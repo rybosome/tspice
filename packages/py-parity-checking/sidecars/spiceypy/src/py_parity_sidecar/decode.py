@@ -137,6 +137,12 @@ from .models import (
     StepGeometryGfGfoclt,
     StepGeometryGfGfrfov,
     StepGeometryGfGftfov,
+    StepGeometryGfGfpa,
+    StepGeometryGfGfposc,
+    StepGeometryGfGfrr,
+    StepGeometryGfGfsntc,
+    StepGeometryGfGfsubc,
+    StepGeometryGfGfilum,
     StepGeometryGfGfsep,
     StepGeometryGfGfsstp,
     StepGeometryGfGfstep,
@@ -1787,6 +1793,121 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 step=_expect_number(step.get("step"), label="geometry-gf.gftfov.step"),
                 cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gftfov.cnfineWindowId"),
                 resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gftfov.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfpa":
+            return StepGeometryGfGfpa(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry-gf.gfpa.target"),
+                illmn=_expect_string(step.get("illmn"), label="geometry-gf.gfpa.illmn"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfpa.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfpa.obsrvr"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfpa.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfpa.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfpa.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfpa.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfpa.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfpa.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfpa.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfposc":
+            return StepGeometryGfGfposc(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry-gf.gfposc.target"),
+                frame=_expect_string(step.get("frame"), label="geometry-gf.gfposc.frame"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfposc.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfposc.obsrvr"),
+                crdsys=_expect_string(step.get("crdsys"), label="geometry-gf.gfposc.crdsys"),
+                coord=_expect_string(step.get("coord"), label="geometry-gf.gfposc.coord"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfposc.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfposc.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfposc.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfposc.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfposc.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfposc.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfposc.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfrr":
+            return StepGeometryGfGfrr(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry-gf.gfrr.target"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfrr.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfrr.obsrvr"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfrr.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfrr.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfrr.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfrr.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfrr.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfrr.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfrr.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfsntc":
+            return StepGeometryGfGfsntc(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry-gf.gfsntc.target"),
+                fixref=_expect_string(step.get("fixref"), label="geometry-gf.gfsntc.fixref"),
+                method=_expect_string(step.get("method"), label="geometry-gf.gfsntc.method"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfsntc.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfsntc.obsrvr"),
+                dref=_expect_string(step.get("dref"), label="geometry-gf.gfsntc.dref"),
+                dvec=_expect_vec3(step.get("dvec"), label="geometry-gf.gfsntc.dvec"),
+                crdsys=_expect_string(step.get("crdsys"), label="geometry-gf.gfsntc.crdsys"),
+                coord=_expect_string(step.get("coord"), label="geometry-gf.gfsntc.coord"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfsntc.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfsntc.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfsntc.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfsntc.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfsntc.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfsntc.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfsntc.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfsubc":
+            return StepGeometryGfGfsubc(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry-gf.gfsubc.target"),
+                fixref=_expect_string(step.get("fixref"), label="geometry-gf.gfsubc.fixref"),
+                method=_expect_string(step.get("method"), label="geometry-gf.gfsubc.method"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfsubc.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfsubc.obsrvr"),
+                crdsys=_expect_string(step.get("crdsys"), label="geometry-gf.gfsubc.crdsys"),
+                coord=_expect_string(step.get("coord"), label="geometry-gf.gfsubc.coord"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfsubc.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfsubc.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfsubc.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfsubc.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfsubc.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfsubc.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfsubc.resultWindowId"),
+                resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
+            )
+
+        case "geometry-gf.gfilum":
+            return StepGeometryGfGfilum(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry-gf.gfilum.method"),
+                angtyp=_expect_string(step.get("angtyp"), label="geometry-gf.gfilum.angtyp"),
+                target=_expect_string(step.get("target"), label="geometry-gf.gfilum.target"),
+                illmn=_expect_string(step.get("illmn"), label="geometry-gf.gfilum.illmn"),
+                fixref=_expect_string(step.get("fixref"), label="geometry-gf.gfilum.fixref"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry-gf.gfilum.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"), label="geometry-gf.gfilum.obsrvr"),
+                spoint=_expect_vec3(step.get("spoint"), label="geometry-gf.gfilum.spoint"),
+                relate=_expect_string(step.get("relate"), label="geometry-gf.gfilum.relate"),
+                refval=_expect_number(step.get("refval"), label="geometry-gf.gfilum.refval"),
+                adjust=_expect_number(step.get("adjust"), label="geometry-gf.gfilum.adjust"),
+                step=_expect_number(step.get("step"), label="geometry-gf.gfilum.step"),
+                nintvls=_expect_int(step.get("nintvls"), label="geometry-gf.gfilum.nintvls"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="geometry-gf.gfilum.cnfineWindowId"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="geometry-gf.gfilum.resultWindowId"),
                 resultMaxIntervals=(_expect_int(step["resultMaxIntervals"], label="resultMaxIntervals") if step.get("resultMaxIntervals") is not None else None),
             )
 

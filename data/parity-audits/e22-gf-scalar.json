@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 1,
+  "batch": "e22-gf-scalar",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-gf-scalar.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry-gf.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/geometry_gf.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry-gf.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/gf-scalar-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/field-of-view.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/gf-scalar.test.ts",
+    "packages/tspice/src/index.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "gfpa_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfpa_c.html",
+      "semantics": "Search the illuminator-target-observer phase angle in radians.",
+      "edgeAssessment": "Swapped illumination and observation names, phase threshold crossings, aberration corrections and both local and absolute extrema.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOTRECOGNIZED), SPICE(SPKINSUFFDATA), SPICE(VALUEOUTOFRANGE). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfpa-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-source-observer",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-unknown-source",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-source."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfpa-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfpa -> serialized N-API binding -> tspice_gfpa -> gfpa_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfpa -> scoped WASM adapter and compiled export -> tspice_gfpa -> gfpa_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfpa-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfpa-source-observer"]
+        }
+      ]
+    },
+    {
+      "routine": "gfposc_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfposc_c.html",
+      "semantics": "Search the chosen apparent target coordinate in a named frame.",
+      "edgeAssessment": "Rotated axes, rectangular, spherical and latitudinal coordinates and their units.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOTRECOGNIZED), SPICE(NOTSUPPORTED), SPICE(SPKINSUFFDATA), SPICE(UNKNOWNFRAME), SPICE(VALUEOUTOFRANGE). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfposc-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-coordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-bad-frame",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for bad-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-coordinate",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for coordinate."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfposc-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfposc -> serialized N-API binding -> tspice_gfposc -> gfposc_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfposc -> scoped WASM adapter and compiled export -> tspice_gfposc -> gfposc_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfposc-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfposc-coordinates"]
+        }
+      ]
+    },
+    {
+      "routine": "gfrr_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrr_c.html",
+      "semantics": "Search signed apparent target range rate in km/s.",
+      "edgeAssessment": "Moving and static observers, sign-changing rate, units, absolute adjustment and same-body diagnostic.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(BODIESNOTDISTINCT), SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOTRECOGNIZED), SPICE(SPKINSUFFDATA), SPICE(VALUEOUTOFRANGE). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfrr-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-relative-motion",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-same-body",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for same-body."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfrr-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrr -> serialized N-API binding -> tspice_gfrr -> gfrr_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrr -> scoped WASM adapter and compiled export -> tspice_gfrr -> gfrr_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfrr-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfrr-relative-motion"]
+        }
+      ]
+    },
+    {
+      "routine": "gfsntc_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfsntc_c.html",
+      "semantics": "Search a target-fixed coordinate of the first ray intercept.",
+      "edgeAssessment": "Ray magnitude, ray rotation, surface visibility intervals, zero vector and coordinate diagnostics.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOFRAME), SPICE(NOTRECOGNIZED), SPICE(NOTSUPPORTED), SPICE(SPKINSUFFDATA), SPICE(VALUEOUTOFRANGE), SPICE(ZEROVECTOR). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfsntc-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-rays",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-bad-frame",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for bad-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-coordinate",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for coordinate."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-zero-direction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for zero-direction."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfsntc-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfsntc -> serialized N-API binding -> tspice_gfsntc -> gfsntc_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfsntc -> scoped WASM adapter and compiled export -> tspice_gfsntc -> gfsntc_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfsntc-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfsntc-rays"]
+        }
+      ]
+    },
+    {
+      "routine": "gfsubc_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfsubc_c.html",
+      "semantics": "Search a coordinate of the sub-observer point on the surface.",
+      "edgeAssessment": "Intercept and near-point methods, spherical/latitudinal versus rectangular, non-spherical triaxial model.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOFRAME), SPICE(NOTRECOGNIZED), SPICE(NOTSUPPORTED), SPICE(SPKINSUFFDATA), SPICE(VALUEOUTOFRANGE). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfsubc-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-subpoint-methods",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-bad-frame",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for bad-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-coordinate",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for coordinate."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfsubc-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfsubc -> serialized N-API binding -> tspice_gfsubc -> gfsubc_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfsubc -> scoped WASM adapter and compiled export -> tspice_gfsubc -> gfsubc_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfsubc-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfsubc-subpoint-methods"]
+        }
+      ]
+    },
+    {
+      "routine": "gfilum_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfilum_c.html",
+      "semantics": "Search the specified phase, incidence or emission angle at a surface point.",
+      "edgeAssessment": "Two emission crossings, minimum at zero, illumination angle selector and off-axis point.",
+      "errorAssessment": "Real terminal diagnostics include SPICE(CELLTOOSMALL), SPICE(IDCODENOTFOUND), SPICE(INVALIDOPTION), SPICE(INVALIDSTEP), SPICE(NOTRECOGNIZED), SPICE(NOTSUPPORTED), SPICE(SPKINSUFFDATA), SPICE(UNKNOWNFRAME), SPICE(VALUEOUTOFRANGE). Continued operation is verified after failure.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfilum-relations",
+          "coverage": ["success", "edge"],
+          "observes": "Compare equality and inequality crossings and both local extrema in the authored moving geometry."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-absolute-adjust",
+          "coverage": ["success", "edge"],
+          "observes": "Compare absolute extrema with and without a physical-unit adjustment."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Discard prior result contents and preserve separate confinement intervals and active search step."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric and corrected boundaries in the synthetic ephemeris."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-resolution",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the search with different time tolerance and step, comparing all returned boundaries."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-angle-point",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-invalid-step",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-step."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-invalid-relation",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-relation."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-negative-adjust",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for negative-adjust."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-unknown-target",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-workspace",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for workspace."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-bad-frame",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for bad-frame."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-angle-type",
+          "coverage": ["error"],
+          "observes": "Compare the canonical diagnostic for angle-type."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-ephemeris",
+          "coverage": ["error"],
+          "observes": "A real search outside the ephemeris coverage signals a toolkit error."
+        },
+        {
+          "caseId": "geometry-gf-gfilum-short-result",
+          "coverage": ["error"],
+          "observes": "Three disjoint matching intervals exceed the one-interval result capacity."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Independent SpiceyPy-generated synthetic moving ephemerides.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored test frames, triaxial shapes and orientations.",
+          "distribution": "Project-authored fixture distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Synthetic trajectories, source ephemerides and target-fixed frames allow independent geometric checks of event times.",
+      "cleanup": "Each workflow frees its windows, clears kernels and disposes its client. Initialized search steps are saved before a scalar-search workflow and restored on exit. The sidecar uses a fresh process per workflow.",
+      "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfilum -> serialized N-API binding -> tspice_gfilum -> gfilum_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfilum -> scoped WASM adapter and compiled export -> tspice_gfilum -> gfilum_c",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "gfilum-window-lifetime",
+          "status": "repaired",
+          "summary": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "repair": "Validate live distinct double windows and floating point step progress before dispatch. Share the existing geometry name check. Preserve the exact compiled search and all returned intervals.",
+          "evidence": [
+            "docs/step8-gf-scalar.md",
+            "packages/py-parity-checking/test/gf-scalar.test.ts",
+            "packages/backend-node/test/gf-scalar-domain.test.ts",
+            "packages/backend-wasm/test/gf-scalar-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py"
+          ],
+          "caseIds": ["geometry-gf-gfilum-angle-point"]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Compiled workflow, instrumentation and real browser observations are recorded in the scientific notes. Complete required local and Linux CI evidence binds separately."
+}

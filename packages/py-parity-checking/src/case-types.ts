@@ -1116,6 +1116,115 @@ export type StepGeometryGfGftfov = {
   resultMaxIntervals?: number;
 };
 
+export type StepGeometryGfGfpa = {
+  op: "geometry-gf.gfpa";
+  target: string;
+  illmn: string;
+  abcorr: string;
+  obsrvr: string;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfposc = {
+  op: "geometry-gf.gfposc";
+  target: string;
+  frame: string;
+  abcorr: string;
+  obsrvr: string;
+  crdsys: string;
+  coord: string;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfrr = {
+  op: "geometry-gf.gfrr";
+  target: string;
+  abcorr: string;
+  obsrvr: string;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfsntc = {
+  op: "geometry-gf.gfsntc";
+  target: string;
+  fixref: string;
+  method: string;
+  abcorr: string;
+  obsrvr: string;
+  dref: string;
+  dvec: [number, number, number];
+  crdsys: string;
+  coord: string;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfsubc = {
+  op: "geometry-gf.gfsubc";
+  target: string;
+  fixref: string;
+  method: string;
+  abcorr: string;
+  obsrvr: string;
+  crdsys: string;
+  coord: string;
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
+export type StepGeometryGfGfilum = {
+  op: "geometry-gf.gfilum";
+  method: string;
+  angtyp: string;
+  target: string;
+  illmn: string;
+  fixref: string;
+  abcorr: string;
+  obsrvr: string;
+  spoint: [number, number, number];
+  relate: string;
+  refval: number;
+  adjust: number;
+  step: number;
+  nintvls: number;
+  cnfineWindowId: string;
+  resultWindowId: string;
+  resultMaxIntervals?: number;
+};
+
 export type StepGeometryGfGfsep = {
   op: "geometry-gf.gfsep";
   targ1: string;
@@ -1568,6 +1677,12 @@ export type WorkflowStep =
   | StepGeometryGfGfoclt
   | StepGeometryGfGfrfov
   | StepGeometryGfGftfov
+  | StepGeometryGfGfpa
+  | StepGeometryGfGfposc
+  | StepGeometryGfGfrr
+  | StepGeometryGfGfsntc
+  | StepGeometryGfGfsubc
+  | StepGeometryGfGfilum
   | StepGeometryGfGfsep
   | StepGeometryGfGfdist
   | StepDskDskobj
@@ -2020,6 +2135,12 @@ export type StepOutput =
   | { op: "geometry-gf.gfoclt"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfrfov"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gftfov"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfpa"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfposc"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfrr"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfsntc"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfsubc"; value: GfSearchWindowPayload }
+  | { op: "geometry-gf.gfilum"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
   | {

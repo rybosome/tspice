@@ -705,3 +705,7 @@ orientation is ignored, with nonempty C strings still required.
 ### Visibility search windows
 
 `gfoclt`, `gfrfov` and `gftfov` dispatch to their same-named CSPICE entry points on native Node and WASM. Each replaces a distinct result window with the complete intervals for the selected occultation, ray visibility or apparent target visibility. [Search semantics, limitations and evidence](step8-gf-visibility.md)
+
+### Scalar Geometry Finder searches
+
+`gfpa`, `gfposc`, `gfrr`, `gfsntc`, `gfsubc` and `gfilum` use the matching CSPICE entry point on each backend. They find phase, target coordinate, range rate, surface-intercept coordinate, sub-observer coordinate and surface illumination events in the complete confinement window. [Semantics, units and independent evidence](step8-gf-scalar.md)

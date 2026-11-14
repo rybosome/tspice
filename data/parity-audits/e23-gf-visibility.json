@@ -113,7 +113,8 @@
         "geometry-gf-gftfov-unknown-target",
         "geometry-gf-gftfov-wrong-frame"
       ],
-      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e23-616bbf8a-wasm",
@@ -181,7 +182,8 @@
         "geometry-gf-gftfov-unknown-target",
         "geometry-gf-gftfov-wrong-frame"
       ],
-      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e23-616bbf8a-node",
@@ -251,7 +253,8 @@
       ],
       "commit": "616bbf8a8cbb4484ff4e3051d1da7f95d453ff45",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584847943/job/132417014295",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e23-616bbf8a-wasm",
@@ -321,7 +324,8 @@
       ],
       "commit": "616bbf8a8cbb4484ff4e3051d1da7f95d453ff45",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584847943/job/132417014295",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -461,16 +465,28 @@
       "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gfoclt -> serialized N-API binding -> tspice_gfoclt -> gfoclt_c",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gfoclt -> scoped WASM adapter and compiled export -> tspice_gfoclt -> gfoclt_c",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -631,16 +647,28 @@
       "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gfrfov -> serialized N-API binding -> tspice_gfrfov -> gfrfov_c",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gfrfov -> scoped WASM adapter and compiled export -> tspice_gfrfov -> gfrfov_c",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -776,16 +804,28 @@
       "tolerance": "All registered interval endpoints use the shared 1e-12 absolute or relative component-wise comparator, including empty and single-point windows. Analytic crossing checks allow the supplied GF boundary tolerance of 1e-6 seconds.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gftfov -> serialized N-API binding -> tspice_gftfov -> gftfov_c",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.gftfov -> scoped WASM adapter and compiled export -> tspice_gftfov -> gftfov_c",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -806,5 +846,5 @@
       ]
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior observations are historical. Complete local and canonical CI executions will bind reviews to this expanded source."
 }

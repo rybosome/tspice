@@ -237,7 +237,7 @@ int tspice_gfrepf(char *err, int errMaxBytes) {
   return 0;
 }
 
-static int visibility_windows(uintptr_t input, uintptr_t output, double step,
+static int search_windows(uintptr_t input, uintptr_t output, double step,
                               SpiceCell **cnfine, SpiceCell **result, char *err,
                               int cap) {
   if (input == output)
@@ -269,12 +269,194 @@ static int visibility_windows(uintptr_t input, uintptr_t output, double step,
   return 0;
 }
 
-static int visibility_text(const char *const *items, size_t n, char *err,
+static int search_text(const char *const *items, size_t n, char *err,
                            int cap) {
   for (size_t i = 0; i < n; i++) {
     if (!items[i] || strlen(items[i]) >= INT_MAX)
       return tspice_geometry_gf_invalid_arg(
           err, cap, "Missing or oversized visibility argument");
+  }
+  return 0;
+}
+
+static int scalar_workspace(const char *name, int windows, double refval,
+                            double adjust, int count, SpiceInt *intervals,
+                            char *err, int cap) {
+  if (!isfinite(refval) || !isfinite(adjust))
+    return tspice_geometry_gf_invalid_arg(
+        err, cap, "GF reference and adjustment must be finite");
+  if (tspice_int_to_spice_int_checked(count, intervals, name, err, cap))
+    return 1;
+  return tspice_check_gf_workspace(*intervals, windows, name, err, cap);
+}
+
+int tspice_gfpa(const char *target, const char *illmn, const char *abcorr,
+                const char *obsrvr, const char *relate, double refval,
+                double adjust, double step, int nintvls, uintptr_t input,
+                uintptr_t output, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {target, illmn, abcorr, obsrvr, relate};
+  if (search_text(text, 5, err, cap) ||
+      scalar_workspace("gfpa", SPICE_GF_NWPA, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*target && *illmn && *abcorr && *obsrvr && *relate && intervals > 0 &&
+      step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfpa_c(target, illmn, abcorr, obsrvr, relate, refval, adjust, step, intervals,
+         cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfposc(const char *target, const char *frame, const char *abcorr,
+                  const char *obsrvr, const char *crdsys, const char *coord,
+                  const char *relate, double refval, double adjust, double step,
+                  int nintvls, uintptr_t input, uintptr_t output, char *err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {target, frame, abcorr, obsrvr, crdsys, coord, relate};
+  if (search_text(text, 7, err, cap) ||
+      scalar_workspace("gfposc", SPICE_GF_NWMAX, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*target && *frame && *abcorr && *obsrvr && *crdsys && *coord && *relate &&
+      intervals > 0 && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfposc_c(target, frame, abcorr, obsrvr, crdsys, coord, relate, refval, adjust,
+           step, intervals, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfrr(const char *target, const char *abcorr, const char *obsrvr,
+                const char *relate, double refval, double adjust, double step,
+                int nintvls, uintptr_t input, uintptr_t output, char *err,
+                int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {target, abcorr, obsrvr, relate};
+  if (search_text(text, 4, err, cap) ||
+      scalar_workspace("gfrr", SPICE_GF_NWRR, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*target && *abcorr && *obsrvr && *relate && intervals > 0 && step > 0 &&
+      result->size >= 2 && tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfrr_c(target, abcorr, obsrvr, relate, refval, adjust, step, intervals,
+         cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfsntc(const char *target, const char *fixref, const char *method,
+                  const char *abcorr, const char *obsrvr, const char *dref,
+                  const double dvec[3], const char *crdsys, const char *coord,
+                  const char *relate, double refval, double adjust, double step,
+                  int nintvls, uintptr_t input, uintptr_t output, char *err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {target, fixref, method, abcorr, obsrvr,
+                        dref,   crdsys, coord,  relate};
+  if (search_text(text, 9, err, cap) ||
+      scalar_workspace("gfsntc", SPICE_GF_NWMAX, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (!dvec || !isfinite(dvec[0]) || !isfinite(dvec[1]) || !isfinite(dvec[2]))
+    return tspice_geometry_gf_invalid_arg(err, cap,
+                                          "GF search vector must be finite");
+  if (*target && *fixref && *method && *abcorr && *obsrvr && *dref && *crdsys &&
+      *coord && *relate && intervals > 0 && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfsntc_c(target, fixref, method, abcorr, obsrvr, dref, dvec, crdsys, coord,
+           relate, refval, adjust, step, intervals, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfsubc(const char *target, const char *fixref, const char *method,
+                  const char *abcorr, const char *obsrvr, const char *crdsys,
+                  const char *coord, const char *relate, double refval,
+                  double adjust, double step, int nintvls, uintptr_t input,
+                  uintptr_t output, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {target, fixref, method, abcorr,
+                        obsrvr, crdsys, coord,  relate};
+  if (search_text(text, 8, err, cap) ||
+      scalar_workspace("gfsubc", SPICE_GF_NWMAX, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (*target && *fixref && *method && *abcorr && *obsrvr && *crdsys &&
+      *coord && *relate && intervals > 0 && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfsubc_c(target, fixref, method, abcorr, obsrvr, crdsys, coord, relate,
+           refval, adjust, step, intervals, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfilum(const char *method, const char *angtyp, const char *target,
+                  const char *illmn, const char *fixref, const char *abcorr,
+                  const char *obsrvr, const double spoint[3],
+                  const char *relate, double refval, double adjust, double step,
+                  int nintvls, uintptr_t input, uintptr_t output, char *err,
+                  int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpiceCell *cnfine = NULL, *result = NULL;
+  SpiceInt intervals = 0;
+  const char *text[] = {method, angtyp, target, illmn,
+                        fixref, abcorr, obsrvr, relate};
+  if (search_text(text, 8, err, cap) ||
+      scalar_workspace("gfilum", SPICE_GF_NWILUM, refval, adjust, nintvls,
+                       &intervals, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
+    return 1;
+  if (!spoint || !isfinite(spoint[0]) || !isfinite(spoint[1]) ||
+      !isfinite(spoint[2]))
+    return tspice_geometry_gf_invalid_arg(err, cap,
+                                          "GF search vector must be finite");
+  if (*method && *angtyp && *target && *illmn && *fixref && *abcorr &&
+      *obsrvr && *relate && intervals > 0 && step > 0 && result->size >= 2 &&
+      tspice_check_body_mapping_codes(err, cap))
+    return 1;
+  gfilum_c(method, angtyp, target, illmn, fixref, abcorr, obsrvr, spoint,
+           relate, refval, adjust, step, intervals, cnfine, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, cap);
+    return 1;
   }
   return 0;
 }
@@ -288,8 +470,8 @@ int tspice_gfoclt(const char *occtyp, const char *front, const char *fshape,
   const char *text[] = {occtyp, front,  fshape, fframe, back,
                         bshape, bframe, abcorr, obsrvr};
   SpiceCell *cnfine = NULL, *result = NULL;
-  if (visibility_text(text, 9, err, cap) ||
-      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+  if (search_text(text, 9, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
     return 1;
   if (*occtyp && *front && *fshape && *back && *bshape && *abcorr && *obsrvr &&
       step > 0 && result->size >= 2 &&
@@ -310,8 +492,8 @@ int tspice_gfrfov(const char *inst, const double raydir[3], const char *rframe,
   tspice_init_cspice_error_handling_once();
   const char *text[] = {inst, rframe, abcorr, obsrvr};
   SpiceCell *cnfine = NULL, *result = NULL;
-  if (visibility_text(text, 4, err, cap) ||
-      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+  if (search_text(text, 4, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
     return 1;
   if (!raydir || !isfinite(raydir[0]) || !isfinite(raydir[1]) ||
       !isfinite(raydir[2]))
@@ -334,8 +516,8 @@ int tspice_gftfov(const char *inst, const char *target, const char *tshape,
   tspice_init_cspice_error_handling_once();
   const char *text[] = {inst, target, tshape, tframe, abcorr, obsrvr};
   SpiceCell *cnfine = NULL, *result = NULL;
-  if (visibility_text(text, 6, err, cap) ||
-      visibility_windows(input, output, step, &cnfine, &result, err, cap))
+  if (search_text(text, 6, err, cap) ||
+      search_windows(input, output, step, &cnfine, &result, err, cap))
     return 1;
   if (*inst && *target && *tshape && *abcorr && *obsrvr &&
       !eqstr_c(tshape, "RAY") && step > 0 && result->size >= 2 &&

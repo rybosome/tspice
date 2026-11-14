@@ -429,7 +429,21 @@
       "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
       "dependsOn": ["e15-field-of-view"],
       "prs": ["https://github.com/rybosome/tspice/pull/768"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Preserve prior source-bound observations as historical and revalidate against the expanded source."
+    },
+    {
+      "id": "e22-gf-scalar",
+      "routines": [
+        "gfpa_c",
+        "gfposc_c",
+        "gfrr_c",
+        "gfsntc_c",
+        "gfsubc_c",
+        "gfilum_c"
+      ],
+      "dependsOn": ["e23-gf-visibility"],
+      "prs": [],
+      "nextAction": "Capture complete source-bound local and canonical CI observations."
     }
   ]
 }

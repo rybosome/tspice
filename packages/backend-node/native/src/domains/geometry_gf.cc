@@ -145,7 +145,7 @@ static void Gfrepf(const Napi::CallbackInfo& info) {
   }
 }
 
-static bool VisibilityWindowPointers(const tspice_backend_node::CspiceLock& lock, const Napi::CallbackInfo& info,
+static bool SearchWindowPointers(const tspice_backend_node::CspiceLock& lock, const Napi::CallbackInfo& info,
                                      size_t index, uintptr_t *cnfine, uintptr_t *result) {
   Napi::Env env = info.Env();
   uint32_t in=0,out=0;
@@ -155,6 +155,236 @@ static bool VisibilityWindowPointers(const tspice_backend_node::CspiceLock& lock
   if (env.IsExceptionPending()) return false;
   *result=tspice_backend_node::GetCellHandlePtrOrThrow(lock,env,out,SPICE_DP,"visibility(result)","SpiceWindow");
   return !env.IsExceptionPending();
+}
+
+struct ScalarSearchBounds {
+  double refval, adjust, step;
+  int intervals;
+};
+static bool ReadScalarSearchBounds(const Napi::CallbackInfo &info, size_t start,
+                                   ScalarSearchBounds *out) {
+  auto env = info.Env();
+  if (info.Length() != start + 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid GF search arguments"));
+    return false;
+  }
+  for (size_t i = start; i < start + 4; i++)
+    if (!info[i].IsNumber()) {
+      ThrowSpiceError(Napi::TypeError::New(
+          env, "GF search expects numeric bounds, step and workspace size"));
+      return false;
+    }
+  const double count = info[start + 3].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(count) || std::trunc(count) != count ||
+      count < INT32_MIN || count > INT32_MAX) {
+    ThrowSpiceError(Napi::RangeError::New(
+        env, "GF workspace size must be a signed SpiceInt"));
+    return false;
+  }
+  *out = {info[start].As<Napi::Number>().DoubleValue(),
+          info[start + 1].As<Napi::Number>().DoubleValue(),
+          info[start + 2].As<Napi::Number>().DoubleValue(),
+          static_cast<int>(count)};
+  return true;
+}
+
+static void Gfpa(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 5, &bounds))
+    return;
+  std::string target, illmn, abcorr, obsrvr, relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &illmn))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &relate))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 9, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfpa(target.c_str(), illmn.c_str(), abcorr.c_str(), obsrvr.c_str(),
+                  relate.c_str(), bounds.refval, bounds.adjust, bounds.step,
+                  bounds.intervals, cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfpa", err);
+}
+
+static void Gfposc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 7, &bounds))
+    return;
+  std::string target, frame, abcorr, obsrvr, crdsys, coord, relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &frame))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &crdsys))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &coord))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[6], &relate))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 11, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfposc(target.c_str(), frame.c_str(), abcorr.c_str(),
+                    obsrvr.c_str(), crdsys.c_str(), coord.c_str(),
+                    relate.c_str(), bounds.refval, bounds.adjust, bounds.step,
+                    bounds.intervals, cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfposc", err);
+}
+
+static void Gfrr(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 4, &bounds))
+    return;
+  std::string target, abcorr, obsrvr, relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &relate))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 8, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfrr(target.c_str(), abcorr.c_str(), obsrvr.c_str(),
+                  relate.c_str(), bounds.refval, bounds.adjust, bounds.step,
+                  bounds.intervals, cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfrr", err);
+}
+
+static void Gfsntc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 10, &bounds))
+    return;
+  std::string target, fixref, method, abcorr, obsrvr, dref, crdsys, coord,
+      relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &fixref))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &method))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &dref))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[7], &crdsys))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[8], &coord))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[9], &relate))
+    return;
+  double dvec[3];
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[6], 3, dvec, "dvec"))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 14, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfsntc(target.c_str(), fixref.c_str(), method.c_str(),
+                    abcorr.c_str(), obsrvr.c_str(), dref.c_str(), dvec,
+                    crdsys.c_str(), coord.c_str(), relate.c_str(),
+                    bounds.refval, bounds.adjust, bounds.step, bounds.intervals,
+                    cnfine, result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfsntc", err);
+}
+
+static void Gfsubc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 8, &bounds))
+    return;
+  std::string target, fixref, method, abcorr, obsrvr, crdsys, coord, relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &fixref))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &method))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &crdsys))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[6], &coord))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[7], &relate))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 12, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfsubc(target.c_str(), fixref.c_str(), method.c_str(),
+                    abcorr.c_str(), obsrvr.c_str(), crdsys.c_str(),
+                    coord.c_str(), relate.c_str(), bounds.refval, bounds.adjust,
+                    bounds.step, bounds.intervals, cnfine, result, err,
+                    sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfsubc", err);
+}
+
+static void Gfilum(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  ScalarSearchBounds bounds{};
+  if (!ReadScalarSearchBounds(info, 9, &bounds))
+    return;
+  std::string method, angtyp, target, illmn, fixref, abcorr, obsrvr, relate;
+  if (!tspice_napi::ReadGeometryString(env, info[0], &method))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[1], &angtyp))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[2], &target))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[3], &illmn))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[4], &fixref))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[5], &abcorr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[6], &obsrvr))
+    return;
+  if (!tspice_napi::ReadGeometryString(env, info[8], &relate))
+    return;
+  double spoint[3];
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, info[7], 3, spoint,
+                                                 "spoint"))
+    return;
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t cnfine = 0, result = 0;
+  if (!SearchWindowPointers(lock, info, 13, &cnfine, &result))
+    return;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  if (tspice_gfilum(method.c_str(), angtyp.c_str(), target.c_str(),
+                    illmn.c_str(), fixref.c_str(), abcorr.c_str(),
+                    obsrvr.c_str(), spoint, relate.c_str(), bounds.refval,
+                    bounds.adjust, bounds.step, bounds.intervals, cnfine,
+                    result, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfilum", err);
 }
 
 static void Gfoclt(const Napi::CallbackInfo &info) {
@@ -187,7 +417,7 @@ static void Gfoclt(const Napi::CallbackInfo &info) {
   const double step = info[9].As<Napi::Number>().DoubleValue();
   tspice_backend_node::CspiceLock lock;
   uintptr_t cnfine = 0, result = 0;
-  if (!VisibilityWindowPointers(lock, info, 10, &cnfine, &result))
+  if (!SearchWindowPointers(lock, info, 10, &cnfine, &result))
     return;
   char err[tspice_backend_node::kErrMaxBytes] = {0};
   if (tspice_gfoclt(occtyp.c_str(), front.c_str(), fshape.c_str(),
@@ -220,7 +450,7 @@ static void Gfrfov(const Napi::CallbackInfo &info) {
   const double step = info[5].As<Napi::Number>().DoubleValue();
   tspice_backend_node::CspiceLock lock;
   uintptr_t cnfine = 0, result = 0;
-  if (!VisibilityWindowPointers(lock, info, 6, &cnfine, &result))
+  if (!SearchWindowPointers(lock, info, 6, &cnfine, &result))
     return;
   char err[tspice_backend_node::kErrMaxBytes] = {0};
   if (tspice_gfrfov(inst.c_str(), raydir, rframe.c_str(), abcorr.c_str(),
@@ -251,7 +481,7 @@ static void Gftfov(const Napi::CallbackInfo &info) {
   const double step = info[6].As<Napi::Number>().DoubleValue();
   tspice_backend_node::CspiceLock lock;
   uintptr_t cnfine = 0, result = 0;
-  if (!VisibilityWindowPointers(lock, info, 7, &cnfine, &result))
+  if (!SearchWindowPointers(lock, info, 7, &cnfine, &result))
     return;
   char err[tspice_backend_node::kErrMaxBytes] = {0};
   if (tspice_gftfov(inst.c_str(), target.c_str(), tshape.c_str(),
@@ -432,6 +662,12 @@ void RegisterGeometryGf(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "gftfov",
                         Napi::Function::New(env, Gftfov), __func__))
     return;
+  if (!SetExportChecked(env,exports,"gfpa",Napi::Function::New(env,Gfpa),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfposc",Napi::Function::New(env,Gfposc),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfrr",Napi::Function::New(env,Gfrr),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfsntc",Napi::Function::New(env,Gfsntc),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfsubc",Napi::Function::New(env,Gfsubc),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfilum",Napi::Function::New(env,Gfilum),__func__)) return;
   if (!SetExportChecked(env, exports, "gfsep", Napi::Function::New(env, Gfsep), __func__)) return;
   if (!SetExportChecked(env, exports, "gfdist", Napi::Function::New(env, Gfdist), __func__)) return;
 }

@@ -16,11 +16,19 @@ export function fovWorkspace(room: number, shapelen: number, framelen: number) {
 
 /** Own each component before dispatch so accessors cannot change a validated ray. */
 export function fovRayDirection(value: unknown): [number, number, number] {
+  return finiteGeometryVector(value, "raydir");
+}
+
+/** Copy a named finite three-vector exactly once before native or WASM dispatch. */
+export function finiteGeometryVector(
+  value: unknown,
+  name: string,
+): [number, number, number] {
   if (!Array.isArray(value) || value.length !== 3)
-    throw new TypeError("raydir must be a three-component array");
+    throw new TypeError(`${name} must be a three-component array`);
   function component(entry: unknown, index: number): number {
     if (typeof entry !== "number" || !Number.isFinite(entry))
-      throw new RangeError(`raydir[${index}] must be finite`);
+      throw new RangeError(`${name}[${index}] must be finite`);
     return entry;
   }
   return [

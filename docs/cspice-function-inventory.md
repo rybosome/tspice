@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 172
-- Planned (not yet implemented): 477
+- Implemented now (SpiceRawBackend): 178
+- Planned (not yet implemented): 471
 - Excluded: 3
 
 ## Implemented now
@@ -94,15 +94,21 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `getmsg_c` | Get Error Message |
 | `gfdist_c` | GF, distance search |
+| `gfilum_c` | GF, illumination angle search |
 | `gfoclt_c` | GF, find occultation |
+| `gfpa_c` | GF, phase angle search |
+| `gfposc_c` | GF, observer-target vector coordinate search |
 | `gfrefn_c` | GF, default refinement estimator |
 | `gfrepf_c` | GF, progress report finalization |
 | `gfrepi_c` | GF, progress report initialization |
 | `gfrfov_c` | GF, is ray in FOV? |
+| `gfrr_c` | GF, range rate search |
 | `gfsep_c` | GF, angular separation search |
+| `gfsntc_c` | GF, surface intercept vector coordinate search |
 | `gfsstp_c` | Geometry finder set step size |
 | `gfstep_c` | Geometry finder step size |
 | `gfstol_c` | GF, set a tolerance value for GF |
+| `gfsubc_c` | GF, subpoint vector coordinate search |
 | `gftfov_c` | GF, is target in FOV? |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
@@ -382,15 +388,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfclrh_c` | GF, clear interrupt signal handler status |
 | `gfevnt_c` | GF, geometric event finder |
 | `gffove_c` | GF, is target in FOV? |
-| `gfilum_c` | GF, illumination angle search |
 | `gfinth_c` | GF, interrupt signal handler |
 | `gfocce_c` | GF, occultation event |
-| `gfpa_c` | GF, phase angle search |
-| `gfposc_c` | GF, observer-target vector coordinate search |
 | `gfrepu_c` | GF, progress report update |
-| `gfrr_c` | GF, range rate search |
-| `gfsntc_c` | GF, surface intercept vector coordinate search |
-| `gfsubc_c` | GF, subpoint vector coordinate search |
 | `gfudb_c` | GF, user defined boolean |
 | `gfuds_c` | GF, user defined scalar |
 | `halfpi_c` | Half the value of pi |

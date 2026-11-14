@@ -92,6 +92,121 @@ class StepGeometryGfGftfov:
 
 
 @dataclass(frozen=True)
+class StepGeometryGfGfpa:
+    op: Literal["geometry-gf.gfpa"]
+    target: str
+    illmn: str
+    abcorr: str
+    obsrvr: str
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfposc:
+    op: Literal["geometry-gf.gfposc"]
+    target: str
+    frame: str
+    abcorr: str
+    obsrvr: str
+    crdsys: str
+    coord: str
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfrr:
+    op: Literal["geometry-gf.gfrr"]
+    target: str
+    abcorr: str
+    obsrvr: str
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfsntc:
+    op: Literal["geometry-gf.gfsntc"]
+    target: str
+    fixref: str
+    method: str
+    abcorr: str
+    obsrvr: str
+    dref: str
+    dvec: tuple[float, float, float]
+    crdsys: str
+    coord: str
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfsubc:
+    op: Literal["geometry-gf.gfsubc"]
+    target: str
+    fixref: str
+    method: str
+    abcorr: str
+    obsrvr: str
+    crdsys: str
+    coord: str
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfilum:
+    op: Literal["geometry-gf.gfilum"]
+    method: str
+    angtyp: str
+    target: str
+    illmn: str
+    fixref: str
+    abcorr: str
+    obsrvr: str
+    spoint: tuple[float, float, float]
+    relate: str
+    refval: float
+    adjust: float
+    step: float
+    nintvls: int
+    cnfineWindowId: str
+    resultWindowId: str
+    resultMaxIntervals: int | None = None
+
+
+@dataclass(frozen=True)
 class StepGeometryGfGfsep:
     op: Literal["geometry-gf.gfsep"]
     targ1: str

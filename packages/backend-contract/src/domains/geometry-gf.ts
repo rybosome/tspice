@@ -20,6 +20,127 @@ export type GfRelate =
 
 /** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {
+  /** Find intervals of phase angle at target between the illumination source and observer (radians).
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfpa_c.html
+   */
+  gfpa(
+    target: string,
+    illmn: string,
+    abcorr: string,
+    obsrvr: string,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Search a named coordinate of the apparent target position in frame. Linear coordinates are km and angular coordinates are radians.
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfposc_c.html
+   */
+  gfposc(
+    target: string,
+    frame: string,
+    abcorr: string,
+    obsrvr: string,
+    crdsys: string,
+    coord: string,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Search the signed apparent target range rate relative to the observer in km/s.
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrr_c.html
+   */
+  gfrr(
+    target: string,
+    abcorr: string,
+    obsrvr: string,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Search a coordinate of the intercept on the target in fixref for the supplied observer ray in dref. Direction is dimensionless. The search restricts the coordinate comparison to intervals with an intercept.
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfsntc_c.html
+   */
+  gfsntc(
+    target: string,
+    fixref: string,
+    method: string,
+    abcorr: string,
+    obsrvr: string,
+    dref: string,
+    dvec: readonly [number, number, number],
+    crdsys: string,
+    coord: string,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Find intervals of a coordinate of the sub-observer point in fixref under the selected method. Linear coordinates are km and angles are radians.
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfsubc_c.html
+   */
+  gfsubc(
+    target: string,
+    fixref: string,
+    method: string,
+    abcorr: string,
+    obsrvr: string,
+    crdsys: string,
+    coord: string,
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
+  /** Search a phase, incidence or emission angle (radians) at a supplied body-fixed surface point in km.
+   * Compare with relate/refval or find local/absolute extrema; adjust applies to absolute extrema. Supply a positive sampling step in TDB seconds, a positive workspace interval count and distinct allocated confinement/result windows. The result replaces previous intervals; insufficient capacity raises a toolkit diagnostic. The standard GF convergence tolerance controls temporal boundary refinement.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfilum_c.html
+   */
+  gfilum(
+    method: string,
+    angtyp: string,
+    target: string,
+    illmn: string,
+    fixref: string,
+    abcorr: string,
+    obsrvr: string,
+    spoint: readonly [number, number, number],
+    relate: GfRelate | string,
+    refval: number,
+    adjust: number,
+    step: number,
+    nintvls: number,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+  ): void;
+
   /** Find occultations of the back target by the front target. Supply the occultation type, each body’s shape and fixed frame, correction and observer. Point shapes permit an empty frame; ellipsoid and supported DSK shapes need their kernels.
    * The positive search step is in TDB seconds and updates the global GF step. The routine replaces the distinct, preallocated result window with complete TDB intervals. A miss yields an empty window. Step size controls event detection; the GF convergence tolerance controls boundary refinement.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfoclt_c.html

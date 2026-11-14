@@ -4,6 +4,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  finiteGeometryVector,
   fovRayDirection,
   spiceStringByteLength,
 } from "@rybosome/tspice-core";
@@ -21,7 +22,7 @@ import {
 
 const visibilityEncoder = new TextEncoder();
 
-function writeVisibilityText(
+function writeSearchText(
   module: EmscriptenModule,
   pointer: number,
   size: number,
@@ -43,6 +44,18 @@ function assertGfStrings(values: readonly unknown[], context: string): void {
 function assertGfBoolean(value: unknown, context: string): void {
   if (typeof value !== "boolean")
     throw new TypeError(`${context}: expected boolean`);
+}
+
+function validateScalarSearch(
+  refval: number,
+  adjust: number,
+  step: number,
+  nintvls: number,
+): void {
+  assertFiniteNumber(refval, "refval");
+  assertFiniteNumber(adjust, "adjust");
+  assertFiniteNumber(step, "step");
+  assertSpiceInt32(nintvls, "nintvls");
 }
 
 function assertFiniteNumber(
@@ -302,6 +315,412 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
     },
     gfrepf: () => tspiceCallGfrepf(module),
 
+    gfpa: (
+      target,
+      illmn,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfpa(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfpa(result)");
+      const text = [target, illmn, abcorr, obsrvr, relate],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfpa") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (targetPtr, illmnPtr, abcorrPtr, obsrvrPtr, relatePtr, err) => {
+          [targetPtr, illmnPtr, abcorrPtr, obsrvrPtr, relatePtr].forEach(
+            (ptr, i) => writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          const status = module._tspice_gfpa(
+            targetPtr,
+            illmnPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfposc: (
+      target,
+      frame,
+      abcorr,
+      obsrvr,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfposc(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfposc(result)");
+      const text = [target, frame, abcorr, obsrvr, crdsys, coord, relate],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfposc") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (
+          targetPtr,
+          framePtr,
+          abcorrPtr,
+          obsrvrPtr,
+          crdsysPtr,
+          coordPtr,
+          relatePtr,
+          err,
+        ) => {
+          [
+            targetPtr,
+            framePtr,
+            abcorrPtr,
+            obsrvrPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+          ].forEach((ptr, i) =>
+            writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          const status = module._tspice_gfposc(
+            targetPtr,
+            framePtr,
+            abcorrPtr,
+            obsrvrPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfrr: (
+      target,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfrr(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfrr(result)");
+      const text = [target, abcorr, obsrvr, relate],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfrr") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (targetPtr, abcorrPtr, obsrvrPtr, relatePtr, err) => {
+          [targetPtr, abcorrPtr, obsrvrPtr, relatePtr].forEach((ptr, i) =>
+            writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          const status = module._tspice_gfrr(
+            targetPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfsntc: (
+      target,
+      fixref,
+      method,
+      abcorr,
+      obsrvr,
+      dref,
+      dvec,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfsntc(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfsntc(result)");
+      const text = [
+          target,
+          fixref,
+          method,
+          abcorr,
+          obsrvr,
+          dref,
+          crdsys,
+          coord,
+          relate,
+        ],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfsntc") + 1);
+      const vector = finiteGeometryVector(dvec, "dvec");
+      withAllocs(
+        module,
+        [...sizes, 24, WASM_ERR_MAX_BYTES],
+        (
+          targetPtr,
+          fixrefPtr,
+          methodPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          drefPtr,
+          crdsysPtr,
+          coordPtr,
+          relatePtr,
+          vectorPtr,
+          err,
+        ) => {
+          [
+            targetPtr,
+            fixrefPtr,
+            methodPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            drefPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+          ].forEach((ptr, i) =>
+            writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          module.HEAPF64.set(vector, vectorPtr >>> 3);
+          const status = module._tspice_gfsntc(
+            targetPtr,
+            fixrefPtr,
+            methodPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            drefPtr,
+            vectorPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfsubc: (
+      target,
+      fixref,
+      method,
+      abcorr,
+      obsrvr,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfsubc(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfsubc(result)");
+      const text = [
+          target,
+          fixref,
+          method,
+          abcorr,
+          obsrvr,
+          crdsys,
+          coord,
+          relate,
+        ],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfsubc") + 1);
+      withAllocs(
+        module,
+        [...sizes, WASM_ERR_MAX_BYTES],
+        (
+          targetPtr,
+          fixrefPtr,
+          methodPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          crdsysPtr,
+          coordPtr,
+          relatePtr,
+          err,
+        ) => {
+          [
+            targetPtr,
+            fixrefPtr,
+            methodPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+          ].forEach((ptr, i) =>
+            writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          const status = module._tspice_gfsubc(
+            targetPtr,
+            fixrefPtr,
+            methodPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            crdsysPtr,
+            coordPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    gfilum: (
+      method,
+      angtyp,
+      target,
+      illmn,
+      fixref,
+      abcorr,
+      obsrvr,
+      spoint,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      const input = wasmWindowPointer(module, cnfine, "gfilum(cnfine)"),
+        output = wasmWindowPointer(module, result, "gfilum(result)");
+      const text = [
+          method,
+          angtyp,
+          target,
+          illmn,
+          fixref,
+          abcorr,
+          obsrvr,
+          relate,
+        ],
+        sizes = text.map((x) => spiceStringByteLength(x, "gfilum") + 1);
+      const vector = finiteGeometryVector(spoint, "spoint");
+      withAllocs(
+        module,
+        [...sizes, 24, WASM_ERR_MAX_BYTES],
+        (
+          methodPtr,
+          angtypPtr,
+          targetPtr,
+          illmnPtr,
+          fixrefPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          relatePtr,
+          vectorPtr,
+          err,
+        ) => {
+          [
+            methodPtr,
+            angtypPtr,
+            targetPtr,
+            illmnPtr,
+            fixrefPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            relatePtr,
+          ].forEach((ptr, i) =>
+            writeSearchText(module, ptr, sizes[i]!, text[i]!),
+          );
+          module.HEAPF64.set(vector, vectorPtr >>> 3);
+          const status = module._tspice_gfilum(
+            methodPtr,
+            angtypPtr,
+            targetPtr,
+            illmnPtr,
+            fixrefPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            vectorPtr,
+            relatePtr,
+            refval,
+            adjust,
+            step,
+            nintvls,
+            input,
+            output,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
     gfoclt: (
       occtyp,
       front,
@@ -357,7 +776,7 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
             abcorrPtr,
             obsrvrPtr,
           ].forEach((ptr, i) =>
-            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+            writeSearchText(module, ptr, sizes[i]!, texts[i]!),
           );
           const status = module._tspice_gfoclt(
             occtypPtr,
@@ -392,7 +811,7 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
         [...sizes, 24, WASM_ERR_MAX_BYTES],
         (instPtr, rframePtr, abcorrPtr, obsrvrPtr, rayPtr, err) => {
           [instPtr, rframePtr, abcorrPtr, obsrvrPtr].forEach((ptr, i) =>
-            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+            writeSearchText(module, ptr, sizes[i]!, texts[i]!),
           );
           module.HEAPF64.set(dir, rayPtr >>> 3);
           const status = module._tspice_gfrfov(
@@ -448,7 +867,7 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
             abcorrPtr,
             obsrvrPtr,
           ].forEach((ptr, i) =>
-            writeVisibilityText(module, ptr, sizes[i]!, texts[i]!),
+            writeSearchText(module, ptr, sizes[i]!, texts[i]!),
           );
           const status = module._tspice_gftfov(
             instPtr,

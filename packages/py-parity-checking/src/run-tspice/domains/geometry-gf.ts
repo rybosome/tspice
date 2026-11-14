@@ -7,6 +7,12 @@ import type {
   StepGeometryGfGfoclt,
   StepGeometryGfGfrfov,
   StepGeometryGfGftfov,
+  StepGeometryGfGfpa,
+  StepGeometryGfGfposc,
+  StepGeometryGfGfrr,
+  StepGeometryGfGfsntc,
+  StepGeometryGfGfsubc,
+  StepGeometryGfGfilum,
   StepGeometryGfGfsep,
   StepGeometryGfGfsstp,
   StepGeometryGfGfstep,
@@ -28,6 +34,12 @@ type GeometryGfStep =
   | StepGeometryGfGfoclt
   | StepGeometryGfGfrfov
   | StepGeometryGfGftfov
+  | StepGeometryGfGfpa
+  | StepGeometryGfGfposc
+  | StepGeometryGfGfrr
+  | StepGeometryGfGfsntc
+  | StepGeometryGfGfsubc
+  | StepGeometryGfGfilum
   | StepGeometryGfGfsep
   | StepGeometryGfGfsstp
   | StepGeometryGfGfstep
@@ -185,6 +197,193 @@ export function runGeometryGfStep(
         step.abcorr,
         step.obsrvr,
         step.step,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfpa": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfpa(
+        step.target,
+        step.illmn,
+        step.abcorr,
+        step.obsrvr,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfposc": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfposc(
+        step.target,
+        step.frame,
+        step.abcorr,
+        step.obsrvr,
+        step.crdsys,
+        step.coord,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfrr": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfrr(
+        step.target,
+        step.abcorr,
+        step.obsrvr,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfsntc": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfsntc(
+        step.target,
+        step.fixref,
+        step.method,
+        step.abcorr,
+        step.obsrvr,
+        step.dref,
+        step.dvec,
+        step.crdsys,
+        step.coord,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfsubc": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfsubc(
+        step.target,
+        step.fixref,
+        step.method,
+        step.abcorr,
+        step.obsrvr,
+        step.crdsys,
+        step.coord,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
+        cnfine,
+        result,
+      );
+      return {
+        op: step.op,
+        value: {
+          intervals: windowIntervals(context, result),
+          confinementIntervals: windowIntervals(context, cnfine),
+        },
+      };
+    }
+    case "geometry-gf.gfilum": {
+      preserveSearchStep(context);
+      const cnfine = requireWindow(context, step.cnfineWindowId),
+        result = getOrCreateWindow(
+          context,
+          step.resultWindowId,
+          step.resultMaxIntervals ?? 8,
+        );
+      context.spice.raw.gfilum(
+        step.method,
+        step.angtyp,
+        step.target,
+        step.illmn,
+        step.fixref,
+        step.abcorr,
+        step.obsrvr,
+        step.spoint,
+        step.relate,
+        step.refval,
+        step.adjust,
+        step.step,
+        step.nintvls,
         cnfine,
         result,
       );
