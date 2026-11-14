@@ -1,0 +1,482 @@
+[
+  {
+    "caseId": "geometry-gf-gfudb-two-true-regions",
+    "description": "The square-above-one predicate calls its supplied scalar and finds two separated regions.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-time-dependent",
+    "description": "An affine quantity changes sign across confinement; the predicate uses the function supplied on each callback.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "negativeAffine",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 2
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "identity",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-independent-callbacks",
+    "description": "Predicates that ignore the scalar generate no scalar observations; threshold predicates record forwarded epochs and values.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "always",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "never",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-disjoint-confinement",
+    "description": "Search independently on separated components, retaining true and false portions adjoining confinement boundaries.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -4,
+        "right": -2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -0.75,
+        "right": 1.5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 3,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-singleton",
+    "description": "A singleton confinement epoch is retained only when its evaluated boolean predicate is true.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-never-and-all",
+    "description": "Replace an earlier result with an empty result, then a complete-window result.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 20
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-cubic",
+    "description": "Nonmonotone cubic crosses a fixed comparison value three times across the search domain.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "cubic",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 0.25
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "cubic",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "below",
+        "threshold": 0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-seeded-result",
+    "description": "A valid search overwrites an unrelated seeded result interval while leaving confinement intact.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 10,
+        "right": 12,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "never",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-empty-confinement",
+    "description": "An empty initialized confinement produces an empty result and no scientific callback invocations.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "c",
+        "card": 0
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-zero-step",
+    "description": "The original search rejects a nonpositive step on a valid confinement window.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-negative-step",
+    "description": "The original search rejects a nonpositive step on a valid confinement window.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": -0.5,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 8,
+        "predicate": "above",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfudb-result-capacity",
+    "description": "The two disjoint components of square above one exceed capacity for one result interval.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -3,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfudb",
+        "scalar": "square",
+        "step": 0.25,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1,
+        "predicate": "above",
+        "threshold": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  }
+]

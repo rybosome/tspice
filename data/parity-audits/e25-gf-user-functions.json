@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "batch": "e25-gf-user-functions",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-gf-user.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry-gf.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/addon_common.h",
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "packages/backend-node/native/src/domains/ek.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/native/src/domains/error.cc",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/native/src/domains/frames.cc",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/domains/geometry_gf.cc",
+    "packages/backend-node/native/src/domains/ids_names.cc",
+    "packages/backend-node/native/src/domains/kernel_pool.cc",
+    "packages/backend-node/native/src/domains/kernels.cc",
+    "packages/backend-node/native/src/domains/time.cc",
+    "packages/backend-node/src/domains/geometry-gf.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/gf-user-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/gf-callbacks.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/src/domains/user-gf.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/gf-user-allocations.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/gf_user_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/geometry-gf/gfudb.cases.json",
+    "packages/py-parity-checking/src/cases/geometry-gf/gfuds.cases.json",
+    "packages/py-parity-checking/src/cases/geometry-gf/uddc.cases.json",
+    "packages/py-parity-checking/src/cases/geometry-gf/uddf.cases.json",
+    "packages/py-parity-checking/src/cases/geometry-gf/udf.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/gf-user.test.ts",
+    "packages/tspice/src/clients/createSpiceAsyncFromTransport.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/index.ts",
+    "packages/tspice/src/kit/types/spice-types.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "packages/tspice/src/worker/browser/createSpiceWorkerClient.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/tspice/src/worker/transport/gfCallbacks.ts",
+    "packages/tspice/test/gf-worker-callbacks.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-user-derivative.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "udf_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/udf_c.html",
+      "semantics": "Add positive zero to the initialized scalar accumulator. The epoch itself does not supply the output.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-udf-zero-default",
+          "coverage": ["success", "edge"],
+          "observes": "A fresh implicit zero accumulator is independent of the epoch. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-udf-signed-accumulator",
+          "coverage": ["success", "edge"],
+          "observes": "Call the real in/out ABI with finite negative, positive and explicit zero accumulators. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-udf-independent-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Keep the same accumulator while changing the unused epoch across its finite range. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-udf-finite-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Nonzero initial words preserve the largest finite magnitude and representable normal values. Compare the complete returned data."
+        }
+      ],
+      "edgeAssessment": "A fresh implicit zero accumulator is independent of the epoch. Call the real in/out ABI with finite negative, positive and explicit zero accumulators. Keep the same accumulator while changing the unused epoch across its finite range. Nonzero initial words preserve the largest finite magnitude and representable normal values.",
+      "errorAssessment": "The dummy routine has no scientific failure for its defined scalar inputs.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free scalar arithmetic and analytic functions. Each workflow supplies its own callback definitions and, for searches, owned confinement and result windows.",
+      "cleanup": "No kernel or window state. Explicit inputs and outputs use per-call storage.",
+      "tolerance": "Test signs of zero and exact accumulator words, including finite extremes and subnormals.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.udf -> serialized N-API method -> tspice_udf -> udf_c. Independent in/out UDF binding and default public wrapper.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.udf -> checked WASM export with owned temporary storage -> tspice_udf -> udf_c. Independent in/out UDF binding and default public wrapper.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "uddc_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/uddc_c.html",
+      "semantics": "Test whether the numerical centered derivative is strictly negative, preserving the scalar callback and exact evaluation order.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-uddc-affine-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Linear increasing and decreasing functions produce opposite slopes, including the same samples in both dispatches. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddc-stationary",
+          "coverage": ["success", "edge"],
+          "observes": "A constant function and a quadratic at its minimum have zero centered difference. Observe both sampled input epochs and values. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddc-turning-point",
+          "coverage": ["success", "edge"],
+          "observes": "Observe decreasing, flat and increasing behavior on either side of a true quadratic turning point. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddc-negative-separation",
+          "coverage": ["success", "edge"],
+          "observes": "Negative DX reverses callback sample order. Compare the signed central quotient and its decreasing predicate. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddc-finite-difference",
+          "coverage": ["success", "edge"],
+          "observes": "Cubic measurements distinguish the finite-difference result from the analytic derivative at the same point. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddc-coincident-representable-samples",
+          "coverage": ["success", "edge"],
+          "observes": "At a large finite epoch a positive step can round both sample epochs to the same word; the callback is still evaluated twice. Compare the complete returned data."
+        }
+      ],
+      "edgeAssessment": "Linear increasing and decreasing functions produce opposite slopes, including the same samples in both dispatches. A constant function and a quadratic at its minimum have zero centered difference. Observe both sampled input epochs and values. Observe decreasing, flat and increasing behavior on either side of a true quadratic turning point. Negative DX reverses callback sample order. Compare the signed central quotient and its decreasing predicate. Cubic measurements distinguish the finite-difference result from the analytic derivative at the same point. At a large finite epoch a positive step can round both sample epochs to the same word; the callback is still evaluated twice.",
+      "errorAssessment": "Check protected DIVIDEBYZERO and normal reuse on both backends. Direct QDERIV supplies the independent error. Ordinary stock UDDF and UDDC comparisons use nonzero steps.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free scalar arithmetic and analytic functions. Each workflow supplies its own callback definitions and, for searches, owned confinement and result windows.",
+      "cleanup": "Per-call scoped callbacks release native references and WASM scratch on all exits. Worker replies are associated with the originating request; cancellation/disposal releases them.",
+      "tolerance": "Registered numerical comparisons retain the existing comparator. Supplemental cubics use exact dyadic results, callback sample order is exact, and tagged IEEE results are compared by sign/class.",
+      "findings": [
+        {
+          "id": "uddf-stop-at-failed-producer",
+          "status": "repaired",
+          "summary": "Pinned UDDF continued after a failed callback and read its private QDERIV output after division by zero. UDDC delegates to UDDF.",
+          "repair": "Stage the exact hash-checked source and return immediately through the original UDDF error frame at all three producers. Compare protected code with the actual underlying QDERIV diagnostic, plus successful subsequent reuse.",
+          "evidence": [
+            "scripts/stage-user-derivative.mjs",
+            "packages/py-parity-checking/test/gf-user.test.ts",
+            "docs/step8-gf-user.md"
+          ],
+          "caseIds": [
+            "geometry-gf-uddc-negative-separation",
+            "geometry-gf-uddc-finite-difference"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.uddc -> serialized N-API method -> tspice_uddc -> uddc_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.uddc -> checked WASM export with owned temporary storage -> tspice_uddc -> uddc_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "uddf_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/uddf_c.html",
+      "semantics": "Evaluate the scalar callback at x−dx then x+dx and compute the pinned QDERIV centered first derivative.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-uddf-affine-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Linear increasing and decreasing functions produce opposite slopes, including the same samples in both dispatches. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddf-stationary",
+          "coverage": ["success", "edge"],
+          "observes": "A constant function and a quadratic at its minimum have zero centered difference. Observe both sampled input epochs and values. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddf-turning-point",
+          "coverage": ["success", "edge"],
+          "observes": "Observe decreasing, flat and increasing behavior on either side of a true quadratic turning point. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddf-negative-separation",
+          "coverage": ["success", "edge"],
+          "observes": "Negative DX reverses callback sample order. Compare the signed central quotient and its decreasing predicate. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddf-finite-difference",
+          "coverage": ["success", "edge"],
+          "observes": "Cubic measurements distinguish the finite-difference result from the analytic derivative at the same point. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-uddf-coincident-representable-samples",
+          "coverage": ["success", "edge"],
+          "observes": "At a large finite epoch a positive step can round both sample epochs to the same word; the callback is still evaluated twice. Compare the complete returned data."
+        }
+      ],
+      "edgeAssessment": "Linear increasing and decreasing functions produce opposite slopes, including the same samples in both dispatches. A constant function and a quadratic at its minimum have zero centered difference. Observe both sampled input epochs and values. Observe decreasing, flat and increasing behavior on either side of a true quadratic turning point. Negative DX reverses callback sample order. Compare the signed central quotient and its decreasing predicate. Cubic measurements distinguish the finite-difference result from the analytic derivative at the same point. At a large finite epoch a positive step can round both sample epochs to the same word; the callback is still evaluated twice.",
+      "errorAssessment": "Check protected DIVIDEBYZERO and normal reuse on both backends. Direct QDERIV supplies the independent error. Ordinary stock UDDF and UDDC comparisons use nonzero steps.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free scalar arithmetic and analytic functions. Each workflow supplies its own callback definitions and, for searches, owned confinement and result windows.",
+      "cleanup": "Per-call scoped callbacks release native references and WASM scratch on all exits. Worker replies are associated with the originating request; cancellation/disposal releases them.",
+      "tolerance": "Registered numerical comparisons retain the existing comparator. Supplemental cubics use exact dyadic results, callback sample order is exact, and tagged IEEE results are compared by sign/class.",
+      "findings": [
+        {
+          "id": "uddf-stop-at-failed-producer",
+          "status": "repaired",
+          "summary": "Pinned UDDF continued after a failed callback and read its private QDERIV output after division by zero. UDDC delegates to UDDF.",
+          "repair": "Stage the exact hash-checked source and return immediately through the original UDDF error frame at all three producers. Compare protected code with the actual underlying QDERIV diagnostic, plus successful subsequent reuse.",
+          "evidence": [
+            "scripts/stage-user-derivative.mjs",
+            "packages/py-parity-checking/test/gf-user.test.ts",
+            "docs/step8-gf-user.md"
+          ],
+          "caseIds": [
+            "geometry-gf-uddf-negative-separation",
+            "geometry-gf-uddf-finite-difference"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.uddf -> serialized N-API method -> tspice_uddf -> uddf_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.uddf -> checked WASM export with owned temporary storage -> tspice_uddf -> uddf_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfudb_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfudb_c.html",
+      "semantics": "Search a caller-owned confinement for all epochs where the supplied condition evaluates true; pass the original scalar function to the condition.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfudb-two-true-regions",
+          "coverage": ["success", "edge"],
+          "observes": "The square-above-one predicate calls its supplied scalar and finds two separated regions. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-time-dependent",
+          "coverage": ["success", "edge"],
+          "observes": "An affine quantity changes sign across confinement; the predicate uses the function supplied on each callback. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-independent-callbacks",
+          "coverage": ["success", "edge"],
+          "observes": "Predicates that ignore the scalar generate no scalar observations; threshold predicates record forwarded epochs and values. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-disjoint-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "Search independently on separated components, retaining true and false portions adjoining confinement boundaries. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "A singleton confinement epoch is retained only when its evaluated boolean predicate is true. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-never-and-all",
+          "coverage": ["success", "edge"],
+          "observes": "Replace an earlier result with an empty result, then a complete-window result. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-cubic",
+          "coverage": ["success", "edge"],
+          "observes": "Nonmonotone cubic crosses a fixed comparison value three times across the search domain. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-seeded-result",
+          "coverage": ["success", "edge"],
+          "observes": "A valid search overwrites an unrelated seeded result interval while leaving confinement intact. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-empty-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "An empty initialized confinement produces an empty result and no scientific callback invocations. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-zero-step",
+          "coverage": ["error", "edge"],
+          "observes": "The original search rejects a nonpositive step on a valid confinement window. Compare INVALIDSTEP."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-negative-step",
+          "coverage": ["error", "edge"],
+          "observes": "The original search rejects a nonpositive step on a valid confinement window. Compare INVALIDSTEP."
+        },
+        {
+          "caseId": "geometry-gf-gfudb-result-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "The two disjoint components of square above one exceed capacity for one result interval. Compare WINDOWEXCESS."
+        }
+      ],
+      "edgeAssessment": "The square-above-one predicate calls its supplied scalar and finds two separated regions. An affine quantity changes sign across confinement; the predicate uses the function supplied on each callback. Predicates that ignore the scalar generate no scalar observations; threshold predicates record forwarded epochs and values. Search independently on separated components, retaining true and false portions adjoining confinement boundaries. A singleton confinement epoch is retained only when its evaluated boolean predicate is true. Replace an earlier result with an empty result, then a complete-window result. Nonmonotone cubic crosses a fixed comparison value three times across the search domain. A valid search overwrites an unrelated seeded result interval while leaving confinement intact. An empty initialized confinement produces an empty result and no scientific callback invocations.",
+      "errorAssessment": "Matched genuine terminal search diagnostics INVALIDSTEP, WINDOWEXCESS.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free scalar arithmetic and analytic functions. Each workflow supplies its own callback definitions and, for searches, owned confinement and result windows.",
+      "cleanup": "Per-call scoped callbacks release native references and WASM scratch on all exits. Worker replies are associated with the originating request; cancellation/disposal releases them. Search windows are tracked by the workflow finalizers. Tests restore the GF tolerance and a previously initialized step.",
+      "tolerance": "Compare complete intervals, every sampled epoch and value, and boolean conditions using the existing live comparator. Targeted analytic boundary checks allow the selected 1e−8-second GF tolerance.",
+      "findings": [
+        {
+          "id": "callback-window-ownership",
+          "status": "repaired",
+          "summary": "Host callbacks can free an output handle and allocate another window during an active native or suspended worker search.",
+          "repair": "Run the scientific operation with private window storage and check the result claim generation before publishing the complete solution. Reject nested user searches that would overwrite N0067 callback slots.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/geometry_gf.c",
+            "packages/backend-node/test/gf-user-domain.test.ts",
+            "packages/backend-wasm/test/gf-user-allocations.test.ts",
+            "packages/tspice/test/gf-worker-callbacks.test.ts",
+            "docs/step8-gf-user.md"
+          ],
+          "caseIds": [
+            "geometry-gf-gfudb-seeded-result",
+            "geometry-gf-gfudb-disjoint-confinement"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.gfudb -> serialized N-API method -> tspice_gfudb -> gfudb_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.gfudb -> checked WASM export with owned temporary storage -> tspice_gfudb -> gfudb_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfuds_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfuds_c.html",
+      "semantics": "Search a user measurement and its decreasing predicate for relational or extremum solutions, including adjusted absolute extrema, into a caller-owned result window.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfuds-two-roots",
+          "coverage": ["success", "edge"],
+          "observes": "Equality returns both isolated crossings; comparisons above and below produce the integral intervals between and outside roots. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-absolute-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "The absolute minimum of a convex parabola and maximum of its negation are attained at the unique interior stationary epoch. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-absolute-adjustment",
+          "coverage": ["success", "edge"],
+          "observes": "Positive adjustment turns a global minimum/maximum singleton into an interval around the extremum. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-local-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "A smooth cubic has a local maximum at −1 and local minimum at +1. The supplied decreasing predicate uses explicit scalar samples on both sides. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-monotone",
+          "coverage": ["success", "edge"],
+          "observes": "A decreasing affine scalar and increasing identity yield opposite inequality directions and different event locations. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-disjoint-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "Equality and strict search are each confined to three separate components. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-no-result",
+          "coverage": ["success", "edge"],
+          "observes": "The reference exceeds the finite function range, then the result window is filled by a succeeding query. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Confinement of zero duration admits or rejects the single epoch by its measurement. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-constant",
+          "coverage": ["success", "edge"],
+          "observes": "On a constant plateau use strict comparisons and avoid assigning a unique extremum. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-seeded-result",
+          "coverage": ["success", "edge"],
+          "observes": "A valid search overwrites an unrelated seeded result interval while leaving confinement intact. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-empty-confinement",
+          "coverage": ["success", "edge"],
+          "observes": "An empty initialized confinement produces an empty result and no scientific callback invocations. Compare the complete returned data."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-zero-step",
+          "coverage": ["error", "edge"],
+          "observes": "The original search rejects a nonpositive step on a valid confinement window. Compare INVALIDSTEP."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-negative-step",
+          "coverage": ["error", "edge"],
+          "observes": "The original search rejects a nonpositive step on a valid confinement window. Compare INVALIDSTEP."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-result-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "The two disjoint components of square above one exceed capacity for one result interval. Compare CELLTOOSMALL."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-unknown-relation",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported scalar relation is rejected before any result can be read. Compare NOTRECOGNIZED."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-empty-relation",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-length relation reaches the original C string check. Compare EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-negative-adjustment",
+          "coverage": ["error", "edge"],
+          "observes": "A negative adjustment on an absolute maximum reaches the genuine solver error. Compare VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-zero-workspace",
+          "coverage": ["error", "edge"],
+          "observes": "Zero internal work intervals reaches the actual C wrapper dimension guard. Compare VALUEOUTOFRANGE."
+        },
+        {
+          "caseId": "geometry-gf-gfuds-negative-workspace",
+          "coverage": ["error", "edge"],
+          "observes": "Negative internal interval count reaches the same diagnostic without allocating a workspace. Compare VALUEOUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Equality returns both isolated crossings; comparisons above and below produce the integral intervals between and outside roots. The absolute minimum of a convex parabola and maximum of its negation are attained at the unique interior stationary epoch. Positive adjustment turns a global minimum/maximum singleton into an interval around the extremum. A smooth cubic has a local maximum at −1 and local minimum at +1. The supplied decreasing predicate uses explicit scalar samples on both sides. A decreasing affine scalar and increasing identity yield opposite inequality directions and different event locations. Equality and strict search are each confined to three separate components. The reference exceeds the finite function range, then the result window is filled by a succeeding query. Confinement of zero duration admits or rejects the single epoch by its measurement. On a constant plateau use strict comparisons and avoid assigning a unique extremum. A valid search overwrites an unrelated seeded result interval while leaving confinement intact. An empty initialized confinement produces an empty result and no scientific callback invocations.",
+      "errorAssessment": "Matched genuine terminal search diagnostics CELLTOOSMALL, EMPTYSTRING, INVALIDSTEP, NOTRECOGNIZED, VALUEOUTOFRANGE.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free scalar arithmetic and analytic functions. Each workflow supplies its own callback definitions and, for searches, owned confinement and result windows.",
+      "cleanup": "Per-call scoped callbacks release native references and WASM scratch on all exits. Worker replies are associated with the originating request; cancellation/disposal releases them. Search windows are tracked by the workflow finalizers. Tests restore the GF tolerance and a previously initialized step.",
+      "tolerance": "Compare complete intervals, every sampled epoch and value, and boolean conditions using the existing live comparator. Targeted analytic boundary checks allow the selected 1e−8-second GF tolerance.",
+      "findings": [
+        {
+          "id": "callback-window-ownership",
+          "status": "repaired",
+          "summary": "Host callbacks can free an output handle and allocate another window during an active native or suspended worker search.",
+          "repair": "Run the scientific operation with private window storage and check the result claim generation before publishing the complete solution. Reject nested user searches that would overwrite N0067 callback slots.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/geometry_gf.c",
+            "packages/backend-node/test/gf-user-domain.test.ts",
+            "packages/backend-wasm/test/gf-user-allocations.test.ts",
+            "packages/tspice/test/gf-worker-callbacks.test.ts",
+            "docs/step8-gf-user.md"
+          ],
+          "caseIds": [
+            "geometry-gf-gfuds-seeded-result",
+            "geometry-gf-gfuds-disjoint-confinement"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.gfuds -> serialized N-API method -> tspice_gfuds -> gfuds_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryGfApi.gfuds -> checked WASM export with owned temporary storage -> tspice_gfuds -> gfuds_c. Compare the independent locked SpiceyPy callbacks, sampled measurements and full outputs.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "The focused Node, WASM, browser and independent reference observations are in docs/step8-gf-user.md. Complete source-bound local and CI runs are pending."
+}

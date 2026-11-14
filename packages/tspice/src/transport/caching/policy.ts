@@ -11,6 +11,11 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.unload",
   "raw.kclear",
   // Each visibility search overwrites a live result window.
+  "raw.udf",
+  "raw.uddf",
+  "raw.uddc",
+  "raw.gfudb",
+  "raw.gfuds",
   "raw.gfoclt",
   "raw.gfrfov",
   "raw.gftfov",

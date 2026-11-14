@@ -78,7 +78,7 @@ static Napi::Value ReadFov(const Napi::CallbackInfo& info, bool byName) {
   }
   double bore[3] = {};
   int n = 0;
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   const int status = byName ? tspice_getfvn(inst.c_str(), room, shapeLen, frameLen, shape, frame,
                                             bore, &n, bounds.get(), err, sizeof(err))
                             : tspice_getfov(id, room, shapeLen, frameLen, shape, frame, bore, &n,
@@ -124,7 +124,7 @@ static Napi::Value Fovray(const Napi::CallbackInfo& info) {
   const double et = info[5].As<Napi::Number>().DoubleValue();
   char err[tspice_backend_node::kErrMaxBytes] = {};
   int out = 0;
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_fovray(inst.c_str(), dir, rframe.c_str(), abcorr.c_str(), observer.c_str(), et, &out,
                     err, sizeof(err))) {
     ThrowSpiceError(env, "fovray", err);
@@ -155,7 +155,7 @@ static Napi::Value Fovtrg(const Napi::CallbackInfo& info) {
   const double et = info[6].As<Napi::Number>().DoubleValue();
   char err[tspice_backend_node::kErrMaxBytes] = {};
   int out = 0;
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_fovtrg(inst.c_str(), target.c_str(), tshape.c_str(), tframe.c_str(), abcorr.c_str(),
                     observer.c_str(), et, &out, err, sizeof(err))) {
     ThrowSpiceError(env, "fovtrg", err);
@@ -183,7 +183,7 @@ static Napi::Value Phaseq(const Napi::CallbackInfo& info) {
   if (!ReadGeometryString(env, info[3], &observer)) return env.Undefined();
   std::string abcorr;
   if (!ReadGeometryString(env, info[4], &abcorr)) return env.Undefined();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0;
   if (tspice_phaseq(et, target.c_str(), illmn.c_str(), observer.c_str(), abcorr.c_str(), &out, err, sizeof(err)) != 0) {
@@ -208,7 +208,7 @@ static Napi::Value Lspcn(const Napi::CallbackInfo& info) {
   if (!ReadGeometryString(env, info[0], &body)) return env.Undefined();
   std::string abcorr;
   if (!ReadGeometryString(env, info[2], &abcorr)) return env.Undefined();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0;
   if (tspice_lspcn(body.c_str(), et, abcorr.c_str(), &out, err, sizeof(err)) != 0) {
@@ -245,7 +245,7 @@ static Napi::Value Trgsep(const Napi::CallbackInfo& info) {
   if (!ReadGeometryString(env, info[7], &observer)) return env.Undefined();
   std::string abcorr;
   if (!ReadGeometryString(env, info[8], &abcorr)) return env.Undefined();
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0;
   if (tspice_trgsep(et, targ1.c_str(), shape1.c_str(), frame1.c_str(), targ2.c_str(), shape2.c_str(), frame2.c_str(), observer.c_str(), abcorr.c_str(), &out, err, sizeof(err)) != 0) {
@@ -273,7 +273,7 @@ static Napi::Object Subpnt(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
@@ -320,7 +320,7 @@ static Napi::Object Subslr(const Napi::CallbackInfo& info) {
   const std::string abcorr = info[4].As<Napi::String>().Utf8Value();
   const std::string observer = info[5].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
@@ -374,7 +374,7 @@ static Napi::Object Sincpt(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double spoint[3] = {0};
   double trgepc = 0.0;
@@ -435,7 +435,7 @@ static Napi::Object Ilumin(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -496,7 +496,7 @@ static Napi::Object Illumg(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -558,7 +558,7 @@ static Napi::Object Illumf(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double trgepc = 0.0;
   double srfvec[3] = {0};
@@ -615,7 +615,7 @@ static Napi::Array Nvc2pl(const Napi::CallbackInfo& info) {
   }
   const double konst = info[1].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double plane[4] = {0};
   const int code = tspice_nvc2pl(normal, konst, plane, err, (int)sizeof(err));
@@ -640,7 +640,7 @@ static Napi::Object Pl2nvc(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double normal[3] = {0};
   double konst = 0.0;
@@ -678,7 +678,7 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
   const std::string observer = info[7].As<Napi::String>().Utf8Value();
   const double et = info[8].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int ocltid = 0;
   const int code = tspice_occult(

@@ -1,0 +1,100 @@
+[
+  {
+    "caseId": "geometry-gf-udf-zero-default",
+    "description": "A fresh implicit zero accumulator is independent of the epoch.",
+    "workflow": [
+      {
+        "op": "geometry-gf.udf",
+        "et": 0
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 25
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": -4.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-udf-signed-accumulator",
+    "description": "Call the real in/out ABI with finite negative, positive and explicit zero accumulators.",
+    "workflow": [
+      {
+        "op": "geometry-gf.udf",
+        "et": 2,
+        "initialValue": 17.5
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 2,
+        "initialValue": -19.75
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 2,
+        "initialValue": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-udf-independent-epochs",
+    "description": "Keep the same accumulator while changing the unused epoch across its finite range.",
+    "workflow": [
+      {
+        "op": "geometry-gf.udf",
+        "et": -1e250,
+        "initialValue": 0.375
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 1e250,
+        "initialValue": 0.375
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 0,
+        "initialValue": 0.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-udf-finite-limits",
+    "description": "Nonzero initial words preserve the largest finite magnitude and representable normal values.",
+    "workflow": [
+      {
+        "op": "geometry-gf.udf",
+        "et": 0,
+        "initialValue": 1.7976931348623157e308
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 0,
+        "initialValue": -1.7976931348623157e308
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 0,
+        "initialValue": 2.2250738585072014e-308
+      },
+      {
+        "op": "geometry-gf.udf",
+        "et": 0,
+        "initialValue": 5e-324
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

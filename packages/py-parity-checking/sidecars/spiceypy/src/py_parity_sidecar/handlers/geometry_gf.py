@@ -9,7 +9,13 @@ from typing import Any, Iterator, MutableMapping
 import spiceypy as sp
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL
 
+from ..gf_user_oracle import dummy_scalar, derivative, search
 from ..models import (
+    StepGeometryGfUdf,
+    StepGeometryGfUddc,
+    StepGeometryGfUddf,
+    StepGeometryGfGfudb,
+    StepGeometryGfGfuds,
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
@@ -162,6 +168,16 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
         )
         return StepOutput(op=step.op, value={"intervals":[list(map(float,sp.wnfetd(result,i))) for i in range(sp.wncard(result))],"confinementIntervals":[list(map(float,sp.wnfetd(cnfine,i))) for i in range(sp.wncard(cnfine))]})
 
+    if isinstance(step,StepGeometryGfUdf):
+        return StepOutput(op=step.op,value=dummy_scalar(step.et,step.initialValue))
+    if isinstance(step,(StepGeometryGfUddc,StepGeometryGfUddf)):
+        return StepOutput(op=step.op,value=derivative(step))
+    if isinstance(step,(StepGeometryGfGfudb,StepGeometryGfGfuds)):
+        confinement=_require_window(windows,step.cnfineWindowId)
+        result=_get_or_create_window(windows,step.resultWindowId,max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else 8)
+        observations=search(step,confinement,result)
+        values=_visibility_output(step.op,confinement,result).value
+        return StepOutput(op=step.op,value={**values,**observations})
     if isinstance(step, StepGeometryGfGfdist):
         cnfine = _require_window(windows, step.cnfineWindowId)
         result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else max(step.nintvls, 8))

@@ -70,6 +70,11 @@ import ephemerisSpkudsCasesRaw from "./ephemeris/spkuds.cases.json" with { type:
 import ephemerisSpkw08CasesRaw from "./ephemeris/spkw08.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
+import userUdf from "./geometry-gf/udf.cases.json" with { type: "json" };
+import userUddc from "./geometry-gf/uddc.cases.json" with { type: "json" };
+import userUddf from "./geometry-gf/uddf.cases.json" with { type: "json" };
+import userGfudb from "./geometry-gf/gfudb.cases.json" with { type: "json" };
+import userGfuds from "./geometry-gf/gfuds.cases.json" with { type: "json" };
 import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
 import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
 import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
@@ -305,6 +310,11 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfrfovCases,
   ...geometryGfGftfovCases,
   ...geometryGfGfsepCases,
+  ...(userUdf as ParityCase[]),
+  ...(userUddc as ParityCase[]),
+  ...(userUddf as ParityCase[]),
+  ...(userGfudb as ParityCase[]),
+  ...(userGfuds as ParityCase[]),
   ...geometryGfGfdistCases,
 ];
 

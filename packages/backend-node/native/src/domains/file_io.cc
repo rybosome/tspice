@@ -93,7 +93,7 @@ static Napi::Boolean Exists(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int exists = 0;
   const int code = tspice_exists(path.c_str(), &exists, err, (int)sizeof(err));
@@ -118,7 +118,7 @@ static Napi::Object Getfat(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   char arch[tspice_backend_node::kOutMaxBytes];
   char type[tspice_backend_node::kOutMaxBytes];
@@ -155,7 +155,7 @@ static Napi::Number Dafopr(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_dafopr(path.c_str(), &handle, err, (int)sizeof(err));
@@ -183,7 +183,7 @@ static void Dafcls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_dafcls(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -204,7 +204,7 @@ static void Dafbfs(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_dafbfs(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -225,7 +225,7 @@ static Napi::Boolean Daffna(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int found = 0;
   const int code = tspice_daffna(handle, &found, err, (int)sizeof(err));
@@ -247,7 +247,7 @@ static Napi::Number Dasopr(const Napi::CallbackInfo& info) {
 
   const std::string path = info[0].As<Napi::String>().Utf8Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_dasopr(path.c_str(), &handle, err, (int)sizeof(err));
@@ -275,7 +275,7 @@ static void Dascls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_dascls(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -296,7 +296,7 @@ static void Dlacls(const Napi::CallbackInfo& info) {
     return;
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   const int code = tspice_dlacls(handle, err, (int)sizeof(err));
   if (code != 0) {
@@ -326,7 +326,7 @@ static Napi::Number Dlaopn(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_dlaopn(
@@ -368,7 +368,7 @@ static Napi::Number Dskopn(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int handle = 0;
   const int code = tspice_dskopn(
@@ -536,7 +536,7 @@ static Napi::Object Dskmi2(const Napi::CallbackInfo& info) {
   std::vector<int32_t> spaixi;
   spaixi.resize((size_t)spxisz);
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
 
   const int code = tspice_dskmi2(
@@ -764,7 +764,7 @@ static void Dskw02(const Napi::CallbackInfo& info) {
     }
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
 
   const int code = tspice_dskw02(
@@ -811,7 +811,7 @@ static Napi::Object Dlabfs(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int32_t descr8[8] = {0};
   int32_t found = 0;
@@ -848,7 +848,7 @@ static Napi::Object Dlafns(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   int32_t nextDescr8[8] = {0};
   int32_t found = 0;

@@ -24,6 +24,7 @@ export { Mat3 } from "./kit/math/mat3.js";
 export type {
   Spice,
   SpiceAsync,
+  SpiceWorker,
   SpiceKit,
   SpiceSync,
 } from "./kit/types/spice-types.js";

@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 172,
-    planned: 477,
+    implemented: 177,
+    planned: 472,
     excluded: 3,
-    caseFiles: 172,
-    scenarios: 1287,
+    caseFiles: 177,
+    scenarios: 1334,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -472,7 +472,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 10);
+  assert.equal(ledger.audit.expansionRoutines, 15);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -768,4 +768,42 @@ test("each visibility search has a compiled export and two same-named CSPICE rou
     assert.equal(row.backends.wasm.status, "source-and-binary-route-present");
     assert.ok(row.backends.wasm.shimSymbols.includes("tspice_" + method));
   }
+});
+
+test("user GF methods trace their own native and compiled WASM entrypoints", (t) => {
+  const fixtureData = fixture(t);
+  const { routines } = fixtureData.build();
+  const methods = ["udf", "uddc", "uddf", "gfudb", "gfuds"];
+  for (const method of methods) {
+    const routine = routines.find((entry) => entry.routine === method + "_c");
+    for (const backend of ["node", "wasm"]) {
+      const route = routine.backends[backend];
+      assert.deepEqual(
+        route.shimSymbols.filter((symbol) =>
+          methods.some((item) => symbol === "tspice_" + item),
+        ),
+        ["tspice_" + method],
+      );
+      assert.equal(
+        routine.mapping[backend].classification,
+        "same-named-cspice-entrypoint",
+      );
+      assert.ok(
+        routine.mapping[backend].cspiceEntrypoints.includes(method + "_c"),
+      );
+    }
+    assert.equal(
+      routine.backends.wasm.status,
+      "source-and-binary-route-present",
+    );
+  }
+  fixtureData.edit(
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "  gfudb_c(user_scalar,",
+    "  disconnected_gfudb(user_scalar,",
+  );
+  assert.throws(
+    fixtureData.build,
+    /Unexplained non-direct .* mapping for gfudb/,
+  );
 });

@@ -6,7 +6,7 @@
 
 namespace tspice_backend_node {
 
-std::mutex g_cspice_mutex;
+std::recursive_mutex g_cspice_mutex;
 
 using tspice_napi::ThrowSpiceError;
 

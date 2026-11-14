@@ -628,6 +628,11 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.gfoclt === "function", "Expected gfoclt export");
   invariant(typeof native.gfrfov === "function", "Expected gfrfov export");
   invariant(typeof native.gftfov === "function", "Expected gftfov export");
+  invariant(typeof native.udf === "function", "Expected native udf export");
+  invariant(typeof native.uddf === "function", "Expected native uddf export");
+  invariant(typeof native.uddc === "function", "Expected native uddc export");
+  invariant(typeof native.gfudb === "function", "Expected native gfudb export");
+  invariant(typeof native.gfuds === "function", "Expected native gfuds export");
   invariant(
     typeof native.gfsep === "function",
     "Expected native addon to export gfsep(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",

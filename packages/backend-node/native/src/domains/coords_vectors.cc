@@ -21,7 +21,7 @@ static Napi::Object Reclat(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double radius = 0.0;
   double lon = 0.0;
@@ -53,7 +53,7 @@ static Napi::Array Latrec(const Napi::CallbackInfo& info) {
   const double lon = info[1].As<Napi::Number>().DoubleValue();
   const double lat = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double rect[3] = {0};
   const int code = tspice_latrec(radius, lon, lat, rect, err, (int)sizeof(err));
@@ -78,7 +78,7 @@ static Napi::Object Recsph(const Napi::CallbackInfo& info) {
     return Napi::Object::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double radius = 0.0;
   double colat = 0.0;
@@ -110,7 +110,7 @@ static Napi::Array Sphrec(const Napi::CallbackInfo& info) {
   const double colat = info[1].As<Napi::Number>().DoubleValue();
   const double lon = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double rect[3] = {0};
   const int code = tspice_sphrec(radius, colat, lon, rect, err, (int)sizeof(err));
@@ -135,7 +135,7 @@ static Napi::Number Vnorm(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0.0;
   const int code = tspice_vnorm(v, &out, err, (int)sizeof(err));
@@ -160,7 +160,7 @@ static Napi::Array Vhat(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vhat(v, out, err, (int)sizeof(err));
@@ -189,7 +189,7 @@ static Napi::Number Vdot(const Napi::CallbackInfo& info) {
     return Napi::Number::New(env, 0);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out = 0.0;
   const int code = tspice_vdot(a, b, &out, err, (int)sizeof(err));
@@ -218,7 +218,7 @@ static Napi::Array Vcrss(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vcrss(a, b, out, err, (int)sizeof(err));
@@ -247,7 +247,7 @@ static Napi::Array Mxv(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_mxv(m, v, out, err, (int)sizeof(err));
@@ -276,7 +276,7 @@ static Napi::Array Mtxv(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_mtxv(m, v, out, err, (int)sizeof(err));
@@ -306,7 +306,7 @@ static Napi::Array Vadd(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vadd(a, b, out, err, (int)sizeof(err));
@@ -335,7 +335,7 @@ static Napi::Array Vsub(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vsub(a, b, out, err, (int)sizeof(err));
@@ -360,7 +360,7 @@ static Napi::Array Vminus(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vminus(v, out, err, (int)sizeof(err));
@@ -387,7 +387,7 @@ static Napi::Array Vscl(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_vscl(s, v, out, err, (int)sizeof(err));
@@ -416,7 +416,7 @@ static Napi::Array Mxm(const Napi::CallbackInfo& info) {
     return Napi::Array::New(env);
   }
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[9] = {0};
   const int code = tspice_mxm(a, b, out, err, (int)sizeof(err));
@@ -439,7 +439,7 @@ static Napi::Array Rotate(const Napi::CallbackInfo& info) {
   const double angle = info[0].As<Napi::Number>().DoubleValue();
   const int axis = info[1].As<Napi::Number>().Int32Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[9] = {0};
   const int code = tspice_rotate(angle, axis, out, err, (int)sizeof(err));
@@ -467,7 +467,7 @@ static Napi::Array Rotmat(const Napi::CallbackInfo& info) {
   const double angle = info[1].As<Napi::Number>().DoubleValue();
   const int axis = info[2].As<Napi::Number>().Int32Value();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[9] = {0};
   const int code = tspice_rotmat(m, angle, axis, out, err, (int)sizeof(err));
@@ -494,7 +494,7 @@ static Napi::Array Axisar(const Napi::CallbackInfo& info) {
 
   const double angle = info[1].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[9] = {0};
   const int code = tspice_axisar(axisVec, angle, out, err, (int)sizeof(err));
@@ -523,7 +523,7 @@ static Napi::Array Georec(const Napi::CallbackInfo& info) {
   const double re = info[3].As<Napi::Number>().DoubleValue();
   const double f = info[4].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double out[3] = {0};
   const int code = tspice_georec(lon, lat, alt, re, f, out, err, (int)sizeof(err));
@@ -551,7 +551,7 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
   const double re = info[1].As<Napi::Number>().DoubleValue();
   const double f = info[2].As<Napi::Number>().DoubleValue();
 
-  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  std::lock_guard lock(tspice_backend_node::g_cspice_mutex);
   char err[tspice_backend_node::kErrMaxBytes];
   double lon = 0.0;
   double lat = 0.0;

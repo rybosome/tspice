@@ -11,6 +11,11 @@ import type {
 } from "./kit/types/spice-types.js";
 import { createKit } from "./kit/spice/create-kit.js";
 
+const asyncOverrides = new WeakMap<
+  Spice,
+  NonNullable<SpiceBackend["asyncRaw"]>
+>();
+
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
    * If provided, `createSpice()` will wrap this backend instead of creating a new one.
@@ -92,17 +97,25 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
     { byteBackedKernelPaths },
   );
 
-  return { raw, kit };
+  const spice = { raw, kit };
+  if (backend.asyncRaw) asyncOverrides.set(spice, backend.asyncRaw);
+  return spice;
 }
 
-function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
+function promisifyApi<T extends object>(
+  target: T,
+  overrides?: object,
+): PromisifyObject<T> {
   const wrappedByFn = new WeakMap<
     (...args: never[]) => unknown,
     (...args: never[]) => unknown
   >();
   const handler: ProxyHandler<T> = {
     get: (t, prop) => {
-      const value = Reflect.get(t, prop, t) as unknown;
+      const value: unknown =
+        overrides && Object.prototype.hasOwnProperty.call(overrides, prop)
+          ? Reflect.get(overrides, prop)
+          : Reflect.get(t, prop, t);
 
       if (typeof value === "function") {
         const fn = value as unknown as (...args: unknown[]) => unknown;
@@ -136,10 +149,11 @@ function promisifyApi<T extends object>(target: T): PromisifyObject<T> {
 export async function createSpiceAsync(
   options: CreateSpiceAsyncOptions,
 ): Promise<SpiceAsync> {
-  const { raw, kit } = await createSpice(options);
+  const spice = await createSpice(options);
+  const { raw, kit } = spice;
 
   return {
-    raw: promisifyApi(raw),
+    raw: promisifyApi(raw, asyncOverrides.get(spice)),
     kit: promisifyApi(kit),
   };
 }
