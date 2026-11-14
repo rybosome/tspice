@@ -27,13 +27,278 @@
     "packages/backend-shim-c/src/errors.c",
     "packages/backend-node/native/src/addon_common.cc"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a17-909e5968-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d68b45e3a6498b6e8a3b44875f7fe27edac7cc2acc6e8ccba0b5dda4107c0808",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 909e5968a7bc4bd30da55743a3165bf255ce9732. JavaScript: 2,549 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a17-909e5968-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d68b45e3a6498b6e8a3b44875f7fe27edac7cc2acc6e8ccba0b5dda4107c0808",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 909e5968a7bc4bd30da55743a3165bf255ce9732. JavaScript: 2,549 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a17-909e5968-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d68b45e3a6498b6e8a3b44875f7fe27edac7cc2acc6e8ccba0b5dda4107c0808",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "commit": "909e5968a7bc4bd30da55743a3165bf255ce9732",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550203706/job/132310683376",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310683376 on 909e5968a7bc4bd30da55743a3165bf255ce9732: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a17-909e5968-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d68b45e3a6498b6e8a3b44875f7fe27edac7cc2acc6e8ccba0b5dda4107c0808",
+      "caseIds": [
+        "coords-vectors-hrmesp-cubic-at-nodes",
+        "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmesp-empty-table-error",
+        "coords-vectors-hrmesp-scaled-abscissas",
+        "coords-vectors-hrmesp-scaled-ordinates",
+        "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+        "coords-vectors-hrmesp-single-point",
+        "coords-vectors-hrmesp-zero-and-constant",
+        "coords-vectors-hrmesp-zero-step-error",
+        "coords-vectors-hrmint-cubic-at-nodes",
+        "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+        "coords-vectors-hrmint-duplicate-node-error",
+        "coords-vectors-hrmint-empty-table-error",
+        "coords-vectors-hrmint-irregular-distinct-grid",
+        "coords-vectors-hrmint-permuted-distinct-nodes",
+        "coords-vectors-hrmint-scaled-abscissas",
+        "coords-vectors-hrmint-scaled-ordinates",
+        "coords-vectors-hrmint-single-point",
+        "coords-vectors-hrmint-zero-and-constant",
+        "coords-vectors-lgresp-cubic-at-nodes",
+        "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+        "coords-vectors-lgresp-empty-table-error",
+        "coords-vectors-lgresp-scaled-abscissas",
+        "coords-vectors-lgresp-scaled-ordinates",
+        "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+        "coords-vectors-lgresp-single-point",
+        "coords-vectors-lgresp-zero-and-constant",
+        "coords-vectors-lgresp-zero-step-error",
+        "coords-vectors-lgrind-cubic-at-nodes",
+        "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrind-duplicate-node-error",
+        "coords-vectors-lgrind-empty-table-error",
+        "coords-vectors-lgrind-irregular-distinct-grid",
+        "coords-vectors-lgrind-scaled-abscissas",
+        "coords-vectors-lgrind-scaled-ordinates",
+        "coords-vectors-lgrind-single-point",
+        "coords-vectors-lgrind-zero-and-constant",
+        "coords-vectors-lgrint-cubic-at-nodes",
+        "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+        "coords-vectors-lgrint-duplicate-node-error",
+        "coords-vectors-lgrint-empty-table-error",
+        "coords-vectors-lgrint-irregular-distinct-grid",
+        "coords-vectors-lgrint-scaled-abscissas",
+        "coords-vectors-lgrint-scaled-ordinates",
+        "coords-vectors-lgrint-single-point",
+        "coords-vectors-lgrint-zero-and-constant",
+        "coords-vectors-qderiv-balanced-extreme-endpoints",
+        "coords-vectors-qderiv-constant-endpoints",
+        "coords-vectors-qderiv-half-interval-and-orientation",
+        "coords-vectors-qderiv-scaled-abscissas",
+        "coords-vectors-qderiv-scaled-ordinates",
+        "coords-vectors-qderiv-variable-dimensions",
+        "coords-vectors-qderiv-zero-delta-error"
+      ],
+      "commit": "909e5968a7bc4bd30da55743a3165bf255ce9732",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550203706/job/132310683376",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310683376 on 909e5968a7bc4bd30da55743a3165bf255ce9732: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "hrmesp_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmesp_c.html",
-      "semantics": "Read flat interleaved ordinate/first-derivative pairs at first+i*step; infer n from exactly half the even array length. Return both {f,df} for degree at most 2n\u22121; df is measured against x, not node index. Preserve negative nonzero step and extrapolation. Inputs are finite and arrays readonly. The signed internal 32*n workspace byte count limits n to 67,108,863. WASM caps the hidden workspace at 256 MiB (8,388,608 nodes).",
+      "semantics": "Read flat interleaved ordinate/first-derivative pairs at first+i*step; infer n from exactly half the even array length. Return both {f,df} for degree at most 2n−1; df is measured against x, not node index. Preserve negative nonzero step and extrapolation. Inputs are finite and arrays readonly. The signed internal 32*n workspace byte count limits n to 67,108,863. WASM caps the hidden workspace at 256 MiB (8,388,608 nodes).",
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmesp-single-point",
@@ -58,12 +323,12 @@
         {
           "caseId": "coords-vectors-hrmesp-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmesp-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
@@ -90,16 +355,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hrmesp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hrmesp -> typed WASM adapter -> checked buffers -> exported _tspice_hrmesp -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     },
@@ -107,7 +372,7 @@
       "routine": "hrmint_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmint_c.html",
-      "semantics": "Infer n from xvals and require exactly 2n interleaved [value,derivative] entries. Preserve each distinct abscissa and its corresponding pair in the submitted order. Return degree-at-most-2n\u22121 Hermite value and first derivative in x as {f,df}; do not sort the nodes. Inputs are finite and arrays readonly. The translated unreduced 6*n\u22121 workspace index limits n to 357,913,941. WASM caps the 4*n-double workspace at 256 MiB (8,388,608 nodes).",
+      "semantics": "Infer n from xvals and require exactly 2n interleaved [value,derivative] entries. Preserve each distinct abscissa and its corresponding pair in the submitted order. Return degree-at-most-2n−1 Hermite value and first derivative in x as {f,df}; do not sort the nodes. Inputs are finite and arrays readonly. The translated unreduced 6*n−1 workspace index limits n to 357,913,941. WASM caps the 4*n-double workspace at 256 MiB (8,388,608 nodes).",
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmint-single-point",
@@ -132,12 +397,12 @@
         {
           "caseId": "coords-vectors-hrmint-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmint-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmint-irregular-distinct-grid",
@@ -182,16 +447,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hrmint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hrmint -> typed WASM adapter -> checked buffers -> exported _tspice_hrmint -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     },
@@ -199,7 +464,7 @@
       "routine": "lgresp_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgresp_c.html",
-      "semantics": "Infer n from all ordinates at first+i*step, including a negative nonzero step. Return scalar Lagrange polynomial value of degree at most n\u22121 at the supplied x. Preserve grid origin, signs, node order and extrapolation. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
+      "semantics": "Infer n from all ordinates at first+i*step, including a negative nonzero step. Return scalar Lagrange polynomial value of degree at most n−1 at the supplied x. Preserve grid origin, signs, node order and extrapolation. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
       "scenarios": [
         {
           "caseId": "coords-vectors-lgresp-single-point",
@@ -224,12 +489,12 @@
         {
           "caseId": "coords-vectors-lgresp-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgresp-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
@@ -256,16 +521,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgresp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgresp -> typed WASM adapter -> checked buffers -> exported _tspice_lgresp -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     },
@@ -273,7 +538,7 @@
       "routine": "lgrind_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrind_c.html",
-      "semantics": "Infer n from explicit xvals and require one corresponding yval per node. The published successful domain uses distinct increasing abscissae. Retain input order and return both the degree-at-most-n\u22121 polynomial and its first derivative in x as {p,dp}. Inputs are finite and arrays readonly. The translated unreduced 3*n workspace index limits n to 715,827,882. WASM caps the 2*n-double workspace at 256 MiB (16,777,216 nodes).",
+      "semantics": "Infer n from explicit xvals and require one corresponding yval per node. The published successful domain uses distinct increasing abscissae. Retain input order and return both the degree-at-most-n−1 polynomial and its first derivative in x as {p,dp}. Inputs are finite and arrays readonly. The translated unreduced 3*n workspace index limits n to 715,827,882. WASM caps the 2*n-double workspace at 256 MiB (16,777,216 nodes).",
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrind-single-point",
@@ -298,12 +563,12 @@
         {
           "caseId": "coords-vectors-lgrind-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrind-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrind-irregular-distinct-grid",
@@ -343,16 +608,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgrind -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgrind -> typed WASM adapter -> checked buffers -> exported _tspice_lgrind -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     },
@@ -360,7 +625,7 @@
       "routine": "lgrint_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrint_c.html",
-      "semantics": "Infer n from explicit xvals and require equal ordinate count. Return the scalar degree-at-most-n\u22121 Lagrange value at x. Use the documented distinct increasing successful domain; do not sort, merge repeated nodes, clamp x or manufacture derivatives. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
+      "semantics": "Infer n from explicit xvals and require equal ordinate count. Return the scalar degree-at-most-n−1 Lagrange value at x. Use the documented distinct increasing successful domain; do not sort, merge repeated nodes, clamp x or manufacture derivatives. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrint-single-point",
@@ -385,12 +650,12 @@
         {
           "caseId": "coords-vectors-lgrint-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrint-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrint-irregular-distinct-grid",
@@ -430,16 +695,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgrint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lgrint -> typed WASM adapter -> checked buffers -> exported _tspice_lgrint -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     },
@@ -467,17 +732,17 @@
         {
           "caseId": "coords-vectors-qderiv-scaled-ordinates",
           "coverage": ["success", "edge"],
-          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-qderiv-scaled-abscissas",
           "coverage": ["success", "edge"],
-          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-qderiv-balanced-extreme-endpoints",
           "coverage": ["success", "edge"],
-          "observes": "Opposite maximum-finite endpoints with maximum-finite half-spacing keep two components near \u00b11 and a third nonzero subnormal. Focused rescaling observes the small component separately."
+          "observes": "Opposite maximum-finite endpoints with maximum-finite half-spacing keep two components near ±1 and a third nonzero subnormal. Focused rescaling observes the small component separately."
         },
         {
           "caseId": "coords-vectors-qderiv-zero-delta-error",
@@ -507,19 +772,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qderiv -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-node", "ci-a17-909e5968-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.qderiv -> typed WASM adapter -> checked buffers -> exported _tspice_qderiv -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": []
+          "executions": ["local-a17-909e5968-wasm", "ci-a17-909e5968-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Reviewed pinned primary sources, public shapes and bounds, independent locked wrapper symbols, scientific cases and adapter resource handling. Original Step 7 execution records are historical. Fresh required local and observed canonical CI records are needed for final source-bound verification."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

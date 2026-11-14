@@ -421,8 +421,8 @@
         "qderiv_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review point/derivative layouts, hidden workspace and translated-index bounds, explicit invalid-size/spacing/duplicate errors and qderiv midpoint/domain semantics. Require complete independent outputs, cleanup and both required local plus observed CI evidence before verification. No merge authorized."
+      "prs": ["https://github.com/rybosome/tspice/pull/718"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
