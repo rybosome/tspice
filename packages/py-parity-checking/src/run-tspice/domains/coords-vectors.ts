@@ -5,6 +5,12 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsDucrss,
+  StepCoordsVectorsDvcrss,
+  StepCoordsVectorsDvdot,
+  StepCoordsVectorsDvhat,
+  StepCoordsVectorsDvnorm,
+  StepCoordsVectorsDvsep,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -26,6 +32,12 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsDucrss
+  | StepCoordsVectorsDvcrss
+  | StepCoordsVectorsDvdot
+  | StepCoordsVectorsDvhat
+  | StepCoordsVectorsDvnorm
+  | StepCoordsVectorsDvsep
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -71,6 +83,36 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.ducrss": {
+      const out = context.spice.raw.ducrss(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvcrss": {
+      const out = context.spice.raw.dvcrss(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvdot": {
+      const out = context.spice.raw.dvdot(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvhat": {
+      const out = context.spice.raw.dvhat(step.state);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvnorm": {
+      const out = context.spice.raw.dvnorm(step.state);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.dvsep": {
+      const out = context.spice.raw.dvsep(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

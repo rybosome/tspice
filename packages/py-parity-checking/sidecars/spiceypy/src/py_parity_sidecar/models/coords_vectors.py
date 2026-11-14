@@ -3,8 +3,49 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, TypeAlias
 
+Vec6: TypeAlias = tuple[float, float, float, float, float, float]
 Vec3: TypeAlias = tuple[float, float, float]
 Matrix3x3: TypeAlias = list[list[float]]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDucrss:
+    op: Literal["coords-vectors.ducrss"]
+    a: Vec6
+    b: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDvcrss:
+    op: Literal["coords-vectors.dvcrss"]
+    a: Vec6
+    b: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDvdot:
+    op: Literal["coords-vectors.dvdot"]
+    a: Vec6
+    b: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDvhat:
+    op: Literal["coords-vectors.dvhat"]
+    state: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDvnorm:
+    op: Literal["coords-vectors.dvnorm"]
+    state: Vec6
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDvsep:
+    op: Literal["coords-vectors.dvsep"]
+    a: Vec6
+    b: Vec6
 
 
 @dataclass(frozen=True)

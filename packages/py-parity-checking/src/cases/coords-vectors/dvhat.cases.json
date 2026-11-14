@@ -1,0 +1,118 @@
+[
+  {
+    "caseId": "coords-vectors-dvhat-mixed-components",
+    "description": "dvhat: mixed-components; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1, -2, 4, 3, -5, 7]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [3, -4, 12, 5, 7, -11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvhat-zero-position-and-velocity",
+    "description": "dvhat: zero-position-and-velocity; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [0, 0, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [0, 0, 0, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1, -2, 4, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvhat-radial-and-transverse-motion",
+    "description": "dvhat: radial-and-transverse-motion; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [2, 0, 0, 6, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [-2, 0, 0, 6, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [2, 0, 0, 0, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [0, 0, -4, 3, -5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvhat-scaled-states",
+    "description": "dvhat: scaled-states; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1e100, -2e100, 4e100, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1e-100, -2e-100, 4e-100, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvhat-scaled-derivatives",
+    "description": "dvhat: scaled-derivatives; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1, -2, 4, 3.0000000000000002e100, -5e100, 7e100]
+      },
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [1, -2, 4, 3e-100, -5e-100, 7e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvhat-zero-position-exact-extrema",
+    "description": "dvhat: zero-position-exact-extrema; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvhat",
+        "state": [
+          0, 0, 0, 1.7976931348623157e308, -1.7976931348623157e308, 5e-324
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

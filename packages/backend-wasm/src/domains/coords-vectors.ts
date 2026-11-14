@@ -2,6 +2,7 @@ import type {
   CoordsVectorsApi,
   Mat3RowMajor,
   SpiceVector3,
+  SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertMat3ArrayLike9,
@@ -10,6 +11,8 @@ import {
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
+
+import { withAllocs } from "../codec/alloc.js";
 
 import { throwWasmSpiceError } from "../codec/errors.js";
 
@@ -772,11 +775,165 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertStateDerivativeInput(
+  value: unknown,
+  label: string,
+): asserts value is Readonly<SpiceStateVector> {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError(`${label} must contain exactly six finite numbers`);
+  for (let i = 0; i < 6; i++) {
+    if (typeof value[i] !== "number" || !Number.isFinite(value[i]))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+  }
+}
+
+function readStateDerivativeOutput(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceStateVector {
+  const start = ptr >>> 3;
+  const heap = module.HEAPF64;
+  return [
+    heap[start]!,
+    heap[start + 1]!,
+    heap[start + 2]!,
+    heap[start + 3]!,
+    heap[start + 4]!,
+    heap[start + 5]!,
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    ducrss: (a, b) => {
+      assertStateDerivativeInput(a, "ducrss(a)");
+      assertStateDerivativeInput(b, "ducrss(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 48, 48],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_ducrss(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readStateDerivativeOutput(module, outPtr);
+        },
+      );
+    },
+    dvcrss: (a, b) => {
+      assertStateDerivativeInput(a, "dvcrss(a)");
+      assertStateDerivativeInput(b, "dvcrss(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 48, 48],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_dvcrss(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readStateDerivativeOutput(module, outPtr);
+        },
+      );
+    },
+    dvdot: (a, b) => {
+      assertStateDerivativeInput(a, "dvdot(a)");
+      assertStateDerivativeInput(b, "dvdot(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 48, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_dvdot(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    dvhat: (state) => {
+      assertStateDerivativeInput(state, "dvhat(state)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 48],
+        (errPtr, statePtr, outPtr) => {
+          module.HEAPF64.set(state, statePtr >>> 3);
+          const status = module._tspice_dvhat(
+            statePtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readStateDerivativeOutput(module, outPtr);
+        },
+      );
+    },
+    dvnorm: (state) => {
+      assertStateDerivativeInput(state, "dvnorm(state)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 8],
+        (errPtr, statePtr, outPtr) => {
+          module.HEAPF64.set(state, statePtr >>> 3);
+          const status = module._tspice_dvnorm(
+            statePtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    dvsep: (a, b) => {
+      assertStateDerivativeInput(a, "dvsep(a)");
+      assertStateDerivativeInput(b, "dvsep(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 48, 48, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >>> 3);
+          module.HEAPF64.set(b, bPtr >>> 3);
+          const status = module._tspice_dvsep(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

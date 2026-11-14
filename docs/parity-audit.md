@@ -10,6 +10,40 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## State derivatives expansion
+
+A11 reviews six direct state-derivative routines: `ducrss`, `dvcrss`, `dvdot`,
+`dvhat`, `dvnorm` and `dvsep`. The 39 registered scenarios contain 106 actual
+routine calls, including two genuine `dvsep` numeric-overflow errors. Inputs
+are authored readonly six-component states; all output position/derivative
+entries or scalar values reach the actual locked SpiceyPy wrappers.
+
+[State derivative evidence](step8-state-derivatives.md) records the pinned
+whole-state scaling behind `ducrss`'s zero-cross derivative, `dvhat`'s copied
+zero-position derivative, and `dvsep`'s guarded division and normalization
+conditioning. Caller overflow restrictions for `ducrss`/`dvdot` remain intact.
+Twelve separate tagged observations preserve complete finite/nonfinite outputs
+and signed zeros for the unrestricted routines, with finite controls. Focused
+live rescaling keeps tiny derivatives observable; no global tolerance changes.
+The narrow WASM error-test allocation repair counts existing structured
+short/long/trace buffers without changing production or scientific assertions.
+
+The original 162-routine assignment remains immutable; only these six routines
+are added as this branch's expansion. All earlier executions are historical and
+all judgments remain `reviewed` until fresh required local and observed canonical
+CI evidence is recorded against the final source digest.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.

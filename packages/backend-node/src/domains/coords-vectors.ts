@@ -1,6 +1,7 @@
 import type {
   CoordsVectorsApi,
   SpiceVector3,
+  SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertMat3ArrayLike9,
@@ -15,9 +16,78 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertStateDerivativeInput(
+  value: unknown,
+  label: string,
+): asserts value is Readonly<SpiceStateVector> {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError(`${label} must contain exactly six finite numbers`);
+  for (let i = 0; i < 6; i++) {
+    if (typeof value[i] !== "number" || !Number.isFinite(value[i]))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+  }
+}
+
+function stateDerivativeOutputNumber(value: unknown, label: string): number {
+  // Preserve nonfinite numeric outputs produced by defined finite CSPICE inputs.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function stateDerivativeOutput(
+  value: unknown,
+  label: string,
+): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError(`${label} must be an array of length six`);
+  return [
+    stateDerivativeOutputNumber(value[0], `${label}[0]`),
+    stateDerivativeOutputNumber(value[1], `${label}[1]`),
+    stateDerivativeOutputNumber(value[2], `${label}[2]`),
+    stateDerivativeOutputNumber(value[3], `${label}[3]`),
+    stateDerivativeOutputNumber(value[4], `${label}[4]`),
+    stateDerivativeOutputNumber(value[5], `${label}[5]`),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    ducrss: (a, b) => {
+      assertStateDerivativeInput(a, "ducrss(a)");
+      assertStateDerivativeInput(b, "ducrss(b)");
+      const out: unknown = native.ducrss(a, b);
+      return stateDerivativeOutput(out, "ducrss result");
+    },
+    dvcrss: (a, b) => {
+      assertStateDerivativeInput(a, "dvcrss(a)");
+      assertStateDerivativeInput(b, "dvcrss(b)");
+      const out: unknown = native.dvcrss(a, b);
+      return stateDerivativeOutput(out, "dvcrss result");
+    },
+    dvdot: (a, b) => {
+      assertStateDerivativeInput(a, "dvdot(a)");
+      assertStateDerivativeInput(b, "dvdot(b)");
+      const out: unknown = native.dvdot(a, b);
+      return stateDerivativeOutputNumber(out, "dvdot result");
+    },
+    dvhat: (state) => {
+      assertStateDerivativeInput(state, "dvhat(state)");
+      const out: unknown = native.dvhat(state);
+      return stateDerivativeOutput(out, "dvhat result");
+    },
+    dvnorm: (state) => {
+      assertStateDerivativeInput(state, "dvnorm(state)");
+      const out: unknown = native.dvnorm(state);
+      return stateDerivativeOutputNumber(out, "dvnorm result");
+    },
+    dvsep: (a, b) => {
+      assertStateDerivativeInput(a, "dvsep(a)");
+      assertStateDerivativeInput(b, "dvsep(b)");
+      const out: unknown = native.dvsep(a, b);
+      return stateDerivativeOutputNumber(out, "dvsep result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

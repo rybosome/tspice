@@ -529,6 +529,13 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  ducrss(a: readonly number[], b: readonly number[]): number[];
+  dvcrss(a: readonly number[], b: readonly number[]): number[];
+  dvdot(a: readonly number[], b: readonly number[]): number;
+  dvhat(state: readonly number[]): number[];
+  dvnorm(state: readonly number[]): number;
+  dvsep(a: readonly number[], b: readonly number[]): number;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

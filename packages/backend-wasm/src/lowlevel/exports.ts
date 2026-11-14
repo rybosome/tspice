@@ -895,6 +895,47 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_ducrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvcrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvdot(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvhat(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvnorm(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1884,47 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_ducrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvcrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvdot(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvhat(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvnorm(
+    statePtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dvsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2344,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_ducrss",
+  "_tspice_dvcrss",
+  "_tspice_dvdot",
+  "_tspice_dvhat",
+  "_tspice_dvnorm",
+  "_tspice_dvsep",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

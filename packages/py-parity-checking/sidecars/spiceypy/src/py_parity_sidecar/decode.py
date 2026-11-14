@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Any, Mapping
 
 from .models import (
@@ -22,6 +23,12 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsDucrss,
+    StepCoordsVectorsDvcrss,
+    StepCoordsVectorsDvdot,
+    StepCoordsVectorsDvhat,
+    StepCoordsVectorsDvnorm,
+    StepCoordsVectorsDvsep,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -267,6 +274,15 @@ def _expect_3x3_matrix(value: Any, *, label: str) -> list[list[float]]:
     return rows
 
 
+def _expect_vec6(value: Any, *, label: str) -> tuple[float, float, float, float, float, float]:
+    if not isinstance(value, list) or len(value) != 6:
+        raise TypeError(f"{label} must be a length-6 number array")
+    values = [_expect_number(item, label=f"{label}[{index}]") for index, item in enumerate(value)]
+    if not all(math.isfinite(item) for item in values):
+        raise ValueError(f"{label} must contain finite components")
+    return (values[0], values[1], values[2], values[3], values[4], values[5])
+
+
 def _expect_vec3(value: Any, *, label: str) -> tuple[float, float, float]:
     if not isinstance(value, list) or len(value) != 3:
         raise TypeError(f"{label} must be a length-3 number array")
@@ -494,6 +510,46 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.ducrss":
+            return StepCoordsVectorsDucrss(
+                op=op,
+                a=_expect_vec6(step.get("a"), label="coords-vectors.ducrss.a"),
+                b=_expect_vec6(step.get("b"), label="coords-vectors.ducrss.b"),
+            )
+
+        case "coords-vectors.dvcrss":
+            return StepCoordsVectorsDvcrss(
+                op=op,
+                a=_expect_vec6(step.get("a"), label="coords-vectors.dvcrss.a"),
+                b=_expect_vec6(step.get("b"), label="coords-vectors.dvcrss.b"),
+            )
+
+        case "coords-vectors.dvdot":
+            return StepCoordsVectorsDvdot(
+                op=op,
+                a=_expect_vec6(step.get("a"), label="coords-vectors.dvdot.a"),
+                b=_expect_vec6(step.get("b"), label="coords-vectors.dvdot.b"),
+            )
+
+        case "coords-vectors.dvhat":
+            return StepCoordsVectorsDvhat(
+                op=op,
+                state=_expect_vec6(step.get("state"), label="coords-vectors.dvhat.state"),
+            )
+
+        case "coords-vectors.dvnorm":
+            return StepCoordsVectorsDvnorm(
+                op=op,
+                state=_expect_vec6(step.get("state"), label="coords-vectors.dvnorm.state"),
+            )
+
+        case "coords-vectors.dvsep":
+            return StepCoordsVectorsDvsep(
+                op=op,
+                a=_expect_vec6(step.get("a"), label="coords-vectors.dvsep.a"),
+                b=_expect_vec6(step.get("b"), label="coords-vectors.dvsep.b"),
             )
 
         case "coords-vectors.reclat":
