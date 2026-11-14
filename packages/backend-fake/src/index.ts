@@ -2176,6 +2176,27 @@ export function createFakeBackend(
     },
 
     // --- EK (not implemented in fake backend) ---
+    ekccnt: () => {
+      throw new Error("Fake backend does not model ekccnt");
+    },
+    ekcii: () => {
+      throw new Error("Fake backend does not model ekcii");
+    },
+    eklef: () => {
+      throw new Error("Fake backend does not model eklef");
+    },
+    eknelt: () => {
+      throw new Error("Fake backend does not model eknelt");
+    },
+    ekpsel: () => {
+      throw new Error("Fake backend does not model ekpsel");
+    },
+    ekssum: () => {
+      throw new Error("Fake backend does not model ekssum");
+    },
+    ekuef: () => {
+      throw new Error("Fake backend does not model ekuef");
+    },
     ekopr: (_path: string) => {
       throw new Error("Fake backend: ekopr() is not implemented");
     },

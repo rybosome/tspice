@@ -44,8 +44,78 @@ export type EkGetResult<T> =
   | { found: true; isNull: true }
   | { found: true; isNull: false; value: T };
 
+/** Physical storage class, SPICE type, character width, array size and column flags. */
+export type EkAttributeDescriptor = {
+  cclass: number;
+  dtype: number;
+  strlen: number;
+  size: number;
+  indexd: boolean;
+  nullok: boolean;
+};
+/** SELECT clause parsed by CSPICE, with inclusive zero-based UTF-8 byte offsets. */
+export type EkSelectResult =
+  | {
+      ok: true;
+      n: number;
+      xbegs: number[];
+      xends: number[];
+      xtypes: number[];
+      xclass: number[];
+      tabs: string[];
+      cols: string[];
+    }
+  | { ok: false; errmsg: string };
+/** Complete physical segment summary, with one name and descriptor per column. */
+export type EkSegmentSummary = {
+  tabnam: string;
+  nrows: number;
+  ncols: number;
+  cnames: string[];
+  cdescrs: EkAttributeDescriptor[];
+};
+
 /** Backend contract for EK (Events Kernel) file/query operations. */
 export interface EkApi {
+  /** Count the columns of a loaded logical table. An unknown table signals TABLENOTLOADED.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekccnt_c.html
+   */
+  ekccnt(table: string): number;
+
+  /** Look up a zero-based column of a loaded table. Return its name and all six descriptor fields. collen includes NUL and defaults to 33. Variable size and variable character width use −1.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekcii_c.html
+   */
+  ekcii(
+    table: string,
+    cindex: number,
+    collen?: number,
+  ): { column: string; attdsc: EkAttributeDescriptor };
+
+  /** Load a physical EK into the query system from an existing path. Repeated direct loads share one registration. Direct-only loads survive kclear. Use ekuef to release the token. A KEEPER unload of the same physical registration can also remove it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eklef_c.html
+   */
+  eklef(path: string): SpiceHandle;
+
+  /** Count elements in a zero-based select item and result row of the current successful ekfind. Rerun the query after changing its file membership. A null entry retains the stored count, including the declared extent of fixed arrays.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eknelt_c.html
+   */
+  eknelt(selidx: number, row: number): number;
+
+  /** Parse the SELECT clause against loaded tables and return inclusive zero-based byte offsets, CSPICE type/class codes and resolved names. A query language error returns its diagnostic.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekpsel_c.html
+   */
+  ekpsel(query: string): EkSelectResult;
+
+  /** Read the physical zero-based segment of an owned reader or query-load handle. Return the table name, row count and all column names and descriptors in file order.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekssum_c.html
+   */
+  ekssum(handle: SpiceHandle, segno: number): EkSegmentSummary;
+
+  /** Release an owned EK query-load token. One unload removes an idempotent registration, while independent ekopr readers remain open. A claim previously removed by KEEPER can still be released.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekuef_c.html
+   */
+  ekuef(handle: SpiceHandle): void;
+
   /**
    * Open an existing EK for read and return a backend-owned opaque token.
    * Duplicate read opens retain separate claims; close each explicitly.

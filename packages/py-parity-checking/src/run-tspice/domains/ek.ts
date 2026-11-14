@@ -13,6 +13,13 @@ import type {
   StepEkEkifld,
   StepEkEknseg,
   StepEkEkntab,
+  StepEkEkccnt,
+  StepEkEkcii,
+  StepEkEklef,
+  StepEkEknelt,
+  StepEkEkpsel,
+  StepEkEkssum,
+  StepEkEkuef,
   StepEkEkopn,
   StepEkEkopr,
   StepEkEkopw,
@@ -32,6 +39,13 @@ import {
 import { normalizePathRefRelativePath } from "../../runtime/path-ref.js";
 
 type EkStep =
+  | StepEkEkccnt
+  | StepEkEkcii
+  | StepEkEklef
+  | StepEkEknelt
+  | StepEkEkpsel
+  | StepEkEkssum
+  | StepEkEkuef
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -66,6 +80,47 @@ function resolveEkPath(rawPath: PathRefLike): string {
 /** Execute one `ek.*` workflow step in tspice. */
 export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
+    case "ek.ekccnt": {
+      return { op: step.op, value: context.spice.raw.ekccnt(step.table) };
+    }
+    case "ek.ekcii": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekcii(step.table, step.cindex, step.collen),
+      };
+    }
+    case "ek.eklef": {
+      if (context.state.ek.handles.has(step.handleId))
+        throw new Error("Duplicate EK workflow handle");
+      const h = context.spice.raw.eklef(resolveEkPath(step.path));
+      registerEkHandle(context, step.handleId, h, true);
+      return { op: step.op, value: { handleId: step.handleId } };
+    }
+    case "ek.eknelt": {
+      return {
+        op: step.op,
+        value: context.spice.raw.eknelt(step.selidx, step.row),
+      };
+    }
+    case "ek.ekpsel": {
+      return { op: step.op, value: context.spice.raw.ekpsel(step.query) };
+    }
+    case "ek.ekssum": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekssum(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+        ),
+      };
+    }
+    case "ek.ekuef": {
+      const h = requireEkHandle(context, step.handleId);
+      context.spice.raw.ekuef(h);
+      for (const [id, token] of context.state.ek.handles)
+        if (token === h) context.state.ek.handles.delete(id);
+      return { op: step.op, value: null };
+    }
     case "ek.ekopn": {
       const handle = context.spice.raw.ekopn(
         resolveEkPath(step.path),

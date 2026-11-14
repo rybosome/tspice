@@ -154,6 +154,13 @@ export function dispatchStep(
     case "ek.ekgc":
     case "ek.ekgd":
     case "ek.ekgi":
+    case "ek.ekccnt":
+    case "ek.ekcii":
+    case "ek.eklef":
+    case "ek.eknelt":
+    case "ek.ekpsel":
+    case "ek.ekssum":
+    case "ek.ekuef":
     case "ek.ekopn":
     case "ek.ekopr":
     case "ek.ekopw":

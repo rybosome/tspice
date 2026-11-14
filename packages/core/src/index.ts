@@ -118,6 +118,15 @@ export {
   hasSpkPackedDescriptorStorage,
 } from "./spice-runtime/shared/spk-descriptor.js";
 
+export {
+  decodeEkColumn,
+  decodeEkSummary,
+  decodeEkSelect,
+  ekMetadataLayout,
+  ekMetadataText,
+  ekMetadataOrdinal,
+  type EkMetadataBuffers,
+} from "./spice-runtime/domains/ek-metadata.js";
 export type { AssertSpiceInt32Options } from "./spice-runtime/shared/spice-int.js";
 export {
   SPICE_INT32_MIN,

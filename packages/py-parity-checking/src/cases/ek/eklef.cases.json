@@ -1,0 +1,249 @@
+[
+  {
+    "caseId": "ek-eklef-direct-only",
+    "description": "The direct query load registers the physical file independently from KEEPER and survives KCLEAR.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "EK"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eklef-duplicate",
+    "description": "Repeated direct loads of one file share the same query registration; one unload removes it.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "dup"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "EK"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "dup"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eklef-two-physical-files",
+    "description": "Load two physical EKs sharing a logical table, remove either file and inspect the surviving logical schema.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-tables-two.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-two.ek"
+        },
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_SHARED"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekccnt",
+        "table": "AUDIT_BETA"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "b"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eklef-keeper-overlap",
+    "description": "One physical EK can be furnished and directly loaded. Unloading its KEEPER registration removes its query tables.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekntab"
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekntab"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-eklef-empty-ek",
+    "description": "The actual query loader rejects an independently created EK with zero segments.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "empty-c10.ek",
+        "ifname": "Empty EK",
+        "ncomch": 0,
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.eklef",
+        "path": "empty-c10.ek",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EKNOSEGMENTS)"]
+    }
+  },
+  {
+    "caseId": "ek-eklef-missing-file",
+    "description": "A missing EK file signals a real file-open error.",
+    "workflow": [
+      {
+        "op": "ek.eklef",
+        "path": "absent-c10.ek",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(FILENOTFOUND)"]
+    }
+  }
+]

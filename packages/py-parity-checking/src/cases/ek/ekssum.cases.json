@@ -1,0 +1,217 @@
+[
+  {
+    "caseId": "ek-ekssum-all-physical-segments",
+    "description": "Summarize each physical segment and its distinct row count, including repeated logical table schema.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-tables-one.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 2
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekssum-all-column-attributes",
+    "description": "Read all seven column names/attribute records directly from the physical EK with no query load.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekssum-direct-and-reader",
+    "description": "Owned reader and direct query load of the same file independently see identical complete metadata.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.eklef",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekuef",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekssum-negative-segment",
+    "description": "An invalid physical segment index reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekssum-past-segment",
+    "description": "An invalid physical segment index reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-query.ek"
+        },
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekssum-empty-ek",
+    "description": "An empty physical writer has no segment zero.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "path": "empty-c10-sum.ek",
+        "ifname": "Empty summary",
+        "ncomch": 0,
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekopr",
+        "path": "empty-c10-sum.ek",
+        "handleId": "r"
+      },
+      {
+        "op": "ek.ekssum",
+        "handleId": "r",
+        "segno": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  }
+]

@@ -7,6 +7,14 @@ import { createSpiceHandleRegistry } from "../src/runtime/spice-handles.js";
 
 type EkNativeDeps = Pick<
   NativeAddon,
+  | "ekccnt"
+  | "ekcii"
+  | "eklef"
+  | "eknelt"
+  | "ekpsel"
+  | "ekssum"
+  | "ekuef"
+  | "ekload_nseg"
   | "ekopr"
   | "ekopw"
   | "ekopn"
@@ -33,6 +41,14 @@ function makeNativeDeps(overrides: Partial<EkNativeDeps>): EkNativeDeps {
   };
 
   return {
+    ekccnt: notImplemented("ekccnt"),
+    ekcii: notImplemented("ekcii"),
+    eklef: notImplemented("eklef"),
+    eknelt: notImplemented("eknelt"),
+    ekpsel: notImplemented("ekpsel"),
+    ekssum: notImplemented("ekssum"),
+    ekuef: notImplemented("ekuef"),
+    ekload_nseg: notImplemented("ekload_nseg"),
     ekopr: notImplemented("ekopr"),
     ekopw: notImplemented("ekopw"),
     ekopn: notImplemented("ekopn"),

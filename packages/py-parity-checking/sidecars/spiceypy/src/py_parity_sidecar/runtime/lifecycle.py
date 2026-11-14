@@ -30,7 +30,11 @@ def _close_ek_handles_best_effort(context: SidecarRuntimeContext) -> None:
     _reset_best_effort()
     for handle_id, handle in list(context.state.ek.handles.items()):
         try:
-            sp.ekcls(handle)
+            if handle_id in context.state.ek.loads:
+                sp.ekuef(0 if handle_id in context.state.ek.expiredLoads else handle)
+                context.state.ek.loads.discard(handle_id)
+            else:
+                sp.ekcls(handle)
         except BaseException:
             continue
         context.state.ek.handles.pop(handle_id, None)

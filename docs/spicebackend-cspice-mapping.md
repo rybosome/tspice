@@ -482,6 +482,18 @@ WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
 
+[Physical and logical EK metadata, SELECT storage and query-load ownership](step8-ek-metadata.md)
+
+| Raw method | Linked N0067 entry               | Result or effect                                                                                                                   |
+| ---------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ekccnt`   | `ekccnt_c`                       | Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.                    |
+| `ekcii`    | `ekcii_` with canonical tracing  | Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags. |
+| `eklef`    | `eklef_c`                        | Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.           |
+| `eknelt`   | `eknelt_` with canonical tracing | Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.       |
+| `ekpsel`   | `ekpsel_c`                       | Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.   |
+| `ekssum`   | `ekssum_c`                       | Read physical segment table/row/column counts and every column name and six-field storage descriptor.                              |
+| `ekuef`    | `ekuef_c`                        | Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.               |
+
 | Raw method | Actual CSPICE route | Observations                                                                                                        |
 | ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `ekopn`    | `ekopn_c`           | Create, existing-file failure, actual 60-byte internal-name field and comment reservation.                          |

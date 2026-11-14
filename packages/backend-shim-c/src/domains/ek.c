@@ -3,6 +3,10 @@
 #include "SpiceUsr.h"
 #include "SpiceEK.h"
 
+#include "SpiceZfc.h"
+#include "SpiceZst.h"
+#include "ek_metadata_state.h"
+#include <limits.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,6 +41,166 @@ static int tspice_ek_invalid_arg(char *err, int errMaxBytes, const char *msg) {
   return 1;
 }
 
+
+
+// N0067 EKQMGR has twenty file slots. Duplicate EKLEF is idempotent; a
+// generation distinguishes a later registration of the same DAS file.
+enum { EK_LOAD_SLOTS=20, EK_KEEPER_SLOTS=5300, EK_PARSE_MSG=1841 };
+static struct { int handle, generation; } query_loads[EK_LOAD_SLOTS];
+static int next_ek_generation;
+static int last_query_rows, query_changed, unknown_query_extent;
+static int fast_write_active, fast_write_handle, fast_write_segment;
+static int begin_metadata(char *err,int errMaxBytes){
+  tspice_init_cspice_error_handling_once();
+  return fast_write_active?tspice_ek_invalid_arg(err,errMaxBytes,"Finish the active EK fast write before inspecting metadata"):0;
+}
+typedef struct { int n,handles[EK_KEEPER_SLOTS]; } EkKeeper;
+static EkKeeper keeper_before, keeper_after;
+static int monitoring_keeper;
+static int metadata_status(char *err,int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+  return 1;
+}
+static void read_keeper(EkKeeper *list) {
+  ktotal_c("EK",&list->n);
+  for (int i=0;i<list->n;i++) {
+    char file[256],type[9],source[256]; SpiceBoolean found;
+    kdata_c(i,"EK",sizeof(file),sizeof(type),sizeof(source),file,type,source,&list->handles[i],&found);
+  }
+}
+static int keeper_contains(const EkKeeper *k,int h) {
+  for(int i=0;i<k->n;i++) if(k->handles[i]==h) return 1;
+  return 0;
+}
+void tspice_ek_saved_keeper(void) {
+  monitoring_keeper=last_query_rows>0;
+  for(int i=0;i<EK_LOAD_SLOTS;i++) if(query_loads[i].generation) monitoring_keeper=1;
+  if(monitoring_keeper) read_keeper(&keeper_before);
+}
+void tspice_ek_changed_keeper(void) {
+  if(!monitoring_keeper) return;
+  read_keeper(&keeper_after);
+  for(int i=0;i<EK_LOAD_SLOTS;i++) {
+    int handle=query_loads[i].handle;
+    if(query_loads[i].generation && keeper_contains(&keeper_before,handle) && !keeper_contains(&keeper_after,handle))
+      query_loads[i].generation=0;
+  }
+  if(keeper_before.n!=keeper_after.n ||
+     memcmp(keeper_before.handles,keeper_after.handles,keeper_after.n*sizeof(int)))
+    query_changed=1;
+  monitoring_keeper=0;
+}
+static int find_ek_load(int generation) {
+  for(int i=0;i<EK_LOAD_SLOTS;i++)
+    if(generation>0 && query_loads[i].generation==generation) return i;
+  return -1;
+}
+int tspice_eklef(const char *path, int *generation, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!path || !generation || next_ek_generation==INT_MAX) return tspice_ek_invalid_arg(err,errMaxBytes,"Invalid EK load");
+  int h=0, freeSlot=-1;
+  eklef_c(path,&h);
+  if(metadata_status(err,errMaxBytes)) return 1;
+  for(int i=0;i<EK_LOAD_SLOTS;i++) {
+    if(query_loads[i].generation && query_loads[i].handle==h) { *generation=query_loads[i].generation; return 0; }
+    if(!query_loads[i].generation) freeSlot=i;
+  }
+  if(freeSlot<0) return tspice_ek_invalid_arg(err,errMaxBytes,"No EK load slot");
+  // A direct claim on an already KEEPER-loaded file does not change the query.
+  if(last_query_rows>0 && !query_changed) {read_keeper(&keeper_after); if(!keeper_contains(&keeper_after,h))query_changed=1;}
+  query_loads[freeSlot].handle=h;
+  *generation=query_loads[freeSlot].generation=++next_ek_generation;
+  return 0;
+}
+int tspice_ekuef(int generation, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  int slot=find_ek_load(generation);
+  // EKUEF of an already unloaded file is a documented no-op; never use a
+  // handle that could now refer to a different load of that same file.
+  ekuef_c(slot<0?0:query_loads[slot].handle);
+  if(metadata_status(err,errMaxBytes)) return 1;
+  if(slot>=0){query_loads[slot].generation=0;query_changed=1;}
+  return 0;
+}
+int tspice_ekload_nseg(int generation, int *count, char *err, int errMaxBytes) {
+  int slot=find_ek_load(generation);
+  if(slot<0)return tspice_ek_invalid_arg(err,errMaxBytes,"EK query load is no longer active");
+  return tspice_eknseg(query_loads[slot].handle,count,err,errMaxBytes);
+}
+int tspice_ekccnt(const char *table, int *count, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!table || !count) return tspice_ek_invalid_arg(err,errMaxBytes,"Missing EK metadata argument");
+  ekccnt_c(table,count);
+  return metadata_status(err,errMaxBytes);
+}
+int tspice_ekcii(const char *table, int index, int width, int *words, char *name, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!table || !words || !name || index==INT_MAX)return tspice_ek_invalid_arg(err,errMaxBytes,"Invalid EK column argument");
+  if(width<2){SpiceEKAttDsc dummy={0};ekcii_c(table,index,width,name,&dummy);return metadata_status(err,errMaxBytes);}
+  if(width>SPICE_EK_CSTRLN)width=SPICE_EK_CSTRLN;
+  // EKCII_C converts an unwritten local descriptor after EKCII signals an error.
+  int attrs[6]={0}, ordinal=index+1;
+  chkin_c("ekcii_c");
+  ekcii_((char*)table,&ordinal,name,attrs,(ftnlen)strlen(table),(ftnlen)(width-1));
+  if(!failed_c()){
+    F2C_ConvertStr(width,name);
+    words[0]=attrs[0]; words[1]=attrs[1]-1; words[2]=attrs[2]; words[3]=attrs[3];
+    words[4]=attrs[4]>=0; words[5]=attrs[5]>=0;
+  }
+  chkout_c("ekcii_c");
+  return metadata_status(err,errMaxBytes);
+}
+int tspice_eknelt(int selectIndex, int row, int *count, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!count || selectIndex==INT_MAX || row==INT_MAX)return tspice_ek_invalid_arg(err,errMaxBytes,"Invalid one-based EK ordinal");
+  if(query_changed && row>=0 && (unknown_query_extent || row<last_query_rows) && selectIndex>=0){
+    int tables=0;ekntab_c(&tables);
+    if(metadata_status(err,errMaxBytes))return 1;
+    if(tables>0)return tspice_ek_invalid_arg(err,errMaxBytes,"Run ekfind again after changing loaded EK files");
+  }
+  // EKNELT_C returns an uninitialized private integer on signaled errors.
+  int index=selectIndex+1, record=row+1;
+  *count=0;
+  chkin_c("eknelt_c");
+  eknelt_(&index,&record,count);
+  chkout_c("eknelt_c");
+  return metadata_status(err,errMaxBytes);
+}
+int tspice_ekssum(int id, int loaded, int segment, int *words, char *text, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!words || !text || segment==INT_MAX || (loaded!=0 && loaded!=1))return tspice_ek_invalid_arg(err,errMaxBytes,"Invalid EK segment argument");
+  if(loaded){
+    int slot=find_ek_load(id);
+    if(slot<0)return tspice_ek_invalid_arg(err,errMaxBytes,"EK query load is no longer active");
+    id=query_loads[slot].handle;
+  }
+  SpiceEKSegSum sum={0};
+  ekssum_c(id,segment,&sum);
+  if(metadata_status(err,errMaxBytes))return 1;
+  words[0]=sum.nrows; words[1]=sum.ncols;
+  memcpy(text,sum.tabnam,SPICE_EK_TSTRLN);
+  for(int i=0;i<sum.ncols;i++){
+    SpiceEKAttDsc *a=&sum.cdescrs[i];
+    int *w=words+2+6*i;
+    w[0]=a->cclass;w[1]=a->dtype;w[2]=a->strlen;w[3]=a->size;w[4]=a->indexd;w[5]=a->nullok;
+    memcpy(text+SPICE_EK_TSTRLN+i*SPICE_EK_CSTRLN,sum.cnames[i],SPICE_EK_CSTRLN);
+  }
+  return 0;
+}
+int tspice_ekpsel(const char *query, int *words, char *text, char *err, int errMaxBytes) {
+  if(begin_metadata(err,errMaxBytes))return 1;
+  if(!query || !words || !text)return tspice_ek_invalid_arg(err,errMaxBytes,"Invalid EK select");
+  enum {N=SPICE_EK_MAXQSEL};
+  SpiceEKDataType types[N]; SpiceEKExprClass classes[N];
+  int n=0; SpiceBoolean error=0;
+  ekpsel_c(query,EK_PARSE_MSG,SPICE_EK_TSTRLN,SPICE_EK_CSTRLN,&n,words+2,words+2+N,types,classes,
+           text+EK_PARSE_MSG,text+EK_PARSE_MSG+N*SPICE_EK_TSTRLN,&error,text);
+  if(metadata_status(err,errMaxBytes))return 1;
+  words[0]=error;words[1]=error?0:n;
+  if(!error)for(int i=0;i<n;i++){words[2+2*N+i]=types[i];words[2+3*N+i]=classes[i];}
+  return 0;
+}
 
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
@@ -145,6 +309,7 @@ int tspice_ekcls(int handle, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  if(fast_write_handle==handle)fast_write_active=0;
   return 0;
 }
 
@@ -277,6 +442,7 @@ int tspice_ekfind(
 
   SpiceInt nmrowsC = 0;
   SpiceBoolean errorC = SPICEFALSE;
+  query_changed=1;unknown_query_extent=1;
   ekfind_c(query, (SpiceInt)outErrmsgMaxBytes, &nmrowsC, &errorC, outErrmsg);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -286,6 +452,7 @@ int tspice_ekfind(
   // Ensure stable NUL-termination even if code changes.
   outErrmsg[outErrmsgMaxBytes - 1] = '\0';
 
+  if(!errorC){query_changed=0;unknown_query_extent=0;last_query_rows=nmrowsC;}
   *outError = errorC == SPICETRUE ? 1 : 0;
   *outNmrows = (errorC == SPICETRUE) ? 0 : (int)nmrowsC;
   return 0;
@@ -591,6 +758,7 @@ int tspice_ekifld(
   }
 
   SpiceInt segnoC = 0;
+  query_changed=1;
   ekifld_c(
       (SpiceInt)handle,
       tabnam,
@@ -607,6 +775,7 @@ int tspice_ekifld(
     return 1;
   }
 
+  fast_write_active=1;fast_write_handle=handle;fast_write_segment=segnoC;
   *outSegno = (int)segnoC;
   return 0;
 }
@@ -1056,5 +1225,6 @@ int tspice_ekffld(int handle, int segno, int nrows, int *rcptrs, char *err, int 
     return 1;
   }
 
+  if(fast_write_handle==handle&&fast_write_segment==segno)fast_write_active=0;
   return 0;
 }

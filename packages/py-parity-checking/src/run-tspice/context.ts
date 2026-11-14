@@ -56,6 +56,7 @@ export function registerEkHandle(
   context: RunTspiceContext,
   handleId: string,
   handle: SpiceHandle,
+  queryLoad = false,
 ): void {
   if (context.state.ek.handles.has(handleId)) {
     throw new Error(`EK handle already exists: ${handleId}`);
@@ -68,7 +69,8 @@ export function registerEkHandle(
       return;
     }
     try {
-      context.spice.raw.ekcls(tracked);
+      if (queryLoad) context.spice.raw.ekuef(tracked);
+      else context.spice.raw.ekcls(tracked);
     } catch {
       // Retain the claim for a later cleanup/disposal retry.
       return;

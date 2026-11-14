@@ -6,6 +6,53 @@ from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
+class StepEkEkccnt:
+    op: Literal["ek.ekccnt"]
+    table: str
+
+
+@dataclass(frozen=True)
+class StepEkEkcii:
+    op: Literal["ek.ekcii"]
+    table: str
+    cindex: int
+    collen: int
+
+
+@dataclass(frozen=True)
+class StepEkEklef:
+    op: Literal["ek.eklef"]
+    path: PathRefInput
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepEkEknelt:
+    op: Literal["ek.eknelt"]
+    selidx: int
+    row: int
+
+
+@dataclass(frozen=True)
+class StepEkEkpsel:
+    op: Literal["ek.ekpsel"]
+    query: str
+
+
+@dataclass(frozen=True)
+class StepEkEkssum:
+    op: Literal["ek.ekssum"]
+    handleId: str
+    segno: int
+
+
+@dataclass(frozen=True)
+class StepEkEkuef:
+    op: Literal["ek.ekuef"]
+    handleId: str
+
+
+@dataclass(frozen=True)
 class StepEkEkopn:
     op: Literal["ek.ekopn"]
     path: PathRefInput

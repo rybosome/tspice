@@ -1,0 +1,921 @@
+{
+  "schemaVersion": 1,
+  "batch": "c10-ek-metadata",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-ek-metadata.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ek.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/ek.cc",
+    "packages/backend-node/src/domains/ek.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ek-column-bounds.test.ts",
+    "packages/backend-node/test/ek-domain.test.ts",
+    "packages/backend-node/test/ek-metadata-domain.test.ts",
+    "packages/backend-node/test/fixtures/ek-column-bounds.c",
+    "packages/backend-node/test/fixtures/ek-column-shim.c",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ek.c",
+    "packages/backend-shim-c/src/domains/ek_metadata_state.h",
+    "packages/backend-shim-c/src/domains/kernels.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/domains/ek.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/ek-column-query-allocations.test.ts",
+    "packages/backend-wasm/test/ek-lifecycle-allocations.test.ts",
+    "packages/backend-wasm/test/ek-metadata-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/ek-metadata.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-ek-query.py",
+    "packages/py-parity-checking/fixtures/generate-audit-ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernels.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ek.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ek.ts",
+    "packages/py-parity-checking/test/ek-column-literals.test.ts",
+    "packages/py-parity-checking/test/ek-column-recovery.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-shapes.test.ts",
+    "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c10-43e36dc9-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c10-43e36dc9-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c10-43e36dc9-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c10-43e36dc9-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ekccnt_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekccnt_c.html",
+      "semantics": "Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekccnt-all-logical-tables",
+          "coverage": ["success", "edge"],
+          "observes": "Physical segments with shared table names contribute one schema; count all logical tables across two EKs."
+        },
+        {
+          "caseId": "ek-ekccnt-direct-membership",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat counts across case folding, blank padding and an explicit unload."
+        },
+        {
+          "caseId": "ek-ekccnt-absent",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown named table signals TABLENOTLOADED."
+        },
+        {
+          "caseId": "ek-ekccnt-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-byte table name signals the C string error."
+        },
+        {
+          "caseId": "ek-ekccnt-explicit-reader-only",
+          "coverage": ["error", "edge"],
+          "observes": "Opening an EK for reading does not load its schema."
+        }
+      ],
+      "edgeAssessment": "Physical segments with shared table names contribute one schema; count all logical tables across two EKs. Repeat counts across case folding, blank padding and an explicit unload.",
+      "errorAssessment": "Registered native status: SPICE(EMPTYSTRING), SPICE(TABLENOTLOADED). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 9c8f317b7c9517e977da4aa0f646d46dbfcf24cb97dd16199e591441a0411142"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekccnt -> serialized native addon -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekccnt -> required WASM export with scoped allocations -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekcii_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekcii_c.html",
+      "semantics": "Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekcii-all-descriptors",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect all seven physical storage classes, flags, scalar/fixed/variable sizes and types in logical column order."
+        },
+        {
+          "caseId": "ek-ekcii-output-width",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect truncated names and full descriptors at widths two, three, 33 and signed maximum."
+        },
+        {
+          "caseId": "ek-ekcii-case-folded-table",
+          "coverage": ["success", "edge"],
+          "observes": "Lowercase and trailing blanks identify the loaded logical table."
+        },
+        {
+          "caseId": "ek-ekcii-negative-index",
+          "coverage": ["error", "edge"],
+          "observes": "Observe genuine INVALIDINDEX in the column descriptor path."
+        },
+        {
+          "caseId": "ek-ekcii-past-column",
+          "coverage": ["error", "edge"],
+          "observes": "Observe genuine INVALIDINDEX in the column descriptor path."
+        },
+        {
+          "caseId": "ek-ekcii-missing-table",
+          "coverage": ["error", "edge"],
+          "observes": "Observe genuine TABLENOTLOADED in the column descriptor path."
+        },
+        {
+          "caseId": "ek-ekcii-short-width",
+          "coverage": ["error", "edge"],
+          "observes": "Observe genuine STRINGTOOSHORT in the column descriptor path."
+        }
+      ],
+      "edgeAssessment": "Inspect all seven physical storage classes, flags, scalar/fixed/variable sizes and types in logical column order. Inspect truncated names and full descriptors at widths two, three, 33 and signed maximum. Lowercase and trailing blanks identify the loaded logical table.",
+      "errorAssessment": "Registered native status: SPICE(INVALIDINDEX), SPICE(STRINGTOOSHORT), SPICE(TABLENOTLOADED). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [
+        {
+          "id": "ekcii-metadata-observation",
+          "status": "repaired",
+          "summary": "The original C wrapper reads a private unwritten attribute descriptor after errors. Use initialized ekcii_ under the canonical outer trace, preserve zero-based type/index mapping and use the C width diagnostic.",
+          "repair": "Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags. Validate against the independent locked library and complete public state transitions.",
+          "evidence": [
+            "docs/step8-ek-metadata.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+            "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekcii.cases.json"
+          ],
+          "caseIds": ["ek-ekcii-all-descriptors"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "EkApi.ekcii -> serialized native addon -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "EkApi.ekcii -> required WASM export with scoped allocations -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "eklef_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eklef_c.html",
+      "semantics": "Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
+      "scenarios": [
+        {
+          "caseId": "ek-eklef-direct-only",
+          "coverage": ["success", "edge"],
+          "observes": "The direct query load registers the physical file independently from KEEPER and survives KCLEAR."
+        },
+        {
+          "caseId": "ek-eklef-duplicate",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated direct loads of one file share the same query registration; one unload removes it."
+        },
+        {
+          "caseId": "ek-eklef-two-physical-files",
+          "coverage": ["success", "edge"],
+          "observes": "Load two physical EKs sharing a logical table, remove either file and inspect the surviving logical schema."
+        },
+        {
+          "caseId": "ek-eklef-keeper-overlap",
+          "coverage": ["success", "edge"],
+          "observes": "One physical EK can be furnished and directly loaded. Unloading its KEEPER registration removes its query tables."
+        },
+        {
+          "caseId": "ek-eklef-empty-ek",
+          "coverage": ["error", "edge"],
+          "observes": "The actual query loader rejects an independently created EK with zero segments."
+        },
+        {
+          "caseId": "ek-eklef-missing-file",
+          "coverage": ["error", "edge"],
+          "observes": "A missing EK file signals a real file-open error."
+        }
+      ],
+      "edgeAssessment": "The direct query load registers the physical file independently from KEEPER and survives KCLEAR. Repeated direct loads of one file share the same query registration; one unload removes it. Load two physical EKs sharing a logical table, remove either file and inspect the surviving logical schema. One physical EK can be furnished and directly loaded. Unloading its KEEPER registration removes its query tables.",
+      "errorAssessment": "Registered native status: SPICE(EKNOSEGMENTS), SPICE(FILENOTFOUND). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 9c8f317b7c9517e977da4aa0f646d46dbfcf24cb97dd16199e591441a0411142"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [
+        {
+          "id": "eklef-metadata-observation",
+          "status": "repaired",
+          "summary": "CSPICE reuses direct query registration across duplicate loads. Generation-scoped opaque claims preserve idempotence without allowing an old token to act on a reloaded file.",
+          "repair": "Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token. Validate against the independent locked library and complete public state transitions.",
+          "evidence": [
+            "docs/step8-ek-metadata.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+            "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/eklef.cases.json"
+          ],
+          "caseIds": ["ek-eklef-direct-only"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.eklef -> serialized native addon -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.eklef -> required WASM export with scoped allocations -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "eknelt_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eknelt_c.html",
+      "semantics": "Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
+      "scenarios": [
+        {
+          "caseId": "ek-eknelt-all-query-entries",
+          "coverage": ["success", "edge"],
+          "observes": "Read entry extents of all seven selected columns and all three ordered rows, including fixed- and variable-size nulls."
+        },
+        {
+          "caseId": "ek-eknelt-replacement-query",
+          "coverage": ["success", "edge"],
+          "observes": "A new SELECT changes item order and row order. Observe size from both result sets."
+        },
+        {
+          "caseId": "ek-eknelt-psel-preserves-results",
+          "coverage": ["success", "edge"],
+          "observes": "Parsing a different SELECT leaves the current EKFIND result available."
+        },
+        {
+          "caseId": "ek-eknelt-negative-row",
+          "coverage": ["error", "edge"],
+          "observes": "Read an invalid negative-row from the current successful query and inspect the real diagnostic."
+        },
+        {
+          "caseId": "ek-eknelt-past-row",
+          "coverage": ["error", "edge"],
+          "observes": "Read an invalid past-row from the current successful query and inspect the real diagnostic."
+        },
+        {
+          "caseId": "ek-eknelt-past-item",
+          "coverage": ["error", "edge"],
+          "observes": "Read an invalid past-item from the current successful query and inspect the real diagnostic."
+        },
+        {
+          "caseId": "ek-eknelt-negative-item",
+          "coverage": ["error", "edge"],
+          "observes": "Read an invalid negative-item from the current successful query and inspect the real diagnostic."
+        },
+        {
+          "caseId": "ek-eknelt-zero-rows",
+          "coverage": ["error", "edge"],
+          "observes": "Read an invalid zero-rows from the current successful query and inspect the real diagnostic."
+        },
+        {
+          "caseId": "ek-eknelt-no-files",
+          "coverage": ["error", "edge"],
+          "observes": "Empty query manager takes precedence over both invalid indices."
+        }
+      ],
+      "edgeAssessment": "Read entry extents of all seven selected columns and all three ordered rows, including fixed- and variable-size nulls. A new SELECT changes item order and row order. Observe size from both result sets. Parsing a different SELECT leaves the current EKFIND result available.",
+      "errorAssessment": "Registered native status: SPICE(INVALIDINDEX), SPICE(NOLOADEDFILES). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [
+        {
+          "id": "eknelt-metadata-observation",
+          "status": "repaired",
+          "summary": "The C wrapper returns an unwritten private integer on errors. Use initialized eknelt_ under the canonical outer trace, preserving one-based input conversion and actual query results.",
+          "repair": "Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries. Validate against the independent locked library and complete public state transitions.",
+          "evidence": [
+            "docs/step8-ek-metadata.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+            "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/eknelt.cases.json"
+          ],
+          "caseIds": ["ek-eknelt-all-query-entries"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "EkApi.eknelt -> serialized native addon -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "EkApi.eknelt -> required WASM export with scoped allocations -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekpsel_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekpsel_c.html",
+      "semantics": "Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekpsel-mixed-types",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for mixed-types."
+        },
+        {
+          "caseId": "ek-ekpsel-alias-offsets",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for alias-offsets."
+        },
+        {
+          "caseId": "ek-ekpsel-duplicate-projection",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for duplicate-projection."
+        },
+        {
+          "caseId": "ek-ekpsel-fifty-items",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for fifty-items."
+        },
+        {
+          "caseId": "ek-ekpsel-over-item-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for over-item-limit."
+        },
+        {
+          "caseId": "ek-ekpsel-missing-column",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for missing-column."
+        },
+        {
+          "caseId": "ek-ekpsel-unsupported-expression",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every defined SELECT result field or the actual parser diagnostic for unsupported-expression."
+        },
+        {
+          "caseId": "ek-ekpsel-two-table-aliases",
+          "coverage": ["success", "edge"],
+          "observes": "Return table and column names plus exact qualified spans for a two-table query."
+        },
+        {
+          "caseId": "ek-ekpsel-missing-table",
+          "coverage": ["success", "edge"],
+          "observes": "A query on an unloaded table returns a parse diagnostic."
+        },
+        {
+          "caseId": "ek-ekpsel-empty-string",
+          "coverage": ["error", "edge"],
+          "observes": "C-level empty query signals a structured string error."
+        }
+      ],
+      "edgeAssessment": "Observe every defined SELECT result field or the actual parser diagnostic for mixed-types. Observe every defined SELECT result field or the actual parser diagnostic for alias-offsets. Observe every defined SELECT result field or the actual parser diagnostic for duplicate-projection. Observe every defined SELECT result field or the actual parser diagnostic for fifty-items. Observe every defined SELECT result field or the actual parser diagnostic for over-item-limit. Observe every defined SELECT result field or the actual parser diagnostic for missing-column. Observe every defined SELECT result field or the actual parser diagnostic for unsupported-expression. Return table and column names plus exact qualified spans for a two-table query. A query on an unloaded table returns a parse diagnostic.",
+      "errorAssessment": "Registered native status: SPICE(EMPTYSTRING). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekpsel -> serialized native addon -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekpsel -> required WASM export with scoped allocations -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekssum_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekssum_c.html",
+      "semantics": "Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekssum-all-physical-segments",
+          "coverage": ["success", "edge"],
+          "observes": "Summarize each physical segment and its distinct row count, including repeated logical table schema."
+        },
+        {
+          "caseId": "ek-ekssum-all-column-attributes",
+          "coverage": ["success", "edge"],
+          "observes": "Read all seven column names/attribute records directly from the physical EK with no query load."
+        },
+        {
+          "caseId": "ek-ekssum-direct-and-reader",
+          "coverage": ["success", "edge"],
+          "observes": "Owned reader and direct query load of the same file independently see identical complete metadata."
+        },
+        {
+          "caseId": "ek-ekssum-negative-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An invalid physical segment index reaches INDEXOUTOFRANGE."
+        },
+        {
+          "caseId": "ek-ekssum-past-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An invalid physical segment index reaches INDEXOUTOFRANGE."
+        },
+        {
+          "caseId": "ek-ekssum-empty-ek",
+          "coverage": ["error", "edge"],
+          "observes": "An empty physical writer has no segment zero."
+        }
+      ],
+      "edgeAssessment": "Summarize each physical segment and its distinct row count, including repeated logical table schema. Read all seven column names/attribute records directly from the physical EK with no query load. Owned reader and direct query load of the same file independently see identical complete metadata.",
+      "errorAssessment": "Registered native status: SPICE(INDEXOUTOFRANGE). Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [
+        {
+          "id": "ekssum-metadata-observation",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 transposes the cnames ctypes array extents; traverse the actual field with 33-byte rows and compare every name.",
+          "repair": "Read physical segment table/row/column counts and every column name and six-field storage descriptor. Validate against the independent locked library and complete public state transitions.",
+          "evidence": [
+            "docs/step8-ek-metadata.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+            "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekssum.cases.json"
+          ],
+          "caseIds": ["ek-ekssum-all-physical-segments"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekssum -> serialized native addon -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekssum -> required WASM export with scoped allocations -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ekuef_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekuef_c.html",
+      "semantics": "Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekuef-independent-reader",
+          "coverage": ["success", "edge"],
+          "observes": "Unloading the last direct query file retains an independent reader and its metadata."
+        },
+        {
+          "caseId": "ek-ekuef-file-specific",
+          "coverage": ["success", "edge"],
+          "observes": "Only the selected physical file is removed. Inspect each surviving table schema and metadata."
+        },
+        {
+          "caseId": "ek-ekuef-keeper-removal",
+          "coverage": ["success", "edge"],
+          "observes": "After KEEPER removes an overlapping registration, release its generation while a new direct load of the same opened file remains queryable."
+        },
+        {
+          "caseId": "ek-ekuef-direct-clear-release",
+          "coverage": ["success", "edge"],
+          "observes": "Clear KEEPER twice with a direct-only file loaded, then explicitly unload."
+        },
+        {
+          "caseId": "ek-ekuef-repeatable-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Direct unload and reload cycle produces the same physical summary and query count."
+        }
+      ],
+      "edgeAssessment": "Unloading the last direct query file retains an independent reader and its metadata. Only the selected physical file is removed. Inspect each surviving table schema and metadata. After KEEPER removes an overlapping registration, release its generation while a new direct load of the same opened file remains queryable. Clear KEEPER twice with a direct-only file loaded, then explicitly unload. Direct unload and reload cycle produces the same physical summary and query count.",
+      "errorAssessment": "Prior KEEPER removal is a genuine no-op. Owned-token checks prevent closing foreign, wrong-kind or released tokens. Query-language errors use the explicit result flag. Wrapper preconditions and cleanup are verified separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 ae83d94abbe88df9fa59f0de745cd2f4ab702f2d61d297ac75506889a34a0ca4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Repository-authored synthetic N0067 binary EK; see the included fixture generators and checksums.",
+          "distribution": "Already distributed in the repository. SHA-256 9c8f317b7c9517e977da4aa0f646d46dbfcf24cb97dd16199e591441a0411142"
+        }
+      ],
+      "fixtureRationale": "Use only the originally authored checked-in EK fixtures. Both toolkits stage/open their own files and use real toolkit queries; the empty-file tests create disposable EKs.",
+      "cleanup": "Explicitly release direct EK loads before closing readers and clearing KEEPER. A generation that no longer exists cannot touch a reloaded file. The public client releases remaining direct query files on disposal.",
+      "tolerance": "Everything returned is an exact integer, boolean or string. Every descriptor field, ordered name, SELECT span/class/type and null/variable result cardinality is compared.",
+      "findings": [
+        {
+          "id": "ekuef-metadata-observation",
+          "status": "repaired",
+          "summary": "An explicit KEEPER unload can already remove a direct registration. Unloading the retired generation must preserve a newer registration even when its physical DAS handle is unchanged.",
+          "repair": "Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token. Validate against the independent locked library and complete public state transitions.",
+          "evidence": [
+            "docs/step8-ek-metadata.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_metadata_oracle.py",
+            "packages/py-parity-checking/test/ek-metadata-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekuef.cases.json"
+          ],
+          "caseIds": ["ek-ekuef-independent-reader"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekuef -> serialized native addon -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "EkApi.ekuef -> required WASM export with scoped allocations -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

@@ -55,6 +55,9 @@ class EkSegmentState:
 
 @dataclass
 class EkState:
+    activeMetadataWrite: tuple[str,int] | None = None
+    expiredLoads: set[str] = field(default_factory=set)
+    loads: set[str] = field(default_factory=set)
     lastQuery: str | None = None
     lastSuccessfulFindNmrows: int | None = None
     handles: dict[str, int] = field(default_factory=dict)
