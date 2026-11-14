@@ -98,8 +98,20 @@ export type PromisifyFn<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => Promise<Awaited<R>>
   : T;
 
+type PromisifyPolicy<T> = T extends {
+  (...args: infer A): infer R;
+  (...args: infer B): infer S;
+}
+  ? {
+      (...args: A): Promise<Awaited<R>>;
+      (...args: B): Promise<Awaited<S>>;
+    }
+  : PromisifyFn<T>;
+
 export type PromisifyObject<T extends object> = {
-  [K in keyof T]: PromisifyFn<T[K]>;
+  [K in keyof T]: K extends "errdev" | "errprt"
+    ? PromisifyPolicy<T[K]>
+    : PromisifyFn<T[K]>;
 };
 
 /**

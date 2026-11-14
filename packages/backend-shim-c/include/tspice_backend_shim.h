@@ -38,6 +38,9 @@ int tspice_get_last_error_trace(char *out, int outMaxBytes);
 void tspice_clear_last_error_buffers(void);
 
 // --- CSPICE error/status utilities ---
+int tspice_errdev(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
+int tspice_errprt(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
+int tspice_trcoff(char *err, int errMaxBytes);
 int tspice_errch(const char *marker, const char *value, char *err, int errMaxBytes);
 int tspice_errdp(const char *marker, double value, char *err, int errMaxBytes);
 int tspice_errint(const char *marker, int value, char *err, int errMaxBytes);

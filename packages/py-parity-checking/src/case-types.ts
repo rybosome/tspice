@@ -797,6 +797,16 @@ export type StepFileIoDskw02 = {
   spaixId: string;
 };
 
+export type StepErrorErrdev = { op: "error.errdev" } & (
+  { operation: "GET"; capacity?: number } | { operation: "SET"; value: string }
+);
+
+export type StepErrorErrprt = { op: "error.errprt" } & (
+  { operation: "GET"; capacity?: number } | { operation: "SET"; value: string }
+);
+
+export type StepErrorTrcoff = { op: "error.trcoff" };
+
 export type StepErrorErrch = {
   op: "error.errch";
   marker: string;
@@ -1432,6 +1442,9 @@ export type WorkflowStep =
   | StepFileIoDskopn
   | StepFileIoDskmi2
   | StepFileIoDskw02
+  | StepErrorErrdev
+  | StepErrorErrprt
+  | StepErrorTrcoff
   | StepErrorErrch
   | StepErrorErrdp
   | StepErrorErrint
@@ -1748,6 +1761,9 @@ export type StepOutput =
   | { op: "error.return"; value: boolean }
   | { op: "error.trcdep"; value: number }
   | { op: "error.trcnam"; value: string }
+  | { op: "error.errdev"; value: string | null }
+  | { op: "error.errprt"; value: string | null }
+  | { op: "error.trcoff"; value: null }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }

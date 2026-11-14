@@ -95,6 +95,9 @@ from .models import (
     StepFileIoGetfat,
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrdev,
+    StepErrorErrprt,
+    StepErrorTrcoff,
     StepErrorErrch,
     StepErrorErrdp,
     StepErrorErrint,
@@ -1164,6 +1167,27 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 plates=_expect_int_list(step.get("plates"), label="file-io.dskw02.plates"),
                 spaixId=_expect_string(step.get("spaixId"), label="file-io.dskw02.spaixId"),
             )
+        case "error.errdev":
+            operation = _expect_string(step.get("operation"), label="errdev.operation")
+            if operation == "GET":
+                capacity = step.get("capacity")
+                return StepErrorErrdev(op=op, operation=operation, capacity=None if capacity is None else _expect_int(capacity,label="errdev.capacity"))
+            if operation == "SET":
+                return StepErrorErrdev(op=op, operation=operation, value=_expect_string(step.get("value"), label="errdev.value"))
+            raise ValueError("Expected GET or SET")
+
+        case "error.errprt":
+            operation = _expect_string(step.get("operation"), label="errprt.operation")
+            if operation == "GET":
+                capacity = step.get("capacity")
+                return StepErrorErrprt(op=op, operation=operation, capacity=None if capacity is None else _expect_int(capacity,label="errprt.capacity"))
+            if operation == "SET":
+                return StepErrorErrprt(op=op, operation=operation, value=_expect_string(step.get("value"), label="errprt.value"))
+            raise ValueError("Expected GET or SET")
+
+        case "error.trcoff":
+            return StepErrorTrcoff(op=op)
+
         case "error.errch":
             return StepErrorErrch(op=op,
                 marker=_expect_string(step.get("marker"), label="error.errch.marker"),

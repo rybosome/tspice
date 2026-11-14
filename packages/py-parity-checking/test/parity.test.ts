@@ -1,3 +1,5 @@
+import { spawnSync } from "node:child_process";
+import type { CaseExecutionResult } from "../src/case-types.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,6 +26,30 @@ async function assertParityForBackend(
 ): Promise<void> {
   const sidecarResult = await runCaseInSidecar(parityCase, fixturesRoot);
 
+  // TRCOFF is irreversible and native clients share error policy across
+  // workers. Run each policy workflow in a fresh process, including getters
+  // whose initial-state observations must be independent of test order.
+  if (
+    parityCase.workflow.some((step) =>
+      ["error.errdev", "error.errprt", "error.trcoff"].includes(step.op),
+    )
+  ) {
+    const child = spawnSync(
+      process.execPath,
+      [path.join(__dirname, "_helpers/error-policy-case.mjs")],
+      {
+        input: JSON.stringify({ parityCase, backend, fixturesRoot }),
+        encoding: "utf8",
+        timeout: 15000,
+      },
+    );
+    if (child.error) throw child.error;
+    if (child.status !== 0)
+      throw new Error("Error policy child exited: " + child.stderr);
+    const actual: CaseExecutionResult = JSON.parse(child.stdout);
+    assertCaseParity(parityCase, sidecarResult, actual);
+    return;
+  }
   const setup = await spiceClients.toSync({ backend });
   try {
     const tspiceResult = runCaseInTspice(setup.spice, parityCase, fixturesRoot);

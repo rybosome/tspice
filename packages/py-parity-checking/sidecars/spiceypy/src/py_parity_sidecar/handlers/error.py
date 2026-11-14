@@ -6,6 +6,9 @@ import spiceypy as sp
 from ..models import (
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrdev,
+    StepErrorErrprt,
+    StepErrorTrcoff,
     StepErrorErrch,
     StepErrorErrdp,
     StepErrorErrint,
@@ -47,6 +50,42 @@ def _trace_text(capacity: int, index: int | None = None) -> str:
     return buf.value.decode("utf-8")
 
 
+# The pinned SpiceyPy 6.0.3 errprt() mistakenly calls errdev_c. Its other
+# policy wrappers strip trailing whitespace and allocate the requested size
+# even when only one physical byte is needed for a genuine length diagnostic.
+# Bind the two actual N0067 C routines in the independently loaded wheel.
+_error_device = _trace_library.errdev_c
+_error_print = _trace_library.errprt_c
+for _policy_fn in (_error_device, _error_print):
+    _policy_fn.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
+    _policy_fn.restype = None
+
+
+def _policy_call(fn, operation: str, value: str, capacity: int | None, full: int) -> str | None:
+    if operation == "SET":
+        data = value.encode("utf-8")
+        if b"\0" in data:
+            raise ValueError("C input contains NUL")
+        buf = ctypes.create_string_buffer(data)
+        fn(b"SET", 0, buf)
+        sp.check_for_spice_error(None)
+        return None
+    if operation != "GET" or (capacity is not None and not -(2**31) <= capacity < 2**31):
+        raise ValueError("Invalid policy operation or SpiceInt capacity")
+    length = full if capacity is None else min(capacity, full)
+    buf = ctypes.create_string_buffer(max(1, length))
+    fn(b"GET", length, buf)
+    sp.check_for_spice_error(None)
+    return buf.value.decode("utf-8")
+
+
+def initialize_policy_oracle() -> None:
+    # The two frontends choose different initial policy. Set only the
+    # documented tspice starting state in this new, dedicated sidecar process.
+    _policy_call(_error_print, "SET", "NONE", None, 41)
+    _policy_call(_error_device, "SET", "SCREEN", None, 256)
+
+
 _ALLOWED_GETMSG_SELECTORS = {"SHORT", "LONG", "EXPLAIN"}
 
 
@@ -65,6 +104,16 @@ def _format_sigerr_message() -> str:
 
 
 def run_error_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepErrorErrdev):
+        return StepOutput(op=step.op, value=_policy_call(_error_device, step.operation, step.value, step.capacity, 256))
+
+    if isinstance(step, StepErrorErrprt):
+        return StepOutput(op=step.op, value=_policy_call(_error_print, step.operation, step.value, step.capacity, 41))
+
+    if isinstance(step, StepErrorTrcoff):
+        sp.trcoff()
+        return StepOutput(op=step.op, value=None)
+
     if isinstance(step, StepErrorErrch):
         sp.errch(step.marker, step.value)
         sp.check_for_spice_error(None)

@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "batch": "b07-error-devices",
+  "traceFiles": [
+    "docs/step8-error-devices.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/error.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/error.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/error.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/error-policy-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-shim-c/test/error-policy.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/error.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/_helpers/errorModule.ts",
+    "packages/backend-wasm/test/error-observation-allocations.test.ts",
+    "packages/backend-wasm/test/error-policy-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/error-policy.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/error/errdev.cases.json",
+    "packages/py-parity-checking/src/cases/error/errprt.cases.json",
+    "packages/py-parity-checking/src/cases/error/index.ts",
+    "packages/py-parity-checking/src/cases/error/trcoff.cases.json",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/test/_helpers/error-device-lifetime.mjs",
+    "packages/py-parity-checking/test/_helpers/error-policy-case.mjs",
+    "packages/py-parity-checking/test/_helpers/error-policy-effects.mjs",
+    "packages/py-parity-checking/test/_helpers/error-policy-effects.py",
+    "packages/py-parity-checking/test/_helpers/error-policy-module.mjs",
+    "packages/py-parity-checking/test/error-policy-public.test.ts",
+    "packages/py-parity-checking/test/parity.test.ts",
+    "packages/tspice/src/kit/types/spice-types.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "errdev_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdev_c.html",
+      "semantics": "Get/set caller-owned diagnostic device names. Preserve byte truncation and real file creation, scoped to host or module filesystem.",
+      "scenarios": [
+        {
+          "caseId": "error-errdev-initial-capacities",
+          "coverage": ["success", "edge"],
+          "observes": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities."
+        },
+        {
+          "caseId": "error-errdev-length--2147483648",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errdev-length-0",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errdev-length-1",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errdev-empty-setting",
+          "coverage": ["error", "edge"],
+          "observes": "Let CSPICE diagnose a zero-byte input string."
+        },
+        {
+          "caseId": "error-errdev-null",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-screen",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-filename",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-significant-tab",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-leading-space",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-fixed-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        },
+        {
+          "caseId": "error-errdev-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Read the toolkit-stored device and byte-limited spellings without writing to a path."
+        }
+      ],
+      "edgeAssessment": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities. Read the toolkit-stored device and byte-limited spellings without writing to a path.",
+      "errorAssessment": "SPICE(STRINGTOOSHORT) SPICE(EMPTYSTRING) observed through the actual toolkit; error utility state remains scoped to this child.",
+      "fixtures": [],
+      "fixtureRationale": "Authored policy strings, traced names and private scratch device files; no kernels or external data.",
+      "cleanup": "Separate native/WASM frontend and locked-reference OS child processes per policy workflow. Irreversible disabled tracing cannot affect the test coordinator.",
+      "tolerance": "Exact strings, booleans, status, diagnostic fields and independently generated file bytes; no numerical tolerance.",
+      "findings": [
+        {
+          "id": "errdev-byte-ownership",
+          "status": "repaired",
+          "summary": "The locked high-level getter removes a significant final tab and state-only comparisons miss file ownership and buffered output.",
+          "repair": "Decode the independent device buffer strictly, observe native complete output and exact flushed WASM prefix from separate owned files.",
+          "evidence": [
+            "docs/step8-error-devices.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "packages/py-parity-checking/test/error-policy-public.test.ts"
+          ],
+          "caseIds": ["error-errdev-significant-tab"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errdev -> native addon under global mutex -> tspice_errdev -> errdev_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errdev -> bounded WASM adapter -> tspice_errdev -> errdev_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "errprt_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errprt_c.html",
+      "semantics": "Apply ordered message selections, observing accumulated state, reset tokens and complete returned ordered mask.",
+      "scenarios": [
+        {
+          "caseId": "error-errprt-initial-capacities",
+          "coverage": ["success", "edge"],
+          "observes": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities."
+        },
+        {
+          "caseId": "error-errprt-length--2147483648",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errprt-length-0",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errprt-length-1",
+          "coverage": ["error", "edge"],
+          "observes": "Use physical sentinel storage while passing the signed length to the canonical C interface."
+        },
+        {
+          "caseId": "error-errprt-empty-setting",
+          "coverage": ["error", "edge"],
+          "observes": "Let CSPICE diagnose a zero-byte input string."
+        },
+        {
+          "caseId": "error-errprt-ordered",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-all-default",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-clear-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-blank",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-token-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual printable mask and output-buffer truncation after each ordered selection."
+        },
+        {
+          "caseId": "error-errprt-invalid-list",
+          "coverage": ["error", "edge"],
+          "observes": "Encounter an invalid item after an earlier valid selection."
+        }
+      ],
+      "edgeAssessment": "Read the established toolkit setting at one-character, intermediate, default and maximal signed capacities. Observe the actual printable mask and output-buffer truncation after each ordered selection.",
+      "errorAssessment": "SPICE(STRINGTOOSHORT) SPICE(EMPTYSTRING) SPICE(INVALIDLISTITEM) observed through the actual toolkit; error utility state remains scoped to this child.",
+      "fixtures": [],
+      "fixtureRationale": "Authored policy strings, traced names and private scratch device files; no kernels or external data.",
+      "cleanup": "Separate native/WASM frontend and locked-reference OS child processes per policy workflow. Irreversible disabled tracing cannot affect the test coordinator.",
+      "tolerance": "Exact strings, booleans, status, diagnostic fields and independently generated file bytes; no numerical tolerance.",
+      "findings": [
+        {
+          "id": "locked-errprt-calls-wrong-routine",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 errprt calls errdev_c. Its returned value cannot support a scientific assertion about selected messages.",
+          "repair": "Bind the independent wheel’s actual void errprt_c with checked owned buffers and compare successive canonical mask reads.",
+          "evidence": [
+            "docs/step8-error-devices.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py"
+          ],
+          "caseIds": ["error-errprt-ordered"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errprt -> native addon under global mutex -> tspice_errprt -> errprt_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errprt -> bounded WASM adapter -> tspice_errprt -> errprt_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "trcoff_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcoff_c.html",
+      "semantics": "Irreversibly disable traceback collection and clear its current stack in the toolkit instance.",
+      "scenarios": [
+        {
+          "caseId": "error-trcoff-active-stack",
+          "coverage": ["success", "edge"],
+          "observes": "Disable tracing within nested names; inspect all observable stack changes after a subsequent check-in and check-out."
+        },
+        {
+          "caseId": "error-trcoff-reset-kclear",
+          "coverage": ["success", "edge"],
+          "observes": "Reset and kernel clear in a disabled instance, followed by an attempted new check-in."
+        },
+        {
+          "caseId": "error-trcoff-repeat",
+          "coverage": ["success", "edge"],
+          "observes": "A repeated disable in a new instance remains irreversible."
+        },
+        {
+          "caseId": "error-trcoff-signaled",
+          "coverage": ["success", "edge"],
+          "observes": "Capture a real user signal with trace collection disabled and check the failure indicator after recovery."
+        },
+        {
+          "caseId": "error-trcoff-absent-index",
+          "coverage": ["error", "edge"],
+          "observes": "An indexed name request after disabling an active trace reports the toolkit bounds error."
+        }
+      ],
+      "edgeAssessment": "Disable tracing within nested names; inspect all observable stack changes after a subsequent check-in and check-out. Reset and kernel clear in a disabled instance, followed by an attempted new check-in. A repeated disable in a new instance remains irreversible. Capture a real user signal with trace collection disabled and check the failure indicator after recovery.",
+      "errorAssessment": "SPICE(INDEXOUTOFRANGE) observed through the actual toolkit; error utility state remains scoped to this child.",
+      "fixtures": [],
+      "fixtureRationale": "Authored policy strings, traced names and private scratch device files; no kernels or external data.",
+      "cleanup": "Separate native/WASM frontend and locked-reference OS child processes per policy workflow. Irreversible disabled tracing cannot affect the test coordinator.",
+      "tolerance": "Exact strings, booleans, status, diagnostic fields and independently generated file bytes; no numerical tolerance.",
+      "findings": [
+        {
+          "id": "trace-lifetime-isolation",
+          "status": "repaired",
+          "summary": "Other tests in a reused native process would inherit permanent disabled tracing.",
+          "repair": "Dispatch each registered policy workflow to a dedicated OS process, independently of its oracle process; observe the active stack before and the blank stack after.",
+          "evidence": [
+            "docs/step8-error-devices.md",
+            "packages/py-parity-checking/test/parity.test.ts"
+          ],
+          "caseIds": [
+            "error-trcoff-active-stack",
+            "error-trcoff-reset-kclear",
+            "error-trcoff-repeat",
+            "error-trcoff-signaled",
+            "error-trcoff-absent-index"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcoff -> native addon under global mutex -> tspice_trcoff -> trcoff_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcoff -> bounded WASM adapter -> tspice_trcoff -> trcoff_c. Actual N0067 state observed in dedicated runtime.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Targeted compiled, independent and browser checks completed; source-level required lanes and CI pending."
+}

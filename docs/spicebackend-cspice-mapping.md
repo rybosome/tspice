@@ -186,6 +186,14 @@ Notes:
 
 ## Domain: `error` (`ErrorApi`)
 
+GET/SET error policy and permanent trace disabling are direct toolkit operations with process/module lifetime. [Diagnostic devices, print masks and trace state](step8-error-devices.md)
+
+| Raw method | CSPICE     | Effect                                                                                                                              |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `errdev`   | `errdev_c` | Get/set caller-owned diagnostic device names. Preserve byte truncation and real file creation, scoped to host or module filesystem. |
+| `errprt`   | `errprt_c` | Apply ordered message selections, observing accumulated state, reset tokens and complete returned ordered mask.                     |
+| `trcoff`   | `trcoff_c` | Irreversibly disable traceback collection and clear its current stack in the toolkit instance.                                      |
+
 The following direct operations extend the original error API. [Prepared and frozen diagnostic state](step8-error-observation.md)
 
 | Raw method | CSPICE     | Effect                                                                                                                                                                               |

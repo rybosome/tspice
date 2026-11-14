@@ -111,6 +111,18 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export timdefSet(item, value)",
   );
   invariant(
+    typeof native.errdev === "function",
+    "Expected native addon to export errdev()",
+  );
+  invariant(
+    typeof native.errprt === "function",
+    "Expected native addon to export errprt()",
+  );
+  invariant(
+    typeof native.trcoff === "function",
+    "Expected native addon to export trcoff()",
+  );
+  invariant(
     typeof native.errch === "function",
     "Expected native addon to export errch()",
   );
