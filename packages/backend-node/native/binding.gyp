@@ -7,6 +7,9 @@
     {
       "target_name": "tspice_backend_node",
       "sources": [
+        "generated/inquire.c",
+        "generated/rdtext.c",
+        "generated/rdtext_c.c",
         "src/addon.cc",
         "src/addon_common.cc",
         "src/cell_handles.cc",
@@ -47,7 +50,7 @@
         "<(tspice_native_generated_dir)"
       ],
       "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
-      "defines": ["NODE_ADDON_API_DISABLE_CPP_EXCEPTIONS"],
+      "defines": ["NODE_ADDON_API_DISABLE_CPP_EXCEPTIONS", "NON_UNIX_STDIO"],
       "libraries": [
         "<(tspice_cspice_dir)/lib/cspice.a",
         "<(tspice_cspice_dir)/lib/csupport.a"

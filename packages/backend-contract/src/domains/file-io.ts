@@ -5,7 +5,11 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 
-import type { SpiceHandle, VirtualOutput } from "../shared/types.js";
+import type {
+  KernelSource,
+  SpiceHandle,
+  VirtualOutput,
+} from "../shared/types.js";
 
 /**
  * Plain-object representation of CSPICE `SpiceDLADescr`.
@@ -55,6 +59,21 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
+  /** Read one physical text line, preserving leading bytes and trimming trailing ASCII spaces.
+   * lineln includes the terminator and defaults to 1024 bytes. A completed short read discards the remaining record.
+   * An empty line differs from EOF. EOF closes the reader and the next call starts over. Clients sharing one
+   * physical file in a native process share its cursor. An explicit byte source is staged privately until client
+   * disposal; reuse its virtual path for subsequent calls. Reject truncated malformed UTF-8 after the read.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rdtext_c.html
+   */
+  rdtext(file: KernelSource, lineln?: number): { line: string; eof: boolean };
+  /** Initialize the toolkit's command arguments once. The array includes argv[0] and may contain empty strings.
+   * The linked toolkit deep-copies the supplied array. Later calls in the same native process or WASM instance
+   * signal PUTCMLCALLEDTWICE, including after reset, kclear or disposal. The array length provides argc.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/putcml_c.html
+   */
+  putcml(argv: readonly string[]): void;
+
   /**
    * Return whether a nonempty backend filesystem path exists.
    * A missing file returns false; this does not load or open a kernel.

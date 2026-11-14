@@ -103,6 +103,11 @@ int tspice_ktotal_all(char *err, int errMaxBytes);
 
 // --- file i/o primitives ---------------------------------------------------
 
+int tspice_rdtext(int owner, const char *path, int width, char *line, int *eof, char *err, int errMaxBytes);
+int tspice_putcml(int argc, int packedBytes, const char *packed, char *observed, char *err, int errMaxBytes);
+int tspice_text_owner(int *owner, char *err, int errMaxBytes);
+int tspice_release_text_owner(int owner, char *err, int errMaxBytes);
+
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes);
 
 int tspice_getfat(

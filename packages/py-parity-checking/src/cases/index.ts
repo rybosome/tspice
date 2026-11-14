@@ -91,6 +91,8 @@ import fileIoDlaopnCasesRaw from "./file-io/dlaopn.cases.json" with { type: "jso
 import fileIoDskmi2CasesRaw from "./file-io/dskmi2.cases.json" with { type: "json" };
 import fileIoDskopnCasesRaw from "./file-io/dskopn.cases.json" with { type: "json" };
 import fileIoDskw02CasesRaw from "./file-io/dskw02.cases.json" with { type: "json" };
+import fileIoRdtextCasesRaw from "./file-io/rdtext.cases.json" with { type: "json" };
+import fileIoPutcmlCasesRaw from "./file-io/putcml.cases.json" with { type: "json" };
 import fileIoExistsCasesRaw from "./file-io/exists.cases.json" with { type: "json" };
 import fileIoGetfatCasesRaw from "./file-io/getfat.cases.json" with { type: "json" };
 import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
@@ -205,6 +207,8 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDskmi2CasesRaw as ParityCase[]),
   ...(fileIoDskopnCasesRaw as ParityCase[]),
   ...(fileIoDskw02CasesRaw as ParityCase[]),
+  ...(fileIoRdtextCasesRaw as ParityCase[]),
+  ...(fileIoPutcmlCasesRaw as ParityCase[]),
   ...(fileIoExistsCasesRaw as ParityCase[]),
   ...(fileIoGetfatCasesRaw as ParityCase[]),
 ];

@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cstring>
 #include "file_io.h"
 
 #include <string>
@@ -10,6 +12,8 @@
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
 
+using tspice_backend_node::kErrMaxBytes;
+using tspice_backend_node::g_cspice_mutex;
 using tspice_napi::MakeNotFound;
 using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
@@ -108,6 +112,50 @@ static Napi::Boolean Exists(const Napi::CallbackInfo& info) {
   return Napi::Boolean::New(env, exists != 0);
 }
 
+
+static Napi::Value TextOwner(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if(info.Length()!=0){ThrowSpiceError(Napi::TypeError::New(env,"text_owner expects no arguments"));return env.Undefined();}
+  int owner=0;char err[kErrMaxBytes]={};std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  if(tspice_text_owner(&owner,err,sizeof err)){ThrowSpiceError(env,"text_owner",err);return env.Undefined();}
+  return Napi::Number::New(env,owner);
+}
+static Napi::Value ReleaseTextOwner(const Napi::CallbackInfo& info) {
+  auto env=info.Env();int owner=0;
+  if(info.Length()!=1){ThrowSpiceError(Napi::TypeError::New(env,"release_text_owner expects one owner"));return env.Undefined();}
+  if(!ReadInt32Checked(env,info[0],"owner",&owner))return env.Undefined();
+  char err[kErrMaxBytes]={};std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  if(tspice_release_text_owner(owner,err,sizeof err))ThrowSpiceError(env,"release_text_owner",err);
+  return env.Undefined();
+}
+static Napi::Value Rdtext(const Napi::CallbackInfo& info) {
+  auto env=info.Env();int owner=0,width=0;
+  if(info.Length()!=3 || !info[1].IsString()){ThrowSpiceError(Napi::TypeError::New(env,"Expected owner, text path and width"));return env.Undefined();}
+  if(!ReadInt32Checked(env,info[0],"owner",&owner)||!ReadInt32Checked(env,info[2],"width",&width))return env.Undefined();
+  auto path=info[1].As<Napi::String>().Utf8Value();
+  if(path.find('\0')!=std::string::npos || path.size()>255 || width>256*1024*1024){
+    ThrowSpiceError(Napi::RangeError::New(env,"Invalid text path or output width"));return env.Undefined();
+  }
+  std::vector<char> line(static_cast<size_t>(std::max(1,width)));
+  int eof=0;char err[kErrMaxBytes]={};std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  if(tspice_rdtext(owner,path.c_str(),width,line.data(),&eof,err,sizeof err)){ThrowSpiceError(env,"rdtext",err,"rdtext");return env.Undefined();}
+  const size_t n=std::strlen(line.data());auto bytes=Napi::Uint8Array::New(env,n);
+  if(n)std::memcpy(bytes.Data(),line.data(),n);
+  auto result=Napi::Object::New(env);result.Set("bytes",bytes);result.Set("eof",eof!=0);return result;
+}
+static Napi::Value Putcml(const Napi::CallbackInfo& info) {
+  auto env=info.Env();int argc=0;
+  if(info.Length()!=2 || !info[1].IsTypedArray()||info[1].As<Napi::TypedArray>().TypedArrayType()!=napi_uint8_array){ThrowSpiceError(Napi::TypeError::New(env,"Expected count and packed UTF-8 command bytes"));return env.Undefined();}
+  if(!ReadInt32Checked(env,info[0],"argc",&argc))return env.Undefined();
+  auto input=info[1].As<Napi::Uint8Array>();
+  if(input.ByteLength()>256*1024*1024){ThrowSpiceError(Napi::RangeError::New(env,"Command exceeds transfer limit"));return env.Undefined();}
+  const int n=static_cast<int>(input.ByteLength());auto observed=Napi::Uint8Array::New(env,n);
+  char dummy=0,err[kErrMaxBytes]={};std::lock_guard<std::mutex> lock(g_cspice_mutex);
+  if(tspice_putcml(argc,n,n?reinterpret_cast<const char*>(input.Data()):&dummy,n?reinterpret_cast<char*>(observed.Data()):&dummy,err,sizeof err)){
+    ThrowSpiceError(env,"putcml",err,"putcml");return env.Undefined();
+  }
+  return observed;
+}
 static Napi::Object Getfat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -872,6 +920,10 @@ namespace tspice_backend_node {
 
 void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "exists", Napi::Function::New(env, Exists), __func__)) return;
+  if(!SetExportChecked(env,exports,"text_owner",Napi::Function::New(env,TextOwner),__func__))return;
+  if(!SetExportChecked(env,exports,"release_text_owner",Napi::Function::New(env,ReleaseTextOwner),__func__))return;
+  if(!SetExportChecked(env,exports,"rdtext",Napi::Function::New(env,Rdtext),__func__))return;
+  if(!SetExportChecked(env,exports,"putcml",Napi::Function::New(env,Putcml),__func__))return;
   if (!SetExportChecked(env, exports, "getfat", Napi::Function::New(env, Getfat), __func__)) return;
 
   if (!SetExportChecked(env, exports, "dafopr", Napi::Function::New(env, Dafopr), __func__)) return;

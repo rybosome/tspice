@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,6 +23,23 @@ async function assertParityForBackend(
   parityCase: (typeof allCases)[number],
   backend: "wasm" | "node",
 ): Promise<void> {
+  if (
+    backend === "node" &&
+    parityCase.workflow.some((step) => step.op === "file-io.putcml")
+  ) {
+    execFileSync(
+      process.execPath,
+      [
+        path.join(__dirname, "_helpers/run-isolated-command-case.mjs"),
+        fixturesRoot,
+      ],
+      {
+        input: JSON.stringify(parityCase),
+        timeout: 18_000,
+      },
+    );
+    return;
+  }
   const sidecarResult = await runCaseInSidecar(parityCase, fixturesRoot);
 
   const setup = await spiceClients.toSync({ backend });

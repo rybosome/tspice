@@ -386,6 +386,13 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw method | Linked N0067 entry | Result or effect                                                                                                                                                                                                                                                |
+| ---------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rdtext`   | `rdtext_c`         | Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes. |
+| `putcml`   | `putcml_c`         | Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.                       |
+
+[Text record semantics, ownership and command state](step8-text-command-state.md)
+
 | Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |
 | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `dafopr(path)`   | `dafopr_c`                 | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |

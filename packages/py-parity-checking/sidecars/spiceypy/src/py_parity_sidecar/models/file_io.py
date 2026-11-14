@@ -7,6 +7,20 @@ from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
+class StepFileIoRdtext:
+    op: Literal["file-io.rdtext"]
+    fileId: str
+    text: str
+    lineln: int
+
+
+@dataclass(frozen=True)
+class StepFileIoPutcml:
+    op: Literal["file-io.putcml"]
+    argv: list[str]
+
+
+@dataclass(frozen=True)
 class StepFileIoExists:
     op: Literal["file-io.exists"]
     path: PathRefInput

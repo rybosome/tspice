@@ -1,0 +1,89 @@
+[
+  {
+    "caseId": "file-io-putcml-empty-argv",
+    "description": "Pass zero arguments to the actual setter and inspect actual stored count.",
+    "workflow": [
+      {
+        "op": "file-io.putcml",
+        "argv": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-putcml-single-empty",
+    "description": "An empty string is one argument with length zero.",
+    "workflow": [
+      {
+        "op": "file-io.putcml",
+        "argv": [""]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-putcml-exact-argv",
+    "description": "Verify all stored bytes for executable, spaces, empty, Unicode and trailing tabs.",
+    "workflow": [
+      {
+        "op": "file-io.putcml",
+        "argv": ["survey", "", "  two words  ", "µΔ", "﻿bom", "end\t"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-putcml-repeated",
+    "description": "A second setter is a genuine toolkit error.",
+    "workflow": [
+      {
+        "op": "file-io.putcml",
+        "argv": ["first"]
+      },
+      {
+        "op": "file-io.putcml",
+        "argv": ["second"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["PUTCMLCALLEDTWICE"]
+    }
+  },
+  {
+    "caseId": "file-io-putcml-persists",
+    "description": "The first command survives error reset, kernel clear and a successful file read.",
+    "workflow": [
+      {
+        "op": "file-io.putcml",
+        "argv": []
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "file-io.rdtext",
+        "fileId": "lines.txt",
+        "text": "independent\n",
+        "lineln": 80
+      },
+      {
+        "op": "file-io.putcml",
+        "argv": ["second"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["PUTCMLCALLEDTWICE"]
+    }
+  }
+]

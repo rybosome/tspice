@@ -139,6 +139,16 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export chkout(name)",
   );
 
+  invariant(typeof native.rdtext === "function", "Expected native rdtext");
+  invariant(typeof native.putcml === "function", "Expected native putcml");
+  invariant(
+    typeof native.text_owner === "function",
+    "Expected native text_owner",
+  );
+  invariant(
+    typeof native.release_text_owner === "function",
+    "Expected native release_text_owner",
+  );
   invariant(
     typeof native.exists === "function",
     "Expected native addon to export exists(path)",
