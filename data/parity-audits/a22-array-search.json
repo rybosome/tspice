@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 1,
+  "batch": "a22-array-search",
+  "traceFiles": [
+    "docs/step8-array-search.md",
+    "docs/step8-sorted-bounds.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/coords-vectors.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/array-search-domain.test.ts",
+    "packages/backend-node/test/sorted-bounds-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/coords_vectors.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/array-search-allocations.test.ts",
+    "packages/backend-wasm/test/sorted-bounds-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/sorted-bounds.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_search_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/sorted_bounds_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/array-search-live.test.ts",
+    "packages/py-parity-checking/test/sorted-bounds.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "bschoc_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bschoc_c.html",
+      "semantics": "Search physical values via the supplied zero-based permutation, which contains every index exactly once and orders the values nondecreasingly. Return the physical index represented by the first equal binary midpoint. Return −1 for an empty array or missing key. Compare unsigned UTF-8 bytes under ASCII blank extension with case and tabs significant. The stride is inferred from the longest encoded row.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-bschoc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find left, right and middle entries and a missing key in an odd-length input."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-even",
+          "coverage": ["success", "edge"],
+          "observes": "Distinct even-length results map into the original array."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-character-order",
+          "coverage": ["success", "edge"],
+          "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-unequal-width",
+          "coverage": ["success", "edge"],
+          "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-ties-ascending-indices",
+          "coverage": ["success", "edge"],
+          "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
+        },
+        {
+          "caseId": "coords-vectors-bschoc-ties-descending-indices",
+          "coverage": ["success", "edge"],
+          "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
+        }
+      ],
+      "edgeAssessment": "Change the permutation among equal values to discriminate physical indices from logical sorted positions and verify exact midpoint selection. Terminal tabs, case, leading/trailing blanks, unequal widths, multibyte and longer keys distinguish the pinned lexical ordering.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Malformed order lengths, repeated or out-of-range indices and nonintegral values are wrapper errors. Actual malformed indices are never passed to the toolkit. Character encoding, stride and table size are checked before dispatch. Nondecreasing search order is a caller precondition; the oracle validates its authored fixtures.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use. Both adapters validate order before dispatch, and the shared C guard frees its temporary permutation check on every path.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bschoc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bschoc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bschoi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bschoi_c.html",
+      "semantics": "Search physical values via the supplied zero-based permutation, which contains every index exactly once and orders the values nondecreasingly. Return the physical index represented by the first equal binary midpoint. Return −1 for an empty array or missing key. Compare signed32 keys and elements exactly, including their two extreme representable values.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-bschoi-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find both endpoints, interior, and gaps among signed values."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-even",
+          "coverage": ["success", "edge"],
+          "observes": "Check every match across an even-length input."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-signed-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-ties-ascending-indices",
+          "coverage": ["success", "edge"],
+          "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
+        },
+        {
+          "caseId": "coords-vectors-bschoi-ties-descending-indices",
+          "coverage": ["success", "edge"],
+          "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
+        }
+      ],
+      "edgeAssessment": "Change the permutation among equal values to discriminate physical indices from logical sorted positions and verify exact midpoint selection. Indices at signed32 minimum and maximum, adjacent misses, and repeated elements are distinguished.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Malformed order lengths, repeated or out-of-range indices and nonintegral values are wrapper errors. Actual malformed indices are never passed to the toolkit. Its private order-vector allocation may report MALLOCFAILED. Resource exhaustion is not triggered or counted as a scientific oracle case. Element/key types and signed count/index limits are checked before dispatch. Nondecreasing search order is a caller precondition; the oracle validates its authored fixtures.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use. Both adapters validate order before dispatch, and the shared C guard frees its temporary permutation check on every path.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bschoi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bschoi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bsrchc_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchc_c.html",
+      "semantics": "Search the nondecreasing physical values and return the first equal binary midpoint in zero-based indexing. Return −1 for an empty array or missing key. Compare unsigned UTF-8 bytes under ASCII blank extension with case and tabs significant. The stride is inferred from the longest encoded row.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-bsrchc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find left, right and middle entries and a missing key in an odd-length input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-even",
+          "coverage": ["success", "edge"],
+          "observes": "Distinct even-length results map into the original array."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-character-order",
+          "coverage": ["success", "edge"],
+          "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
+        },
+        {
+          "caseId": "coords-vectors-bsrchc-unequal-width",
+          "coverage": ["success", "edge"],
+          "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Terminal tabs, case, leading/trailing blanks, unequal widths, multibyte and longer keys distinguish the pinned lexical ordering.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Character encoding, stride and table size are checked before dispatch. Nondecreasing search order is a caller precondition; the oracle validates its authored fixtures.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [
+        {
+          "id": "binary-character-duplicate-selection",
+          "status": "repaired",
+          "summary": "The CSPICE and SpiceyPy descriptions can suggest the first physical duplicate. Pinned bsrchc_c returns immediately at an equal midpoint.",
+          "repair": "Document midpoint selection, preserve the canonical integer without scanning for another duplicate, and compare distinguishing duplicate positions to the ordinary locked wrapper.",
+          "caseIds": ["coords-vectors-bsrchc-duplicates"],
+          "evidence": [
+            "docs/step8-array-search.md",
+            "packages/py-parity-checking/test/array-search-live.test.ts",
+            "packages/backend-contract/src/domains/coords-vectors.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bsrchd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchd_c.html",
+      "semantics": "Search the nondecreasing physical values and return the first equal binary midpoint in zero-based indexing. Return −1 for an empty array or missing key. Match zeros of either sign and equal infinities. The ordered inputs exclude NaN.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-bsrchd-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchd-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-bsrchd-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find both endpoints, interior, and gaps among signed values."
+        },
+        {
+          "caseId": "coords-vectors-bsrchd-even",
+          "coverage": ["success", "edge"],
+          "observes": "Check every match across an even-length input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchd-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
+        },
+        {
+          "caseId": "coords-vectors-bsrchd-tiny-neighbors",
+          "coverage": ["success", "edge"],
+          "observes": "Exact equality distinguishes adjacent representable values and subnormals."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Examples cover very small representable neighbors without a numerical tolerance. Focused live observations add signed zeros, infinities.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Element/key types and signed count/index limits are checked before dispatch. Nondecreasing search order is a caller precondition; the oracle validates its authored fixtures.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bsrchi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchi_c.html",
+      "semantics": "Search the nondecreasing physical values and return the first equal binary midpoint in zero-based indexing. Return −1 for an empty array or missing key. Compare signed32 keys and elements exactly, including their two extreme representable values.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-bsrchi-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchi-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-bsrchi-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find both endpoints, interior, and gaps among signed values."
+        },
+        {
+          "caseId": "coords-vectors-bsrchi-even",
+          "coverage": ["success", "edge"],
+          "observes": "Check every match across an even-length input."
+        },
+        {
+          "caseId": "coords-vectors-bsrchi-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
+        },
+        {
+          "caseId": "coords-vectors-bsrchi-signed-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Indices at signed32 minimum and maximum, adjacent misses, and repeated elements are distinguished.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Element/key types and signed count/index limits are checked before dispatch. Nondecreasing search order is a caller precondition; the oracle validates its authored fixtures.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bsrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "isrchc_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchc_c.html",
+      "semantics": "Scan physical values in their supplied order and return the first equal zero-based index. Return −1 for an empty array or missing key. Compare unsigned UTF-8 bytes under ASCII blank extension with case and tabs significant. The stride is inferred from the longest encoded row.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-isrchc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find left, right and middle entries and a missing key in an odd-length input."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-even",
+          "coverage": ["success", "edge"],
+          "observes": "Distinct even-length results map into the original array."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-character-order",
+          "coverage": ["success", "edge"],
+          "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
+        },
+        {
+          "caseId": "coords-vectors-isrchc-unequal-width",
+          "coverage": ["success", "edge"],
+          "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Terminal tabs, case, leading/trailing blanks, unequal widths, multibyte and longer keys distinguish the pinned lexical ordering.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Character encoding, stride and table size are checked before dispatch.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "isrchd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchd_c.html",
+      "semantics": "Scan physical values in their supplied order and return the first equal zero-based index. Return −1 for an empty array or missing key. Match zeros of either sign and equal infinities. Any NaN comparison is false, so a NaN key misses and NaN elements do not match.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-isrchd-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-isrchd-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-isrchd-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find both endpoints, interior, and gaps among signed values."
+        },
+        {
+          "caseId": "coords-vectors-isrchd-even",
+          "coverage": ["success", "edge"],
+          "observes": "Check every match across an even-length input."
+        },
+        {
+          "caseId": "coords-vectors-isrchd-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
+        },
+        {
+          "caseId": "coords-vectors-isrchd-tiny-neighbors",
+          "coverage": ["success", "edge"],
+          "observes": "Exact equality distinguishes adjacent representable values and subnormals."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Examples cover very small representable neighbors without a numerical tolerance. Focused live observations add signed zeros, infinities and NaN linear misses.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Element/key types and signed count/index limits are checked before dispatch.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "isrchi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchi_c.html",
+      "semantics": "Scan physical values in their supplied order and return the first equal zero-based index. Return −1 for an empty array or missing key. Compare signed32 keys and elements exactly, including their two extreme representable values.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-isrchi-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Return the canonical -1 sentinel for empty input."
+        },
+        {
+          "caseId": "coords-vectors-isrchi-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Test below, at and above a single physical element."
+        },
+        {
+          "caseId": "coords-vectors-isrchi-odd",
+          "coverage": ["success", "edge"],
+          "observes": "Find both endpoints, interior, and gaps among signed values."
+        },
+        {
+          "caseId": "coords-vectors-isrchi-even",
+          "coverage": ["success", "edge"],
+          "observes": "Check every match across an even-length input."
+        },
+        {
+          "caseId": "coords-vectors-isrchi-duplicates",
+          "coverage": ["success", "edge"],
+          "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
+        },
+        {
+          "caseId": "coords-vectors-isrchi-signed-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
+        }
+      ],
+      "edgeAssessment": "Compare odd and even shapes, both endpoints, duplicate groups and runs of missing keys. Indices at signed32 minimum and maximum, adjacent misses, and repeated elements are distinguished.",
+      "errorAssessment": "Valid searches return an index or the genuine −1 miss. No scientific-error fixture is claimed. Element/key types and signed count/index limits are checked before dispatch.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored arrays, keys and boundary examples in registered JSON. This routine needs no kernels, mutable external state or third-party fixture.",
+      "cleanup": "Adapters snapshot inputs and use non-null empty storage. Native owns its temporary buffers during the call. WASM releases every acquired buffer in reverse order on success and failure. It checks CSPICE status before reading the output index. Focused clients dispose after use.",
+      "tolerance": "Observe the exact physical integer index and −1 sentinel. Distinct valid integers differ by at least one, outside the existing comparator tolerances across this supported range. Focused live assertions check exact integer equality, including for IEEE inputs.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused public, independent, compiled-backend and Chrome observations describe reviewed source. Fresh required local and canonical CI executions will establish verification for the combined A24/A22 source."
+}

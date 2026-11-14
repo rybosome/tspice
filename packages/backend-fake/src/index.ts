@@ -2392,6 +2392,30 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    bschoc: () => {
+      throw new Error("Fake backend does not model bschoc()");
+    },
+    bschoi: () => {
+      throw new Error("Fake backend does not model bschoi()");
+    },
+    bsrchc: () => {
+      throw new Error("Fake backend does not model bsrchc()");
+    },
+    bsrchd: () => {
+      throw new Error("Fake backend does not model bsrchd()");
+    },
+    bsrchi: () => {
+      throw new Error("Fake backend does not model bsrchi()");
+    },
+    isrchc: () => {
+      throw new Error("Fake backend does not model isrchc()");
+    },
+    isrchd: () => {
+      throw new Error("Fake backend does not model isrchd()");
+    },
+    isrchi: () => {
+      throw new Error("Fake backend does not model isrchi()");
+    },
     lstlec: () => {
       throw new Error("Fake backend does not model lstlec()");
     },

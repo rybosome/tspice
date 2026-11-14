@@ -7,26 +7,24 @@ function boundCount(values: unknown, maximum: number): number {
   return count;
 }
 
-function boundNumber(value: unknown, integer: boolean): number {
-  if (typeof value !== "number" || Number.isNaN(value))
+function boundNumber(value: unknown, kind: "int" | "double" | "ieee"): number {
+  if (typeof value !== "number" || (kind !== "ieee" && Number.isNaN(value)))
     throw new TypeError("Expected an ordered numeric search value");
-  if (integer) assertSpiceInt32(value, "search value");
+  if (kind === "int") assertSpiceInt32(value, "search value");
   return value;
 }
 
-/** Snapshot the ordered numeric inputs and check the physical element count before traversing them. */
+/** Snapshot numeric search values and check the element count before traversal. The linear IEEE search accepts NaN. */
 export function sortedNumericInputs(
   key: number,
   values: readonly number[],
-  kind: "int" | "double",
+  kind: "int" | "double" | "ieee",
   maximumCount = SPICE_INT32_MAX,
 ): { key: number; values: number[] } {
-  const integer = kind === "int";
-  const checkedKey = boundNumber(key, integer);
+  const checkedKey = boundNumber(key, kind);
   const count = boundCount(values, maximumCount);
   const snapshot: number[] = [];
-  for (let i = 0; i < count; i++)
-    snapshot.push(boundNumber(values[i], integer));
+  for (let i = 0; i < count; i++) snapshot.push(boundNumber(values[i], kind));
   return { key: checkedKey, values: snapshot };
 }
 
@@ -62,13 +60,17 @@ export function sortedCharacterInputs(
   key: string,
   values: readonly string[],
   maxBytes = SPICE_INT32_MAX,
+  maximumCount = Math.floor(maxBytes / 2),
 ): {
   keyBytes: number;
   rows: string[];
   width: number;
 } {
   const keyBytes = boundTextLength(key, maxBytes - 1);
-  const count = boundCount(values, Math.floor(maxBytes / 2));
+  const count = boundCount(
+    values,
+    Math.min(maximumCount, Math.floor(maxBytes / 2)),
+  );
   const maxRowBytes = Math.floor(maxBytes / Math.max(1, count)) - 1;
   const rows: string[] = [];
   let width = 2;
@@ -80,6 +82,33 @@ export function sortedCharacterInputs(
     rows.push(row);
   }
   return { keyBytes, rows, width };
+}
+
+/** Snapshot the zero-based permutation consumed by the two indirect binary searches. */
+export function searchOrderInput(
+  order: readonly number[],
+  count: number,
+): number[] {
+  if (!Array.isArray(order) || order.length !== count)
+    throw new RangeError("Search order and values must have the same length");
+  const snapshot: number[] = [];
+  const seen = new Uint8Array(count);
+  for (let i = 0; i < count; i++) {
+    const index: unknown = order[i];
+    if (
+      typeof index !== "number" ||
+      !Number.isInteger(index) ||
+      index < 0 ||
+      index >= count ||
+      seen[index]
+    )
+      throw new RangeError(
+        "Expected a permutation of zero-based search indices",
+      );
+    seen[index] = 1;
+    snapshot.push(index);
+  }
+  return snapshot;
 }
 
 /** Preserve CSPICE's -1 sentinel and check every returned index against the owned input length. */

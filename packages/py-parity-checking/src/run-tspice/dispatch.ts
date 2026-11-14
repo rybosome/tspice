@@ -53,6 +53,14 @@ export function dispatchStep(
     case "coords-vectors.lstltc":
     case "coords-vectors.lstltd":
     case "coords-vectors.lstlti":
+    case "coords-vectors.bschoc":
+    case "coords-vectors.bschoi":
+    case "coords-vectors.bsrchc":
+    case "coords-vectors.bsrchd":
+    case "coords-vectors.bsrchi":
+    case "coords-vectors.isrchc":
+    case "coords-vectors.isrchd":
+    case "coords-vectors.isrchi":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

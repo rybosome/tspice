@@ -529,6 +529,22 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  bschoc(
+    key: string,
+    values: readonly string[],
+    order: readonly number[],
+  ): number;
+  bschoi(
+    key: number,
+    values: readonly number[],
+    order: readonly number[],
+  ): number;
+  bsrchc(key: string, values: readonly string[]): number;
+  bsrchd(key: number, values: readonly number[]): number;
+  bsrchi(key: number, values: readonly number[]): number;
+  isrchc(key: string, values: readonly string[]): number;
+  isrchd(key: number, values: readonly number[]): number;
+  isrchi(key: number, values: readonly number[]): number;
   lstlec(key: string, values: readonly string[]): number;
   lstled(key: number, values: readonly number[]): number;
   lstlei(key: number, values: readonly number[]): number;

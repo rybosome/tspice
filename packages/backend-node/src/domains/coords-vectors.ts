@@ -3,6 +3,8 @@ import type {
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
+  searchOrderInput,
+  SPICE_INT32_MAX,
   sortedNumericInputs,
   sortedCharacterInputs,
   sortedBoundResult,
@@ -21,6 +23,94 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    bschoc: (key, values, order) => {
+      const input = sortedCharacterInputs(
+        key,
+        values,
+        SPICE_INT32_MAX,
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.rows.length);
+      return sortedBoundResult(
+        native.bschoc(key, input.rows, indices),
+        input.rows.length,
+      );
+    },
+    bschoi: (key, values, order) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.values.length);
+      return sortedBoundResult(
+        native.bschoi(input.key, input.values, indices),
+        input.values.length,
+      );
+    },
+    bsrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.bsrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    bsrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "double",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    bsrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.isrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    isrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "ieee",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
     lstlec: (key, values) => {
       const input = sortedCharacterInputs(key, values);
       return sortedBoundResult(

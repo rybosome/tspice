@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 168
-- Planned (not yet implemented): 481
+- Implemented now (SpiceRawBackend): 176
+- Planned (not yet implemented): 473
 - Excluded: 3
 
 ## Implemented now
@@ -29,6 +29,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodn2c_c` | Body name to ID code translation |
 | `bods2c_c` | Body string to ID code translation |
 | `bodvar_c` | Return values from the kernel pool |
+| `bschoc_c` | Binary search with order vector, character |
+| `bschoi_c` | Binary search with order vector, integer |
+| `bsrchc_c` | Binary search for a character string |
+| `bsrchd_c` | Binary search for a double precision value |
+| `bsrchi_c` | Binary search for an integer value |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
 | `chkin_c` | module Check In |
@@ -105,6 +110,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `isrchc_c` | Search in a character array |
+| `isrchd_c` | Search in a double precision array |
+| `isrchi_c` | Search in an integer array |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -207,11 +215,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodvrd_c` | Return d.p. values from the kernel pool |
 | `brcktd_c` | Bracket a d.p. value within an interval |
 | `brckti_c` | Bracket an integer value within an interval |
-| `bschoc_c` | Binary search with order vector, character |
-| `bschoi_c` | Binary search with order vector, integer |
-| `bsrchc_c` | Binary search for a character string |
-| `bsrchd_c` | Binary search for a double precision value |
-| `bsrchi_c` | Binary search for an integer value |
 | `cgv2el_c` | Center and generating vectors to ellipse |
 | `chbder_c` | Derivatives of a Chebyshev expansion |
 | `chbigr_c` | Chebyshev expansion integral |
@@ -414,9 +417,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `invort_c` | Invert nearly orthogonal matrices |
 | `invstm_c` | Inverse of state transformation matrix |
 | `isordv_c` | Is array an order vector? |
-| `isrchc_c` | Search in a character array |
-| `isrchd_c` | Search in a double precision array |
-| `isrchi_c` | Search in an integer array |
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `iswhsp_c` | Determine whether a string is white space |
 | `j1900_c` | Julian Date of 1900.0 JAN 0.5 |

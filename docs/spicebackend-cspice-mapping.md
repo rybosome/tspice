@@ -227,6 +227,19 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+The following eight methods accept a key and a readonly array. Each returns a physical zero-based index or −1. CSPICE performs the search after both adapters validate and snapshot the arguments. [Search domain, indices and verified examples](step8-array-search.md)
+
+| Raw method                   | Canonical routine | Search order                                             |
+| ---------------------------- | ----------------- | -------------------------------------------------------- |
+| `bschoc(key, values, order)` | `bschoc_c`        | Nondecreasing order given by the zero-based permutation. |
+| `bschoi(key, values, order)` | `bschoi_c`        | Nondecreasing order given by the zero-based permutation. |
+| `bsrchc(key, values)`        | `bsrchc_c`        | Nondecreasing physical order.                            |
+| `bsrchd(key, values)`        | `bsrchd_c`        | Nondecreasing physical order.                            |
+| `bsrchi(key, values)`        | `bsrchi_c`        | Nondecreasing physical order.                            |
+| `isrchc(key, values)`        | `isrchc_c`        | Physical order, first matching entry.                    |
+| `isrchd(key, values)`        | `isrchd_c`        | Physical order, first matching entry.                    |
+| `isrchi(key, values)`        | `isrchi_c`        | Physical order, first matching entry.                    |
+
 Each sorted-boundary method accepts a key and a readonly array of the same
 element type. It returns the zero-based index of the last qualifying entry
 or −1. The caller supplies the values in nondecreasing order.

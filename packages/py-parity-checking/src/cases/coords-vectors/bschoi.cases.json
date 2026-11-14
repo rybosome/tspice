@@ -1,0 +1,332 @@
+[
+  {
+    "caseId": "coords-vectors-bschoi-empty",
+    "description": "Return the canonical -1 sentinel for empty input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 0,
+        "values": [],
+        "order": []
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -1,
+        "values": [],
+        "order": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-singleton",
+    "description": "Test below, at and above a single physical element.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 6,
+        "values": [7],
+        "order": [0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 7,
+        "values": [7],
+        "order": [0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 8,
+        "values": [7],
+        "order": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-odd",
+    "description": "Find both endpoints, interior, and gaps among signed values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -19,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -4,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 0,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 2,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 8,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 15,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 23,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -20,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 3,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 28,
+        "values": [15, 0, 8, -19, 23, -4, 2],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-even",
+    "description": "Check every match across an even-length input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -8,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -2,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 1,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 3,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 7,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 9,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -1,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 10,
+        "values": [9, 7, 3, 1, -2, -8],
+        "order": [5, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-duplicates",
+    "description": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4],
+        "order": [7, 6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 1,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4],
+        "order": [7, 6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4],
+        "order": [7, 6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 7,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4],
+        "order": [7, 6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 2,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4],
+        "order": [7, 6, 5, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-signed-limits",
+    "description": "Use both signed 32-bit endpoints, near neighbors and misses.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -2147483648,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -2147483647,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -1,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 0,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 1,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 2147483646,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 2147483647,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": -2147483646,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 2147483645,
+        "values": [2147483647, 2147483646, 1, 0, -1, -2147483647, -2147483648],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-ties-ascending-indices",
+    "description": "A different valid order within ties distinguishes physical indices from logical search positions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 1,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 21,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 30,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoi-ties-descending-indices",
+    "description": "A different valid order within ties distinguishes physical indices from logical search positions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 1,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 21,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoi",
+        "key": 30,
+        "values": [9, 1, 21, 1, 1, 30, 42, 99],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

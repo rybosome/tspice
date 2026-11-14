@@ -50,6 +50,64 @@ class StepCoordsVectorsLstlti:
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsBschoc:
+    op: Literal["coords-vectors.bschoc"]
+    key: str
+    values: list[str]
+    order: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsBschoi:
+    op: Literal["coords-vectors.bschoi"]
+    key: int
+    values: list[int]
+    order: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsBsrchc:
+    op: Literal["coords-vectors.bsrchc"]
+    key: str
+    values: list[str]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsBsrchd:
+    op: Literal["coords-vectors.bsrchd"]
+    key: float
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsBsrchi:
+    op: Literal["coords-vectors.bsrchi"]
+    key: int
+    values: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsIsrchc:
+    op: Literal["coords-vectors.isrchc"]
+    key: str
+    values: list[str]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsIsrchd:
+    op: Literal["coords-vectors.isrchd"]
+    key: float
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsIsrchi:
+    op: Literal["coords-vectors.isrchi"]
+    key: int
+    values: list[int]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

@@ -74,3 +74,7 @@ workflows make 282 canonical calls using the six installed SpiceyPy wrappers.
 Character rows have explicit UTF-8 byte widths, ASCII blank padding and final
 NULs. Numeric cases include ordered double boundaries and signed integers.
 [Sorted-boundary semantics and evidence](step8-sorted-bounds.md)
+
+## Array search
+
+A22 depends on the six A24 sorted bounds and adds eight direct raw operations. The 55 registered workflows make 351 independent canonical calls and cover physical order, duplicate selection, binary and linear search, and numeric and UTF-8 comparison rules. Two additional public tests compare exact live indices for values outside JSON, including NaN and infinities. [Array search semantics and evidence](step8-array-search.md) [Per-routine audit](../data/parity-audits/a22-array-search.json)
