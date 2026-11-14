@@ -34,7 +34,7 @@ export function copySpkChebyshevData(
 }
 
 /** Check common writer fields before copying coefficient records or entering the toolkit. */
-export function validateSpkChebyshevFields(
+export function validateSpkWriterFields(
   body: number,
   center: number,
   frame: string,

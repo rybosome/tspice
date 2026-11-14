@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 165
-- Planned (not yet implemented): 484
+- Implemented now (SpiceRawBackend): 169
+- Planned (not yet implemented): 480
 - Excluded: 3
 
 ## Implemented now
@@ -159,6 +159,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkw02_c` | Write SPK segment, type 2 |
 | `spkw03_c` | Write SPK segment, type 3 |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `spkw09_c` | Write SPK segment, type 9 |
+| `spkw12_c` | Write SPK segment, type 12 |
+| `spkw13_c` | Write SPK segment, type 13 |
+| `spkw18_c` | Write SPK segment, type 18 |
 | `spkw20_c` | Write SPK segment, type 20 |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
@@ -573,13 +577,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spksub_c` | S/P Kernel, subset |
 | `spkuef_c` | SPK Kernel, Unload ephemeris file |
 | `spkw05_c` | Write SPK segment, type 5 |
-| `spkw09_c` | Write SPK segment, type 9 |
 | `spkw10_c` | SPK - write a type 10 segment |
-| `spkw12_c` | Write SPK segment, type 12 |
-| `spkw13_c` | Write SPK segment, type 13 |
 | `spkw15_c` | SPK, write a type 15 segment |
 | `spkw17_c` | SPK, write a type 17 segment |
-| `spkw18_c` | Write SPK segment, type 18 |
 | `srfc2s_c` | Surface and body ID codes to surface string |
 | `srfcss_c` | Surface ID and body string to surface string |
 | `srfnrm_c` | Map surface points to outward normal vectors |

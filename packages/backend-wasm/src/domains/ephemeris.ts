@@ -16,7 +16,8 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   copySpkChebyshevData,
-  validateSpkChebyshevFields,
+  snapshotSpkInterpolation,
+  validateSpkWriterFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -203,6 +204,41 @@ function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
     );
   } finally {
     module._free(pathPtr);
+  }
+}
+
+function writeInterpolationRecords(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  samples: Float64Array,
+  epochs: Float64Array | undefined,
+  invoke: (
+    framePtr: number,
+    segidPtr: number,
+    samplesPtr: number,
+    epochsPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      const sizes = [Math.max(8, samples.byteLength), WASM_ERR_MAX_BYTES];
+      if (epochs !== undefined) sizes.push(Math.max(8, epochs.byteLength));
+      withAllocs(module, sizes, (samplePtr, err, epochPtr = 0) => {
+        module.HEAPF64.set(samples, samplePtr / 8);
+        if (epochs !== undefined) module.HEAPF64.set(epochs, epochPtr / 8);
+        const status = invoke(framePtr, idPtr, samplePtr, epochPtr, err);
+        if (status)
+          throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      });
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
   }
 }
 
@@ -1033,7 +1069,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw02",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -1088,7 +1124,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw03",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -1146,7 +1182,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw20",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -1183,6 +1219,188 @@ export function createEphemerisApi(
             tscale,
             initjd,
             initfr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw09: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw09").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(9, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw09(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw12: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epoch0,
+      step,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw12").nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        epoch0,
+        step,
+      );
+      const input = snapshotSpkInterpolation(12, 1, degree, states);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        undefined,
+        (framePtr, idPtr, samplesPtr, _epochsPtr, err) =>
+          module._tspice_spkw12(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epoch0,
+            step,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw13: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw13").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(13, 1, degree, states, epochs);
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw13(
+            actual,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw18: (
+      handle,
+      subtype,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      packets,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw18").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(
+        18,
+        subtype,
+        degree,
+        packets,
+        epochs,
+      );
+      writeInterpolationRecords(
+        module,
+        frame,
+        segid,
+        input.samples,
+        input.epochs,
+        (framePtr, idPtr, samplesPtr, epochsPtr, err) =>
+          module._tspice_spkw18(
+            actual,
+            subtype,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            degree,
+            input.n,
+            samplesPtr,
+            input.samples.length,
+            epochsPtr,
+            input.epochs.length,
             err,
             WASM_ERR_MAX_BYTES,
           ),

@@ -915,6 +915,19 @@ int tspice_spkw20(int handle, int body, int center, const char* frame, double fi
                   int words, double dscale, double tscale, double initjd, double initfr, char* err,
                   int cap);
 
+int tspice_spkw09(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap);
+int tspice_spkw12(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  double epoch0, double step, char* err, int cap);
+int tspice_spkw13(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, int degree, int n, const double* samples, int sampleWords,
+                  const double* epochs, int epochCount, char* err, int cap);
+int tspice_spkw18(int handle, int subtype, int body, int center, const char* frame, double first,
+                  double last, const char* segid, int degree, int n, const double* samples,
+                  int sampleWords, const double* epochs, int epochCount, char* err, int cap);
+
 // spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
 //
 // `states6n` is a flat array of length `n*6` doubles.

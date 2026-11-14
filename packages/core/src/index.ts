@@ -164,5 +164,9 @@ export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js
 
 export {
   copySpkChebyshevData,
-  validateSpkChebyshevFields,
+  validateSpkWriterFields,
 } from "./spice-runtime/domains/spk-chebyshev.js";
+
+export { validateSpkWriterFields as validateSpkChebyshevFields } from "./spice-runtime/domains/spk-chebyshev.js";
+
+export { snapshotSpkInterpolation } from "./spice-runtime/domains/spk-interpolation.js";

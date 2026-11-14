@@ -395,4 +395,88 @@ export interface EphemerisApi {
     initjd: number,
     initfr: number,
   ): void;
+  /**
+   * Write a type 9 segment by Lagrange interpolation of all six supplied state components at
+   * increasing, irregular TDB epochs. Degree 1..27 requires at least degree+1 states. Supply
+   * complete flat records in time order. Record count is inferred from their length. The
+   * wrapper snapshots finite values once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw09_c.html
+   */
+  spkw09(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Write a type 12 Hermite segment. Each state provides position in km and its first
+   * derivative in km/s; the first epoch is epoch0 and positive step is in TDB seconds. Odd
+   * degrees 1..27 require at least (degree+1)/2 states. Supply complete flat records in time
+   * order. Record count is inferred from their length. The wrapper snapshots finite values
+   * once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw12_c.html
+   */
+  spkw12(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epoch0: number,
+    step: number,
+  ): void;
+  /**
+   * Write a type 13 Hermite segment. Each state supplies position in km and its first
+   * derivative in km/s at the corresponding irregular, increasing TDB epoch. Odd degrees
+   * 1..27 require at least (degree+1)/2 states. Supply complete flat records in time order.
+   * Record count is inferred from their length. The wrapper snapshots finite values once and
+   * limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw13_c.html
+   */
+  spkw13(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Write a type 18 segment at increasing TDB epochs. Subtype 0 uses 12 words per packet:
+   * position, position derivative, independently supplied velocity, and velocity derivative,
+   * each XYZ. Subtype 1 uses six words for independently interpolated position and velocity.
+   * At least two packets are required; edge windows may be reduced. Subtype 0 documented
+   * degrees are 3,7,11,15. Pinned N0067 also accepts 4,8,12 with the preceding odd degree’s
+   * window size. Subtype 1 uses odd degrees 1..15. Supply complete flat records in time
+   * order. Record count is inferred from their length. The wrapper snapshots finite values
+   * once and limits each input buffer to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw18_c.html
+   */
+  spkw18(
+    handle: SpiceHandle,
+    subtype: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    degree: number,
+    packets: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
 }

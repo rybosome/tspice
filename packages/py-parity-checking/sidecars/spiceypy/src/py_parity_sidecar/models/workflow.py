@@ -57,6 +57,10 @@ from .ephemeris import (
     StepEphemerisSpkw02,
     StepEphemerisSpkw03,
     StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
     StepEphemerisSpkw08,
 )
 from .dsk import (
@@ -296,6 +300,10 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkw02
     | StepEphemerisSpkw03
     | StepEphemerisSpkw20
+    | StepEphemerisSpkw09
+    | StepEphemerisSpkw12
+    | StepEphemerisSpkw13
+    | StepEphemerisSpkw18
     | StepEphemerisSpkw08
     | StepFileIoExists
     | StepFileIoGetfat
