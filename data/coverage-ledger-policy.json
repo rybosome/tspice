@@ -87,6 +87,40 @@
         "expectedEntrypoints": ["ktotal_c", "kdata_c"]
       }
     },
+    "lspcn": {
+      "node": {
+        "reason": "The original lspcn_c handles only the empty-body guard. On nonempty input the shared adapter uses the original N0067 SPICELIB stages with initialized storage and checked status before consuming each output.",
+        "expectedEntrypoints": [
+          "lspcn_c",
+          "bods2c_",
+          "tipbod_",
+          "spkgeo_",
+          "ucrss_",
+          "twovec_",
+          "spkezr_",
+          "mxv_",
+          "recrad_",
+          "chkin_c",
+          "chkout_c"
+        ]
+      },
+      "wasm": {
+        "reason": "The original lspcn_c handles only the empty-body guard. On nonempty input the shared adapter uses the original N0067 SPICELIB stages with initialized storage and checked status before consuming each output.",
+        "expectedEntrypoints": [
+          "lspcn_c",
+          "bods2c_",
+          "tipbod_",
+          "spkgeo_",
+          "ucrss_",
+          "twovec_",
+          "spkezr_",
+          "mxv_",
+          "recrad_",
+          "chkin_c",
+          "chkout_c"
+        ]
+      }
+    },
     "kxtrct": {
       "wasm": {
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",

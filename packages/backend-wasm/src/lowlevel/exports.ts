@@ -760,6 +760,38 @@ export type EmscriptenModule = {
   ): number;
 
   // Derived geometry primitives
+  _tspice_phaseq(
+    et: number,
+    targetPtr: number,
+    illmnPtr: number,
+    observerPtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lspcn(
+    bodyPtr: number,
+    et: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trgsep(
+    et: number,
+    targ1Ptr: number,
+    shape1Ptr: number,
+    frame1Ptr: number,
+    targ2Ptr: number,
+    shape2Ptr: number,
+    frame2Ptr: number,
+    observerPtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_subpnt(
     methodPtr: number,
     targetPtr: number,
@@ -1769,6 +1801,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_phaseq(
+    et: number,
+    targetPtr: number,
+    illmnPtr: number,
+    observerPtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lspcn(
+    bodyPtr: number,
+    et: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trgsep(
+    et: number,
+    targ1Ptr: number,
+    shape1Ptr: number,
+    frame1Ptr: number,
+    targ2Ptr: number,
+    shape2Ptr: number,
+    frame2Ptr: number,
+    observerPtr: number,
+    abcorrPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_subpnt(
     methodPtr: number,
     targetPtr: number,
@@ -2249,6 +2313,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",
+  "_tspice_phaseq",
+  "_tspice_lspcn",
+  "_tspice_trgsep",
   "_tspice_subpnt",
   "_tspice_subslr",
   "_tspice_sincpt",

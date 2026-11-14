@@ -1,3 +1,4 @@
+import { spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   Found,
   GeometryApi,
@@ -68,6 +69,58 @@ function geometryInputs(
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
+    phaseq: (et, target, illmn, observer, abcorr) => {
+      geometryNumber(et, "phaseq(et)");
+      spiceStringByteLength(target, "phaseq(target)");
+      spiceStringByteLength(illmn, "phaseq(illmn)");
+      spiceStringByteLength(observer, "phaseq(observer)");
+      spiceStringByteLength(abcorr, "phaseq(abcorr)");
+      const result = native.phaseq(et, target, illmn, observer, abcorr);
+      invariant(typeof result === "number", "Expected a numeric phaseq result");
+      return result;
+    },
+    lspcn: (body, et, abcorr) => {
+      geometryNumber(et, "lspcn(et)");
+      spiceStringByteLength(body, "lspcn(body)");
+      spiceStringByteLength(abcorr, "lspcn(abcorr)");
+      const result = native.lspcn(body, et, abcorr);
+      invariant(typeof result === "number", "Expected a numeric lspcn result");
+      return result;
+    },
+    trgsep: (
+      et,
+      targ1,
+      shape1,
+      frame1,
+      targ2,
+      shape2,
+      frame2,
+      observer,
+      abcorr,
+    ) => {
+      geometryNumber(et, "trgsep(et)");
+      spiceStringByteLength(targ1, "trgsep(targ1)");
+      spiceStringByteLength(shape1, "trgsep(shape1)");
+      spiceStringByteLength(frame1, "trgsep(frame1)");
+      spiceStringByteLength(targ2, "trgsep(targ2)");
+      spiceStringByteLength(shape2, "trgsep(shape2)");
+      spiceStringByteLength(frame2, "trgsep(frame2)");
+      spiceStringByteLength(observer, "trgsep(observer)");
+      spiceStringByteLength(abcorr, "trgsep(abcorr)");
+      const result = native.trgsep(
+        et,
+        targ1,
+        shape1,
+        frame1,
+        targ2,
+        shape2,
+        frame2,
+        observer,
+        abcorr,
+      );
+      invariant(typeof result === "number", "Expected a numeric trgsep result");
+      return result;
+    },
     subpnt: (method, target, et, fixref, abcorr, observer) => {
       geometryInputs(et, [method, target, fixref, abcorr, observer], "subpnt");
       const out = native.subpnt(method, target, et, fixref, abcorr, observer);

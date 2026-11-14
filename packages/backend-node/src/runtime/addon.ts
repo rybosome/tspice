@@ -430,6 +430,25 @@ export type NativeAddon = {
     step: number,
   ): void;
 
+  phaseq(
+    et: number,
+    target: string,
+    illmn: string,
+    observer: string,
+    abcorr: string,
+  ): number;
+  lspcn(body: string, et: number, abcorr: string): number;
+  trgsep(
+    et: number,
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    observer: string,
+    abcorr: string,
+  ): number;
   subpnt(
     method: string,
     target: string,

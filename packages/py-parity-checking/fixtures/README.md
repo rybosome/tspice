@@ -163,3 +163,13 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+### Solar longitude and apparent angular separation
+
+The E16 workflows use the existing synthetic geometry SPK and FK described
+above. The independent element choices in `kernels/audit-seasonal-pole.tpc`
+give body 100101 a fixed north pole at right ascension 37° and declination 53°.
+Its prime meridian starts at 11° and advances by 300° per day. This
+repository-authored text PCK is distributed under the repository MIT license.
+The tests project the pole onto the fixture's heliocentric orbital plane and
+derive limb contact directly from the authored linear tracks and radii.

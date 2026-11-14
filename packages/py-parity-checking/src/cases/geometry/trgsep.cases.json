@@ -1,0 +1,1009 @@
+[
+  {
+    "caseId": "geometry-trgsep-shapes",
+    "description": "Observe POINT/POINT, POINT/SPHERE, SPHERE/POINT, and SPHERE/SPHERE on separated and overlapping disks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 80,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 80,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 80,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 80,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 3500,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 3500,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 3500,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 3500,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-contact",
+    "description": "Bracket apparent point/sphere tangency at the authored analytic contact epoch. Inspect negative, nearly zero and positive gaps.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 60.68560849090083,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 60.68660849090083,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 60.68760849090083,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": -60.68760849090083,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": -60.68560849090083,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-corrections",
+    "description": "Compare reception and transmission including stellar aberration with a moving observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "LT"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "LT+S"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "CN"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "CN+S"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "XLT"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "XLT+S"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 450,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100102",
+        "abcorr": "XCN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-target-order",
+    "description": "Reverse the complete target/shape/frame groups and keep the same observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 37,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 37,
+        "targ1": "100103",
+        "shape1": "POINT",
+        "frame1": "AUDIT_OCCULT_SMALL",
+        "targ2": "100101",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_GEOMETRY_FIXED",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-frame-bytes",
+    "description": "Pass unrelated nonempty frame strings through the C wrapper. POINT/SPHERE do not consult their orientation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "UNUSED A",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "UNUSED B",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": " sphere ",
+        "frame1": " ",
+        "targ2": "100103",
+        "shape2": " point ",
+        "frame2": "é",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-triaxial-max",
+    "description": "Change one radius through the largest semi-axis while retaining the others; spheres use the maximum of all three.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 300,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [1, 3, 2]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 300,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [1, 2, 5]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 300,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 300,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-point-no-radii",
+    "description": "The pure point geometry uses the SPK alone.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 100,
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-empty-first-frame",
+    "description": "Observe the actual toolkit diagnostic for empty-first-frame with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-empty-second-frame",
+    "description": "Observe the actual toolkit diagnostic for empty-second-frame with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-empty-first-shape",
+    "description": "Observe the actual toolkit diagnostic for empty-first-shape with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-bad-shape1",
+    "description": "Observe the actual toolkit diagnostic for bad-shape1 with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-bad-shape2",
+    "description": "Observe the actual toolkit diagnostic for bad-shape2 with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "DSK",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-bad-correction",
+    "description": "Observe the actual toolkit diagnostic for bad-correction with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "ZZ"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-same-bodies",
+    "description": "Observe the actual toolkit diagnostic for same-bodies with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100101",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-unknown-name",
+    "description": "Observe the actual toolkit diagnostic for unknown-name with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "UNKNOWN TARG",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-no-spk",
+    "description": "Observe the actual toolkit diagnostic for no-spk with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-outside-coverage",
+    "description": "Observe the actual toolkit diagnostic for outside-coverage with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 10001,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-missing-radii",
+    "description": "Observe the actual toolkit diagnostic for missing-radii with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(KERNELVARNOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-two-radii",
+    "description": "Observe the actual toolkit diagnostic for two-radii with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [1, 2]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDCOUNT)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-nonpositive-axis",
+    "description": "Observe the actual toolkit diagnostic for nonpositive-axis with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100103_RADII",
+        "values": [1, 0, 1]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-inside-first-target",
+    "description": "Observe the actual toolkit diagnostic for inside-first-target with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [22, 2, 1]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INSIDEBODY)"]
+    }
+  },
+  {
+    "caseId": "geometry-trgsep-on-second-sphere",
+    "description": "Observe the actual toolkit diagnostic for on-second-sphere with unchanged error handling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100103_RADII",
+        "values": [40, 2, 1]
+      },
+      {
+        "op": "geometry.trgsep",
+        "et": 0,
+        "targ1": "100101",
+        "shape1": "SPHERE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "SPHERE",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "observer": "100104",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INSIDEBODY)"]
+    }
+  }
+]

@@ -118,6 +118,9 @@ from .models import (
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryPhaseq,
+    StepGeometryLspcn,
+    StepGeometryTrgsep,
     StepGeometryOccult,
     StepGeometryPl2nvc,
     StepGeometrySincpt,
@@ -1593,6 +1596,38 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 abcorr=_expect_string(step.get("abcorr"), label="geometry.illumf.abcorr"),
                 observer=_expect_string(step.get("observer"), label="geometry.illumf.observer"),
                 spoint=_expect_vec3(step.get("spoint"), label="geometry.illumf.spoint"),
+            )
+
+        case "geometry.phaseq":
+            return StepGeometryPhaseq(
+                op=op,
+                et=_expect_number(step.get("et"), label="geometry.phaseq.et"),
+                target=_expect_string(step.get("target"), label="geometry.phaseq.target"),
+                illmn=_expect_string(step.get("illmn"), label="geometry.phaseq.illmn"),
+                observer=_expect_string(step.get("observer"), label="geometry.phaseq.observer"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.phaseq.abcorr"),
+            )
+
+        case "geometry.lspcn":
+            return StepGeometryLspcn(
+                op=op,
+                body=_expect_string(step.get("body"), label="geometry.lspcn.body"),
+                et=_expect_number(step.get("et"), label="geometry.lspcn.et"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.lspcn.abcorr"),
+            )
+
+        case "geometry.trgsep":
+            return StepGeometryTrgsep(
+                op=op,
+                et=_expect_number(step.get("et"), label="geometry.trgsep.et"),
+                targ1=_expect_string(step.get("targ1"), label="geometry.trgsep.targ1"),
+                shape1=_expect_string(step.get("shape1"), label="geometry.trgsep.shape1"),
+                frame1=_expect_string(step.get("frame1"), label="geometry.trgsep.frame1"),
+                targ2=_expect_string(step.get("targ2"), label="geometry.trgsep.targ2"),
+                shape2=_expect_string(step.get("shape2"), label="geometry.trgsep.shape2"),
+                frame2=_expect_string(step.get("frame2"), label="geometry.trgsep.frame2"),
+                observer=_expect_string(step.get("observer"), label="geometry.trgsep.observer"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.trgsep.abcorr"),
             )
 
         case "geometry.occult":

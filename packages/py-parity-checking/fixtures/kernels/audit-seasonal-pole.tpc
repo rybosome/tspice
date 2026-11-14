@@ -1,0 +1,13 @@
+KPL/PCK
+
+Authored constant pole and prime meridian for synthetic body 100101.
+Use with the linear body/Sun tracks from audit-geometry.bsp.
+Angles are degrees. These values do not describe a cataloged body.
+
+\begindata
+
+BODY100101_POLE_RA  = ( 37 0 0 )
+BODY100101_POLE_DEC = ( 53 0 0 )
+BODY100101_PM       = ( 11 300 0 )
+
+\begintext

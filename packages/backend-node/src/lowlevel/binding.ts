@@ -538,6 +538,15 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkcls(handle)",
   );
   invariant(
+    typeof native.phaseq === "function",
+    "Native addon missing phaseq()",
+  );
+  invariant(typeof native.lspcn === "function", "Native addon missing lspcn()");
+  invariant(
+    typeof native.trgsep === "function",
+    "Native addon missing trgsep()",
+  );
+  invariant(
     typeof native.subpnt === "function",
     "Expected native addon to export subpnt(method, target, et, fixref, abcorr, observer)",
   );

@@ -5,11 +5,15 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from .. import geometry_quantities_oracle
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryPhaseq,
+    StepGeometryLspcn,
+    StepGeometryTrgsep,
     StepGeometryOccult,
     StepGeometryPl2nvc,
     StepGeometrySincpt,
@@ -154,6 +158,15 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
                 "lit": bool(lit),
             },
         )
+
+    if isinstance(step, StepGeometryPhaseq):
+        return StepOutput(op=step.op, value=geometry_quantities_oracle.phaseq(step.et, step.target, step.illmn, step.observer, step.abcorr))
+
+    if isinstance(step, StepGeometryLspcn):
+        return StepOutput(op=step.op, value=geometry_quantities_oracle.lspcn(step.body, step.et, step.abcorr))
+
+    if isinstance(step, StepGeometryTrgsep):
+        return StepOutput(op=step.op, value=geometry_quantities_oracle.trgsep(step.et, step.targ1, step.shape1, step.frame1, step.targ2, step.shape2, step.frame2, step.observer, step.abcorr))
 
     if isinstance(step, StepGeometryOccult):
         value = int(

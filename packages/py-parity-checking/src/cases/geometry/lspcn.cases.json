@@ -1,0 +1,603 @@
+[
+  {
+    "caseId": "geometry-lspcn-equinox-and-epochs",
+    "description": "Project the Sun into the orbital plane using the tilted authored north pole at five epochs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": -8000,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": -3000,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 8000,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-corrections",
+    "description": "Use geometric orbital normal while changing the apparent solar state through reception and transmission modes supported by SPKEZR.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "LT"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "LT+S"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "CN"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "CN+S"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "XLT"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "XLT+S"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "XCN"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "XCN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-pole-and-meridian",
+    "description": "Change the prime-meridian angle and spin, then rotate the pole. Only the pole orientation changes the season frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_PM",
+        "values": [111, -675, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_RA",
+        "values": [170, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_DEC",
+        "values": [-30, 0, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 3500,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-alternate-poles",
+    "description": "Observe longitudes in different quadrants for a reversed pole and independent changes in pole right ascension.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_RA",
+        "values": [37, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_DEC",
+        "values": [53, 0, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_RA",
+        "values": [217, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_DEC",
+        "values": [-53, 0, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_RA",
+        "values": [22, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_DEC",
+        "values": [-45, 0, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_RA",
+        "values": [132, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_POLE_DEC",
+        "values": [22, 0, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-translation",
+    "description": "A body mapping and its numeric identifier produce the same angle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["AUDIT SEASONS"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "NAIF_BODY_CODE",
+        "values": [100101]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "audit seasons",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-reinitialize",
+    "description": "Unload all kernels and rebuild the original orientation and ephemeris before a repeat observation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-unknown-body",
+    "description": "Report the canonical missing translation within the LSPCN outer trace.",
+    "workflow": [
+      {
+        "op": "geometry.lspcn",
+        "body": "UNKNOWN SEASON BODY",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRANSLATION)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-empty-body",
+    "description": "Empty name is diagnosed by the public C wrapper before accessing orientation.",
+    "workflow": [
+      {
+        "op": "geometry.lspcn",
+        "body": "",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-missing-pole",
+    "description": "Read the original TIPBOD failure before consuming the missing orientation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(FRAMEDATANOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-missing-spk",
+    "description": "Orientation is available but the Sun/body state is unavailable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-coverage",
+    "description": "Request a geometric state beyond authored coverage after a successful call.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 10001,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-light-time-endpoint",
+    "description": "At the lower endpoint the geometric state exists but the retarded solar state does not.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": -10000,
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": -10000,
+        "abcorr": "LT"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-invalid-correction",
+    "description": "The final apparent-state operation reports its own correction diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": "BOGUS"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-empty-correction",
+    "description": "N0067 forwards the empty aberration string to SPKEZR after obtaining the frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "100101",
+        "et": 0,
+        "abcorr": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-lspcn-zero-orbit-normal",
+    "description": "Use SUN as its own central body and supply its orientation, giving a genuinely zero geometric heliocentric state.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-seasonal-pole.tpc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY10_POLE_RA",
+        "values": [0, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY10_POLE_DEC",
+        "values": [66, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY10_PM",
+        "values": [1, 14, 0]
+      },
+      {
+        "op": "geometry.lspcn",
+        "body": "SUN",
+        "et": 0,
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(DEPENDENTVECTORS)"]
+    }
+  }
+]
