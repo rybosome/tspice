@@ -1,0 +1,227 @@
+[
+  {
+    "caseId": "dsk-dskx02-facets",
+    "description": "Compare plate identity and every intercept coordinate on opposite non-edge faces of the stored octahedron.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [-10, -1, -0.25],
+        "raydir": [1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [0.25, 0.25, 3],
+        "raydir": [0, 0, -2]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskx02-miss-inside-recovery",
+    "description": "Outward and lateral miss rays omit all point/plate fields; rays from inside and from outside subsequently hit.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-dsk-ray-outer.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [20, 20, 20],
+        "raydir": [1, -2, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [0, 0.125, 0.125],
+        "raydir": [1, 0.3, 0.1]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskx02-direction-scale",
+    "description": "Scaling direction magnitude preserves the same closest hit and one-based plate ID.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-dsk-ray-outer.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-0.125, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-64, 0, 0]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskx02-edge-and-vertex",
+    "description": "Compare pinned selection at a shared vertex and an edge; exact plate ties apply to this deterministic file.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 0, 0],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskx02-zero-direction",
+    "description": "An actual zero direction on a valid selected segment raises RAYISZEROVECTOR.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-geometry.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.dskx02",
+        "handleId": "h",
+        "dladscId": "d",
+        "vertex": [10, 1, 0.25],
+        "raydir": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["RAYISZEROVECTOR"]
+    }
+  }
+]

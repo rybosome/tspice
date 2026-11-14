@@ -9,6 +9,7 @@ from spiceypy.utils.exceptions import NotFoundError
 from spiceypy.utils import support_types as stypes
 from spiceypy.utils.libspicehelper import libspice
 
+from ..dsk_ray_oracle import source_intercept, batch_intercepts
 from ..dsk_data_oracle import read_page
 from ..models import (
     StepDskDascls,
@@ -17,6 +18,11 @@ from ..models import (
     StepDskDskb02,
     StepDskDskd02,
     StepDskDski02,
+    StepDskDskx02,
+    StepDskDskxsi,
+    StepDskDskxv,
+    StepDskDskgtl,
+    StepDskDskstl,
     StepDskDskn02,
     StepDskDskp02,
     StepDskDskv02,
@@ -233,6 +239,7 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
             os.remove(path)
         handle = int(sp.dskopn(path, step.ifname, step.ncomch))
         _set_handle(context, step.handleId, handle, is_open=True)
+        context.state.dsk.handles[step.handleId]["path"] = path
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepDskDskmi2):
@@ -284,6 +291,7 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
         path = _resolve_dsk_path(context, step.path)
         handle = int(sp.dasopr(path))
         _set_handle(context, step.handleId, handle, is_open=True)
+        context.state.dsk.handles[step.handleId]["path"] = path
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepDskDascls):
@@ -302,9 +310,11 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
             found, descr = False, None
         if not found:
             context.state.dsk.dladsc.pop(step.dladscId, None)
+            context.state.dsk.descriptorOwners.pop(step.dladscId, None)
             return StepOutput(op=step.op, value={"found": False})
 
         context.state.dsk.dladsc[step.dladscId] = descr
+        context.state.dsk.descriptorOwners[step.dladscId] = tracked
         return StepOutput(op=step.op, value={"found": True})
 
     if isinstance(step, StepDskDskd02):
@@ -318,6 +328,33 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
         descriptor = _require_dladsc(context, step.dladscId)
         value = read_page("dski02", handle, descriptor, step.item, step.start, step.room)
         return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskgtl):
+        return StepOutput(op=step.op, value=sp.dskgtl(step.key))
+    if isinstance(step, StepDskDskstl):
+        if 1 <= step.key <= 4 and step.key not in context.state.dsk.savedTolerances:
+            saved = sp.dskgtl(step.key)
+            context.state.dsk.savedTolerances[step.key] = saved
+            context.register_finalizer("restore DSK tolerance", lambda: sp.dskstl(step.key, saved))
+        sp.dskstl(step.key, step.value)
+        return StepOutput(op=step.op, value=None)
+    if isinstance(step, StepDskDskx02):
+        tracked = _require_handle(context, step.handleId)
+        descriptor = _require_dladsc(context, step.dladscId)
+        # Only call the type-2 routine with a descriptor obtained from this open
+        # file. Reuse or closure of a workflow handle replaces its state object.
+        if not tracked["isOpen"] or context.state.dsk.descriptorOwners.get(step.dladscId) is not tracked:
+            raise ValueError("DSKX02 requires its original open descriptor owner")
+        handle = int(tracked["handle"])
+        if sp.getfat(tracked["path"]) != ("DAS", "DSK") or sp.dskgd(handle, descriptor).dtype != 2:
+            raise ValueError("DSKX02 requires a type 2 DSK segment")
+        plate, point, found = sp.dskx02(handle, descriptor, step.vertex, step.raydir)
+        value = {"found": True, "plid": plate, "xpt": point.tolist()} if found else {"found": False}
+        return StepOutput(op=step.op, value=value)
+    if isinstance(step, StepDskDskxsi):
+        return StepOutput(op=step.op, value=source_intercept(step))
+    if isinstance(step, StepDskDskxv):
+        return StepOutput(op=step.op, value=batch_intercepts(step))
 
     if isinstance(step, StepDskDskn02):
         handle = int(_require_handle(context, step.handleId)["handle"])
@@ -352,14 +389,17 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
         return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepDskDlafns):
-        handle = int(_require_handle(context, step.handleId)["handle"])
+        tracked = _require_handle(context, step.handleId)
+        handle = int(tracked["handle"])
         descriptor = _require_dladsc(context, step.dladscId)
         with sp.no_found_check():
             following, found = sp.dlafns(handle, descriptor)
         if found:
             context.state.dsk.dladsc[step.nextId] = following
+            context.state.dsk.descriptorOwners[step.nextId] = tracked
         else:
             context.state.dsk.dladsc.pop(step.nextId, None)
+            context.state.dsk.descriptorOwners.pop(step.nextId, None)
         value = {"found": bool(found)}
         return StepOutput(op=step.op, value=value)
 

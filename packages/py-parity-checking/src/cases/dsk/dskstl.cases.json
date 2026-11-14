@@ -1,0 +1,197 @@
+[
+  {
+    "caseId": "dsk-dskstl-updates",
+    "description": "Read/set/read each mutable parameter, including zero and negative values accepted by N0067. No geometry is run while nonstandard tolerances are installed.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 2,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 2,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 3,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 3,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 4,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 4,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskstl-kclear-persistence",
+    "description": "Verify a deliberate small tolerance survives KEEPER kclear, then restore and observe its ordinary default.",
+    "workflow": [
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 2e-10
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 1e-10
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskstl-invalid-key-0",
+    "description": "The out-of-range signed key reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "dsk.dskstl",
+        "key": 0,
+        "value": 0.1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskstl-invalid-key-7",
+    "description": "The out-of-range signed key reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "dsk.dskstl",
+        "key": 7,
+        "value": 0.1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskstl-immutable-5",
+    "description": "Writing immutable parameter 5 signals IMMUTABLEVALUE even for its existing value.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 5
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 5,
+        "value": 1e-12
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IMMUTABLEVALUE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskstl-immutable-6",
+    "description": "Writing immutable parameter 6 signals IMMUTABLEVALUE even for its existing value.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 6
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 6,
+        "value": 1e-12
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IMMUTABLEVALUE"]
+    }
+  }
+]

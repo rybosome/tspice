@@ -353,6 +353,12 @@ int tspice_dsksrf(
 //
 // `outDoubles18` layout:
 // [corpar(10), co1min, co1max, co2min, co2max, co3min, co3max, start, stop]
+int tspice_dskx02(int handle, const int *descr, const double *vertex, const double *dir, int *plid, double *xpt, int *found, char *err, int cap);
+int tspice_dskxsi(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, const double *vertex, const double *dir, int maxd, int maxi, double *out, int *ints, char *err, int cap);
+int tspice_dskxv(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, int nrays, const double *vertices, const double *dirs, double *out, int *found, char *err, int cap);
+int tspice_dskgtl(int key, double *out, char *err, int cap);
+int tspice_dskstl(int key, double value, char *err, int cap);
+
 int tspice_dskgd(
     int handle,
     const int32_t *dladscInts8,

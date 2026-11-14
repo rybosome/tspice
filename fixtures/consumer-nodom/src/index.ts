@@ -22,3 +22,29 @@ async function readDskPages(
   return [points, triangles, normal, doubles, ints];
 }
 void readDskPages;
+
+function readRay(spice: import("@rybosome/tspice").SpiceSync, path: string) {
+  const h = spice.raw.dasopr(path);
+  try {
+    const desc = spice.raw.dlabfs(h),
+      v = [10, 1, 0.25] as const,
+      d = [-1, 0, 0] as const;
+    if (desc.found) spice.raw.dskx02(h, desc.descr, v, d);
+    const src = spice.raw.dskxsi(
+      false,
+      "100101",
+      [],
+      0,
+      "AUDIT_GEOMETRY_FIXED",
+      v,
+      d,
+    );
+    spice.raw.dskxv(false, "100101", [], 0, "AUDIT_GEOMETRY_FIXED", [v], [d]);
+    const x = spice.raw.dskgtl(1);
+    spice.raw.dskstl(1, x);
+    return src.found ? src.dskdsc : undefined;
+  } finally {
+    spice.raw.dascls(h);
+  }
+}
+void readRay;

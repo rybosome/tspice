@@ -450,7 +450,8 @@
         "ephemeris-spkuds-audit-full-addresses-and-negative-body",
         "ephemeris-spkuds-unpack-descriptor-success"
       ],
-      "observation": "Both complete required lanes passed locally on e2273057820ca07cb1ffbcdce7879453995052fc. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on e2273057820ca07cb1ffbcdce7879453995052fc. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e18-e2273057-wasm",
@@ -481,7 +482,8 @@
         "ephemeris-spkuds-audit-full-addresses-and-negative-body",
         "ephemeris-spkuds-unpack-descriptor-success"
       ],
-      "observation": "Both complete required lanes passed locally on e2273057820ca07cb1ffbcdce7879453995052fc. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on e2273057820ca07cb1ffbcdce7879453995052fc. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e18-e2273057-node",
@@ -514,7 +516,8 @@
       ],
       "commit": "e2273057820ca07cb1ffbcdce7879453995052fc",
       "url": "https://github.com/rybosome/tspice/actions/runs/43578315257/job/132397389306",
-      "observation": "Inspected successful Linux Node 22 native-required job 132397389306 on e2273057820ca07cb1ffbcdce7879453995052fc: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132397389306 on e2273057820ca07cb1ffbcdce7879453995052fc: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e18-e2273057-wasm",
@@ -547,7 +550,136 @@
       ],
       "commit": "e2273057820ca07cb1ffbcdce7879453995052fc",
       "url": "https://github.com/rybosome/tspice/actions/runs/43578315257/job/132397389306",
-      "observation": "Inspected successful Linux Node 22 native-required job 132397389306 on e2273057820ca07cb1ffbcdce7879453995052fc: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132397389306 on e2273057820ca07cb1ffbcdce7879453995052fc: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e19-48efd0ee-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3558741c625f4d0abb38976653c5b52db495f14ae62041dfc0f1bcea388a46de",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e19-48efd0ee-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3558741c625f4d0abb38976653c5b52db495f14ae62041dfc0f1bcea388a46de",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e19-48efd0ee-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3558741c625f4d0abb38976653c5b52db495f14ae62041dfc0f1bcea388a46de",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e19-48efd0ee-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3558741c625f4d0abb38976653c5b52db495f14ae62041dfc0f1bcea388a46de",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -669,11 +801,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": ["local-e18-e2273057-node", "ci-e18-e2273057-node"]
+          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
         },
         "wasm": {
           "history": [
@@ -686,11 +820,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": ["local-e18-e2273057-wasm", "ci-e18-e2273057-wasm"]
+          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
         }
       }
     },
@@ -782,11 +918,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": ["local-e18-e2273057-node", "ci-e18-e2273057-node"]
+          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
         },
         "wasm": {
           "history": [
@@ -799,11 +937,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": ["local-e18-e2273057-wasm", "ci-e18-e2273057-wasm"]
+          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
         }
       }
     }

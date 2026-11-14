@@ -1,4 +1,9 @@
 import {
+  dskRay,
+  dskRayBatch,
+  dskRaySelection,
+  dskPoint,
+  dskRaySource,
   snapshotDskDataDescriptor,
   dskPageStorage,
   dskDataRows,
@@ -268,7 +273,198 @@ export function createDskApi(
   module: EmscriptenModule,
   handles: SpiceHandleRegistry,
 ): DskApi {
+  function check(code: number, err: number) {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+  function withSelection<T>(
+    target: string,
+    fixref: string,
+    surfaces: Int32Array,
+    sizes: number[],
+    run: (
+      err: number,
+      trg: number,
+      frame: number,
+      ids: number,
+      ...rest: number[]
+    ) => T,
+  ) {
+    const enc = new TextEncoder(),
+      t = enc.encode(target),
+      f = enc.encode(fixref);
+    return withAllocs(
+      module,
+      [
+        WASM_ERR_MAX_BYTES,
+        t.length + 1,
+        f.length + 1,
+        Math.max(4, surfaces.byteLength),
+        ...sizes,
+      ],
+      (err, trg, frame, ids, ...rest) => {
+        module.HEAPU8.set(t, trg);
+        module.HEAPU8[trg + t.length] = 0;
+        module.HEAPU8.set(f, frame);
+        module.HEAPU8[frame + f.length] = 0;
+        module.HEAP32.set(surfaces, ids >>> 2);
+        return run(err, trg, frame, ids, ...rest);
+      },
+    );
+  }
   return {
+    dskx02(handle, dladsc, vertex, raydir) {
+      const h = handles.lookup(handle, DAS_BACKED, "dskx02").nativeHandle,
+        desc = snapshotDskDataDescriptor(dladsc),
+        v = dskRay(vertex),
+        d = dskRay(raydir);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 32, 24, 24, 4, 24, 4],
+        (err, ds, vp, dp, id, out, found) => {
+          writeDlaDescr8(module, ds, desc);
+          module.HEAPF64.set(v, vp >>> 3);
+          module.HEAPF64.set(d, dp >>> 3);
+          check(
+            module._tspice_dskx02(
+              h,
+              ds,
+              vp,
+              dp,
+              id,
+              out,
+              found,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return module.HEAP32[found >>> 2]
+            ? {
+                found: true,
+                plid: module.HEAP32[id >>> 2]!,
+                xpt: dskPoint(
+                  Array.from(
+                    module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 3),
+                  ),
+                ),
+              }
+            : { found: false };
+        },
+      );
+    },
+    dskxsi(
+      pri,
+      target,
+      srflst,
+      et,
+      fixref,
+      vertex,
+      raydir,
+      maxd = 1,
+      maxi = 1,
+    ) {
+      const surfaces = dskRaySelection(pri, target, srflst, et, fixref);
+      assertSpiceInt32(maxd, "maxd");
+      assertSpiceInt32(maxi, "maxi");
+      const v = dskRay(vertex),
+        d = dskRay(raydir);
+      return withSelection(
+        target,
+        fixref,
+        surfaces,
+        [24, 24, 216, 44],
+        (err, trg, frame, ids, vp, dp, out, ints) => {
+          module.HEAPF64.set(v, vp >>> 3);
+          module.HEAPF64.set(d, dp >>> 3);
+          check(
+            module._tspice_dskxsi(
+              pri ? 1 : 0,
+              trg,
+              surfaces.length,
+              ids,
+              et,
+              frame,
+              vp,
+              dp,
+              maxd,
+              maxi,
+              out,
+              ints,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const i = ints >>> 2;
+          if (!module.HEAP32[i]) return { found: false };
+          return dskRaySource(
+            module.HEAP32[i + 1]!,
+            module.HEAP32[i + 10]!,
+            Array.from(module.HEAP32.subarray(i + 2, i + 10)),
+            Array.from(module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 27)),
+          );
+        },
+      );
+    },
+    dskxv(pri, target, srflst, et, fixref, vertices, dirs) {
+      const surfaces = dskRaySelection(pri, target, srflst, et, fixref);
+      const { v, d, n } = dskRayBatch(vertices, dirs);
+      const bytes = Math.max(24, v.byteLength);
+      return withSelection(
+        target,
+        fixref,
+        surfaces,
+        [bytes, bytes, bytes, Math.max(4, n * 4)],
+        (err, trg, frame, ids, vp, dp, out, flags) => {
+          module.HEAPF64.set(v, vp >>> 3);
+          module.HEAPF64.set(d, dp >>> 3);
+          check(
+            module._tspice_dskxv(
+              pri ? 1 : 0,
+              trg,
+              surfaces.length,
+              ids,
+              et,
+              frame,
+              n,
+              vp,
+              dp,
+              out,
+              flags,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return Array.from({ length: n }, (_, i) => {
+            const offset = (out >>> 3) + 3 * i;
+            return module.HEAP32[(flags >>> 2) + i]
+              ? {
+                  found: true as const,
+                  xpt: dskPoint(
+                    Array.from(module.HEAPF64.subarray(offset, offset + 3)),
+                  ),
+                }
+              : { found: false as const };
+          });
+        },
+      );
+    },
+    dskgtl(key) {
+      assertSpiceInt32(key, "DSK tolerance key");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 8], (err, out) => {
+        check(module._tspice_dskgtl(key, out, err, WASM_ERR_MAX_BYTES), err);
+        return module.HEAPF64[out >>> 3]!;
+      });
+    },
+    dskstl(key, value) {
+      assertSpiceInt32(key, "DSK tolerance key");
+      if (!Number.isFinite(value))
+        throw new TypeError("Expected finite DSK tolerance");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+        check(module._tspice_dskstl(key, value, err, WASM_ERR_MAX_BYTES), err);
+      });
+    },
     dskd02(handle, dladsc, item, start, room) {
       const actual = handles.lookup(handle, DAS_BACKED, "dskd02").nativeHandle;
       const descriptor = snapshotDskDataDescriptor(dladsc);

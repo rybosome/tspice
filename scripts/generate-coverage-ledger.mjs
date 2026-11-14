@@ -445,11 +445,13 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const key = `${fromFile}:${symbol}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (symbol.endsWith("_c")) {
+      const definition = shim.resolve(symbol, fromFile);
+      // DSKXSI uses the exact linked N0067 callee. A local shim definition
+      // with the same spelling does not establish the external ABI route.
+      if (symbol.endsWith("_c") || (symbol === "dskxsi_" && !definition)) {
         result.add(symbol);
         return;
       }
-      const definition = shim.resolve(symbol, fromFile);
       for (const call of definition?.calls ?? [])
         visit(call, definition.evidence.file);
     }

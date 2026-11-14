@@ -10,6 +10,13 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
+  // DSK intersections depend on the live DAS claim, loaded segments and DSK
+  // tolerances. Repeating a setter must apply it again after intervening writes.
+  "raw.dskx02",
+  "raw.dskxsi",
+  "raw.dskxv",
+  "raw.dskgtl",
+  "raw.dskstl",
 ]) satisfies readonly string[];
 
 const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> =

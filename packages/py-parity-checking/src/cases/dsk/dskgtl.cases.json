@@ -1,0 +1,190 @@
+[
+  {
+    "caseId": "dsk-dskgtl-six-keys",
+    "description": "Read the four runtime-mutable parameters and two immutable alignment margins directly from the initialized toolkit.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 5
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskgtl-updates",
+    "description": "Read/set/read each mutable parameter, including zero and negative values accepted by N0067. No geometry is run while nonstandard tolerances are installed.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 2,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 2,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 2
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 3,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 3,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 3
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 4,
+        "value": -0.125
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 4,
+        "value": 0
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskgtl-kclear-persistence",
+    "description": "Verify a deliberate small tolerance survives KEEPER kclear, then restore and observe its ordinary default.",
+    "workflow": [
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 2e-10
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      },
+      {
+        "op": "dsk.dskstl",
+        "key": 1,
+        "value": 1e-10
+      },
+      {
+        "op": "dsk.dskgtl",
+        "key": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskgtl-invalid-key-0",
+    "description": "The out-of-range signed key reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskgtl-invalid-key-7",
+    "description": "The out-of-range signed key reaches INDEXOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "dsk.dskgtl",
+        "key": 7
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  }
+]

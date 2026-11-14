@@ -163,3 +163,7 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+### DSK ray source selection
+
+`generate-dsk-rays.py` uses locked SpiceyPy to write `kernels/audit-dsk-ray-outer.bds`. The project-authored octahedron has semiaxes of 6, 4 and 2 km, surface 102 and coverage from ET −30 to +30 seconds. The pre-existing `audit-geometry.bds` contains a smaller octahedron on surface 101 and covers a longer interval. Both share the authored target-centered frame in `audit-geometry.tf`. [Geometry, independent reads and fixture hashes](../../../docs/step8-dsk-intersections.md)

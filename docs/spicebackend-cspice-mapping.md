@@ -447,6 +447,16 @@ explicit contract preconditions, not claims of executing CSPICE error paths.
 
 ## Domain: `dsk` queries (`DskApi`)
 
+[Ray intersections, source metadata and tolerance lifecycle](step8-dsk-intersections.md)
+
+| Raw method | CSPICE operation                                | Contract effect                                                                                                    |
+| ---------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `dskx02`   | `dskx02_c`                                      | Find the nearest intercept and one-based plate ID in an owned type 2 DSK segment.                                  |
+| `dskxsi`   | `dskxsi_` (linked implementation of `dskxsi_c`) | Find the nearest loaded surface at ET and return the complete source descriptor, identity and type-dependent data. |
+| `dskxv`    | `dskxv_c`                                       | Return an ordered hit or miss for every paired vertex and direction in the loaded target frame.                    |
+| `dskgtl`   | `dskgtl_c`                                      | Read all six N0067 DSK margin and tolerance keys.                                                                  |
+| `dskstl`   | `dskstl_c`                                      | Change mutable runtime-wide tolerance keys and report immutable or invalid keys.                                   |
+
 | Raw method | Actual CSPICE route | Observations                                                                                                                |
 | ---------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `dskobj`   | `dskobj_c`          | Full body-ID union, retained initial IDs, repeated segment IDs, repeated calls and all intermediate snapshots.              |

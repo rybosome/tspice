@@ -167,3 +167,11 @@ export {
   dskPageStorage,
   dskDataRows,
 } from "./spice-runtime/domains/dsk-data.js";
+
+export {
+  dskRay,
+  dskRayBatch,
+  dskRaySelection,
+  dskPoint,
+  dskRaySource,
+} from "./spice-runtime/domains/dsk-rays.js";

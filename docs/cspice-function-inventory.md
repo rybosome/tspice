@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 169
-- Planned (not yet implemented): 480
+- Implemented now (SpiceRawBackend): 174
+- Planned (not yet implemented): 475
 - Excluded: 3
 
 ## Implemented now
@@ -57,6 +57,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
+| `dskgtl_c` | DSK, get tolerance |
 | `dski02_c` | DSK, fetch integer type 2 data |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
 | `dskn02_c` | DSK, type 2, compute normal vector for plate |
@@ -64,8 +65,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskopn_c` | DSK, open new file |
 | `dskp02_c` | DSK, fetch type 2 plate data |
 | `dsksrf_c` | DSK, get surface IDs for body |
+| `dskstl_c` | DSK, set tolerance |
 | `dskv02_c` | DSK, fetch type 2 vertex data |
 | `dskw02_c` | DSK, write type 2 segment |
+| `dskx02_c` | DSK, ray-surface intercept, type 2 |
+| `dskxsi_c` | DSK, ray-surface intercept with source information |
+| `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dskz02_c` | DSK, fetch type 2 model size parameters |
 | `dtpool_c` | Data for a kernel pool variable |
 | `ekaclc_c` | EK, add character column to segment |
@@ -307,12 +312,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `drdlat_c` | Derivative of rectangular w.r.t. latitudinal |
 | `drdpgr_c` | Derivative of rectangular w.r.t. planetographic |
 | `drdsph_c` | Derivative of rectangular w.r.t. spherical |
-| `dskgtl_c` | DSK, get tolerance |
 | `dskrb2_c` | DSK, determine range bounds for plate set |
-| `dskstl_c` | DSK, set tolerance |
-| `dskx02_c` | DSK, ray-surface intercept, type 2 |
-| `dskxsi_c` | DSK, ray-surface intercept with source information |
-| `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dsphdr_c` | Derivative of spherical w.r.t. rectangular |
 | `ducrss_c` | Unit Normalized Cross Product and Derivative |
 | `dvcrss_c` | Derivative of Vector cross product |

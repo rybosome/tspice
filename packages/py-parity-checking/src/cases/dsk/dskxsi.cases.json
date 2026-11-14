@@ -1,0 +1,652 @@
+[
+  {
+    "caseId": "dsk-dskxsi-closest-overlap",
+    "description": "Unprioritized rays choose the closest geometry across two concentric surfaces independent of list order.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [101],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [102],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [101, 102],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [102, 101],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [102, 102],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-reversed-load-order",
+    "description": "Reverse physical load order and unload the closest file. Distinguish the resulting segment and hit distance.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-time-endpoints",
+    "description": "Select the outer segment at its inclusive ET endpoints and the inner segment on either side of the shorter coverage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": -31,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": -30,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 30,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 31,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-rotated-frame",
+    "description": "Compare full ray outputs in a second target-centered frame whose axes rotate by 30 degrees.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-unknown-target",
+    "description": "Unknown target text reaches IDCODENOTFOUND.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "TSPICE_UNKNOWN_TARGET",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-unknown-frame",
+    "description": "An unrecognized reference frame reaches IDCODENOTFOUND.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "TSPICE_UNKNOWN_FRAME",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-frame-center",
+    "description": "A recognized frame centered on the solar system barycenter is invalid for this target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "J2000",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAME"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-priority",
+    "description": "Only unprioritized search is available in the pinned toolkit.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": true,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPRIORITYSPEC"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-empty-selector",
+    "description": "Empty target and frame text follow the outer C argument checks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-no-dsk",
+    "description": "Without a loaded DSK, N0067 reports the actual missing-data diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDDSKFILES"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-missing-surface",
+    "description": "A nonmatching requested surface mask is evaluated against a loaded applicable body.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [999],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DSKDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-outward-miss",
+    "description": "A geometrically outward ray returns found:false and publishes no source words; a later hit returns complete metadata.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-wide-capacity",
+    "description": "A type 2 segment defines one integer plate word and no doubles irrespective of positive caller room.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 33,
+        "maxi": 27
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 2147483647,
+        "maxi": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-insufficient-maxd",
+    "description": "Nonpositive maxd is rejected by the actual linked operation before geometry lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": -1,
+        "maxi": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-insufficient-maxi",
+    "description": "Nonpositive maxi is rejected by the actual linked operation before geometry lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": false,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 1,
+        "maxi": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "dsk-dskxsi-priority-before-room",
+    "description": "Bad priority takes precedence over missing source-buffer room.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "dsk.dskxsi",
+        "pri": true,
+        "target": "100101",
+        "srflst": [],
+        "et": 0.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "vertex": [10, 1, 0.25],
+        "raydir": [-1, 0, 0],
+        "maxd": 0,
+        "maxi": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADPRIORITYSPEC"]
+    }
+  }
+]

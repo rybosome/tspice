@@ -15,6 +15,11 @@ import type {
   StepDskDskb02,
   StepDskDskd02,
   StepDskDski02,
+  StepDskDskx02,
+  StepDskDskxsi,
+  StepDskDskxv,
+  StepDskDskgtl,
+  StepDskDskstl,
   StepDskDskn02,
   StepDskDskp02,
   StepDskDskv02,
@@ -47,6 +52,11 @@ type DskStep =
   | StepDskDlabfs
   | StepDskDskd02
   | StepDskDski02
+  | StepDskDskx02
+  | StepDskDskxsi
+  | StepDskDskxv
+  | StepDskDskgtl
+  | StepDskDskstl
   | StepDskDskn02
   | StepDskDskp02
   | StepDskDskv02
@@ -427,6 +437,86 @@ export function runDskStep(
         step.room,
       );
       return { op: step.op, value };
+    }
+    case "dsk.dskgtl":
+      return { op: step.op, value: context.spice.raw.dskgtl(step.key) };
+    case "dsk.dskstl": {
+      const raw = context.spice.raw;
+      if (
+        step.key >= 1 &&
+        step.key <= 4 &&
+        !context.state.dsk.savedTolerances.has(step.key)
+      ) {
+        const saved = raw.dskgtl(step.key);
+        context.state.dsk.savedTolerances.set(step.key, saved);
+        registerFinalizer(context, "restore DSK tolerance", () =>
+          raw.dskstl(step.key, saved),
+        );
+      }
+      raw.dskstl(step.key, step.value);
+      return { op: step.op, value: null };
+    }
+    case "dsk.dskx02": {
+      const handle = requireTrackedHandle(context, step.handleId).handle;
+      return {
+        op: step.op,
+        value: context.spice.raw.dskx02(
+          handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.vertex,
+          step.raydir,
+        ),
+      };
+    }
+    case "dsk.dskxv":
+      return {
+        op: step.op,
+        value: context.spice.raw.dskxv(
+          step.pri,
+          step.target,
+          step.srflst,
+          step.et,
+          step.fixref,
+          step.vertices,
+          step.dirs,
+        ),
+      };
+    case "dsk.dskxsi": {
+      const raw = context.spice.raw,
+        out = raw.dskxsi(
+          step.pri,
+          step.target,
+          step.srflst,
+          step.et,
+          step.fixref,
+          step.vertex,
+          step.raydir,
+          step.maxd,
+          step.maxi,
+        );
+      if (!out.found) return { op: step.op, value: { found: false } };
+      for (let i = 0; i < raw.ktotal("DSK"); i++) {
+        const entry = raw.kdata(i, "DSK");
+        if (entry.found && entry.handle === out.handle) {
+          const sourceFile = entry.file
+            .replaceAll("\\", "/")
+            .split("/")
+            .at(-1)!;
+          return {
+            op: step.op,
+            value: {
+              found: true,
+              xpt: out.xpt,
+              sourceFile,
+              dladsc: out.dladsc,
+              dskdsc: out.dskdsc,
+              dc: out.dc,
+              ic: out.ic,
+            },
+          };
+        }
+      }
+      throw new Error("DSK source handle is absent from KEEPER");
     }
     case "dsk.dskn02": {
       const tracked = requireTrackedHandle(context, step.handleId);

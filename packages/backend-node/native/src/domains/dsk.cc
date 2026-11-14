@@ -1,5 +1,6 @@
 #include "dsk.h"
 
+#include <vector>
 #include <memory>
 #include <new>
 #include <cmath>
@@ -487,6 +488,144 @@ static Napi::Value Dskcls(const Napi::CallbackInfo& info) {
 
 namespace tspice_backend_node {
 
+static bool RayText(Napi::Env env, const Napi::Value &value, std::string *out) {
+  if (value.IsString()) {
+    *out=value.As<Napi::String>().Utf8Value();
+    if (out->size()<INT32_MAX && out->find('\0')==std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env,"Expected NUL-free DSK text"));
+  return false;
+}
+
+static bool RayArray(Napi::Env env, const Napi::Value &v, napi_typedarray_type type, size_t max,
+                     size_t *length) {
+  if (v.IsTypedArray()) {
+    auto a=v.As<Napi::TypedArray>();
+    if (a.TypedArrayType()==type && a.ElementLength()<=max) { *length=a.ElementLength(); return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env,"Invalid packed DSK array"));
+  return false;
+}
+
+static Napi::Value Dskx02(const Napi::CallbackInfo &info) {
+  Napi::Env env=info.Env();
+  if (info.Length()!=4) { ThrowSpiceError(Napi::TypeError::New(env,"dskx02: invalid argument count")); return env.Undefined(); }
+  int32_t handle=0, descr[8];
+  if (!ReadInt32Checked(env,info[0],"handle",&handle) || !ReadDlaDescriptor(env,info[1],descr)) return env.Undefined();
+  size_t nv=0,nd=0;
+  if (!RayArray(env,info[2],napi_float64_array,3,&nv) ||
+      !RayArray(env,info[3],napi_float64_array,3,&nd)) return env.Undefined();
+  if (nv!=nd || nv!=3) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid DSK ray dimensions")); return env.Undefined(); }
+  double dummy=0;
+  const double *vertex=nv ? info[2].As<Napi::Float64Array>().Data() : &dummy;
+  const double *dir=nd ? info[3].As<Napi::Float64Array>().Data() : &dummy;
+  int plate=0,found=0;double point[3]={};
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  if (tspice_dskx02(handle,descr,vertex,dir,&plate,point,&found,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling dskx02",err);return env.Undefined();
+  }
+  if (!found) return tspice_napi::MakeNotFound(env);
+  auto result=tspice_napi::MakeFound<int>(env,"plid",plate);
+  result.Set("xpt",tspice_napi::MakeNumberArray(env,point,3));
+  return result;
+}
+
+static Napi::Value Dskxsi(const Napi::CallbackInfo &info) {
+  Napi::Env env=info.Env();
+  if (info.Length()!=9) { ThrowSpiceError(Napi::TypeError::New(env,"dskxsi: invalid argument count")); return env.Undefined(); }
+  std::string target,fixref; size_t ns=0;
+  if (!info[0].IsBoolean() || !info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"Expected DSK priority and epoch")); return env.Undefined(); }
+  if (!RayText(env,info[1],&target) || !RayText(env,info[4],&fixref) || !RayArray(env,info[2],napi_int32_array,67108864,&ns)) return env.Undefined();
+  int sentinel=0;
+  const int *surfaces=ns ? info[2].As<Napi::Int32Array>().Data() : &sentinel;
+  const bool priority=info[0].As<Napi::Boolean>().Value();
+  const double et=info[3].As<Napi::Number>().DoubleValue();
+  size_t nv=0,nd=0;
+  if (!RayArray(env,info[5],napi_float64_array,3,&nv) ||
+      !RayArray(env,info[6],napi_float64_array,3,&nd)) return env.Undefined();
+  if (nv!=nd || nv!=3) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid DSK ray dimensions")); return env.Undefined(); }
+  double dummy=0;
+  const double *vertex=nv ? info[5].As<Napi::Float64Array>().Data() : &dummy;
+  const double *dir=nd ? info[6].As<Napi::Float64Array>().Data() : &dummy;
+  int32_t maxd=0,maxi=0; double out[27]={};int ints[11]={};
+  if (!ReadInt32Checked(env,info[7],"maxd",&maxd) || !ReadInt32Checked(env,info[8],"maxi",&maxi)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  if (tspice_dskxsi(priority,target.c_str(),static_cast<int>(ns),surfaces,et,fixref.c_str(),vertex,dir,maxd,maxi,out,ints,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling dskxsi",err);return env.Undefined();
+  }
+  if (!ints[0]) return tspice_napi::MakeNotFound(env);
+  auto result=tspice_napi::MakeFound<int>(env,"handle",ints[1]);
+  result.Set("words",tspice_napi::MakeNumberArray(env,out,27));
+  auto dla=Napi::Array::New(env,8);
+  for (uint32_t i=0;i<8;++i) dla.Set(i,Napi::Number::New(env,ints[2+i]));
+  result.Set("dla",dla);result.Set("plate",Napi::Number::New(env,ints[10]));
+  return result;
+}
+
+static Napi::Value Dskxv(const Napi::CallbackInfo &info) {
+  Napi::Env env=info.Env();
+  if (info.Length()!=7) { ThrowSpiceError(Napi::TypeError::New(env,"dskxv: invalid argument count")); return env.Undefined(); }
+  std::string target,fixref; size_t ns=0;
+  if (!info[0].IsBoolean() || !info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"Expected DSK priority and epoch")); return env.Undefined(); }
+  if (!RayText(env,info[1],&target) || !RayText(env,info[4],&fixref) || !RayArray(env,info[2],napi_int32_array,67108864,&ns)) return env.Undefined();
+  int sentinel=0;
+  const int *surfaces=ns ? info[2].As<Napi::Int32Array>().Data() : &sentinel;
+  const bool priority=info[0].As<Napi::Boolean>().Value();
+  const double et=info[3].As<Napi::Number>().DoubleValue();
+  size_t nv=0,nd=0;
+  if (!RayArray(env,info[5],napi_float64_array,33554430,&nv) ||
+      !RayArray(env,info[6],napi_float64_array,33554430,&nd)) return env.Undefined();
+  if (nv!=nd || nv%3!=0) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid DSK ray dimensions")); return env.Undefined(); }
+  double dummy=0;
+  const double *vertex=nv ? info[5].As<Napi::Float64Array>().Data() : &dummy;
+  const double *dir=nd ? info[6].As<Napi::Float64Array>().Data() : &dummy;
+  std::unique_ptr<double[]> out(new(std::nothrow) double[nv ? nv : 1]());
+  std::unique_ptr<int[]> found(new(std::nothrow) int[nv ? nv/3 : 1]());
+  if (!out || !found) { ThrowSpiceError(Napi::Error::New(env,"Unable to allocate DSK ray results")); return env.Undefined(); }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  if (tspice_dskxv(priority,target.c_str(),static_cast<int>(ns),surfaces,et,fixref.c_str(),static_cast<int>(nv/3),vertex,dir,out.get(),found.get(),err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling dskxv",err);return env.Undefined();
+  }
+  auto results=Napi::Array::New(env,nv/3);
+  for (uint32_t i=0;i<nv/3;++i) {
+    if (!found[i]) results.Set(i,env.Null());
+    else results.Set(i,tspice_napi::MakeNumberArray(env,out.get()+3*i,3));
+  }
+  return results;
+}
+
+static Napi::Value Dskgtl(const Napi::CallbackInfo &info) {
+  Napi::Env env=info.Env();
+  if (info.Length()!=1) { ThrowSpiceError(Napi::TypeError::New(env,"dskgtl: invalid argument count")); return env.Undefined(); }
+  int32_t key=0;
+  if (!ReadInt32Checked(env,info[0],"key",&key)) return env.Undefined();
+  double out=0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  if (tspice_dskgtl(key,&out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling dskgtl",err);return env.Undefined();
+  }
+  return Napi::Number::New(env,out);
+}
+
+static Napi::Value Dskstl(const Napi::CallbackInfo &info) {
+  Napi::Env env=info.Env();
+  if (info.Length()!=2) { ThrowSpiceError(Napi::TypeError::New(env,"dskstl: invalid argument count")); return env.Undefined(); }
+  int32_t key=0;
+  if (!ReadInt32Checked(env,info[0],"key",&key)) return env.Undefined();
+  if (!info[1].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"Expected DSK tolerance number")); return env.Undefined(); }
+  double value=info[1].As<Napi::Number>().DoubleValue();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]={};
+  if (tspice_dskstl(key,value,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling dskstl",err);return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 void RegisterDsk(Napi::Env env, Napi::Object exports) {
   SetExportChecked(env, exports, "dskd02", Napi::Function::New(env, Dskd02), "RegisterDsk");
   SetExportChecked(env, exports, "dski02", Napi::Function::New(env, Dski02), "RegisterDsk");
@@ -497,6 +636,11 @@ void RegisterDsk(Napi::Env env, Napi::Object exports) {
   SetExportChecked(env, exports, "dskcls", Napi::Function::New(env, Dskcls), "RegisterDsk");
   SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj), "RegisterDsk");
   SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf), "RegisterDsk");
+  if (!SetExportChecked(env,exports,"dskx02",Napi::Function::New(env,Dskx02),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"dskxsi",Napi::Function::New(env,Dskxsi),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"dskxv",Napi::Function::New(env,Dskxv),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"dskgtl",Napi::Function::New(env,Dskgtl),"RegisterDsk")) return;
+  if (!SetExportChecked(env,exports,"dskstl",Napi::Function::New(env,Dskstl),"RegisterDsk")) return;
   SetExportChecked(env, exports, "dskgd", Napi::Function::New(env, Dskgd), "RegisterDsk");
   SetExportChecked(env, exports, "dskb02", Napi::Function::New(env, Dskb02), "RegisterDsk");
 }

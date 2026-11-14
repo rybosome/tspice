@@ -1293,6 +1293,42 @@ export type StepDskDski02 = {
   start: number;
   room: number;
 };
+export type StepDskDskx02 = {
+  op: "dsk.dskx02";
+  handleId: string;
+  dladscId: string;
+  vertex: Vec3;
+  raydir: Vec3;
+};
+
+export type StepDskDskxsi = {
+  op: "dsk.dskxsi";
+  pri: boolean;
+  target: string;
+  srflst: number[];
+  et: number;
+  fixref: string;
+  vertex: Vec3;
+  raydir: Vec3;
+  maxd: number;
+  maxi: number;
+};
+
+export type StepDskDskxv = {
+  op: "dsk.dskxv";
+  pri: boolean;
+  target: string;
+  srflst: number[];
+  et: number;
+  fixref: string;
+  vertices: Vec3[];
+  dirs: Vec3[];
+};
+
+export type StepDskDskgtl = { op: "dsk.dskgtl"; key: number };
+
+export type StepDskDskstl = { op: "dsk.dskstl"; key: number; value: number };
+
 export type StepDskDskn02 = {
   op: "dsk.dskn02";
   handleId: string;
@@ -1511,6 +1547,11 @@ export type WorkflowStep =
   | StepDskDlabfs
   | StepDskDskd02
   | StepDskDski02
+  | StepDskDskx02
+  | StepDskDskxsi
+  | StepDskDskxv
+  | StepDskDskgtl
+  | StepDskDskstl
   | StepDskDskn02
   | StepDskDskp02
   | StepDskDskv02
@@ -1967,6 +2008,30 @@ export type StepOutput =
   | { op: "dsk.dlabfs"; value: { found: boolean } }
   | { op: "dsk.dskd02"; value: number[] }
   | { op: "dsk.dski02"; value: number[] }
+  | {
+      op: "dsk.dskx02";
+      value: { found: false } | { found: true; xpt: Vec3; plid: number };
+    }
+  | {
+      op: "dsk.dskxsi";
+      value:
+        | { found: false }
+        | {
+            found: true;
+            xpt: Vec3;
+            sourceFile: string;
+            dladsc: DlaDescriptorPayload;
+            dskdsc: DskDescriptorPayload;
+            dc: number[];
+            ic: number[];
+          };
+    }
+  | {
+      op: "dsk.dskxv";
+      value: ({ found: false } | { found: true; xpt: Vec3 })[];
+    }
+  | { op: "dsk.dskgtl"; value: number }
+  | { op: "dsk.dskstl"; value: null }
   | { op: "dsk.dskn02"; value: Vec3 }
   | { op: "dsk.dskp02"; value: Vec3[] }
   | { op: "dsk.dskv02"; value: Vec3[] }
