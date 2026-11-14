@@ -424,8 +424,8 @@
         "daswbr_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run both required full local lanes and observe canonical CI on the exact source. Confirm CI on the final evidence head and PR rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/743"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

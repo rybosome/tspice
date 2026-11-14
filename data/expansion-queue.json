@@ -1516,7 +1516,7 @@
         },
         {
           "kind": "source-and-abi",
-          "result": "Pinned numeric output bound MAXVAL 400000 and character output bound MAXLIN \u00d7 MAXCHR + 1 = 1200001 bytes. Source-derived visited-component and body hash guards preserve the defined call domains. Generated WASM SHA-256 c923aff5e333c387f4d5d54497708ddd9ab3943223b4569b442b1b5ece429ec2."
+          "result": "Pinned numeric output bound MAXVAL 400000 and character output bound MAXLIN × MAXCHR + 1 = 1200001 bytes. Source-derived visited-component and body hash guards preserve the defined call domains. Generated WASM SHA-256 c923aff5e333c387f4d5d54497708ddd9ab3943223b4569b442b1b5ece429ec2."
         },
         {
           "kind": "github-checkpoint",
@@ -1752,18 +1752,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/743"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "All 46 locked-library workflows passed in a single Python process. Both compiled backends passed all 92 registered comparisons across 202 workflow steps, 133 new-method calls and 13 expected error exits per backend. Four supplemental public tests passed, including isolated dirty/flush observations and actual header bytes. The native boundary suite passed 13 tests and the real WASM allocation/lifecycle suite passed 33; the no-DOM fixture compiled. A real Chrome worker exercised all nine methods, all 14 summary integers, both header widths and reserved counts, readback, scratch claims, recovery and persisted bytes."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "6ab9b286f62c7a2411fdfc52f8624559637231e1",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43570988079/job/132375119005",
+          "result": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run required full local and source-bound canonical CI; observe final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-das-lifecycle",
       "worktree": "/private/tmp/tspice-step8-das-lifecycle",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Nine actual shared C entry points, owner-local DAS claims, writer-output namespace and registered independent file-state cases. Dirty low-close use is scoped explicitly."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 6ab9b286. 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Nine actual shared C entry points, owner-local DAS claims, writer-output namespace and registered independent file-state cases. Dirty low-close use is scoped explicitly."
     },
     {
       "id": "C05-das-data",
