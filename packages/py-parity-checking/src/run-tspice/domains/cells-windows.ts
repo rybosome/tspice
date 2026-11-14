@@ -4,6 +4,14 @@ import type {
   StepCellsWindowsAppndc,
   StepCellsWindowsAppndd,
   StepCellsWindowsAppndi,
+  StepCellsWindowsSetResult,
+  StepCellsWindowsSet,
+  StepCellsWindowsRemovc,
+  StepCellsWindowsRemovd,
+  StepCellsWindowsRemovi,
+  StepCellsWindowsOrdc,
+  StepCellsWindowsOrdd,
+  StepCellsWindowsOrdi,
   StepCellsWindowsCopy,
   StepCellsWindowsElemc,
   StepCellsWindowsElemd,
@@ -51,6 +59,14 @@ type CellsWindowsStep =
   | StepCellsWindowsAppndc
   | StepCellsWindowsAppndd
   | StepCellsWindowsAppndi
+  | StepCellsWindowsSetResult
+  | StepCellsWindowsSet
+  | StepCellsWindowsRemovc
+  | StepCellsWindowsRemovd
+  | StepCellsWindowsRemovi
+  | StepCellsWindowsOrdc
+  | StepCellsWindowsOrdd
+  | StepCellsWindowsOrdi
   | StepCellsWindowsCopy
   | StepCellsWindowsElemc
   | StepCellsWindowsElemd
@@ -200,6 +216,177 @@ export function runCellsWindowsStep(
           context.spice.kit.cellGeti(cell, i),
         ),
       };
+    }
+    case "cells-windows.diff":
+    case "cells-windows.inter":
+    case "cells-windows.sdiff":
+    case "cells-windows.union": {
+      const { raw, kit } = context.spice;
+      const call = {
+        "cells-windows.diff": raw.diff,
+        "cells-windows.inter": raw.inter,
+        "cells-windows.sdiff": raw.sdiff,
+        "cells-windows.union": raw.union,
+      }[step.op];
+      switch (step.kind) {
+        case "char": {
+          const a = requireCharCell(context, step.aId);
+          const b = requireCharCell(context, step.bId);
+          const result = getOrCreateCharCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+            step.length ?? 32,
+          );
+          call(a, b, result);
+          return {
+            op: step.op,
+            value: Array.from({ length: raw.card(result) }, (_, i) =>
+              kit.cellGetc(result, i),
+            ),
+          };
+        }
+        case "double": {
+          const a = requireDoubleCell(context, step.aId);
+          const b = requireDoubleCell(context, step.bId);
+          const result = getOrCreateDoubleCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+          );
+          call(a, b, result);
+          return {
+            op: step.op,
+            value: Array.from({ length: raw.card(result) }, (_, i) =>
+              kit.cellGetd(result, i),
+            ),
+          };
+        }
+        case "int": {
+          const a = requireIntCell(context, step.aId);
+          const b = requireIntCell(context, step.bId);
+          const result = getOrCreateIntCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+          );
+          call(a, b, result);
+          return {
+            op: step.op,
+            value: Array.from({ length: raw.card(result) }, (_, i) =>
+              kit.cellGeti(result, i),
+            ),
+          };
+        }
+        default: {
+          const unexpected: never = step.kind;
+          throw new Error(`Unknown ordinary set kind: ${String(unexpected)}`);
+        }
+      }
+    }
+    case "cells-windows.set": {
+      const { raw } = context.spice;
+      switch (step.kind) {
+        case "int":
+          return {
+            op: step.op,
+            value: raw.set(
+              requireIntCell(context, step.aId),
+              step.relation,
+              requireIntCell(context, step.bId),
+            ),
+          };
+        case "double":
+          return {
+            op: step.op,
+            value: raw.set(
+              requireDoubleCell(context, step.aId),
+              step.relation,
+              requireDoubleCell(context, step.bId),
+            ),
+          };
+        case "char":
+          return {
+            op: step.op,
+            value: raw.set(
+              requireCharCell(context, step.aId),
+              step.relation,
+              requireCharCell(context, step.bId),
+            ),
+          };
+        default: {
+          const unexpected: never = step.kind;
+          throw new Error(`Unknown ordinary set kind: ${String(unexpected)}`);
+        }
+      }
+    }
+    case "cells-windows.removc": {
+      const cell = getOrCreateCharCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+        step.length ?? 32,
+      );
+      context.spice.raw.removc(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetc(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.removd": {
+      const cell = getOrCreateDoubleCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      context.spice.raw.removd(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetd(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.removi": {
+      const cell = getOrCreateIntCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      context.spice.raw.removi(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGeti(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.ordc": {
+      const cell = getOrCreateCharCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+        step.length ?? 32,
+      );
+      return { op: step.op, value: context.spice.raw.ordc(step.item, cell) };
+    }
+    case "cells-windows.ordd": {
+      const cell = getOrCreateDoubleCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      return { op: step.op, value: context.spice.raw.ordd(step.item, cell) };
+    }
+    case "cells-windows.ordi": {
+      const cell = getOrCreateIntCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      return { op: step.op, value: context.spice.raw.ordi(step.item, cell) };
     }
     case "cells-windows.copy": {
       switch (step.kind) {

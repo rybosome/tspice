@@ -123,3 +123,64 @@ export async function cellArrayConsumer(
     }
   }
 }
+
+/** Static contract coverage through public sync/async clients in a DOM-free project. */
+export async function setAlgebraConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  {
+    const a = spice.kit.newIntCell(4);
+    const b = spice.kit.newIntCell(4);
+    const out = spice.kit.newIntCell(8);
+    const d = spice.kit.newDoubleCell(4);
+    const c = spice.kit.newCharCell(4, 12);
+    try {
+      spice.raw.diff(a, b, out);
+      spice.raw.inter(a, b, out);
+      spice.raw.sdiff(a, b, out);
+      spice.raw.union(a, b, out);
+      const related: boolean = spice.raw.set(a, "=", b);
+      spice.raw.removc("x", c);
+      spice.raw.removd(0.5, d);
+      spice.raw.removi(2, a);
+      const ordc: number = spice.raw.ordc("x", c);
+      const ordd: number = spice.raw.ordd(0.5, d);
+      const ordi: number = spice.raw.ordi(2, a);
+      void [related, ordc, ordd, ordi];
+    } finally {
+      spice.kit.freeCell(c);
+      spice.kit.freeCell(d);
+      spice.kit.freeCell(out);
+      spice.kit.freeCell(b);
+      spice.kit.freeCell(a);
+    }
+  }
+  {
+    const a = await asyncSpice.kit.newIntCell(4);
+    const b = await asyncSpice.kit.newIntCell(4);
+    const out = await asyncSpice.kit.newIntCell(8);
+    const d = await asyncSpice.kit.newDoubleCell(4);
+    const c = await asyncSpice.kit.newCharCell(4, 12);
+    try {
+      await asyncSpice.raw.diff(a, b, out);
+      await asyncSpice.raw.inter(a, b, out);
+      await asyncSpice.raw.sdiff(a, b, out);
+      await asyncSpice.raw.union(a, b, out);
+      const related: boolean = await asyncSpice.raw.set(a, "=", b);
+      await asyncSpice.raw.removc("x", c);
+      await asyncSpice.raw.removd(0.5, d);
+      await asyncSpice.raw.removi(2, a);
+      const ordc: number = await asyncSpice.raw.ordc("x", c);
+      const ordd: number = await asyncSpice.raw.ordd(0.5, d);
+      const ordi: number = await asyncSpice.raw.ordi(2, a);
+      void [related, ordc, ordd, ordi];
+    } finally {
+      await asyncSpice.kit.freeCell(c);
+      await asyncSpice.kit.freeCell(d);
+      await asyncSpice.kit.freeCell(out);
+      await asyncSpice.kit.freeCell(b);
+      await asyncSpice.kit.freeCell(a);
+    }
+  }
+}

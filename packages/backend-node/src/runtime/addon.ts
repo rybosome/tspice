@@ -587,6 +587,17 @@ export type NativeAddon = {
   elemc(item: string, cell: number): boolean;
   elemd(item: number, cell: number): boolean;
   elemi(item: number, cell: number): boolean;
+  diff(a: number, b: number, result: number): void;
+  inter(a: number, b: number, result: number): void;
+  sdiff(a: number, b: number, result: number): void;
+  union(a: number, b: number, result: number): void;
+  set(a: number, op: string, b: number): boolean;
+  removc(item: string, cell: number): void;
+  removd(item: number, cell: number): void;
+  removi(item: number, cell: number): void;
+  ordc(item: string, cell: number): number;
+  ordd(item: number, cell: number): number;
+  ordi(item: number, cell: number): number;
   copy(source: number, destination: number): void;
   insrtc(item: string, cell: number): void;
 

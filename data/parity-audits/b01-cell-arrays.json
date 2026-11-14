@@ -127,7 +127,8 @@
         "cells-windows-elemi-ordered-and-missing",
         "cells-windows-elemi-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b01-4ab87429-wasm",
@@ -207,7 +208,8 @@
         "cells-windows-elemi-ordered-and-missing",
         "cells-windows-elemi-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b01-4ab87429-node",
@@ -289,7 +291,8 @@
       ],
       "commit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43561148351/job/132344875851",
-      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b01-4ab87429-wasm",
@@ -371,7 +374,8 @@
       ],
       "commit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
       "url": "https://github.com/rybosome/tspice/actions/runs/43561148351/job/132344875851",
-      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -458,16 +462,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.appndc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.appndc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndc -> appndc_c. Independent oracle: locked sp.appndc invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -527,16 +543,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.appndd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.appndd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndd -> appndd_c. Independent oracle: locked sp.appndd invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -591,16 +607,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.appndi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.appndi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_appndi -> appndi_c. Independent oracle: locked sp.appndi invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -732,16 +748,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.copy -> Node local handle lookup and mutex-serialized native addon -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.copy -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_copy -> copy_c. Independent oracle: typed copy_c from the locked SpiceyPy library on the caller’s existing source and destination.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -828,16 +856,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.elemc -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.elemc -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemc -> elemc_c. Independent oracle: locked sp.elemc invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -897,16 +937,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.elemd -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.elemd -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemd -> elemd_c. Independent oracle: locked sp.elemd invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     },
@@ -961,19 +1001,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.elemi -> Node local handle lookup and mutex-serialized native addon -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.elemi -> WASM module-owned pointer lookup, scoped buffers and compiled export -> shared tspice_elemi -> elemi_c. Independent oracle: locked sp.elemi invoking its matching public CSPICE routine.",
-          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Historical execution observations retain their exact original source. The combined B03/B01/B02 source requires new source-bound required local and observed canonical CI evidence on both backends."
 }

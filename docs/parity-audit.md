@@ -84,3 +84,8 @@ registered workflows compare actual contents, member booleans, recovered
 set state and errors. The supplemental public tests distinguish the C
 descriptor from translated control cardinality after a failed numeric copy.
 [Cell-array semantics and evidence](step8-cell-arrays.md)
+
+B02 exercises the eleven ordinary set-algebra entry points on real character,
+double and integer cells. Its locked oracle supplies existing destination
+storage and records post-error state before resetting and reusing each cell.
+[Set-algebra semantics and evidence](step8-set-algebra.md)

@@ -853,6 +853,202 @@ int tspice_copy(uintptr_t sourceHandle, uintptr_t destinationHandle, char *err, 
   return CellCallStatus(err, errMaxBytes);
 }
 
+
+// The translated set routines read numeric cardinalities from the Fortran
+// control area, which can differ from the C descriptor after SETEXCESS.
+static SpiceInt SetControlCard(const SpiceCell *cell) {
+  if (cell->dtype == SPICE_INT)
+    return ((const SpiceInt *)cell->base)[SPICE_CELL_CTRLSZ - 1];
+  if (cell->dtype == SPICE_DP)
+    return (SpiceInt)((const SpiceDouble *)cell->base)[SPICE_CELL_CTRLSZ - 1];
+  return cell->card;
+}
+
+static int CheckSetNumbers(const SpiceCell *cell, SpiceInt count, char *err, int errMaxBytes) {
+  if (cell->dtype == SPICE_DP) {
+    const SpiceDouble *data = cell->data;
+    for (SpiceInt i = 0; i < count; ++i) {
+      if (isnan(data[i]))
+        return tspice_return_error(err, errMaxBytes, "Set contains an unordered double");
+    }
+  }
+  return 0;
+}
+
+static int CheckSetOperands(SpiceCell *a, SpiceCell *b, SpiceCell *result,
+                            int combineCounts, char *err, int errMaxBytes) {
+  if (result && (a == result || b == result))
+    return tspice_return_error(err, errMaxBytes, "Result set must be distinct from each input");
+  // CSPICE diagnoses type and set-flag errors before interpreting the cells.
+  if (a->dtype != b->dtype || (result && a->dtype != result->dtype) || !a->isSet || !b->isSet)
+    return 0;
+  if (CheckCopyStorage(a, err, errMaxBytes) || CheckCopyStorage(b, err, errMaxBytes) ||
+      (result && CheckCopyStorage(result, err, errMaxBytes))) return 1;
+  const SpiceInt na = SetControlCard(a), nb = SetControlCard(b);
+  // N0067 indexes a 1-based row plus five control slots. UNION/SDIFF
+  // separately count all excess members beyond the output's capacity.
+  if ((result && result->size > INT32_MAX - 5) ||
+      (combineCounts && ((int64_t)na + nb - result->size > INT32_MAX)))
+    return tspice_return_error(err, errMaxBytes, "Set extent exceeds CSPICE index bounds");
+  return CheckSetNumbers(a, na, err, errMaxBytes) || CheckSetNumbers(b, nb, err, errMaxBytes);
+}
+
+int tspice_diff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *a = tspice_validate_ordinary_cell(aHandle, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = tspice_validate_ordinary_cell(bHandle, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = tspice_validate_ordinary_cell(resultHandle, err, errMaxBytes);
+  if (!result) return 1;
+  if (CheckSetOperands(a, b, result, 0, err, errMaxBytes)) return 1;
+  diff_c(a, b, result);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_inter(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *a = tspice_validate_ordinary_cell(aHandle, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = tspice_validate_ordinary_cell(bHandle, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = tspice_validate_ordinary_cell(resultHandle, err, errMaxBytes);
+  if (!result) return 1;
+  if (CheckSetOperands(a, b, result, 0, err, errMaxBytes)) return 1;
+  inter_c(a, b, result);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_sdiff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *a = tspice_validate_ordinary_cell(aHandle, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = tspice_validate_ordinary_cell(bHandle, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = tspice_validate_ordinary_cell(resultHandle, err, errMaxBytes);
+  if (!result) return 1;
+  if (CheckSetOperands(a, b, result, 1, err, errMaxBytes)) return 1;
+  sdiff_c(a, b, result);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_union(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *a = tspice_validate_ordinary_cell(aHandle, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = tspice_validate_ordinary_cell(bHandle, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = tspice_validate_ordinary_cell(resultHandle, err, errMaxBytes);
+  if (!result) return 1;
+  if (CheckSetOperands(a, b, result, 1, err, errMaxBytes)) return 1;
+  union_c(a, b, result);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_set(uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *a = tspice_validate_ordinary_cell(aHandle, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = tspice_validate_ordinary_cell(bHandle, err, errMaxBytes);
+  if (!b) return 1;
+  if (!out || !op || strlen(op) >= INT32_MAX) return tspice_return_error(err, errMaxBytes, "Invalid set relation output or operator");
+  if (*op && CheckSetOperands(a, b, NULL, 0, err, errMaxBytes)) return 1;
+  *out = set_c(a, op, b) ? 1 : 0;
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_removc(const char *item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!item || strlen(item) >= INT32_MAX) return tspice_return_error(err, errMaxBytes, "Invalid set item string or length");
+  if (cell->dtype == SPICE_CHR && cell->isSet) {
+    if (cell->card > INT32_MAX - 5 || cell->length < 1 || cell->card - 1 > INT32_MAX / cell->length)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+  }
+  removc_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_removd(double item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (isnan(item)) return tspice_return_error(err, errMaxBytes, "Cell item must be an ordered number");
+  if (cell->dtype == SPICE_DP && cell->isSet) {
+    if (cell->card > INT32_MAX - 5)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+    if (CheckSetNumbers(cell, cell->card, err, errMaxBytes)) return 1;
+  }
+  removd_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_removi(int item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (cell->dtype == SPICE_INT && cell->isSet) {
+    if (cell->card > INT32_MAX - 5)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+  }
+  removi_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_ordc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!item || strlen(item) >= INT32_MAX) return tspice_return_error(err, errMaxBytes, "Invalid set item string or length");
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing set ordinal output");
+  if (cell->dtype == SPICE_CHR && cell->isSet) {
+    if (cell->card > INT32_MAX / 2 || cell->length < 1 || cell->card - 1 > INT32_MAX / cell->length)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+  }
+  *out = ordc_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_ordd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (isnan(item)) return tspice_return_error(err, errMaxBytes, "Cell item must be an ordered number");
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing set ordinal output");
+  if (cell->dtype == SPICE_DP && cell->isSet) {
+    if (cell->card > INT32_MAX / 2)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+    if (CheckSetNumbers(cell, cell->card, err, errMaxBytes)) return 1;
+  }
+  *out = ordd_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_ordi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing set ordinal output");
+  if (cell->dtype == SPICE_INT && cell->isSet) {
+    if (cell->card > INT32_MAX / 2)
+      return tspice_return_error(err, errMaxBytes, "Set exceeds CSPICE search index bounds");
+  }
+  *out = ordi_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
 int tspice_cell_geti(uintptr_t cellHandle, int index, int *outItem, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {

@@ -1353,6 +1353,17 @@ int tspice_appndi(int item, uintptr_t handle, char *err, int errMaxBytes);
 int tspice_elemc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes);
 int tspice_elemd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes);
 int tspice_elemi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_diff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_inter(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_sdiff(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_union(uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_set(uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes);
+int tspice_removc(const char *item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_removd(double item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_removi(int item, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_ordc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_ordd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes);
+int tspice_ordi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes);
 int tspice_copy(uintptr_t sourceHandle, uintptr_t destinationHandle, char *err, int errMaxBytes);
 
 int tspice_cell_geti(uintptr_t cell, int index, int *outItem, char *err, int errMaxBytes);

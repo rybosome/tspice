@@ -738,3 +738,22 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+### Ordinary set algebra
+
+| Public raw method     | Direct toolkit entry point | Observation                                 |
+| --------------------- | -------------------------- | ------------------------------------------- |
+| `diff(a, b, result)`  | `diff_c`                   | Ordered difference in caller-owned storage. |
+| `inter(a, b, result)` | `inter_c`                  | Complete ordered intersection.              |
+| `sdiff(a, b, result)` | `sdiff_c`                  | Symmetric difference.                       |
+| `union(a, b, result)` | `union_c`                  | Ordered union.                              |
+| `set(a, op, b)`       | `set_c`                    | Boolean result for one of eight relations.  |
+| `removc(item, cell)`  | `removc_c`                 | Remove a character member in place.         |
+| `removd(item, cell)`  | `removd_c`                 | Remove an ordered double in place.          |
+| `removi(item, cell)`  | `removi_c`                 | Remove a signed integer in place.           |
+| `ordc(item, cell)`    | `ordc_c`                   | Character ordinal or −1.                    |
+| `ordd(item, cell)`    | `ordd_c`                   | Double ordinal or −1.                       |
+| `ordi(item, cell)`    | `ordi_c`                   | Integer ordinal or −1.                      |
+
+Typed ordinary cell handles remain caller-owned. Capacity failures can write
+a prefix while leaving the descriptor cardinality unchanged. [Cardinality, width and byte-level evidence](step8-set-algebra.md)

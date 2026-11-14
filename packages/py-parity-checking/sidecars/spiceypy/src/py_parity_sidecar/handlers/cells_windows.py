@@ -5,6 +5,7 @@ from typing import Any
 import spiceypy as sp
 from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL, SpiceCell
 
+from .. import set_algebra_oracle
 from .. import cell_array_oracle
 from .. import window_algebra_oracle
 from ..models import (
@@ -12,6 +13,14 @@ from ..models import (
     StepCellsWindowsAppndc,
     StepCellsWindowsAppndd,
     StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
     StepCellsWindowsCopy,
     StepCellsWindowsElemc,
     StepCellsWindowsElemd,
@@ -215,6 +224,59 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
             raise ValueError("cell item exceeds SpiceInt")
         sp.appndi(step.item, cell)
         return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsSetResult):
+        a = _require_target(context, step.kind, step.aId)
+        b = _require_target(context, step.kind, step.bId)
+        cap = 8 if step.maxCardinality is None else step.maxCardinality
+        if step.kind == "int":
+            target = _get_or_create_int_cell(context, step.resultId, max_cardinality=cap)
+        elif step.kind == "double":
+            target = _get_or_create_double_cell(context, step.resultId, max_cardinality=cap)
+        else:
+            target = _get_or_create_char_cell(context, step.resultId, max_cardinality=cap, length=32 if step.length is None else step.length)
+        set_algebra_oracle.write_result(step.op, a, b, target)
+        return StepOutput(op=step.op, value=list(target))
+
+    if isinstance(step, StepCellsWindowsSet):
+        a = _require_target(context, step.kind, step.aId)
+        b = _require_target(context, step.kind, step.bId)
+        cell_array_oracle.check_text(step.relation, a)
+        set_algebra_oracle.check_inputs(a, b)
+        return StepOutput(op=step.op, value=bool(sp.set_c(a, step.relation, b)))
+
+    if isinstance(step, StepCellsWindowsRemovc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        sp.removc(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsRemovd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        sp.removd(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsRemovi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        sp.removi(step.item, cell)
+        return StepOutput(op=step.op, value=list(cell))
+
+    if isinstance(step, StepCellsWindowsOrdc):
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality, length=32 if step.length is None else step.length)
+        cell_array_oracle.check_text(step.item, cell)
+        return StepOutput(op=step.op, value=int(sp.ordc(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsOrdd):
+        cell = _get_or_create_double_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        return StepOutput(op=step.op, value=int(sp.ordd(step.item, cell)))
+
+    if isinstance(step, StepCellsWindowsOrdi):
+        cell = _get_or_create_int_cell(context, step.cellId, max_cardinality=8 if step.maxCardinality is None else step.maxCardinality)
+        if not -(2**31) <= step.item < 2**31:
+            raise ValueError("cell item exceeds SpiceInt")
+        return StepOutput(op=step.op, value=int(sp.ordi(step.item, cell)))
 
     if isinstance(step, StepCellsWindowsCopy):
         source = _require_target(context, step.kind, step.sourceId)

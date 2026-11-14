@@ -496,6 +496,26 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.elemc === "function", "Native addon missing elemc()");
   invariant(typeof native.elemd === "function", "Native addon missing elemd()");
   invariant(typeof native.elemi === "function", "Native addon missing elemi()");
+  invariant(typeof native.diff === "function", "Native addon missing diff()");
+  invariant(typeof native.inter === "function", "Native addon missing inter()");
+  invariant(typeof native.sdiff === "function", "Native addon missing sdiff()");
+  invariant(typeof native.union === "function", "Native addon missing union()");
+  invariant(typeof native.set === "function", "Native addon missing set()");
+  invariant(
+    typeof native.removc === "function",
+    "Native addon missing removc()",
+  );
+  invariant(
+    typeof native.removd === "function",
+    "Native addon missing removd()",
+  );
+  invariant(
+    typeof native.removi === "function",
+    "Native addon missing removi()",
+  );
+  invariant(typeof native.ordc === "function", "Native addon missing ordc()");
+  invariant(typeof native.ordd === "function", "Native addon missing ordd()");
+  invariant(typeof native.ordi === "function", "Native addon missing ordi()");
   invariant(typeof native.copy === "function", "Native addon missing copy()");
   invariant(
     typeof native.insrtc === "function",

@@ -1,0 +1,189 @@
+[
+  {
+    "caseId": "cells-windows-ordi-empty",
+    "description": "Query or remove from a newly allocated empty cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordi-ordered-members",
+    "description": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordi-misses",
+    "description": "Search gaps, end ranges and independent live storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -100
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -1
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 3
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 7
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 1000
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "B",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordi-unset",
+    "description": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  }
+]
