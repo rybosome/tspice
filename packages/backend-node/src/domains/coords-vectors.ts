@@ -15,9 +15,198 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertGeneralVectorScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function generalVectorDimension(
+  value: unknown,
+  label: string,
+  maximum: number,
+): number {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const length = value.length;
+  if (!Number.isSafeInteger(length) || length < 0 || length > maximum)
+    throw new RangeError(`${label} exceeds maximum dimension ${maximum}`);
+  return length;
+}
+
+function copyGeneralVector(
+  value: readonly number[],
+  dimension: number,
+  label: string,
+): number[] {
+  // Read exactly the captured dimension, once per component. Callers' arrays
+  // may contain accessors, so marshal this checked copy rather than re-reading.
+  const result: number[] = [];
+  for (let i = 0; i < dimension; i++) {
+    const component = value[i];
+    assertGeneralVectorScalar(component, `${label}[${i}]`);
+    result.push(component);
+  }
+  return result;
+}
+
+function generalVectorOutputNumber(value: unknown, label: string): number {
+  // Do not reject IEEE-754 outputs produced by defined finite CSPICE inputs.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function generalVectorOutput(
+  value: unknown,
+  dimension: number,
+  label: string,
+): number[] {
+  if (!Array.isArray(value) || value.length !== dimension)
+    throw new TypeError(`${label} must be an array of length ${dimension}`);
+  const result: number[] = [];
+  for (let i = 0; i < dimension; i++)
+    result.push(generalVectorOutputNumber(value[i], `${label}[${i}]`));
+  return result;
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    vaddg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vaddg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vaddg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vaddg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vaddg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vaddg(b)");
+      const out: unknown = native.vaddg(aCopy, bCopy);
+      return generalVectorOutput(out, aCopy.length, "vaddg result");
+    },
+    vdistg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vdistg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vdistg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vdistg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vdistg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vdistg(b)");
+      const out: unknown = native.vdistg(aCopy, bCopy);
+      return generalVectorOutputNumber(out, "vdistg result");
+    },
+    vdotg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vdotg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vdotg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vdotg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vdotg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vdotg(b)");
+      const out: unknown = native.vdotg(aCopy, bCopy);
+      return generalVectorOutputNumber(out, "vdotg result");
+    },
+    vequg: (v) => {
+      const vLength = generalVectorDimension(v, "vequg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vequg(v)");
+      const out: unknown = native.vequg(vCopy);
+      return generalVectorOutput(out, vCopy.length, "vequg result");
+    },
+    vhatg: (v) => {
+      const vLength = generalVectorDimension(v, "vhatg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vhatg(v)");
+      const out: unknown = native.vhatg(vCopy);
+      return generalVectorOutput(out, vCopy.length, "vhatg result");
+    },
+    vlcomg: (a, v1, b, v2) => {
+      const v1Length = generalVectorDimension(v1, "vlcomg(v1)", 2147483647);
+      const v2Length = generalVectorDimension(v2, "vlcomg(v2)", 2147483647);
+      if (v1Length !== v2Length)
+        throw new RangeError("vlcomg() vectors must have equal lengths");
+      assertGeneralVectorScalar(a, "vlcomg(a)");
+      assertGeneralVectorScalar(b, "vlcomg(b)");
+      const v1Copy = copyGeneralVector(v1, v1Length, "vlcomg(v1)");
+      const v2Copy = copyGeneralVector(v2, v2Length, "vlcomg(v2)");
+      const out: unknown = native.vlcomg(a, v1Copy, b, v2Copy);
+      return generalVectorOutput(out, v1Copy.length, "vlcomg result");
+    },
+    vminug: (v) => {
+      const vLength = generalVectorDimension(v, "vminug(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vminug(v)");
+      const out: unknown = native.vminug(vCopy);
+      return generalVectorOutput(out, vCopy.length, "vminug result");
+    },
+    vnormg: (v) => {
+      const vLength = generalVectorDimension(v, "vnormg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vnormg(v)");
+      const out: unknown = native.vnormg(vCopy);
+      return generalVectorOutputNumber(out, "vnormg result");
+    },
+    vprojg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vprojg(a)", 2147483646);
+      const bLength = generalVectorDimension(b, "vprojg(b)", 2147483646);
+      if (aLength !== bLength)
+        throw new RangeError("vprojg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vprojg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vprojg(b)");
+      const out: unknown = native.vprojg(aCopy, bCopy);
+      return generalVectorOutput(out, aCopy.length, "vprojg result");
+    },
+    vrelg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vrelg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vrelg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vrelg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vrelg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vrelg(b)");
+      const out: unknown = native.vrelg(aCopy, bCopy);
+      return generalVectorOutputNumber(out, "vrelg result");
+    },
+    vsclg: (s, v) => {
+      const vLength = generalVectorDimension(v, "vsclg(v)", 2147483647);
+      assertGeneralVectorScalar(s, "vsclg(s)");
+      const vCopy = copyGeneralVector(v, vLength, "vsclg(v)");
+      const out: unknown = native.vsclg(s, vCopy);
+      return generalVectorOutput(out, vCopy.length, "vsclg result");
+    },
+    vsepg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vsepg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vsepg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vsepg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vsepg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vsepg(b)");
+      const out: unknown = native.vsepg(aCopy, bCopy);
+      return generalVectorOutputNumber(out, "vsepg result");
+    },
+    vsubg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vsubg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vsubg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vsubg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vsubg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vsubg(b)");
+      const out: unknown = native.vsubg(aCopy, bCopy);
+      return generalVectorOutput(out, aCopy.length, "vsubg result");
+    },
+    vzerog: (v) => {
+      const vLength = generalVectorDimension(v, "vzerog(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vzerog(v)");
+      const out: unknown = native.vzerog(vCopy);
+      invariant(
+        typeof out === "boolean",
+        "Expected vzerog() to return a boolean",
+      );
+      return out;
+    },
+    unormg: (v) => {
+      const vLength = generalVectorDimension(v, "unormg(v)", 2147483646);
+      const vCopy = copyGeneralVector(v, vLength, "unormg(v)");
+      const out: unknown = native.unormg(vCopy);
+      invariant(isPlainObject(out), "Expected unormg() to return an object");
+      return {
+        unit: generalVectorOutput(out.unit, vCopy.length, "unormg().unit"),
+        norm: generalVectorOutputNumber(out.norm, "unormg().norm"),
+      };
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

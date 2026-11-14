@@ -145,6 +145,19 @@ function normalizeName(name: string): string {
   return name.trim();
 }
 
+// Toy general-vector helpers for facade tests, not CSPICE numerical oracles.
+function fakeGeneralNorm(v: readonly number[]): number {
+  return Math.sqrt(v.reduce((sum, value) => sum + value * value, 0));
+}
+
+function fakeGeneralDimensions(
+  a: readonly number[],
+  b: readonly number[],
+): void {
+  if (a.length !== b.length)
+    throw new RangeError("General vectors must have equal lengths");
+}
+
 function parseBodyRef(ref: string): number {
   const trimmed = normalizeName(ref);
 
@@ -2390,6 +2403,62 @@ export function createFakeBackend(
     },
     wnvald: (_size, _n, _window) => {
       throw new Error(spiceCellUnsupported);
+    },
+
+    // Toy general-vector operations; real backends call each CSPICE routine.
+    vaddg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.map((value, i) => value + b[i]!);
+    },
+    vdistg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return fakeGeneralNorm(a.map((value, i) => value - b[i]!));
+    },
+    vdotg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+    },
+    vequg: (v) => [...v],
+    vhatg: (v) => {
+      const norm = fakeGeneralNorm(v);
+      return v.map((value) => (norm === 0 ? 0 : value / norm));
+    },
+    vlcomg: (a, v1, b, v2) => {
+      fakeGeneralDimensions(v1, v2);
+      return v1.map((value, i) => a * value + b * v2[i]!);
+    },
+    vminug: (v) => v.map((value) => -value),
+    vnormg: (v) => fakeGeneralNorm(v),
+    vprojg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = b.reduce((sum, value) => sum + value * value, 0);
+      const numerator = a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+      const scale = denominator === 0 ? 0 : numerator / denominator;
+      return b.map((value) => scale * value);
+    },
+    vrelg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = Math.max(fakeGeneralNorm(a), fakeGeneralNorm(b));
+      return denominator === 0
+        ? 0
+        : fakeGeneralNorm(a.map((value, i) => value - b[i]!)) / denominator;
+    },
+    vsclg: (s, v) => v.map((value) => s * value),
+    vsepg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      const denominator = fakeGeneralNorm(a) * fakeGeneralNorm(b);
+      if (denominator === 0) return 0;
+      const dot = a.reduce((sum, value, i) => sum + value * b[i]!, 0);
+      return Math.acos(clamp(dot / denominator, -1, 1));
+    },
+    vsubg: (a, b) => {
+      fakeGeneralDimensions(a, b);
+      return a.map((value, i) => value - b[i]!);
+    },
+    vzerog: (v) => v.length > 0 && v.every((value) => value === 0),
+    unormg: (v) => {
+      const norm = fakeGeneralNorm(v);
+      return { unit: v.map((value) => (norm === 0 ? 0 : value / norm)), norm };
     },
 
     reclat: (rect) => {

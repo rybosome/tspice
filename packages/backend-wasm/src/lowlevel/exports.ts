@@ -895,6 +895,124 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_vaddg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdistg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdotg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vhatg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcomg(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vminug(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vnormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprojg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrelg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsclg(
+    s: number,
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsepg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsubg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzerog(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1961,124 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_vaddg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdistg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vdotg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vhatg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vlcomg(
+    a: number,
+    v1Ptr: number,
+    b: number,
+    v2Ptr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vminug(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vnormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprojg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vrelg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsclg(
+    s: number,
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsepg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsubg(
+    aPtr: number,
+    bPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzerog(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unormg(
+    vPtr: number,
+    ndim: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2498,21 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_vaddg",
+  "_tspice_vdistg",
+  "_tspice_vdotg",
+  "_tspice_vequg",
+  "_tspice_vhatg",
+  "_tspice_vlcomg",
+  "_tspice_vminug",
+  "_tspice_vnormg",
+  "_tspice_vprojg",
+  "_tspice_vrelg",
+  "_tspice_vsclg",
+  "_tspice_vsepg",
+  "_tspice_vsubg",
+  "_tspice_vzerog",
+  "_tspice_unormg",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

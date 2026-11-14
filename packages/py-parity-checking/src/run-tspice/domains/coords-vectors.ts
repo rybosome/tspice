@@ -5,6 +5,21 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsVaddg,
+  StepCoordsVectorsVdistg,
+  StepCoordsVectorsVdotg,
+  StepCoordsVectorsVequg,
+  StepCoordsVectorsVhatg,
+  StepCoordsVectorsVlcomg,
+  StepCoordsVectorsVminug,
+  StepCoordsVectorsVnormg,
+  StepCoordsVectorsVprojg,
+  StepCoordsVectorsVrelg,
+  StepCoordsVectorsVsclg,
+  StepCoordsVectorsVsepg,
+  StepCoordsVectorsVsubg,
+  StepCoordsVectorsVzerog,
+  StepCoordsVectorsUnormg,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -26,6 +41,21 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsVaddg
+  | StepCoordsVectorsVdistg
+  | StepCoordsVectorsVdotg
+  | StepCoordsVectorsVequg
+  | StepCoordsVectorsVhatg
+  | StepCoordsVectorsVlcomg
+  | StepCoordsVectorsVminug
+  | StepCoordsVectorsVnormg
+  | StepCoordsVectorsVprojg
+  | StepCoordsVectorsVrelg
+  | StepCoordsVectorsVsclg
+  | StepCoordsVectorsVsepg
+  | StepCoordsVectorsVsubg
+  | StepCoordsVectorsVzerog
+  | StepCoordsVectorsUnormg
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -71,6 +101,81 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.vaddg": {
+      const out = context.spice.raw.vaddg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vdistg": {
+      const out = context.spice.raw.vdistg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vdotg": {
+      const out = context.spice.raw.vdotg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vequg": {
+      const out = context.spice.raw.vequg(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vhatg": {
+      const out = context.spice.raw.vhatg(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vlcomg": {
+      const out = context.spice.raw.vlcomg(step.a, step.v1, step.b, step.v2);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vminug": {
+      const out = context.spice.raw.vminug(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vnormg": {
+      const out = context.spice.raw.vnormg(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vprojg": {
+      const out = context.spice.raw.vprojg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vrelg": {
+      const out = context.spice.raw.vrelg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vsclg": {
+      const out = context.spice.raw.vsclg(step.s, step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vsepg": {
+      const out = context.spice.raw.vsepg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vsubg": {
+      const out = context.spice.raw.vsubg(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vzerog": {
+      const out = context.spice.raw.vzerog(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.unormg": {
+      const out = context.spice.raw.unormg(step.v);
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

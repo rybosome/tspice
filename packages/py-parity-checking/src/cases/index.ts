@@ -12,6 +12,21 @@ import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with 
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import coordsVectorsVaddgCasesRaw from "./coords-vectors/vaddg.cases.json" with { type: "json" };
+import coordsVectorsVdistgCasesRaw from "./coords-vectors/vdistg.cases.json" with { type: "json" };
+import coordsVectorsVdotgCasesRaw from "./coords-vectors/vdotg.cases.json" with { type: "json" };
+import coordsVectorsVequgCasesRaw from "./coords-vectors/vequg.cases.json" with { type: "json" };
+import coordsVectorsVhatgCasesRaw from "./coords-vectors/vhatg.cases.json" with { type: "json" };
+import coordsVectorsVlcomgCasesRaw from "./coords-vectors/vlcomg.cases.json" with { type: "json" };
+import coordsVectorsVminugCasesRaw from "./coords-vectors/vminug.cases.json" with { type: "json" };
+import coordsVectorsVnormgCasesRaw from "./coords-vectors/vnormg.cases.json" with { type: "json" };
+import coordsVectorsVprojgCasesRaw from "./coords-vectors/vprojg.cases.json" with { type: "json" };
+import coordsVectorsVrelgCasesRaw from "./coords-vectors/vrelg.cases.json" with { type: "json" };
+import coordsVectorsVsclgCasesRaw from "./coords-vectors/vsclg.cases.json" with { type: "json" };
+import coordsVectorsVsepgCasesRaw from "./coords-vectors/vsepg.cases.json" with { type: "json" };
+import coordsVectorsVsubgCasesRaw from "./coords-vectors/vsubg.cases.json" with { type: "json" };
+import coordsVectorsVzerogCasesRaw from "./coords-vectors/vzerog.cases.json" with { type: "json" };
+import coordsVectorsUnormgCasesRaw from "./coords-vectors/unormg.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -155,6 +170,22 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsVaddgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVdistgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVdotgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVequgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVhatgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVlcomgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVminugCasesRaw as ParityCase[]),
+  ...(coordsVectorsVnormgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVprojgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVrelgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsclgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsepgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsubgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVzerogCasesRaw as ParityCase[]),
+  ...(coordsVectorsUnormgCasesRaw as ParityCase[]),
+
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),
   ...(coordsVectorsRecsphCasesRaw as ParityCase[]),

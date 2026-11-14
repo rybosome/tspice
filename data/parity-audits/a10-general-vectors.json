@@ -1,0 +1,2235 @@
+{
+  "schemaVersion": 1,
+  "batch": "a10-general-vectors",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/general-vectors.test.ts",
+    "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+    "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+    "packages/backend-node/test/general-vectors-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-general-vectors.md",
+    "packages/tspice/test/general-vector-results-rpc.test.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "packages/tspice/test/_helpers/nodeBackendAvailable.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-a10-591c6f49-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eafe886657af38390603872032d051e7277eefa3bc3c1e5696681a0ff1d506b5",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "observation": "Both full required local lanes passed at source591c6f49. Native-required executed2382 actual Node/WASM live comparisons and2610 parity-package tests without skips, including the production native guard;182native673WASM28core152facade tests passed. JS lane passed2382live and2609parity plus its expected guard skip. Source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a10-591c6f49-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eafe886657af38390603872032d051e7277eefa3bc3c1e5696681a0ff1d506b5",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "observation": "Both full required local lanes passed at source591c6f49. Native-required executed2382 actual Node/WASM live comparisons and2610 parity-package tests without skips, including the production native guard;182native673WASM28core152facade tests passed. JS lane passed2382live and2609parity plus its expected guard skip. Source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-a10-591c6f49-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eafe886657af38390603872032d051e7277eefa3bc3c1e5696681a0ff1d506b5",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "commit": "591c6f49c33fee6e9b08a82ade4078bcc7d53b5d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43546649291/job/132299443961",
+      "observation": "Inspected successful canonical uncached Linux Node22 native-required job:2382 actual Node/WASM live comparisons and2610 parity-package tests passed without skips, including production native guard. Both required local lanes passed at this same source;182native673WASM28core152facade tests. Final all-platform matrix/readiness tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a10-591c6f49-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eafe886657af38390603872032d051e7277eefa3bc3c1e5696681a0ff1d506b5",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "commit": "591c6f49c33fee6e9b08a82ade4078bcc7d53b5d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43546649291/job/132299443961",
+      "observation": "Inspected successful canonical uncached Linux Node22 native-required job:2382 actual Node/WASM live comparisons and2610 parity-package tests passed without skips, including production native guard. Both required local lanes passed at this same source;182native673WASM28core152facade tests. Final all-platform matrix/readiness tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a10-78297004-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe1fc1fcf95d6fc009bb36643f909a99a03290a1e673003e21e19d4ac3252899",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a10-78297004-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe1fc1fcf95d6fc009bb36643f909a99a03290a1e673003e21e19d4ac3252899",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "observation": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a10-78297004-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe1fc1fcf95d6fc009bb36643f909a99a03290a1e673003e21e19d4ac3252899",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "commit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a10-78297004-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe1fc1fcf95d6fc009bb36643f909a99a03290a1e673003e21e19d4ac3252899",
+      "caseIds": [
+        "coords-vectors-unormg-dimension-one",
+        "coords-vectors-unormg-dimension-zero",
+        "coords-vectors-unormg-mixed-dimensions",
+        "coords-vectors-unormg-scaled-magnitudes",
+        "coords-vectors-unormg-zero-and-last-component",
+        "coords-vectors-vaddg-dimension-one",
+        "coords-vectors-vaddg-dimension-zero",
+        "coords-vectors-vaddg-mixed-dimensions-and-order",
+        "coords-vectors-vaddg-scaled-magnitudes",
+        "coords-vectors-vaddg-zero-and-axis-boundaries",
+        "coords-vectors-vdistg-dimension-one",
+        "coords-vectors-vdistg-dimension-zero",
+        "coords-vectors-vdistg-mixed-dimensions-and-order",
+        "coords-vectors-vdistg-scaled-magnitudes",
+        "coords-vectors-vdistg-zero-and-axis-boundaries",
+        "coords-vectors-vdotg-dimension-one",
+        "coords-vectors-vdotg-dimension-zero",
+        "coords-vectors-vdotg-mixed-dimensions-and-order",
+        "coords-vectors-vdotg-ordered-cancellation",
+        "coords-vectors-vdotg-scaled-magnitudes",
+        "coords-vectors-vdotg-zero-and-axis-boundaries",
+        "coords-vectors-vequg-dimension-one",
+        "coords-vectors-vequg-dimension-zero",
+        "coords-vectors-vequg-finite-extrema",
+        "coords-vectors-vequg-mixed-dimensions",
+        "coords-vectors-vequg-scaled-magnitudes",
+        "coords-vectors-vequg-zero-and-last-component",
+        "coords-vectors-vhatg-dimension-one",
+        "coords-vectors-vhatg-dimension-zero",
+        "coords-vectors-vhatg-mixed-dimensions",
+        "coords-vectors-vhatg-scaled-magnitudes",
+        "coords-vectors-vhatg-zero-and-last-component",
+        "coords-vectors-vlcomg-dimension-one",
+        "coords-vectors-vlcomg-dimension-zero",
+        "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+        "coords-vectors-vlcomg-scaled-magnitudes",
+        "coords-vectors-vlcomg-zero-identity-and-cancellation",
+        "coords-vectors-vminug-dimension-one",
+        "coords-vectors-vminug-dimension-zero",
+        "coords-vectors-vminug-finite-extrema",
+        "coords-vectors-vminug-mixed-dimensions",
+        "coords-vectors-vminug-scaled-magnitudes",
+        "coords-vectors-vminug-zero-and-last-component",
+        "coords-vectors-vnormg-dimension-one",
+        "coords-vectors-vnormg-dimension-zero",
+        "coords-vectors-vnormg-mixed-dimensions",
+        "coords-vectors-vnormg-scaled-magnitudes",
+        "coords-vectors-vnormg-zero-and-last-component",
+        "coords-vectors-vprojg-dimension-one",
+        "coords-vectors-vprojg-dimension-zero",
+        "coords-vectors-vprojg-mixed-dimensions-and-order",
+        "coords-vectors-vprojg-scaled-magnitudes",
+        "coords-vectors-vprojg-subnormal-source-and-reference",
+        "coords-vectors-vprojg-zero-and-axis-boundaries",
+        "coords-vectors-vrelg-dimension-one",
+        "coords-vectors-vrelg-dimension-zero",
+        "coords-vectors-vrelg-mixed-dimensions-and-order",
+        "coords-vectors-vrelg-nearby-large-components",
+        "coords-vectors-vrelg-scaled-magnitudes",
+        "coords-vectors-vrelg-zero-and-axis-boundaries",
+        "coords-vectors-vsclg-dimension-one",
+        "coords-vectors-vsclg-dimension-zero",
+        "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+        "coords-vectors-vsclg-scaled-magnitudes",
+        "coords-vectors-vsclg-zero-and-identity-coefficients",
+        "coords-vectors-vsepg-dimension-one",
+        "coords-vectors-vsepg-dimension-zero",
+        "coords-vectors-vsepg-mixed-dimensions-and-order",
+        "coords-vectors-vsepg-near-parallel-axis",
+        "coords-vectors-vsepg-raw-dot-underflow",
+        "coords-vectors-vsepg-scaled-magnitudes",
+        "coords-vectors-vsepg-zero-and-axis-boundaries",
+        "coords-vectors-vsubg-dimension-one",
+        "coords-vectors-vsubg-dimension-zero",
+        "coords-vectors-vsubg-mixed-dimensions-and-order",
+        "coords-vectors-vsubg-scaled-magnitudes",
+        "coords-vectors-vsubg-zero-and-axis-boundaries",
+        "coords-vectors-vzerog-dimension-one",
+        "coords-vectors-vzerog-dimension-zero",
+        "coords-vectors-vzerog-last-component-subnormal",
+        "coords-vectors-vzerog-mixed-dimensions",
+        "coords-vectors-vzerog-zero-and-last-component"
+      ],
+      "commit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "vaddg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vaddg_c.html",
+      "semantics": "raw.vaddg(a,b) returns every component of actual CSPICE a+b in a new owned array. Order, finite-input overflow and signed numerical results are retained; empty inputs return an empty array after the canonical call. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vaddg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vaddg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vaddg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vaddg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vaddg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe either zero operand, parallel/opposed and orthogonal axes; compare every component of the sums."
+        },
+        {
+          "caseId": "coords-vectors-vaddg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vaddg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Signed mixed dimensions, reversed operands, both zero positions, axes and wide scales exercise every sum entry; finite-input extremes additionally retain overflow. Tagged live extremes compare every component of [Inf,-Inf,0,3], plus a finite MAX/4 control.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vaddg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vaddg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vaddg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vaddg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vaddg -> typed WASM adapter -> exported _tspice_vaddg with checked buffers/dimension and copied output -> shared tspice_vaddg -> actual vaddg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vdistg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vdistg_c.html",
+      "semantics": "raw.vdistg(a,b) returns the actual scaled Euclidean distance. Equal and empty vectors return zero. Component subtraction can overflow before scaling, and the final scaled norm can also exceed floating range; the result is not replaced by a different norm algorithm. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vdistg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vdistg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vdistg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vdistg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vdistg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe distance from/to zero and parallel/opposed/orthogonal axes; the last coordinate contributes to the norm."
+        },
+        {
+          "caseId": "coords-vectors-vdistg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vdistg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Signed/reversed multi-dimensional inputs, zero/axis positions and wide scales exercise the full distance. Subtraction overflow is distinct from final norm overflow and must not be silently repaired. The tagged live opposite-MAX observation yields NaN after subtraction overflow; its MAX/4 control remains finite.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vdistg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdistg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdistg -> typed WASM adapter -> exported _tspice_vdistg with checked buffers/dimension and copied output -> shared tspice_vdistg -> actual vdistg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vdotg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vdotg_c.html",
+      "semantics": "raw.vdotg(a,b) returns the sum of component products accumulated in order by actual CSPICE. Empty inputs return zero. Product/accumulation rounding, cancellation, underflow and overflow remain observable. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vdotg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vdotg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vdotg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vdotg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vdotg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero for either zero operand and orthogonal axes, and distinguish positive/negative collinear dot products."
+        },
+        {
+          "caseId": "coords-vectors-vdotg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vdotg. Focused live rescaling makes tiny dot products observable."
+        },
+        {
+          "caseId": "coords-vectors-vdotg-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe ordered component products producing zero versus one when [1e16,1,-1e16] is reordered; actual dot accumulation must not be reassociated."
+        }
+      ],
+      "edgeAssessment": "Mixed dimensions, zero/axis signs, wide scales and order-dependent cancellation distinguish product and accumulation order. Tiny dot results require squared-scale comparison. Tagged live same-sign overflowing products yield Inf; the finite MAX/4 control remains finite. Opposed overflowing product cancellation is not asserted as a universal compiler-independent result.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vdotg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdotg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdotg -> typed WASM adapter -> exported _tspice_vdotg with checked buffers/dimension and copied output -> shared tspice_vdotg -> actual vdotg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vequg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vequg_c.html",
+      "semantics": "raw.vequg(v) returns an independently owned array copying every component in its original position, including signed zero and subnormal values. It calls actual CSPICE even for the empty array and never returns caller-owned or heap-backed storage. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vequg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vequg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vequg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vequg-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-vequg-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
+        },
+        {
+          "caseId": "coords-vectors-vequg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vequg. Focused live rescaling makes each tiny output component or scalar observable."
+        },
+        {
+          "caseId": "coords-vectors-vequg-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all maximum-finite, minimum-subnormal and zero components in their original positions through copying/negation; focused live comparisons are exact."
+        }
+      ],
+      "edgeAssessment": "Exact copying across 0,1,2,4,7 dimensions, tail-only nonzero, finite extrema/subnormals and signed zero is reviewed. Returned-array ownership is separate from value equality. Tagged live input [-0,+0,1,-1] is copied with every sign retained; actual backend RPC results preserve seven-component shape and negative zero.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused exact live checks retain extrema/subnormal components where applicable. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vequg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vequg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vequg-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vequg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vequg -> typed WASM adapter -> exported _tspice_vequg with checked buffers/dimension and copied output -> shared tspice_vequg -> actual vequg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vhatg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vhatg_c.html",
+      "semantics": "raw.vhatg(v) returns an owned array divided by the actual computed norm. A zero vector produces zeros, empty input produces an empty array. A finite input whose computed norm overflows can yield a zero normalized vector; no rescaling workaround replaces CSPICE output. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vhatg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vhatg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vhatg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vhatg-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-vhatg-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
+        },
+        {
+          "caseId": "coords-vectors-vhatg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vhatg. Dimensionless outputs are compared directly."
+        }
+      ],
+      "edgeAssessment": "Zero and signed singleton inputs, tail-only direction, dimensions above three and scale-invariant ordinary unit outputs are reviewed. Extreme computed-norm limits are retained. Tagged live [MAX,-MAX,0,0] yields [0,-0,0,0] after norm overflow; a MAX/4 control retains the ordinary finite unit vector.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vhatg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vhatg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vhatg-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vhatg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vhatg -> typed WASM adapter -> exported _tspice_vhatg with checked buffers/dimension and copied output -> shared tspice_vhatg -> actual vhatg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vlcomg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vlcomg_c.html",
+      "semantics": "raw.vlcomg(a,v1,b,v2) returns actual CSPICE a*v1+b*v2 componentwise in a new owned array. The raw API alternates coefficients and vectors; the C call places inferred dimension first. Both coefficients must be finite, and all arithmetic limits are retained. Empty paired inputs still call the canonical routine. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vlcomg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vlcomg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vlcomg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vlcomg-distinct-coefficients-and-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 2-, 4- and 7-component linear combinations with distinct nonunit coefficients; distinguish coefficient/vector order and all tail entries."
+        },
+        {
+          "caseId": "coords-vectors-vlcomg-zero-identity-and-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both zero coefficients, each identity operand separately, and exact cancellation across four components."
+        },
+        {
+          "caseId": "coords-vectors-vlcomg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vlcomg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Distinct alternating coefficients/vectors, mixed dimensions, either identity operand, all-zero coefficients, exact cancellation and wide scales distinguish argument order and every output. Tagged live extremes compare every component of [Inf,-Inf,8,0], plus a finite MAX/4 control.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vlcomg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vlcomg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-vlcomg-distinct-coefficients-and-dimensions"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vlcomg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vlcomg -> typed WASM adapter -> exported _tspice_vlcomg with checked buffers/dimension and copied output -> shared tspice_vlcomg -> actual vlcomg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. The inferred dimension is passed first at both C/oracle boundaries, with coefficients and vectors in their defined order.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vminug_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vminug_c.html",
+      "semantics": "raw.vminug(v) returns an owned array containing the actual CSPICE negation of every component, including reversing zero signs. Input values are unchanged and empty input returns an independent empty array. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vminug-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vminug-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vminug, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vminug-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-vminug-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
+        },
+        {
+          "caseId": "coords-vectors-vminug-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vminug. Focused live rescaling makes each tiny output component or scalar observable."
+        },
+        {
+          "caseId": "coords-vectors-vminug-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all maximum-finite, minimum-subnormal and zero components in their original positions through copying/negation; focused live comparisons are exact."
+        }
+      ],
+      "edgeAssessment": "Mixed signs and dimensions, zero/tail-only input, finite extrema, subnormals and signed-zero inversion are reviewed. Copy ownership and negation both matter. Tagged live input [-0,+0,1,-1] yields [+0,-0,-1,+1], preserving exact zero-sign inversion.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused exact live checks retain extrema/subnormal components where applicable. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vminug_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vminug-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vminug-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vminug -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vminug -> typed WASM adapter -> exported _tspice_vminug with checked buffers/dimension and copied output -> shared tspice_vminug -> actual vminug_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vnormg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vnormg_c.html",
+      "semantics": "raw.vnormg(v) returns the actual CSPICE Euclidean norm using component scaling. Zero and empty inputs return zero. Scaling avoids intermediate square overflow for many inputs but does not prevent an infinite final norm; no alternate hypot reduction substitutes for the result. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vnormg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vnormg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vnormg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vnormg-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-vnormg-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; every result must include the tail contribution."
+        },
+        {
+          "caseId": "coords-vectors-vnormg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vnormg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Zero/singleton, known two/four-component norms, tail-only nonzero, seven dimensions and wide scales distinguish complete-array norm calculation. Final overflow remains observable. Tagged live [MAX,-MAX,0,0] yields Inf; a MAX/4 control remains finite.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vnormg-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vnormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vnormg -> typed WASM adapter -> exported _tspice_vnormg with checked buffers/dimension and copied output -> shared tspice_vnormg -> actual vnormg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vprojg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vprojg_c.html",
+      "semantics": "raw.vprojg(a,b) returns the actual general-dimensional projection onto b in an owned array. Pinned N0067 computes dot(a,b)/dot(b,b), then scales b; a zero computed denominator sets scale zero, including denominator underflow for nonzero tiny b. Overflow/NaN and underflow behavior is preserved without substituting three-vector vproj or JavaScript projection. Empty inputs return an empty array. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. The safe dimension ceiling is 2147483646 because pinned f2c one-based loops would overflow at INT32_MAX. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vprojg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vprojg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vprojg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vprojg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vprojg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero source/reference, collinear and opposed reference axes, and orthogonal projection; compare every output component."
+        },
+        {
+          "caseId": "coords-vectors-vprojg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vprojg. Focused live rescaling makes each tiny output component or scalar observable."
+        },
+        {
+          "caseId": "coords-vectors-vprojg-subnormal-source-and-reference",
+          "coverage": ["success", "edge"],
+          "observes": "Observe [MIN_VALUE,0] projected onto [1,0] retaining the subnormal, then reversed inputs producing zero when the denominator underflows. Exact live comparison distinguishes these paths."
+        }
+      ],
+      "edgeAssessment": "Zero/reference and collinear/opposed/orthogonal controls, nonsymmetric reordered inputs and scales are reviewed. Exact subnormal source/reference reversal distinguishes denominator-underflow zero from a generic projection workaround. Tagged live [MAX,MAX] projected on [1,1] yields [Inf,Inf], while projecting on [MAX,MAX] yields [NaN,NaN]. These outputs also cross actual RPC serialization without repair.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused exact live checks retain extrema/subnormal components where applicable. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vprojg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vprojg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vprojg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vprojg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vprojg -> typed WASM adapter -> exported _tspice_vprojg with checked buffers/dimension and copied output -> shared tspice_vprojg -> actual vprojg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vrelg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vrelg_c.html",
+      "semantics": "raw.vrelg(a,b) returns actual CSPICE distance(a,b)/max(norm(a),norm(b)), with zero returned when computed distance is zero. Empty/equal vectors return zero. The result is dimensionless; the nominal mathematical [0,2] range is not used to clamp floating limits. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vrelg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vrelg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vrelg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vrelg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vrelg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe relative difference with either zero operand, same/opposite directions of different lengths and orthogonal axes."
+        },
+        {
+          "caseId": "coords-vectors-vrelg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vrelg. Dimensionless outputs are compared directly."
+        },
+        {
+          "caseId": "coords-vectors-vrelg-nearby-large-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the small nonzero relative difference between nearby large vectors; focused live result scaling distinguishes it from zero."
+        }
+      ],
+      "edgeAssessment": "Zero/equal/axis relations, dimensions beyond three, reciprocal scaling and nearby-large-vector differences are reviewed. Focused tiny-relative-value rescaling prevents acceptance of zero. Tagged live opposite-MAX vectors yield NaN; the ordinary nearby-large-component result is approximately 8e-15 and is compared after multiplying by 1e15.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Nearby-vector relative output is separately rescaled before live comparison. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vrelg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vrelg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vrelg -> typed WASM adapter -> exported _tspice_vrelg with checked buffers/dimension and copied output -> shared tspice_vrelg -> actual vrelg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vsclg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vsclg_c.html",
+      "semantics": "raw.vsclg(s,v) returns every actual CSPICE s*v component in a new owned array. s must be finite; input storage is unchanged. Zero/negative/fractional scaling, signed-zero behavior and numerical overflow/underflow are retained; empty input returns an empty array. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vsclg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vsclg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsclg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vsclg-distinct-coefficient-and-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe negative/fractional scales across 2-, 4- and 7-component vectors, including the tail entries."
+        },
+        {
+          "caseId": "coords-vectors-vsclg-zero-and-identity-coefficients",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero, positive identity and negative identity scaling of every seven-component entry."
+        },
+        {
+          "caseId": "coords-vectors-vsclg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vsclg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Positive/negative/fractional/zero/identity coefficients across varying dimensions exercise full-array products. Extreme and signed-zero results retain actual arithmetic. Tagged live extremes compare every component of [Inf,-Inf,0,2].",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vsclg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vsclg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-vsclg-distinct-coefficient-and-dimensions"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsclg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsclg -> typed WASM adapter -> exported _tspice_vsclg with checked buffers/dimension and copied output -> shared tspice_vsclg -> actual vsclg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vsepg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vsepg_c.html",
+      "semantics": "raw.vsepg(a,b) returns the actual general-dimensional angular separation in radians. Either computed norm zero gives zero, including empty input. Pinned source branches on raw dot-product sign and uses reciprocal norms and inverse sine of a normalized sum/difference; dot underflow can select pi/2 even for tiny parallel/opposed vectors. Near-parallel/opposed and extreme arithmetic retain source precision/nonfinite limits; no three-vector vsep fallback, clipping or angle normalization is added. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vsepg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; scalar zero reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsepg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete scalar result at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero with either zero operand and actual 0/pi/pi/2 axis separation boundaries."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vsepg. Dimensionless outputs are compared directly."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-near-parallel-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both near-parallel and near-opposed axes with 0.01 off-axis component through the actual general routine, without imposing three-vector numerical behavior."
+        },
+        {
+          "caseId": "coords-vectors-vsepg-raw-dot-underflow",
+          "coverage": ["success", "edge"],
+          "observes": "Observe pi/2 for parallel and opposed nonzero 1e-200 axis vectors because their raw dot products underflow to zero."
+        }
+      ],
+      "edgeAssessment": "Zero/parallel/opposed/orthogonal axes, varying dimensions, ordinary scales, near-axis angles and explicit raw-dot underflow are reviewed. Source precision limits remain documented without global tolerance relaxation. Tagged live opposed [MAX,MAX] vectors yield zero after their norms overflow. Registered tiny parallel/opposed vectors yield pi/2 from raw-dot underflow. Neither result is replaced by a geometric idealization.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Raw-dot underflow and near-axis behavior are actual general-routine observations, not comparisons to the three-vector routine or a stabilized JS formula. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vsepg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsepg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsepg -> typed WASM adapter -> exported _tspice_vsepg with checked buffers/dimension and copied output -> shared tspice_vsepg -> actual vsepg_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vsubg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vsubg_c.html",
+      "semantics": "raw.vsubg(a,b) returns every component of actual CSPICE a-b in a new owned array, preserving operand order and numerical limits. Paired empty inputs return an empty array after the actual call. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vsubg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; empty output shape reaches comparison."
+        },
+        {
+          "caseId": "coords-vectors-vsubg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vsubg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vsubg-mixed-dimensions-and-order",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete array output at dimensions 2,4,7 with signed entries beyond the third position. Swapped input observations retain the routine's actual symmetry or ordered result."
+        },
+        {
+          "caseId": "coords-vectors-vsubg-zero-and-axis-boundaries",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero in either operand, collinear/opposed and orthogonal axes; subtraction order changes the vector."
+        },
+        {
+          "caseId": "coords-vectors-vsubg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual vsubg. Focused live rescaling makes each tiny output component or scalar observable."
+        }
+      ],
+      "edgeAssessment": "Reversed nonsymmetric operands, either zero operand, varying dimensions and wide scales distinguish subtraction order and all tail values; finite-input overflow is retained. Tagged live extremes compare every component of [Inf,-Inf,0,-1].",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls vsubg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-vsubg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vsubg-mixed-dimensions-and-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsubg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsubg -> typed WASM adapter -> exported _tspice_vsubg with checked buffers/dimension and copied output -> shared tspice_vsubg -> actual vsubg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vzerog_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vzerog_c.html",
+      "semantics": "raw.vzerog(v) returns the actual boolean predicate: false for empty input, true only if every component of a nonempty vector is exactly zero. Both zero signs count as zero; even a minimum subnormal is nonzero. No norm tolerance or vacuous JavaScript every predicate replaces CSPICE. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. Dimension must fit signed32. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vzerog-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual empty-input SpiceyPy/C call; false reaches exact boolean comparison."
+        },
+        {
+          "caseId": "coords-vectors-vzerog-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual vzerog, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-vzerog-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete boolean predicate at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-vzerog-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; the exact boolean distinguishes them."
+        },
+        {
+          "caseId": "coords-vectors-vzerog-last-component-subnormal",
+          "coverage": ["success", "edge"],
+          "observes": "Observe false when only the seventh component is a positive/negative minimum subnormal; exact predicate must inspect beyond three entries and must not use a tolerance."
+        }
+      ],
+      "edgeAssessment": "Empty false versus nonempty all-zero true, signed singleton inputs, seven-component tail-only nonzero and each sign of minimum subnormal distinguish the exact predicate.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Boolean results are exact, including empty false, nonempty zero true and minimum-subnormal false; numeric tolerances do not apply.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vzerog-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vzerog -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vzerog -> typed WASM adapter -> exported _tspice_vzerog with checked buffers/dimension and copied output -> shared tspice_vzerog -> actual vzerog_c. Independent Python validates dimensions and invokes the actual locked SpiceyPy wrapper including empty scalar input.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "unormg_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unormg_c.html",
+      "semantics": "raw.unormg(v) returns a fresh {unit,norm}, with every unit component in an owned array and the actual separate norm output. Zero input returns a zero unit array/norm zero; empty input returns {unit:[],norm:0}. Computed norm overflow/underflow effects are preserved; the adapter does not independently derive or correct either output. Inputs are readonly dense finite-number arrays, the dimension is inferred from length, paired vectors must have equal lengths, and results do not alias input/heap storage. The safe dimension ceiling is 2147483646 because pinned f2c one-based loops would overflow at INT32_MAX. WASM additionally retains the existing 256 MiB per-vector-buffer cap.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-unormg-dimension-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an actual canonical empty-only C call with guarded non-null storage and no vector writes; both empty unit array and returned norm zero reach comparison."
+        },
+        {
+          "caseId": "coords-vectors-unormg-dimension-one",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative/zero or mixed singleton inputs through actual unormg, distinguishing dimension one from a fixed three-component path."
+        },
+        {
+          "caseId": "coords-vectors-unormg-mixed-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete unit array and norm at dimensions 2,4,7 with signed entries beyond the third position."
+        },
+        {
+          "caseId": "coords-vectors-unormg-zero-and-last-component",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a four-component zero vector and a seven-component vector with only its final entry nonzero; both unit and norm must reflect the tail."
+        },
+        {
+          "caseId": "coords-vectors-unormg-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both 1e100 and 1e-100 input scales through actual unormg. Both unit and norm are compared, with only norm rescaled in focused tests."
+        }
+      ],
+      "edgeAssessment": "Both output fields are observed for empty/zero, signed singleton, full multi-dimensional and tail-only inputs. Scale changes preserve ordinary unit direction while changing norm; numerical extremes retain actual outputs. Tagged live [MAX,-MAX,0,0] yields unit [0,-0,0,0] and norm Inf, with every field compared; a MAX/4 control is finite. Actual RPC preserves both the empty unit array and separate zero norm.",
+      "errorAssessment": "NAIF/pinned source provides no ordinary scientific error for these defined finite vectors. Registered cases observe actual successful values, including empty dimension. Malformed/nonfinite arrays, unequal dimensions, invalid coefficients and unsafe dimensions/byte counts are explicit wrapper-safety tests; no invented SPICE error or execution of undefined giant dimensions is claimed.",
+      "fixtures": [],
+      "fixtureRationale": "Project-authored numeric vectors only; no external dataset or kernel fixture. Empty-oracle guards and allocation-failure instrumentation are test infrastructure, not scientific data substitutions.",
+      "cleanup": "Kernel-free authored numeric inputs require no files, handles, kernels or retained scientific resources. Shared C validates dimension/non-null buffers and invokes the actual routine; adapters return results only after status checking. Errors collect diagnostics/reset before throwing. Native vectors reserve valid sentinel storage at dimension zero, and all outputs are copied into owned arrays/objects. WASM uses checked byte lengths, transactional withAllocs, valid non-null empty sentinels and copied results before release. Allocation fault/success checks and ownership tests are separate from live scientific value comparisons.",
+      "tolerance": "Normal numeric comparison remains atol=1e-12/rtol=1e-12 across every scalar/vector component; booleans and output shapes are exact. Focused scaled live checks strengthen tiny outputs without global tolerance changes. Every unit entry and the distinct norm field reach comparison; norm scaling is independent of the unit array. Focused tagged live comparison retains complete array/object shape, compares NaN/Inf/zero signs exactly and finite nonzero values with relative-only 1e-12 tolerance; no global comparator change.",
+      "findings": [
+        {
+          "id": "spiceypy-empty-output-converter",
+          "status": "repaired",
+          "summary": "Locked SpiceyPy 6.0.3 calls unormg_c at dimension zero but its zero-length output converter raises IndexError afterward, so that wrapper cannot directly deliver the valid empty scientific result.",
+          "repair": "Use the independent general_vector_oracle empty-only typed binding to the exact locked library symbol with guarded non-null input/output storage and explicit dimension zero. Assert no vector storage writes; read the actual separate norm for unormg. Keep nonempty calls on SpiceyPy and compare registered empty outputs. No scientific algorithm, tspice substitute or new exclusion is introduced.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/general_vector_oracle.py",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+            "packages/py-parity-checking/test/general-vectors.test.ts",
+            "packages/py-parity-checking/test/general-vectors-extremes.test.ts",
+            "docs/step8-general-vectors.md"
+          ],
+          "caseIds": ["coords-vectors-unormg-dimension-zero"]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture dimensions, enforce routine-specific count bounds and equal lengths where required, then copy each finite general-vector component once. Use the owned copies for dispatch, buffer sizes and output-length checks. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/general-vectors-domain.test.ts",
+            "packages/backend-wasm/test/general-vectors-allocations.test.ts",
+            "packages/backend-wasm/test/general-vector-input-snapshots.test.ts"
+          ],
+          "caseIds": ["coords-vectors-unormg-mixed-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.unormg -> typed Node adapter -> actual native binding with owned input/output buffers and global SPICE mutex -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
+          "executions": ["local-a10-78297004-node", "ci-a10-78297004-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.unormg -> typed WASM adapter -> exported _tspice_unormg with checked buffers/dimension and copied output -> shared tspice_unormg -> actual unormg_c. Independent Python validates dimensions and invokes the exact typed canonical symbol from CDLL(libspice._name) only for empty vector results, otherwise the actual locked SpiceyPy wrapper. Both canonical unit output and norm output are returned without recomputation.",
+          "executions": ["local-a10-78297004-wasm", "ci-a10-78297004-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

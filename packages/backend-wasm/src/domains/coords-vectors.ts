@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,469 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertGeneralVectorScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function generalVectorDimension(
+  value: unknown,
+  label: string,
+  maximum: number,
+): number {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const length = value.length;
+  if (!Number.isSafeInteger(length) || length < 0 || length > maximum)
+    throw new RangeError(`${label} exceeds maximum dimension ${maximum}`);
+  generalVectorBufferBytes(length);
+  return length;
+}
+
+function copyGeneralVector(
+  value: readonly number[],
+  dimension: number,
+  label: string,
+): number[] {
+  // Read exactly the captured dimension, once per component. Callers' arrays
+  // may contain accessors, so marshal this checked copy rather than re-reading.
+  const result: number[] = [];
+  for (let i = 0; i < dimension; i++) {
+    const component = value[i];
+    assertGeneralVectorScalar(component, `${label}[${i}]`);
+    result.push(component);
+  }
+  return result;
+}
+
+function generalVectorBufferBytes(dimension: number): number {
+  const bytes = Math.max(1, dimension) * 8;
+  if (!Number.isSafeInteger(bytes) || bytes > WASM_MAX_ALLOC_BYTES)
+    throw new RangeError(
+      `General vector buffer exceeds ${WASM_MAX_ALLOC_BYTES} bytes`,
+    );
+  return bytes;
+}
+
+function readGeneralVector(
+  module: EmscriptenModule,
+  ptr: number,
+  dimension: number,
+): number[] {
+  const start = ptr >>> 3;
+  return Array.from(module.HEAPF64.subarray(start, start + dimension));
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    vaddg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vaddg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vaddg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vaddg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vaddg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vaddg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vaddg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vdistg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vdistg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vdistg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vdistg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vdistg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vdistg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vdistg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vdotg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vdotg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vdotg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vdotg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vdotg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vdotg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vdotg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vequg: (v) => {
+      const vLength = generalVectorDimension(v, "vequg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vequg(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vequg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vhatg: (v) => {
+      const vLength = generalVectorDimension(v, "vhatg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vhatg(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vhatg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vlcomg: (a, v1, b, v2) => {
+      const v1Length = generalVectorDimension(v1, "vlcomg(v1)", 2147483647);
+      const v2Length = generalVectorDimension(v2, "vlcomg(v2)", 2147483647);
+      if (v1Length !== v2Length)
+        throw new RangeError("vlcomg() vectors must have equal lengths");
+      assertGeneralVectorScalar(a, "vlcomg(a)");
+      assertGeneralVectorScalar(b, "vlcomg(b)");
+      const v1Copy = copyGeneralVector(v1, v1Length, "vlcomg(v1)");
+      const v2Copy = copyGeneralVector(v2, v2Length, "vlcomg(v2)");
+      const dimension = v1Copy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, v1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1Copy, v1Ptr >>> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >>> 3);
+          const status = module._tspice_vlcomg(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vminug: (v) => {
+      const vLength = generalVectorDimension(v, "vminug(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vminug(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vminug(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vnormg: (v) => {
+      const vLength = generalVectorDimension(v, "vnormg(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vnormg(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, 8],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vnormg(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vprojg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vprojg(a)", 2147483646);
+      const bLength = generalVectorDimension(b, "vprojg(b)", 2147483646);
+      if (aLength !== bLength)
+        throw new RangeError("vprojg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vprojg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vprojg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vprojg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vrelg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vrelg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vrelg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vrelg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vrelg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vrelg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vrelg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vsclg: (s, v) => {
+      const vLength = generalVectorDimension(v, "vsclg(v)", 2147483647);
+      assertGeneralVectorScalar(s, "vsclg(s)");
+      const vCopy = copyGeneralVector(v, vLength, "vsclg(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vsclg(
+            s,
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vsepg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vsepg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vsepg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vsepg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vsepg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vsepg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vsepg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    vsubg: (a, b) => {
+      const aLength = generalVectorDimension(a, "vsubg(a)", 2147483647);
+      const bLength = generalVectorDimension(b, "vsubg(b)", 2147483647);
+      if (aLength !== bLength)
+        throw new RangeError("vsubg() vectors must have equal lengths");
+      const aCopy = copyGeneralVector(a, aLength, "vsubg(a)");
+      const bCopy = copyGeneralVector(b, bLength, "vsubg(b)");
+      const dimension = aCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, bytes],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
+          const status = module._tspice_vsubg(
+            aPtr,
+            bPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readGeneralVector(module, outPtr, dimension);
+        },
+      );
+    },
+    vzerog: (v) => {
+      const vLength = generalVectorDimension(v, "vzerog(v)", 2147483647);
+      const vCopy = copyGeneralVector(v, vLength, "vzerog(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, 4],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_vzerog(
+            vPtr,
+            dimension,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >>> 2] !== 0;
+        },
+      );
+    },
+    unormg: (v) => {
+      const vLength = generalVectorDimension(v, "unormg(v)", 2147483646);
+      const vCopy = copyGeneralVector(v, vLength, "unormg(v)");
+      const dimension = vCopy.length;
+      const bytes = generalVectorBufferBytes(dimension);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bytes, bytes, 8],
+        (errPtr, vPtr, outPtr, normPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >>> 3);
+          const status = module._tspice_unormg(
+            vPtr,
+            dimension,
+            outPtr,
+            normPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            unit: readGeneralVector(module, outPtr, dimension),
+            norm: module.HEAPF64[normPtr >>> 3]!,
+          };
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),
