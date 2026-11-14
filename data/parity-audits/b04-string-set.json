@@ -32,7 +32,132 @@
     "packages/py-parity-checking/test/string-set-public.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-b04-1aa35005-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6f5731de0b8ac7db7666b61697d1a2fb91d845f32b4ec70ec66e4aca8260e7d2",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "observation": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "local-b04-1aa35005-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6f5731de0b8ac7db7666b61697d1a2fb91d845f32b4ec70ec66e4aca8260e7d2",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "observation": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-b04-1aa35005-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6f5731de0b8ac7db7666b61697d1a2fb91d845f32b4ec70ec66e4aca8260e7d2",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "commit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-b04-1aa35005-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6f5731de0b8ac7db7666b61697d1a2fb91d845f32b4ec70ec66e4aca8260e7d2",
+      "caseIds": [
+        "cells-windows-lparss-blank-delims-required",
+        "cells-windows-lparss-capacity-after-dedup",
+        "cells-windows-lparss-control-length",
+        "cells-windows-lparss-empty-and-blank",
+        "cells-windows-lparss-empty-full",
+        "cells-windows-lparss-late-excess",
+        "cells-windows-lparss-mixed",
+        "cells-windows-lparss-mixed-delimiter-order",
+        "cells-windows-lparss-narrow-empty-bypass",
+        "cells-windows-lparss-no-delimiter",
+        "cells-windows-lparss-nonblank-whitespace",
+        "cells-windows-lparss-nonempty-delims-required",
+        "cells-windows-lparss-replace",
+        "cells-windows-lparss-separator-rules",
+        "cells-windows-lparss-split-full",
+        "cells-windows-lparss-utf8",
+        "cells-windows-lparss-width-collision",
+        "cells-windows-lparss-zero-capacity"
+      ],
+      "commit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "lparss_c",
@@ -156,19 +281,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CellsWindowsApi.lparss -> owned native token and serialized addon -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
-          "executions": []
+          "executions": ["local-b04-1aa35005-node", "ci-b04-1aa35005-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "CellsWindowsApi.lparss -> owned WASM token and scoped UTF-8 buffers -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
-          "executions": []
+          "executions": ["local-b04-1aa35005-wasm", "ci-b04-1aa35005-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused live and browser results are separate from full required local and canonical executions."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

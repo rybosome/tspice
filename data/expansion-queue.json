@@ -81,7 +81,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "Angular constants in CoordsVectorsApi; spd/j2000/j1900/b1950 in TimeApi. Public methods are raw.<canonical name without _c>().",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "No shared prerequisite beyond merged #706. Establish epoch outputs as Julian dates, not ET; zero-argument constants need no invented error cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -135,7 +135,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "TimeApi: b1900/j1950/j2100/jyear/tyear; CoordsVectorsApi: clight/dpmax/dpmin/intmax/intmin.",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Use existing time domain for epoch/year constants and coords-vectors for scalar constants. Verify signed SpiceInt bounds and exact platform N0067 floating limits. Does not require A01 wrappers.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -303,7 +303,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
-      "status": "pr-ready",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Reuse existing scalar/Vec3 conventions; verify longitude/colatitude units and signed/zero radius behavior with asymmetric cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -1569,18 +1569,25 @@
         "missingTopLevelWrappers": [],
         "limitation": "High-level helper allocates a new cell. The typed reference calls LPARSS on the existing SpiceCell."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/746"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "36 registered live comparisons, four public tests, one private native test, and three real-module allocation failures. Real Chrome worker exercised retained members and post-error cell contents."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1aa35005d77652f38251c1d2fd7c93a6a5c83087",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572333173/job/132379194042",
+          "result": "Both complete required lanes passed locally on 1aa35005d77652f38251c1d2fd7c93a6a5c83087. JavaScript: 2,737 parity tests and one expected guard skip. Native-required: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132379194042 on 1aa35005d77652f38251c1d2fd7c93a6a5c83087: 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed."
         }
       ],
-      "nextAction": "Run both required full local lanes and canonical Linux native-required CI. Then confirm final matrix and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-string-set",
       "branch": "codex/expand-string-set",
       "baseCommit": "26d044b87e55e237f507b4dcaa887ca2adfa90d7",
-      "progressNote": "Actual caller-cell parsing, partial mutation on capacity errors and byte-sensitive membership exercised on both compiled backends and a browser worker."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1aa35005. 2,506 registered Node/WASM live comparisons; 2,738 parity-package tests with no skips, including the native-required guard; 125 native wrapper, 690 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "Actual caller-cell parsing, partial mutation on capacity errors and byte-sensitive membership exercised on both compiled backends and a browser worker."
     },
     {
       "id": "B05-kernel-pool",
