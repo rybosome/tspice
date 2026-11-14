@@ -92,6 +92,16 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "daffpa": {
+      "node": {
+        "reason": "Select the owned DAF search first. N0067 daffpa_c unconditionally copies a private logical, even on a pre-existing toolkit failure. Call its exact linked SPICELIB operation with initialized output and preserve its outer trace frame.",
+        "expectedEntrypoints": ["dafcs_c", "daffpa_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "Select the owned DAF search first. N0067 daffpa_c unconditionally copies a private logical, even on a pre-existing toolkit failure. Call its exact linked SPICELIB operation with initialized output and preserve its outer trace frame.",
+        "expectedEntrypoints": ["dafcs_c", "daffpa_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

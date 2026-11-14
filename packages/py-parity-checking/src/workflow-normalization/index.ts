@@ -27,8 +27,11 @@ export function createEmptyWorkflowNormalizationMetadata(): WorkflowNormalizatio
 export function normalizeWorkflowDetailed(
   workflow: WorkflowStep[],
   target: NormalizeTarget,
+  generatedSpkDirectory?: string,
 ): NormalizedWorkflowResult {
   const context = createNormalizationContext(target);
+  if (generatedSpkDirectory !== undefined)
+    context.generatedSpkDirectory = generatedSpkDirectory;
 
   for (const step of workflow) {
     for (const normalizer of normalizers) {

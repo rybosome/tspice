@@ -116,6 +116,17 @@ int tspice_getfat(
 
 // --- DAF -------------------------------------------------------------------
 
+// Pinned N0067 DAF summary uses at most 125 double words.
+#define TSPICE_DAF_SUMMARY_BYTES 1000
+#define TSPICE_DAF_NAME_BYTES (TSPICE_DAF_SUMMARY_BYTES + 1)
+int tspice_dafbbs(int handle, char *err, int errMaxBytes);
+int tspice_dafcs(int handle, char *err, int errMaxBytes);
+int tspice_daffpa(int handle, int *outFound, char *err, int errMaxBytes);
+int tspice_dafgh(int *outHandle, char *err, int errMaxBytes);
+int tspice_dafgn(int handle, int namlen, char *out, char *err, int errMaxBytes);
+int tspice_dafgs(int handle, unsigned char *out, int room, int *bytes, char *err, int errMaxBytes);
+int tspice_dafhsf(int handle, int *nd, int *ni, char *err, int errMaxBytes);
+int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafcls(int handle, char *err, int errMaxBytes);
 int tspice_dafbfs(int handle, char *err, int errMaxBytes);

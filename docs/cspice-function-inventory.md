@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -42,10 +42,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
+| `dafbbs_c` | DAF, begin backward search |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
+| `dafcs_c` | DAF, continue search |
 | `daffna_c` | DAF, find next array |
+| `daffpa_c` | DAF, find previous array |
+| `dafgh_c` | DAF, get handle |
+| `dafgn_c` | DAF, get array name |
+| `dafgs_c` | DAF, get summary |
+| `dafhsf_c` | DAF, handle to summary format |
 | `dafopr_c` | DAF, open for read |
+| `dafopw_c` | DAF, open for write |
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
 | `deltet_c` | Delta ET, ET - UTC |
@@ -239,18 +247,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cylrec_c` | Cylindrical to rectangular |
 | `cylsph_c` | Cylindrical to spherical |
 | `dafac_c` | DAF add comments |
-| `dafbbs_c` | DAF, begin backward search |
-| `dafcs_c` | DAF, continue search |
 | `dafdc_c` | DAF delete comments |
 | `dafec_c` | DAF extract comments |
-| `daffpa_c` | DAF, find previous array |
 | `dafgda_c` | DAF, read data from address |
-| `dafgh_c` | DAF, get handle |
-| `dafgn_c` | DAF, get array name |
-| `dafgs_c` | DAF, get summary |
 | `dafgsr_c` | DAF, get summary/descriptor record |
-| `dafhsf_c` | DAF, handle to summary format |
-| `dafopw_c` | DAF, open for write |
 | `dafps_c` | DAF, pack summary |
 | `dafrda_c` | DAF, read data from address |
 | `dafrfr_c` | DAF, read file record |

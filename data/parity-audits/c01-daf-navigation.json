@@ -1,0 +1,969 @@
+{
+  "schemaVersion": 1,
+  "batch": "c01-daf-navigation",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-daf-navigation.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/daf-navigation-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/test/daf-navigation-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/daf.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py",
+    "packages/py-parity-checking/fixtures/generate-audit-daf.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/py-parity-checking/fixtures/generate-navigation-daf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/fixtures.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/workflow-normalization/context.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/file-io.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/kernels.ts",
+    "packages/py-parity-checking/src/workflow-normalization/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/types.ts",
+    "packages/py-parity-checking/test/daf-navigation.test.ts",
+    "packages/py-parity-checking/test/workflow-normalization.test.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "packages/tspice/test/daf-summary-rpc.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c01-09dbf1e7-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5947dd72ea8e92b7e2dc1c8e391c423b930bb575479cd03cdad2b11b1e417a0",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on 09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f. JavaScript: 2,523 parity tests and one expected guard skip. Native-required: 2,308 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 627 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c01-09dbf1e7-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5947dd72ea8e92b7e2dc1c8e391c423b930bb575479cd03cdad2b11b1e417a0",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "observation": "Both complete required lanes passed locally on 09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f. JavaScript: 2,523 parity tests and one expected guard skip. Native-required: 2,308 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 627 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c01-09dbf1e7-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5947dd72ea8e92b7e2dc1c8e391c423b930bb575479cd03cdad2b11b1e417a0",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43558380270/job/132336304651",
+      "observation": "Inspected successful Linux Node 22 native-required job 132336304651 on 09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f: 2,308 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 627 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c01-09dbf1e7-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e5947dd72ea8e92b7e2dc1c8e391c423b930bb575479cd03cdad2b11b1e417a0",
+      "caseIds": [
+        "file-io-dafbbs-empty-search",
+        "file-io-dafbbs-interleaved-files",
+        "file-io-dafbbs-restart-after-position",
+        "file-io-dafbbs-reverse-an-active-forward-search",
+        "file-io-dafbbs-two-segment-backward",
+        "file-io-dafcs-empty-current-file",
+        "file-io-dafcs-not-initialized",
+        "file-io-dafcs-other-active",
+        "file-io-dafcs-repeated-selection",
+        "file-io-dafcs-select-between-files",
+        "file-io-daffpa-before-first-forward",
+        "file-io-daffpa-empty-repeated-false",
+        "file-io-daffpa-no-search",
+        "file-io-daffpa-previous-exhaust-and-forward",
+        "file-io-daffpa-select-own-file",
+        "file-io-dafgh-before-an-array",
+        "file-io-dafgh-duplicate-open-ownership",
+        "file-io-dafgh-exhausted-file",
+        "file-io-dafgh-interleaved-selection",
+        "file-io-dafgh-reopen-workflow-label",
+        "file-io-dafgn-after-final-array",
+        "file-io-dafgn-before-any-array",
+        "file-io-dafgn-full-and-prefix",
+        "file-io-dafgn-implicit-selection",
+        "file-io-dafgn-negative-capacity",
+        "file-io-dafgn-recover-same-search",
+        "file-io-dafgn-short-capacity",
+        "file-io-dafgn-unstarted-short-capacity",
+        "file-io-dafgs-after-backward-exhaustion",
+        "file-io-dafgs-before-any-array",
+        "file-io-dafgs-changing-packed-addresses",
+        "file-io-dafgs-packed-nan-payload",
+        "file-io-dafgs-select-across-daf-kinds",
+        "file-io-dafgs-unstarted-file",
+        "file-io-dafhsf-active-then-exhausted",
+        "file-io-dafhsf-new-write-handle",
+        "file-io-dafhsf-no-current-change",
+        "file-io-dafhsf-unpositioned-and-empty",
+        "file-io-dafopw-generated-path-alias",
+        "file-io-dafopw-missing-scratch",
+        "file-io-dafopw-read-during-write",
+        "file-io-dafopw-read-open-conflict",
+        "file-io-dafopw-repeated-writer-conflict",
+        "file-io-dafopw-scratch-reopen-read",
+        "file-io-dafopw-writer-after-close"
+      ],
+      "commit": "09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43558380270/job/132336304651",
+      "observation": "Inspected successful Linux Node 22 native-required job 132336304651 on 09dbf1e7ec3f4c3bc86b6c2e92acacebf97ff17f: 2,308 registered Node/WASM live comparisons; 2,524 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 627 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dafbbs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbbs_c.html",
+      "semantics": "Begin a backward search on a live DAF, select it, and reset its per-file cursor to just past the last array. It becomes current even when empty.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafbbs-two-segment-backward",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Backward search makes the last array available first, then the first, before exhaustion."
+        },
+        {
+          "caseId": "file-io-dafbbs-empty-search",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty DAF supports beginning and repeating a backward search."
+        },
+        {
+          "caseId": "file-io-dafbbs-restart-after-position",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Beginning again on the same handle resets its cursor to just after the last array."
+        },
+        {
+          "caseId": "file-io-dafbbs-reverse-an-active-forward-search",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Backward initialization replaces an earlier forward cursor."
+        },
+        {
+          "caseId": "file-io-dafbbs-interleaved-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Backward starts on independent files retain their own array positions."
+        }
+      ],
+      "edgeAssessment": "Prove initialization, replacement of a prior forward search, restart after positioning, empty search and independent positions across files.",
+      "errorAssessment": "The raw public API excludes closed, foreign and wrong-kind claims before the call. Ordinary empty files support a successful search. Media-read failures are outside the authored intact fixtures.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Exact ordered hit/miss flags, array names and owner identities distinguish cursor side effects.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafbbs -> Node owner registry and mutex-protected native addon -> shared tspice_dafbbs -> dafbbs_c.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafbbs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafbbs -> dafbbs_c.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafcs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcs_c.html",
+      "semantics": "Select an already-started search as current, preserving its array position and the saved positions of other open DAFs.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafcs-select-between-files",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Select a positioned search without advancing and observe the current handle and array."
+        },
+        {
+          "caseId": "file-io-dafcs-repeated-selection",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reselecting the same file preserves its position and current name."
+        },
+        {
+          "caseId": "file-io-dafcs-empty-current-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Selection may identify an active empty DAF without a current array."
+        },
+        {
+          "caseId": "file-io-dafcs-not-initialized",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An open DAF without an active search cannot be selected. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
+        },
+        {
+          "caseId": "file-io-dafcs-other-active",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Starting a search in one file does not start one in another. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
+        }
+      ],
+      "edgeAssessment": "Observe owner identities and full names across repeated selection, independent positioned searches and an active empty file.",
+      "errorAssessment": "An owner may open a valid DAF without starting a search. Selecting that file raises DAFNOSEARCH even when a different search is active.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Compare owner labels, booleans and names exactly. The selection is assessed through subsequent real DAFGH and DAFGN results.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafcs -> Node owner registry and mutex-protected native addon -> shared tspice_dafcs -> dafcs_c.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafcs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafcs -> dafcs_c.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "daffpa_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffpa_c.html",
+      "semantics": "Select the owned file, advance to the previous array once, and return whether the result is current. The initialized traced SPICELIB DAFFPA alias preserves the pinned operation and avoids its public shim’s private uninitialized output on early failure.",
+      "scenarios": [
+        {
+          "caseId": "file-io-daffpa-previous-exhaust-and-forward",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe both arrays backward, repeated exhaustion, then a forward step from the endpoint."
+        },
+        {
+          "caseId": "file-io-daffpa-empty-repeated-false",
+          "coverage": ["success", "edge", "state"],
+          "observes": "No previous arrays exist at any position in the empty file."
+        },
+        {
+          "caseId": "file-io-daffpa-before-first-forward",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A backward step at the fresh forward start is false; forward advancement remains possible."
+        },
+        {
+          "caseId": "file-io-daffpa-select-own-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Interleaved previous calls implicitly select their specified file and retain both saved cursors."
+        },
+        {
+          "caseId": "file-io-daffpa-no-search",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A preceding DAFCS failure propagates before any advancement. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
+        }
+      ],
+      "edgeAssessment": "Compare a complete reverse traversal, repeated false after exhaustion, forward recovery, absence before the first array and interleaved files. Each public call consumes one cursor transition. On independently restarted valid two-array searches, the ordinary locked public wrapper and the separately bound initialized routine both returned true/SEGMENT 2, true/SEGMENT 1, false, false.",
+      "errorAssessment": "A valid owned file with no started search raises DAFNOSEARCH during DAFCS selection. No original-wrapper invocation on an undefined error path is needed.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Compare the logical result and subsequent names exactly. Repeated reverse and forward steps distinguish cursor effects.",
+      "findings": [
+        {
+          "id": "defined-linked-daffpa-logical",
+          "status": "repaired",
+          "summary": "The pinned daffpa_c public wrapper unconditionally reads its private logical after calling SPICELIB, including paths in which SPICELIB returned without assigning it.",
+          "repair": "Use an initialized logical with the exact linked daffpa_ call between outer chkin_c/chkout_c. Select the file first and publish only after toolkit status succeeds. The independent sidecar uses the pinned library ABI on its own cursor. The ledger mutation regression requires the real alias route.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "data/coverage-ledger-policy.json",
+            "scripts/coverage-ledger.test.mjs",
+            "docs/step8-daf-navigation.md"
+          ],
+          "caseIds": [
+            "file-io-daffpa-previous-exhaust-and-forward",
+            "file-io-daffpa-no-search"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "alias",
+          "trace": "raw.daffpa -> Node owner registry and mutex-protected native addon -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "alias",
+          "trace": "raw.daffpa -> WASM owner registry and scoped linear-memory buffers -> shared tspice_daffpa -> dafcs_c -> chkin_c -> linked daffpa_ -> chkout_c.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafgh_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgh_c.html",
+      "semantics": "Read the toolkit’s current file and return the oldest surviving local DAF token for its native handle. A matching reference already owned by another client is resolved independently in that client.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafgh-before-an-array",
+          "coverage": ["success", "edge", "state"],
+          "observes": "DAFGH returns the active owner after beginning a search, before any array is current."
+        },
+        {
+          "caseId": "file-io-dafgh-interleaved-selection",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Current handle identity follows explicit and implicit selections across files."
+        },
+        {
+          "caseId": "file-io-dafgh-duplicate-open-ownership",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two owned opens share a native DAF handle; closing the oldest promotes the surviving token."
+        },
+        {
+          "caseId": "file-io-dafgh-reopen-workflow-label",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reopening a previously closed label registers a new owner after the remaining alias."
+        },
+        {
+          "caseId": "file-io-dafgh-exhausted-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An exhausted search retains its owning DAF handle."
+        }
+      ],
+      "edgeAssessment": "Observe selection before positioning, exhaustion, duplicate open/close promotion and moving a reopened workflow label after surviving older claims. Separate native clients exercise process-global current state.",
+      "errorAssessment": "A current file with no local claim is rejected without creating a token. The toolkit documents DAFNOSEARCH when no search exists. The registered cases also distinguish an active search with no current array. An isolated fresh locked-oracle process observed DAFNOSEARCH, trace dafgh_c --> DAFGH, then failed()==false. This initial-state probe is separate from shared-workflow registration.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Compare the identity relation via live registered handle labels and exact public token equality. Absolute native handles are process-local.",
+      "findings": [
+        {
+          "id": "current-search-owned-alias",
+          "status": "repaired",
+          "summary": "A toolkit-global current native handle can refer to a file owned exclusively by another Node client, or to a file with multiple local open claims.",
+          "repair": "Look up the oldest matching live local DAF reference in registration order and reject unowned files. The real two-client regression exercises separate files and shared-file aliases across close/reopen.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/spice-handles.ts",
+            "packages/backend-node/test/daf-navigation-domain.test.ts",
+            "docs/step8-daf-navigation.md"
+          ],
+          "caseIds": [
+            "file-io-dafgh-duplicate-open-ownership",
+            "file-io-dafgh-reopen-workflow-label"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgh -> Node owner registry and mutex-protected native addon -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgh -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgh -> dafgh_c -> existing owner-local reference.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafgn_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgn_c.html",
+      "semantics": "Select the supplied DAF and return the current name with toolkit trailing-blank conversion and strict UTF-8 decoding. namlen is a signed byte capacity including NUL. The default physical capacity is 1001.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafgn-full-and-prefix",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read complete and truncated first and last array names with explicit NUL-inclusive capacities."
+        },
+        {
+          "caseId": "file-io-dafgn-implicit-selection",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Name lookups switch active files without advancing either cursor."
+        },
+        {
+          "caseId": "file-io-dafgn-before-any-array",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Starting a search does not position it on an array yet. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
+        },
+        {
+          "caseId": "file-io-dafgn-after-final-array",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The name cannot be read past the final array. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
+        },
+        {
+          "caseId": "file-io-dafgn-short-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Length one cannot accommodate a character and its terminating NUL. Actual toolkit diagnostic SPICE(STRINGTOOSHORT)."
+        },
+        {
+          "caseId": "file-io-dafgn-negative-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A negative logical name capacity receives toolkit length validation. Actual toolkit diagnostic SPICE(STRINGTOOSHORT)."
+        },
+        {
+          "caseId": "file-io-dafgn-unstarted-short-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Explicit handle selection precedes name buffer validation. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
+        },
+        {
+          "caseId": "file-io-dafgn-recover-same-search",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Capture the actual missing-array and short-buffer errors on one owner, then read the complete name and summary without resetting its search."
+        }
+      ],
+      "edgeAssessment": "Observe prefixes, distinct first/last names, selection across files and true toolkit error precedence. The separate fixture independently verifies a terminal tab and truncated trailing blank.",
+      "errorAssessment": "NOCURRENTARRAY applies before first and after last position, STRINGTOOSHORT to an active search with length below two, and DAFNOSEARCH to an unstarted search even with insufficient length. The public adapter rejects an invalid/incomplete UTF-8 byte prefix.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Compare the complete resulting string exactly, including preserved tabs. The independent C output buffer avoids Python conversion that strips terminal whitespace.",
+      "findings": [
+        {
+          "id": "independent-name-buffer",
+          "status": "repaired",
+          "summary": "The convenience Python string conversion strips a legitimate terminal tab and ignores invalid UTF-8, hiding important output details.",
+          "repair": "Read an initialized, bounded canonical dafgn_c output buffer in the independent sidecar and strictly decode it. The scratch fixture separately proves the text bytes and live public string, including the terminal tab.",
+          "evidence": [
+            "packages/py-parity-checking/fixtures/generate-navigation-daf.py",
+            "packages/py-parity-checking/test/daf-navigation.test.ts",
+            "docs/step8-daf-navigation.md"
+          ],
+          "caseIds": [
+            "file-io-dafgn-full-and-prefix",
+            "file-io-dafgn-recover-same-search"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgn -> Node owner registry and mutex-protected native addon -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgn -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgn -> dafcs_c -> dafgn_c -> strict UTF-8 decode.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafgs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgs_c.html",
+      "semantics": "Select the file, obtain ND and NI, read the entire current packed summary into 125 available double words and return an owned byte array of exactly 8*(ND+ceil(NI/2)) native-order bytes.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafgs-changing-packed-addresses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare each summary byte for both arrays, including distinct packed body and address words."
+        },
+        {
+          "caseId": "file-io-dafgs-packed-nan-payload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Preserve the authored negative body and center integer bits even when their packed double word is a NaN."
+        },
+        {
+          "caseId": "file-io-dafgs-select-across-daf-kinds",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Switch between CK and SPK arrays and observe every format-specific summary byte."
+        },
+        {
+          "caseId": "file-io-dafgs-before-any-array",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Summary reads need an array position after beginning a search. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
+        },
+        {
+          "caseId": "file-io-dafgs-after-backward-exhaustion",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Repeated backward searching beyond the first array leaves no summary. Actual toolkit diagnostic SPICE(NOCURRENTARRAY)."
+        },
+        {
+          "caseId": "file-io-dafgs-unstarted-file",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A handle without a search is rejected before any summary bytes are read. Actual toolkit diagnostic SPICE(DAFNOSEARCH)."
+        }
+      ],
+      "edgeAssessment": "Compare every byte across different arrays, file types, body IDs and address words. Repeated reads remain independent after client-side mutation, including a negative-ID integer pair that would decode as NaN.",
+      "errorAssessment": "NOCURRENTARRAY before first or after last/before first position and DAFNOSEARCH without a started search are actual toolkit errors. The public adapter checks physical bounds before exposing the caller-owned copy.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Exact unsigned-byte equality on each complete packed result. NumPy tobytes and the native/worker Uint8Array preserve arbitrary payload bits. No numerical NaN equivalence or float tolerance is involved.",
+      "findings": [
+        {
+          "id": "packed-byte-preservation",
+          "status": "repaired",
+          "summary": "Numerical treatment of packed double words can canonicalize NaN bit patterns and corrupt the integer fields of a DAF summary.",
+          "repair": "Copy only the used packed words as bytes. Compare all bytes against the independent memory image and recover signed integer components through actual worker transport/structured clone.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/tspice/test/daf-summary-rpc.test.ts",
+            "packages/py-parity-checking/test/daf-navigation.test.ts",
+            "docs/step8-daf-navigation.md"
+          ],
+          "caseIds": [
+            "file-io-dafgs-packed-nan-payload",
+            "file-io-dafgs-changing-packed-addresses"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgs -> Node owner registry and mutex-protected native addon -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgs -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafgs -> dafcs_c -> dafhsf_c -> dafgs_c -> owned Uint8Array.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafhsf_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafhsf_c.html",
+      "semantics": "Return the two integer counts {nd,ni} for an open DAF. The dimensions describe its file-wide packed summary layout, available independently of an active search or current array.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafhsf-unpositioned-and-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query both dimensions before starting a search, including on an empty DAF."
+        },
+        {
+          "caseId": "file-io-dafhsf-no-current-change",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Querying another file format does not change the current active search."
+        },
+        {
+          "caseId": "file-io-dafhsf-active-then-exhausted",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Summary dimensions remain available after cursor exhaustion."
+        },
+        {
+          "caseId": "file-io-dafhsf-new-write-handle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A freshly reopened writable SPK exposes the same file summary format."
+        }
+      ],
+      "edgeAssessment": "Read both counts on an empty/unstarted DAF, a writer and an exhausted search. Query a different file without selecting it, then compare DAFGH to verify the preserved current file.",
+      "errorAssessment": "CSPICE documents DAFNOSUCHHANDLE for an unknown raw native handle. The supported public API rejects expired, foreign and wrong-kind tokens before FFI. Valid unpositioned handles return dimensions.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Use project-authored files to distinguish array positions, metadata and empty states. CSPICE-backed writers use only freshly generated case-local scratch files. The separate generator supplies an independent byte/terminal-tab fixture.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. Ownership errors leave the existing live token available.",
+      "tolerance": "Compare each integer field exactly. Independently check the packed summary byte count against the counts, including bounded legal and malformed format pairs at the adapter boundary.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafhsf -> Node owner registry and mutex-protected native addon -> shared tspice_dafhsf -> dafhsf_c.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafhsf -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafhsf -> dafhsf_c.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafopw_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopw_c.html",
+      "semantics": "Open an existing native-format DAF with write access and register its native claim as an owner-local public token, resolving mounted virtual paths. Close with DAFCLS.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafopw-scratch-reopen-read",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Open a generated SPK for write, navigate its array, close, and reopen the same file for read."
+        },
+        {
+          "caseId": "file-io-dafopw-writer-after-close",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A new write claim is permitted once the prior write claim closes."
+        },
+        {
+          "caseId": "file-io-dafopw-repeated-writer-conflict",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An existing writable claim prevents a second write open on the same generated file. Actual toolkit diagnostic SPICE(FILEOPENCONFLICT)."
+        },
+        {
+          "caseId": "file-io-dafopw-read-open-conflict",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A read claim on an existing generated file prevents a write open. Actual toolkit diagnostic SPICE(FILEOPENCONFLICT)."
+        },
+        {
+          "caseId": "file-io-dafopw-read-during-write",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Opening an existing file for read while it has a write claim produces the actual read/write conflict. Actual toolkit diagnostic SPICE(RWCONFLICT)."
+        },
+        {
+          "caseId": "file-io-dafopw-missing-scratch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Opening a nonexistent file for write does not create a DAF. Actual toolkit diagnostic SPICE(FILENOTFOUND)."
+        },
+        {
+          "caseId": "file-io-dafopw-generated-path-alias",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the logical SPK writer path to its unique generated scratch file before a DAF write open."
+        }
+      ],
+      "edgeAssessment": "Observe content and dimensions through the writer, a read reopen after close, another writer after close and normalized generated-path aliases. Independently injected registration failure closes the acquired native writer.",
+      "errorAssessment": "The genuine errors comprise FILENOTFOUND on a missing path, FILEOPENCONFLICT for a writer requested while the file is already open and RWCONFLICT for a reader requested during a live writer. Failure releases all temporary allocations.",
+      "fixtures": [],
+      "fixtureRationale": "Each writer case creates its own scratch SPK through actual SPKOPN, SPKW08 and SPKCLS as needed, or deliberately addresses a nonexistent scratch file. No repository binary is opened for write.",
+      "cleanup": "Explicit DAFCLS releases one registered claim. Success and error finalizers attempt to close remaining DAF/SPK handles and remove physical case scratch directories. The WASM module owns MEMFS files until disposal. Each writable run receives a unique virtual path on a reused module. Node serializes cursor selection and operation under its native lock. WASM releases every temporary acquisition even on failure. A registration error explicitly releases the newly opened writer.",
+      "tolerance": "Compare exact names, owner relationships, sequence flags, format fields and summary bytes after reopening. Opaque integer representation can differ across processes.",
+      "findings": [
+        {
+          "id": "writer-owner-registration-rollback",
+          "status": "repaired",
+          "summary": "An error issuing an opaque token after a successful C writer open would retain an untracked write claim and prevent reopening.",
+          "repair": "Close the just-acquired native handle on registration failure. Real native and WASM regressions inject owner registration failure, then reopen the same scratch file for reading.",
+          "evidence": [
+            "packages/backend-node/test/daf-navigation-domain.test.ts",
+            "packages/backend-wasm/test/daf-navigation-allocations.test.ts",
+            "docs/step8-daf-navigation.md"
+          ],
+          "caseIds": [
+            "file-io-dafopw-writer-after-close",
+            "file-io-dafopw-scratch-reopen-read"
+          ]
+        },
+        {
+          "id": "case-scoped-wasm-created-spk",
+          "status": "repaired",
+          "summary": "The same generated path can already exist when a DAF-writing scenario is rerun on a live WASM module with persistent MEMFS.",
+          "repair": "Scope generated write-open SPKs by the unique run scratch directory. Publish the same generated location for read/write and kernel-load consumers while requiring a scratch reference before write-open. The actual case can be run again without replacing repository fixtures.",
+          "caseIds": [
+            "file-io-dafopw-generated-path-alias",
+            "file-io-dafopw-scratch-reopen-read"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/index.ts",
+            "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+            "packages/py-parity-checking/test/workflow-normalization.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafopw -> Node owner registry and mutex-protected native addon -> shared tspice_dafopw -> dafopw_c.",
+          "executions": ["local-c01-09dbf1e7-node", "ci-c01-09dbf1e7-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafopw -> WASM owner registry and scoped linear-memory buffers -> shared tspice_dafopw -> dafopw_c.",
+          "executions": ["local-c01-09dbf1e7-wasm", "ci-c01-09dbf1e7-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

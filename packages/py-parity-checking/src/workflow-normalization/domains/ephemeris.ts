@@ -65,6 +65,12 @@ function ensurePublishedGeneratedSpkPath(
   }
 
   const writablePath = createWritableSpkPath(pathRefLike, context);
+  if (context.generatedSpkDirectory !== undefined) {
+    writablePath.rel = path.posix.join(
+      context.generatedSpkDirectory,
+      writablePath.rel,
+    );
+  }
   publishGeneratedPath(context, lookupKey, writablePath);
   return writablePath;
 }

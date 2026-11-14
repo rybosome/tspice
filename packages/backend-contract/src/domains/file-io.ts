@@ -72,6 +72,31 @@ export interface FileIoApi {
 
   // --- DAF -----------------------------------------------------------------
 
+  /** Begin a backward array search on this live DAF, sharing its per-file cursor with other opens of the same file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbbs_c.html */
+  dafbbs(handle: SpiceHandle): void;
+  /** Select a previously started DAF search as the current search. Search selection is toolkit-global in each runtime.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcs_c.html */
+  dafcs(handle: SpiceHandle): void;
+  /** Select the handle’s search and move back one array. False denotes no previous array. Uses the same traced N0067 SPICELIB operation with defined error handling.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffpa_c.html */
+  daffpa(handle: SpiceHandle): boolean;
+  /** Return the oldest live DAF token in this backend for the current CSPICE search file. Repeated opens can share that file. An unowned current file is rejected.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgh_c.html */
+  dafgh(): SpiceHandle;
+  /** Select the handle's search and read the current array name. namlen is the signed byte capacity including NUL, default 1001. Smaller valid capacities retain the toolkit prefix. An incomplete or invalid UTF-8 result cannot be represented.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgn_c.html */
+  dafgn(handle: SpiceHandle, namlen?: number): string;
+  /** Select the handle's search and copy its current packed summary. The owned byte array contains 8*(ND+ceil(NI/2)) bytes in the runtime's native byte order, preserving all stored bit patterns. Use dafhsf for the layout.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgs_c.html */
+  dafgs(handle: SpiceHandle): Uint8Array;
+  /** Read the counts of double (nd) and integer (ni) summary components in this DAF.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafhsf_c.html */
+  dafhsf(handle: SpiceHandle): { nd: number; ni: number };
+  /** Open an existing native-format DAF for write access and return a claim owned by this backend. Resolve mounted virtual paths as for dafopr. Close with dafcls.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopw_c.html */
+  dafopw(path: string): SpiceHandle;
+
   /**
    * Open a DAF file for read and return a backend-owned opaque token.
    * Duplicate read opens have separate tokens but share CSPICE's file/cursor.
@@ -81,9 +106,9 @@ export interface FileIoApi {
   dafopr(path: string): SpiceHandle;
 
   /**
-   * Release one DAF read claim and invalidate its opaque token.
+   * Release one DAF read or write claim and invalidate its opaque token.
    * Wrong-kind, foreign and already-closed tokens throw at the registry boundary.
-   * @param handle Live token returned by this backend's `dafopr`.
+   * @param handle Live token returned by this backend's `dafopr` or `dafopw`.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcls_c.html
    */
   dafcls(handle: SpiceHandle): void;

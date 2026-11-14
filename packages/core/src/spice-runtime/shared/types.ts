@@ -71,6 +71,12 @@ export type SpiceHandleRegistry = {
     expected: readonly SpiceHandleKind[],
     context: string,
   ) => SpiceHandleEntry;
+  /** Resolve an existing claim in insertion order without issuing a new token. */
+  findOwned: (
+    kind: SpiceHandleKind,
+    nativeHandle: number,
+    context: string,
+  ) => SpiceHandle;
   close: (
     handle: SpiceHandle,
     expected: readonly SpiceHandleKind[],

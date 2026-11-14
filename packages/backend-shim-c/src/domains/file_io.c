@@ -2,6 +2,7 @@
 #include "tspice_error.h"
 
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
@@ -100,6 +101,113 @@ int tspice_getfat(
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  return 0;
+}
+
+_Static_assert(sizeof(logical) == sizeof(SpiceBoolean) && sizeof(logical) == 4,
+               "Unexpected DAF search logical ABI");
+_Static_assert(sizeof(SpiceDouble) == 8, "Unexpected DAF summary word size");
+
+static int DafStatus(char *err, int room) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, room);
+  return 1;
+}
+
+int tspice_dafbbs(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  dafbbs_c(handle);
+  return DafStatus(err, errMaxBytes);
+}
+
+int tspice_dafcs(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  dafcs_c(handle);
+  return DafStatus(err, errMaxBytes);
+}
+
+int tspice_daffpa(int handle, int *outFound, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!outFound) return tspice_return_error(err, errMaxBytes, "Missing DAF search output");
+  dafcs_c(handle);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  // daffpa_c copies its uninitialized private fnd even on early errors.
+  logical found = SPICEFALSE;
+  chkin_c("daffpa_c");
+  daffpa_(&found);
+  chkout_c("daffpa_c");
+  if (DafStatus(err, errMaxBytes)) return 1;
+  *outFound = found != SPICEFALSE;
+  return 0;
+}
+
+int tspice_dafgh(int *outHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!outHandle) return tspice_return_error(err, errMaxBytes, "Missing DAF handle output");
+  SpiceInt handle = 0;
+  dafgh_c(&handle);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  *outHandle = handle;
+  return 0;
+}
+
+int tspice_dafgn(int handle, int namlen, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || namlen > TSPICE_DAF_NAME_BYTES)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAF name storage");
+  dafcs_c(handle);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  // N0067 also applies F2C_ConvertStr to the buffer on a search error.
+  if (namlen > 0) memset(out, 0, (size_t)namlen);
+  dafgn_c(namlen, out);
+  return DafStatus(err, errMaxBytes);
+}
+
+int tspice_dafgs(int handle, unsigned char *out, int room, int *bytes, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !bytes || room < TSPICE_DAF_SUMMARY_BYTES)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAF packed summary storage");
+  dafcs_c(handle);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  SpiceInt nd = 0, ni = 0;
+  dafhsf_c(handle, &nd, &ni);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  if (nd < 0 || nd > 124 || ni < 2 || ni > 250 || nd + (ni + 1) / 2 > 125)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAF summary format");
+  SpiceDouble summary[TSPICE_DAF_SUMMARY_BYTES / sizeof(SpiceDouble)] = {0};
+  dafgs_c(summary);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  *bytes = (int)sizeof(SpiceDouble) * (nd + (ni + 1) / 2);
+  memcpy(out, summary, (size_t)*bytes);
+  return 0;
+}
+
+int tspice_dafhsf(int handle, int *nd, int *ni, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!nd || !ni) return tspice_return_error(err, errMaxBytes, "Missing DAF summary format outputs");
+  SpiceInt doubles = 0, integers = 0;
+  dafhsf_c(handle, &doubles, &integers);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  *nd = doubles;
+  *ni = integers;
+  return 0;
+}
+
+int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!path || !outHandle) return tspice_return_error(err, errMaxBytes, "Missing DAF writer input or output");
+  SpiceInt handle = 0;
+  dafopw_c(path, &handle);
+  if (DafStatus(err, errMaxBytes)) return 1;
+  *outHandle = handle;
   return 0;
 }
 

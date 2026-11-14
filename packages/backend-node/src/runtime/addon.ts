@@ -96,6 +96,14 @@ export type NativeAddon = {
   exists(path: string): boolean;
   getfat(path: string): { arch: string; type: string };
 
+  dafbbs(handle: number): void;
+  dafcs(handle: number): void;
+  daffpa(handle: number): boolean;
+  dafgh(): number;
+  dafgn(handle: number, namlen: number): Uint8Array;
+  dafgs(handle: number): Uint8Array;
+  dafhsf(handle: number): { nd: number; ni: number };
+  dafopw(path: string): number;
   dafopr(path: string): number;
   dafcls(handle: number): void;
   dafbfs(handle: number): void;

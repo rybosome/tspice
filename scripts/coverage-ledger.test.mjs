@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 170,
+    planned: 479,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 170,
+    scenarios: 1154,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -245,7 +245,7 @@ test("a shim implementation outside the production build does not count", (t) =>
   const f = fixture(t);
   f.edit(
     "packages/backend-node/native/binding.gyp",
-    '        "../../backend-shim-c/src/domains/time.c",',
+    '        "../../backend-shim-c/src/domains/file_io.c",',
     "",
   );
   assert.throws(f.build, /Node shared shim source not compiled/);
@@ -312,6 +312,49 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   delete policy.mappingNotes.bodvar;
   fs.writeFileSync(file, JSON.stringify(policy));
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
+});
+
+test("the DAFFPA alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "daffpa_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("daffpa_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("dafcs_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("daffpa_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  const call = "daffpa_(&found)";
+  for (const replacement of [
+    "0 /* daffpa_(&found) */",
+    "daffna_(&found)",
+    "daffpa_c(&found)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  const selection =
+    "dafcs_c(handle);\n  if (DafStatus(err, errMaxBytes)) return 1;\n  // daffpa_c";
+  const withoutSelection = selection.replace(
+    "dafcs_c(handle);",
+    "/* no DAF selection */",
+  );
+  f.edit(source, selection, withoutSelection);
+  assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+  f.edit(source, withoutSelection, selection);
+  for (const traceCall of ['chkin_c("daffpa_c");', 'chkout_c("daffpa_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, comment, traceCall);
+  }
 });
 
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
@@ -445,7 +488,12 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 8);
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +518,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("clight_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

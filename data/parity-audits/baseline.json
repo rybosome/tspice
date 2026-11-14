@@ -408,5 +408,23 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "c01-daf-navigation",
+      "routines": [
+        "dafbbs_c",
+        "dafcs_c",
+        "daffpa_c",
+        "dafgh_c",
+        "dafgn_c",
+        "dafgs_c",
+        "dafhsf_c",
+        "dafopw_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/727"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }
