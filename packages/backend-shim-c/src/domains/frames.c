@@ -4,6 +4,8 @@
 
 #include "../handle_validation.h"
 
+#include <limits.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -626,6 +628,162 @@ static int tspice_frames_validate_cell_handle(
     *outCell = cell;
   }
   return 0;
+}
+
+static int pck_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// On a capacity error inside their DAF search, PCKCOV/PCKFRM call DAFCLS
+// while FAILED is set. N0067 DAFCLS returns immediately. Balance exactly
+// that reader link plus our temporary lookup link after saving the error.
+static int pck_query_status(const char *path, const char *excess, char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  char shortMsg[64] = {0};
+  getmsg_c("SHORT", sizeof(shortMsg), shortMsg);
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  if (strcmp(shortMsg, excess) == 0) {
+    SpiceInt h = 0;
+    dafopr_c(path, &h);
+    if (!failed_c()) {
+      dafcls_c(h);
+      dafcls_c(h);
+    }
+    if (failed_c()) reset_c();
+  }
+  return 1;
+}
+
+int tspice_pckcls(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (handle >= 0) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK writer handle");
+  pckcls_c(handle);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckcov(const char *path, int classId, uintptr_t dest, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK path");
+  SpiceCell *window = tspice_validate_input_window(dest, err, errMaxBytes);
+  if (!window) return 1;
+  if (window->size % 2 || window->size > INT_MAX - SPICE_CELL_CTRLSZ - 2)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK coverage window capacity");
+  pckcov_c(path, classId, window);
+  if (failed_c()) {
+    if (window->init) tspice_set_window_control_preserved(window, 1);
+    return pck_query_status(path, "SPICE(WINDOWEXCESS)", err, errMaxBytes);
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckfrm(const char *path, uintptr_t dest, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!path) return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a PCK path");
+  SpiceCell *ids = tspice_validate_handle(dest, "cell", "pckfrm", err, errMaxBytes);
+  if (!ids) return 1;
+  if (ids->dtype != SPICE_INT || !ids->isSet || ids->card < 0 || ids->size < ids->card ||
+      ids->size > INT_MAX - SPICE_CELL_CTRLSZ ||
+      tspice_validate_cell_capacity(ids, ids->size, "pckfrm", err, errMaxBytes))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a bounded integer set");
+  if (ids->init && (((SpiceInt *)ids->base)[4] != ids->size || ((SpiceInt *)ids->base)[5] != ids->card))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Reset the integer set cardinality after a partial result");
+  const SpiceInt *members = ids->data;
+  for (int i = 1; i < ids->card; ++i) if (members[i-1] >= members[i])
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Expected a sorted integer set");
+  pckfrm_c(path, ids);
+  if (failed_c()) return pck_query_status(path, "SPICE(SETEXCESS)", err, errMaxBytes);
+  return pck_status(err, errMaxBytes);
+}
+
+// A repeated physical load reorders a single PCK search-table entry. Track its
+// generation so an owner with an older alias cannot unload a later load after
+// another owner removes the entry. Node serializes this table with CSPICE.
+// 5000 is N0067 PCKBSR's FTSIZE. The number of active DAF handles is smaller.
+static struct { SpiceInt daf; int generation; } pck_loads[5000];
+static int pck_load_count = 0;
+static int pck_generation = 0;
+
+int tspice_pcklof(const char *path, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!out || !path) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK load argument");
+  *out = 0;
+  // PCKLOF registers any readable DAF. Only binary PCKs have the descriptor
+  // and record layout expected by the subsequent orientation evaluators.
+  if (path[0]) {
+    SpiceChar arch[8] = {0}, type[8] = {0};
+    getfat_c(path, sizeof(arch), sizeof(type), arch, type);
+    if (failed_c()) reset_c();  // Let PCKLOF issue its own path diagnostic.
+    else if (!strcmp(arch, "DAF") && strcmp(type, "PCK"))
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load requires a binary PCK DAF");
+  }
+  if (pck_generation == INT_MAX) return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load generations exhausted");
+  SpiceInt daf = 0;
+  pcklof_c(path, &daf);
+  if (failed_c()) return pck_status(err, errMaxBytes);
+  for (int i = 0; i < pck_load_count; ++i) {
+    if (pck_loads[i].daf == daf) { *out = pck_loads[i].generation; return 0; }
+  }
+  if (pck_load_count == 5000) {
+    pckuof_c(daf);
+    return tspice_frames_invalid_arg(err, errMaxBytes, "PCK load registry capacity exceeded");
+  }
+  *out = ++pck_generation;
+  pck_loads[pck_load_count].daf = daf;
+  pck_loads[pck_load_count++].generation = *out;
+  return 0;
+}
+
+int tspice_pckopn(const char *path, const char *ifname, int ncomch, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!out || !path || !ifname) return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid PCK open argument");
+  *out = 0;
+  pckopn_c(path, ifname, ncomch, out);
+  return pck_status(err, errMaxBytes);
+}
+
+int tspice_pckuof(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  for (int i = 0; i < pck_load_count; ++i) {
+    if (pck_loads[i].generation == handle) {
+      pckuof_c(pck_loads[i].daf);
+      if (failed_c()) return pck_status(err, errMaxBytes);
+      pck_loads[i] = pck_loads[--pck_load_count];
+      break;
+    }
+  }
+  // PCKUOF itself ignores an already unloaded file. A retired alias must not
+  // unload a subsequent registration with the same DAF handle.
+  return 0;
+}
+
+int tspice_pckw02(int handle, int classId, const char *frame, double first, double last, const char *segid, double intlen, int n, int degree, const double *coefficients, int count, double btime, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!frame || !segid || !coefficients || degree < 0 || degree > 41 || count < 0 ||
+      count > 33554432 || (int64_t)(n > 0 ? n : 0) * 3 * (degree + 1) != count ||
+      !isfinite(first) || !isfinite(last) || !isfinite(intlen) || !isfinite(btime))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid type 2 PCK coefficient dimensions or epochs");
+  for (int i = 0; i < count; ++i) if (!isfinite(coefficients[i]))
+    return tspice_frames_invalid_arg(err, errMaxBytes, "PCK coefficients must be finite");
+  if (n > 0 && intlen > 0) {
+    double span = n * intlen;
+    if (!isfinite(span) || !isfinite(btime + span) || intlen / 2 == 0 ||
+        !isfinite(btime + intlen/2 + (n-1)*intlen) ||
+        (first <= last && first >= btime && last <= btime + span &&
+         !((last - btime) / intlen < INT_MAX - 1)))
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK epochs exceed the type 2 reader range");
+    SpiceInt nd = 0, ni = 0, fwd = 0, back = 0, next = 0;
+    SpiceChar name[61] = {0};
+    dafrfr_c(handle, sizeof(name), &nd, &ni, name, &fwd, &back, &next);
+    if (failed_c()) return pck_status(err, errMaxBytes);
+    // DAF may add a summary/name record pair and align the next free address.
+    if ((int64_t)next + count + 2*(int64_t)n + 4 + 3*128 > INT_MAX)
+      return tspice_frames_invalid_arg(err, errMaxBytes, "PCK segment exceeds DAF address space");
+  }
+  pckw02_c(handle, classId, frame, first, last, segid, intlen, n, degree, coefficients, btime);
+  return pck_status(err, errMaxBytes);
 }
 
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes) {

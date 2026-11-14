@@ -1,0 +1,146 @@
+[
+  {
+    "caseId": "frames-pcklof-endpoints",
+    "description": "Independently evaluate inclusive endpoints, two record midpoints, a record crossover, and a separate segment.",
+    "workflow": [
+      {
+        "op": "frames.pcklof",
+        "path": "kernels/audit-orientation.bpc",
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -20
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -15
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -10
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -5
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 0
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 10
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 15
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 20
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -16
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": -7
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pcklof-inverse",
+    "description": "Evaluate complete inverse state and orientation matrices separately on a nonstationary record.",
+    "workflow": [
+      {
+        "op": "frames.pcklof",
+        "path": "kernels/audit-orientation.bpc",
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "ITRF93",
+        "to": "J2000",
+        "et": -17
+      },
+      {
+        "op": "frames.sxform",
+        "from": "ITRF93",
+        "to": "J2000",
+        "et": -17
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pcklof-gap",
+    "description": "A genuine between-segment gap has no Earth orientation.",
+    "workflow": [
+      {
+        "op": "frames.pcklof",
+        "path": "kernels/audit-orientation.bpc",
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FRAMEDATANOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pcklof-missing",
+    "description": "A missing low-level PCK leaves no usable handle.",
+    "workflow": [
+      {
+        "op": "frames.pcklof",
+        "path": "kernels/missing-c11.bpc",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  }
+]

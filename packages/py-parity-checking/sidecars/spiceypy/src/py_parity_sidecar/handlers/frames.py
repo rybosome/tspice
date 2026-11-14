@@ -13,6 +13,13 @@ from ..models import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesPckcls,
+    StepFramesPckcov,
+    StepFramesPckfrm,
+    StepFramesPcklof,
+    StepFramesPckopn,
+    StepFramesPckuof,
+    StepFramesPckw02,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -26,6 +33,14 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext, resolve_path_ref
+
+
+def _release_pck_query_link(path: str) -> None:
+    # The checked wrapper has reset the scientific error. Balance the DAF link
+    # left by the interrupted canonical search and the temporary lookup link.
+    handle = sp.dafopr(path)
+    sp.dafcls(handle)
+    sp.dafcls(handle)
 
 
 def _to_matrix3(value: Any) -> list[list[float]]:
@@ -296,6 +311,74 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
         with sp.no_found_check():
             out = _normalize_ckgpav(sp.ckgpav(step.inst, step.sclkdp, step.tol, step.ref))
         return StepOutput(op=step.op, value=out)
+
+    if isinstance(step, (StepFramesPckopn, StepFramesPcklof)):
+        entries = context.state.frames.pckHandles
+        if step.handleId in entries:
+            raise ValueError("PCK handle already registered")
+        path = resolve_path_ref(context.paths, step.path)
+        writer = isinstance(step, StepFramesPckopn)
+        h = sp.pckopn(path, step.ifname, step.ncomch) if isinstance(step, StepFramesPckopn) else sp.pcklof(path)
+        entries[step.handleId] = (h, writer)
+        def close_pending_pck() -> None:
+            if step.handleId in entries:
+                if writer:
+                    try:
+                        sp.pckcls(h)
+                    except sp.utils.exceptions.SpiceNOSEGMENTSFOUND:
+                        sp.dafcls(h)
+                else:
+                    sp.pckuof(h)
+                for key in [key for key, (other, _) in entries.items() if other == h]:
+                    del entries[key]
+        context.register_finalizer(f"PCK:{step.handleId}", close_pending_pck)
+        return StepOutput(op=step.op, value={"opened": True})
+
+    if isinstance(step, (StepFramesPckcls, StepFramesPckuof, StepFramesPckw02)):
+        entries = context.state.frames.pckHandles
+        h, writer = entries[step.handleId]
+        if writer != (not isinstance(step, StepFramesPckuof)):
+            raise ValueError("Unexpected PCK handle kind")
+        if isinstance(step, StepFramesPckw02):
+            if not 0 <= step.degree <= 41 or len(step.coefficients) != 3 * max(step.n, 0) * (step.degree + 1):
+                raise ValueError("Invalid PCK coefficient shape")
+            sp.pckw02(h, step.classId, step.frame, step.first, step.last, step.segid, step.intlen,
+                      step.n, step.degree, step.coefficients or [0.0], step.btime)
+            return StepOutput(op=step.op, value=None)
+        if isinstance(step, StepFramesPckcls):
+            sp.pckcls(h)
+        else:
+            sp.pckuof(h)
+        for key in [key for key, (other, _) in entries.items() if other == h]:
+            del entries[key]
+        return StepOutput(op=step.op, value={"closed": True})
+
+    if isinstance(step, StepFramesPckfrm):
+        cells = context.state.cellsWindows.intCells
+        if step.idsId not in cells:
+            cells[step.idsId] = SPICEINT_CELL(step.maxCard)
+        ids = cells[step.idsId]
+        if step.reset:
+            sp.scard(0, ids)
+        path = resolve_path_ref(context.paths, step.path)
+        try:
+            sp.pckfrm(path, ids)
+        except sp.utils.exceptions.SpiceSETEXCESS:
+            _release_pck_query_link(path)
+            raise
+        return StepOutput(op=step.op, value={"ids": [int(v) for v in ids]})
+
+    if isinstance(step, StepFramesPckcov):
+        cover = _get_or_create_window(context, step.coverId, max_intervals=step.maxIntervals)
+        if step.reset:
+            sp.scard(0, cover)
+        path = resolve_path_ref(context.paths, step.path)
+        try:
+            sp.pckcov(path, step.classId, cover)
+        except sp.utils.exceptions.SpiceWINDOWEXCESS:
+            _release_pck_query_link(path)
+            raise
+        return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
 
     if isinstance(step, StepFramesCklpf):
         if step.handleId in context.state.frames.ckHandles:

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 175
-- Planned (not yet implemented): 474
+- Implemented now (SpiceRawBackend): 182
+- Planned (not yet implemented): 467
 - Excluded: 3
 
 ## Implemented now
@@ -118,6 +118,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
+| `pckcls_c` | PCK, close file |
+| `pckcov_c` | PCK coverage |
+| `pckfrm_c` | PCK, get reference frame class ID set |
+| `pcklof_c` | PCK, load binary file |
+| `pckopn_c` | PCK, open new file |
+| `pckuof_c` | PCK, unload binary file |
+| `pckw02_c` | PCK, write type 2 segment |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
@@ -495,13 +502,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ordi_c` | The ordinal position of an element in a set |
 | `oscelt_c` | Determine conic elements from state |
 | `oscltx_c` | Extended osculating elements from state |
-| `pckcls_c` | PCK, close file |
-| `pckcov_c` | PCK coverage |
-| `pckfrm_c` | PCK, get reference frame class ID set |
-| `pcklof_c` | PCK, load binary file |
-| `pckopn_c` | PCK, open new file |
-| `pckuof_c` | PCK, unload binary file |
-| `pckw02_c` | PCK, write type 2 segment |
 | `pgrrec_c` | Planetographic to rectangular |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |

@@ -74,3 +74,37 @@ export async function windowAlgebraConsumer(
     }
   }
 }
+
+/** Author and reopen a binary PCK through typed owned file, set and window handles. */
+export function binaryPckConsumer(
+  spice: Spice,
+  coefficients: readonly number[],
+): void {
+  const file = { kind: "virtual-output", path: "orientation.bpc" } as const;
+  const writer = spice.raw.pckopn(file, "ORIENTATION", 0);
+  spice.raw.pckw02(
+    writer,
+    3000,
+    "J2000",
+    0,
+    10,
+    "ONE",
+    10,
+    1,
+    1,
+    coefficients,
+    0,
+  );
+  spice.raw.pckcls(writer);
+  const ids = spice.kit.newIntCell(4),
+    coverage = spice.kit.newWindow(4);
+  try {
+    spice.raw.pckfrm(file, ids);
+    spice.raw.pckcov(file, 3000, coverage);
+    const loaded = spice.raw.pcklof(file);
+    spice.raw.pckuof(loaded);
+  } finally {
+    spice.kit.freeCell(ids);
+    spice.kit.freeWindow(coverage);
+  }
+}

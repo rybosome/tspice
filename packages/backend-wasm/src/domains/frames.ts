@@ -2,6 +2,9 @@ import type {
   CkCoverageLevel,
   CkCoverageTimeSystem,
   Found,
+  SpiceHandle,
+  VirtualOutput,
+  SpiceHandleRegistry,
   FramesApi,
   Mat3RowMajor,
   SpiceIntCell,
@@ -10,6 +13,9 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyPckCoefficients,
+  requirePckString,
+  createSpiceHandleRegistry,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   brandMat6RowMajor,
@@ -17,6 +23,10 @@ import {
   brandMat3RowMajor,
 } from "@rybosome/tspice-core";
 
+import {
+  createVirtualOutputRegistry,
+  type VirtualOutputRegistry,
+} from "../runtime/virtual-outputs.js";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
@@ -616,9 +626,223 @@ function validateCkPointing(
     throw new TypeError("CK reference must be a string");
 }
 
+function withPckStrings<T>(
+  module: EmscriptenModule,
+  strings: readonly string[],
+  sizes: readonly number[],
+  fn: (err: number, ...pointers: number[]) => T,
+): T {
+  const encoded = strings.map((value) =>
+    new TextEncoder().encode(requirePckString(value)),
+  );
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, ...encoded.map((bytes) => bytes.length + 1), ...sizes],
+    (err, ...pointers) => {
+      encoded.forEach((bytes, index) => {
+        const ptr = pointers[index]!;
+        module.HEAPU8.set(bytes, ptr);
+        module.HEAPU8[ptr + bytes.length] = 0;
+      });
+      return fn(err, ...pointers);
+    },
+  );
+}
+
+function pckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected a PCK path or VirtualOutput");
+  return { kind: "virtual-output", path: requirePckString(file.path) };
+}
+
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
-export function createFramesApi(module: EmscriptenModule): FramesApi {
+export function createFramesApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry = createSpiceHandleRegistry(),
+  outputs: VirtualOutputRegistry = createVirtualOutputRegistry(),
+): FramesApi {
+  const writerOutputs = new Map<SpiceHandle, string>();
+  const resolveRead = (file: string | VirtualOutput) =>
+    resolveKernelPath(
+      typeof file === "string" ? requirePckString(file) : pckOutput(file).path,
+    );
+  function check(code: number, err: number): void {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+  const loaded = new Map<number, SpiceHandle>();
   return {
+    pckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "pckopn ncomch");
+      requirePckString(ifname);
+      const target =
+        typeof file === "string" ? requirePckString(file) : pckOutput(file);
+      const path = resolveRead(target);
+      module.FS.mkdirTree(path.slice(0, path.lastIndexOf("/")));
+      const value = withPckStrings(
+        module,
+        [path, ifname],
+        [4],
+        (err, pathPtr, name, out) => {
+          check(
+            module._tspice_pckopn(
+              pathPtr,
+              name,
+              ncomch,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+      try {
+        const handle = handles.register("PCK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(path);
+          writerOutputs.set(handle, path);
+        }
+        return handle;
+      } catch (error) {
+        withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+          check(module._tspice_dafcls(value, err, WASM_ERR_MAX_BYTES), err),
+        );
+        throw error;
+      }
+    },
+    pckcls: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-WRITER"],
+        (entry) =>
+          withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+            check(
+              module._tspice_pckcls(
+                entry.nativeHandle,
+                err,
+                WASM_ERR_MAX_BYTES,
+              ),
+              err,
+            ),
+          ),
+        "pckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    pcklof: (file) => {
+      const path = resolveRead(file);
+      const value = withPckStrings(module, [path], [4], (err, name, out) => {
+        check(module._tspice_pcklof(name, out, err, WASM_ERR_MAX_BYTES), err);
+        return module.HEAP32[out >>> 2]!;
+      });
+      const existing = loaded.get(value);
+      if (existing !== undefined) return existing;
+      try {
+        const handle = handles.register("PCK-LOADED", value);
+        loaded.set(value, handle);
+        return handle;
+      } catch (error) {
+        withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+          check(module._tspice_pckuof(value, err, WASM_ERR_MAX_BYTES), err),
+        );
+        throw error;
+      }
+    },
+    pckuof: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-LOADED"],
+        (entry) => {
+          withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+            check(
+              module._tspice_pckuof(
+                entry.nativeHandle,
+                err,
+                WASM_ERR_MAX_BYTES,
+              ),
+              err,
+            ),
+          );
+          loaded.delete(entry.nativeHandle);
+        },
+        "pckuof",
+      );
+    },
+    pckcov: (file, classId, cover) => {
+      const path = resolveRead(file);
+      assertSpiceInt32(classId, "pckcov classId");
+      const dest = wasmWindowPointer(module, cover, "pckcov");
+      withPckStrings(module, [path], [], (err, name) =>
+        check(
+          module._tspice_pckcov(name, classId, dest, err, WASM_ERR_MAX_BYTES),
+          err,
+        ),
+      );
+    },
+    pckfrm: (file, ids) => {
+      const path = resolveRead(file);
+      const dest = wasmCellPointer(module, ids, "pckfrm");
+      withPckStrings(module, [path], [], (err, name) =>
+        check(module._tspice_pckfrm(name, dest, err, WASM_ERR_MAX_BYTES), err),
+      );
+    },
+    pckw02: (
+      handle,
+      classId,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      coefficients,
+      btime,
+    ) => {
+      const values = copyPckCoefficients(n, degree, coefficients);
+      assertSpiceInt32(classId, "pckw02 classId");
+      requirePckString(frame);
+      requirePckString(segid);
+      if (![first, last, intlen, btime].every(Number.isFinite))
+        throw new RangeError("PCK epochs and interval must be finite");
+      const writer = handles.lookup(
+        handle,
+        ["PCK-WRITER"],
+        "pckw02",
+      ).nativeHandle;
+      withPckStrings(
+        module,
+        [frame, segid],
+        [Math.max(1, values.length) * 8],
+        (err, ref, seg, data) => {
+          module.HEAPF64.set(values, data >>> 3);
+          check(
+            module._tspice_pckw02(
+              writer,
+              classId,
+              ref,
+              first,
+              last,
+              seg,
+              intlen,
+              n,
+              degree,
+              data,
+              values.length,
+              btime,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
     namfrm: (name: string) => {
       assertFrameString(name, "namfrm(name)");
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, name);

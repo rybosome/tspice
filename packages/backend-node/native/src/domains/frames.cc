@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <vector>
 #include <string>
 
 #include "../addon_common.h"
@@ -279,6 +280,213 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, m, 36);
 }
 
+static bool PckInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double d = value.As<Napi::Number>().DoubleValue();
+    if (d >= INT32_MIN && d <= INT32_MAX && std::trunc(d) == d) {
+      *out = static_cast<int>(d);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit PCK integer"));
+  return false;
+}
+
+static bool PckString(Napi::Env env, const Napi::Value& value, std::string* out) {
+  if (value.IsString()) {
+    *out = value.As<Napi::String>().Utf8Value();
+    if (out->size() < INT32_MAX && out->find('\0') == std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a NUL-free PCK string"));
+  return false;
+}
+
+static Napi::Value Pckcls(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckcls: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!PckInt(env, info[0], &handle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckcls(handle, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckcls", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Pckcov(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckcov: invalid argument count"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!PckString(env, info[0], &path)) return env.Undefined();
+  int classId = 0;
+  if (!PckInt(env, info[1], &classId)) return env.Undefined();
+  uint32_t token = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[2], "dest", &token)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t dest = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, token, SPICE_DP, "pckcov", "destination");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckcov(path.c_str(), classId, dest, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckcov", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Pckfrm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckfrm: invalid argument count"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!PckString(env, info[0], &path)) return env.Undefined();
+  uint32_t token = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "dest", &token)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  uintptr_t dest = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, token, SPICE_INT, "pckfrm", "destination");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckfrm(path.c_str(), dest, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckfrm", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Pcklof(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pcklof: invalid argument count"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!PckString(env, info[0], &path)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pcklof(path.c_str(), &out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pcklof", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Pckopn(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckopn: invalid argument count"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!PckString(env, info[0], &path)) return env.Undefined();
+  std::string ifname;
+  if (!PckString(env, info[1], &ifname)) return env.Undefined();
+  int ncomch = 0;
+  if (!PckInt(env, info[2], &ncomch)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  int out = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckopn(path.c_str(), ifname.c_str(), ncomch, &out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckopn", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Pckuof(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckuof: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!PckInt(env, info[0], &handle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckuof(handle, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckuof", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Pckw02(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 11) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pckw02: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!PckInt(env, info[0], &handle)) return env.Undefined();
+  int classId = 0;
+  if (!PckInt(env, info[1], &classId)) return env.Undefined();
+  std::string frame;
+  if (!PckString(env, info[2], &frame)) return env.Undefined();
+  if (!info[3].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected numeric first"));
+    return env.Undefined();
+  }
+  const double first = info[3].As<Napi::Number>().DoubleValue();
+  if (!info[4].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected numeric last"));
+    return env.Undefined();
+  }
+  const double last = info[4].As<Napi::Number>().DoubleValue();
+  std::string segid;
+  if (!PckString(env, info[5], &segid)) return env.Undefined();
+  if (!info[6].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected numeric intlen"));
+    return env.Undefined();
+  }
+  const double intlen = info[6].As<Napi::Number>().DoubleValue();
+  int n = 0;
+  if (!PckInt(env, info[7], &n)) return env.Undefined();
+  int degree = 0;
+  if (!PckInt(env, info[8], &degree)) return env.Undefined();
+  if (!info[9].IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a PCK coefficient array"));
+    return env.Undefined();
+  }
+  Napi::Array array = info[9].As<Napi::Array>();
+  const uint32_t count = array.Length();
+  if (degree < 0 || degree > 41 || count > 33554432 ||
+      static_cast<int64_t>(n > 0 ? n : 0)*3*(degree+1) != count) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid type 2 PCK coefficient dimensions"));
+    return env.Undefined();
+  }
+  std::vector<double> coefficients(count ? count : 1);
+  for (uint32_t i = 0; i < count; ++i) {
+    Napi::Value entry = array.Get(i);
+    if (env.IsExceptionPending()) return env.Undefined();
+    if (!entry.IsNumber() || !std::isfinite(entry.As<Napi::Number>().DoubleValue())) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected finite PCK coefficients"));
+      return env.Undefined();
+    }
+    coefficients[i] = entry.As<Napi::Number>().DoubleValue();
+  }
+  if (!info[10].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected numeric btime"));
+    return env.Undefined();
+  }
+  const double btime = info[10].As<Napi::Number>().DoubleValue();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_pckw02(handle, classId, frame.c_str(), first, last, segid.c_str(), intlen, n, degree, coefficients.data(), static_cast<int>(count), btime, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling pckw02", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 // --- CK file query / management --------------------------------------------
 
 static Napi::Number Cklpf(const Napi::CallbackInfo& info) {
@@ -426,6 +634,13 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "frinfo", Napi::Function::New(env, Frinfo), __func__)) return;
   if (!SetExportChecked(env, exports, "ccifrm", Napi::Function::New(env, Ccifrm), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "pckcls", Napi::Function::New(env, Pckcls), __func__)) return;
+  if (!SetExportChecked(env, exports, "pckcov", Napi::Function::New(env, Pckcov), __func__)) return;
+  if (!SetExportChecked(env, exports, "pckfrm", Napi::Function::New(env, Pckfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "pcklof", Napi::Function::New(env, Pcklof), __func__)) return;
+  if (!SetExportChecked(env, exports, "pckopn", Napi::Function::New(env, Pckopn), __func__)) return;
+  if (!SetExportChecked(env, exports, "pckuof", Napi::Function::New(env, Pckuof), __func__)) return;
+  if (!SetExportChecked(env, exports, "pckw02", Napi::Function::New(env, Pckw02), __func__)) return;
   // CK read-only helpers.
   if (!SetExportChecked(env, exports, "cklpf", Napi::Function::New(env, Cklpf), __func__)) return;
   if (!SetExportChecked(env, exports, "ckupf", Napi::Function::New(env, Ckupf), __func__)) return;

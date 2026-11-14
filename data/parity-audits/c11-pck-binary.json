@@ -1,0 +1,811 @@
+{
+  "schemaVersion": 1,
+  "batch": "c11-pck-binary",
+  "traceFiles": [
+    "docs/step8-pck-binary.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/frames.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/frames.cc",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/domains/frames.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/pck-binary.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/cells_windows.c",
+    "packages/backend-shim-c/src/domains/frames.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/pck-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/pck.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-pck.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/frames/index.ts",
+    "packages/py-parity-checking/src/cases/frames/pckcls.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pckcov.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pckfrm.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pcklof.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pckopn.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pckuof.cases.json",
+    "packages/py-parity-checking/src/cases/frames/pckw02.cases.json",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/pck-binary.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c11-ace63baf-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c11-ace63baf-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c11-ace63baf-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c11-ace63baf-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "pckcls_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcls_c.html",
+      "semantics": "Finalize a writer with at least one segment. Empty close reports NOSEGMENTSFOUND and the writer can be retried.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckcls-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Closing an empty writer reports NOSEGMENTSFOUND; cleanup releases the independent scratch handle. Require NOSEGMENTSFOUND."
+        },
+        {
+          "caseId": "frames-pckcls-two-classes",
+          "coverage": ["success", "edge"],
+          "observes": "Finalize a writer containing two class IDs and retain the exact set and independent windows. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcls-empty-then-write",
+          "coverage": ["success", "edge"],
+          "observes": "A writer with a valid single degree-zero constant segment can close and load. Compare the complete independent workflow outputs."
+        }
+      ],
+      "edgeAssessment": "Finalize a writer containing two class IDs and retain the exact set and independent windows. A writer with a valid single degree-zero constant segment can close and load.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: NOSEGMENTSFOUND. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckcls -> owner-local adapter and serialized Node addon -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckcls -> owner-local adapter and required WASM export -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pckcov_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcov_c.html",
+      "semantics": "Append the closed coverage intervals for a frame class ID to a live normalized window. An absent class leaves existing intervals intact.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckcov-gapped",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcov-lunar",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcov-body-not-class",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcov-frame-not-class",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcov-accumulate",
+          "coverage": ["success", "edge"],
+          "observes": "Append coverage to a nonempty window, including bridges, overlap and deduplication. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckcov-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "The second disjoint interval exceeds a one-interval window. Require WINDOWEXCESS."
+        },
+        {
+          "caseId": "frames-pckcov-missing",
+          "coverage": ["error", "edge"],
+          "observes": "A missing PCK path reports actual toolkit error. Require FILENOTFOUND."
+        },
+        {
+          "caseId": "frames-pckcov-text",
+          "coverage": ["error", "edge"],
+          "observes": "A text kernel has no DAF binary coverage. Require INVALIDARCHTYPE."
+        }
+      ],
+      "edgeAssessment": "Compare all closed coverage intervals using the selected class ID. Compare all closed coverage intervals using the selected class ID. Compare all closed coverage intervals using the selected class ID. Compare all closed coverage intervals using the selected class ID. Append coverage to a nonempty window, including bridges, overlap and deduplication.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: FILENOTFOUND, INVALIDARCHTYPE, WINDOWEXCESS. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [
+        {
+          "id": "pckcov-reader-link",
+          "status": "repaired",
+          "summary": "The DAF link opened by the canonical scan survives a capacity error because the internal DAFCLS returns while failed.",
+          "repair": "After capturing the actual diagnostic, balance the single retained link using a temporary independently acquired read link. Existing loads remain valid.",
+          "evidence": [
+            "docs/step8-pck-binary.md",
+            "packages/py-parity-checking/test/pck-binary.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/src/cases/frames/pckcov.cases.json"
+          ],
+          "caseIds": ["frames-pckcov-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckcov -> owner-local adapter and serialized Node addon -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckcov -> owner-local adapter and required WASM export -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pckfrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckfrm_c.html",
+      "semantics": "Insert distinct frame class IDs into an existing sorted integer set.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckfrm-fixture-classes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe sorted class IDs from three physical segments, two sharing one ID. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckfrm-accumulate",
+          "coverage": ["success", "edge"],
+          "observes": "Owned output preserves the original duplicate classes and a new negative class across files. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckfrm-tight",
+          "coverage": ["success", "edge"],
+          "observes": "A two-element cell exactly fits both distinct fixture classes. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckfrm-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "A second distinct ID exceeds the one-element integer set. Require SETEXCESS."
+        },
+        {
+          "caseId": "frames-pckfrm-missing",
+          "coverage": ["error", "edge"],
+          "observes": "Missing binary PCK path produces actual file diagnostics. Require FILENOTFOUND."
+        },
+        {
+          "caseId": "frames-pckfrm-text",
+          "coverage": ["error", "edge"],
+          "observes": "Text PCK is a valid kernel but has no DAF segment IDs. Require INVALIDARCHTYPE."
+        }
+      ],
+      "edgeAssessment": "Observe sorted class IDs from three physical segments, two sharing one ID. Owned output preserves the original duplicate classes and a new negative class across files. A two-element cell exactly fits both distinct fixture classes.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: FILENOTFOUND, INVALIDARCHTYPE, SETEXCESS. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [
+        {
+          "id": "pckfrm-reader-link",
+          "status": "repaired",
+          "summary": "The DAF link opened by the canonical scan survives a capacity error because the internal DAFCLS returns while failed.",
+          "repair": "After capturing the actual diagnostic, balance the single retained link using a temporary independently acquired read link. Existing loads remain valid.",
+          "evidence": [
+            "docs/step8-pck-binary.md",
+            "packages/py-parity-checking/test/pck-binary.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/src/cases/frames/pckfrm.cases.json"
+          ],
+          "caseIds": ["frames-pckfrm-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckfrm -> owner-local adapter and serialized Node addon -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckfrm -> owner-local adapter and required WASM export -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pcklof_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pcklof_c.html",
+      "semantics": "Register a binary PCK with the low-level orientation search. A duplicate promotes priority and a single unload removes its search entry.",
+      "scenarios": [
+        {
+          "caseId": "frames-pcklof-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Independently evaluate inclusive endpoints, two record midpoints, a record crossover, and a separate segment. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pcklof-inverse",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate complete inverse state and orientation matrices separately on a nonstationary record. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pcklof-gap",
+          "coverage": ["error", "edge"],
+          "observes": "A genuine between-segment gap has no Earth orientation. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-pcklof-missing",
+          "coverage": ["error", "edge"],
+          "observes": "A missing low-level PCK leaves no usable handle. Require FILENOTFOUND."
+        }
+      ],
+      "edgeAssessment": "Independently evaluate inclusive endpoints, two record midpoints, a record crossover, and a separate segment. Evaluate complete inverse state and orientation matrices separately on a nonstationary record.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: FILENOTFOUND, FRAMEDATANOTFOUND. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [
+        {
+          "id": "pcklof-shared-file-lifetime",
+          "status": "repaired",
+          "summary": "A single physical PCK search entry can have tokens in multiple Node owners. DAF readers may keep the numeric file handle alive across unloads.",
+          "repair": "Serialize a bounded load generation table with the real PCK calls. Retired direct aliases cannot remove later direct registrations.",
+          "evidence": [
+            "docs/step8-pck-binary.md",
+            "packages/py-parity-checking/test/pck-binary.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/src/cases/frames/pcklof.cases.json"
+          ],
+          "caseIds": ["frames-pcklof-endpoints"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pcklof -> owner-local adapter and serialized Node addon -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pcklof -> owner-local adapter and required WASM export -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pckopn_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckopn_c.html",
+      "semantics": "Create a binary PCK writer with a caller internal name and comment reservation; a virtual output becomes readable after close.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckopn-roundtrip",
+          "coverage": ["success", "edge"],
+          "observes": "Open a new PCK, write two angular records, close and reopen for independent frame, coverage and matrix observations. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckopn-negative",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckopn-reserved",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckopn-existing",
+          "coverage": ["error", "edge"],
+          "observes": "Opening a second writer on an existing physical file produces the real new-file diagnostic. Require FILEOPENFAIL."
+        },
+        {
+          "caseId": "frames-pckopn-empty-internal-name",
+          "coverage": ["error", "edge"],
+          "observes": "An empty internal name is diagnosed before opening any writer. Require EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "Open a new PCK, write two angular records, close and reopen for independent frame, coverage and matrix observations. Exercise the actual comment reservation rule and inspect a finalized orientation. Exercise the actual comment reservation rule and inspect a finalized orientation.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: EMPTYSTRING, FILEOPENFAIL. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckopn -> owner-local adapter and serialized Node addon -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckopn -> owner-local adapter and required WASM export -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pckuof_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckuof_c.html",
+      "semantics": "Unload the physical low-level PCK registration and restore eligible lower-priority data; a retired alias cannot affect a later generation.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckuof-priority",
+          "coverage": ["success", "edge"],
+          "observes": "At a shared epoch the latest file wins. Reloading the original promotes it, then one unload exposes the authored lower-priority orientation. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckuof-last-unload",
+          "coverage": ["error", "edge"],
+          "observes": "Unloading the only directly loaded PCK removes its frame data. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-pckuof-reload",
+          "coverage": ["success", "edge"],
+          "observes": "A fresh load after unloading restores complete orientation and derivative. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckuof-keeper",
+          "coverage": ["success", "edge"],
+          "observes": "Direct binary PCK loading and unloading do not add entries to KEEPER. Compare the complete independent workflow outputs."
+        }
+      ],
+      "edgeAssessment": "At a shared epoch the latest file wins. Reloading the original promotes it, then one unload exposes the authored lower-priority orientation. A fresh load after unloading restores complete orientation and derivative. Direct binary PCK loading and unloading do not add entries to KEEPER.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: FRAMEDATANOTFOUND. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [
+        {
+          "id": "pckuof-shared-file-lifetime",
+          "status": "repaired",
+          "summary": "A single physical PCK search entry can have tokens in multiple Node owners. DAF readers may keep the numeric file handle alive across unloads.",
+          "repair": "Serialize a bounded load generation table with the real PCK calls. Retired direct aliases cannot remove later direct registrations.",
+          "evidence": [
+            "docs/step8-pck-binary.md",
+            "packages/py-parity-checking/test/pck-binary.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/src/cases/frames/pckuof.cases.json"
+          ],
+          "caseIds": ["frames-pckuof-priority"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckuof -> owner-local adapter and serialized Node addon -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckuof -> owner-local adapter and required WASM export -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pckw02_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckw02_c.html",
+      "semantics": "Write consecutive equal-duration records with three Chebyshev Euler series per record, preserving descriptor trims, midpoint/radius, degree and trailer in the physical DAF.",
+      "scenarios": [
+        {
+          "caseId": "frames-pckw02-two-records",
+          "coverage": ["success", "edge"],
+          "observes": "Distinct angle groups, slopes, records, endpoints and inclusive crossover are preserved in the full rotation and state matrices. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckw02-degree-41",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate every angle at the maximum degree supported by the pinned fixed record reader. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckw02-trim",
+          "coverage": ["success", "edge"],
+          "observes": "Descriptor bounds can trim the full Chebyshev record interval. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckw02-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "An equal descriptor endpoint is a one-instant segment with a defined orientation. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckw02-segment-priority",
+          "coverage": ["success", "edge"],
+          "observes": "A later overlapping segment supersedes the earlier segment within a single file. Compare the complete independent workflow outputs."
+        },
+        {
+          "caseId": "frames-pckw02-count",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NUMCOEFFSNOTPOS."
+        },
+        {
+          "caseId": "frames-pckw02-interval",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INTLENNOTPOS."
+        },
+        {
+          "caseId": "frames-pckw02-bad-frame",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INVALIDREFFRAME."
+        },
+        {
+          "caseId": "frames-pckw02-reversed",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
+        },
+        {
+          "caseId": "frames-pckw02-early",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
+        },
+        {
+          "caseId": "frames-pckw02-late",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
+        },
+        {
+          "caseId": "frames-pckw02-long-segid",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require IDSTRINGTOOLONG."
+        },
+        {
+          "caseId": "frames-pckw02-nonprinting",
+          "coverage": ["error", "edge"],
+          "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NONPRINTABLECHARS."
+        }
+      ],
+      "edgeAssessment": "Distinct angle groups, slopes, records, endpoints and inclusive crossover are preserved in the full rotation and state matrices. Evaluate every angle at the maximum degree supported by the pinned fixed record reader. Descriptor bounds can trim the full Chebyshev record interval. An equal descriptor endpoint is a one-instant segment with a defined orientation. A later overlapping segment supersedes the earlier segment within a single file.",
+      "errorAssessment": "Independent terminal toolkit diagnostics: BADDESCRTIMES, IDSTRINGTOOLONG, INTLENNOTPOS, INVALIDREFFRAME, NONPRINTABLECHARS, NUMCOEFFSNOTPOS. No malformed external orientation record is evaluated.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-orientation.bpc",
+          "provenance": "Synthetic three-segment PCK produced independently with the pinned SpiceyPy generator.",
+          "distribution": "Project-authored data in the repository, SHA-256 63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba"
+        }
+      ],
+      "fixtureRationale": "Two disjoint terrestrial intervals with a changing orientation, plus a distinct lunar class and base frame. New writers also create isolated virtual or temporary files.",
+      "cleanup": "Close owned writers, unload direct PCK registrations, free windows and integer cells, dispose clients and remove scratch files. Reset cardinality before reusing a partial scan.",
+      "tolerance": "Class IDs, interval endpoints, descriptor fields, record words and file lifecycle are exact. Ordinary registered matrix comparisons use the existing harness policy; supplemental physical readback checks every floating component to 12 decimal places.",
+      "findings": [
+        {
+          "id": "pckw02-fixed-reader-record",
+          "status": "repaired",
+          "summary": "The writer accepts polynomial degrees exceeding the fixed reader record array.",
+          "repair": "Bound degree, coefficient length, record and address arithmetic before writing. Independently read all 126 coefficients for max-degree matrix/derivative tests.",
+          "evidence": [
+            "docs/step8-pck-binary.md",
+            "packages/py-parity-checking/test/pck-binary.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/src/cases/frames/pckw02.cases.json"
+          ],
+          "caseIds": ["frames-pckw02-degree-41"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckw02 -> owner-local adapter and serialized Node addon -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.pckw02 -> owner-local adapter and required WASM export -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

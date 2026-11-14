@@ -163,3 +163,7 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+## Binary orientation fixture
+
+`kernels/audit-orientation.bpc` contains project-authored synthetic type 2 orientation segments. The locked SpiceyPy generator writes two class 3000 segments in J2000 with different angular rates and an intervening gap, and one constant class 301 segment relative to B1950. Epochs are TDB seconds past J2000. These values exercise data layout and frame selection. They have no observational interpretation. The distributed 4096-byte fixture has SHA-256 `63afada27964265890dfd4c9846ba1dbd781edac6fd2d5aac319727333659dba`. [Generator](generate-audit-pck.py)

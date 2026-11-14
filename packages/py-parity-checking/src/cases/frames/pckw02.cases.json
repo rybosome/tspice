@@ -1,0 +1,832 @@
+[
+  {
+    "caseId": "frames-pckw02-two-records",
+    "description": "Distinct angle groups, slopes, records, endpoints and inclusive crossover are preserved in the full rotation and state matrices.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 0
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 2
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 5
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 10
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 14
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 20
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckw02-degree-41",
+    "description": "Evaluate every angle at the maximum degree supported by the pinned fixed record reader.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 20,
+        "n": 1,
+        "degree": 41,
+        "coefficients": [
+          -0.01, -0.007984031936127744, -0.00597609561752988,
+          -0.003976143141153081, -0.001984126984126984, 0.0,
+          0.001976284584980237, 0.0039447731755424065, 0.005905511811023622,
+          0.007858546168958742, 0.00980392156862745, 0.011741682974559686,
+          0.013671875, -0.009746588693957114, -0.007782101167315175,
+          -0.005825242718446602, -0.003875968992248062, -0.0019342359767891683,
+          0.0, 0.0019267822736030828, 0.0038461538461538464,
+          0.005758157389635317, 0.007662835249042145, 0.009560229445506692,
+          0.011450381679389313, 0.013333333333333334, -0.009505703422053232,
+          -0.007590132827324478, -0.005681818181818182, -0.003780718336483932,
+          -0.0018867924528301887, 0.0, 0.0018796992481203006,
+          0.00375234521575985, 0.0056179775280898875, 0.007476635514018692,
+          0.009328358208955223, 0.0111731843575419, 0.013011152416356878,
+          -0.00927643784786642, -0.007407407407407408, -0.005545286506469501,
+          -0.0036900369003690036, -0.001841620626151013, 0.0,
+          0.001834862385321101, 0.003663003663003663, 0.005484460694698354,
+          0.0072992700729927005, 0.009107468123861567, 0.01090909090909091,
+          0.012704174228675136, -0.009057971014492754, -0.007233273056057866,
+          -0.005415162454873646, -0.0036036036036036037, -0.0017985611510791368,
+          0.0, 0.0017921146953405018, 0.0035778175313059034,
+          0.005357142857142857, 0.0071301247771836, 0.008896797153024912,
+          0.010657193605683837, 0.012411347517730497, -0.008849557522123894,
+          -0.007067137809187279, -0.005291005291005291, -0.0035211267605633804,
+          -0.0017574692442882249, 0.0, 0.0017513134851138354,
+          0.0034965034965034965, 0.005235602094240838, 0.006968641114982578,
+          0.008695652173913044, 0.010416666666666666, 0.012131715771230503,
+          -0.00865051903114187, -0.0069084628670120895, -0.005172413793103448,
+          -0.0034423407917383822, -0.001718213058419244, 0.0,
+          0.0017123287671232876, 0.003418803418803419, 0.005119453924914676,
+          0.0068143100511073255, 0.008503401360544218, 0.010186757215619695,
+          0.011864406779661017, -0.008460236886632826, -0.006756756756756757,
+          -0.00505902192242833, -0.003367003367003367, -0.0016806722689075631,
+          0.0, 0.0016750418760469012, 0.0033444816053511705,
+          0.005008347245409015, 0.006666666666666667, 0.008319467554076539,
+          0.009966777408637873, 0.011608623548922056, -0.008278145695364239,
+          -0.006611570247933884, -0.0049504950495049506, -0.0032948929159802307,
+          -0.001644736842105263, 0.0, 0.001639344262295082,
+          0.0032733224222585926, 0.004901960784313725, 0.0065252854812398045,
+          0.008143322475570033, 0.00975609756097561, 0.011363636363636364,
+          -0.008103727714748784, -0.006472491909385114, -0.004846526655896607,
+          -0.0032258064516129032, -0.001610305958132045, 0.0,
+          0.0016051364365971107, 0.003205128205128205, 0.0048
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 8
+      },
+      {
+        "op": "frames.sxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 13
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckw02-trim",
+    "description": "Descriptor bounds can trim the full Chebyshev record interval.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 3,
+        "last": 17,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pckcov",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 3
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 17
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckw02-singleton",
+    "description": "An equal descriptor endpoint is a one-instant segment with a defined orientation.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 4,
+        "last": 4,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pckcov",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "classId": 3000,
+        "coverId": "cov",
+        "maxIntervals": 6,
+        "reset": true
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 4
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckw02-segment-priority",
+    "description": "A later overlapping segment supersedes the earlier segment within a single file.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 8,
+        "last": 14,
+        "segid": "TWO RECORDS",
+        "intlen": 20,
+        "n": 1,
+        "degree": 0,
+        "coefficients": [0.75, -0.25, 0.125],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pcklof",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "handleId": "p"
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 4
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 10
+      },
+      {
+        "op": "frames.pxform",
+        "from": "J2000",
+        "to": "ITRF93",
+        "et": 18
+      },
+      {
+        "op": "frames.pckuof",
+        "handleId": "p"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckw02-count",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 0,
+        "degree": 1,
+        "coefficients": [],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMCOEFFSNOTPOS"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-interval",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 0,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INTLENNOTPOS"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-bad-frame",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "ITRF93",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDREFFRAME"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-reversed",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 15,
+        "last": 10,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-early",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": -1,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-late",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 21,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-long-segid",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDSTRINGTOOLONG"]
+    }
+  },
+  {
+    "caseId": "frames-pckw02-nonprinting",
+    "description": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": 3000,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "BAD\tID",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPRINTABLECHARS"]
+    }
+  }
+]

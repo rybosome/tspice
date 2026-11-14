@@ -182,6 +182,7 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
 /** Create backend kit hooks for cells/windows backed by the native Node addon. */
 export function createCellsWindowsKitApi(
   native: NativeAddon,
+  pckDestinations?: { ids: Set<number>; windows: Set<number> },
 ): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
@@ -191,6 +192,7 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newIntCell() to return a number handle",
       );
+      pckDestinations?.ids.add(handle);
       return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
@@ -219,12 +221,15 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newWindow() to return a number handle",
       );
+      pckDestinations?.windows.add(handle);
       return handle as SpiceWindow;
     },
 
     freeCell: (cell) => {
       assertSpiceInt32NonNegative(cell as unknown as number, "freeCell(cell)");
       native.freeCell(cell);
+      pckDestinations?.ids.delete(cell);
+      pckDestinations?.windows.delete(cell);
     },
     freeWindow: (window) => {
       assertSpiceInt32NonNegative(
@@ -232,6 +237,8 @@ export function createCellsWindowsKitApi(
         "freeWindow(window)",
       );
       native.freeWindow(window);
+      pckDestinations?.windows.delete(window);
+      pckDestinations?.ids.delete(window);
     },
 
     cellGeti: (cell, index) => {
