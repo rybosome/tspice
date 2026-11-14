@@ -21,6 +21,10 @@ it.runIf(process.env.TSPICE_EXPECT_NATIVE === "true")(
     const scratch = mkdtempSync(path.join(os.tmpdir(), "tspice-dsk-bounds-"));
     try {
       const cspice = run(process.execPath, ["scripts/print-cspice-dir.mjs"]);
+      const generated = run(process.execPath, [
+        "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+        cspice,
+      ]);
       const shim = path.join(root, "packages/backend-shim-c");
       const flags = [
         "-std=c11",
@@ -49,6 +53,9 @@ it.runIf(process.env.TSPICE_EXPECT_NATIVE === "true")(
         "packages/backend-node/test/fixtures/dsk-index-bounds.c",
         io,
         errors,
+        // The file I/O shim shares the checked text-reader unit registry with the addon.
+        "-DNON_UNIX_STDIO",
+        path.join(generated, "rdtext.c"),
         path.join(cspice, "lib/cspice.a"),
         path.join(cspice, "lib/csupport.a"),
         "-lm",

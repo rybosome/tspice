@@ -2472,11 +2472,11 @@
           "result": "17 workflows / 34 registered backend comparisons, 11 public, 2 native and 10 WASM-focused checks. Final actual Chrome worker passed record/EOF/restart, FILEOPENFAILED recovery and command state."
         }
       ],
-      "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+      "nextAction": "Run both complete local lanes and canonical source CI, then check the final matrix and explicit GitHub rebaseability.",
       "worktree": "/private/tmp/tspice-step8-text-command-state",
       "branch": "codex/expand-text-command-state",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Two compiled text/command operations. Exact record/EOF and canonical argv bytes, client cleanup, fixed RDTEXT unit ABI and saved-index lifecycle."
+      "progressNote": "Repaired standalone C fixture linkage to the canonical staged text-reader definitions."
     },
     {
       "id": "D01-time-additions",

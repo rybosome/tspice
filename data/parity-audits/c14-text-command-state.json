@@ -14,6 +14,7 @@
     "packages/backend-node/src/lowlevel/binding.ts",
     "packages/backend-node/src/runtime/addon.ts",
     "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/dsk-index-bounds.test.ts",
     "packages/backend-node/test/text-command-state.test.ts",
     "packages/backend-shim-c/include/tspice_backend_shim.h",
     "packages/backend-shim-c/src/domains/file_io.c",
@@ -236,5 +237,5 @@
       }
     }
   ],
-  "verificationNote": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability."
+  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
 }

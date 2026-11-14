@@ -19,7 +19,7 @@
           "https://github.com/rybosome/tspice/pull/684",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/cell-capacity-prerequisite.json"
       },
       {
@@ -42,7 +42,7 @@
           "https://github.com/rybosome/tspice/pull/685",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/cells-windows.json"
       },
       {
@@ -68,7 +68,7 @@
           "https://github.com/rybosome/tspice/pull/681",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/coordinates-matrices.json"
       },
       {
@@ -86,7 +86,7 @@
           "https://github.com/rybosome/tspice/pull/695",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/dsk.json"
       },
       {
@@ -108,7 +108,7 @@
           "https://github.com/rybosome/tspice/pull/697",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ek-1.json"
       },
       {
@@ -128,7 +128,7 @@
           "https://github.com/rybosome/tspice/pull/696",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ek-2.json"
       },
       {
@@ -148,7 +148,7 @@
           "https://github.com/rybosome/tspice/pull/702",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ephemeris-1.json"
       },
       {
@@ -170,7 +170,7 @@
           "https://github.com/rybosome/tspice/pull/703",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ephemeris-2.json"
       },
       {
@@ -184,7 +184,7 @@
           "https://github.com/rybosome/tspice/pull/700",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ephemeris-descriptors.json"
       },
       {
@@ -205,7 +205,7 @@
           "https://github.com/rybosome/tspice/pull/682",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/error.json"
       },
       {
@@ -226,7 +226,7 @@
           "https://github.com/rybosome/tspice/pull/692",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/file-io-1.json"
       },
       {
@@ -247,7 +247,7 @@
           "https://github.com/rybosome/tspice/pull/694",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/file-io-2.json"
       },
       {
@@ -265,7 +265,7 @@
           "https://github.com/rybosome/tspice/pull/699",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/frames-1.json"
       },
       {
@@ -285,7 +285,7 @@
           "https://github.com/rybosome/tspice/pull/698",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/frames-2.json"
       },
       {
@@ -306,7 +306,7 @@
           "https://github.com/rybosome/tspice/pull/704",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/geometry.json"
       },
       {
@@ -330,7 +330,7 @@
           "https://github.com/rybosome/tspice/pull/705",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/geometry-gf.json"
       },
       {
@@ -351,7 +351,7 @@
           "https://github.com/rybosome/tspice/pull/687",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/ids-names.json"
       },
       {
@@ -374,7 +374,7 @@
           "https://github.com/rybosome/tspice/pull/686",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/kernel-pool.json"
       },
       {
@@ -393,7 +393,7 @@
           "https://github.com/rybosome/tspice/pull/690",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/kernels.json"
       },
       {
@@ -409,7 +409,7 @@
           "https://github.com/rybosome/tspice/pull/684",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/kplfrm-prerequisite.json"
       },
       {
@@ -429,7 +429,7 @@
           "https://github.com/rybosome/tspice/pull/689",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/time-1.json"
       },
       {
@@ -448,7 +448,7 @@
           "https://github.com/rybosome/tspice/pull/688",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/time-2.json"
       },
       {
@@ -468,7 +468,7 @@
           "https://github.com/rybosome/tspice/pull/679",
           "https://github.com/rybosome/tspice/pull/706"
         ],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
@@ -479,7 +479,7 @@
         ],
         "dependsOn": [],
         "prs": [],
-        "nextAction": "Capture combined local and canonical GitHub CI executions on the final source, then verify PR checks and rebaseability.",
+        "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source.",
         "record": "data/parity-audits/c14-text-command-state.json"
       }
     ],
