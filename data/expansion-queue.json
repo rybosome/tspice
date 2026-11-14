@@ -818,13 +818,21 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Run both required local lanes and inspect canonical CI for this complete source. Record executions against the final fingerprint, then confirm final-head checks and rebaseability.",
+      "prs": ["https://github.com/rybosome/tspice/pull/719"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+          "result": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-string-transforms",
       "branch": "codex/expand-string-transforms",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Eight direct methods and 64 scenarios / 274 canonical calls, including 12 genuine SPICE errors. Focused actual Node/WASM checks passed 128 registered comparisons, 11 public/independent-oracle tests, 38 WASM allocation/encoding checks and 37 native tests. Fresh required local and canonical CI verification remains pending. Final worker channel test passed after waiting for asynchronous endpoint closure. A separate real Chrome run loaded the bundled client, inline blob worker and WASM over localhost; all eight calls and EMPTYSTRING recovery passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 572a9d29. 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "Eight direct methods and 64 scenarios / 274 canonical calls, including 12 genuine SPICE errors. Focused actual Node/WASM checks passed 128 registered comparisons, 11 public/independent-oracle tests, 38 WASM allocation/encoding checks and 37 native tests. Fresh required local and canonical CI verification remains pending. Final worker channel test passed after waiting for asynchronous endpoint closure. A separate real Chrome run loaded the bundled client, inline blob worker and WASM over localhost; all eight calls and EMPTYSTRING recovery passed."
     },
     {
       "id": "A19-string-search",
