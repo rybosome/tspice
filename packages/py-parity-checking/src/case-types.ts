@@ -172,6 +172,50 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsHrmesp = {
+  op: "coords-vectors.hrmesp";
+  first: number;
+  step: number;
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsHrmint = {
+  op: "coords-vectors.hrmint";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgresp = {
+  op: "coords-vectors.lgresp";
+  first: number;
+  step: number;
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgrind = {
+  op: "coords-vectors.lgrind";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsLgrint = {
+  op: "coords-vectors.lgrint";
+  xvals: number[];
+  yvals: number[];
+  x: number;
+};
+
+export type StepCoordsVectorsQderiv = {
+  op: "coords-vectors.qderiv";
+  f0: number[];
+  f2: number[];
+  delta: number;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1357,12 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsHrmesp
+  | StepCoordsVectorsHrmint
+  | StepCoordsVectorsLgresp
+  | StepCoordsVectorsLgrind
+  | StepCoordsVectorsLgrint
+  | StepCoordsVectorsQderiv
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1534,12 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.hrmesp"; value: { f: number; df: number } }
+  | { op: "coords-vectors.hrmint"; value: { f: number; df: number } }
+  | { op: "coords-vectors.lgresp"; value: number }
+  | { op: "coords-vectors.lgrind"; value: { p: number; dp: number } }
+  | { op: "coords-vectors.lgrint"; value: number }
+  | { op: "coords-vectors.qderiv"; value: number[] }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

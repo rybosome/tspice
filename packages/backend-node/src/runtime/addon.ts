@@ -529,6 +529,31 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  hrmesp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+  hrmint(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+  lgresp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): number;
+  lgrind(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { p: number; dp: number };
+  lgrint(xvals: readonly number[], yvals: readonly number[], x: number): number;
+  qderiv(f0: readonly number[], f2: readonly number[], delta: number): number[];
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

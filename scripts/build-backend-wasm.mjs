@@ -511,6 +511,12 @@ const exportedFunctions = [
   "_tspice_gfdist",
 
   // --- coords/vectors ---
+  "_tspice_hrmesp",
+  "_tspice_hrmint",
+  "_tspice_lgresp",
+  "_tspice_lgrind",
+  "_tspice_lgrint",
+  "_tspice_qderiv",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

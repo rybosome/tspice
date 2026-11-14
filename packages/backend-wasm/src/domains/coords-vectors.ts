@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,334 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertInterpolationNumber(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function interpolationCount(
+  value: unknown,
+  stride: number,
+  maximum: number,
+  label: string,
+): number {
+  if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
+  const length = value.length;
+  if (
+    !Number.isSafeInteger(length) ||
+    length < 0 ||
+    length % stride !== 0 ||
+    length / stride > maximum
+  )
+    throw new RangeError(`${label} has an unsupported point count or layout`);
+  return length / stride;
+}
+
+function copyInterpolationValues(
+  value: readonly number[],
+  length: number,
+  label: string,
+): number[] {
+  // Read exactly the validated count. An input accessor can mutate another
+  // array while inputs are being copied; a missing entry must fail validation.
+  const copy: number[] = [];
+  for (let i = 0; i < length; i++) {
+    const entry = value[i];
+    assertInterpolationNumber(entry, `${label}[${i}]`);
+    copy.push(entry);
+  }
+  return copy;
+}
+
+function interpolationBufferBytes(count: number): number {
+  const bytes = Math.max(1, count) * 8;
+  if (!Number.isSafeInteger(bytes) || bytes > WASM_MAX_ALLOC_BYTES)
+    throw new RangeError(
+      `Interpolation buffer exceeds ${WASM_MAX_ALLOC_BYTES} bytes`,
+    );
+  return bytes;
+}
+
+function readInterpolationArray(
+  module: EmscriptenModule,
+  ptr: number,
+  count: number,
+): number[] {
+  const start = ptr >>> 3;
+  return Array.from(module.HEAPF64.subarray(start, start + count));
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    hrmesp: (first, step, yvals, x) => {
+      const count = interpolationCount(yvals, 2, 67108863, "hrmesp(yvals)");
+      interpolationBufferBytes(4 * count);
+      const yvalsBytes = interpolationBufferBytes(2 * count);
+      assertInterpolationNumber(first, "hrmesp(first)");
+      assertInterpolationNumber(step, "hrmesp(step)");
+      const yvalsCopy = copyInterpolationValues(
+        yvals,
+        2 * count,
+        "hrmesp(yvals)",
+      );
+      assertInterpolationNumber(x, "hrmesp(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, yvalsBytes, 8, 8],
+        (errPtr, yvalsPtr, outPtr, derivativePtr) => {
+          module.HEAPF64.set(yvalsCopy, yvalsPtr >>> 3);
+          const status = module._tspice_hrmesp(
+            count,
+            first,
+            step,
+            yvalsPtr,
+            x,
+            outPtr,
+            derivativePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            f: module.HEAPF64[outPtr >>> 3]!,
+            df: module.HEAPF64[derivativePtr >>> 3]!,
+          };
+        },
+      );
+    },
+    hrmint: (xvals, yvals, x) => {
+      const count = interpolationCount(xvals, 1, 357913941, "hrmint(xvals)");
+      const otherCount = interpolationCount(
+        yvals,
+        2,
+        357913941,
+        "hrmint(yvals)",
+      );
+      if (otherCount !== count)
+        throw new RangeError("hrmint() input array lengths do not match");
+      interpolationBufferBytes(4 * count);
+      const xvalsBytes = interpolationBufferBytes(1 * count);
+      const yvalsBytes = interpolationBufferBytes(2 * count);
+      const xvalsCopy = copyInterpolationValues(
+        xvals,
+        1 * count,
+        "hrmint(xvals)",
+      );
+      const yvalsCopy = copyInterpolationValues(
+        yvals,
+        2 * count,
+        "hrmint(yvals)",
+      );
+      assertInterpolationNumber(x, "hrmint(x)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          xvalsBytes,
+          yvalsBytes,
+          interpolationBufferBytes(4 * count),
+          8,
+          8,
+        ],
+        (errPtr, xvalsPtr, yvalsPtr, workPtr, outPtr, derivativePtr) => {
+          module.HEAPF64.set(xvalsCopy, xvalsPtr >>> 3);
+          module.HEAPF64.set(yvalsCopy, yvalsPtr >>> 3);
+          const status = module._tspice_hrmint(
+            count,
+            xvalsPtr,
+            yvalsPtr,
+            x,
+            workPtr,
+            outPtr,
+            derivativePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            f: module.HEAPF64[outPtr >>> 3]!,
+            df: module.HEAPF64[derivativePtr >>> 3]!,
+          };
+        },
+      );
+    },
+    lgresp: (first, step, yvals, x) => {
+      const count = interpolationCount(yvals, 1, 268435455, "lgresp(yvals)");
+      interpolationBufferBytes(1 * count);
+      const yvalsBytes = interpolationBufferBytes(1 * count);
+      assertInterpolationNumber(first, "lgresp(first)");
+      assertInterpolationNumber(step, "lgresp(step)");
+      const yvalsCopy = copyInterpolationValues(
+        yvals,
+        1 * count,
+        "lgresp(yvals)",
+      );
+      assertInterpolationNumber(x, "lgresp(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, yvalsBytes, 8],
+        (errPtr, yvalsPtr, outPtr) => {
+          module.HEAPF64.set(yvalsCopy, yvalsPtr >>> 3);
+          const status = module._tspice_lgresp(
+            count,
+            first,
+            step,
+            yvalsPtr,
+            x,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    lgrind: (xvals, yvals, x) => {
+      const count = interpolationCount(xvals, 1, 715827882, "lgrind(xvals)");
+      const otherCount = interpolationCount(
+        yvals,
+        1,
+        715827882,
+        "lgrind(yvals)",
+      );
+      if (otherCount !== count)
+        throw new RangeError("lgrind() input array lengths do not match");
+      interpolationBufferBytes(2 * count);
+      const xvalsBytes = interpolationBufferBytes(1 * count);
+      const yvalsBytes = interpolationBufferBytes(1 * count);
+      const xvalsCopy = copyInterpolationValues(
+        xvals,
+        1 * count,
+        "lgrind(xvals)",
+      );
+      const yvalsCopy = copyInterpolationValues(
+        yvals,
+        1 * count,
+        "lgrind(yvals)",
+      );
+      assertInterpolationNumber(x, "lgrind(x)");
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          xvalsBytes,
+          yvalsBytes,
+          interpolationBufferBytes(2 * count),
+          8,
+          8,
+        ],
+        (errPtr, xvalsPtr, yvalsPtr, workPtr, outPtr, derivativePtr) => {
+          module.HEAPF64.set(xvalsCopy, xvalsPtr >>> 3);
+          module.HEAPF64.set(yvalsCopy, yvalsPtr >>> 3);
+          const status = module._tspice_lgrind(
+            count,
+            xvalsPtr,
+            yvalsPtr,
+            workPtr,
+            x,
+            outPtr,
+            derivativePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            p: module.HEAPF64[outPtr >>> 3]!,
+            dp: module.HEAPF64[derivativePtr >>> 3]!,
+          };
+        },
+      );
+    },
+    lgrint: (xvals, yvals, x) => {
+      const count = interpolationCount(xvals, 1, 268435455, "lgrint(xvals)");
+      const otherCount = interpolationCount(
+        yvals,
+        1,
+        268435455,
+        "lgrint(yvals)",
+      );
+      if (otherCount !== count)
+        throw new RangeError("lgrint() input array lengths do not match");
+      interpolationBufferBytes(1 * count);
+      const xvalsBytes = interpolationBufferBytes(1 * count);
+      const yvalsBytes = interpolationBufferBytes(1 * count);
+      const xvalsCopy = copyInterpolationValues(
+        xvals,
+        1 * count,
+        "lgrint(xvals)",
+      );
+      const yvalsCopy = copyInterpolationValues(
+        yvals,
+        1 * count,
+        "lgrint(yvals)",
+      );
+      assertInterpolationNumber(x, "lgrint(x)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, xvalsBytes, yvalsBytes, 8],
+        (errPtr, xvalsPtr, yvalsPtr, outPtr) => {
+          module.HEAPF64.set(xvalsCopy, xvalsPtr >>> 3);
+          module.HEAPF64.set(yvalsCopy, yvalsPtr >>> 3);
+          const status = module._tspice_lgrint(
+            count,
+            xvalsPtr,
+            yvalsPtr,
+            x,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >>> 3]!;
+        },
+      );
+    },
+    qderiv: (f0, f2, delta) => {
+      const count = interpolationCount(f0, 1, 2147483646, "qderiv(f0)");
+      const otherCount = interpolationCount(f2, 1, 2147483646, "qderiv(f2)");
+      if (otherCount !== count)
+        throw new RangeError("qderiv() input array lengths do not match");
+      if (count === 0)
+        throw new RangeError("qderiv() requires nonempty arrays");
+      interpolationBufferBytes(1 * count);
+      const f0Bytes = interpolationBufferBytes(1 * count);
+      const f2Bytes = interpolationBufferBytes(1 * count);
+      const f0Copy = copyInterpolationValues(f0, 1 * count, "qderiv(f0)");
+      const f2Copy = copyInterpolationValues(f2, 1 * count, "qderiv(f2)");
+      assertInterpolationNumber(delta, "qderiv(delta)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, f0Bytes, f2Bytes, interpolationBufferBytes(count)],
+        (errPtr, f0Ptr, f2Ptr, outPtr) => {
+          module.HEAPF64.set(f0Copy, f0Ptr >>> 3);
+          module.HEAPF64.set(f2Copy, f2Ptr >>> 3);
+          const status = module._tspice_qderiv(
+            count,
+            f0Ptr,
+            f2Ptr,
+            delta,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readInterpolationArray(module, outPtr, count);
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

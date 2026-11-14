@@ -1,0 +1,2414 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Step 8 routine ownership and delivery queue. Scheduling records are not semantic verification. Shared per-routine acceptance remains docs/parity-audit.md and data/parity-audits.",
+  "snapshot": {
+    "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+    "basePr": "https://github.com/rybosome/tspice/pull/706",
+    "date": "2026-11-13",
+    "source": "data/coverage-ledger.json derived implementation field, cross-checked against current contract; inventory decision planned is not used to infer absence.",
+    "totalCanonical": 652,
+    "eligible": 649,
+    "alreadyPresent": 162,
+    "remainingAtBase": 487,
+    "registeredCaseFiles": 162,
+    "registeredScenarios": 1109,
+    "excluded": ["ftncls_c", "getcml_c", "prompt_c"]
+  },
+  "statusDefinitions": {
+    "planned": "Reserved scheduling proposal; no claim that prerequisite or API/oracle design is settled.",
+    "in-progress": "Owned implementation in progress; no delivery/landing claim.",
+    "PR-ready": "Complete supported paths and source-bound local/required CI evidence in a reviewable open PR; not landed.",
+    "landed": "Verified batch merged to main; record actual merge commit and reconcile live inventory.",
+    "blocked": "Specific unresolved dependency or maintainer decision prevents this batch; record blocker and continue independent work."
+  },
+  "coordination": {
+    "step7": "Existing routine audits and shared repairs landed in #706; Step 8 owns only the 487 absent routines assigned below. Recheck open PRs/main before taking a batch.",
+    "integrationOwner": "Codex Step 8 (/root) owns shared registration and each generated WASM revision. Source work may be parallel; final combined artifacts must be regenerated and verified.",
+    "branchPolicy": "Prefer independent current-main branches. dependsOn denotes a real proposed public type/workflow prerequisite, not every internal CSPICE callee. Resolve or remove proposed edges after authoritative review; stack only when necessary.",
+    "acceptance": "Use Step 7 semantic/effect/error/cleanup/numeric evidence and local plus observed CI for each backend. Registration, source presence and passing generic smoke tests do not establish verification.",
+    "recordUpdates": "Each owner updates status, PR URLs, exact command/job/commit/source-digest evidence, blockers and next action. No merging or release preparation without explicit authorization."
+  },
+  "oracleInspection": {
+    "version": "6.0.3",
+    "lockedBy": "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
+    "inspectedModule": "spiceypy/spiceypy.py from the installed locked Step 7 integration environment",
+    "sourceSha256": "86aaf23ee18e1ba86ebdc97a69d1d3c533136b98ac833195eeb29824ff76f420",
+    "method": "Parsed top-level function definitions and libspice calls; recognized set_c and return_c wrapper names. This is availability triage only, not a semantic/ABI audit.",
+    "missingTopLevelWrapperCount": 23,
+    "missingTopLevelWrappers": [
+      "clearc_c",
+      "cleard_c",
+      "cleari_c",
+      "dasrdc_c",
+      "dasudc_c",
+      "filld_c",
+      "filli_c",
+      "illum_pl02",
+      "illum_plid_pl02",
+      "limb_pl02",
+      "llgrid_pl02",
+      "maxd_c",
+      "maxi_c",
+      "mind_c",
+      "mini_c",
+      "moved_c",
+      "nextwd_c",
+      "nthwd_c",
+      "putcml_c",
+      "repml_c",
+      "subpt_pl02",
+      "subsol_pl02",
+      "term_pl02"
+    ],
+    "requiredFollowup": "For missing wrappers inspect the actual locked library and pinned N0067 ABI for an independent live oracle route. Seek a maintainer decision if no trustworthy route is found; no comparison against tspice itself and no new exclusions."
+  },
+  "batches": [
+    {
+      "id": "A01-constants",
+      "title": "Angular and day/epoch constants",
+      "wave": "A",
+      "routines": [
+        "pi_c",
+        "twopi_c",
+        "halfpi_c",
+        "dpr_c",
+        "rpd_c",
+        "spd_c",
+        "j2000_c",
+        "j1900_c",
+        "b1950_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "Angular constants in CoordsVectorsApi; spd/j2000/j1900/b1950 in TimeApi. Public methods are raw.<canonical name without _c>().",
+      "owner": "Codex Step 8 (/root)",
+      "status": "PR-ready",
+      "dependsOn": [],
+      "prerequisiteReview": "No shared prerequisite beyond merged #706. Establish epoch outputs as Julian dates, not ET; zero-argument constants need no invented error cases.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/707"],
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "1eee2cffd03e1d9ab4f063807cd2e256a09ffe77",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43538403821",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #707 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await user review/merge authorization; do not count this PR-ready batch as landed.",
+      "deliveryNote": "Ready for review; draft removed after final-head checks and explicit rebaseability observation. Not merged.",
+      "progressNote": "Final head 1eee2cffd03e1d9ab4f063807cd2e256a09ffe77 passed all 15 jobs in CI run 43538403821. Integration owner observed REST rebaseable:true against base 73f3fec8 after CI, removed draft status and updated the PR body. Nine routines are PR-ready, not landed."
+    },
+    {
+      "id": "A02-remaining-constants",
+      "title": "Remaining numeric and epoch constants",
+      "wave": "A",
+      "routines": [
+        "b1900_c",
+        "j1950_c",
+        "j2100_c",
+        "jyear_c",
+        "tyear_c",
+        "clight_c",
+        "dpmax_c",
+        "dpmin_c",
+        "intmax_c",
+        "intmin_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "TimeApi: b1900/j1950/j2100/jyear/tyear; CoordsVectorsApi: clight/dpmax/dpmin/intmax/intmin.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "PR-ready",
+      "dependsOn": [],
+      "prerequisiteReview": "Use existing time domain for epoch/year constants and coords-vectors for scalar constants. Verify signed SpiceInt bounds and exact platform N0067 floating limits. Does not require A01 wrappers.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/708"],
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "2b59cee8d4f321bb6636f4c6085b27b62a84942a",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43540047006",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #708 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await maintainer review and merge authorization. Recheck final-head CI/rebaseability after any source/base change.",
+      "worktree": "/private/tmp/tspice-step8-scalar-constants",
+      "branch": "codex/expand-scalar-constants",
+      "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed.",
+      "progressNote": "Integration owner reports final head 2b59cee8d4f321bb6636f4c6085b27b62a84942a passed all 15 jobs in CI run 43540047006 and after-CI REST explicitly reported rebaseable:true against main 73f3. Draft status removed and body updated; no merge."
+    },
+    {
+      "id": "A03-scalar-math",
+      "title": "Scalar bracketing, unit conversion and reductions",
+      "wave": "A",
+      "routines": [
+        "brcktd_c",
+        "brckti_c",
+        "convrt_c",
+        "sumad_c",
+        "sumai_c",
+        "maxd_c",
+        "maxi_c",
+        "mind_c",
+        "mini_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Integrate and validate the independent variadic C oracle route investigated in PR #707; retain explicit portable argument limits. Review input lengths/checked allocation sizes and reject undefined signed-prefix integer overflow before actual sumai arithmetic. No completed batch or verified semantics claim.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-source-investigated",
+        "missingTopLevelWrappers": ["maxd_c", "maxi_c", "mind_c", "mini_c"],
+        "evidence": "https://github.com/rybosome/tspice/pull/707",
+        "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/714"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-scalar-math",
+      "branch": "codex/expand-scalar-math",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Draft PR #714 source02544981 passed both required local lanes and inspected Linux22 CI job132293815854:2312 live comparisons/2538 parity tests without skips. All171 source audit reviews freshly verified. Final metadata9c1c1e2f pushed; final CI43546459881 pending."
+    },
+    {
+      "id": "A04-array-storage",
+      "title": "Typed array clear, fill and copy",
+      "wave": "A",
+      "routines": [
+        "clearc_c",
+        "cleard_c",
+        "cleari_c",
+        "filld_c",
+        "filli_c",
+        "moved_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "All six wrappers are absent from the inspected SpiceyPy top-level module. Establish independent live C ABI oracle first. Define raw mutation/returned-copy semantics, character row width and caller memory ownership; no JS-only replacements.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": [
+          "clearc_c",
+          "cleard_c",
+          "cleari_c",
+          "filld_c",
+          "filli_c",
+          "moved_c"
+        ]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "A05-cylindrical-coordinates",
+      "title": "Cylindrical and spherical coordinate conversions",
+      "wave": "A",
+      "routines": [
+        "cyllat_c",
+        "cylrec_c",
+        "cylsph_c",
+        "latcyl_c",
+        "latsph_c",
+        "reccyl_c",
+        "sphcyl_c",
+        "sphlat_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse existing scalar/Vec3 conventions; verify longitude/colatitude units and signed/zero radius behavior with asymmetric cases.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/709"],
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "3c1b767be9f4a7661795e0fe0412a3828dda6a19",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43540344076",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #709 data/parity-audits; this queue checkpoint is not a replacement.",
+          "historical": true,
+          "supersededReason": "Readiness reopened for adapter input snapshot correction."
+        }
+      ],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-cylindrical",
+      "branch": "codex/expand-cylindrical-coordinates",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed.",
+      "priorCheckpoint": "Integration owner reports final head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 passed all 15 jobs in CI run 43540344076; after-CI REST explicitly reported rebaseable:true against main 73f3. Draft removed and body updated; no merge."
+    },
+    {
+      "id": "A06-coordinate-conventions",
+      "title": "Azimuth, planetographic and right ascension coordinates",
+      "wave": "A",
+      "routines": [
+        "azlrec_c",
+        "recazl_c",
+        "pgrrec_c",
+        "recpgr_c",
+        "radrec_c",
+        "recrad_c",
+        "srfrec_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Verify azimuth/elevation boolean conventions, planetographic longitude sense and radii flattening; surface routines require body constants.",
+      "fixtures": "Authored radii/body constants in kernel pool for srfrec and planetographic conventions; no new mission data.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/713"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
+      "branch": "codex/expand-coordinate-conventions",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Draft PR #713 final metadata commit 232ee6ef pushed; canonical final-head CI run 43545867313 pending. Both required local lanes and inspected source Linux22 job132291465391 passed 2332 live comparisons and 2559 parity tests without skips; all169 source-bound audit reviews verified. Final-head readiness still pending."
+    },
+    {
+      "id": "A07-coordinate-jacobians",
+      "title": "Coordinate Jacobians",
+      "wave": "A",
+      "routines": [
+        "dazldr_c",
+        "dcyldr_c",
+        "dgeodr_c",
+        "dlatdr_c",
+        "dpgrdr_c",
+        "drdazl_c",
+        "drdcyl_c",
+        "drdgeo_c",
+        "drdlat_c",
+        "drdpgr_c",
+        "drdsph_c",
+        "dsphdr_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Use existing row-major Mat3 output. Distinguish derivative direction, singular axes, flattening and azimuth conventions; internal CSPICE callees do not require public wrapper prerequisites.",
+      "fixtures": "Authored scalar inputs; synthetic pool body conventions only where required.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A08-vector-basics",
+      "title": "Remaining three-vector scalar and construction operations",
+      "wave": "A",
+      "routines": [
+        "vdist_c",
+        "vequ_c",
+        "vpack_c",
+        "vupack_c",
+        "vzero_c",
+        "unorm_c",
+        "ucrss_c",
+        "vsep_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Existing Vec3 representation suffices. Establish zero-vector returns, boolean shape, unit-vector-plus-norm result and copy ownership.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/710"],
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "f3d2cb4fe7c69de6e3bec925f89c4938a9de0108",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43541137087",
+          "result": "All15 jobs passed; after-CI REST explicitly rebaseable:true and mergeable:true againstmain73f3; draft removed.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #710 data/parity-audits; this queue checkpoint is not a replacement.",
+          "historical": true,
+          "supersededReason": "Readiness reopened for adapter input snapshot correction."
+        }
+      ],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-vector-basics",
+      "branch": "codex/expand-vector-basics",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "deliveryNote": "Final-head checks passed, explicit rebaseability observed and draft removed. Not merged.",
+      "priorCheckpoint": "Exact final head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 passed all15 jobs in CI43541137087. Integration owner observed REST rebaseable:true and mergeable:true againstmain73f3, updated body and removed draft. Eight routines PR-ready, not landed."
+    },
+    {
+      "id": "A09-vector-combinations",
+      "title": "Vector combinations and projections",
+      "wave": "A",
+      "routines": [
+        "vlcom_c",
+        "vlcom3_c",
+        "vperp_c",
+        "vproj_c",
+        "vrel_c",
+        "vrotv_c",
+        "rotvec_c",
+        "vtmv_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Existing Vec3/Mat3 types suffice. Distinguish active versus passive rotation, argument order, zero axes and near-degenerate projections.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/711"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-vector-combinations",
+      "branch": "codex/expand-vector-combinations",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Integration owner reports both required locals and inspected Linux Node 22 source CI job 132280923832 passed 2294 live / 2517 parity-package tests without skips, and all 170 source-bound routine audits have fresh verification. Final metadata head 0f13f395e86ada615031221fc87fc01ef1587f8c awaits CI run 43542362965 and readiness review. Draft PR #711 remains in-progress."
+    },
+    {
+      "id": "A10-general-vectors",
+      "title": "General-dimension vector operations",
+      "wave": "A",
+      "routines": [
+        "vaddg_c",
+        "vdistg_c",
+        "vdotg_c",
+        "vequg_c",
+        "vhatg_c",
+        "vlcomg_c",
+        "vminug_c",
+        "vnormg_c",
+        "vprojg_c",
+        "vrelg_c",
+        "vsclg_c",
+        "vsepg_c",
+        "vsubg_c",
+        "vzerog_c",
+        "unormg_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Immediate consumer for bounded readonly number-array input and copied variable-length outputs. Establish matching dimensions, zero dimension, finite inputs and checked byte sizes. Family size 15 keeps one shared dimension policy review.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/715"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-general-vectors",
+      "branch": "codex/expand-general-vectors",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Draft PR #715: both required locals and inspected Linux22 source CI132299443961 passed2382 live/2610 parity without native-required skips; fresh source-bound verification recorded. Final metadata dcbb65af31f3077405561dd3b06930a683ed872e pushed; final CI43548212298 pending. No PR-ready transition."
+    },
+    {
+      "id": "A11-state-derivatives",
+      "title": "State-vector derivatives",
+      "wave": "A",
+      "routines": [
+        "ducrss_c",
+        "dvcrss_c",
+        "dvdot_c",
+        "dvhat_c",
+        "dvnorm_c",
+        "dvsep_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Vec6/SpiceStateVector; verify position/velocity ordering and singular angular derivatives. No dependency on public general-vector wrappers.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/716"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-state-derivatives",
+      "branch": "codex/expand-state-derivatives",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Draft PR #716 source b20b81724550fe5cfa6b215afc78991b0dc5f76b; source CI43547433026 pending. All39 ledger/format/lint/typecheck/docs/generation checks passed. Full JS passed2296 live comparisons/2521 parity passes plus expected guard skip; native-required lane running. Focused78 live/10 public/3 extremes-oracle/31 WASM/32 native passed; source verification/readiness pending."
+    },
+    {
+      "id": "A12-fixed-matrices",
+      "title": "Fixed-dimension matrix utilities",
+      "wave": "A",
+      "routines": [
+        "det_c",
+        "diags2_c",
+        "ident_c",
+        "invert_c",
+        "invort_c",
+        "isrot_c",
+        "mequ_c",
+        "mtxm_c",
+        "mxmt_c",
+        "trace_c",
+        "xpose_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Mat3RowMajor; add immediately consumed 2x2 representation for diags2. Verify singular/nonorthogonal behavior, input immutability and transpose order.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/712"],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-fixed-matrices",
+      "branch": "codex/expand-fixed-matrices",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Integration owner reports both required locals and inspected source Linux Node 22 CI job 132286223439 passed 2318 live / 2543 parity tests without skips; all 173 source-bound routine audits have fresh verification. Final metadata f3289ac90d299bc0ef782ba576e9efd2173a8e25 pushed to draft PR #712; final-head CI/readiness pending."
+    },
+    {
+      "id": "A13-general-matrices",
+      "title": "General-dimension matrix operations",
+      "wave": "A",
+      "routines": [
+        "mequg_c",
+        "mtxmg_c",
+        "mtxvg_c",
+        "mxmg_c",
+        "mxmtg_c",
+        "mxvg_c",
+        "vtmvg_c",
+        "xposeg_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["A10-general-vectors"],
+      "prerequisiteReview": "Reuse bounded dynamic-array policy from A10; establish explicit rows/columns and row-major layout with nonsquare distinguishing inputs and checked dimension products.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A14-rotation-representations",
+      "title": "Euler angles and quaternions",
+      "wave": "A",
+      "routines": [
+        "eul2m_c",
+        "m2eul_c",
+        "m2q_c",
+        "q2m_c",
+        "qxq_c",
+        "qdq2av_c",
+        "raxisa_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Immediate quaternion four-number representation; verify scalar-first ordering, axes, angle ranges and nonrotation/degenerate cases.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A15-frame-algebra",
+      "title": "Algebraic frames and state transforms",
+      "wave": "A",
+      "routines": [
+        "frame_c",
+        "twovec_c",
+        "twovxf_c",
+        "eul2xf_c",
+        "xf2eul_c",
+        "xf2rav_c",
+        "rav2xf_c",
+        "invstm_c",
+        "xpose6_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse existing Mat3/Mat6/Vec6 representations and define multi-output types. Establish handedness, derivative units, singular axes and state-transform layout.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A16-polynomial-expansions",
+      "title": "Chebyshev and polynomial evaluation",
+      "wave": "A",
+      "routines": [
+        "chbder_c",
+        "chbigr_c",
+        "chbint_c",
+        "chbval_c",
+        "polyds_c",
+        "rquad_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Immediate bounded coefficient/workspace arrays. Verify coefficient order, degree versus element count, interval scaling, derivative order and quadratic root representation.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Freeze the corrected adapter and boundary regressions; re-review source, retain historical executions, run both required local lanes and observe canonical CI on the corrected source. Confirm final head and rebaseability before readiness.",
+      "worktree": "/private/tmp/tspice-step8-polynomial-expansions",
+      "branch": "codex/expand-polynomial-expansions",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Array input snapshots require correction and fresh source-bound evidence. Prior bundle/test/CI observations apply only to their recorded source; this batch has no current PR-ready claim.",
+      "priorCheckpoint": "Six-routine source/audit frozen at46 scenarios/131 calls with5 genuine errors. Compiled focused92 live/12 public/3 extremes-oracle/35 WASM/31 native/2 RPC plus3 rquad diagnostic/caller-stack regressions passed. A narrow test-helper optional-empty representation correction leaves production unchanged. Upstream rquad checkout typo/device-dependent diagnostic remains documented; primary error/reset/stack recovery verified in focused tests. Full required local lanes and canonical CI pending; judgments reviewed, not verified."
+    },
+    {
+      "id": "A17-interpolation",
+      "title": "Hermite/Lagrange interpolation and quadratic derivatives",
+      "wave": "A",
+      "routines": [
+        "hrmesp_c",
+        "hrmint_c",
+        "lgresp_c",
+        "lgrind_c",
+        "lgrint_c",
+        "qderiv_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [],
+      "prerequisiteReview": "Bound coefficient/workspace products; verify equal-spacing conventions, repeated abscissas, degree/count relations and derivative outputs.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": ["https://github.com/rybosome/tspice/pull/718"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "909e5968a7bc4bd30da55743a3165bf255ce9732",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550203706/job/132310683376",
+          "result": "Both complete required lanes passed locally on 909e5968a7bc4bd30da55743a3165bf255ce9732. JavaScript: 2,549 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132310683376 on 909e5968a7bc4bd30da55743a3165bf255ce9732: 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-interpolation",
+      "branch": "codex/expand-interpolation",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 909e5968. 2,324 registered Node/WASM live comparisons; 2,550 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Six direct paths; 53 registered scenarios / 132 actual calls including 11 genuine errors. Native paired inputs now copy the validated counts. Independent locked Python smoke passed; focused backend execution and required source-bound verification are separate."
+    },
+    {
+      "id": "A18-string-transform",
+      "title": "String transformations and matching",
+      "wave": "A",
+      "routines": [
+        "cmprss_c",
+        "eqstr_c",
+        "iswhsp_c",
+        "lastnb_c",
+        "lcase_c",
+        "ucase_c",
+        "matchi_c",
+        "matchw_c"
+      ],
+      "domain": "strings",
+      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Introduce only the domain/typed buffers consumed here. Establish CSPICE ASCII/blank/NUL behavior, zero-based indices and fixed output capacities.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "strings",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A19-string-search",
+      "title": "Character and substring searches",
+      "wave": "A",
+      "routines": [
+        "cpos_c",
+        "cposr_c",
+        "ncpos_c",
+        "ncposr_c",
+        "pos_c",
+        "posr_c",
+        "esrchc_c"
+      ],
+      "domain": "strings",
+      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["A18-string-transform"],
+      "prerequisiteReview": "Reuse string boundary policy; verify forward/reverse starting indices, legitimate -1 absence, blanks and byte versus JS character indexing.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "strings",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A20-string-tokenize",
+      "title": "Word/list parsing and lexical scans",
+      "wave": "A",
+      "routines": [
+        "nextwd_c",
+        "nthwd_c",
+        "lparse_c",
+        "lparsm_c",
+        "lx4dec_c",
+        "lx4num_c",
+        "lx4sgn_c",
+        "lx4uns_c",
+        "lxqstr_c"
+      ],
+      "domain": "strings",
+      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["A18-string-transform"],
+      "prerequisiteReview": "Resolve nextwd/nthwd oracle gaps independently. Establish empty token handling, delimiter sets, scan indices and bounded output list storage; split gaps if needed.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "strings",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": ["nextwd_c", "nthwd_c"]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "A21-string-numeric",
+      "title": "Numeric parsing, formatting and marker replacement",
+      "wave": "A",
+      "routines": [
+        "dp2hx_c",
+        "hx2dp_c",
+        "prsdp_c",
+        "prsint_c",
+        "repmc_c",
+        "repmct_c",
+        "repmd_c",
+        "repmf_c",
+        "repmi_c",
+        "repml_c",
+        "repmot_c"
+      ],
+      "domain": "strings",
+      "apiPlacement": "Proposed directly consumed strings.ts raw domain: existing domains have no general string API. Confirm this small domain placement before implementation; preserve flat raw method composition and the existing architecture.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["A18-string-transform"],
+      "prerequisiteReview": "Resolve repml oracle gap. Verify numeric errors, width/precision, ordinal/cardinal English text and replacement count without trimming significant output.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "strings",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": ["repml_c"]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "A22-array-search",
+      "title": "Ordered and unordered array search",
+      "wave": "A",
+      "routines": [
+        "bschoc_c",
+        "bschoi_c",
+        "bsrchc_c",
+        "bsrchd_c",
+        "bsrchi_c",
+        "isrchc_c",
+        "isrchd_c",
+        "isrchi_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Immediate shared numeric/character array encoding. Verify sorted-order preconditions, zero-based indices, order-vector mapping and legitimate -1 result.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A23-array-order",
+      "title": "Array permutations and sorting",
+      "wave": "A",
+      "routines": [
+        "isordv_c",
+        "orderc_c",
+        "orderd_c",
+        "orderi_c",
+        "reordc_c",
+        "reordd_c",
+        "reordi_c",
+        "reordl_c",
+        "shellc_c",
+        "shelld_c",
+        "shelli_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Establish bounded numeric/logical/fixed-row string arrays, permutation indexing and raw in-place versus copied result contract; check caller arrays remain owned by caller.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "A24-sorted-bounds",
+      "title": "Sorted-array boundary searches",
+      "wave": "A",
+      "routines": [
+        "lstlec_c",
+        "lstled_c",
+        "lstlei_c",
+        "lstltc_c",
+        "lstltd_c",
+        "lstlti_c"
+      ],
+      "domain": "coords-vectors",
+      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse reviewed array search representations when landed; verify strict versus inclusive comparisons, duplicates and -1 absence. No dependency on sorting wrappers when authored arrays are already sorted.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "coords-vectors",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B01-cell-arrays",
+      "title": "Cell append, copy and membership",
+      "wave": "B",
+      "routines": [
+        "appndc_c",
+        "appndd_c",
+        "appndi_c",
+        "copy_c",
+        "elemc_c",
+        "elemd_c",
+        "elemi_c"
+      ],
+      "domain": "cells-windows",
+      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Step 7 owner-local cell handles/capacity guards; verify character widths, cardinality, sorted-set flags, source/destination ownership and failed allocation cleanup.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "cells-windows",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B02-set-algebra",
+      "title": "Set differences, union, order and removal",
+      "wave": "B",
+      "routines": [
+        "diff_c",
+        "inter_c",
+        "sdiff_c",
+        "set_c",
+        "union_c",
+        "removc_c",
+        "removd_c",
+        "removi_c",
+        "ordc_c",
+        "ordd_c",
+        "ordi_c"
+      ],
+      "domain": "cells-windows",
+      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse actual Step 7 cell API. Lock set type/width matching, output capacity, order indices and mutation. SpiceyPy wrapper is set_c, not set.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "cells-windows",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B03-window-algebra",
+      "title": "Window algebra and summaries",
+      "wave": "B",
+      "routines": [
+        "wncomd_c",
+        "wncond_c",
+        "wndifd_c",
+        "wnelmd_c",
+        "wnexpd_c",
+        "wnextd_c",
+        "wnfild_c",
+        "wnfltd_c",
+        "wnincd_c",
+        "wnintd_c",
+        "wnreld_c",
+        "wnsumd_c",
+        "wnunid_c"
+      ],
+      "domain": "cells-windows",
+      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse window handles, capacity checks and complete endpoint observations. Verify closed endpoints, gaps, degenerate intervals, output aliasing and summary indices.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "cells-windows",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B04-string-set",
+      "title": "List parsing into a character set",
+      "wave": "B",
+      "routines": ["lparss_c"],
+      "domain": "cells-windows",
+      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["A20-string-tokenize"],
+      "prerequisiteReview": "Single routine integrates character width/capacity with parser output; verify deduplication, delimiter behavior and owner-local cell lifecycle. Implement only immediate parser-to-cell bridge.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "cells-windows",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B05-kernel-pool",
+      "title": "Remaining kernel-pool access and lifecycle",
+      "wave": "B",
+      "routines": [
+        "badkpv_c",
+        "bodvcd_c",
+        "bodvrd_c",
+        "clpool_c",
+        "dvpool_c",
+        "ldpool_c",
+        "lmpool_c",
+        "stpool_c",
+        "szpool_c"
+      ],
+      "domain": "kernel-pool",
+      "apiPlacement": "packages/backend-contract/src/domains/kernel-pool.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Preserve Step 7 watch-notification/state conventions and actual found/error distinction. Verify explicit output capacity, string continuation, pool limits and interaction with loaded-kernel bookkeeping.",
+      "fixtures": "Authored pool text and in-memory variables; existing LSK/body fixtures only where needed.",
+      "expectedChanges": {
+        "domain": "kernel-pool",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B06-error-observation",
+      "title": "Error substitution and traceback observation",
+      "wave": "B",
+      "routines": [
+        "errch_c",
+        "errdp_c",
+        "errint_c",
+        "qcktrc_c",
+        "return_c",
+        "trcdep_c",
+        "trcnam_c"
+      ],
+      "domain": "error",
+      "apiPlacement": "packages/backend-contract/src/domains/error.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse structured errors/trace cleanup. Determine observable pre-reset semantics; return_c has a locked wrapper named return_c. Verify exact message contents and trace indices in isolated workflows.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "error",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "B07-error-policy",
+      "title": "Process-global error/reporting policy",
+      "wave": "B",
+      "routines": ["erract_c", "errdev_c", "errprt_c", "trcoff_c"],
+      "domain": "error",
+      "apiPlacement": "packages/backend-contract/src/domains/error.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Inspect raw policy interactions with automatic shim reset and process-global CSPICE. Establish isolated-process tests and restoration; runtime termination/output-device semantics may need a maintainer decision, never an invented exclusion.",
+      "fixtures": "Isolated subprocesses and owned scratch output only; no external scientific fixtures.",
+      "expectedChanges": {
+        "domain": "error",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C01-daf-navigation",
+      "title": "DAF navigation and write-open access",
+      "wave": "C",
+      "routines": [
+        "dafbbs_c",
+        "dafcs_c",
+        "daffpa_c",
+        "dafgh_c",
+        "dafgn_c",
+        "dafgs_c",
+        "dafhsf_c",
+        "dafopw_c"
+      ],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse DAF opaque owner handles and Step 7 reader fixtures. Establish current-search state, complete packed summaries, names and writable handle lifecycle.",
+      "fixtures": "Existing authored multi-segment DAF/SPK fixtures and independently generated scratch copies.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C02-daf-records",
+      "title": "DAF descriptors and record reads",
+      "wave": "C",
+      "routines": [
+        "dafps_c",
+        "dafus_c",
+        "dafgsr_c",
+        "dafrfr_c",
+        "dafrda_c",
+        "dafgda_c"
+      ],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C01-daf-navigation"],
+      "prerequisiteReview": "Preserve opaque packed integer bytes using existing SPK descriptor lessons; immediate general DAF summary type. Verify 1-based on-disk addresses, architecture/endian data and complete record fields.",
+      "fixtures": "Authored DAF files from independent oracle; pinned small record-address fixtures.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C03-daf-mutation",
+      "title": "DAF comments and summary replacement",
+      "wave": "C",
+      "routines": ["dafac_c", "dafdc_c", "dafec_c", "dafrs_c"],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "prerequisiteReview": "Require writable DAF lifecycle and complete summary observation. Test comment paging, significant blanks, EOF and independent-reader validation after mutation.",
+      "fixtures": "Scratch copies generated by live SpiceyPy; cleanup on every close/error path.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C04-das-lifecycle",
+      "title": "DAS file creation, metadata and buffering",
+      "wave": "C",
+      "routines": [
+        "dasonw_c",
+        "dasops_c",
+        "dasopw_c",
+        "dashfn_c",
+        "dashfs_c",
+        "daslla_c",
+        "dasllc_c",
+        "dasrfr_c",
+        "daswbr_c"
+      ],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse DAS opaque handles. Define scratch/virtual output exposure with an immediate consumer; preserve duplicate claims, low-level versus ordinary close and buffer visibility.",
+      "fixtures": "Small independently generated DAS files; owned scratch files with close-before-delete cleanup.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C05-das-data",
+      "title": "DAS typed data read/write/update",
+      "wave": "C",
+      "routines": [
+        "dasadc_c",
+        "dasadd_c",
+        "dasadi_c",
+        "dasrdc_c",
+        "dasrdd_c",
+        "dasrdi_c",
+        "dasudc_c",
+        "dasudd_c",
+        "dasudi_c"
+      ],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C04-das-lifecycle"],
+      "prerequisiteReview": "Resolve missing character read/update oracle wrappers. Verify 1-based logical addresses, character substring bounds, array capacities and independent readback; split supported numeric subset if useful.",
+      "fixtures": "Independent live SpiceyPy DAS writer/reader where available; live library ABI route investigation for character records.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": ["dasrdc_c", "dasudc_c"]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "C06-das-comments",
+      "title": "DAS comment storage",
+      "wave": "C",
+      "routines": ["dasac_c", "dasdc_c", "dasec_c"],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C04-das-lifecycle"],
+      "prerequisiteReview": "Verify fixed-width text, paged reads, end-of-comments and mutation persistence while preserving file claims.",
+      "fixtures": "Small synthetic scratch DAS comment files; independent oracle writer/reader.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C07-dla-segments",
+      "title": "DLA backward traversal and segment construction",
+      "wave": "C",
+      "routines": ["dlabbs_c", "dlabns_c", "dlaens_c", "dlafps_c"],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C04-das-lifecycle", "C05-das-data"],
+      "prerequisiteReview": "Reuse all eight DLA descriptor fields and found/error treatment. Test multiple empty/nonempty segments, current segment state and interrupted-write cleanup.",
+      "fixtures": "Independent synthetic multi-segment DLA files; no mission data.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C08-ek-records",
+      "title": "EK record lifecycle",
+      "wave": "C",
+      "routines": ["ekappr_c", "ekbseg_c", "ekdelr_c", "ekinsr_c", "ekops_c"],
+      "domain": "ek",
+      "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse existing EK handles, metadata and scratch cleanup; define non-fast-load segment schema input and zero-based record indexing.",
+      "fixtures": "Authored EK schema/data generated independently by live SpiceyPy.",
+      "expectedChanges": {
+        "domain": "ek",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C09-ek-entries",
+      "title": "EK entry read/write/update",
+      "wave": "C",
+      "routines": [
+        "ekacec_c",
+        "ekaced_c",
+        "ekacei_c",
+        "ekrcec_c",
+        "ekrced_c",
+        "ekrcei_c",
+        "ekucec_c",
+        "ekuced_c",
+        "ekucei_c"
+      ],
+      "domain": "ek",
+      "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C08-ek-records"],
+      "prerequisiteReview": "Verify null flags, vector entry lengths, row indexing, character truncation and schema enforcement; independently query persisted values.",
+      "fixtures": "Synthetic mixed-null/multi-value EK records; all scratch output reclaimed.",
+      "expectedChanges": {
+        "domain": "ek",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C10-ek-metadata",
+      "title": "EK query metadata and explicit load lifecycle",
+      "wave": "C",
+      "routines": [
+        "ekccnt_c",
+        "ekcii_c",
+        "eklef_c",
+        "eknelt_c",
+        "ekpsel_c",
+        "ekssum_c",
+        "ekuef_c"
+      ],
+      "domain": "ek",
+      "apiPlacement": "packages/backend-contract/src/domains/ek.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Step 7 EK schema/result conventions and actual kernel load ownership. Immediate typed descriptors for column/segment/SELECT metadata; observe every field and valid null/absence.",
+      "fixtures": "Existing authored EK query files, expanded with small deterministic schema variants if needed.",
+      "expectedChanges": {
+        "domain": "ek",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C11-pck-binary",
+      "title": "Binary PCK workflow",
+      "wave": "C",
+      "routines": [
+        "pckcls_c",
+        "pckcov_c",
+        "pckfrm_c",
+        "pcklof_c",
+        "pckopn_c",
+        "pckuof_c",
+        "pckw02_c"
+      ],
+      "domain": "frames",
+      "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Introduce directly consumed PCK handle kind or explicit existing physical-handle convention after comparison with CK. Verify independent type-2 coefficient evaluation, coverage and close retry.",
+      "fixtures": "Tiny synthetic binary PCK generated by locked oracle; existing PCK used only as independent reference where suitable.",
+      "expectedChanges": {
+        "domain": "frames",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C12-ck-writers",
+      "title": "CK writer lifecycle and segment types",
+      "wave": "C",
+      "routines": [
+        "ckopn_c",
+        "ckcls_c",
+        "ckw01_c",
+        "ckw02_c",
+        "ckw03_c",
+        "ckw05_c"
+      ],
+      "domain": "frames",
+      "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Preserve Step 7 physical CK read-handle semantics and define writer ownership. Review each record subtype/degree/AV layout; split types if six-routine workflow exceeds reviewable size.",
+      "fixtures": "Independently generated tiny CK plus synthetic SCLK; writer outputs read by live oracle.",
+      "expectedChanges": {
+        "domain": "frames",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C13-ck-records",
+      "title": "CK record and frame access",
+      "wave": "C",
+      "routines": [
+        "ckfrot_c",
+        "ckfxfm_c",
+        "ckgr02_c",
+        "ckgr03_c",
+        "ckmeta_c",
+        "cknr02_c",
+        "cknr03_c"
+      ],
+      "domain": "frames",
+      "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["C01-daf-navigation", "C02-daf-records"],
+      "prerequisiteReview": "Reuse existing loaded CK and Step 7 pointing/coverage fixtures. Add opaque packed CK descriptor representation only for immediate consumers; validate frame derivatives and record indices.",
+      "fixtures": "Existing synthetic type-2/type-3 CKs; add independently generated subtype fixtures only if necessary.",
+      "expectedChanges": {
+        "domain": "frames",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "C14-text-command-state",
+      "title": "Text line reading and command-line state",
+      "wave": "C",
+      "routines": ["rdtext_c", "putcml_c"],
+      "domain": "file-io",
+      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Resolve putcml oracle absence and actual command-state semantics. Establish Node/WASM text EOF and implicit unit lifecycle without interactive I/O. Existing exclusions remain unchanged.",
+      "fixtures": "Owned small ASCII scratch files; process isolation for command-line state; browser/Node portability review required.",
+      "expectedChanges": {
+        "domain": "file-io",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": ["putcml_c"]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "D01-time-additions",
+      "title": "Calendar parsing controls and local solar time",
+      "wave": "D",
+      "routines": ["etcal_c", "utc2et_c", "tparch_c", "tsetyr_c", "et2lst_c"],
+      "domain": "time",
+      "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Step 7 time default restoration; new global parse/year state must have explicit cleanup or subprocess isolation. Distinguish formal calendar/ET/UTC, longitude type and local solar units.",
+      "fixtures": "Existing LSK and authored body constants; independent time/calendar cases around boundaries.",
+      "expectedChanges": {
+        "domain": "time",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "D02-sclk-additions",
+      "title": "Remaining spacecraft-clock primitives",
+      "wave": "D",
+      "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
+      "domain": "time",
+      "apiPlacement": "packages/backend-contract/src/domains/time.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse synthetic two-partition SCLK and signed ID checks. Observe all partition endpoints, rounded ticks, field formats and absent-kernel errors.",
+      "fixtures": "Existing authored two-partition SCLK/LSK fixtures with recorded provenance.",
+      "expectedChanges": {
+        "domain": "time",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "D03-frame-additions",
+      "title": "Additional frame metadata and transformations",
+      "wave": "D",
+      "routines": [
+        "bltfrm_c",
+        "pxfrm2_c",
+        "tipbod_c",
+        "tisbod_c",
+        "tkfram_c",
+        "xfmsta_c"
+      ],
+      "domain": "frames",
+      "apiPlacement": "packages/backend-contract/src/domains/frames.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse owner-local ID cells, row-major transforms and state vectors. Inspect xfmsta coordinate-system conventions and output units; distinguish frames at unequal epochs.",
+      "fixtures": "Existing synthetic frame/body/CK fixtures plus independent analytic frame cases.",
+      "expectedChanges": {
+        "domain": "frames",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "D04-surface-names",
+      "title": "Surface-name translations",
+      "wave": "D",
+      "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
+      "domain": "ids-names",
+      "apiPlacement": "packages/backend-contract/src/domains/ids-names.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse found/pool conventions and signed SpiceInt validation; verify body-qualified collisions, numeric fallbacks and unmatched names.",
+      "fixtures": "Authored NAIF_SURFACE_* kernel-pool variables with final restoration.",
+      "expectedChanges": {
+        "domain": "ids-names",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E01-orbital-elements",
+      "title": "Conic and equinoctial elements",
+      "wave": "E",
+      "routines": ["conics_c", "eqncpv_c", "oscelt_c", "oscltx_c", "prop2b_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Define directly consumed element tuples with explicit units/epochs; test circular/equatorial/elliptic/hyperbolic limits and invalid gravitational parameters.",
+      "fixtures": "Authored analytic two-body states and elements; no mission observations.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E02-tle-propagation",
+      "title": "Two-line element parsing and SGP4",
+      "wave": "E",
+      "routines": ["evsgp4_c", "getelm_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Review epoch expansion, geophysical constants and parser/checksum behavior; establish explicit element types.",
+      "fixtures": "Use publicly redistributable documented TLE examples only after provenance review, or author deterministic synthetic lines and independent oracle outputs.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E03-spk-lowlevel",
+      "title": "SPK load, native evaluation and subset",
+      "wave": "E",
+      "routines": ["spklef_c", "spkuef_c", "spkpvn_c", "spksub_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse exact packed SPK descriptors and ownership. Distinguish load handles from opaque writer handles; subset must be independently read after close.",
+      "fixtures": "Existing synthetic multi-segment SPKs and independently generated subset scratch files.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E04-spk-chebyshev",
+      "title": "SPK Chebyshev segment writers",
+      "wave": "E",
+      "routines": ["spkw02_c", "spkw03_c", "spkw20_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Existing spkopn/spkcls suffice. Verify coefficient order, subtype record sizes, epoch interval coverage and independent state evaluation.",
+      "fixtures": "Authored coefficients; live SpiceyPy independently evaluates generated segment data.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E05-spk-interpolation",
+      "title": "SPK interpolated state writers",
+      "wave": "E",
+      "routines": ["spkw09_c", "spkw12_c", "spkw13_c", "spkw18_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Existing writer lifecycle suffices. Verify state/epoch count and subtype/degree constraints; compare between record epochs and at boundaries.",
+      "fixtures": "Authored nontrivial states/derivatives; independent live reads of generated files.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E06-spk-analytic",
+      "title": "SPK analytic/orbital segment writers",
+      "wave": "E",
+      "routines": ["spkw05_c", "spkw10_c", "spkw15_c", "spkw17_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Each subtype has distinct record semantics. Establish immediately consumed orbital/TLE tuple types and split subtype PRs if needed; avoid writer-reader self-validation.",
+      "fixtures": "Authored or provenance-reviewed orbital elements independently evaluated through locked oracle; no unchecked external data.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E07-spk-streaming",
+      "title": "SPK type-14 streaming workflow",
+      "wave": "E",
+      "routines": ["spk14a_c", "spk14b_c", "spk14e_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Single stateful begin/add/end workflow on existing SPK writer. Test interruption, count mismatches, handle misuse and independently readable completion.",
+      "fixtures": "Small synthetic type-14 coefficients and owned scratch SPKs.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E08-spk-corrections",
+      "title": "Lower-level SPK aberration and light-time operations",
+      "wave": "E",
+      "routines": [
+        "spkacs_c",
+        "spkapo_c",
+        "spkapp_c",
+        "spkaps_c",
+        "spkltc_c",
+        "stelab_c",
+        "stlabx_c",
+        "ltime_c"
+      ],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse state/position types and all supported correction policies. Observe velocity, light-time derivatives and reception/transmission distinctions.",
+      "fixtures": "Existing authored moving-body SPKs and finite analytic observer states.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E09-spk-relative-observers",
+      "title": "Constant position/velocity target and observer states",
+      "wave": "E",
+      "routines": ["azlcpo_c", "spkcpo_c", "spkcpt_c", "spkcvo_c", "spkcvt_c"],
+      "domain": "ephemeris",
+      "apiPlacement": "packages/backend-contract/src/domains/ephemeris.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Verify reference-location flags, observer epoch and frame-center dependencies; azlcpo includes azimuth/elevation conventions and rates.",
+      "fixtures": "Existing synthetic linked centers/moving frames; authored nonzero observer/target states.",
+      "expectedChanges": {
+        "domain": "ephemeris",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E10-plane-geometry",
+      "title": "Plane construction, projection and line intersections",
+      "wave": "E",
+      "routines": [
+        "nvp2pl_c",
+        "pl2nvp_c",
+        "pl2psv_c",
+        "psv2pl_c",
+        "inrypl_c",
+        "vprjp_c",
+        "vprjpi_c",
+        "nplnpt_c"
+      ],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse SpicePlane and Vec3; define legitimate miss/infinite intersection results accurately. Verify normalization, parallel lines and singular inverse projections.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E11-ellipse-geometry",
+      "title": "Ellipse representation and intersections",
+      "wave": "E",
+      "routines": [
+        "cgv2el_c",
+        "el2cgv_c",
+        "saelgv_c",
+        "pjelpl_c",
+        "inelpl_c",
+        "inedpl_c",
+        "npelpt_c"
+      ],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Introduce directly consumed center/semimajor/semiminor ellipse representation. Verify orthogonality/degeneracy, complete intersection outputs and miss semantics.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E12-ellipsoid-geometry",
+      "title": "Ellipsoid points, normals and limbs",
+      "wave": "E",
+      "routines": [
+        "nearpt_c",
+        "npedln_c",
+        "edlimb_c",
+        "ednmpt_c",
+        "edpnt_c",
+        "surfnm_c",
+        "surfpt_c"
+      ],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["E11-ellipse-geometry"],
+      "prerequisiteReview": "Reuse ellipse result from E11 for edlimb; remaining point/normal operations can split independently. Verify axes/inside/outside/tangent and zero-radius errors.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E13-surface-derivatives",
+      "title": "Surface tangencies and derivatives",
+      "wave": "E",
+      "routines": ["dnearp_c", "surfpv_c", "tangpt_c"],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Vec6 and found results. Establish singular/tangent conventions and time derivatives; tangpt needs kernel/frame observer workflow.",
+      "fixtures": "Authored ellipsoids and existing synthetic geometry kernels where tangpt requires them.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E14-legacy-surface-geometry",
+      "title": "Legacy surface points and illumination",
+      "wave": "E",
+      "routines": ["illum_c", "srfxpt_c", "subpt_c", "subsol_c", "edterm_c"],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Keep actual legacy routine semantics rather than substituting newer APIs. Observe found/epoch/point/angle outputs and each supported correction.",
+      "fixtures": "Existing authored geometry SPK/PCK/DSK cases as applicable, with independent oracle.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E15-field-of-view",
+      "title": "Instrument FOV definitions and visibility",
+      "wave": "E",
+      "routines": ["getfov_c", "getfvn_c", "fovray_c", "fovtrg_c"],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Immediate typed FOV boundary arrays with capacity limits; verify shape-dependent boundary counts, instrument name/ID and ray/target visibility.",
+      "fixtures": "Authored IK/FK plus existing synthetic SPK/CK/SCLK as required; no mission instrument data.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E16-geometry-quantities",
+      "title": "Solar longitude, phase and target separation",
+      "wave": "E",
+      "routines": ["phaseq_c", "lspcn_c", "trgsep_c"],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Observe angular units, apparent/geometric corrections, extended target shapes and frame dependencies.",
+      "fixtures": "Existing synthetic geometry kernels; add authored configurations that distinguish limb/center behavior.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E17-plate-math",
+      "title": "Plate model geometry and bounds",
+      "wave": "E",
+      "routines": [
+        "pltar_c",
+        "pltexp_c",
+        "pltnp_c",
+        "pltnrm_c",
+        "pltvol_c",
+        "dskrb2_c"
+      ],
+      "domain": "dsk",
+      "apiPlacement": "packages/backend-contract/src/domains/dsk.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Existing DSK arrays provide immediate mesh representation. Verify one-based plate indices, orientation, degeneracy, bounded products and surface coordinate bounds.",
+      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "expectedChanges": {
+        "domain": "dsk",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E18-dsk-data",
+      "title": "DSK low-level type-2 reads and close",
+      "wave": "E",
+      "routines": [
+        "dskd02_c",
+        "dski02_c",
+        "dskn02_c",
+        "dskp02_c",
+        "dskv02_c",
+        "dskz02_c",
+        "dskcls_c"
+      ],
+      "domain": "dsk",
+      "apiPlacement": "packages/backend-contract/src/domains/dsk.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Step 7 DAS/DLA descriptor and writer lifecycle. Verify address/index conventions, paging/room bounds, descriptor ownership and physical close behavior.",
+      "fixtures": "Existing synthetic meshes and independently generated DSKs; no new external data.",
+      "expectedChanges": {
+        "domain": "dsk",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E19-dsk-intersections",
+      "title": "DSK ray queries and tolerance state",
+      "wave": "E",
+      "routines": ["dskx02_c", "dskxsi_c", "dskxv_c", "dskgtl_c", "dskstl_c"],
+      "domain": "dsk",
+      "apiPlacement": "packages/backend-contract/src/domains/dsk.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Observe full intercept/source descriptor outputs, misses, plate IDs and vectorized shape. Restore tolerance state or isolate process; no silent normalization.",
+      "fixtures": "Existing synthetic multi-segment DSKs with asymmetric triangles and known hits/misses.",
+      "expectedChanges": {
+        "domain": "dsk",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E20-extended-surfaces",
+      "title": "Surface grids, normals, limbs and terminators",
+      "wave": "E",
+      "routines": ["latsrf_c", "srfnrm_c", "limbpt_c", "termpt_c"],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Define directly consumed bounded variable-length point/epoch/tangent result arrays. Verify method/frame strings, ellipsoid versus DSK, cuts and capacity behavior.",
+      "fixtures": "Existing synthetic SPK/PCK/DSK geometry; independently generated cases for multiple cuts and missing intercepts.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E21-legacy-plate-geometry",
+      "title": "Legacy plate-model geometry",
+      "wave": "E",
+      "routines": [
+        "illum_pl02",
+        "illum_plid_pl02",
+        "limb_pl02",
+        "llgrid_pl02",
+        "subpt_pl02",
+        "subsol_pl02",
+        "term_pl02"
+      ],
+      "domain": "geometry",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "All seven top-level wrappers absent in locked SpiceyPy. Inspect exported N0067 ABI and independent live library route, ownership and obsolete interface semantics before implementation. Maintainer decision required if no compatible oracle can be established; no exclusion is proposed.",
+      "fixtures": "Existing synthetic type-2 DSK; authoritative primary examples and independent oracle route still need investigation.",
+      "expectedChanges": {
+        "domain": "geometry",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "independent-route-investigation-required",
+        "missingTopLevelWrappers": [
+          "illum_pl02",
+          "illum_plid_pl02",
+          "limb_pl02",
+          "llgrid_pl02",
+          "subpt_pl02",
+          "subsol_pl02",
+          "term_pl02"
+        ]
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+    },
+    {
+      "id": "E22-gf-scalar",
+      "title": "Geometry Finder scalar quantities",
+      "wave": "E",
+      "routines": [
+        "gfpa_c",
+        "gfposc_c",
+        "gfrr_c",
+        "gfsntc_c",
+        "gfsubc_c",
+        "gfilum_c"
+      ],
+      "domain": "geometry-gf",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Reuse Step 7 windows, tolerance and workspace guards. Inspect quantity/method/coordinate options, full event windows and cleanup of persistent state.",
+      "fixtures": "Existing authored geometry/GF kernels with analytically distinguishable event intervals.",
+      "expectedChanges": {
+        "domain": "geometry-gf",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E23-gf-visibility",
+      "title": "Geometry Finder occultation and FOV searches",
+      "wave": "E",
+      "routines": ["gfoclt_c", "gfrfov_c", "gftfov_c"],
+      "domain": "geometry-gf",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": ["E15-field-of-view"],
+      "prerequisiteReview": "Reuse reviewed FOV definitions and GF windows; test complete boundary intervals, correction modes, misses and workspace capacity.",
+      "fixtures": "Authored FOV/geometry kernels; independent oracle plus analytic event checks.",
+      "expectedChanges": {
+        "domain": "geometry-gf",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E24-gf-configurable",
+      "title": "Configurable Geometry Finder callbacks",
+      "wave": "E",
+      "routines": ["gfevnt_c", "gffove_c", "gfocce_c"],
+      "domain": "geometry-gf",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Resolve synchronous callback ABI, Emscripten function-table lifecycle, exception propagation, memory ownership and worker transport with immediate consumers. These are concrete prerequisite investigations, not a reason to substitute fixed callbacks or exclude raw behavior.",
+      "fixtures": "Existing authored GF/FOV kernels plus deterministic callback functions. May depend on E25 implementation after API decision.",
+      "expectedChanges": {
+        "domain": "geometry-gf",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E25-gf-user-functions",
+      "title": "User-function search and differentiation",
+      "wave": "E",
+      "routines": ["gfudb_c", "gfuds_c", "uddc_c", "uddf_c", "udf_c"],
+      "domain": "geometry-gf",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Establish one owned Node/WASM callback boundary and explicit lifetime with these immediate consumers. Verify callback errors, reentrancy, scalar derivatives and full search results; coordinate shared callback prerequisite with E24.",
+      "fixtures": "Authored mathematical callback functions with independent live Python callbacks and analytic invariants.",
+      "expectedChanges": {
+        "domain": "geometry-gf",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    },
+    {
+      "id": "E26-gf-signals-progress",
+      "title": "Geometry Finder interrupts and progress updates",
+      "wave": "E",
+      "routines": ["gfbail_c", "gfclrh_c", "gfinth_c", "gfrepu_c"],
+      "domain": "geometry-gf",
+      "apiPlacement": "packages/backend-contract/src/domains/geometry-gf.ts; raw methods retain canonical names without _c.",
+      "owner": null,
+      "status": "planned",
+      "dependsOn": [],
+      "prerequisiteReview": "Inspect platform signal semantics and browser constraints; preserve supported raw effects. Isolated process tests for signal/reporting state and explicit maintainer decision for any unresolved platform behavior.",
+      "fixtures": "Owned subprocess stdout/signal fixtures; no scientific data.",
+      "expectedChanges": {
+        "domain": "geometry-gf",
+        "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
+      },
+      "oracle": {
+        "status": "source-wrappers-present",
+        "missingTopLevelWrappers": []
+      },
+      "prs": [],
+      "validationEvidence": [],
+      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+    }
+  ]
+}

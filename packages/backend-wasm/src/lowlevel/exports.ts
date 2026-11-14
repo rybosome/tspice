@@ -895,6 +895,68 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_hrmesp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_hrmint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    workPtr: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgresp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrind(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    workPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qderiv(
+    count: number,
+    f0Ptr: number,
+    f2Ptr: number,
+    delta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -1843,6 +1905,68 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_hrmesp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_hrmint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    workPtr: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgresp(
+    count: number,
+    first: number,
+    step: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrind(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    workPtr: number,
+    x: number,
+    outPtr: number,
+    derivativePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lgrint(
+    count: number,
+    xvalsPtr: number,
+    yvalsPtr: number,
+    x: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qderiv(
+    count: number,
+    f0Ptr: number,
+    f2Ptr: number,
+    delta: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2262,6 +2386,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_hrmesp",
+  "_tspice_hrmint",
+  "_tspice_lgresp",
+  "_tspice_lgrind",
+  "_tspice_lgrint",
+  "_tspice_qderiv",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

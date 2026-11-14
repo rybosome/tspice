@@ -2,6 +2,7 @@
 
 #include "SpiceUsr.h"
 
+#include <stdint.h>
 #include <string.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
@@ -20,6 +21,93 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int tspice_interpolation_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "Invalid interpolation buffer or dimension", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_hrmesp(int n, double first, double step, const double *yvals, double x, double *outF, double *outDerivative, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // CSPICE allocates 32*n bytes through a signed32 byte count.
+  if (!yvals || !outF || !outDerivative || n < 0 || n > 67108863 || (size_t)n > SIZE_MAX / (4 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  hrmesp_c((SpiceInt)n, first, step, yvals, x, outF, outDerivative);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_hrmint(int n, const double *xvals, const double *yvals, double x, double *work, double *outF, double *outDerivative, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // Keep unreduced translated index (2*n-1)+4*n within signed32.
+  if (!xvals || !yvals || !work || !outF || !outDerivative || n < 0 || n > 357913941 || (size_t)n > SIZE_MAX / (4 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  hrmint_c((SpiceInt)n, xvals, yvals, x, work, outF, outDerivative);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lgresp(int n, double first, double step, const double *yvals, double x, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // CSPICE allocates 8*n bytes through a signed32 byte count.
+  if (!yvals || !out || n < 0 || n > 268435455 || (size_t)n > SIZE_MAX / (1 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  *out = lgresp_c((SpiceInt)n, first, step, yvals, x);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lgrind(int n, const double *xvals, const double *yvals, double *work, double x, double *outP, double *outDerivative, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // Keep unreduced translated index i+2*n (i<=n) within signed32.
+  if (!xvals || !yvals || !work || !outP || !outDerivative || n < 0 || n > 715827882 || (size_t)n > SIZE_MAX / (2 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  lgrind_c((SpiceInt)n, xvals, yvals, work, x, outP, outDerivative);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lgrint(int n, const double *xvals, const double *yvals, double x, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // CSPICE allocates 8*n bytes through a signed32 byte count.
+  if (!xvals || !yvals || !out || n < 0 || n > 268435455 || (size_t)n > SIZE_MAX / (1 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  *out = lgrint_c((SpiceInt)n, xvals, yvals, x);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_qderiv(int n, const double *f0, const double *f2, double delta, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // Avoid overflow of the translated vlcomg inclusive loop counter.
+  if (!f0 || !f2 || !out || n < 1 || n > 2147483646 || (size_t)n > SIZE_MAX / (1 * sizeof(double))) return tspice_interpolation_invalid_arg(err, errMaxBytes);
+  qderiv_c((SpiceInt)n, f0, f2, delta, out);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 int tspice_reclat(

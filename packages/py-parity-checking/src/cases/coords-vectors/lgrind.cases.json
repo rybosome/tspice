@@ -1,0 +1,223 @@
+[
+  {
+    "caseId": "coords-vectors-lgrind-single-point",
+    "description": "One point gives its tangent line for Hermite or a constant for Lagrange, including evaluations off the node.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [10],
+        "yvals": [7],
+        "x": 9
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [10],
+        "yvals": [7],
+        "x": 10
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [10],
+        "yvals": [7],
+        "x": 12
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-cubic-at-nodes",
+    "description": "Evaluate at every authored node; preserve each returned value and derivative.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": -1
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 0
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 1
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+    "description": "Mixed cubic data distinguish component order, interpolation and evaluation beyond the last node.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 0.25
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 1.25
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [17, 2, -3, -40],
+        "x": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-zero-and-constant",
+    "description": "Zero and constant data preserve the ordinate and any zero derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [0, 0, 0, 0],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [7, 7, 7, 7],
+        "x": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-scaled-ordinates",
+    "description": "All value and slope inputs are rescaled together; focused tests compare every normalized output field to live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [1.7e101, 2e100, -3.0000000000000002e100, -4e101],
+        "x": 0.5
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 1, 2],
+        "yvals": [1.7e-99, 2e-100, -3e-100, -4e-99],
+        "x": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-scaled-abscissas",
+    "description": "Changing abscissa units rescales derivatives inversely; focused checks restore their original units.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1e100, 0.0, 1e100, 2e100],
+        "yvals": [17, 2, -3, -40],
+        "x": 5e99
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1e-100, 0.0, 1e-100, 2e-100],
+        "yvals": [17, 2, -3, -40],
+        "x": 5e-101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-irregular-distinct-grid",
+    "description": "Unequally spaced nodes distinguish abscissa/ordinate ordering and return every evaluated field.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 0.5, 2],
+        "yvals": [17, 2, 0.875, -40],
+        "x": -0.75
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 0.5, 2],
+        "yvals": [17, 2, 0.875, -40],
+        "x": 0.25
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 0.5, 2],
+        "yvals": [17, 2, 0.875, -40],
+        "x": 1.5
+      },
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [-1, 0, 0.5, 2],
+        "yvals": [17, 2, 0.875, -40],
+        "x": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-duplicate-node-error",
+    "description": "An adjacent repeated abscissa in a nonempty table reaches the actual CSPICE duplicate-node error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [0, 1, 1],
+        "yvals": [2, -3, 4],
+        "x": 0.5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DIVIDEBYZERO"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-lgrind-empty-table-error",
+    "description": "The documented zero-node table reaches the actual CSPICE INVALIDSIZE error.",
+    "workflow": [
+      {
+        "op": "coords-vectors.lgrind",
+        "xvals": [],
+        "yvals": [],
+        "x": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  }
+]

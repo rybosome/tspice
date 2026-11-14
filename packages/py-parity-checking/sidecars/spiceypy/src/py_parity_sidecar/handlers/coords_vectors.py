@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import interpolation_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +11,12 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsHrmesp,
+    StepCoordsVectorsHrmint,
+    StepCoordsVectorsLgresp,
+    StepCoordsVectorsLgrind,
+    StepCoordsVectorsLgrint,
+    StepCoordsVectorsQderiv,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -27,6 +35,13 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+def _to_number_array(values: object, length: int) -> list[float]:
+    out = values.tolist() if hasattr(values, "tolist") else values
+    if not isinstance(out, list) or len(out) != length:
+        raise TypeError(f"Expected {length} numeric outputs, got: {out!r}")
+    return [float(value) for value in out]
 
 
 def _to_vec3(values: object) -> list[float]:
@@ -51,6 +66,34 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsHrmesp):
+        interpolation_oracle.equally_spaced("hrmesp", step.first, step.step, step.yvals, step.x)
+        value, derivative = sp.hrmesp(step.first, step.step, step.yvals, step.x)
+        return StepOutput(op=step.op, value={"f": float(value), "df": float(derivative)})
+
+    if isinstance(step, StepCoordsVectorsHrmint):
+        interpolation_oracle.arbitrary("hrmint", step.xvals, step.yvals, step.x)
+        value, derivative = sp.hrmint(step.xvals, step.yvals, step.x)
+        return StepOutput(op=step.op, value={"f": float(value), "df": float(derivative)})
+
+    if isinstance(step, StepCoordsVectorsLgresp):
+        interpolation_oracle.equally_spaced("lgresp", step.first, step.step, step.yvals, step.x)
+        return StepOutput(op=step.op, value=float(sp.lgresp(step.first, step.step, step.yvals, step.x)))
+
+    if isinstance(step, StepCoordsVectorsLgrind):
+        interpolation_oracle.arbitrary("lgrind", step.xvals, step.yvals, step.x)
+        value, derivative = sp.lgrind(step.xvals, step.yvals, step.x)
+        return StepOutput(op=step.op, value={"p": float(value), "dp": float(derivative)})
+
+    if isinstance(step, StepCoordsVectorsLgrint):
+        interpolation_oracle.arbitrary("lgrint", step.xvals, step.yvals, step.x)
+        return StepOutput(op=step.op, value=float(sp.lgrint(step.xvals, step.yvals, step.x)))
+
+    if isinstance(step, StepCoordsVectorsQderiv):
+        interpolation_oracle.quadratic(step.f0, step.f2, step.delta)
+        result = sp.qderiv(step.f0, step.f2, step.delta)
+        return StepOutput(op=step.op, value=_to_number_array(result, len(step.f0)))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

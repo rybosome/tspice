@@ -1,5 +1,10 @@
 #include "coords_vectors.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <vector>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +12,260 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadInterpolationNumber(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+    return false;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static bool ReadInterpolationCount(Napi::Env env, const Napi::Value& value, uint32_t stride, uint32_t maximum, int* count, const char* label) {
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be an array"));
+    return false;
+  }
+  const uint32_t length = value.As<Napi::Array>().Length();
+  if (length % stride != 0 || length / stride > maximum || static_cast<size_t>(length) > SIZE_MAX / sizeof(double)) {
+    ThrowSpiceError(Napi::RangeError::New(env, std::string(label) + " has an unsupported point count or layout"));
+    return false;
+  }
+  *count = static_cast<int>(length / stride);
+  return true;
+}
+
+static bool ReadInterpolationValues(Napi::Env env, const Napi::Value& value, uint32_t length, std::vector<double>& out, const char* label) {
+  // Copy the exact validated size even if an earlier input accessor resized
+  // this array. Missing entries then fail before any pointer reaches CSPICE.
+  const Napi::Array array = value.As<Napi::Array>();
+  out.resize(std::max<size_t>(1, length), 0.0);
+  for (uint32_t i = 0; i < length; i++) {
+    if (!ReadInterpolationNumber(env, array.Get(i), &out[i], label)) return false;
+  }
+  return true;
+}
+
+static Napi::Object Hrmesp(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "hrmesp() expects 4 arguments"));
+    return Napi::Object::New(env);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[2], 2U, 67108863U, &count, "hrmesp(yvals)")) return Napi::Object::New(env);
+  if (static_cast<size_t>(count) > SIZE_MAX / (4 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Object::New(env);
+  }
+  double first = 0.0;
+  if (!ReadInterpolationNumber(env, info[0], &first, "hrmesp(first)")) return Napi::Object::New(env);
+  double step = 0.0;
+  if (!ReadInterpolationNumber(env, info[1], &step, "hrmesp(step)")) return Napi::Object::New(env);
+  std::vector<double> yvals;
+  if (!ReadInterpolationValues(env, info[2], 2U * static_cast<uint32_t>(count), yvals, "hrmesp(yvals)")) return Napi::Object::New(env);
+  double x = 0.0;
+  if (!ReadInterpolationNumber(env, info[3], &x, "hrmesp(x)")) return Napi::Object::New(env);
+  double value = 0.0;
+  double derivative = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_hrmesp(count, first, step, yvals.data(), x, &value, &derivative, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling hrmesp", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("f", Napi::Number::New(env, value));
+  result.Set("df", Napi::Number::New(env, derivative));
+  return result;
+}
+
+static Napi::Object Hrmint(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "hrmint() expects 3 arguments"));
+    return Napi::Object::New(env);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[0], 1U, 357913941U, &count, "hrmint(xvals)")) return Napi::Object::New(env);
+  int otherCount = 0;
+  if (!ReadInterpolationCount(env, info[1], 2U, 357913941U, &otherCount, "hrmint(yvals)")) return Napi::Object::New(env);
+  if (otherCount != count) {
+    ThrowSpiceError(Napi::RangeError::New(env, "hrmint() input array lengths do not match"));
+    return Napi::Object::New(env);
+  }
+  if (static_cast<size_t>(count) > SIZE_MAX / (4 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Object::New(env);
+  }
+  std::vector<double> xvals;
+  if (!ReadInterpolationValues(env, info[0], static_cast<uint32_t>(count), xvals, "hrmint(xvals)")) return Napi::Object::New(env);
+  std::vector<double> yvals;
+  if (!ReadInterpolationValues(env, info[1], 2U * static_cast<uint32_t>(count), yvals, "hrmint(yvals)")) return Napi::Object::New(env);
+  double x = 0.0;
+  if (!ReadInterpolationNumber(env, info[2], &x, "hrmint(x)")) return Napi::Object::New(env);
+  double value = 0.0;
+  double derivative = 0.0;
+  std::vector<double> work(std::max<size_t>(1, 4 * static_cast<size_t>(count)), 0.0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_hrmint(count, xvals.data(), yvals.data(), x, work.data(), &value, &derivative, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling hrmint", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("f", Napi::Number::New(env, value));
+  result.Set("df", Napi::Number::New(env, derivative));
+  return result;
+}
+
+static Napi::Number Lgresp(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lgresp() expects 4 arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[2], 1U, 268435455U, &count, "lgresp(yvals)")) return Napi::Number::New(env, 0);
+  if (static_cast<size_t>(count) > SIZE_MAX / (1 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Number::New(env, 0);
+  }
+  double first = 0.0;
+  if (!ReadInterpolationNumber(env, info[0], &first, "lgresp(first)")) return Napi::Number::New(env, 0);
+  double step = 0.0;
+  if (!ReadInterpolationNumber(env, info[1], &step, "lgresp(step)")) return Napi::Number::New(env, 0);
+  std::vector<double> yvals;
+  if (!ReadInterpolationValues(env, info[2], static_cast<uint32_t>(count), yvals, "lgresp(yvals)")) return Napi::Number::New(env, 0);
+  double x = 0.0;
+  if (!ReadInterpolationNumber(env, info[3], &x, "lgresp(x)")) return Napi::Number::New(env, 0);
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_lgresp(count, first, step, yvals.data(), x, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling lgresp", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Object Lgrind(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lgrind() expects 3 arguments"));
+    return Napi::Object::New(env);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[0], 1U, 715827882U, &count, "lgrind(xvals)")) return Napi::Object::New(env);
+  int otherCount = 0;
+  if (!ReadInterpolationCount(env, info[1], 1U, 715827882U, &otherCount, "lgrind(yvals)")) return Napi::Object::New(env);
+  if (otherCount != count) {
+    ThrowSpiceError(Napi::RangeError::New(env, "lgrind() input array lengths do not match"));
+    return Napi::Object::New(env);
+  }
+  if (static_cast<size_t>(count) > SIZE_MAX / (2 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Object::New(env);
+  }
+  std::vector<double> xvals;
+  if (!ReadInterpolationValues(env, info[0], static_cast<uint32_t>(count), xvals, "lgrind(xvals)")) return Napi::Object::New(env);
+  std::vector<double> yvals;
+  if (!ReadInterpolationValues(env, info[1], static_cast<uint32_t>(count), yvals, "lgrind(yvals)")) return Napi::Object::New(env);
+  double x = 0.0;
+  if (!ReadInterpolationNumber(env, info[2], &x, "lgrind(x)")) return Napi::Object::New(env);
+  double value = 0.0;
+  double derivative = 0.0;
+  std::vector<double> work(std::max<size_t>(1, 2 * static_cast<size_t>(count)), 0.0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_lgrind(count, xvals.data(), yvals.data(), work.data(), x, &value, &derivative, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling lgrind", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("p", Napi::Number::New(env, value));
+  result.Set("dp", Napi::Number::New(env, derivative));
+  return result;
+}
+
+static Napi::Number Lgrint(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lgrint() expects 3 arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[0], 1U, 268435455U, &count, "lgrint(xvals)")) return Napi::Number::New(env, 0);
+  int otherCount = 0;
+  if (!ReadInterpolationCount(env, info[1], 1U, 268435455U, &otherCount, "lgrint(yvals)")) return Napi::Number::New(env, 0);
+  if (otherCount != count) {
+    ThrowSpiceError(Napi::RangeError::New(env, "lgrint() input array lengths do not match"));
+    return Napi::Number::New(env, 0);
+  }
+  if (static_cast<size_t>(count) > SIZE_MAX / (1 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Number::New(env, 0);
+  }
+  std::vector<double> xvals;
+  if (!ReadInterpolationValues(env, info[0], static_cast<uint32_t>(count), xvals, "lgrint(xvals)")) return Napi::Number::New(env, 0);
+  std::vector<double> yvals;
+  if (!ReadInterpolationValues(env, info[1], static_cast<uint32_t>(count), yvals, "lgrint(yvals)")) return Napi::Number::New(env, 0);
+  double x = 0.0;
+  if (!ReadInterpolationNumber(env, info[2], &x, "lgrint(x)")) return Napi::Number::New(env, 0);
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_lgrint(count, xvals.data(), yvals.data(), x, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling lgrint", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Array Qderiv(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "qderiv() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  int count = 0;
+  if (!ReadInterpolationCount(env, info[0], 1U, 2147483646U, &count, "qderiv(f0)")) return Napi::Array::New(env);
+  int otherCount = 0;
+  if (!ReadInterpolationCount(env, info[1], 1U, 2147483646U, &otherCount, "qderiv(f2)")) return Napi::Array::New(env);
+  if (otherCount != count) {
+    ThrowSpiceError(Napi::RangeError::New(env, "qderiv() input array lengths do not match"));
+    return Napi::Array::New(env);
+  }
+  if (count == 0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "qderiv() requires nonempty arrays"));
+    return Napi::Array::New(env);
+  }
+  if (static_cast<size_t>(count) > SIZE_MAX / (1 * sizeof(double))) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation workspace is too large"));
+    return Napi::Array::New(env);
+  }
+  std::vector<double> f0;
+  if (!ReadInterpolationValues(env, info[0], static_cast<uint32_t>(count), f0, "qderiv(f0)")) return Napi::Array::New(env);
+  std::vector<double> f2;
+  if (!ReadInterpolationValues(env, info[1], static_cast<uint32_t>(count), f2, "qderiv(f2)")) return Napi::Array::New(env);
+  double delta = 0.0;
+  if (!ReadInterpolationNumber(env, info[2], &delta, "qderiv(delta)")) return Napi::Array::New(env);
+  std::vector<double> out(static_cast<size_t>(count), 0.0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  const int status = tspice_qderiv(count, f0.data(), f2.data(), delta, out.data(), err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling qderiv", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out.data(), static_cast<size_t>(count));
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +831,12 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "hrmesp", Napi::Function::New(env, Hrmesp), __func__)) return;
+  if (!SetExportChecked(env, exports, "hrmint", Napi::Function::New(env, Hrmint), __func__)) return;
+  if (!SetExportChecked(env, exports, "lgresp", Napi::Function::New(env, Lgresp), __func__)) return;
+  if (!SetExportChecked(env, exports, "lgrind", Napi::Function::New(env, Lgrind), __func__)) return;
+  if (!SetExportChecked(env, exports, "lgrint", Napi::Function::New(env, Lgrint), __func__)) return;
+  if (!SetExportChecked(env, exports, "qderiv", Napi::Function::New(env, Qderiv), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

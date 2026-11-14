@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -99,6 +99,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
+| `hrmint_c` | Hermite polynomial interpolation |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
@@ -112,6 +114,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `lgresp_c` | Lagrange interpolation on equally spaced points |
+| `lgrind_c` | Lagrange polynomial interpolation with derivative |
+| `lgrint_c` | Lagrange polynomial interpolation |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -123,6 +128,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `qderiv_c` | Quadratic derivative |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -391,8 +397,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfudb_c` | GF, user defined boolean |
 | `gfuds_c` | GF, user defined scalar |
 | `halfpi_c` | Half the value of pi |
-| `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
-| `hrmint_c` | Hermite polynomial interpolation |
 | `hx2dp_c` | Hexadecimal string to d.p. number |
 | `ident_c` | Return the 3x3 identity matrix |
 | `illum_c` | Illumination angles |
@@ -424,9 +428,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `latsrf_c` | Latitudinal grid to surface points |
 | `lcase_c` | Convert to lowercase |
 | `ldpool_c` | Load variables from a kernel file into the pool |
-| `lgresp_c` | Lagrange interpolation on equally spaced points |
-| `lgrind_c` | Lagrange polynomial interpolation with derivative |
-| `lgrint_c` | Lagrange polynomial interpolation |
 | `limb_pl02` | Limb using DSK type 2 plate model |
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
@@ -511,7 +512,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
 | `qcktrc_c` | Get Quick Traceback |
-| `qderiv_c` | Quadratic derivative |
 | `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
 | `qxq_c` | Quaternion times quaternion |
 | `radrec_c` | Range, RA and DEC to rectangular coordinates |

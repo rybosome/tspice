@@ -8,6 +8,56 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsHrmesp:
+    op: Literal["coords-vectors.hrmesp"]
+    first: float
+    step: float
+    yvals: list[float]
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsHrmint:
+    op: Literal["coords-vectors.hrmint"]
+    xvals: list[float]
+    yvals: list[float]
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsLgresp:
+    op: Literal["coords-vectors.lgresp"]
+    first: float
+    step: float
+    yvals: list[float]
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsLgrind:
+    op: Literal["coords-vectors.lgrind"]
+    xvals: list[float]
+    yvals: list[float]
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsLgrint:
+    op: Literal["coords-vectors.lgrint"]
+    xvals: list[float]
+    yvals: list[float]
+    x: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsQderiv:
+    op: Literal["coords-vectors.qderiv"]
+    f0: list[float]
+    f2: list[float]
+    delta: float
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3
