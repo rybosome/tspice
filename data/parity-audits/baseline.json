@@ -437,8 +437,8 @@
         "dafgda_c"
       ],
       "dependsOn": ["c01-daf-navigation"],
-      "prs": [],
-      "nextAction": "Record the full required local and inspected canonical executions, then verify the final matrix and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/738"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

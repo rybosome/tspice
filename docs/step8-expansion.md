@@ -184,3 +184,7 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
+
+## C02 source validation checkpoint
+
+[PR #738](https://github.com/rybosome/tspice/pull/738) remains in progress. Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.
