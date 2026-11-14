@@ -65,6 +65,7 @@ export type EphemerisState = {
 export type FramesState = {
   requestedFrames: Set<string>;
   stagedVirtualKernelPaths: Set<string>;
+  writers: Map<string, { handle: SpiceHandle; path: string; physical: string }>;
   ckHandles: Map<string, number>;
 };
 
@@ -151,6 +152,7 @@ export function createRunTspiceContext(
       frames: {
         requestedFrames: new Set<string>(),
         stagedVirtualKernelPaths: new Set<string>(),
+        writers: new Map(),
         ckHandles: new Map<string, number>(),
       },
     },

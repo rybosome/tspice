@@ -283,6 +283,56 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
+  ckopn(path: string, ifname: string, ncomch: number): number;
+  ckcls(handle: number): void;
+  ckw01(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  ckw02(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  ckw03(
+    handle: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    nints: number,
+    data: Float64Array,
+  ): void;
+  ckw05(
+    handle: number,
+    subtype: number,
+    degree: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    n: number,
+    nints: number,
+    rate: number,
+    data: Float64Array,
+  ): void;
   cklpf(ck: string): number;
   ckupf(handle: number): void;
   ckobj(ck: string, idsCellHandle: number): void;

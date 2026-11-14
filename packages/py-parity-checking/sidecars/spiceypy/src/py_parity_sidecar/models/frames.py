@@ -65,6 +65,86 @@ class StepFramesCkgpav:
 
 
 @dataclass(frozen=True)
+class StepFramesCkopn:
+    op: Literal["frames.ckopn"]
+    handleId: str
+    path: PathRefInput
+    ifname: str
+    ncomch: int
+
+
+@dataclass(frozen=True)
+class StepFramesCkcls:
+    op: Literal["frames.ckcls"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFramesCkw01:
+    op: Literal["frames.ckw01"]
+    handleId: str
+    beg: float
+    end: float
+    inst: int
+    ref: str
+    av: bool
+    segid: str
+    ticks: list[float]
+    quats: list[float]
+    avvs: list[float]
+
+
+@dataclass(frozen=True)
+class StepFramesCkw02:
+    op: Literal["frames.ckw02"]
+    handleId: str
+    beg: float
+    end: float
+    inst: int
+    ref: str
+    segid: str
+    starts: list[float]
+    stops: list[float]
+    quats: list[float]
+    avvs: list[float]
+    rates: list[float]
+
+
+@dataclass(frozen=True)
+class StepFramesCkw03:
+    op: Literal["frames.ckw03"]
+    handleId: str
+    beg: float
+    end: float
+    inst: int
+    ref: str
+    av: bool
+    segid: str
+    ticks: list[float]
+    quats: list[float]
+    avvs: list[float]
+    intervalStarts: list[float]
+
+
+@dataclass(frozen=True)
+class StepFramesCkw05:
+    op: Literal["frames.ckw05"]
+    handleId: str
+    subtype: int
+    degree: int
+    beg: float
+    end: float
+    inst: int
+    ref: str
+    av: bool
+    segid: str
+    ticks: list[float]
+    packets: list[float]
+    rate: float
+    intervalStarts: list[float]
+
+
+@dataclass(frozen=True)
 class StepFramesCklpf:
     op: Literal["frames.cklpf"]
     ck: PathRefInput

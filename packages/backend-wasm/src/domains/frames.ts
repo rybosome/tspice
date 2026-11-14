@@ -2,6 +2,9 @@ import type {
   CkCoverageLevel,
   CkCoverageTimeSystem,
   Found,
+  SpiceHandle,
+  SpiceHandleRegistry,
+  VirtualOutput,
   FramesApi,
   Mat3RowMajor,
   SpiceIntCell,
@@ -10,6 +13,9 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  packCkWriterData,
+  checkCkWriter,
+  createSpiceHandleRegistry,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   brandMat6RowMajor,
@@ -17,6 +23,10 @@ import {
   brandMat3RowMajor,
 } from "@rybosome/tspice-core";
 
+import {
+  createVirtualOutputRegistry,
+  type VirtualOutputRegistry,
+} from "../runtime/virtual-outputs.js";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
@@ -616,9 +626,308 @@ function validateCkPointing(
     throw new TypeError("CK reference must be a string");
 }
 
+function withCkStrings<T>(
+  module: EmscriptenModule,
+  strings: readonly string[],
+  sizes: readonly number[],
+  fn: (err: number, ...pointers: number[]) => T,
+): T {
+  const encoded = strings.map((value) =>
+    new TextEncoder().encode(ckText(value)),
+  );
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, ...encoded.map((bytes) => bytes.length + 1), ...sizes],
+    (err, ...pointers) => {
+      encoded.forEach((bytes, index) => {
+        const ptr = pointers[index]!;
+        module.HEAPU8.set(bytes, ptr);
+        module.HEAPU8[ptr + bytes.length] = 0;
+      });
+      return fn(err, ...pointers);
+    },
+  );
+}
+
+function ckText(text: string) {
+  if (typeof text !== "string" || text.includes("\0"))
+    throw new TypeError("Expected a NUL-free CK string");
+  return text;
+}
+function ckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected CK path or VirtualOutput");
+  return { kind: "virtual-output", path: ckText(file.path) };
+}
+
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
-export function createFramesApi(module: EmscriptenModule): FramesApi {
+export function createFramesApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry = createSpiceHandleRegistry(),
+  outputs: VirtualOutputRegistry = createVirtualOutputRegistry(),
+): FramesApi {
+  const writerOutputs = new Map<SpiceHandle, string>();
+  function check(code: number, err: number) {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+
   return {
+    ckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "ckopn ncomch");
+      ckText(ifname);
+      const target = typeof file === "string" ? ckText(file) : ckOutput(file);
+      const path = resolveKernelPath(
+        typeof target === "string" ? target : target.path,
+      );
+      module.FS.mkdirTree(path.slice(0, path.lastIndexOf("/")));
+      const value = withCkStrings(
+        module,
+        [path, ifname],
+        [4],
+        (err, pathPtr, name, out) => {
+          check(
+            module._tspice_ckopn(
+              pathPtr,
+              name,
+              ncomch,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+      try {
+        const handle = handles.register("CK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(path);
+          writerOutputs.set(handle, path);
+        }
+        return handle;
+      } catch (error) {
+        withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+          check(module._tspice_dafcls(value, err, WASM_ERR_MAX_BYTES), err),
+        );
+        throw error;
+      }
+    },
+    ckcls: (handle) => {
+      handles.close(
+        handle,
+        ["CK-WRITER"],
+        (entry) =>
+          withAllocs(module, [WASM_ERR_MAX_BYTES], (err) =>
+            check(
+              module._tspice_ckcls(entry.nativeHandle, err, WASM_ERR_MAX_BYTES),
+              err,
+            ),
+          ),
+        "ckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    ckw01: (handle, beg, end, inst, ref, av, segid, ticks, quats, avvs) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        undefined,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw01").nativeHandle;
+      withCkStrings(
+        module,
+        [ref, segid],
+        [Math.max(8, data.byteLength)],
+        (err, refPtr, segPtr, ptr) => {
+          module.HEAPF64.set(data, ptr >>> 3);
+          check(
+            module._tspice_ckw01(
+              h,
+              beg,
+              end,
+              inst,
+              refPtr,
+              av ? 1 : 0,
+              segPtr,
+              n,
+              ptr,
+              data.length,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+    ckw02: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      segid,
+      starts,
+      stops,
+      quats,
+      avvs,
+      rates,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, true);
+      const { n, data } = packCkWriterData(starts, [
+        [stops, 1],
+        [quats, 4],
+        [avvs, 3],
+        [rates, 1],
+      ]);
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw02").nativeHandle;
+      withCkStrings(
+        module,
+        [ref, segid],
+        [Math.max(8, data.byteLength)],
+        (err, refPtr, segPtr, ptr) => {
+          module.HEAPF64.set(data, ptr >>> 3);
+          check(
+            module._tspice_ckw02(
+              h,
+              beg,
+              end,
+              inst,
+              refPtr,
+              segPtr,
+              n,
+              ptr,
+              data.length,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+    ckw03: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      quats,
+      avvs,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        intervalStarts,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw03").nativeHandle;
+      withCkStrings(
+        module,
+        [ref, segid],
+        [Math.max(8, data.byteLength)],
+        (err, refPtr, segPtr, ptr) => {
+          module.HEAPF64.set(data, ptr >>> 3);
+          check(
+            module._tspice_ckw03(
+              h,
+              beg,
+              end,
+              inst,
+              refPtr,
+              av ? 1 : 0,
+              segPtr,
+              n,
+              nints,
+              ptr,
+              data.length,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
+    ckw05: (
+      handle,
+      subtype,
+      degree,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      packets,
+      rate,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      assertSpiceInt32(subtype, "CK subtype");
+      assertSpiceInt32(degree, "CK degree");
+      if (!Number.isFinite(rate))
+        throw new RangeError("CK rate must be finite");
+      const width = [8, 4, 14, 7][subtype] ?? 0;
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        [[packets, width]],
+        intervalStarts,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw05").nativeHandle;
+      withCkStrings(
+        module,
+        [ref, segid],
+        [Math.max(8, data.byteLength)],
+        (err, refPtr, segPtr, ptr) => {
+          module.HEAPF64.set(data, ptr >>> 3);
+          check(
+            module._tspice_ckw05(
+              h,
+              subtype,
+              degree,
+              beg,
+              end,
+              inst,
+              refPtr,
+              av ? 1 : 0,
+              segPtr,
+              n,
+              nints,
+              rate,
+              ptr,
+              data.length,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+        },
+      );
+    },
     namfrm: (name: string) => {
       assertFrameString(name, "namfrm(name)");
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, name);

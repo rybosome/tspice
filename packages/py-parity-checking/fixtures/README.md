@@ -163,3 +163,7 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+## CK writer records
+
+`kernels/audit-ck-writers.bc` contains seven project-authored synthetic segments in J2000. The type 1, 2 and 3 segments and four type 5 subtypes each use a distinct negative instrument ID. Locked SpiceyPy 6.0.3 writes the fixture independently of tspice. Physical readback compares descriptors, names, every segment word, complete pointing matrices, angular velocities and selected encoded times. The distributed file has SHA-256 `c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6`. [Fixture generator](generate-audit-ck-writers.py)

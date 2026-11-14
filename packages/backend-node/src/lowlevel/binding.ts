@@ -522,6 +522,30 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkpos(target, et, ref, abcorr, observer)",
   );
   invariant(
+    typeof native.ckopn === "function",
+    "Expected native addon to export ckopn",
+  );
+  invariant(
+    typeof native.ckcls === "function",
+    "Expected native addon to export ckcls",
+  );
+  invariant(
+    typeof native.ckw01 === "function",
+    "Expected native addon to export ckw01",
+  );
+  invariant(
+    typeof native.ckw02 === "function",
+    "Expected native addon to export ckw02",
+  );
+  invariant(
+    typeof native.ckw03 === "function",
+    "Expected native addon to export ckw03",
+  );
+  invariant(
+    typeof native.ckw05 === "function",
+    "Expected native addon to export ckw05",
+  );
+  invariant(
     typeof native.spkopn === "function",
     "Expected native addon to export spkopn(path, ifname, ncomch)",
   );
