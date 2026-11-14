@@ -385,6 +385,73 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dskd02(
+    handle: number,
+    descr: number,
+    item: number,
+    start: number,
+    room: number,
+    storage: number,
+    count: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dski02(
+    handle: number,
+    descr: number,
+    item: number,
+    start: number,
+    room: number,
+    storage: number,
+    count: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskn02(
+    handle: number,
+    descr: number,
+    plid: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskp02(
+    handle: number,
+    descr: number,
+    start: number,
+    room: number,
+    storage: number,
+    count: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskv02(
+    handle: number,
+    descr: number,
+    start: number,
+    room: number,
+    storage: number,
+    count: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskz02(
+    handle: number,
+    descr: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskcls(
+    handle: number,
+    optmiz: number,
+    err: number,
+    cap: number,
+  ): number;
   _tspice_dskb02(
     handle: number,
     dladscInts8Ptr: number,
@@ -2308,6 +2375,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dskobj",
   "_tspice_dsksrf",
   "_tspice_dskgd",
+  "_tspice_dskd02",
+  "_tspice_dski02",
+  "_tspice_dskn02",
+  "_tspice_dskp02",
+  "_tspice_dskv02",
+  "_tspice_dskz02",
+  "_tspice_dskcls",
   "_tspice_dskb02",
 
   // Cells + windows

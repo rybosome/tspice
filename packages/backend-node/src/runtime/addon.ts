@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import type {
+  DlaDescriptor,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -233,6 +234,35 @@ export type NativeAddon = {
     handle: number,
     dladsc: Record<string, unknown>,
   ): Record<string, unknown>;
+  dskd02(
+    handle: number,
+    dladsc: DlaDescriptor,
+    item: number,
+    start: number,
+    room: number,
+  ): unknown;
+  dski02(
+    handle: number,
+    dladsc: DlaDescriptor,
+    item: number,
+    start: number,
+    room: number,
+  ): unknown;
+  dskn02(handle: number, dladsc: DlaDescriptor, plid: number): unknown;
+  dskp02(
+    handle: number,
+    dladsc: DlaDescriptor,
+    start: number,
+    room: number,
+  ): unknown;
+  dskv02(
+    handle: number,
+    dladsc: DlaDescriptor,
+    start: number,
+    room: number,
+  ): unknown;
+  dskz02(handle: number, dladsc: DlaDescriptor): unknown;
+  dskcls(handle: number, optmiz: boolean): void;
   dskb02(
     handle: number,
     dladsc: Record<string, unknown>,

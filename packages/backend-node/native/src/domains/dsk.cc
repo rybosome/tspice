@@ -1,5 +1,7 @@
 #include "dsk.h"
 
+#include <memory>
+#include <new>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -259,9 +261,240 @@ static Napi::Value Dskb02(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Value Dskd02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(env, "Expected 5 arguments for dskd02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int32_t item;
+  if (!ReadInt32Checked(env, info[2], "item", &item)) return env.Undefined();
+  int32_t start;
+  if (!ReadInt32Checked(env, info[3], "start", &start)) return env.Undefined();
+  int32_t room;
+  if (!ReadInt32Checked(env, info[4], "room", &room)) return env.Undefined();
+  int64_t words =
+      std::max<int64_t>(1, std::min<int64_t>(std::max(1, room), std::max(1, descr[5] / 1)) * 1);
+  if (words > INT32_MAX / (int)sizeof(double)) {
+    ThrowSpiceError(env, "DSK page exceeds native buffer limit");
+    return env.Undefined();
+  }
+  int count = 0;
+  std::unique_ptr<double[]> out(new (std::nothrow) double[words]());
+  if (!out) {
+    ThrowSpiceError(env, "DSK page allocation failed");
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskd02(handle, descr, item, start, room, static_cast<int>(words), &count, out.get(),
+                    err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskd02", err, "dskd02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, count * 1);
+  for (int i = 0; i < count * 1; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dski02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(env, "Expected 5 arguments for dski02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int32_t item;
+  if (!ReadInt32Checked(env, info[2], "item", &item)) return env.Undefined();
+  int32_t start;
+  if (!ReadInt32Checked(env, info[3], "start", &start)) return env.Undefined();
+  int32_t room;
+  if (!ReadInt32Checked(env, info[4], "room", &room)) return env.Undefined();
+  int64_t words =
+      std::max<int64_t>(1, std::min<int64_t>(std::max(1, room), std::max(1, descr[3] / 1)) * 1);
+  if (words > INT32_MAX / (int)sizeof(int)) {
+    ThrowSpiceError(env, "DSK page exceeds native buffer limit");
+    return env.Undefined();
+  }
+  int count = 0;
+  std::unique_ptr<int[]> out(new (std::nothrow) int[words]());
+  if (!out) {
+    ThrowSpiceError(env, "DSK page allocation failed");
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dski02(handle, descr, item, start, room, static_cast<int>(words), &count, out.get(),
+                    err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dski02", err, "dski02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, count * 1);
+  for (int i = 0; i < count * 1; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dskn02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(env, "Expected 3 arguments for dskn02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int32_t plid;
+  if (!ReadInt32Checked(env, info[2], "plid", &plid)) return env.Undefined();
+  double out[3] = {};
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskn02(handle, descr, plid, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskn02", err, "dskn02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, 3);
+  for (int i = 0; i < 3; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dskp02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(env, "Expected 4 arguments for dskp02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int32_t start;
+  if (!ReadInt32Checked(env, info[2], "start", &start)) return env.Undefined();
+  int32_t room;
+  if (!ReadInt32Checked(env, info[3], "room", &room)) return env.Undefined();
+  int64_t words =
+      std::max<int64_t>(1, std::min<int64_t>(std::max(1, room), std::max(1, descr[3] / 3)) * 3);
+  if (words > INT32_MAX / (int)sizeof(int)) {
+    ThrowSpiceError(env, "DSK page exceeds native buffer limit");
+    return env.Undefined();
+  }
+  int count = 0;
+  std::unique_ptr<int[]> out(new (std::nothrow) int[words]());
+  if (!out) {
+    ThrowSpiceError(env, "DSK page allocation failed");
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskp02(handle, descr, start, room, static_cast<int>(words), &count, out.get(), err,
+                    sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskp02", err, "dskp02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, count * 3);
+  for (int i = 0; i < count * 3; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dskv02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(env, "Expected 4 arguments for dskv02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int32_t start;
+  if (!ReadInt32Checked(env, info[2], "start", &start)) return env.Undefined();
+  int32_t room;
+  if (!ReadInt32Checked(env, info[3], "room", &room)) return env.Undefined();
+  int64_t words =
+      std::max<int64_t>(1, std::min<int64_t>(std::max(1, room), std::max(1, descr[5] / 3)) * 3);
+  if (words > INT32_MAX / (int)sizeof(double)) {
+    ThrowSpiceError(env, "DSK page exceeds native buffer limit");
+    return env.Undefined();
+  }
+  int count = 0;
+  std::unique_ptr<double[]> out(new (std::nothrow) double[words]());
+  if (!out) {
+    ThrowSpiceError(env, "DSK page allocation failed");
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskv02(handle, descr, start, room, static_cast<int>(words), &count, out.get(), err,
+                    sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskv02", err, "dskv02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, count * 3);
+  for (int i = 0; i < count * 3; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dskz02(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(env, "Expected 2 arguments for dskz02");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t descr[8];
+  if (!ReadDlaDescriptor(env, info[1], descr)) return env.Undefined();
+  int out[2] = {};
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskz02(handle, descr, out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskz02", err, "dskz02");
+    return env.Undefined();
+  }
+  Napi::Array result = Napi::Array::New(env, 2);
+  for (int i = 0; i < 2; ++i) result.Set((uint32_t)i, Napi::Number::New(env, out[i]));
+  return result;
+}
+
+static Napi::Value Dskcls(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(env, "Expected 2 arguments for dskcls");
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  if (!info[1].IsBoolean()) {
+    ThrowSpiceError(env, "Expected boolean optimize flag");
+    return env.Undefined();
+  }
+  bool optmiz = info[1].As<Napi::Boolean>().Value();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_dskcls(handle, optmiz, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling dskcls", err, "dskcls");
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 namespace tspice_backend_node {
 
 void RegisterDsk(Napi::Env env, Napi::Object exports) {
+  SetExportChecked(env, exports, "dskd02", Napi::Function::New(env, Dskd02), "RegisterDsk");
+  SetExportChecked(env, exports, "dski02", Napi::Function::New(env, Dski02), "RegisterDsk");
+  SetExportChecked(env, exports, "dskn02", Napi::Function::New(env, Dskn02), "RegisterDsk");
+  SetExportChecked(env, exports, "dskp02", Napi::Function::New(env, Dskp02), "RegisterDsk");
+  SetExportChecked(env, exports, "dskv02", Napi::Function::New(env, Dskv02), "RegisterDsk");
+  SetExportChecked(env, exports, "dskz02", Napi::Function::New(env, Dskz02), "RegisterDsk");
+  SetExportChecked(env, exports, "dskcls", Napi::Function::New(env, Dskcls), "RegisterDsk");
   SetExportChecked(env, exports, "dskobj", Napi::Function::New(env, Dskobj), "RegisterDsk");
   SetExportChecked(env, exports, "dsksrf", Napi::Function::New(env, Dsksrf), "RegisterDsk");
   SetExportChecked(env, exports, "dskgd", Napi::Function::New(env, Dskgd), "RegisterDsk");

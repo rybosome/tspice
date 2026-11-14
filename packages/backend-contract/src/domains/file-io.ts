@@ -188,7 +188,7 @@ export interface FileIoApi {
    * @param path New nonempty backend path; an existing file is an error.
    * @param ifname Nonempty internal filename stored in the DAS header.
    * @param ncomch Nonnegative int32 comment-character reservation.
-   * @returns Token accepted by `dskw02` and finalized with `dascls`/`dlacls`.
+   * @returns Token accepted by `dskw02`. Finalize with `dskcls` to select optimization, or with `dascls`/`dlacls`.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskopn_c.html
    */
   dskopn(path: string, ifname: string, ncomch: number): SpiceHandle;

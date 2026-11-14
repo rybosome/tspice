@@ -1,0 +1,186 @@
+[
+  {
+    "caseId": "dsk-dskn02-axis-normals",
+    "description": "Full right-handed unit normals of three orthogonal tetrahedral faces, preserving outward signs.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 1
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 2
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskn02-inclined-face",
+    "description": "The oblique face has nonzero x, y and z components and unit length.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 3
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskn02-second-segment",
+    "description": "Repeat nontrivial and axial normals using a different linked segment descriptor.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "R",
+        "dladscId": "S",
+        "nextId": "S"
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 3
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 1
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskn02-minimum-index",
+    "description": "Zero is not a valid plate number.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskn02-past-last",
+    "description": "The final valid plate and the next index distinguish the upper endpoint.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 4
+      },
+      {
+        "op": "dsk.dskn02",
+        "handleId": "R",
+        "dladscId": "S",
+        "plid": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  }
+]

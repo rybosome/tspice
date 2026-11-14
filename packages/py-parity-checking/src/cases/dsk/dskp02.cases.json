@@ -1,0 +1,251 @@
+[
+  {
+    "caseId": "dsk-dskp02-ordered-rows",
+    "description": "Compare all four authored one-based index triples from first to last.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 1,
+        "room": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-window-and-tail",
+    "description": "One-based starts fetch a prefix, an interior page and a single unpadded final row.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 1,
+        "room": 1
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 2,
+        "room": 2
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 4,
+        "room": 9
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-largest-room",
+    "description": "An otherwise excessive room on the final row is bounded by physical geometry and yields a single triple.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 4,
+        "room": 2147483647
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-second-segment",
+    "description": "Read the next linked segment and compare the complete first and final rows.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "R",
+        "dladscId": "S",
+        "nextId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 1,
+        "room": 1
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 4,
+        "room": 1
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-invalid-start-precedence",
+    "description": "A zero row number fails before the nested scalar room validation.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 0,
+        "room": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-past-last",
+    "description": "One past the final row is a toolkit error, not an empty result.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 5,
+        "room": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskp02-no-room",
+    "description": "A valid row number with zero room reaches the nested item reader with initialized count.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskp02",
+        "handleId": "R",
+        "dladscId": "S",
+        "start": 1,
+        "room": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

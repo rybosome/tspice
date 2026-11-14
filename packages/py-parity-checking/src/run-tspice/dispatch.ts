@@ -176,6 +176,14 @@ export function dispatchStep(
     case "dsk.dasopr":
     case "dsk.dascls":
     case "dsk.dlabfs":
+    case "dsk.dskd02":
+    case "dsk.dski02":
+    case "dsk.dskn02":
+    case "dsk.dskp02":
+    case "dsk.dskv02":
+    case "dsk.dskz02":
+    case "dsk.dskcls":
+    case "dsk.dlafns":
     case "dsk.dskgd":
     case "dsk.dskb02":
       return runDskStep(context, step);

@@ -33,6 +33,13 @@ import coordsVectorsVnormCasesRaw from "./coords-vectors/vnorm.cases.json" with 
 import coordsVectorsVsclCasesRaw from "./coords-vectors/vscl.cases.json" with { type: "json" };
 import coordsVectorsVsubCasesRaw from "./coords-vectors/vsub.cases.json" with { type: "json" };
 import dskDskb02CasesRaw from "./dsk/dskb02.cases.json" with { type: "json" };
+import dskDskd02CasesRaw from "./dsk/dskd02.cases.json" with { type: "json" };
+import dskDski02CasesRaw from "./dsk/dski02.cases.json" with { type: "json" };
+import dskDskn02CasesRaw from "./dsk/dskn02.cases.json" with { type: "json" };
+import dskDskp02CasesRaw from "./dsk/dskp02.cases.json" with { type: "json" };
+import dskDskv02CasesRaw from "./dsk/dskv02.cases.json" with { type: "json" };
+import dskDskz02CasesRaw from "./dsk/dskz02.cases.json" with { type: "json" };
+import dskDskclsCasesRaw from "./dsk/dskcls.cases.json" with { type: "json" };
 import dskDskgdCasesRaw from "./dsk/dskgd.cases.json" with { type: "json" };
 import dskDskobjCasesRaw from "./dsk/dskobj.cases.json" with { type: "json" };
 import dskDsksrfCasesRaw from "./dsk/dsksrf.cases.json" with { type: "json" };
@@ -248,6 +255,13 @@ export const ekCases: ParityCase[] = [
 export const dskCases: ParityCase[] = [
   ...(dskDskobjCasesRaw as ParityCase[]),
   ...(dskDsksrfCasesRaw as ParityCase[]),
+  ...(dskDskd02CasesRaw as ParityCase[]),
+  ...(dskDski02CasesRaw as ParityCase[]),
+  ...(dskDskn02CasesRaw as ParityCase[]),
+  ...(dskDskp02CasesRaw as ParityCase[]),
+  ...(dskDskv02CasesRaw as ParityCase[]),
+  ...(dskDskz02CasesRaw as ParityCase[]),
+  ...(dskDskclsCasesRaw as ParityCase[]),
   ...(dskDskgdCasesRaw as ParityCase[]),
   ...(dskDskb02CasesRaw as ParityCase[]),
 ];

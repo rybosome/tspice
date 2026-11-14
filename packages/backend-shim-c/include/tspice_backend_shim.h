@@ -366,6 +366,18 @@ int tspice_dskgd(
 //
 // `outDoubles10` layout:
 // [vtxbds(6), voxsiz, voxori(3)]
+int tspice_dskd02(int handle, const int32_t* descr, int item, int start, int room, int storage,
+                  int* count, double* out, char* err, int cap);
+int tspice_dski02(int handle, const int32_t* descr, int item, int start, int room, int storage,
+                  int* count, int* out, char* err, int cap);
+int tspice_dskn02(int handle, const int32_t* descr, int plid, double* out, char* err, int cap);
+int tspice_dskp02(int handle, const int32_t* descr, int start, int room, int storage, int* count,
+                  int* out, char* err, int cap);
+int tspice_dskv02(int handle, const int32_t* descr, int start, int room, int storage, int* count,
+                  double* out, char* err, int cap);
+int tspice_dskz02(int handle, const int32_t* descr, int* out, char* err, int cap);
+int tspice_dskcls(int handle, int optmiz, char* err, int cap);
+
 int tspice_dskb02(
     int handle,
     const int32_t *dladscInts8,

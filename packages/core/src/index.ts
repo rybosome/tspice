@@ -161,3 +161,9 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  snapshotDskDataDescriptor,
+  dskPageStorage,
+  dskDataRows,
+} from "./spice-runtime/domains/dsk-data.js";

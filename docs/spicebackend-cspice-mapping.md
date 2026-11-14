@@ -480,6 +480,20 @@ oracle traversal now distinguishes a genuine empty miss from a toolkit failure,
 and pending actual DSK claims close before scratch deletion. No C shim or checked-in
 WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
+### DSK component pages, geometry and physical closure
+
+Item offsets are zero-based. Plate/vertex numbers, including IDs inside plate triples, are one-based. Partial pages return the reported values or rows. [Detailed DSK behavior and independent evidence](step8-dsk-data.md)
+
+| Raw signature                               | Canonical route | Return                  |
+| ------------------------------------------- | --------------- | ----------------------- |
+| `dskd02(handle, dladsc, item, start, room)` | `dskd02_c`      | `number[]`              |
+| `dski02(handle, dladsc, item, start, room)` | `dski02_c`      | `number[]`              |
+| `dskn02(handle, dladsc, plid)`              | `dskn02_c`      | `SpiceVector3`          |
+| `dskp02(handle, dladsc, start, room)`       | `dskp02_c`      | `SpiceVector3[]`        |
+| `dskv02(handle, dladsc, start, room)`       | `dskv02_c`      | `SpiceVector3[]`        |
+| `dskz02(handle, dladsc)`                    | `dskz02_c`      | `{nv:number;np:number}` |
+| `dskcls(handle, optmiz)`                    | `dskcls_c`      | `void`                  |
+
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
 
 | Raw method | Actual CSPICE route | Observations                                                                                                        |

@@ -83,7 +83,7 @@ function ensureVirtualCkPath(
   context: RunTspiceContext,
   pathRef: PathRefLike,
 ): string {
-  const virtualPath = toVirtualKernelPath(pathRef);
+  const virtualPath = toVirtualKernelPath(pathRef, context.paths);
   if (!context.state.frames.stagedVirtualKernelPaths.has(virtualPath)) {
     const resolvedPath = resolvePathRef(context.paths, pathRef);
     if (!fs.existsSync(resolvedPath)) return virtualPath;

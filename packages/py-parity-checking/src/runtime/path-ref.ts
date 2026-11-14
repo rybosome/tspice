@@ -89,12 +89,16 @@ export function resolveFixturePath(
 }
 
 /** Convert a logical PathRef into a stable virtual kernel path used by tspice. */
-export function toVirtualKernelPath(pathRefLike: PathRefLike): string {
+export function toVirtualKernelPath(
+  pathRefLike: PathRefLike,
+  paths?: RuntimePaths,
+): string {
   const pathRef = toPathRef(pathRefLike);
   if (pathRef.kind === "fixture") {
     return `py-parity/${pathRef.rel}`;
   }
-  return `py-parity/scratch/${pathRef.rel}`;
+  const scope = paths ? path.basename(paths.scratchRoot) + "/" : "";
+  return `py-parity/scratch/${scope}${pathRef.rel}`;
 }
 
 /** Normalize backend-reported kernel paths to stable basename-only parity values. */

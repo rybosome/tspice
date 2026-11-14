@@ -408,5 +408,22 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "e18-dsk-data",
+      "routines": [
+        "dskcls_c",
+        "dskd02_c",
+        "dski02_c",
+        "dskn02_c",
+        "dskp02_c",
+        "dskv02_c",
+        "dskz02_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/754"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }
