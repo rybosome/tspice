@@ -1,0 +1,233 @@
+[
+  {
+    "caseId": "ephemeris-spkuef-restores-priority",
+    "description": "Removal restores the earlier search state and center.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris-priority.bsp",
+        "id": "p"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "p",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "p"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuef-duplicate-once",
+    "description": "One unload removes a duplicated registration including segment table entries.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "again"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "again"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuef-keeper-first",
+    "description": "KEEPER clear precedes direct release, whose actual target is already absent.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuef-direct-survives-clear",
+    "description": "A direct-only scratch SPK remains searchable across KEEPER clear.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": -5,
+        "end": 10,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "output"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "output",
+        "descriptor": "sel",
+        "et": 0,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "output"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuef-empty",
+    "description": "Unload an empty SPK and verify that the SPK subsystem has no remaining files.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-empty.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris-empty.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  }
+]

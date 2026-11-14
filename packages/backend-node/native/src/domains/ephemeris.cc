@@ -488,6 +488,59 @@ static Napi::Value Spkobj(const Napi::CallbackInfo& info) {
   return env.Undefined();
 }
 
+static Napi::Value Spklef(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length()!=1 || !info[0].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected SPK path")); return env.Undefined();
+  }
+  const std::string path=info[0].As<Napi::String>().Utf8Value();
+  if (path.find('\0')!=std::string::npos) {ThrowSpiceError(Napi::TypeError::New(env,"Invalid SPK path")); return env.Undefined();}
+  int generation=0;char err[tspice_backend_node::kErrMaxBytes]={};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_spklef(path.c_str(),&generation,err,sizeof err)) {ThrowSpiceError(env,"spklef",err);return env.Undefined();}
+  return Napi::Number::New(env,generation);
+}
+static Napi::Value Spkuef(const Napi::CallbackInfo& info) {
+  auto env=info.Env();int generation=0;
+  if (!ReadInt32Checked(env,info[0],"SPK generation",&generation)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes]={};std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if(tspice_spkuef(generation,err,sizeof err))ThrowSpiceError(env,"spkuef",err);
+  return env.Undefined();
+}
+static bool ReadSpkSource(const Napi::CallbackInfo& info,int* source,int* registered,double words[5]) {
+  auto env=info.Env();
+  if(!ReadInt32Checked(env,info[0],"SPK source",source)) return false;
+  if(!info[1].IsBoolean()||!info[2].IsTypedArray()||
+     info[2].As<Napi::TypedArray>().TypedArrayType()!=napi_uint8_array||
+     info[2].As<Napi::Uint8Array>().ByteLength()!=40){
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected source kind and 40 packed SPK bytes"));return false;
+  }
+  *registered=info[1].As<Napi::Boolean>().Value();
+  std::memcpy(words,info[2].As<Napi::Uint8Array>().Data(),40);return true;
+}
+static Napi::Value Spkpvn(const Napi::CallbackInfo& info) {
+  auto env=info.Env(); int source=0,registered=0,ref=0,center=0; double words[5],state[6]={};
+  if(info.Length()!=4||!info[3].IsNumber()){ThrowSpiceError(Napi::TypeError::New(env,"Expected SPK source, descriptor and epoch"));return env.Undefined();}
+  if(!ReadSpkSource(info,&source,&registered,words))return env.Undefined();
+  const double et=info[3].As<Napi::Number>().DoubleValue();char err[tspice_backend_node::kErrMaxBytes]={};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if(tspice_spkpvn(source,registered,words,40,et,&ref,state,&center,err,sizeof err)){
+    ThrowSpiceError(env,"spkpvn",err);return env.Undefined();
+  }
+  auto result=Napi::Object::New(env);result.Set("ref",ref);result.Set("center",center);result.Set("state",MakeNumberArray(env,state,6));return result;
+}
+static Napi::Value Spksub(const Napi::CallbackInfo& info) {
+  auto env=info.Env();int source=0,registered=0,writer=0;double words[5];
+  if(info.Length()!=7||!info[3].IsString()||!info[4].IsNumber()||!info[5].IsNumber()){
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected source, subset identifier, interval and writer"));return env.Undefined();
+  }
+  if(!ReadSpkSource(info,&source,&registered,words)||!ReadInt32Checked(env,info[6],"writer",&writer))return env.Undefined();
+  auto ident=info[3].As<Napi::String>().Utf8Value();if(ident.find('\0')!=std::string::npos){ThrowSpiceError(Napi::TypeError::New(env,"Invalid segment ID"));return env.Undefined();}
+  char err[tspice_backend_node::kErrMaxBytes]={};std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if(tspice_spksub(source,registered,words,40,ident.c_str(),info[4].As<Napi::Number>().DoubleValue(),info[5].As<Napi::Number>().DoubleValue(),writer,err,sizeof err))ThrowSpiceError(env,"spksub",err);
+  return env.Undefined();
+}
+
 static Napi::Object Spksfs(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -511,7 +564,8 @@ static Napi::Object Spksfs(const Napi::CallbackInfo& info) {
   ident[0] = '\0';
   int found = 0;
 
-  const int code = tspice_spksfs(body, et, &handle, descr, ident, (int)sizeof(ident), &found, err, (int)sizeof(err));
+  int generation=0;
+  const int code = tspice_spksfs(body, et, &handle, &generation, descr, ident, (int)sizeof(ident), &found, err, (int)sizeof(err));
   if (code != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling spksfs", err);
     return Napi::Object::New(env);
@@ -524,6 +578,7 @@ static Napi::Object Spksfs(const Napi::CallbackInfo& info) {
   Napi::Object result = Napi::Object::New(env);
   result.Set("found", Napi::Boolean::New(env, true));
   result.Set("handle", Napi::Number::New(env, static_cast<double>(handle)));
+  result.Set("generation", Napi::Number::New(env,generation));
   result.Set("descr", MakePackedSpkDescriptor(env, descr));
   result.Set("ident", FixedWidthToJsString(env, ident, sizeof(ident)));
   return result;
@@ -849,6 +904,10 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
 
   if (!SetExportChecked(env, exports, "spkcov", Napi::Function::New(env, Spkcov), __func__)) return;
   if (!SetExportChecked(env, exports, "spkobj", Napi::Function::New(env, Spkobj), __func__)) return;
+  if (!SetExportChecked(env, exports, "spklef", Napi::Function::New(env, Spklef), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkuef", Napi::Function::New(env, Spkuef), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkpvn", Napi::Function::New(env, Spkpvn), __func__)) return;
+  if (!SetExportChecked(env, exports, "spksub", Napi::Function::New(env, Spksub), __func__)) return;
   if (!SetExportChecked(env, exports, "spksfs", Napi::Function::New(env, Spksfs), __func__)) return;
   if (!SetExportChecked(env, exports, "spkpds", Napi::Function::New(env, Spkpds), __func__)) return;
   if (!SetExportChecked(env, exports, "spkuds", Napi::Function::New(env, Spkuds), __func__)) return;

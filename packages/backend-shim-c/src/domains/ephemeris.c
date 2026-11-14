@@ -2,6 +2,9 @@
 
 #include "SpiceUsr.h"
 
+#include "SpiceZfc.h"
+#include <limits.h>
+#include <math.h>
 #include "../handle_validation.h"
 
 #include <stddef.h>
@@ -406,10 +409,259 @@ int tspice_spkobj(
   return 0;
 }
 
+// SPKBSR stores at most 5000 distinct physical files and de-duplicates
+// repeated loads. Generations keep old local tokens from acting on a later
+// registration, even when an independent DAF link kept the physical handle.
+enum { SPK_LOAD_CAPACITY = 5000 };
+typedef struct {
+  int handle;
+  int generation;
+  int inKeeper;
+} SpkRegistration;
+static SpkRegistration spk_loads[SPK_LOAD_CAPACITY];
+static int next_spk_generation;
+
+static int spk_status(char *err, int cap) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err,cap);
+  return 1;
+}
+
+static int spk_generation(int handle, int *out, char *err, int cap) {
+  int vacant = -1;
+  for (int i=0; i<SPK_LOAD_CAPACITY; ++i) {
+    if (spk_loads[i].generation && spk_loads[i].handle == handle) {
+      *out = spk_loads[i].generation;
+      return 0;
+    }
+    if (!spk_loads[i].generation && vacant < 0) vacant = i;
+  }
+  if (vacant < 0 || next_spk_generation == INT_MAX)
+    return tspice_ephemeris_invalid_arg(err,cap,"SPK registration limit reached");
+  spk_loads[vacant] = (SpkRegistration){handle, ++next_spk_generation, 0};
+  *out = next_spk_generation;
+  return 0;
+}
+
+// KEEPER may unload a directly registered file. Take snapshots around its
+// actual mutation. A direct-only load survives a KEEPER clear. A duplicate
+// KEEPER link still present after unload keeps its existing generation.
+void tspice_spk_keeper_snapshot(int after) {
+  int active = 0;
+  for (int i=0; i<SPK_LOAD_CAPACITY; ++i) {
+    if (spk_loads[i].generation) {
+      active = 1;
+      if (!after) spk_loads[i].inKeeper = 0;
+    }
+  }
+  if (!active) return;
+  SpiceInt count = 0;
+  ktotal_c("SPK", &count);
+  for (int row=0; row<count; ++row) {
+    char file[256], type[9], source[256];
+    SpiceInt handle = 0;
+    SpiceBoolean found = SPICEFALSE;
+    kdata_c(row,"SPK",sizeof(file),sizeof(type),sizeof(source),file,type,source,&handle,&found);
+    if (!found || failed_c()) continue;
+    for (int i=0; i<SPK_LOAD_CAPACITY; ++i)
+      if (spk_loads[i].generation && spk_loads[i].handle == handle)
+        spk_loads[i].inKeeper = after ? 0 : 1;
+  }
+  if (after) {
+    for (int i=0; i<SPK_LOAD_CAPACITY; ++i)
+      if (spk_loads[i].inKeeper) spk_loads[i] = (SpkRegistration){0};
+  }
+}
+
+static SpkRegistration *spk_registration(int generation) {
+  for (int i=0; generation>0 && i<SPK_LOAD_CAPACITY; ++i)
+    if (spk_loads[i].generation == generation) return &spk_loads[i];
+  return NULL;
+}
+
+int tspice_spklef(const char *path, int *generation, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!path || !generation || next_spk_generation == INT_MAX)
+    return tspice_ephemeris_invalid_arg(err,cap,"Invalid SPK load path, generation or result");
+  SpiceInt handle = 0;
+  spklef_c(path, &handle);
+  if (spk_status(err,cap)) return 1;
+  return spk_generation(handle,generation,err,cap);
+}
+
+int tspice_spkuef(int generation, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  SpkRegistration *entry = spk_registration(generation);
+  // The canonical unload of a file absent from SPKBSR is a no-op. Zero
+  // cannot be a physical DAF handle and cannot unload a replacement.
+  spkuef_c(entry ? entry->handle : 0);
+  if (spk_status(err,cap)) return 1;
+  if (entry) *entry = (SpkRegistration){0};
+  return 0;
+}
+
+static int spk_reader(int source, int isRegistration, int *handle, char *err, int cap) {
+  if (!isRegistration) { *handle = source; return 0; }
+  SpkRegistration *entry = spk_registration(source);
+  if (!entry) return tspice_ephemeris_invalid_arg(err,cap,"SPK registration is no longer active");
+  *handle = entry->handle;
+  return 0;
+}
+
+// Authenticate the entire native-word descriptor against real DAF summary
+// records without disturbing the user's current DAF search or selection.
+static int spk_file_descriptor(int handle, const void *input, int size, double words[5],
+                               int integers[6], char *err, int cap) {
+  if (!input || size != 40)
+    return tspice_ephemeris_invalid_arg(err,cap,"Expected exactly 40 packed SPK descriptor bytes");
+  char arch[9] = {0}, kind[9] = {0}, path[256] = {0};
+  dafhfn_(&handle,path,255);
+  if (spk_status(err,cap)) return 1;
+  for (int i=254; i>=0 && path[i]==' '; --i) path[i]=0;
+  getfat_c(path,sizeof(arch),sizeof(kind),arch,kind);
+  if (spk_status(err,cap)) return 1;
+  if (strcmp(arch,"DAF") || strcmp(kind,"SPK"))
+    return tspice_ephemeris_invalid_arg(err,cap,"Expected a readable SPK DAF");
+  char name[61] = {0};
+  int fields[5] = {0};
+  if (tspice_dafrfr(handle,sizeof(name),name,sizeof(name),fields,err,cap)) return 1;
+  if (fields[0]!=2 || fields[1]!=6 || fields[4]<2)
+    return tspice_ephemeris_invalid_arg(err,cap,"Invalid SPK DAF file record");
+  const int limit = (fields[4]-2)/128+1;
+  int record=fields[2], previous=0;
+  for (int visited=0; record && visited<limit; ++visited) {
+    double row[128]={0};
+    int found=0;
+    if (record<2 || record>limit) break;
+    if (tspice_dafgsr(handle,record,1,128,(unsigned char*)row,sizeof(row),&found,err,cap)) return 1;
+    if (!found || row[1]!=previous || !(row[0]>=0 && row[0]<=limit && trunc(row[0])==row[0]) ||
+        !(row[2]>=0 && row[2]<=25 && trunc(row[2])==row[2])) break;
+    for (int i=0; i<(int)row[2]; ++i) {
+      if (memcmp(row+3+5*i,input,40)) continue;
+      memcpy(words,input,40);
+      double endpoints[2];
+      dafus_c(words,2,6,endpoints,integers);
+      if (spk_status(err,cap)) return 1;
+      if (integers[4]>0 && integers[4]<=integers[5] && integers[5]<fields[4] &&
+          isfinite(endpoints[0]) && isfinite(endpoints[1]) && endpoints[0]<=endpoints[1]) return 0;
+      return tspice_ephemeris_invalid_arg(err,cap,"Invalid source SPK segment bounds");
+    }
+    previous=record;
+    record=(int)row[0];
+  }
+  return tspice_ephemeris_invalid_arg(err,cap,"Packed SPK descriptor does not belong to this file");
+}
+
+int tspice_spkpvn(int source, int isRegistration, const void *descr, int size, double et,
+                  int *ref, double *state6, int *center, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  int handle, fields[6];
+  double words[5];
+  if (!ref || !state6 || !center || !isfinite(et))
+    return tspice_ephemeris_invalid_arg(err,cap,"Expected a finite epoch and SPK result storage");
+  if (spk_reader(source,isRegistration,&handle,err,cap) ||
+      spk_file_descriptor(handle,descr,size,words,fields,err,cap)) return 1;
+  // SPKR08/09/12/13/14/18/19 diagnose out-of-coverage epochs themselves.
+  // Other readers extrapolate. Check only the actual record address or f2c
+  // integer conversion that would be unsafe for the selected storage layout.
+  if (fields[3]==2 || fields[3]==3 || fields[3]==20) {
+    const int type=fields[3], tail=type==20 ? 7 : 4;
+    if (fields[5]-fields[4]+1<tail)
+      return tspice_ephemeris_invalid_arg(err,cap,"Incomplete SPK coefficient segment trailer");
+    double controls[7]={0};
+    dafgda_c(handle,fields[5]-tail+1,fields[5],controls);
+    if (spk_status(err,cap)) return 1;
+    const double start=type==20 ? (controls[2]-j2000_c()+controls[3])*spd_c() : controls[0];
+    const double step=type==20 ? controls[4]*spd_c() : controls[1];
+    const double width=controls[tail-2], count=controls[tail-1];
+    const int extent=fields[5]-fields[4]+1-tail;
+    if (!(width>=1 && width<=(type==20?195:197) && trunc(width)==width &&
+          count>=1 && count<=INT_MAX && trunc(count)==count &&
+          width*count==extent && isfinite(start) && isfinite(step) && step>0))
+      return tspice_ephemeris_invalid_arg(err,cap,"Invalid SPK coefficient record extent");
+    const double ordinal=trunc((et-start)/step);
+    if (!(ordinal>=INT_MIN && ordinal<=INT_MAX-1) || (type!=20 && ordinal<0))
+      return tspice_ephemeris_invalid_arg(err,cap,"Epoch exceeds addressable SPK coefficient records");
+  } else if ((fields[3]==1 || fields[3]==21) && et>words[1]) {
+    // These readers select the first record endpoint at or above ET. Unlike
+    // a DAF descriptor, its last physical record may extend past coverage.
+    const int trailer=fields[3]==1 ? 1 : 2;
+    double n=0,finalEpoch=0;
+    dafgda_c(handle,fields[5],fields[5],&n);
+    if (spk_status(err,cap)) return 1;
+    if (!(n>=1 && n<=fields[5]-fields[4]+1 && trunc(n)==n))
+      return tspice_ephemeris_invalid_arg(err,cap,"Invalid SPK difference record count");
+    const int addr=fields[5]-(int)n/100-trailer;
+    if (addr<fields[4]) return tspice_ephemeris_invalid_arg(err,cap,"Invalid SPK epoch directory");
+    dafgda_c(handle,addr,addr,&finalEpoch);
+    if (spk_status(err,cap)) return 1;
+    if (!(et<=finalEpoch)) return tspice_ephemeris_invalid_arg(err,cap,"Epoch exceeds the last SPK difference record");
+  } else if (fields[3]==10) {
+    // SPKR10 chooses the closest one or two element sets even beyond the
+    // descriptor endpoints. Check the selected packets before propagation.
+    double record[198]={0};
+    spkr10_(&handle,words,&et,record);
+    if (spk_status(err,cap)) return 1;
+    for (int offset=8; offset<=22; offset+=14) {
+      double *elements=record+offset;
+      if (!isfinite(elements[9]) || fabs(elements[9])>1.6e14)
+        return tspice_ephemeris_invalid_arg(err,cap,"SPK element epoch exceeds signed calendar-day range");
+      // Only a resonant orbit uses N0067's unbounded 720-minute loop.
+      // ZZINIL computes the corrected mean motion used by the actual driver.
+      if (fabs(et-elements[9])>=43200000000.0) {
+        int mode=2;
+        double epoch=0, ecc=elements[5], incl=elements[3], motion=elements[8], aux[13]={0};
+        zzinil_(record,&mode,&ecc,&epoch,&incl,&motion,&aux[0],&aux[1],&aux[2],&aux[3],
+                &aux[4],&aux[5],&aux[6],&aux[7],&aux[8],&aux[9],&aux[10],&aux[11],&aux[12]);
+        if (spk_status(err,cap)) return 1;
+        if ((motion>.0034906585 && motion<.0052359877) ||
+            (motion>=.00826 && motion<=.00924 && ecc>=.5)) {
+          // Preserve initialization errors (including missing leap seconds)
+          // before imposing the execution-work limit.
+          mode=1;
+          chkin_c("spkpvn_c"); chkin_c("SPKPVN"); chkin_c("SPKE10");
+          xxsgp4i_(record,elements,&mode);
+          chkout_c("SPKE10"); chkout_c("SPKPVN"); chkout_c("spkpvn_c");
+          if (spk_status(err,cap)) return 1;
+          return tspice_ephemeris_invalid_arg(err,cap,"SPK resonant interval reaches one million integration steps");
+        }
+      }
+      if (record[17]==record[31]) break;
+    }
+  }
+  spkpvn_c(handle,words,et,ref,state6,center);
+  return spk_status(err,cap);
+}
+
+int tspice_spksub(int source, int isRegistration, const void *descr, int size, const char *ident,
+                  double begin, double end, int writer, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  int handle, fields[6];
+  double words[5];
+  if (!ident || !isfinite(begin) || !isfinite(end))
+    return tspice_ephemeris_invalid_arg(err,cap,"Expected a segment ID and finite subset epochs");
+  if (spk_reader(source,isRegistration,&handle,err,cap) ||
+      spk_file_descriptor(handle,descr,size,words,fields,err,cap)) return 1;
+  if (handle==writer) return tspice_ephemeris_invalid_arg(err,cap,"An SPK subset requires a separate writer");
+  // Authenticate the write-mode handle even for direct native callers.
+  dafsih_(&writer,"WRITE",5);
+  if (spk_status(err,cap)) return 1;
+  char idword[8], ifname[60];
+  int nd=0, ni=0, fward=0, bward=0, freeAddress=0, found=0;
+  zzdafgfr_(&writer,idword,&nd,&ni,ifname,&fward,&bward,&freeAddress,&found,8,60);
+  if (spk_status(err,cap)) return 1;
+  if (!found || nd!=2 || ni!=6 ||
+      (memcmp(idword,"DAF/",4)==0 && memcmp(idword,"DAF/SPK ",8)!=0))
+    return tspice_ephemeris_invalid_arg(err,cap,"Expected an SPK subset writer");
+  spksub_c(handle,words,ident,begin,end,writer);
+  return spk_status(err,cap);
+}
+
 int tspice_spksfs(
     int body,
     double et,
     int *outHandle,
+    int *outGeneration,
     double *outDescr5,
     char *outIdent,
     int outIdentMaxBytes,
@@ -474,6 +726,7 @@ int tspice_spksfs(
     return 0;
   }
 
+  if (!outGeneration || spk_generation(handle,outGeneration,err,errMaxBytes)) return 1;
   if (outHandle) {
     if (tspice_spice_int_to_int_checked(handle, outHandle, "tspice_spksfs()", err, errMaxBytes) != 0) {
       return 1;

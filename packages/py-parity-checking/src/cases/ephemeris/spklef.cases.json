@@ -1,0 +1,259 @@
+[
+  {
+    "caseId": "ephemeris-spklef-promote-repeated",
+    "description": "Reloading the lower-priority original SPK promotes it, and its physical registration is removed by one unload.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "sel",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "borrowed"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "again"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "again"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "sel",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "borrowed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spklef-priority-stack",
+    "description": "Observe the distinct complete states at a common epoch with overlapping direct registrations.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris-priority.bsp",
+        "id": "priority"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "priority",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "priority"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 125,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "load",
+        "descriptor": "sel",
+        "et": 125,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spklef-direct-no-keeper",
+    "description": "Close and independently register an authored physical SPK without adding a KEEPER record.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "file": "kernels/e03-subset.bsp",
+        "ifname": "TSPICE SUBSET",
+        "ncomch": 0,
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spksub",
+        "source": "load",
+        "descriptor": "sel",
+        "ident": "AUTHORED SUBSET",
+        "begin": -5,
+        "end": 10,
+        "writer": "out",
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "out"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-subset.bsp",
+        "id": "direct"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkpvn",
+        "source": "direct",
+        "descriptor": "sel",
+        "et": 0,
+        "mode": "direct"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "direct"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spklef-empty-file",
+    "description": "A valid empty DAF loads directly and has no matching segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-empty.bsp"
+      },
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/audit-ephemeris-empty.bsp",
+        "id": "load"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": -100011,
+        "et": 0,
+        "descrId": "sel"
+      },
+      {
+        "op": "ephemeris.spkuef",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spklef-missing",
+    "description": "Opening a nonexistent SPK reaches the real DAF file diagnostic.",
+    "workflow": [
+      {
+        "op": "ephemeris.spklef",
+        "file": "kernels/e03-absent.bsp",
+        "id": "load"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  }
+]

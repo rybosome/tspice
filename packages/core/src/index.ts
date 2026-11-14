@@ -113,6 +113,11 @@ export {
 } from "./spice-runtime/shared/mat6.js";
 
 export {
+  createSpkReaders,
+  releaseSpkLoads,
+  spkSegmentBytes,
+  spkInputText,
+  spkStateComponents,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
   hasSpkPackedDescriptorStorage,

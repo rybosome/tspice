@@ -206,6 +206,15 @@ Notes:
 
 ## Domain: `ephemeris` (`EphemerisApi`)
 
+| Raw operation | N0067 entry | Result or effect                                                                                                                                                                               |
+| ------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spklef`      | `spklef_c`  | Register a physical SPK without a KEEPER entry and promote it to highest SPKBSR priority. Repeated direct loads share a per-client token until unload.                                         |
+| `spkuef`      | `spkuef_c`  | Remove an owned direct SPK registration, invalidating prior direct and borrowed observations across the shared toolkit, while preserving other files and any later registration.               |
+| `spkpvn`      | `spkpvn_c`  | Authenticate the exact packed descriptor against its readable source, evaluate the requested finite TDB epoch and return the complete native frame, position (km), velocity (km/s) and center. |
+| `spksub`      | `spksub_c`  | Append a real physical subset to a separate open SPK writer using the original file, actual packed descriptor, segment ID and inclusive TDB epochs.                                            |
+
+[SPK file registration, descriptor and physical subset evidence](step8-spk-lowlevel.md)
+
 | domain.method                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                       | Returns (TS shape)                        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                               |
 | ----------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ephemeris.spkezr(target, et, ref, abcorr, observer)` | `spkezr_c`           | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkezrResult` | `{ state: [x,y,z,vx,vy,vz], lt: number }` | float tolerance on each component + `lt`   | **stateful**: requires SPK (`*.bsp`); may also require FK/PCK/CK depending on `ref`; aberration correction must match CSPICE `abcorr` parsing |

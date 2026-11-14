@@ -118,16 +118,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafps uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafps and actual dafps_c. The independent sidecar binds dafps_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafps uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafps and actual dafps_c. The independent sidecar binds dafps_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -188,16 +200,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafus uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafus and actual dafus_c. The independent sidecar binds dafus_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafus uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafus and actual dafus_c. The independent sidecar binds dafus_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -287,16 +311,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafgsr uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafgsr and actual dafgsr_c. The independent sidecar binds dafgsr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dafgsr uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafgsr and actual dafgsr_c. The independent sidecar binds dafgsr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -372,16 +408,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafrfr uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafrfr and actual dafrfr_c. The independent sidecar binds dafrfr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafrfr uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafrfr and actual dafrfr_c. The independent sidecar binds dafrfr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -467,16 +503,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafrda uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafrda and actual dafrda_c. The independent sidecar binds dafrda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafrda uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafrda and actual dafrda_c. The independent sidecar binds dafrda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -557,16 +593,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafgda uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafgda and actual dafgda_c. The independent sidecar binds dafgda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.dafgda uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafgda and actual dafgda_c. The independent sidecar binds dafgda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     }
@@ -624,7 +660,8 @@
         "file-io-dafus-packed-bits",
         "file-io-dafus-unobserved-padding"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c02-0138a1b3-wasm",
@@ -678,7 +715,8 @@
         "file-io-dafus-packed-bits",
         "file-io-dafus-unobserved-padding"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-node",
@@ -734,7 +772,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-wasm",
@@ -790,8 +829,9 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Previous source-bound executions are historical. Revalidate the complete baseline and C01, C02 and E03 on this combined source."
 }

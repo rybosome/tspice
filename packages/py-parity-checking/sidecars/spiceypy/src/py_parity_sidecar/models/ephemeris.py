@@ -86,6 +86,40 @@ class StepEphemerisSpkopa:
 
 
 @dataclass(frozen=True)
+class StepEphemerisSpklef:
+    op: Literal["ephemeris.spklef"]
+    file: PathRefInput
+    id: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkuef:
+    op: Literal["ephemeris.spkuef"]
+    id: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkpvn:
+    op: Literal["ephemeris.spkpvn"]
+    source: str
+    descriptor: str
+    et: float
+    mode: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpksub:
+    op: Literal["ephemeris.spksub"]
+    source: str
+    descriptor: str
+    ident: str
+    begin: float
+    end: float
+    writer: str
+    mode: str
+
+
+@dataclass(frozen=True)
 class StepEphemerisSpkopn:
     op: Literal["ephemeris.spkopn"]
     file: PathRefInput

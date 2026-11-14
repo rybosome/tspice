@@ -33,6 +33,8 @@ export type SpkPackedDescriptor = readonly [
   number,
 ];
 
+/** Five packed native words from SPKSFS or the 40 DAFGS bytes from a real SPK file. */
+export type SpkSegmentDescriptor = SpkPackedDescriptor | Uint8Array;
 /** Unpacked SPK segment descriptor (see `spkuds_c`). */
 export type SpkUnpackedDescriptor = {
   body: number;
@@ -195,6 +197,38 @@ export interface EphemerisApi {
    */
   spkobj(spk: string, ids: SpiceIntCell): void;
 
+  /** Load a readable SPK directly into the SPK search table. Each load makes this file highest priority.
+   * Repeated direct loads of the same live file return the same client-owned token. A single unload removes its physical registration.
+   * Use a filesystem/virtual kernel path or a closed virtual SPK output. Direct loading does not register a KEEPER kernel.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spklef_c.html
+   */
+  spklef(file: string | VirtualOutput): SpiceHandle;
+  /** Remove an explicit SPKLEF registration and release this client's ownership token. A prior toolkit unload is a canonical no-op.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkuef_c.html
+   */
+  spkuef(handle: SpiceHandle): void;
+  /** Evaluate a real segment at finite TDB seconds past J2000. Type-specific readers control coverage and extrapolation. Supply a live local DAF or SPKLEF token,
+   * or the borrowed physical handle previously returned by this client's SPKSFS. The descriptor must match this SPK's actual summary.
+   * Returns frame code, owned Cartesian position (km) and velocity (km/s), and center body code.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkpvn_c.html
+   */
+  spkpvn(
+    handle: number,
+    descr: SpkSegmentDescriptor,
+    et: number,
+  ): { ref: number; state: SpiceStateVector; center: number };
+  /** Append a type-specific physical subset of an authentic source segment to a separate SPK writer. Both endpoints are inclusive TDB seconds.
+   * The source and descriptor follow SPKPVN conventions. Close the destination with SPKCLS before reopening it or reading its bytes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spksub_c.html
+   */
+  spksub(
+    handle: number,
+    descr: SpkSegmentDescriptor,
+    ident: string,
+    begin: number,
+    end: number,
+    newh: SpiceHandle,
+  ): void;
   /**
    * Search loaded SPK files for the highest-priority segment applicable to `body` and `et`.
    *

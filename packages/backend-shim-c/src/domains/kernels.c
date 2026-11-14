@@ -32,11 +32,14 @@ int tspice_unload(const char *path, char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  tspice_spk_keeper_snapshot(0);
   unload_c(path);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    tspice_spk_keeper_snapshot(1);
     return 1;
   }
+  tspice_spk_keeper_snapshot(1);
 
   return 0;
 }
@@ -48,11 +51,14 @@ int tspice_kclear(char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  tspice_spk_keeper_snapshot(0);
   kclear_c();
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    tspice_spk_keeper_snapshot(1);
     return 1;
   }
+  tspice_spk_keeper_snapshot(1);
 
   return 0;
 }
