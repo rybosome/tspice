@@ -948,7 +948,7 @@
         "status": "locked-public-and-typed-row-table-reviewed",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/726"],
       "validationEvidence": [
         {
           "kind": "source-and-focused-runtime",
@@ -957,13 +957,20 @@
         {
           "kind": "focused-public-and-browser",
           "result": "112 registered Node/WASM and 7 focused public/oracle tests passed. Actual Chrome public client, inline worker and localhost WASM returned the expected byte indices, maximum signed-start behavior, and blank or empty row results."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+          "result": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed."
         }
       ],
-      "nextAction": "Complete both required local lanes and observed canonical CI on the combined A18/A19 source, then validate the final PR head and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-string-search",
       "worktree": "/private/tmp/tspice-step8-string-search",
       "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
-      "progressNote": "56 workflows and 407 target calls. Actual registered Node/WASM comparisons passed 112/112 and public/oracle tests passed 7/7. Native and WASM boundary tests passed. The real Chrome public client and inline worker exercised all seven operations. Full local and canonical CI remain required."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source a2b5705a. 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "56 workflows and 407 target calls. Actual registered Node/WASM comparisons passed 112/112 and public/oracle tests passed 7/7. Native and WASM boundary tests passed. The real Chrome public client and inline worker exercised all seven operations. Full local and canonical CI remain required."
     },
     {
       "id": "A20-string-tokenize",
