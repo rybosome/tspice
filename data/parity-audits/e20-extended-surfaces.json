@@ -1,0 +1,624 @@
+{
+  "schemaVersion": 1,
+  "batch": "e20-extended-surfaces",
+  "traceFiles": [
+    "docs/step8-extended-surfaces.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/surface-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/surface-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/dsk-rays.ts",
+    "packages/core/src/spice-runtime/domains/surface-grid.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/generate-dsk-rays.py",
+    "packages/py-parity-checking/fixtures/generate-surface-cuts.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-dsk-ray-outer.bds",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+    "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/geometry/latsrf.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/limbpt.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/srfnrm.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/termpt.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/test/extended-surfaces.test.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-limbpt.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "latsrf_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latsrf_c.html",
+      "semantics": "Convert planetocentric longitude/latitude to outermost shaped surface points in the requested target frame.",
+      "scenarios": [
+        {
+          "caseId": "geometry-latsrf-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-selected-shape",
+          "coverage": ["success", "edge"],
+          "observes": "Explicitly select the original smaller plate model with both matching body DSKs loaded. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-outermost",
+          "coverage": ["success", "edge"],
+          "observes": "A second larger octahedron supplies outermost radial points and normals at its facet interiors. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-rotated-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Compare coordinates or gradient normals in a rotated body-centered reference frame. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-empty-grid",
+          "coverage": ["success", "edge"],
+          "observes": "A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-bad-method",
+          "coverage": ["error", "edge"],
+          "observes": "An unknown computation method is rejected by the actual syntax parser. Verified BADMETHODSYNTAX."
+        },
+        {
+          "caseId": "geometry-latsrf-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Distinguish a target name that cannot be resolved. Verified IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-latsrf-wrong-center",
+          "coverage": ["error", "edge"],
+          "observes": "A recognized frame centered on another body has a distinct diagnostic. Verified INVALIDFRAME."
+        },
+        {
+          "caseId": "geometry-latsrf-no-segment",
+          "coverage": ["error", "edge"],
+          "observes": "A DSK model requires selected plate data from a loaded target file. Verified NOLOADEDDSKFILES."
+        },
+        {
+          "caseId": "geometry-latsrf-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "Empty input strings reach the actual outer C adapter. Verified EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-latsrf-disconnected-surface",
+          "coverage": ["success", "edge"],
+          "observes": "The north-facing radial ray reaches the northern companion of a disconnected shape, while an equatorial ray reaches the primary component. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-latsrf-uncovered-ray",
+          "coverage": ["error", "edge"],
+          "observes": "The surface containing only a northern component has no intercept along the equatorial test ray. Verified POINTNOTFOUND."
+        }
+      ],
+      "edgeAssessment": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid. Explicitly select the original smaller plate model with both matching body DSKs loaded. A second larger octahedron supplies outermost radial points and normals at its facet interiors. Compare coordinates or gradient normals in a rotated body-centered reference frame. A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry. The north-facing radial ray reaches the northern companion of a disconnected shape, while an equatorial ray reaches the primary component.",
+      "errorAssessment": "Independent terminal diagnostics include BADMETHODSYNTAX, EMPTYSTRING, IDCODENOTFOUND, INVALIDFRAME, NOLOADEDDSKFILES, POINTNOTFOUND. The adapters clear failed state before rethrowing. Public tests verify reuse after scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored target-centered frames, triaxial body and illuminator radii.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Original type 2 octahedron with semiaxes 3, 2 and 1 km.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-dsk-ray-outer.bds",
+          "provenance": "Original larger overlapping type 2 octahedron on surface 102.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 740720e0bcde81e05d814ed155677262c5a11b18946507413832069287649401"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+          "provenance": "Two project-authored octahedra on surface 103 plus the isolated northern component on surface 104.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 543856f821583f68cc6df8768e1944f9f3d6a35fdcf2b1469b8a86144c41f28f"
+        }
+      ],
+      "fixtureRationale": "Independently authored geometry selects different target surfaces and frames. Separate observer and illumination ephemerides and a disconnected shape determine cut multiplicity.",
+      "cleanup": "Clear the kernel pool after each independent workflow; dispose each public client, release owned temporary buffers on success or failure, and test cached reads after explicit unload.",
+      "tolerance": "Use the existing registered numeric comparator for every defined field. Public analytic radial direction, gradient, observer vectors and tangent-plane distances use 12–13 decimal places. All counts, lengths, zero counts and tested geometric epochs are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.latsrf -> bounded Node adapter and serialized N-API handler -> tspice_latsrf -> latsrf_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.latsrf -> owned heap arrays, checked 2 MiB stack and mandatory WASM export -> tspice_latsrf -> latsrf_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "srfnrm_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfnrm_c.html",
+      "semantics": "Compute outward unit normals on the selected target surface at ordered target-frame coordinates.",
+      "scenarios": [
+        {
+          "caseId": "geometry-srfnrm-ellipsoid",
+          "coverage": ["success", "edge"],
+          "observes": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-srfnrm-selected-shape",
+          "coverage": ["success", "edge"],
+          "observes": "Explicitly select the original smaller plate model with both matching body DSKs loaded. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-srfnrm-outermost",
+          "coverage": ["success", "edge"],
+          "observes": "A second larger octahedron supplies outermost radial points and normals at its facet interiors. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-srfnrm-rotated-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Compare coordinates or gradient normals in a rotated body-centered reference frame. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-srfnrm-empty-grid",
+          "coverage": ["success", "edge"],
+          "observes": "A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-srfnrm-bad-method",
+          "coverage": ["error", "edge"],
+          "observes": "An unknown computation method is rejected by the actual syntax parser. Verified BADMETHODSYNTAX."
+        },
+        {
+          "caseId": "geometry-srfnrm-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Distinguish a target name that cannot be resolved. Verified IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-srfnrm-wrong-center",
+          "coverage": ["error", "edge"],
+          "observes": "A recognized frame centered on another body has a distinct diagnostic. Verified INVALIDFRAME."
+        },
+        {
+          "caseId": "geometry-srfnrm-no-segment",
+          "coverage": ["error", "edge"],
+          "observes": "A DSK model requires selected plate data from a loaded target file. Verified NOLOADEDDSKFILES."
+        },
+        {
+          "caseId": "geometry-srfnrm-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "Empty input strings reach the actual outer C adapter. Verified EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-srfnrm-off-plate",
+          "coverage": ["error", "edge"],
+          "observes": "Non-membership in a selected DSK surface is reported even when a prior grid point was valid. Verified POINTNOTINSEGMENT."
+        }
+      ],
+      "edgeAssessment": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid. Explicitly select the original smaller plate model with both matching body DSKs loaded. A second larger octahedron supplies outermost radial points and normals at its facet interiors. Compare coordinates or gradient normals in a rotated body-centered reference frame. A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry.",
+      "errorAssessment": "Independent terminal diagnostics include BADMETHODSYNTAX, EMPTYSTRING, IDCODENOTFOUND, INVALIDFRAME, NOLOADEDDSKFILES, POINTNOTINSEGMENT. The adapters clear failed state before rethrowing. Public tests verify reuse after scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored target-centered frames, triaxial body and illuminator radii.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Original type 2 octahedron with semiaxes 3, 2 and 1 km.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-dsk-ray-outer.bds",
+          "provenance": "Original larger overlapping type 2 octahedron on surface 102.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 740720e0bcde81e05d814ed155677262c5a11b18946507413832069287649401"
+        }
+      ],
+      "fixtureRationale": "Independently authored geometry selects different target surfaces and frames. Separate observer and illumination ephemerides and a disconnected shape determine cut multiplicity.",
+      "cleanup": "Clear the kernel pool after each independent workflow; dispose each public client, release owned temporary buffers on success or failure, and test cached reads after explicit unload.",
+      "tolerance": "Use the existing registered numeric comparator for every defined field. Public analytic radial direction, gradient, observer vectors and tangent-plane distances use 12–13 decimal places. All counts, lengths, zero counts and tested geometric epochs are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.srfnrm -> bounded Node adapter and serialized N-API handler -> tspice_srfnrm -> srfnrm_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.srfnrm -> owned heap arrays, checked 2 MiB stack and mandatory WASM export -> tspice_srfnrm -> srfnrm_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "limbpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/limbpt_c.html",
+      "semantics": "Return per-half-plane limb counts and dense target-frame surface points, surface epochs and observer-to-point tangent vectors.",
+      "scenarios": [
+        {
+          "caseId": "geometry-limbpt-ellipsoid-cuts",
+          "coverage": ["success", "edge"],
+          "observes": "All four cuts on the triaxial ellipsoid return points, epochs and observer-relative vectors with a compact exact-size second call. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-locus-and-aberration",
+          "coverage": ["success", "edge"],
+          "observes": "Compare center and per-surface light-time epochs and the full effect of stellar aberration on the same four cuts. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-rotated-and-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "Signed roll reverses plane ordering. Rotating the fixed frame changes the full returned vectors. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-guided-facets",
+          "coverage": ["success", "edge"],
+          "observes": "Use guidance from the triaxial reference ellipsoid with two overlapping DSKs and separately selected surfaces. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-tangent-shape",
+          "coverage": ["success", "edge"],
+          "observes": "Find DSK tangencies by angular search with real geometry, complete dense rows and a distinct observer from the target. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-multi-point-cut",
+          "coverage": ["success", "edge"],
+          "observes": "The disconnected authored geometry yields multiple tangent transitions on a half-plane. Preserve every dense row and the counts for all four cuts. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-one-cut",
+          "coverage": ["success", "edge"],
+          "observes": "A single cut permits zero roll; the ellipsoid path also ignores search step and tolerance. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-limbpt-zero-cuts",
+          "coverage": ["error", "edge"],
+          "observes": "The pinned routine handles zero cutting planes according to its own count check. Verified INVALIDCOUNT."
+        },
+        {
+          "caseId": "geometry-limbpt-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDSIZE."
+        },
+        {
+          "caseId": "geometry-limbpt-too-many-cuts",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDCOUNT."
+        },
+        {
+          "caseId": "geometry-limbpt-negative-cuts",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDCOUNT."
+        },
+        {
+          "caseId": "geometry-limbpt-zero-roll",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDROLLSTEP."
+        },
+        {
+          "caseId": "geometry-limbpt-zero-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified ZEROVECTOR."
+        },
+        {
+          "caseId": "geometry-limbpt-invalid-locus",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDLOCUS."
+        },
+        {
+          "caseId": "geometry-limbpt-missing-observer",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-limbpt-empty-method",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-limbpt-invalid-search-step",
+          "coverage": ["error", "edge"],
+          "observes": "A nonpositive search step on a DSK returns the pinned toolkit error. Verified INVALIDSEARCHSTEP."
+        },
+        {
+          "caseId": "geometry-limbpt-empty-cut-rows",
+          "coverage": ["success", "edge"],
+          "observes": "The isolated northern component leaves several cutting half-planes uncovered. Compare every count and the dense rows independently for the tangent and guided methods. Compare every defined field to an independent locked reference."
+        }
+      ],
+      "edgeAssessment": "All four cuts on the triaxial ellipsoid return points, epochs and observer-relative vectors with a compact exact-size second call. Compare center and per-surface light-time epochs and the full effect of stellar aberration on the same four cuts. Signed roll reverses plane ordering. Rotating the fixed frame changes the full returned vectors. Use guidance from the triaxial reference ellipsoid with two overlapping DSKs and separately selected surfaces. Find DSK tangencies by angular search with real geometry, complete dense rows and a distinct observer from the target. The disconnected authored geometry yields multiple tangent transitions on a half-plane. Preserve every dense row and the counts for all four cuts. A single cut permits zero roll; the ellipsoid path also ignores search step and tolerance. The isolated northern component leaves several cutting half-planes uncovered. Compare every count and the dense rows independently for the tangent and guided methods.",
+      "errorAssessment": "Independent terminal diagnostics include EMPTYSTRING, IDCODENOTFOUND, INVALIDCOUNT, INVALIDLOCUS, INVALIDROLLSTEP, INVALIDSEARCHSTEP, INVALIDSIZE, ZEROVECTOR. The adapters clear failed state before rethrowing. Public tests verify reuse after scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored target-centered frames, triaxial body and illuminator radii.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original synthetic target, observer and source state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Original type 2 octahedron with semiaxes 3, 2 and 1 km.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-dsk-ray-outer.bds",
+          "provenance": "Original larger overlapping type 2 octahedron on surface 102.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 740720e0bcde81e05d814ed155677262c5a11b18946507413832069287649401"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+          "provenance": "Two project-authored octahedra on surface 103 plus the isolated northern component on surface 104.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 543856f821583f68cc6df8768e1944f9f3d6a35fdcf2b1469b8a86144c41f28f"
+        }
+      ],
+      "fixtureRationale": "Independently authored geometry selects different target surfaces and frames. Separate observer and illumination ephemerides and a disconnected shape determine cut multiplicity.",
+      "cleanup": "Clear the kernel pool after each independent workflow; dispose each public client, release owned temporary buffers on success or failure, and test cached reads after explicit unload.",
+      "tolerance": "Use the existing registered numeric comparator for every defined field. Public analytic radial direction, gradient, observer vectors and tangent-plane distances use 12–13 decimal places. All counts, lengths, zero counts and tested geometric epochs are exact.",
+      "findings": [
+        {
+          "id": "lock-oracle-dense-cut-arrays",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 filters all outputs using the positions of cuts with positive counts, which loses valid dense rows or zero counts.",
+          "repair": "Call the actual locked C entry into independently bounded physical buffers, extract every count and copy the sum of defined point/epoch/vector rows.",
+          "evidence": [
+            "docs/step8-extended-surfaces.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/py-parity-checking/test/extended-surfaces.test.ts"
+          ],
+          "caseIds": [
+            "geometry-limbpt-multi-point-cut",
+            "geometry-limbpt-empty-cut-rows"
+          ]
+        },
+        {
+          "id": "global-remaining-capacity",
+          "status": "repaired",
+          "summary": "Pinned LIMBPT compares each cut with the original available room after the output cursor has advanced.",
+          "repair": "Compile a hash-verified local source with remaining cumulative room supplied to both original correction-locus checks. Separate protected public OUTOFROOM/retry from sufficient-capacity independent scientific parity.",
+          "evidence": [
+            "docs/step8-extended-surfaces.md",
+            "packages/py-parity-checking/test/extended-surfaces.test.ts",
+            "scripts/stage-limbpt.mjs",
+            "packages/backend-node/native/binding.gyp",
+            "scripts/build-backend-wasm.mjs"
+          ],
+          "caseIds": ["geometry-limbpt-multi-point-cut"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.limbpt -> bounded Node adapter and serialized N-API handler -> tspice_limbpt -> limbpt_c; both builds link the pinned toolkit with the remaining-capacity check at both LIMBPT correction loci.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.limbpt -> owned heap arrays, checked 2 MiB stack and mandatory WASM export -> tspice_limbpt -> limbpt_c; both builds link the pinned toolkit with the remaining-capacity check at both LIMBPT correction loci.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "termpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/termpt_c.html",
+      "semantics": "Return per-half-plane umbral or penumbral terminator counts and dense surface points, epochs and observer-to-point vectors.",
+      "scenarios": [
+        {
+          "caseId": "geometry-termpt-ellipsoid-cuts",
+          "coverage": ["success", "edge"],
+          "observes": "All four cuts on the triaxial ellipsoid return points, epochs and observer-relative vectors with a compact exact-size second call. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-locus-and-aberration",
+          "coverage": ["success", "edge"],
+          "observes": "Compare center and per-surface light-time epochs and the full effect of stellar aberration on the same four cuts. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-rotated-and-reversed",
+          "coverage": ["success", "edge"],
+          "observes": "Signed roll reverses plane ordering. Rotating the fixed frame changes the full returned vectors. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-guided-facets",
+          "coverage": ["success", "edge"],
+          "observes": "Use guidance from the triaxial reference ellipsoid with two overlapping DSKs and separately selected surfaces. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-tangent-shape",
+          "coverage": ["success", "edge"],
+          "observes": "Find DSK tangencies by angular search with real geometry, complete dense rows and a distinct observer from the target. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-multi-point-cut",
+          "coverage": ["success", "edge"],
+          "observes": "The disconnected authored geometry yields multiple tangent transitions on a half-plane. Preserve every dense row and the counts for all four cuts. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-one-cut",
+          "coverage": ["success", "edge"],
+          "observes": "A single cut permits zero roll; the ellipsoid path also ignores search step and tolerance. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-zero-cuts",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned routine handles zero cutting planes according to its own count check. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDSIZE."
+        },
+        {
+          "caseId": "geometry-termpt-too-many-cuts",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDCOUNT."
+        },
+        {
+          "caseId": "geometry-termpt-negative-cuts",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDCOUNT."
+        },
+        {
+          "caseId": "geometry-termpt-zero-roll",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDROLLSTEP."
+        },
+        {
+          "caseId": "geometry-termpt-zero-reference",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified ZEROVECTOR."
+        },
+        {
+          "caseId": "geometry-termpt-invalid-locus",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified INVALIDLOCUS."
+        },
+        {
+          "caseId": "geometry-termpt-missing-observer",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-termpt-empty-method",
+          "coverage": ["error", "edge"],
+          "observes": "Require the named scientific diagnostic on otherwise valid authored inputs. Verified EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-termpt-umbral-versus-penumbral",
+          "coverage": ["success", "edge"],
+          "observes": "The illumination source has finite radius. Compare the distinct umbral and penumbral ellipsoid boundaries. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-empty-cut-rows",
+          "coverage": ["success", "edge"],
+          "observes": "The isolated northern component leaves several cutting half-planes uncovered. Compare every count and the dense rows independently for the tangent and guided methods. Compare every defined field to an independent locked reference."
+        },
+        {
+          "caseId": "geometry-termpt-tangent-room",
+          "coverage": ["error", "edge"],
+          "observes": "The pinned terminator routine exhausts its internal room for a three-point first cut with maxn six, even though the geometric total is six. Verified OUTOFROOM."
+        }
+      ],
+      "edgeAssessment": "All four cuts on the triaxial ellipsoid return points, epochs and observer-relative vectors with a compact exact-size second call. Compare center and per-surface light-time epochs and the full effect of stellar aberration on the same four cuts. Signed roll reverses plane ordering. Rotating the fixed frame changes the full returned vectors. Use guidance from the triaxial reference ellipsoid with two overlapping DSKs and separately selected surfaces. Find DSK tangencies by angular search with real geometry, complete dense rows and a distinct observer from the target. The disconnected authored geometry yields multiple tangent transitions on a half-plane. Preserve every dense row and the counts for all four cuts. A single cut permits zero roll; the ellipsoid path also ignores search step and tolerance. The pinned routine handles zero cutting planes according to its own count check. The illumination source has finite radius. Compare the distinct umbral and penumbral ellipsoid boundaries. The isolated northern component leaves several cutting half-planes uncovered. Compare every count and the dense rows independently for the tangent and guided methods.",
+      "errorAssessment": "Independent terminal diagnostics include EMPTYSTRING, IDCODENOTFOUND, INVALIDCOUNT, INVALIDLOCUS, INVALIDROLLSTEP, INVALIDSIZE, OUTOFROOM, ZEROVECTOR. The adapters clear failed state before rethrowing. Public tests verify reuse after scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored target-centered frames, triaxial body and illuminator radii.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original synthetic target, observer and source state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Original type 2 octahedron with semiaxes 3, 2 and 1 km.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-dsk-ray-outer.bds",
+          "provenance": "Original larger overlapping type 2 octahedron on surface 102.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 740720e0bcde81e05d814ed155677262c5a11b18946507413832069287649401"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+          "provenance": "Two project-authored octahedra on surface 103 plus the isolated northern component on surface 104.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 543856f821583f68cc6df8768e1944f9f3d6a35fdcf2b1469b8a86144c41f28f"
+        }
+      ],
+      "fixtureRationale": "Independently authored geometry selects different target surfaces and frames. Separate observer and illumination ephemerides and a disconnected shape determine cut multiplicity.",
+      "cleanup": "Clear the kernel pool after each independent workflow; dispose each public client, release owned temporary buffers on success or failure, and test cached reads after explicit unload.",
+      "tolerance": "Use the existing registered numeric comparator for every defined field. Public analytic radial direction, gradient, observer vectors and tangent-plane distances use 12–13 decimal places. All counts, lengths, zero counts and tested geometric epochs are exact.",
+      "findings": [
+        {
+          "id": "lock-oracle-dense-cut-arrays",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 filters all outputs using the positions of cuts with positive counts, which loses valid dense rows or zero counts.",
+          "repair": "Call the actual locked C entry into independently bounded physical buffers, extract every count and copy the sum of defined point/epoch/vector rows.",
+          "evidence": [
+            "docs/step8-extended-surfaces.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/py-parity-checking/test/extended-surfaces.test.ts"
+          ],
+          "caseIds": [
+            "geometry-termpt-multi-point-cut",
+            "geometry-termpt-empty-cut-rows"
+          ]
+        },
+        {
+          "id": "wasm-dsk-traversal-stack",
+          "status": "repaired",
+          "summary": "The previously implicit 64 KiB Emscripten stack is smaller than the compiled 88,336-byte ZZDSKBUX frame used by DSK tangent searches.",
+          "repair": "Reserve 2 MiB and check each stack adjustment in both WASM environments. Compare all counts, dense points, epochs and vectors for complete and partial DSK coverage.",
+          "evidence": [
+            "docs/step8-extended-surfaces.md",
+            "scripts/build-backend-wasm.mjs",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py"
+          ],
+          "caseIds": [
+            "geometry-termpt-tangent-shape",
+            "geometry-termpt-multi-point-cut",
+            "geometry-termpt-empty-cut-rows"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.termpt -> bounded Node adapter and serialized N-API handler -> tspice_termpt -> termpt_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "GeometryApi.termpt -> owned heap arrays, checked 2 MiB stack and mandatory WASM export -> tspice_termpt -> termpt_c; independent locked N0067 scientific comparison.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Run the full uncached local and canonical CI lanes on this combined source, then check the final PR matrix and rebaseability."
+}

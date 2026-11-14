@@ -1,0 +1,336 @@
+[
+  {
+    "caseId": "geometry-latsrf-ellipsoid",
+    "description": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0, 0],
+          [1.5707963267948966, 0],
+          [0, -1.5707963267948966],
+          [0.5, 2.4]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-selected-shape",
+    "description": "Explicitly select the original smaller plate model with both matching body DSKs loaded.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "DSK/UNPRIORITIZED/SURFACES=101",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-outermost",
+    "description": "A second larger octahedron supplies outermost radial points and normals at its facet interiors.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-rotated-frame",
+    "description": "Compare coordinates or gradient normals in a rotated body-centered reference frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-empty-grid",
+    "description": "A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-bad-method",
+    "description": "An unknown computation method is rejected by the actual syntax parser.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "INVALID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADMETHODSYNTAX"]
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-unknown-target",
+    "description": "Distinguish a target name that cannot be resolved.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "UNKNOWN_TARGET_E20",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-wrong-center",
+    "description": "A recognized frame centered on another body has a distinct diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "J2000",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAME"]
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-no-segment",
+    "description": "A DSK model requires selected plate data from a loaded target file.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDDSKFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-empty-text",
+    "description": "Empty input strings reach the actual outer C adapter.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0.31, 0.21],
+          [-0.71, 0.15],
+          [2.13, -0.49]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-disconnected-surface",
+    "description": "The north-facing radial ray reaches the northern companion of a disconnected shape, while an equatorial ray reaches the primary component.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-surface-cuts.bds"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [
+          [0, 0],
+          [0, 1.5707963267948966]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-latsrf-uncovered-ray",
+    "description": "The surface containing only a northern component has no intercept along the equatorial test ray.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-surface-cuts.bds"
+      },
+      {
+        "op": "geometry.latsrf",
+        "method": "DSK/UNPRIORITIZED/SURFACES=104",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "lonlat": [[0, 0]]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTNOTFOUND"]
+    }
+  }
+]

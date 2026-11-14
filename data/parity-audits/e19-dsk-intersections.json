@@ -107,7 +107,8 @@
         "dsk-dskxv-unknown-frame",
         "dsk-dskxv-unknown-target"
       ],
-      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e19-48efd0ee-wasm",
@@ -166,7 +167,8 @@
         "dsk-dskxv-unknown-frame",
         "dsk-dskxv-unknown-target"
       ],
-      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e19-48efd0ee-node",
@@ -227,7 +229,8 @@
       ],
       "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e19-48efd0ee-wasm",
@@ -288,7 +291,8 @@
       ],
       "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -349,16 +353,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskx02 -> native adapter and mutex-protected N-API handler -> tspice_dskx02 -> dskx02_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskx02 -> validated WASM heap adapter and required compiled export -> tspice_dskx02 -> dskx02_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": []
         }
       }
     },
@@ -492,16 +496,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "alias",
           "trace": "DskApi.dskxsi -> native adapter and mutex-protected N-API handler -> tspice_dskxsi -> traced N0067 dskxsi_ with initialized outputs, independent locked callee and confirmed-hit public cross-check.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "alias",
           "trace": "DskApi.dskxsi -> validated WASM heap adapter and required compiled export -> tspice_dskxsi -> traced N0067 dskxsi_ with initialized outputs, independent locked callee and confirmed-hit public cross-check.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": []
         }
       }
     },
@@ -612,16 +628,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskxv -> native adapter and mutex-protected N-API handler -> tspice_dskxv -> dskxv_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskxv -> validated WASM heap adapter and required compiled export -> tspice_dskxv -> dskxv_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": []
         }
       }
     },
@@ -666,16 +682,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskgtl -> native adapter and mutex-protected N-API handler -> tspice_dskgtl -> dskgtl_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "DskApi.dskgtl -> validated WASM heap adapter and required compiled export -> tspice_dskgtl -> dskgtl_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": []
         }
       }
     },
@@ -738,19 +754,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "DskApi.dskstl -> native adapter and mutex-protected N-API handler -> tspice_dskstl -> dskstl_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "DskApi.dskstl -> validated WASM heap adapter and required compiled export -> tspice_dskstl -> dskstl_c, independently invoked through locked SpiceyPy.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source-bound observations remain historical. Revalidate the E18/E19/E20 combined source on both runtimes."
 }

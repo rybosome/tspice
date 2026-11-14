@@ -514,6 +514,63 @@ export type NativeAddon = {
     observer: string,
   ): { spoint: number[]; trgepc: number; srfvec: number[] };
 
+  latsrf(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    npts: number,
+    input: Float64Array,
+    out: Float64Array,
+  ): void;
+  srfnrm(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    npts: number,
+    input: Float64Array,
+    out: Float64Array,
+  ): void;
+  limbpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    corloc: string,
+    observer: string,
+    refvec: Float64Array,
+    rolstp: number,
+    ncuts: number,
+    schstp: number,
+    soltol: number,
+    maxn: number,
+    npts: Int32Array,
+    points: Float64Array,
+    epochs: Float64Array,
+    vectors: Float64Array,
+  ): void;
+  termpt(
+    method: string,
+    ilusrc: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    corloc: string,
+    observer: string,
+    refvec: Float64Array,
+    rolstp: number,
+    ncuts: number,
+    schstp: number,
+    soltol: number,
+    maxn: number,
+    npts: Int32Array,
+    points: Float64Array,
+    epochs: Float64Array,
+    vectors: Float64Array,
+  ): void;
   sincpt(
     method: string,
     target: string,

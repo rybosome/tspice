@@ -51,27 +51,8 @@ export function dskRaySelection(
 ) {
   if (typeof pri !== "boolean" || !Number.isFinite(et))
     throw new TypeError("Expected DSK boolean priority and finite ET");
-  // Bound UTF-8 before allocating encoder output. Ill-formed UTF-16 and
-  // embedded NUL cannot faithfully represent a C string.
-  for (const s of [target, fixref]) {
-    if (typeof s !== "string" || s.length > 268435455)
-      throw new TypeError("Expected bounded NUL-free DSK text");
-    let bytes = 0;
-    for (let i = 0; i < s.length; i++) {
-      const c = s.charCodeAt(i);
-      if (c === 0) throw new TypeError("Expected NUL-free DSK text");
-      if (c < 128) bytes++;
-      else if (c < 2048) bytes += 2;
-      else if (c >= 0xd800 && c <= 0xdfff) {
-        const low = s.charCodeAt(++i);
-        if (c > 0xdbff || !(low >= 0xdc00 && low <= 0xdfff))
-          throw new TypeError("Invalid UTF-16 DSK text");
-        bytes += 4;
-      } else bytes += 3;
-      if (bytes > 268435455)
-        throw new RangeError("DSK text exceeds the UTF-8 buffer bound");
-    }
-  }
+  surfaceTextBytes(target);
+  surfaceTextBytes(fixref);
   const n = count(ids, 67108864, "surface list"),
     out = new Int32Array(n);
   for (let i = 0; i < n; i++) {
@@ -158,4 +139,26 @@ export function dskRaySource(
     dc: [],
     ic: [plate],
   };
+}
+
+/** Count bounded, losslessly representable UTF-8 bytes including the terminating NUL. */
+export function surfaceTextBytes(s: string): number {
+  if (typeof s !== "string" || s.length > 268435455)
+    throw new TypeError("Expected bounded NUL-free surface text");
+  let bytes = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c === 0) throw new TypeError("Expected NUL-free surface text");
+    if (c < 128) bytes++;
+    else if (c < 2048) bytes += 2;
+    else if (c >= 0xd800 && c <= 0xdfff) {
+      const low = s.charCodeAt(++i);
+      if (c > 0xdbff || !(low >= 0xdc00 && low <= 0xdfff))
+        throw new TypeError("Invalid UTF-16 surface text");
+      bytes += 4;
+    } else bytes += 3;
+    if (bytes > 268435455)
+      throw new RangeError("surface text exceeds the UTF-8 buffer bound");
+  }
+  return bytes + 1;
 }

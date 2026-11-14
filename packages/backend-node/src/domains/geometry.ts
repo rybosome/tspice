@@ -1,3 +1,11 @@
+import {
+  dskRay,
+  surfaceGrid,
+  surfaceCutLimits,
+  surfaceCutCount,
+  surfaceVectors,
+  surfaceTextBytes,
+} from "@rybosome/tspice-core";
 import type {
   Found,
   GeometryApi,
@@ -68,6 +76,140 @@ function geometryInputs(
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
+    latsrf: (method, target, et, fixref, rows) => {
+      const { count, words } = surfaceGrid(rows, 2);
+      if (![et].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      for (const text of [method, target, fixref]) surfaceTextBytes(text);
+      const out = new Float64Array(Math.max(1, count) * 3);
+      native.latsrf(method, target, et, fixref, count, words, out);
+      return surfaceVectors(out, count);
+    },
+    srfnrm: (method, target, et, fixref, rows) => {
+      const { count, words } = surfaceGrid(rows, 3);
+      if (![et].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      for (const text of [method, target, fixref]) surfaceTextBytes(text);
+      const out = new Float64Array(Math.max(1, count) * 3);
+      native.srfnrm(method, target, et, fixref, count, words, out);
+      return surfaceVectors(out, count);
+    },
+    limbpt: (
+      method,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      refvec,
+      rolstp,
+      ncuts,
+      schstp,
+      soltol,
+      maxn,
+    ) => {
+      const sizes = surfaceCutLimits(ncuts, maxn);
+      const ref = dskRay(refvec);
+      if (![et, rolstp, schstp, soltol].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      for (const text of [method, target, fixref, abcorr, corloc, observer])
+        surfaceTextBytes(text);
+      const npts = new Int32Array(sizes.counts),
+        points = new Float64Array(sizes.rows * 3),
+        epochs = new Float64Array(sizes.rows),
+        vectors = new Float64Array(sizes.rows * 3);
+      native.limbpt(
+        method,
+        target,
+        et,
+        fixref,
+        abcorr,
+        corloc,
+        observer,
+        ref,
+        rolstp,
+        ncuts,
+        schstp,
+        soltol,
+        maxn,
+        npts,
+        points,
+        epochs,
+        vectors,
+      );
+      const counts = npts.subarray(0, ncuts);
+      const total = surfaceCutCount(counts, maxn);
+      return {
+        npts: Array.from(counts),
+        points: surfaceVectors(points, total),
+        epochs: Array.from(epochs.subarray(0, total)),
+        tangts: surfaceVectors(vectors, total),
+      };
+    },
+    termpt: (
+      method,
+      ilusrc,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      refvec,
+      rolstp,
+      ncuts,
+      schstp,
+      soltol,
+      maxn,
+    ) => {
+      const sizes = surfaceCutLimits(ncuts, maxn);
+      const ref = dskRay(refvec);
+      if (![et, rolstp, schstp, soltol].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      for (const text of [
+        method,
+        ilusrc,
+        target,
+        fixref,
+        abcorr,
+        corloc,
+        observer,
+      ])
+        surfaceTextBytes(text);
+      const npts = new Int32Array(sizes.counts),
+        points = new Float64Array(sizes.rows * 3),
+        epochs = new Float64Array(sizes.rows),
+        vectors = new Float64Array(sizes.rows * 3);
+      native.termpt(
+        method,
+        ilusrc,
+        target,
+        et,
+        fixref,
+        abcorr,
+        corloc,
+        observer,
+        ref,
+        rolstp,
+        ncuts,
+        schstp,
+        soltol,
+        maxn,
+        npts,
+        points,
+        epochs,
+        vectors,
+      );
+      const counts = npts.subarray(0, ncuts);
+      const total = surfaceCutCount(counts, maxn);
+      return {
+        npts: Array.from(counts),
+        points: surfaceVectors(points, total),
+        epochs: Array.from(epochs.subarray(0, total)),
+        trmvcs: surfaceVectors(vectors, total),
+      };
+    },
     subpnt: (method, target, et, fixref, abcorr, observer) => {
       geometryInputs(et, [method, target, fixref, abcorr, observer], "subpnt");
       const out = native.subpnt(method, target, et, fixref, abcorr, observer);

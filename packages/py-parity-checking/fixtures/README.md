@@ -167,3 +167,7 @@ against locked SpiceyPy, with no scientific operation replaced by a formula.
 ### DSK ray source selection
 
 `generate-dsk-rays.py` uses locked SpiceyPy to write `kernels/audit-dsk-ray-outer.bds`. The project-authored octahedron has semiaxes of 6, 4 and 2 km, surface 102 and coverage from ET −30 to +30 seconds. The pre-existing `audit-geometry.bds` contains a smaller octahedron on surface 101 and covers a longer interval. Both share the authored target-centered frame in `audit-geometry.tf`. [Geometry, independent reads and fixture hashes](../../../docs/step8-dsk-intersections.md)
+
+### Disconnected shape and missing surface cuts
+
+`generate-surface-cuts.py` builds `kernels/audit-surface-cuts.bds` with locked SpiceyPy from two project-authored, outward-oriented octahedra. Surface 103 contains a central body and a separated northern component. Surface 104 contains the northern component alone. The target frame and observer/source ephemerides come from the existing synthetic geometry fixtures. [Shape coordinates, missing intercepts and multi-point cuts](../../../docs/step8-extended-surfaces.md)

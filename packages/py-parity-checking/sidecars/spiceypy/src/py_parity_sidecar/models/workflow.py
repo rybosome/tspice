@@ -132,6 +132,10 @@ from .geometry import (
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
+    StepGeometryLatsrf,
+    StepGeometrySrfnrm,
+    StepGeometryLimbpt,
+    StepGeometryTermpt,
     StepGeometrySincpt,
     StepGeometrySubpnt,
     StepGeometrySubslr,
@@ -381,6 +385,10 @@ WorkflowStep: TypeAlias = (
     | StepDskDskb02
     | StepGeometrySubpnt
     | StepGeometrySubslr
+    | StepGeometryLatsrf
+    | StepGeometrySrfnrm
+    | StepGeometryLimbpt
+    | StepGeometryTermpt
     | StepGeometrySincpt
     | StepGeometryIlumin
     | StepGeometryIllumg

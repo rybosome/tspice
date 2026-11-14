@@ -7,6 +7,7 @@
     {
       "target_name": "tspice_backend_node",
       "sources": [
+        "generated/limbpt.c",
         "src/addon.cc",
         "src/addon_common.cc",
         "src/cell_handles.cc",

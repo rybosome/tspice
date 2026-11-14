@@ -1128,6 +1128,55 @@ export type StepGeometrySubslr = {
   observer: string;
 };
 
+export type StepGeometryLatsrf = {
+  op: "geometry.latsrf";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  lonlat: [number, number][];
+};
+export type StepGeometrySrfnrm = {
+  op: "geometry.srfnrm";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  srfpts: Vec3[];
+};
+export type StepGeometryLimbpt = {
+  op: "geometry.limbpt";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  corloc: string;
+  observer: string;
+  refvec: Vec3;
+  rolstp: number;
+  ncuts: number;
+  schstp: number;
+  soltol: number;
+  maxn: number;
+};
+export type StepGeometryTermpt = {
+  op: "geometry.termpt";
+  method: string;
+  ilusrc: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  corloc: string;
+  observer: string;
+  refvec: Vec3;
+  rolstp: number;
+  ncuts: number;
+  schstp: number;
+  soltol: number;
+  maxn: number;
+};
 export type StepGeometrySincpt = {
   op: "geometry.sincpt";
   method: string;
@@ -1522,6 +1571,10 @@ export type WorkflowStep =
   | StepEkEkffld
   | StepGeometrySubpnt
   | StepGeometrySubslr
+  | StepGeometryLatsrf
+  | StepGeometrySrfnrm
+  | StepGeometryLimbpt
+  | StepGeometryTermpt
   | StepGeometrySincpt
   | StepGeometryIlumin
   | StepGeometryIllumg
@@ -1939,6 +1992,26 @@ export type StepOutput =
   | {
       op: "geometry.subslr";
       value: { spoint: Vec3; trgepc: number; srfvec: Vec3 };
+    }
+  | { op: "geometry.latsrf"; value: Vec3[] }
+  | { op: "geometry.srfnrm"; value: Vec3[] }
+  | {
+      op: "geometry.limbpt";
+      value: {
+        npts: number[];
+        points: Vec3[];
+        epochs: number[];
+        tangts: Vec3[];
+      };
+    }
+  | {
+      op: "geometry.termpt";
+      value: {
+        npts: number[];
+        points: Vec3[];
+        epochs: number[];
+        trmvcs: Vec3[];
+      };
     }
   | {
       op: "geometry.sincpt";
