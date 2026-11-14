@@ -56,3 +56,7 @@ This checkpoint has 39 routines ready for review, 307 in progress and 141 planne
 | E17-plate-math               | `pltar_c`, `pltexp_c`, `pltnp_c`, `pltnrm_c`, `pltvol_c`, `dskrb2_c`                                                                                                       | Main baseline                       | in-progress                                                     |
 
 After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
+
+## C05 source validation checkpoint
+
+[PR #750](https://github.com/rybosome/tspice/pull/750) remains in progress. Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

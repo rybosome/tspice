@@ -1966,18 +1966,25 @@
         "status": "verified-locked-library-abi",
         "missingTopLevelWrappers": ["dasrdc_c", "dasudc_c"]
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/750"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "54 registered workflows, 253 steps, 154 target calls, 21 expected errors; 108 compiled live comparisons, 4 bidirectional public checks, 3 native and 28 WASM checks and actual Chrome all nine."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "c0937973e0bd4a910c12056e5ad16197eb2ea15e",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43574808718/job/132386644376",
+          "result": "Both complete required lanes passed locally on c0937973e0bd4a910c12056e5ad16197eb2ea15e. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132386644376 on c0937973e0bd4a910c12056e5ad16197eb2ea15e: 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Revalidate this expanded source with both required local lanes, canonical CI, final-head checks and PR rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-das-data",
       "branch": "codex/expand-das-data",
       "baseCommit": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
-      "progressNote": "All nine direct DAS transfer routes and owned buffers are implemented. Locked typed byte ABI and bidirectional independent cross-file checks passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source c0937973. 2,418 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 661 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All nine direct DAS transfer routes and owned buffers are implemented. Locked typed byte ABI and bidirectional independent cross-file checks passed."
     },
     {
       "id": "C06-das-comments",

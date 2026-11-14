@@ -441,8 +441,8 @@
         "dasudi_c"
       ],
       "dependsOn": ["c04-das-lifecycle"],
-      "prs": [],
-      "nextAction": "Revalidate this expanded source with both required local lanes, canonical CI, final-head checks and PR rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/750"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
