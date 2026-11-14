@@ -10,6 +10,9 @@ import type {
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
 import {
+  ellipseIntersectionCount,
+  packEllipse,
+  unpackEllipse,
   copyPlaneComponents,
   copyPlaneVector,
   planeComponent,
@@ -362,6 +365,77 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       return out;
     },
 
+    cgv2el: (center, vec1, vec2) => {
+      const out = native.cgv2el(
+        copyPlaneVector(center, "cgv2el(center)", true),
+        copyPlaneVector(vec1, "cgv2el(vec1)", true),
+        copyPlaneVector(vec2, "cgv2el(vec2)", true),
+      );
+      return unpackEllipse(out, "cgv2el result");
+    },
+    el2cgv: (ellipse) => {
+      const out = native.el2cgv(packEllipse(ellipse, "el2cgv(ellipse)"));
+      return {
+        center: copyPlaneVector(out.center, "el2cgv(center)", false),
+        smajor: copyPlaneVector(out.smajor, "el2cgv(smajor)", false),
+        sminor: copyPlaneVector(out.sminor, "el2cgv(sminor)", false),
+      };
+    },
+    saelgv: (vec1, vec2) => {
+      const out = native.saelgv(
+        copyPlaneVector(vec1, "saelgv(vec1)", true),
+        copyPlaneVector(vec2, "saelgv(vec2)", true),
+      );
+      return {
+        smajor: copyPlaneVector(out.smajor, "saelgv(smajor)", false),
+        sminor: copyPlaneVector(out.sminor, "saelgv(sminor)", false),
+      };
+    },
+    pjelpl: (ellipse, plane) => {
+      const out = native.pjelpl(
+        packEllipse(ellipse, "pjelpl(ellipse)"),
+        copyPlaneComponents(plane, "pjelpl(plane)", true),
+      );
+      return unpackEllipse(out, "pjelpl result");
+    },
+    inedpl: (a, b, c, plane) => {
+      const out = native.inedpl(
+        planeComponent(a, "inedpl(a)", true),
+        planeComponent(b, "inedpl(b)", true),
+        planeComponent(c, "inedpl(c)", true),
+        copyPlaneComponents(plane, "inedpl(plane)", true),
+      );
+      const found = out.found;
+      if (found === false) return { found: false };
+      if (found !== true) throw new TypeError("Invalid INEDPL found flag");
+      return {
+        ellipse: unpackEllipse(out.ellipse, "inedpl result"),
+        found: true,
+      };
+    },
+    inelpl: (ellipse, plane) => {
+      const out = native.inelpl(
+        packEllipse(ellipse, "inelpl(ellipse)"),
+        copyPlaneComponents(plane, "inelpl(plane)", true),
+      );
+      const nxpts = ellipseIntersectionCount(out.nxpts);
+      if (nxpts === -1 || nxpts === 0) return { nxpts };
+      return {
+        nxpts,
+        xpt1: copyPlaneVector(out.xpt1, "inelpl(xpt1)", false),
+        xpt2: copyPlaneVector(out.xpt2, "inelpl(xpt2)", false),
+      };
+    },
+    npelpt: (point, ellipse) => {
+      const out = native.npelpt(
+        copyPlaneVector(point, "npelpt(point)", true),
+        packEllipse(ellipse, "npelpt(ellipse)"),
+      );
+      return {
+        pnear: copyPlaneVector(out.pnear, "npelpt(pnear)", false),
+        dist: planeComponent(out.dist, "npelpt(dist)", false),
+      };
+    },
     nvp2pl: (normal, point) => {
       const out = native.nvp2pl(
         copyPlaneVector(normal, "nvp2pl(normal)", true),

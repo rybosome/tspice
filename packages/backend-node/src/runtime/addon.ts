@@ -383,6 +383,25 @@ export type NativeAddon = {
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
+  cgv2el(center: number[], vec1: number[], vec2: number[]): unknown;
+  el2cgv(ellipse: number[]): {
+    center: unknown;
+    smajor: unknown;
+    sminor: unknown;
+  };
+  saelgv(vec1: number[], vec2: number[]): { smajor: unknown; sminor: unknown };
+  pjelpl(ellipse: number[], plane: number[]): unknown;
+  inedpl(
+    a: number,
+    b: number,
+    c: number,
+    plane: number[],
+  ): { ellipse?: unknown; found: unknown };
+  inelpl(
+    ellipse: number[],
+    plane: number[],
+  ): { nxpts: unknown; xpt1?: unknown; xpt2?: unknown };
+  npelpt(point: number[], ellipse: number[]): { pnear: unknown; dist: unknown };
   nvp2pl(normal: number[], point: number[]): unknown;
   pl2nvp(plane: number[]): { normal: unknown; point: unknown };
   pl2psv(plane: number[]): { point: unknown; span1: unknown; span2: unknown };

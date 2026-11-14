@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
+from .models.geometry import StoredEllipse
+
 from .models import (
     CaseRequest,
     StepCellsWindowsCard,
@@ -125,6 +127,13 @@ from .models import (
     StepGeometryVprjp,
     StepGeometryVprjpi,
     StepGeometryNplnpt,
+    StepGeometryCgv2el,
+    StepGeometryEl2cgv,
+    StepGeometrySaelgv,
+    StepGeometryPjelpl,
+    StepGeometryInelpl,
+    StepGeometryInedpl,
+    StepGeometryNpelpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -282,6 +291,15 @@ def _expect_vec3(value: Any, *, label: str) -> tuple[float, float, float]:
         _expect_number(value[0], label=f"{label}[0]"),
         _expect_number(value[1], label=f"{label}[1]"),
         _expect_number(value[2], label=f"{label}[2]"),
+    )
+
+
+def _expect_ellipse(value: Any, *, label: str) -> StoredEllipse:
+    ellipse = _expect_mapping(value, label=label)
+    return StoredEllipse(
+        center=_expect_vec3(ellipse.get("center"), label=f"{label}.center"),
+        semiMajor=_expect_vec3(ellipse.get("semiMajor"), label=f"{label}.semiMajor"),
+        semiMinor=_expect_vec3(ellipse.get("semiMinor"), label=f"{label}.semiMinor"),
     )
 
 
@@ -1673,6 +1691,57 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 linpt=_expect_vec3(step.get("linpt"), label="geometry.nplnpt.linpt"),
                 lindir=_expect_vec3(step.get("lindir"), label="geometry.nplnpt.lindir"),
                 point=_expect_vec3(step.get("point"), label="geometry.nplnpt.point"),
+            )
+
+        case "geometry.cgv2el":
+            return StepGeometryCgv2el(
+                op=op,
+                center=_expect_vec3(step.get("center"), label="geometry.cgv2el.center"),
+                vec1=_expect_vec3(step.get("vec1"), label="geometry.cgv2el.vec1"),
+                vec2=_expect_vec3(step.get("vec2"), label="geometry.cgv2el.vec2"),
+            )
+
+        case "geometry.el2cgv":
+            return StepGeometryEl2cgv(
+                op=op,
+                ellipse=_expect_ellipse(step.get("ellipse"), label="geometry.el2cgv.ellipse"),
+            )
+
+        case "geometry.saelgv":
+            return StepGeometrySaelgv(
+                op=op,
+                vec1=_expect_vec3(step.get("vec1"), label="geometry.saelgv.vec1"),
+                vec2=_expect_vec3(step.get("vec2"), label="geometry.saelgv.vec2"),
+            )
+
+        case "geometry.pjelpl":
+            return StepGeometryPjelpl(
+                op=op,
+                ellipse=_expect_ellipse(step.get("ellipse"), label="geometry.pjelpl.ellipse"),
+                plane=_expect_vec4(step.get("plane"), label="geometry.pjelpl.plane"),
+            )
+
+        case "geometry.inelpl":
+            return StepGeometryInelpl(
+                op=op,
+                ellipse=_expect_ellipse(step.get("ellipse"), label="geometry.inelpl.ellipse"),
+                plane=_expect_vec4(step.get("plane"), label="geometry.inelpl.plane"),
+            )
+
+        case "geometry.inedpl":
+            return StepGeometryInedpl(
+                op=op,
+                a=_expect_number(step.get("a"), label="geometry.inedpl.a"),
+                b=_expect_number(step.get("b"), label="geometry.inedpl.b"),
+                c=_expect_number(step.get("c"), label="geometry.inedpl.c"),
+                plane=_expect_vec4(step.get("plane"), label="geometry.inedpl.plane"),
+            )
+
+        case "geometry.npelpt":
+            return StepGeometryNpelpt(
+                op=op,
+                point=_expect_vec3(step.get("point"), label="geometry.npelpt.point"),
+                ellipse=_expect_ellipse(step.get("ellipse"), label="geometry.npelpt.ellipse"),
             )
 
         case "geometry.nvc2pl":

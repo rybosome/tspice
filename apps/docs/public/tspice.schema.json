@@ -153,6 +153,14 @@
         "description": "Options for spiceClients.toWebWorker() (custom Worker, wasmUrl override, timeouts, termination behavior)."
       },
       {
+        "name": "SpiceEllipse",
+        "description": "Public export from @rybosome/tspice."
+      },
+      {
+        "name": "SpiceEllipseInput",
+        "description": "Public export from @rybosome/tspice."
+      },
+      {
         "name": "SpiceKit",
         "description": "High-level convenience API built on top of the raw backend."
       },

@@ -424,7 +424,22 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/729"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Revalidate the inherited E10 routines on the combined E10/E11 source. The former source-bound executions are retained on PR #729 and in this audit history."
+    },
+    {
+      "id": "e11-ellipse-geometry",
+      "routines": [
+        "cgv2el_c",
+        "el2cgv_c",
+        "saelgv_c",
+        "pjelpl_c",
+        "inedpl_c",
+        "inelpl_c",
+        "npelpt_c"
+      ],
+      "dependsOn": ["e10-plane-geometry"],
+      "prs": [],
+      "nextAction": "Record full required local and canonical source-bound executions, then inspect complete final-head CI and explicit rebaseability."
     }
   ]
 }

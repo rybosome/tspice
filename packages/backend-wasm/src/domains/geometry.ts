@@ -6,12 +6,15 @@ import type {
   IllumgResult,
   IluminResult,
   Pl2nvcResult,
+  SpiceEllipse,
   SpicePlane,
   SpiceVector3,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
 
 import {
+  ellipseIntersectionCount,
+  packEllipse,
   copyPlaneComponents,
   copyPlaneVector,
   planeComponent,
@@ -33,6 +36,17 @@ function readPlaneResultVector(
     planeComponent(module.HEAPF64[base + 1], "result[1]", false),
     planeComponent(module.HEAPF64[base + 2], "result[2]", false),
   ];
+}
+
+function readEllipseResult(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceEllipse {
+  return {
+    center: readPlaneResultVector(module, ptr),
+    semiMajor: readPlaneResultVector(module, ptr + 24),
+    semiMinor: readPlaneResultVector(module, ptr + 48),
+  };
 }
 
 function readPlaneResult(module: EmscriptenModule, ptr: number): SpicePlane {
@@ -843,6 +857,196 @@ export function createGeometryApi(module: EmscriptenModule): GeometryApi {
         observer,
         et,
       ),
+    cgv2el: (center, vec1, vec2) => {
+      const centerCopy = copyPlaneVector(center, "cgv2el(center)", true);
+      const vec1Copy = copyPlaneVector(vec1, "cgv2el(vec1)", true);
+      const vec2Copy = copyPlaneVector(vec2, "cgv2el(vec2)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 72, WASM_ERR_MAX_BYTES],
+        (centerPtr, vec1Ptr, vec2Ptr, ellipsePtr, errPtr) => {
+          module.HEAPF64.set(centerCopy, centerPtr / 8);
+          module.HEAPF64.set(vec1Copy, vec1Ptr / 8);
+          module.HEAPF64.set(vec2Copy, vec2Ptr / 8);
+          const status = module._tspice_cgv2el(
+            centerPtr,
+            vec1Ptr,
+            vec2Ptr,
+            ellipsePtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readEllipseResult(module, ellipsePtr);
+        },
+      );
+    },
+    el2cgv: (ellipse) => {
+      const ellipseCopy = packEllipse(ellipse, "el2cgv(ellipse)");
+      return withAllocs(
+        module,
+        [72, 24, 24, 24, WASM_ERR_MAX_BYTES],
+        (ellipsePtr, centerPtr, smajorPtr, sminorPtr, errPtr) => {
+          module.HEAPF64.set(ellipseCopy, ellipsePtr / 8);
+          const status = module._tspice_el2cgv(
+            ellipsePtr,
+            centerPtr,
+            smajorPtr,
+            sminorPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            center: readPlaneResultVector(module, centerPtr),
+            smajor: readPlaneResultVector(module, smajorPtr),
+            sminor: readPlaneResultVector(module, sminorPtr),
+          };
+        },
+      );
+    },
+    saelgv: (vec1, vec2) => {
+      const vec1Copy = copyPlaneVector(vec1, "saelgv(vec1)", true);
+      const vec2Copy = copyPlaneVector(vec2, "saelgv(vec2)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 24, WASM_ERR_MAX_BYTES],
+        (vec1Ptr, vec2Ptr, smajorPtr, sminorPtr, errPtr) => {
+          module.HEAPF64.set(vec1Copy, vec1Ptr / 8);
+          module.HEAPF64.set(vec2Copy, vec2Ptr / 8);
+          const status = module._tspice_saelgv(
+            vec1Ptr,
+            vec2Ptr,
+            smajorPtr,
+            sminorPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            smajor: readPlaneResultVector(module, smajorPtr),
+            sminor: readPlaneResultVector(module, sminorPtr),
+          };
+        },
+      );
+    },
+    pjelpl: (ellipse, plane) => {
+      const ellipseCopy = packEllipse(ellipse, "pjelpl(ellipse)");
+      const planeCopy = copyPlaneComponents(plane, "pjelpl(plane)", true);
+      return withAllocs(
+        module,
+        [72, 32, 72, WASM_ERR_MAX_BYTES],
+        (ellipsePtr, planePtr, projectedPtr, errPtr) => {
+          module.HEAPF64.set(ellipseCopy, ellipsePtr / 8);
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const status = module._tspice_pjelpl(
+            ellipsePtr,
+            planePtr,
+            projectedPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readEllipseResult(module, projectedPtr);
+        },
+      );
+    },
+    inedpl: (a, b, c, plane) => {
+      const aCopy = planeComponent(a, "inedpl(a)", true);
+      const bCopy = planeComponent(b, "inedpl(b)", true);
+      const cCopy = planeComponent(c, "inedpl(c)", true);
+      const planeCopy = copyPlaneComponents(plane, "inedpl(plane)", true);
+      return withAllocs(
+        module,
+        [32, 72, 4, WASM_ERR_MAX_BYTES],
+        (planePtr, ellipsePtr, foundPtr, errPtr) => {
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const status = module._tspice_inedpl(
+            aCopy,
+            bCopy,
+            cCopy,
+            planePtr,
+            ellipsePtr,
+            foundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const found = module.HEAP32[foundPtr / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid INEDPL found flag");
+          return {
+            ellipse: readEllipseResult(module, ellipsePtr),
+            found: true,
+          };
+        },
+      );
+    },
+    inelpl: (ellipse, plane) => {
+      const ellipseCopy = packEllipse(ellipse, "inelpl(ellipse)");
+      const planeCopy = copyPlaneComponents(plane, "inelpl(plane)", true);
+      return withAllocs(
+        module,
+        [72, 32, 4, 24, 24, WASM_ERR_MAX_BYTES],
+        (ellipsePtr, planePtr, nxptsPtr, xpt1Ptr, xpt2Ptr, errPtr) => {
+          module.HEAPF64.set(ellipseCopy, ellipsePtr / 8);
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const status = module._tspice_inelpl(
+            ellipsePtr,
+            planePtr,
+            nxptsPtr,
+            xpt1Ptr,
+            xpt2Ptr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const nxpts = ellipseIntersectionCount(module.HEAP32[nxptsPtr / 4]);
+          if (nxpts === -1 || nxpts === 0) return { nxpts };
+          return {
+            nxpts,
+            xpt1: readPlaneResultVector(module, xpt1Ptr),
+            xpt2: readPlaneResultVector(module, xpt2Ptr),
+          };
+        },
+      );
+    },
+    npelpt: (point, ellipse) => {
+      const pointCopy = copyPlaneVector(point, "npelpt(point)", true);
+      const ellipseCopy = packEllipse(ellipse, "npelpt(ellipse)");
+      return withAllocs(
+        module,
+        [24, 72, 24, 8, WASM_ERR_MAX_BYTES],
+        (pointPtr, ellipsePtr, pnearPtr, distPtr, errPtr) => {
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          module.HEAPF64.set(ellipseCopy, ellipsePtr / 8);
+          const status = module._tspice_npelpt(
+            pointPtr,
+            ellipsePtr,
+            pnearPtr,
+            distPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            pnear: readPlaneResultVector(module, pnearPtr),
+            dist: planeComponent(
+              module.HEAPF64[distPtr / 8],
+              "npelpt(dist)",
+              false,
+            ),
+          };
+        },
+      );
+    },
     nvp2pl: (normal, point) => {
       const normalCopy = copyPlaneVector(normal, "nvp2pl(normal)", true);
       const pointCopy = copyPlaneVector(point, "nvp2pl(point)", true);

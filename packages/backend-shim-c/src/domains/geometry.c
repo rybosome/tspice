@@ -3,6 +3,7 @@
 #include "tspice_error.h"
 #include "SpiceUsr.h"
 
+#include <math.h>
 #include <string.h>
 
 int tspice_subpnt(
@@ -438,6 +439,168 @@ static int plane_call_status(char *err, int errMaxBytes) {
   if (!failed_c()) return 0;
   tspice_get_spice_error_message_and_reset(err, errMaxBytes);
   return 1;
+}
+
+// Transport holds three consecutive vectors; copy named struct fields so layout
+// never relies on padding or on pointer arithmetic across C structure members.
+static SpiceEllipse ellipse_from_components(const double in[9]) {
+  SpiceEllipse ellipse;
+  memcpy(ellipse.center, in, sizeof(ellipse.center));
+  memcpy(ellipse.semiMajor, in + 3, sizeof(ellipse.semiMajor));
+  memcpy(ellipse.semiMinor, in + 6, sizeof(ellipse.semiMinor));
+  return ellipse;
+}
+
+static void ellipse_to_components(const SpiceEllipse *ellipse, double out[9]) {
+  memcpy(out, ellipse->center, sizeof(ellipse->center));
+  memcpy(out + 3, ellipse->semiMajor, sizeof(ellipse->semiMajor));
+  memcpy(out + 6, ellipse->semiMinor, sizeof(ellipse->semiMinor));
+}
+
+// N0067 INEDPL continues with its private distorted plane after PSV2PL signals
+// an error, although its constant has not been initialized. Check the same
+// intermediate under the genuine outer traceback before entering that path.
+static int check_inedpl_distortion(double a, double b, double c, const SpicePlane *plane,
+                                    char *err, int errMaxBytes) {
+  if (a <= 0 || b <= 0 || c <= 0) return 0;  // INEDPL diagnoses these before distortion.
+  double point[3], span1[3], span2[3];
+  SpicePlane distorted = {{0}, 0};
+  chkin_c("inedpl_c");
+  pl2psv_c(plane, point, span1, span2);
+  const double maxRadius = fmax(a, fmax(b, c));
+  if (!failed_c() && !(vnorm_c(point) > maxRadius)) {
+    const double inverse[3] = {1.0 / a, 1.0 / b, 1.0 / c};
+    for (int i = 0; i < 3; i++) {
+      point[i] *= inverse[i];
+      span1[i] *= inverse[i];
+      span2[i] *= inverse[i];
+    }
+    psv2pl_c(point, span1, span2, &distorted);
+  }
+  chkout_c("inedpl_c");
+  return plane_call_status(err, errMaxBytes);
+}
+
+int tspice_cgv2el(
+    const double *center, const double *vec1, const double *vec2, double *outEllipse, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!center || !vec1 || !vec2 || !outEllipse)
+    return tspice_return_error(err, errMaxBytes, "Missing cgv2el storage");
+  SpiceEllipse ellipse = {{0}, {0}, {0}};
+  cgv2el_c(center, vec1, vec2, &ellipse);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  ellipse_to_components(&ellipse, outEllipse);
+  return 0;
+}
+
+int tspice_el2cgv(
+    const double *ellipse, double *outCenter, double *outSmajor, double *outSminor, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!ellipse || !outCenter || !outSmajor || !outSminor)
+    return tspice_return_error(err, errMaxBytes, "Missing el2cgv storage");
+  SpiceEllipse ellipseValue = ellipse_from_components(ellipse);
+  SpiceDouble center[3] = {0};
+  SpiceDouble smajor[3] = {0};
+  SpiceDouble sminor[3] = {0};
+  el2cgv_c(&ellipseValue, center, smajor, sminor);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outCenter, center, sizeof(center));
+  memcpy(outSmajor, smajor, sizeof(smajor));
+  memcpy(outSminor, sminor, sizeof(sminor));
+  return 0;
+}
+
+int tspice_saelgv(
+    const double *vec1, const double *vec2, double *outSmajor, double *outSminor, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!vec1 || !vec2 || !outSmajor || !outSminor)
+    return tspice_return_error(err, errMaxBytes, "Missing saelgv storage");
+  SpiceDouble smajor[3] = {0};
+  SpiceDouble sminor[3] = {0};
+  saelgv_c(vec1, vec2, smajor, sminor);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outSmajor, smajor, sizeof(smajor));
+  memcpy(outSminor, sminor, sizeof(sminor));
+  return 0;
+}
+
+int tspice_pjelpl(
+    const double *ellipse, const double *plane, double *outProjected, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!ellipse || !plane || !outProjected)
+    return tspice_return_error(err, errMaxBytes, "Missing pjelpl storage");
+  SpiceEllipse ellipseValue = ellipse_from_components(ellipse);
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceEllipse projected = {{0}, {0}, {0}};
+  pjelpl_c(&ellipseValue, &planeValue, &projected);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  ellipse_to_components(&projected, outProjected);
+  return 0;
+}
+
+int tspice_inedpl(
+    double a, double b, double c, const double *plane, double *outEllipse, int *outFound, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!plane || !outEllipse || !outFound)
+    return tspice_return_error(err, errMaxBytes, "Missing inedpl storage");
+  SpicePlane planeValue = plane_from_components(plane);
+  if (check_inedpl_distortion(a, b, c, &planeValue, err, errMaxBytes)) return 1;
+  SpiceEllipse ellipse = {{0}, {0}, {0}};
+  SpiceBoolean found = 0;
+  inedpl_c(a, b, c, &planeValue, &ellipse, &found);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  *outFound = found != SPICEFALSE;
+  if (!found) return 0;
+  ellipse_to_components(&ellipse, outEllipse);
+  return 0;
+}
+
+int tspice_inelpl(
+    const double *ellipse, const double *plane, int *outNxpts, double *outXpt1, double *outXpt2, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!ellipse || !plane || !outNxpts || !outXpt1 || !outXpt2)
+    return tspice_return_error(err, errMaxBytes, "Missing inelpl storage");
+  SpiceEllipse ellipseValue = ellipse_from_components(ellipse);
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceInt nxpts = 0;
+  SpiceDouble xpt1[3] = {0};
+  SpiceDouble xpt2[3] = {0};
+  inelpl_c(&ellipseValue, &planeValue, &nxpts, xpt1, xpt2);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  *outNxpts = nxpts;
+  if (nxpts != 1 && nxpts != 2) return 0;
+  memcpy(outXpt1, xpt1, sizeof(xpt1));
+  memcpy(outXpt2, xpt2, sizeof(xpt2));
+  return 0;
+}
+
+int tspice_npelpt(
+    const double *point, const double *ellipse, double *outPnear, double *outDist, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  if (!point || !ellipse || !outPnear || !outDist)
+    return tspice_return_error(err, errMaxBytes, "Missing npelpt storage");
+  SpiceEllipse ellipseValue = ellipse_from_components(ellipse);
+  SpiceDouble pnear[3] = {0};
+  SpiceDouble dist = 0;
+  npelpt_c(point, &ellipseValue, pnear, &dist);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outPnear, pnear, sizeof(pnear));
+  *outDist = dist;
+  return 0;
 }
 
 int tspice_nvp2pl(

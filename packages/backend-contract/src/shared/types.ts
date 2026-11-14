@@ -83,6 +83,18 @@ export type SpiceVector3 = [number, number, number];
  */
 export type SpicePlane = [number, number, number, number];
 
+/** Three independently owned vectors in CSPICE ellipse component order. */
+export type SpiceEllipse = {
+  center: SpiceVector3;
+  semiMajor: SpiceVector3;
+  semiMinor: SpiceVector3;
+};
+
+/** Structural ellipse inputs also accept readonly component tuples. */
+export type SpiceEllipseInput = {
+  readonly [K in keyof SpiceEllipse]: Readonly<SpiceEllipse[K]>;
+};
+
 // -- Branded handles -------------------------------------------------------
 
 /** Opaque numeric handle returned by low-level SPICE file APIs (DAF/DAS/DLA). */

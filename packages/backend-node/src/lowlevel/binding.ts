@@ -610,6 +610,34 @@ export function getNodeBinding(): NativeAddon {
   );
 
   invariant(
+    typeof native.cgv2el === "function",
+    "Native addon missing cgv2el()",
+  );
+  invariant(
+    typeof native.el2cgv === "function",
+    "Native addon missing el2cgv()",
+  );
+  invariant(
+    typeof native.saelgv === "function",
+    "Native addon missing saelgv()",
+  );
+  invariant(
+    typeof native.pjelpl === "function",
+    "Native addon missing pjelpl()",
+  );
+  invariant(
+    typeof native.inedpl === "function",
+    "Native addon missing inedpl()",
+  );
+  invariant(
+    typeof native.inelpl === "function",
+    "Native addon missing inelpl()",
+  );
+  invariant(
+    typeof native.npelpt === "function",
+    "Native addon missing npelpt()",
+  );
+  invariant(
     typeof native.nvp2pl === "function",
     "Expected native addon to export nvp2pl",
   );

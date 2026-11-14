@@ -371,6 +371,185 @@ static bool ReadPlaneArgument(Napi::Env env, const Napi::Value& source,
   return true;
 }
 
+static bool ReadEllipseScalar(Napi::Env env, const Napi::Value& value, double *out) {
+  if (value.IsNumber()) {
+    *out = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(*out)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite ellipsoid radius"));
+  return false;
+}
+
+static Napi::Value Cgv2el(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cgv2el: incorrect argument count"));
+    return env.Undefined();
+  }
+  double center[3];
+  if (!ReadPlaneArgument(env, info[0], center, "cgv2el(center)")) return env.Undefined();
+  double vec1[3];
+  if (!ReadPlaneArgument(env, info[1], vec1, "cgv2el(vec1)")) return env.Undefined();
+  double vec2[3];
+  if (!ReadPlaneArgument(env, info[2], vec2, "cgv2el(vec2)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double ellipse[9] = {};
+  if (tspice_cgv2el(center, vec1, vec2, ellipse, err, sizeof(err))) {
+    ThrowSpiceError(env, "cgv2el", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, ellipse, 9);
+}
+
+static Napi::Value El2cgv(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "el2cgv: incorrect argument count"));
+    return env.Undefined();
+  }
+  double ellipse[9];
+  if (!ReadPlaneArgument(env, info[0], ellipse, "el2cgv(ellipse)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double center[3] = {};
+  double smajor[3] = {};
+  double sminor[3] = {};
+  if (tspice_el2cgv(ellipse, center, smajor, sminor, err, sizeof(err))) {
+    ThrowSpiceError(env, "el2cgv", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("center", MakeNumberArray(env, center, 3));
+  out.Set("smajor", MakeNumberArray(env, smajor, 3));
+  out.Set("sminor", MakeNumberArray(env, sminor, 3));
+  return out;
+}
+
+static Napi::Value Saelgv(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "saelgv: incorrect argument count"));
+    return env.Undefined();
+  }
+  double vec1[3];
+  if (!ReadPlaneArgument(env, info[0], vec1, "saelgv(vec1)")) return env.Undefined();
+  double vec2[3];
+  if (!ReadPlaneArgument(env, info[1], vec2, "saelgv(vec2)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double smajor[3] = {};
+  double sminor[3] = {};
+  if (tspice_saelgv(vec1, vec2, smajor, sminor, err, sizeof(err))) {
+    ThrowSpiceError(env, "saelgv", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("smajor", MakeNumberArray(env, smajor, 3));
+  out.Set("sminor", MakeNumberArray(env, sminor, 3));
+  return out;
+}
+
+static Napi::Value Pjelpl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pjelpl: incorrect argument count"));
+    return env.Undefined();
+  }
+  double ellipse[9];
+  if (!ReadPlaneArgument(env, info[0], ellipse, "pjelpl(ellipse)")) return env.Undefined();
+  double plane[4];
+  if (!ReadPlaneArgument(env, info[1], plane, "pjelpl(plane)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double projected[9] = {};
+  if (tspice_pjelpl(ellipse, plane, projected, err, sizeof(err))) {
+    ThrowSpiceError(env, "pjelpl", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, projected, 9);
+}
+
+static Napi::Value Inedpl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "inedpl: incorrect argument count"));
+    return env.Undefined();
+  }
+  double a;
+  if (!ReadEllipseScalar(env, info[0], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[1], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[2], &c)) return env.Undefined();
+  double plane[4];
+  if (!ReadPlaneArgument(env, info[3], plane, "inedpl(plane)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double ellipse[9] = {};
+  int found = 0;
+  if (tspice_inedpl(a, b, c, plane, ellipse, &found, err, sizeof(err))) {
+    ThrowSpiceError(env, "inedpl", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("ellipse", MakeNumberArray(env, ellipse, 9));
+  out.Set("found", Napi::Boolean::New(env, true));
+  return out;
+}
+
+static Napi::Value Inelpl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "inelpl: incorrect argument count"));
+    return env.Undefined();
+  }
+  double ellipse[9];
+  if (!ReadPlaneArgument(env, info[0], ellipse, "inelpl(ellipse)")) return env.Undefined();
+  double plane[4];
+  if (!ReadPlaneArgument(env, info[1], plane, "inelpl(plane)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int nxpts = 0;
+  double xpt1[3] = {};
+  double xpt2[3] = {};
+  if (tspice_inelpl(ellipse, plane, &nxpts, xpt1, xpt2, err, sizeof(err))) {
+    ThrowSpiceError(env, "inelpl", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("nxpts", Napi::Number::New(env, nxpts));
+  if (nxpts != 1 && nxpts != 2) return out;
+  out.Set("xpt1", MakeNumberArray(env, xpt1, 3));
+  out.Set("xpt2", MakeNumberArray(env, xpt2, 3));
+  return out;
+}
+
+static Napi::Value Npelpt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "npelpt: incorrect argument count"));
+    return env.Undefined();
+  }
+  double point[3];
+  if (!ReadPlaneArgument(env, info[0], point, "npelpt(point)")) return env.Undefined();
+  double ellipse[9];
+  if (!ReadPlaneArgument(env, info[1], ellipse, "npelpt(ellipse)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double pnear[3] = {};
+  double dist = 0;
+  if (tspice_npelpt(point, ellipse, pnear, &dist, err, sizeof(err))) {
+    ThrowSpiceError(env, "npelpt", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("pnear", MakeNumberArray(env, pnear, 3));
+  out.Set("dist", Napi::Number::New(env, dist));
+  return out;
+}
+
 static Napi::Value Nvp2pl(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (info.Length() != 2) {
@@ -669,6 +848,13 @@ void RegisterGeometry(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "illumg", Napi::Function::New(env, Illumg), __func__)) return;
   if (!SetExportChecked(env, exports, "illumf", Napi::Function::New(env, Illumf), __func__)) return;
   if (!SetExportChecked(env, exports, "occult", Napi::Function::New(env, Occult), __func__)) return;
+  if (!SetExportChecked(env, exports, "cgv2el", Napi::Function::New(env, Cgv2el), __func__)) return;
+  if (!SetExportChecked(env, exports, "el2cgv", Napi::Function::New(env, El2cgv), __func__)) return;
+  if (!SetExportChecked(env, exports, "saelgv", Napi::Function::New(env, Saelgv), __func__)) return;
+  if (!SetExportChecked(env, exports, "pjelpl", Napi::Function::New(env, Pjelpl), __func__)) return;
+  if (!SetExportChecked(env, exports, "inedpl", Napi::Function::New(env, Inedpl), __func__)) return;
+  if (!SetExportChecked(env, exports, "inelpl", Napi::Function::New(env, Inelpl), __func__)) return;
+  if (!SetExportChecked(env, exports, "npelpt", Napi::Function::New(env, Npelpt), __func__)) return;
   if (!SetExportChecked(env, exports, "nvp2pl", Napi::Function::New(env, Nvp2pl), __func__)) return;
   if (!SetExportChecked(env, exports, "pl2nvp", Napi::Function::New(env, Pl2nvp), __func__)) return;
   if (!SetExportChecked(env, exports, "pl2psv", Napi::Function::New(env, Pl2psv), __func__)) return;

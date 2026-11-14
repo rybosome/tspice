@@ -295,6 +295,7 @@ export type StepCoordsVectorsMtxv = {
 };
 
 export type Vec3 = Vector3;
+export type Ellipse = { center: Vec3; semiMajor: Vec3; semiMinor: Vec3 };
 export type SpicePlane = [number, number, number, number];
 
 export type CellsWindowsTargetKind = "int" | "double" | "char" | "window";
@@ -1224,6 +1225,40 @@ export type StepGeometryNplnpt = {
   lindir: Vec3;
   point: Vec3;
 };
+export type StepGeometryCgv2el = {
+  op: "geometry.cgv2el";
+  center: Vec3;
+  vec1: Vec3;
+  vec2: Vec3;
+};
+export type StepGeometryEl2cgv = { op: "geometry.el2cgv"; ellipse: Ellipse };
+export type StepGeometrySaelgv = {
+  op: "geometry.saelgv";
+  vec1: Vec3;
+  vec2: Vec3;
+};
+export type StepGeometryPjelpl = {
+  op: "geometry.pjelpl";
+  ellipse: Ellipse;
+  plane: SpicePlane;
+};
+export type StepGeometryInelpl = {
+  op: "geometry.inelpl";
+  ellipse: Ellipse;
+  plane: SpicePlane;
+};
+export type StepGeometryInedpl = {
+  op: "geometry.inedpl";
+  a: number;
+  b: number;
+  c: number;
+  plane: SpicePlane;
+};
+export type StepGeometryNpelpt = {
+  op: "geometry.npelpt";
+  point: Vec3;
+  ellipse: Ellipse;
+};
 export type StepGeometryNvc2pl = {
   op: "geometry.nvc2pl";
   normal: Vec3;
@@ -1483,6 +1518,13 @@ export type WorkflowStep =
   | StepGeometryVprjp
   | StepGeometryVprjpi
   | StepGeometryNplnpt
+  | StepGeometryCgv2el
+  | StepGeometryEl2cgv
+  | StepGeometrySaelgv
+  | StepGeometryPjelpl
+  | StepGeometryInelpl
+  | StepGeometryInedpl
+  | StepGeometryNpelpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc
   | StepGeometryGfGfsstp
@@ -1933,6 +1975,22 @@ export type StepOutput =
       value: { found: false } | { found: true; vout: Vec3 };
     }
   | { op: "geometry.nplnpt"; value: { pnear: Vec3; dist: number } }
+  | { op: "geometry.cgv2el"; value: Ellipse }
+  | {
+      op: "geometry.el2cgv";
+      value: { center: Vec3; smajor: Vec3; sminor: Vec3 };
+    }
+  | { op: "geometry.saelgv"; value: { smajor: Vec3; sminor: Vec3 } }
+  | { op: "geometry.pjelpl"; value: Ellipse }
+  | {
+      op: "geometry.inelpl";
+      value: { nxpts: -1 | 0 } | { nxpts: 1 | 2; xpt1: Vec3; xpt2: Vec3 };
+    }
+  | {
+      op: "geometry.inedpl";
+      value: { found: false } | { found: true; ellipse: Ellipse };
+    }
+  | { op: "geometry.npelpt"; value: { pnear: Vec3; dist: number } }
   | { op: "geometry.nvc2pl"; value: SpicePlane }
   | {
       op: "geometry.pl2nvc";

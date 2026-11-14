@@ -1,0 +1,470 @@
+{
+  "schemaVersion": 1,
+  "batch": "e11-ellipse-geometry",
+  "traceFiles": [
+    "docs/step8-ellipse-geometry.md",
+    "docs/step8-plane-geometry.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ellipse-geometry-domain.test.ts",
+    "packages/backend-node/test/plane-geometry-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/ellipse-geometry-allocations.test.ts",
+    "packages/backend-wasm/test/plane-geometry-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/plane-geometry.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/ellipse-geometry-public.test.ts",
+    "packages/py-parity-checking/test/plane-geometry.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "routines": [
+    {
+      "routine": "cgv2el_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cgv2el_c.html",
+      "semantics": "Preserve the center and derive ordered orthogonal principal axes from the two finite generating vectors. The actual toolkit chooses their signs and circle orientation. Zero or dependent generators produce a point or segment.",
+      "scenarios": [
+        {
+          "caseId": "geometry-cgv2el-principal-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Both input orderings and signs retain the toolkit choice of major and minor vectors."
+        },
+        {
+          "caseId": "geometry-cgv2el-nonorthogonal",
+          "coverage": ["success", "edge"],
+          "observes": "Skew generators in inclined planes distinguish all returned orientations and components."
+        },
+        {
+          "caseId": "geometry-cgv2el-point-and-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Both zero, one zero, and dependent generators represent lower-dimensional ellipses."
+        },
+        {
+          "caseId": "geometry-cgv2el-circular",
+          "coverage": ["success", "edge"],
+          "observes": "Equal-length orthogonal generators test the toolkit convention in a circular case."
+        },
+        {
+          "caseId": "geometry-cgv2el-scaling",
+          "coverage": ["success", "edge"],
+          "observes": "Common large and small scalings of distinguishable generators."
+        }
+      ],
+      "edgeAssessment": "Principal axes, swapped/signed generators, skew and inclined pairs, dependent generators, points, circles and distinct large/small common scales distinguish all nine stored fields.",
+      "errorAssessment": "Zero and collinear generators are genuine successful degeneracies. No synthetic scientific error is added. Malformed or nonfinite input components are wrapper errors.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cgv2el -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_cgv2el -> cgv2el_c. Independent sidecar calls installed SpiceyPy sp.cgv2el on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cgv2el -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_cgv2el -> cgv2el_c. Independent sidecar calls installed SpiceyPy sp.cgv2el on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "el2cgv_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/el2cgv_c.html",
+      "semantics": "Read the three stored vectors verbatim from the ellipse descriptor. Return center, smajor and sminor as separate owned vectors. No regeneration, axis swap, normalization or search for another equivalent orientation occurs.",
+      "scenarios": [
+        {
+          "caseId": "geometry-el2cgv-stored-components",
+          "coverage": ["success", "edge"],
+          "observes": "Read every center and axis component including signs and orientation."
+        },
+        {
+          "caseId": "geometry-el2cgv-degenerate",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve the stored axes of point and line ellipses."
+        },
+        {
+          "caseId": "geometry-el2cgv-stored-signed-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Direct extraction retains the stored order and small nonzero components."
+        }
+      ],
+      "edgeAssessment": "Directly authored stored axes include signs, small nonzero values and point/segment descriptors. The independently reconstructed descriptor preserves input orientation without a preliminary CGV2EL call.",
+      "errorAssessment": "This direct component copy is error-free for a valid descriptor. Malformed shape, types or nonfinite inputs are separate wrapper rejections.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.el2cgv -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_el2cgv -> el2cgv_c. Independent sidecar calls installed SpiceyPy sp.el2cgv on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.el2cgv -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_el2cgv -> el2cgv_c. Independent sidecar calls installed SpiceyPy sp.el2cgv on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "saelgv_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/saelgv_c.html",
+      "semantics": "Derive the ordered semi-major and semi-minor vectors of the image of a unit circle under the two generators. Their orientation, cancellation, signs and choice among equal-length solutions are those of the linked CSPICE.",
+      "scenarios": [
+        {
+          "caseId": "geometry-saelgv-principal-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Both input orderings and signs retain the toolkit choice of major and minor vectors."
+        },
+        {
+          "caseId": "geometry-saelgv-nonorthogonal",
+          "coverage": ["success", "edge"],
+          "observes": "Skew generators in inclined planes distinguish all returned orientations and components."
+        },
+        {
+          "caseId": "geometry-saelgv-point-and-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Both zero, one zero, and dependent generators represent lower-dimensional ellipses."
+        },
+        {
+          "caseId": "geometry-saelgv-circular",
+          "coverage": ["success", "edge"],
+          "observes": "Equal-length orthogonal generators test the toolkit convention in a circular case."
+        },
+        {
+          "caseId": "geometry-saelgv-scaling",
+          "coverage": ["success", "edge"],
+          "observes": "Common large and small scalings of distinguishable generators."
+        }
+      ],
+      "edgeAssessment": "Skew, equal-length, swapped and zero/dependent generators exercise the full ordered pair. At scale 2^-400 public tests divide both resulting vectors by the scale and compare their six components to the unscaled result.",
+      "errorAssessment": "Zero and dependent generating vectors are accepted. Shape and numeric domain checks occur at the adapter boundary and are not counted as canonical errors.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.saelgv -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_saelgv -> saelgv_c. Independent sidecar calls installed SpiceyPy sp.saelgv on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.saelgv -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_saelgv -> saelgv_c. Independent sidecar calls installed SpiceyPy sp.saelgv on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pjelpl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pjelpl_c.html",
+      "semantics": "Project the stored ellipse orthogonally onto a finite canonical plane. The projected center uses the plane offset, the projected axis directions use the plane normal, and CSPICE computes new principal axes. Collapse to a line or point is supported.",
+      "scenarios": [
+        {
+          "caseId": "geometry-pjelpl-parallel-and-offset",
+          "coverage": ["success", "edge"],
+          "observes": "Project translated ellipses onto parallel planes at different signed offsets."
+        },
+        {
+          "caseId": "geometry-pjelpl-edge-on",
+          "coverage": ["success", "edge"],
+          "observes": "Edge-on projections may collapse a proper ellipse to a segment or a segment to a point."
+        },
+        {
+          "caseId": "geometry-pjelpl-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Oblique projection changes the center and both returned semi-axes."
+        },
+        {
+          "caseId": "geometry-pjelpl-degenerate",
+          "coverage": ["success", "edge"],
+          "observes": "A segment and a point remain observable as ellipse objects with degenerate axes."
+        }
+      ],
+      "edgeAssessment": "Offset parallel planes distinguish center translation from direction projection. Oblique and edge-on projections, plus a segment collapsing to a point, exercise changing orientation and dimensionality.",
+      "errorAssessment": "The supported input uses a finite CSPICE plane and finite ellipse components, with degenerate images accepted. No error is fabricated for a legitimate edge-on collapse.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pjelpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_pjelpl -> pjelpl_c. Independent sidecar calls installed SpiceyPy sp.pjelpl on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pjelpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_pjelpl -> pjelpl_c. Independent sidecar calls installed SpiceyPy sp.pjelpl on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "inedpl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inedpl_c.html",
+      "semantics": "Intersect the origin-centered triaxial ellipsoid with a canonical plane. Positive radii and a nonempty section yield found=true and three owned ellipse vectors. Exact tangency may return a point ellipse. A miss only has found=false; a nonpositive radius signals the canonical error before distortion.",
+      "scenarios": [
+        {
+          "caseId": "geometry-inedpl-central-sections",
+          "coverage": ["success", "edge"],
+          "observes": "Three principal planes through a distinct triaxial body."
+        },
+        {
+          "caseId": "geometry-inedpl-parallel-sections",
+          "coverage": ["success", "edge"],
+          "observes": "Off-center cuts and tangencies with both normal signs."
+        },
+        {
+          "caseId": "geometry-inedpl-miss",
+          "coverage": ["success", "edge"],
+          "observes": "Misses beyond the largest radius and along the shortest axis with smaller distance."
+        },
+        {
+          "caseId": "geometry-inedpl-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Oblique section of a triaxial body with distinguishable ellipse axes."
+        },
+        {
+          "caseId": "geometry-inedpl-spherical-section",
+          "coverage": ["success", "edge"],
+          "observes": "Spherical section with analytic radius and known center."
+        },
+        {
+          "caseId": "geometry-inedpl-bad-axis-0",
+          "coverage": ["error"],
+          "observes": "A nonpositive ellipsoid radius is rejected before section computation."
+        },
+        {
+          "caseId": "geometry-inedpl-bad-axis-1",
+          "coverage": ["error"],
+          "observes": "A nonpositive ellipsoid radius is rejected before section computation."
+        },
+        {
+          "caseId": "geometry-inedpl-bad-axis-2",
+          "coverage": ["error"],
+          "observes": "A nonpositive ellipsoid radius is rejected before section computation."
+        }
+      ],
+      "edgeAssessment": "Three principal triaxial sections, offset or reversed normals, oblique and spherical sections, outer and inner misses and tangency distinguish both found states and every defined result vector.",
+      "errorAssessment": "Three registered canonical DEGENERATECASE outcomes vary the nonpositive axis position. A guarded distorted-plane diagnostic is tested separately on initialized storage and compared against the defined component operations; the failing full upstream call is never invoked for this case.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [
+        {
+          "id": "distorted-plane-preflight",
+          "status": "repaired",
+          "summary": "Pinned INEDPL continues to use a private distorted plane after its construction signals an error and leaves its constant unspecified.",
+          "repair": "Check the exact plane construction in initialized local storage under the outer INEDPL traceback, preserving the genuine early nonpositive-radius and far-miss paths. Only a successful preflight enters the direct canonical distortion path. The safe component oracle and actual backend error/recovery tests cover this guard.",
+          "caseIds": [
+            "geometry-inedpl-oblique",
+            "geometry-inedpl-miss",
+            "geometry-inedpl-bad-axis-0"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/backend-node/test/ellipse-geometry-domain.test.ts",
+            "packages/backend-wasm/test/ellipse-geometry-allocations.test.ts",
+            "docs/step8-ellipse-geometry.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.inedpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_inedpl -> inedpl_c. Independent sidecar calls installed SpiceyPy sp.inedpl on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.inedpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_inedpl -> inedpl_c. Independent sidecar calls installed SpiceyPy sp.inedpl on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "inelpl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inelpl_c.html",
+      "semantics": "Preserve nxpts classifications −1, 0, 1 and 2. Counts −1 and 0 omit undefined point data. Counts 1 and 2 expose both individual toolkit point vectors in order, without coalescing roundoff in the one-point case.",
+      "scenarios": [
+        {
+          "caseId": "geometry-inelpl-two-points",
+          "coverage": ["success", "edge"],
+          "observes": "Secant cuts through and away from the center, with signed orientation."
+        },
+        {
+          "caseId": "geometry-inelpl-tangent",
+          "coverage": ["success", "edge"],
+          "observes": "Tangency supplies both toolkit point outputs for the single intersection."
+        },
+        {
+          "caseId": "geometry-inelpl-empty-or-contained",
+          "coverage": ["success", "edge"],
+          "observes": "Check zero versus infinitely many intersections without reading undefined points."
+        },
+        {
+          "caseId": "geometry-inelpl-point-ellipse",
+          "coverage": ["success", "edge"],
+          "observes": "A point in a plane has one intersection. A displaced point has none."
+        },
+        {
+          "caseId": "geometry-inelpl-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Interior cut, endpoint, missed and contained segment remain distinct."
+        },
+        {
+          "caseId": "geometry-inelpl-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Oblique planes and rotated stored axes produce distinct ordered crossing points."
+        },
+        {
+          "caseId": "geometry-inelpl-invalid-stored-axes",
+          "coverage": ["error"],
+          "observes": "Nonorthogonal stored axes trigger the actual explicit input check."
+        },
+        {
+          "caseId": "geometry-inelpl-zero-normal",
+          "coverage": ["error"],
+          "observes": "INELPL directly diagnoses a zero stored plane normal."
+        },
+        {
+          "caseId": "geometry-inelpl-negative-constant",
+          "coverage": ["error"],
+          "observes": "INELPL directly diagnoses a negative plane distance."
+        }
+      ],
+      "edgeAssessment": "Test two distinct ordered crossings, single tangent, contained and disjoint parallel ellipses, a point in or outside the plane, and degenerate segments. Public tests independently check plane membership and the ellipse equation.",
+      "errorAssessment": "A nonorthogonal ellipse raises INVALIDELLIPSE. A zero plane normal and a negative plane constant each raise INVALIDPLANE. Absent point fields for 0/−1 remain a normal geometric outcome.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.inelpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_inelpl -> inelpl_c. Independent sidecar calls installed SpiceyPy sp.inelpl on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.inelpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_inelpl -> inelpl_c. Independent sidecar calls installed SpiceyPy sp.inelpl on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "npelpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/npelpt_c.html",
+      "semantics": "Return the nearest point on the ellipse boundary and the Euclidean distance, in the input coordinate units. Keep the selected minimizer for a geometrically nonunique interior case. Zero-length axes are an error. Scaling, translation and NEARPT input limits belong to the documented domain.",
+      "scenarios": [
+        {
+          "caseId": "geometry-npelpt-principal-nearest",
+          "coverage": ["success", "edge"],
+          "observes": "External points, points on the boundary and points below the orbital plane."
+        },
+        {
+          "caseId": "geometry-npelpt-interior",
+          "coverage": ["success", "edge"],
+          "observes": "Interior and central points exercise the nearest boundary convention."
+        },
+        {
+          "caseId": "geometry-npelpt-translated-and-rotated",
+          "coverage": ["success", "edge"],
+          "observes": "Oblique in-plane offset and signed perpendicular distance."
+        },
+        {
+          "caseId": "geometry-npelpt-degenerate-major-and-minor",
+          "coverage": ["error"],
+          "observes": "Point ellipse has no usable semi-axis."
+        },
+        {
+          "caseId": "geometry-npelpt-zero-minor",
+          "coverage": ["error"],
+          "observes": "Segment ellipse is rejected by NPELPT."
+        }
+      ],
+      "edgeAssessment": "Projected points on, above, below and inside the boundary include translated, principal and rotated constructions. Public tests measure a known nearest point and distance, and then demonstrate recovery after an actual degenerate error.",
+      "errorAssessment": "Two registered cases diagnose a point ellipse or zero minor axis with DEGENERATECASE. The caller must avoid overflow during the documented scaling and translation. Actual NEARPT errors remain errors. Tests do not invoke uncontrolled extreme solver inputs.",
+      "fixtures": [],
+      "fixtureRationale": "Analytic, project-authored coordinate triples, descriptors and plane coefficients are embedded in the registered cases. No kernel or external dataset is required.",
+      "cleanup": "Both adapters own each input snapshot. The C shim checks incoming and resulting SPICE status and publishes only defined fields. Native uses initialized caller result storage. WASM releases each allocated buffer on success, allocation failure and genuine toolkit errors. The public clients dispose in finally.",
+      "tolerance": "The ordinary oracle comparison observes every defined numeric field with the existing float tolerances; flags, record keys and intersection counts retain exact meaning. The public suite additionally checks membership, distances and rescaled tiny axes. No global tolerance or geometric solver replacement is introduced.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.npelpt -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_npelpt -> npelpt_c. Independent sidecar calls installed SpiceyPy sp.npelpt on original finite vectors or exact stored components.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.npelpt -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_npelpt -> npelpt_c. Independent sidecar calls installed SpiceyPy sp.npelpt on original finite vectors or exact stored components.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "executions": [],
+  "verificationNote": "Focused Node/WASM, public, primary-source, independent oracle and browser observations support review. Full required local and canonical CI execution records for this combined source are pending."
+}

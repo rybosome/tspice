@@ -1862,6 +1862,27 @@ export function createFakeBackend(
       throw new Error("Fake backend: spkuds() is not implemented");
     },
 
+    cgv2el: () => {
+      throw new Error("Fake backend does not model cgv2el()");
+    },
+    el2cgv: () => {
+      throw new Error("Fake backend does not model el2cgv()");
+    },
+    saelgv: () => {
+      throw new Error("Fake backend does not model saelgv()");
+    },
+    pjelpl: () => {
+      throw new Error("Fake backend does not model pjelpl()");
+    },
+    inedpl: () => {
+      throw new Error("Fake backend does not model inedpl()");
+    },
+    inelpl: () => {
+      throw new Error("Fake backend does not model inelpl()");
+    },
+    npelpt: () => {
+      throw new Error("Fake backend does not model npelpt()");
+    },
     nvp2pl: () => {
       throw new Error("Fake backend: nvp2pl() is not implemented");
     },

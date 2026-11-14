@@ -59,3 +59,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## Plane and line geometry expansion
 
 The Step 7 baseline remains 162 routines. E10 adds eight in the additive expansion batch table. Both backend reviews cover 39 registered workflows and additional public IEEE, strict inverse-projection, round-trip and recovery observations. Historical executions retain their original fingerprints. Current verification requires source-matched local and canonical CI records for each backend. [E10 semantics and evidence](step8-plane-geometry.md) [Per-routine audit](../data/parity-audits/e10-plane-geometry.json)
+
+## Ellipse geometry
+
+E11 consumes E10's plane representation and adds seven direct raw methods with 39 independently registered workflows, 93 canonical calls and eight expected terminal errors. The audit tracks stored ellipse orientation, found and intersection counts, output ownership, the guarded plane distortion step and numerical conditioning in degenerate cases. [Ellipse geometry](step8-ellipse-geometry.md) [Per-routine audit](../data/parity-audits/e11-ellipse-geometry.json)

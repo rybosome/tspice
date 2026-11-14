@@ -163,6 +163,9 @@ export {
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
 export {
+  ellipseIntersectionCount,
+  packEllipse,
+  unpackEllipse,
   copyPlaneComponents,
   copyPlaneVector,
   planeComponent,

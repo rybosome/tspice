@@ -211,6 +211,13 @@ export function dispatchStep(
     case "geometry.vprjp":
     case "geometry.vprjpi":
     case "geometry.nplnpt":
+    case "geometry.cgv2el":
+    case "geometry.el2cgv":
+    case "geometry.saelgv":
+    case "geometry.pjelpl":
+    case "geometry.inelpl":
+    case "geometry.inedpl":
+    case "geometry.npelpt":
     case "geometry.nvc2pl":
     case "geometry.pl2nvc":
       return runGeometryStep(context, step);

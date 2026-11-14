@@ -11,6 +11,13 @@ import type {
   StepGeometryVprjp,
   StepGeometryVprjpi,
   StepGeometryNplnpt,
+  StepGeometryCgv2el,
+  StepGeometryEl2cgv,
+  StepGeometrySaelgv,
+  StepGeometryPjelpl,
+  StepGeometryInelpl,
+  StepGeometryInedpl,
+  StepGeometryNpelpt,
   StepGeometryNvc2pl,
   StepGeometryOccult,
   StepGeometryPl2nvc,
@@ -38,6 +45,13 @@ type GeometryStep =
   | StepGeometryVprjp
   | StepGeometryVprjpi
   | StepGeometryNplnpt
+  | StepGeometryCgv2el
+  | StepGeometryEl2cgv
+  | StepGeometrySaelgv
+  | StepGeometryPjelpl
+  | StepGeometryInelpl
+  | StepGeometryInedpl
+  | StepGeometryNpelpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc;
 
@@ -242,6 +256,38 @@ export function runGeometryStep(
       return {
         op: step.op,
         value: context.spice.raw.nplnpt(step.linpt, step.lindir, step.point),
+      };
+    case "geometry.cgv2el":
+      return {
+        op: step.op,
+        value: context.spice.raw.cgv2el(step.center, step.vec1, step.vec2),
+      };
+    case "geometry.el2cgv":
+      return { op: step.op, value: context.spice.raw.el2cgv(step.ellipse) };
+    case "geometry.saelgv":
+      return {
+        op: step.op,
+        value: context.spice.raw.saelgv(step.vec1, step.vec2),
+      };
+    case "geometry.pjelpl":
+      return {
+        op: step.op,
+        value: context.spice.raw.pjelpl(step.ellipse, step.plane),
+      };
+    case "geometry.inelpl":
+      return {
+        op: step.op,
+        value: context.spice.raw.inelpl(step.ellipse, step.plane),
+      };
+    case "geometry.inedpl":
+      return {
+        op: step.op,
+        value: context.spice.raw.inedpl(step.a, step.b, step.c, step.plane),
+      };
+    case "geometry.npelpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.npelpt(step.point, step.ellipse),
       };
     case "geometry.nvc2pl": {
       const out = context.spice.raw.nvc2pl(step.normal, step.konst);

@@ -631,6 +631,64 @@ export type EmscriptenModule = {
   ): number;
 
   // Plane helpers
+  _tspice_cgv2el(
+    centerPtr: number,
+    vec1Ptr: number,
+    vec2Ptr: number,
+    ellipsePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_el2cgv(
+    ellipsePtr: number,
+    centerPtr: number,
+    smajorPtr: number,
+    sminorPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_saelgv(
+    vec1Ptr: number,
+    vec2Ptr: number,
+    smajorPtr: number,
+    sminorPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pjelpl(
+    ellipsePtr: number,
+    planePtr: number,
+    projectedPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inedpl(
+    a: number,
+    b: number,
+    c: number,
+    planePtr: number,
+    ellipsePtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inelpl(
+    ellipsePtr: number,
+    planePtr: number,
+    nxptsPtr: number,
+    xpt1Ptr: number,
+    xpt2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_npelpt(
+    pointPtr: number,
+    ellipsePtr: number,
+    pnearPtr: number,
+    distPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvp2pl(
     normalPtr: number,
     pointPtr: number,
@@ -1756,6 +1814,64 @@ export type EmscriptenModule = {
   ): number;
 
   // Plane helpers
+  _tspice_cgv2el(
+    centerPtr: number,
+    vec1Ptr: number,
+    vec2Ptr: number,
+    ellipsePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_el2cgv(
+    ellipsePtr: number,
+    centerPtr: number,
+    smajorPtr: number,
+    sminorPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_saelgv(
+    vec1Ptr: number,
+    vec2Ptr: number,
+    smajorPtr: number,
+    sminorPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pjelpl(
+    ellipsePtr: number,
+    planePtr: number,
+    projectedPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inedpl(
+    a: number,
+    b: number,
+    c: number,
+    planePtr: number,
+    ellipsePtr: number,
+    foundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inelpl(
+    ellipsePtr: number,
+    planePtr: number,
+    nxptsPtr: number,
+    xpt1Ptr: number,
+    xpt2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_npelpt(
+    pointPtr: number,
+    ellipsePtr: number,
+    pnearPtr: number,
+    distPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvp2pl(
     normalPtr: number,
     pointPtr: number,
@@ -2364,6 +2480,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkgps",
   "_tspice_illumg",
   "_tspice_illumf",
+  "_tspice_cgv2el",
+  "_tspice_el2cgv",
+  "_tspice_saelgv",
+  "_tspice_pjelpl",
+  "_tspice_inedpl",
+  "_tspice_inelpl",
+  "_tspice_npelpt",
   "_tspice_nvp2pl",
   "_tspice_pl2nvp",
   "_tspice_pl2psv",

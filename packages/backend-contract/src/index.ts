@@ -21,6 +21,8 @@ export type {
   Pl2nvcResult,
   SpiceHandle,
   SpiceMatrix6x6,
+  SpiceEllipse,
+  SpiceEllipseInput,
   SpicePlane,
   SpiceStateVector,
   SpiceVector3,

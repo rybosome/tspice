@@ -113,6 +113,8 @@ Source: `packages/tspice/src/index.ts`
 - `SpiceClientBuildResult`
 - `SpiceClientsBuilder`
 - `SpiceClientsWebWorkerOptions`
+- `SpiceEllipse`
+- `SpiceEllipseInput`
 - `SpiceKit`
 - `SpiceSync`
 - `SpiceTime`
