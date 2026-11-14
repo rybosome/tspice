@@ -631,6 +631,70 @@ export type EmscriptenModule = {
   ): number;
 
   // Plane helpers
+  _tspice_nvp2pl(
+    normalPtr: number,
+    pointPtr: number,
+    outResultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvp(
+    planePtr: number,
+    outNormalPtr: number,
+    outPointPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2psv(
+    planePtr: number,
+    outPointPtr: number,
+    outSpan1Ptr: number,
+    outSpan2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_psv2pl(
+    pointPtr: number,
+    span1Ptr: number,
+    span2Ptr: number,
+    outResultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inrypl(
+    vertexPtr: number,
+    dirPtr: number,
+    planePtr: number,
+    outNxptsPtr: number,
+    outXptPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprjp(
+    vinPtr: number,
+    planePtr: number,
+    outVoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprjpi(
+    vinPtr: number,
+    projplPtr: number,
+    invplPtr: number,
+    outVoutPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_nplnpt(
+    linptPtr: number,
+    lindirPtr: number,
+    pointPtr: number,
+    outPnearPtr: number,
+    outDistPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvc2pl(
     normal3Ptr: number,
     konst: number,
@@ -1692,6 +1756,70 @@ export type EmscriptenModule = {
   ): number;
 
   // Plane helpers
+  _tspice_nvp2pl(
+    normalPtr: number,
+    pointPtr: number,
+    outResultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2nvp(
+    planePtr: number,
+    outNormalPtr: number,
+    outPointPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pl2psv(
+    planePtr: number,
+    outPointPtr: number,
+    outSpan1Ptr: number,
+    outSpan2Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_psv2pl(
+    pointPtr: number,
+    span1Ptr: number,
+    span2Ptr: number,
+    outResultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inrypl(
+    vertexPtr: number,
+    dirPtr: number,
+    planePtr: number,
+    outNxptsPtr: number,
+    outXptPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprjp(
+    vinPtr: number,
+    planePtr: number,
+    outVoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vprjpi(
+    vinPtr: number,
+    projplPtr: number,
+    invplPtr: number,
+    outVoutPtr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_nplnpt(
+    linptPtr: number,
+    lindirPtr: number,
+    pointPtr: number,
+    outPnearPtr: number,
+    outDistPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_nvc2pl(
     normal3Ptr: number,
     konst: number,
@@ -2236,6 +2364,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkgps",
   "_tspice_illumg",
   "_tspice_illumf",
+  "_tspice_nvp2pl",
+  "_tspice_pl2nvp",
+  "_tspice_pl2psv",
+  "_tspice_psv2pl",
+  "_tspice_inrypl",
+  "_tspice_vprjp",
+  "_tspice_vprjpi",
+  "_tspice_nplnpt",
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
   "_tspice_spkssb",

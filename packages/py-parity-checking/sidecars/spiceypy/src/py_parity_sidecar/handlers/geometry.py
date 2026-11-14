@@ -9,6 +9,14 @@ from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
+    StepGeometryNvp2pl,
+    StepGeometryPl2nvp,
+    StepGeometryPl2psv,
+    StepGeometryPsv2pl,
+    StepGeometryInrypl,
+    StepGeometryVprjp,
+    StepGeometryVprjpi,
+    StepGeometryNplnpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -22,6 +30,12 @@ from ..models import (
 
 def _vec3_to_json(value: tuple[float, float, float] | list[float]) -> list[float]:
     return [float(value[0]), float(value[1]), float(value[2])]
+
+
+def _stored_plane(values: tuple[float, float, float, float]) -> stypes.Plane:
+    # Reconstruct the exact four caller-supplied plane words. Re-running a
+    # construction routine here would normalize them a second time.
+    return stypes.Plane(_normal=(c_double * 3)(*values[:3]), _constant=values[3])
 
 
 def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
@@ -170,6 +184,39 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
             )
         )
         return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryNvp2pl):
+        out = sp.nvp2pl(step.normal, step.point)
+        return StepOutput(op=step.op, value=[float(x) for x in out.normal] + [float(out.constant)])
+
+    if isinstance(step, StepGeometryPl2nvp):
+        out = sp.pl2nvp(_stored_plane(step.plane))
+        return StepOutput(op=step.op, value={"normal": _vec3_to_json(out[0]), "point": _vec3_to_json(out[1])})
+
+    if isinstance(step, StepGeometryPl2psv):
+        out = sp.pl2psv(_stored_plane(step.plane))
+        return StepOutput(op=step.op, value={"point": _vec3_to_json(out[0]), "span1": _vec3_to_json(out[1]), "span2": _vec3_to_json(out[2])})
+
+    if isinstance(step, StepGeometryPsv2pl):
+        out = sp.psv2pl(step.point, step.span1, step.span2)
+        return StepOutput(op=step.op, value=[float(x) for x in out.normal] + [float(out.constant)])
+
+    if isinstance(step, StepGeometryInrypl):
+        out = sp.inrypl(step.vertex, step.dir, _stored_plane(step.plane))
+        return StepOutput(op=step.op, value={"nxpts": int(out[0]), "xpt": _vec3_to_json(out[1])})
+
+    if isinstance(step, StepGeometryVprjp):
+        out = sp.vprjp(step.vin, _stored_plane(step.plane))
+        return StepOutput(op=step.op, value=_vec3_to_json(out))
+
+    if isinstance(step, StepGeometryVprjpi):
+        with sp.no_found_check():
+            out, found = sp.vprjpi(step.vin, _stored_plane(step.projpl), _stored_plane(step.invpl))
+        return StepOutput(op=step.op, value={"found": True, "vout": _vec3_to_json(out)} if found else {"found": False})
+
+    if isinstance(step, StepGeometryNplnpt):
+        out = sp.nplnpt(step.linpt, step.lindir, step.point)
+        return StepOutput(op=step.op, value={"pnear": _vec3_to_json(out[0]), "dist": float(out[1])})
 
     if isinstance(step, StepGeometryNvc2pl):
         plane = sp.nvc2pl(step.normal, step.konst)

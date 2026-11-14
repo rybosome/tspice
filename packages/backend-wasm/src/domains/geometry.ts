@@ -11,11 +11,36 @@ import type {
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
 
+import {
+  copyPlaneComponents,
+  copyPlaneVector,
+  planeComponent,
+  planeIntersectionCount,
+} from "@rybosome/tspice-core";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { withAllocs } from "../codec/alloc.js";
+import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+function readPlaneResultVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const base = ptr / 8;
+  return [
+    planeComponent(module.HEAPF64[base], "result[0]", false),
+    planeComponent(module.HEAPF64[base + 1], "result[1]", false),
+    planeComponent(module.HEAPF64[base + 2], "result[2]", false),
+  ];
+}
+
+function readPlaneResult(module: EmscriptenModule, ptr: number): SpicePlane {
+  return [
+    ...readPlaneResultVector(module, ptr),
+    planeComponent(module.HEAPF64[ptr / 8 + 3], "result[3]", false),
+  ];
+}
 
 function geometryInputs(
   et: unknown,
@@ -818,6 +843,214 @@ export function createGeometryApi(module: EmscriptenModule): GeometryApi {
         observer,
         et,
       ),
+    nvp2pl: (normal, point) => {
+      const normalCopy = copyPlaneVector(normal, "nvp2pl(normal)", true);
+      const pointCopy = copyPlaneVector(point, "nvp2pl(point)", true);
+      return withAllocs(
+        module,
+        [24, 24, 32, WASM_ERR_MAX_BYTES],
+        (normalPtr, pointPtr, resultPtr, errPtr) => {
+          module.HEAPF64.set(normalCopy, normalPtr / 8);
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          const code = module._tspice_nvp2pl(
+            normalPtr,
+            pointPtr,
+            resultPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return readPlaneResult(module, resultPtr);
+        },
+      );
+    },
+    pl2nvp: (plane) => {
+      const planeCopy = copyPlaneComponents(plane, "pl2nvp(plane)", true);
+      return withAllocs(
+        module,
+        [32, 24, 24, WASM_ERR_MAX_BYTES],
+        (planePtr, normalPtr, pointPtr, errPtr) => {
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const code = module._tspice_pl2nvp(
+            planePtr,
+            normalPtr,
+            pointPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return {
+            normal: readPlaneResultVector(module, normalPtr),
+            point: readPlaneResultVector(module, pointPtr),
+          };
+        },
+      );
+    },
+    pl2psv: (plane) => {
+      const planeCopy = copyPlaneComponents(plane, "pl2psv(plane)", true);
+      return withAllocs(
+        module,
+        [32, 24, 24, 24, WASM_ERR_MAX_BYTES],
+        (planePtr, pointPtr, span1Ptr, span2Ptr, errPtr) => {
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const code = module._tspice_pl2psv(
+            planePtr,
+            pointPtr,
+            span1Ptr,
+            span2Ptr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return {
+            point: readPlaneResultVector(module, pointPtr),
+            span1: readPlaneResultVector(module, span1Ptr),
+            span2: readPlaneResultVector(module, span2Ptr),
+          };
+        },
+      );
+    },
+    psv2pl: (point, span1, span2) => {
+      const pointCopy = copyPlaneVector(point, "psv2pl(point)", true);
+      const span1Copy = copyPlaneVector(span1, "psv2pl(span1)", true);
+      const span2Copy = copyPlaneVector(span2, "psv2pl(span2)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 32, WASM_ERR_MAX_BYTES],
+        (pointPtr, span1Ptr, span2Ptr, resultPtr, errPtr) => {
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          module.HEAPF64.set(span1Copy, span1Ptr / 8);
+          module.HEAPF64.set(span2Copy, span2Ptr / 8);
+          const code = module._tspice_psv2pl(
+            pointPtr,
+            span1Ptr,
+            span2Ptr,
+            resultPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return readPlaneResult(module, resultPtr);
+        },
+      );
+    },
+    inrypl: (vertex, dir, plane) => {
+      const vertexCopy = copyPlaneVector(vertex, "inrypl(vertex)", true);
+      const dirCopy = copyPlaneVector(dir, "inrypl(dir)", true);
+      const planeCopy = copyPlaneComponents(plane, "inrypl(plane)", true);
+      return withAllocs(
+        module,
+        [24, 24, 32, 4, 24, WASM_ERR_MAX_BYTES],
+        (vertexPtr, dirPtr, planePtr, nxptsPtr, xptPtr, errPtr) => {
+          module.HEAPF64.set(vertexCopy, vertexPtr / 8);
+          module.HEAPF64.set(dirCopy, dirPtr / 8);
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const code = module._tspice_inrypl(
+            vertexPtr,
+            dirPtr,
+            planePtr,
+            nxptsPtr,
+            xptPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return {
+            nxpts: planeIntersectionCount(module.HEAP32[nxptsPtr / 4]),
+            xpt: readPlaneResultVector(module, xptPtr),
+          };
+        },
+      );
+    },
+    vprjp: (vin, plane) => {
+      const vinCopy = copyPlaneVector(vin, "vprjp(vin)", true);
+      const planeCopy = copyPlaneComponents(plane, "vprjp(plane)", true);
+      return withAllocs(
+        module,
+        [24, 32, 24, WASM_ERR_MAX_BYTES],
+        (vinPtr, planePtr, voutPtr, errPtr) => {
+          module.HEAPF64.set(vinCopy, vinPtr / 8);
+          module.HEAPF64.set(planeCopy, planePtr / 8);
+          const code = module._tspice_vprjp(
+            vinPtr,
+            planePtr,
+            voutPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return readPlaneResultVector(module, voutPtr);
+        },
+      );
+    },
+    vprjpi: (vin, projpl, invpl) => {
+      const vinCopy = copyPlaneVector(vin, "vprjpi(vin)", true);
+      const projplCopy = copyPlaneComponents(projpl, "vprjpi(projpl)", true);
+      const invplCopy = copyPlaneComponents(invpl, "vprjpi(invpl)", true);
+      return withAllocs(
+        module,
+        [24, 32, 32, 24, 4, WASM_ERR_MAX_BYTES],
+        (vinPtr, projplPtr, invplPtr, voutPtr, foundPtr, errPtr) => {
+          module.HEAPF64.set(vinCopy, vinPtr / 8);
+          module.HEAPF64.set(projplCopy, projplPtr / 8);
+          module.HEAPF64.set(invplCopy, invplPtr / 8);
+          const code = module._tspice_vprjpi(
+            vinPtr,
+            projplPtr,
+            invplPtr,
+            voutPtr,
+            foundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          const found = module.HEAP32[foundPtr / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid VPRJPI found result");
+          return { vout: readPlaneResultVector(module, voutPtr), found: true };
+        },
+      );
+    },
+    nplnpt: (linpt, lindir, point) => {
+      const linptCopy = copyPlaneVector(linpt, "nplnpt(linpt)", true);
+      const lindirCopy = copyPlaneVector(lindir, "nplnpt(lindir)", true);
+      const pointCopy = copyPlaneVector(point, "nplnpt(point)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 24, 8, WASM_ERR_MAX_BYTES],
+        (linptPtr, lindirPtr, pointPtr, pnearPtr, distPtr, errPtr) => {
+          module.HEAPF64.set(linptCopy, linptPtr / 8);
+          module.HEAPF64.set(lindirCopy, lindirPtr / 8);
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          const code = module._tspice_nplnpt(
+            linptPtr,
+            lindirPtr,
+            pointPtr,
+            pnearPtr,
+            distPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return {
+            pnear: readPlaneResultVector(module, pnearPtr),
+            dist: planeComponent(
+              module.HEAPF64[distPtr / 8],
+              "nplnpt(dist)",
+              false,
+            ),
+          };
+        },
+      );
+    },
     nvc2pl: (normal: SpiceVector3, konst: number) => {
       assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
       if (!Number.isFinite(konst)) {

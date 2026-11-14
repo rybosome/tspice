@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -102,6 +102,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
+| `inrypl_c` | Intersection of ray and plane |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
@@ -116,12 +117,17 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `nplnpt_c` | Nearest point on line to point |
 | `nvc2pl_c` | Normal vector and constant to plane |
+| `nvp2pl_c` | Normal vector and point to plane |
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `pl2nvp_c` | Plane to normal vector and point |
+| `pl2psv_c` | Plane to point and spanning vectors |
+| `psv2pl_c` | Point and spanning vectors to plane |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -177,6 +183,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vhat_c` | "V-Hat", unit vector along V, 3 dimensions |
 | `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnorm_c` | Vector norm, 3 dimensions |
+| `vprjp_c` | Vector projection onto plane |
+| `vprjpi_c` | Vector projection onto plane, inverted |
 | `vscl_c` | Vector scaling, 3 dimensions |
 | `vsub_c` | Vector subtraction, 3 dimensions |
 | `wncard_c` | Cardinality of a double precision window |
@@ -400,7 +408,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
-| `inrypl_c` | Intersection of ray and plane |
 | `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
@@ -471,9 +478,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `nextwd_c` | Next word in a character string |
 | `npedln_c` | Nearest point on ellipsoid to line |
 | `npelpt_c` | Nearest point on ellipse to point |
-| `nplnpt_c` | Nearest point on line to point |
 | `nthwd_c` | n'th word in a character string |
-| `nvp2pl_c` | Normal vector and point to plane |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |
 | `orderc_c` | Order of a character array |
@@ -493,8 +498,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
 | `pjelpl_c` | Project ellipse onto plane |
-| `pl2nvp_c` | Plane to normal vector and point |
-| `pl2psv_c` | Plane to point and spanning vectors |
 | `pltar_c` | Compute area of plate set |
 | `pltexp_c` | Plate expander |
 | `pltnp_c` | Nearest point on triangular plate |
@@ -506,7 +509,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `prop2b_c` | Propagate a two-body solution |
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |
-| `psv2pl_c` | Point and spanning vectors to plane |
 | `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
@@ -640,8 +642,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vnormg_c` | Vector norm, general dimension |
 | `vpack_c` | Pack three scalar components into a vector |
 | `vperp_c` | Perpendicular component of a 3-vector |
-| `vprjp_c` | Vector projection onto plane |
-| `vprjpi_c` | Vector projection onto plane, inverted |
 | `vproj_c` | Vector projection, 3 dimensions |
 | `vprojg_c` | Vector projection, general dimension |
 | `vrel_c` | Vector relative difference, 3 dimensions |

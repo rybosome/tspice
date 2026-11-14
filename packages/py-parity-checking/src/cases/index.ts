@@ -96,6 +96,14 @@ import fileIoGetfatCasesRaw from "./file-io/getfat.cases.json" with { type: "jso
 import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "json" };
 import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
 import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
+import geometryNvp2plCasesRaw from "./geometry/nvp2pl.cases.json" with { type: "json" };
+import geometryPl2nvpCasesRaw from "./geometry/pl2nvp.cases.json" with { type: "json" };
+import geometryPl2psvCasesRaw from "./geometry/pl2psv.cases.json" with { type: "json" };
+import geometryPsv2plCasesRaw from "./geometry/psv2pl.cases.json" with { type: "json" };
+import geometryInryplCasesRaw from "./geometry/inrypl.cases.json" with { type: "json" };
+import geometryVprjpCasesRaw from "./geometry/vprjp.cases.json" with { type: "json" };
+import geometryVprjpiCasesRaw from "./geometry/vprjpi.cases.json" with { type: "json" };
+import geometryNplnptCasesRaw from "./geometry/nplnpt.cases.json" with { type: "json" };
 import geometryNvc2plCasesRaw from "./geometry/nvc2pl.cases.json" with { type: "json" };
 import geometryOccultCasesRaw from "./geometry/occult.cases.json" with { type: "json" };
 import geometryPl2nvcCasesRaw from "./geometry/pl2nvc.cases.json" with { type: "json" };
@@ -261,6 +269,14 @@ export const geometryCases: ParityCase[] = [
   ...(geometryIllumgCasesRaw as ParityCase[]),
   ...(geometryIllumfCasesRaw as ParityCase[]),
   ...(geometryOccultCasesRaw as ParityCase[]),
+  ...(geometryNvp2plCasesRaw as ParityCase[]),
+  ...(geometryPl2nvpCasesRaw as ParityCase[]),
+  ...(geometryPl2psvCasesRaw as ParityCase[]),
+  ...(geometryPsv2plCasesRaw as ParityCase[]),
+  ...(geometryInryplCasesRaw as ParityCase[]),
+  ...(geometryVprjpCasesRaw as ParityCase[]),
+  ...(geometryVprjpiCasesRaw as ParityCase[]),
+  ...(geometryNplnptCasesRaw as ParityCase[]),
   ...(geometryNvc2plCasesRaw as ParityCase[]),
   ...(geometryPl2nvcCasesRaw as ParityCase[]),
 ];

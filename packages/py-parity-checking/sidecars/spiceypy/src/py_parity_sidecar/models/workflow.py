@@ -116,6 +116,14 @@ from .geometry import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
+    StepGeometryNvp2pl,
+    StepGeometryPl2nvp,
+    StepGeometryPl2psv,
+    StepGeometryPsv2pl,
+    StepGeometryInrypl,
+    StepGeometryVprjp,
+    StepGeometryVprjpi,
+    StepGeometryNplnpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -360,6 +368,14 @@ WorkflowStep: TypeAlias = (
     | StepGeometryIllumg
     | StepGeometryIllumf
     | StepGeometryOccult
+    | StepGeometryNvp2pl
+    | StepGeometryPl2nvp
+    | StepGeometryPl2psv
+    | StepGeometryPsv2pl
+    | StepGeometryInrypl
+    | StepGeometryVprjp
+    | StepGeometryVprjpi
+    | StepGeometryNplnpt
     | StepGeometryNvc2pl
     | StepGeometryPl2nvc
     | StepGeometryGfGfsstp

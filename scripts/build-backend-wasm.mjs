@@ -474,6 +474,14 @@ const exportedFunctions = [
   "_tspice_illumg",
   "_tspice_illumf",
 
+  "_tspice_nvp2pl",
+  "_tspice_pl2nvp",
+  "_tspice_pl2psv",
+  "_tspice_psv2pl",
+  "_tspice_inrypl",
+  "_tspice_vprjp",
+  "_tspice_vprjpi",
+  "_tspice_nplnpt",
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
   // --- ephemeris ---

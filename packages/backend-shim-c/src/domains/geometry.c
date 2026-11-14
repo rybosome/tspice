@@ -1,5 +1,6 @@
 #include "tspice_backend_shim.h"
 
+#include "tspice_error.h"
 #include "SpiceUsr.h"
 
 #include <string.h>
@@ -420,6 +421,177 @@ int tspice_illumf(
     *outLit = lit == SPICETRUE ? 1 : 0;
   }
 
+  return 0;
+}
+
+static SpicePlane plane_from_components(const double values[4]) {
+  SpicePlane plane = {{values[0], values[1], values[2]}, values[3]};
+  return plane;
+}
+
+static void plane_to_components(const SpicePlane *plane, double out[4]) {
+  memcpy(out, plane->normal, sizeof(plane->normal));
+  out[3] = plane->constant;
+}
+
+static int plane_call_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+int tspice_nvp2pl(
+    const double *normal,
+    const double *point,
+    double *outResult,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!normal || !point || !outResult) return tspice_return_error(err, errMaxBytes, "Missing nvp2pl storage");
+  SpicePlane result = {{0}, 0};
+  nvp2pl_c(normal, point, &result);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  plane_to_components(&result, outResult);
+  return 0;
+}
+
+int tspice_pl2nvp(
+    const double *plane,
+    double *outNormal,
+    double *outPoint,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!plane || !outNormal || !outPoint) return tspice_return_error(err, errMaxBytes, "Missing pl2nvp storage");
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceDouble normal[3] = {0};
+  SpiceDouble point[3] = {0};
+  pl2nvp_c(&planeValue, normal, point);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outNormal, normal, sizeof(normal));
+  memcpy(outPoint, point, sizeof(point));
+  return 0;
+}
+
+int tspice_pl2psv(
+    const double *plane,
+    double *outPoint,
+    double *outSpan1,
+    double *outSpan2,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!plane || !outPoint || !outSpan1 || !outSpan2) return tspice_return_error(err, errMaxBytes, "Missing pl2psv storage");
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceDouble point[3] = {0};
+  SpiceDouble span1[3] = {0};
+  SpiceDouble span2[3] = {0};
+  pl2psv_c(&planeValue, point, span1, span2);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outPoint, point, sizeof(point));
+  memcpy(outSpan1, span1, sizeof(span1));
+  memcpy(outSpan2, span2, sizeof(span2));
+  return 0;
+}
+
+int tspice_psv2pl(
+    const double *point,
+    const double *span1,
+    const double *span2,
+    double *outResult,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!point || !span1 || !span2 || !outResult) return tspice_return_error(err, errMaxBytes, "Missing psv2pl storage");
+  SpicePlane result = {{0}, 0};
+  psv2pl_c(point, span1, span2, &result);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  plane_to_components(&result, outResult);
+  return 0;
+}
+
+int tspice_inrypl(
+    const double *vertex,
+    const double *dir,
+    const double *plane,
+    int *outNxpts,
+    double *outXpt,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!vertex || !dir || !plane || !outNxpts || !outXpt) return tspice_return_error(err, errMaxBytes, "Missing inrypl storage");
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceInt nxpts = 0;
+  SpiceDouble xpt[3] = {0};
+  inrypl_c(vertex, dir, &planeValue, &nxpts, xpt);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  *outNxpts = nxpts;
+  memcpy(outXpt, xpt, sizeof(xpt));
+  return 0;
+}
+
+int tspice_vprjp(
+    const double *vin,
+    const double *plane,
+    double *outVout,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!vin || !plane || !outVout) return tspice_return_error(err, errMaxBytes, "Missing vprjp storage");
+  SpicePlane planeValue = plane_from_components(plane);
+  SpiceDouble vout[3] = {0};
+  vprjp_c(vin, &planeValue, vout);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outVout, vout, sizeof(vout));
+  return 0;
+}
+
+int tspice_vprjpi(
+    const double *vin,
+    const double *projpl,
+    const double *invpl,
+    double *outVout,
+    int *outFound,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!vin || !projpl || !invpl || !outVout || !outFound) return tspice_return_error(err, errMaxBytes, "Missing vprjpi storage");
+  SpicePlane projplValue = plane_from_components(projpl);
+  SpicePlane invplValue = plane_from_components(invpl);
+  SpiceDouble vout[3] = {0};
+  SpiceBoolean found = SPICEFALSE;
+  vprjpi_c(vin, &projplValue, &invplValue, vout, &found);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  *outFound = found != SPICEFALSE;
+  if (!found) return 0;
+  memcpy(outVout, vout, sizeof(vout));
+  return 0;
+}
+
+int tspice_nplnpt(
+    const double *linpt,
+    const double *lindir,
+    const double *point,
+    double *outPnear,
+    double *outDist,
+    char *err,
+    int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!linpt || !lindir || !point || !outPnear || !outDist) return tspice_return_error(err, errMaxBytes, "Missing nplnpt storage");
+  SpiceDouble pnear[3] = {0};
+  SpiceDouble dist = 0;
+  nplnpt_c(linpt, lindir, point, pnear, &dist);
+  if (plane_call_status(err, errMaxBytes)) return 1;
+  memcpy(outPnear, pnear, sizeof(pnear));
+  *outDist = dist;
   return 0;
 }
 

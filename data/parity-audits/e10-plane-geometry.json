@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "batch": "e10-plane-geometry",
+  "traceFiles": [
+    "docs/step8-plane-geometry.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/plane-geometry-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/plane-geometry-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/plane-geometry.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/plane-geometry.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e10-111ab299-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6fe3732895842054cd8a92a620228f7195dfb4fe3817ffd017333fb042b93388",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "observation": "Both complete required lanes passed locally on 111ab2996d6861bc90249f0868c89e1cc753c4b5. JavaScript: 2,516 parity tests and one expected guard skip. Native-required: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e10-111ab299-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6fe3732895842054cd8a92a620228f7195dfb4fe3817ffd017333fb042b93388",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "observation": "Both complete required lanes passed locally on 111ab2996d6861bc90249f0868c89e1cc753c4b5. JavaScript: 2,516 parity tests and one expected guard skip. Native-required: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e10-111ab299-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6fe3732895842054cd8a92a620228f7195dfb4fe3817ffd017333fb042b93388",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "commit": "111ab2996d6861bc90249f0868c89e1cc753c4b5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43561458721/job/132345850125",
+      "observation": "Inspected successful Linux Node 22 native-required job 132345850125 on 111ab2996d6861bc90249f0868c89e1cc753c4b5: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e10-111ab299-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6fe3732895842054cd8a92a620228f7195dfb4fe3817ffd017333fb042b93388",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "commit": "111ab2996d6861bc90249f0868c89e1cc753c4b5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43561458721/job/132345850125",
+      "observation": "Inspected successful Linux Node 22 native-required job 132345850125 on 111ab2996d6861bc90249f0868c89e1cc753c4b5: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "nvp2pl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nvp2pl_c.html",
+      "semantics": "Construct the normalized four-word plane through a supplied point, reversing a negative constant and its normal.",
+      "scenarios": [
+        {
+          "caseId": "geometry-nvp2pl-axis-sign",
+          "coverage": ["success", "edge"],
+          "observes": "Nonunit normal, signed side of origin and closest point conventions. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nvp2pl-through-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Canonical constant zero including oblique and signed normals. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nvp2pl-scale",
+          "coverage": ["success", "edge"],
+          "observes": "A plane point with equivalent positive and negative normal scalings. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nvp2pl-varied-point",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed axes and same plane traced by distinct points. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nvp2pl-zero-normal",
+          "coverage": ["error", "edge"],
+          "observes": "Actual CSPICE rejects zero normal. Require SPICE(ZEROVECTOR)."
+        }
+      ],
+      "edgeAssessment": "Check zero constant, sign reversal, scale, distinct points, complete normal and constant, and IEEE overflow from a finite point.",
+      "errorAssessment": "A zero normal signals SPICE(ZEROVECTOR); malformed tuple inputs fail adapter representation validation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.nvp2pl -> geometry adapter -> process-serialized native addon -> tspice_nvp2pl -> nvp2pl_c. The locked oracle calls sp.nvp2pl.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.nvp2pl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_nvp2pl -> nvp2pl_c. The locked oracle calls sp.nvp2pl.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pl2nvp_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pl2nvp_c.html",
+      "semantics": "Extract the stored normal and the closest point to the origin, the normal multiplied by the stored constant.",
+      "scenarios": [
+        {
+          "caseId": "geometry-pl2nvp-coordinate-planes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all returned coordinates for each signed principal normal. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2nvp-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Non-axis unit normals through origin distinguish convention and returned basis. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2nvp-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Nontrivial mixed signs, projected feet and signed axes. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2nvp-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate huge and tiny nonnegative distances on a canonical unit normal. Compare the complete returned value with locked SpiceyPy."
+        }
+      ],
+      "edgeAssessment": "Compare all six components for coordinate and oblique normals, through-origin and translated planes and extreme distances; reconstruct a valid oblique plane.",
+      "errorAssessment": "The canonical extractor has no scientific error for valid finite planes. The caller supplies a canonical plane; shape/finite validation is an adapter obligation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pl2nvp -> geometry adapter -> process-serialized native addon -> tspice_pl2nvp -> pl2nvp_c. The locked oracle calls sp.pl2nvp.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pl2nvp -> geometry adapter -> module-owned scoped WASM buffers -> tspice_pl2nvp -> pl2nvp_c. The locked oracle calls sp.pl2nvp.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pl2psv_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pl2psv_c.html",
+      "semantics": "Return the closest point and the ordered CSPICE spanning basis for a canonical plane.",
+      "scenarios": [
+        {
+          "caseId": "geometry-pl2psv-coordinate-planes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all returned coordinates for each signed principal normal. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2psv-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Non-axis unit normals through origin distinguish convention and returned basis. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2psv-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Nontrivial mixed signs, projected feet and signed axes. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-pl2psv-distance-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Separate huge and tiny nonnegative distances on a canonical unit normal. Compare the complete returned value with locked SpiceyPy."
+        }
+      ],
+      "edgeAssessment": "Check all nine output components including signs and span order; reconstruct a plane and check the right-handed span cross product independently.",
+      "errorAssessment": "The canonical extractor assumes a valid plane. A nonunit descriptor is outside the caller contract and is not an error probe.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pl2psv -> geometry adapter -> process-serialized native addon -> tspice_pl2psv -> pl2psv_c. The locked oracle calls sp.pl2psv.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pl2psv -> geometry adapter -> module-owned scoped WASM buffers -> tspice_pl2psv -> pl2psv_c. The locked oracle calls sp.pl2psv.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "psv2pl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/psv2pl_c.html",
+      "semantics": "Construct a plane through a point with unit normal derived from the cross product of two spans, adjusting the sign for a nonnegative constant.",
+      "scenarios": [
+        {
+          "caseId": "geometry-psv2pl-coordinate-spans",
+          "coverage": ["success", "edge"],
+          "observes": "Order, origin side and orientation of axes. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-psv2pl-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Nonorthogonal spanning vectors, both signs, and translated points. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-psv2pl-scaled-spans",
+          "coverage": ["success", "edge"],
+          "observes": "Disparate nonzero spans define the same plane. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-psv2pl-zero-first",
+          "coverage": ["error", "edge"],
+          "observes": "Dependent spanning vectors must signal the actual toolkit condition. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "geometry-psv2pl-zero-second",
+          "coverage": ["error", "edge"],
+          "observes": "Dependent spanning vectors must signal the actual toolkit condition. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "geometry-psv2pl-parallel",
+          "coverage": ["error", "edge"],
+          "observes": "Dependent spanning vectors must signal the actual toolkit condition. Require SPICE(DEGENERATECASE)."
+        }
+      ],
+      "edgeAssessment": "Distinguish span ordering and orientation, exact parallel and zero spans, oblique basis reconstruction, and finite-input infinite plane distance.",
+      "errorAssessment": "A computed zero cross product signals SPICE(DEGENERATECASE). Collinear acceptance probes use axis-aligned spans; nearly parallel nonaxis inputs are ill-conditioned.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.psv2pl -> geometry adapter -> process-serialized native addon -> tspice_psv2pl -> psv2pl_c. The locked oracle calls sp.psv2pl.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.psv2pl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_psv2pl -> psv2pl_c. The locked oracle calls sp.psv2pl.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "inrypl_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inrypl_c.html",
+      "semantics": "Return all ray intersection coordinates and cardinality: a unique point, the vertex for a contained ray, or zero coordinates for a miss.",
+      "scenarios": [
+        {
+          "caseId": "geometry-inrypl-one",
+          "coverage": ["success", "edge"],
+          "observes": "Hit in front with different direction scales, and at the ray vertex. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-inrypl-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Missing ray: points away or lies parallel outside the plane. Observe zero intersection vector. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-inrypl-infinite",
+          "coverage": ["success", "edge"],
+          "observes": "Ray contained in plane. Observe nxpts=-1 and original vertex (not a missing point). Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-inrypl-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Intersect oblique offset plane on different sides. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-inrypl-zero-direction",
+          "coverage": ["error", "edge"],
+          "observes": "Zero direction produces actual ZEROVECTOR. Require SPICE(ZEROVECTOR)."
+        },
+        {
+          "caseId": "geometry-inrypl-excessive-vertex",
+          "coverage": ["error", "edge"],
+          "observes": "Finite vertex exceeds toolkit geometric conditioning bound. Require SPICE(VECTORTOOBIG)."
+        },
+        {
+          "caseId": "geometry-inrypl-excessive-plane",
+          "coverage": ["error", "edge"],
+          "observes": "Finite plane distance exceeds toolkit geometric conditioning bound. Require SPICE(VECTORTOOBIG)."
+        }
+      ],
+      "edgeAssessment": "Observe backward, forward, contained and parallel rays, translated planes and both finite radius limits. Focused successful calls after scientific errors confirm recovery.",
+      "errorAssessment": "Zero direction signals SPICE(ZEROVECTOR). Vertex norm or plane distance at least DPMAX/3 signals SPICE(VECTORTOOBIG); misses are successful zero-count results.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.inrypl -> geometry adapter -> process-serialized native addon -> tspice_inrypl -> inrypl_c. The locked oracle calls sp.inrypl.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.inrypl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_inrypl -> inrypl_c. The locked oracle calls sp.inrypl.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vprjp_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vprjp_c.html",
+      "semantics": "Orthogonal projection of a vector onto a canonical plane, including the specified nonnegative plane offset.",
+      "scenarios": [
+        {
+          "caseId": "geometry-vprjp-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Orthogonal projection onto translated coordinate planes on both sides. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjp-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Signed mixed normals and interior/exterior points. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjp-already-in-plane",
+          "coverage": ["success", "edge"],
+          "observes": "Projection leaves an in-plane point on a nonzero plane. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjp-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Recover offsets and all vector components at different scales. Compare the complete returned value with locked SpiceyPy."
+        }
+      ],
+      "edgeAssessment": "Distinguish points already on and outside translated planes and all vector components. Scoped live probes compare signed infinite components and NaNs, plus finite controls.",
+      "errorAssessment": "Supply a canonical finite plane; the caller restriction excludes invalid normals. Floating-point overflow can appear in successful results.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.vprjp -> geometry adapter -> process-serialized native addon -> tspice_vprjp -> vprjp_c. The locked oracle calls sp.vprjp.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.vprjp -> geometry adapter -> module-owned scoped WASM buffers -> tspice_vprjp -> vprjp_c. The locked oracle calls sp.vprjp.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "vprjpi_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vprjpi_c.html",
+      "semantics": "Return a point in the inverse plane whose orthogonal projection onto the projection plane is the supplied point. Output contains vout only for a found inverse.",
+      "scenarios": [
+        {
+          "caseId": "geometry-vprjpi-parallel",
+          "coverage": ["success", "edge"],
+          "observes": "Parallel planes yield unique inverse, including same plane. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjpi-perpendicular",
+          "coverage": ["success", "edge"],
+          "observes": "Perpendicular normal yields no unique inverse; no undefined output is published. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjpi-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "An oblique inverse normal gives signed nontrivial displacement. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-vprjpi-conditioned",
+          "coverage": ["success", "edge"],
+          "observes": "Near perpendicular inverse at both sides of representability criterion. Compare the complete returned value with locked SpiceyPy."
+        }
+      ],
+      "edgeAssessment": "Compare absence, unique oblique solutions and a forward/inverse round trip. Dedicated live probes compare the doubles immediately below, at and above the strict cutoff for three numerator sizes and both denominator signs.",
+      "errorAssessment": "Perpendicular or insufficiently separated normals return found=false without an error. A point in the projection plane and valid canonical planes are caller preconditions.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.vprjpi -> geometry adapter -> process-serialized native addon -> tspice_vprjpi -> vprjpi_c. The locked oracle calls sp.vprjpi.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.vprjpi -> geometry adapter -> module-owned scoped WASM buffers -> tspice_vprjpi -> vprjpi_c. The locked oracle calls sp.vprjpi.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "nplnpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nplnpt_c.html",
+      "semantics": "Return all coordinates of the nearest point on an infinite line plus the nonnegative distance to the query point.",
+      "scenarios": [
+        {
+          "caseId": "geometry-nplnpt-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Coordinate lines, reversed orientation, and point on line. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nplnpt-oblique",
+          "coverage": ["success", "edge"],
+          "observes": "Line offset, translated point and signed non-normalized direction. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nplnpt-origin",
+          "coverage": ["success", "edge"],
+          "observes": "Nontrivial orthogonal vector and origin projection. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nplnpt-direction-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Line direction scale cannot change the geometric locus. Compare the complete returned value with locked SpiceyPy."
+        },
+        {
+          "caseId": "geometry-nplnpt-zero-direction",
+          "coverage": ["error", "edge"],
+          "observes": "Zero line direction signals the canonical toolkit error. Require SPICE(ZEROVECTOR)."
+        }
+      ],
+      "edgeAssessment": "Distinguish scaled and reversed line directions and a zero residual. A finite closest point may have infinite distance; tiny nonzero direction scaling can return NaN components and NaN distance.",
+      "errorAssessment": "A zero direction signals SPICE(ZEROVECTOR). Subsequent valid line queries recover. IEEE outcomes on nonzero finite directions are observed results.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-independent static vectors, planes and scalar distances authored for this batch. The IEEE and boundary probes construct all inputs numerically and require no downloaded fixture or scientific kernel.",
+      "cleanup": "Every public focused call disposes its client. Native operations use local output storage under the existing lock, and WASM releases every acquired temporary on success, failed acquisition or toolkit error. The shared error path captures and resets CSPICE diagnostics.",
+      "tolerance": "The existing registered comparator compares full numeric outputs with its unchanged 1e-12 absolute-or-relative tolerance. Flags and multiplicities are exact. Focused inverse and IEEE tests compare each finite component using a 3e-15 relative bound (zero exactly), and distinguish NaN and both infinity signs exactly. Ordinary oblique round trips use 12-decimal-place absolute comparisons.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.nplnpt -> geometry adapter -> process-serialized native addon -> tspice_nplnpt -> nplnpt_c. The locked oracle calls sp.nplnpt.",
+          "executions": ["local-e10-111ab299-node", "ci-e10-111ab299-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.nplnpt -> geometry adapter -> module-owned scoped WASM buffers -> tspice_nplnpt -> nplnpt_c. The locked oracle calls sp.nplnpt.",
+          "executions": ["local-e10-111ab299-wasm", "ci-e10-111ab299-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

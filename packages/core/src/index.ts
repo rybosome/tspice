@@ -161,3 +161,10 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  copyPlaneComponents,
+  copyPlaneVector,
+  planeComponent,
+  planeIntersectionCount,
+} from "./spice-runtime/domains/plane-geometry.js";

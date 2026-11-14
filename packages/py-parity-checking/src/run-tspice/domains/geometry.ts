@@ -3,6 +3,14 @@ import type {
   StepGeometryIlumin,
   StepGeometryIllumf,
   StepGeometryIllumg,
+  StepGeometryNvp2pl,
+  StepGeometryPl2nvp,
+  StepGeometryPl2psv,
+  StepGeometryPsv2pl,
+  StepGeometryInrypl,
+  StepGeometryVprjp,
+  StepGeometryVprjpi,
+  StepGeometryNplnpt,
   StepGeometryNvc2pl,
   StepGeometryOccult,
   StepGeometryPl2nvc,
@@ -22,6 +30,14 @@ type GeometryStep =
   | StepGeometryIllumg
   | StepGeometryIllumf
   | StepGeometryOccult
+  | StepGeometryNvp2pl
+  | StepGeometryPl2nvp
+  | StepGeometryPl2psv
+  | StepGeometryPsv2pl
+  | StepGeometryInrypl
+  | StepGeometryVprjp
+  | StepGeometryVprjpi
+  | StepGeometryNplnpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc;
 
@@ -193,6 +209,40 @@ export function runGeometryStep(
       return { op: step.op, value: out };
     }
 
+    case "geometry.nvp2pl":
+      return {
+        op: step.op,
+        value: context.spice.raw.nvp2pl(step.normal, step.point),
+      };
+    case "geometry.pl2nvp":
+      return { op: step.op, value: context.spice.raw.pl2nvp(step.plane) };
+    case "geometry.pl2psv":
+      return { op: step.op, value: context.spice.raw.pl2psv(step.plane) };
+    case "geometry.psv2pl":
+      return {
+        op: step.op,
+        value: context.spice.raw.psv2pl(step.point, step.span1, step.span2),
+      };
+    case "geometry.inrypl":
+      return {
+        op: step.op,
+        value: context.spice.raw.inrypl(step.vertex, step.dir, step.plane),
+      };
+    case "geometry.vprjp":
+      return {
+        op: step.op,
+        value: context.spice.raw.vprjp(step.vin, step.plane),
+      };
+    case "geometry.vprjpi":
+      return {
+        op: step.op,
+        value: context.spice.raw.vprjpi(step.vin, step.projpl, step.invpl),
+      };
+    case "geometry.nplnpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.nplnpt(step.linpt, step.lindir, step.point),
+      };
     case "geometry.nvc2pl": {
       const out = context.spice.raw.nvc2pl(step.normal, step.konst);
       return { op: step.op, value: toPlane(out, "geometry.nvc2pl") };

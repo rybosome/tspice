@@ -117,6 +117,14 @@ from .models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
+    StepGeometryNvp2pl,
+    StepGeometryPl2nvp,
+    StepGeometryPl2psv,
+    StepGeometryPsv2pl,
+    StepGeometryInrypl,
+    StepGeometryVprjp,
+    StepGeometryVprjpi,
+    StepGeometryNplnpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -1607,6 +1615,64 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 abcorr=_expect_string(step.get("abcorr"), label="geometry.occult.abcorr"),
                 observer=_expect_string(step.get("observer"), label="geometry.occult.observer"),
                 et=_expect_number(step.get("et"), label="geometry.occult.et"),
+            )
+
+        case "geometry.nvp2pl":
+            return StepGeometryNvp2pl(
+                op=op,
+                normal=_expect_vec3(step.get("normal"), label="geometry.nvp2pl.normal"),
+                point=_expect_vec3(step.get("point"), label="geometry.nvp2pl.point"),
+            )
+
+        case "geometry.pl2nvp":
+            return StepGeometryPl2nvp(
+                op=op,
+                plane=_expect_vec4(step.get("plane"), label="geometry.pl2nvp.plane"),
+            )
+
+        case "geometry.pl2psv":
+            return StepGeometryPl2psv(
+                op=op,
+                plane=_expect_vec4(step.get("plane"), label="geometry.pl2psv.plane"),
+            )
+
+        case "geometry.psv2pl":
+            return StepGeometryPsv2pl(
+                op=op,
+                point=_expect_vec3(step.get("point"), label="geometry.psv2pl.point"),
+                span1=_expect_vec3(step.get("span1"), label="geometry.psv2pl.span1"),
+                span2=_expect_vec3(step.get("span2"), label="geometry.psv2pl.span2"),
+            )
+
+        case "geometry.inrypl":
+            return StepGeometryInrypl(
+                op=op,
+                vertex=_expect_vec3(step.get("vertex"), label="geometry.inrypl.vertex"),
+                dir=_expect_vec3(step.get("dir"), label="geometry.inrypl.dir"),
+                plane=_expect_vec4(step.get("plane"), label="geometry.inrypl.plane"),
+            )
+
+        case "geometry.vprjp":
+            return StepGeometryVprjp(
+                op=op,
+                vin=_expect_vec3(step.get("vin"), label="geometry.vprjp.vin"),
+                plane=_expect_vec4(step.get("plane"), label="geometry.vprjp.plane"),
+            )
+
+        case "geometry.vprjpi":
+            return StepGeometryVprjpi(
+                op=op,
+                vin=_expect_vec3(step.get("vin"), label="geometry.vprjpi.vin"),
+                projpl=_expect_vec4(step.get("projpl"), label="geometry.vprjpi.projpl"),
+                invpl=_expect_vec4(step.get("invpl"), label="geometry.vprjpi.invpl"),
+            )
+
+        case "geometry.nplnpt":
+            return StepGeometryNplnpt(
+                op=op,
+                linpt=_expect_vec3(step.get("linpt"), label="geometry.nplnpt.linpt"),
+                lindir=_expect_vec3(step.get("lindir"), label="geometry.nplnpt.lindir"),
+                point=_expect_vec3(step.get("point"), label="geometry.nplnpt.point"),
             )
 
         case "geometry.nvc2pl":

@@ -1,0 +1,98 @@
+[
+  {
+    "caseId": "geometry-pl2psv-coordinate-planes",
+    "description": "Observe all returned coordinates for each signed principal normal.",
+    "workflow": [
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [1, 0, 0, 0]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0, 1, 0, 3]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [-1, 0, 0, 5]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0, -1, 0, 0.5]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0, 0, -1, 16]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2psv-origin",
+    "description": "Non-axis unit normals through origin distinguish convention and returned basis.",
+    "workflow": [
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0.6, 0.8, 0, 0]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0, 0.6, -0.8, 0]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [-1, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2psv-oblique",
+    "description": "Nontrivial mixed signs, projected feet and signed axes.",
+    "workflow": [
+      {
+        "op": "geometry.pl2psv",
+        "plane": [-0.6, 0, 0.8, 2.5]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0.6, 0.8, 0, 5]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [-0.8, 0.6, 0, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2psv-distance-scales",
+    "description": "Separate huge and tiny nonnegative distances on a canonical unit normal.",
+    "workflow": [
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0.6, 0.8, 0, 1e-150]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0.6, 0.8, 0, 0.75]
+      },
+      {
+        "op": "geometry.pl2psv",
+        "plane": [0.6, 0.8, 0, 1e150]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

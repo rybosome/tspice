@@ -1,0 +1,140 @@
+[
+  {
+    "caseId": "geometry-inrypl-one",
+    "description": "Hit in front with different direction scales, and at the ray vertex.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, 3, -1],
+        "dir": [0, 0, 1],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, 3, -1],
+        "dir": [0, 0, 25],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.inrypl",
+        "vertex": [1, 3, 2],
+        "dir": [1, 2, 3],
+        "plane": [0, 0, 1, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-zero",
+    "description": "Missing ray: points away or lies parallel outside the plane. Observe zero intersection vector.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, 3, -1],
+        "dir": [0, 0, -1],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, 3, 3],
+        "dir": [1, 0, 0],
+        "plane": [0, 0, 1, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-infinite",
+    "description": "Ray contained in plane. Observe nxpts=-1 and original vertex (not a missing point).",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, 3, 2],
+        "dir": [1, 0, 0],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.inrypl",
+        "vertex": [1, 3, 0],
+        "dir": [0, 1, 0],
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-oblique",
+    "description": "Intersect oblique offset plane on different sides.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [2, -3, 7],
+        "dir": [-3, -4, 0],
+        "plane": [0.6, 0.8, 0, 1]
+      },
+      {
+        "op": "geometry.inrypl",
+        "vertex": [-2, -3, 4],
+        "dir": [3, 4, 1],
+        "plane": [0.6, 0.8, 0, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-zero-direction",
+    "description": "Zero direction produces actual ZEROVECTOR.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [0, 0, 0],
+        "dir": [0, 0, 0],
+        "plane": [0, 0, 1, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-excessive-vertex",
+    "description": "Finite vertex exceeds toolkit geometric conditioning bound.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [1e308, 0, 0],
+        "dir": [1, 0, 0],
+        "plane": [1, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VECTORTOOBIG"]
+    }
+  },
+  {
+    "caseId": "geometry-inrypl-excessive-plane",
+    "description": "Finite plane distance exceeds toolkit geometric conditioning bound.",
+    "workflow": [
+      {
+        "op": "geometry.inrypl",
+        "vertex": [0, 0, 0],
+        "dir": [1, 0, 0],
+        "plane": [1, 0, 0, 1e308]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VECTORTOOBIG"]
+    }
+  }
+]

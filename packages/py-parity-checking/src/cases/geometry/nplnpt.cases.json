@@ -1,0 +1,114 @@
+[
+  {
+    "caseId": "geometry-nplnpt-axes",
+    "description": "Coordinate lines, reversed orientation, and point on line.",
+    "workflow": [
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [1, 2, 3],
+        "lindir": [0, 0, 1],
+        "point": [2, -3, 7]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [1, 2, 3],
+        "lindir": [0, 0, -8],
+        "point": [2, -3, 7]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [0, 1, 0],
+        "point": [2, -3, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nplnpt-oblique",
+    "description": "Line offset, translated point and signed non-normalized direction.",
+    "workflow": [
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [3, -4, 2],
+        "point": [-1, 3, -2]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [-1, 3, -2],
+        "lindir": [-3, 4, -2],
+        "point": [2, -3, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nplnpt-origin",
+    "description": "Nontrivial orthogonal vector and origin projection.",
+    "workflow": [
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [0, 0, 0],
+        "lindir": [3, 4, 0],
+        "point": [4, -3, 7]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [0, 0, 0],
+        "lindir": [1, 0, 0],
+        "point": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nplnpt-direction-scales",
+    "description": "Line direction scale cannot change the geometric locus.",
+    "workflow": [
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [1e-80, -2e-80, 2.9999999999999997e-80],
+        "point": [3, 4, 5]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [0.5, -1.0, 1.5],
+        "point": [3, 4, 5]
+      },
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [1e80, -2e80, 3e80],
+        "point": [3, 4, 5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-nplnpt-zero-direction",
+    "description": "Zero line direction signals the canonical toolkit error.",
+    "workflow": [
+      {
+        "op": "geometry.nplnpt",
+        "linpt": [2, -3, 7],
+        "lindir": [0, 0, 0],
+        "point": [2, -3, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  }
+]
