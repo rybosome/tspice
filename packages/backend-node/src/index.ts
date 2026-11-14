@@ -56,7 +56,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native, stager),
+      ...createFramesApi(native, stager, spiceHandles),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),

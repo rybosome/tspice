@@ -65,6 +65,57 @@ class StepFramesCkgpav:
 
 
 @dataclass(frozen=True)
+class StepFramesCkfrot:
+    op: Literal["frames.ckfrot"]
+    inst: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepFramesCkfxfm:
+    op: Literal["frames.ckfxfm"]
+    inst: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepFramesCkgr02:
+    op: Literal["frames.ckgr02"]
+    handleId: str
+    summaryId: str
+    recno: int
+
+
+@dataclass(frozen=True)
+class StepFramesCkgr03:
+    op: Literal["frames.ckgr03"]
+    handleId: str
+    summaryId: str
+    recno: int
+
+
+@dataclass(frozen=True)
+class StepFramesCkmeta:
+    op: Literal["frames.ckmeta"]
+    ckid: int
+    meta: str
+
+
+@dataclass(frozen=True)
+class StepFramesCknr02:
+    op: Literal["frames.cknr02"]
+    handleId: str
+    summaryId: str
+
+
+@dataclass(frozen=True)
+class StepFramesCknr03:
+    op: Literal["frames.cknr03"]
+    handleId: str
+    summaryId: str
+
+
+@dataclass(frozen=True)
 class StepFramesCklpf:
     op: Literal["frames.cklpf"]
     ck: PathRefInput

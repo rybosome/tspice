@@ -88,6 +88,7 @@ export {
   isMat3ArrayLike9,
   brandMat3ColMajor,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,
 } from "./spice-runtime/shared/mat3.js";
@@ -173,3 +174,9 @@ export {
   dafPathByteLength,
   dafSummaryFormat,
 } from "./spice-runtime/shared/daf.js";
+
+export {
+  ckType2Record,
+  ckType3Record,
+  ckStateResult,
+} from "./spice-runtime/shared/ck-records.js";

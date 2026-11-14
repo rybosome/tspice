@@ -175,3 +175,7 @@ uses the pinned SPICELIB DAFRN routine to give a DAF array name a terminal tab,
 which the high-level Python string converter removes but the C function returns.
 Each backend receives its own copy; the scratch writer and reader close before
 cleanup. Only the MIT-licensed generator is checked in.
+
+### CK record access
+
+`generate-ck-records.py` uses the locked SpiceyPy N0067 writers to create three MIT-authored fixtures. The three B1950 type 2 intervals in `audit-ck-records.bc` have distinct endpoints, seconds-per-tick rates, scalar-first quaternions and angular velocities. The generator reads back all ten words of every packet. `audit-ck-record-directory.bc` contains 27 segments, including 102 type 2 intervals and 103 type 3 records in 103 interpolation intervals on its second physical summary record. The type 3 segment in `audit-ck-record-limit.bc` contains finite angular velocities of 1.65e308 rad/s to exercise the IEEE derivative output at an actual stored endpoint. The ordinary type 3, interpolation gap, no-AV and priority workflows reuse `audit-pointing.bc`, `audit-pointing-priority.bc` and `audit-ck-clock.tsc`. [Scientific checks and binary hashes](../../../docs/step8-ck-records.md)

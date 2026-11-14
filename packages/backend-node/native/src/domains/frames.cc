@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <cstring>
 #include <string>
 
 #include "../addon_common.h"
@@ -279,6 +280,206 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, m, 36);
 }
 
+static bool CkRecordInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double d = value.As<Napi::Number>().DoubleValue();
+    if (d >= INT32_MIN && d <= INT32_MAX && std::trunc(d) == d) {
+      *out = static_cast<int>(d);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit CK integer"));
+  return false;
+}
+
+static bool CkRecordString(Napi::Env env, const Napi::Value& value, std::string* out) {
+  if (value.IsString()) {
+    *out = value.As<Napi::String>().Utf8Value();
+    if (out->size() < INT32_MAX && out->find('\0') == std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a NUL-free CK string"));
+  return false;
+}
+
+static Napi::Value Ckfrot(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env,"ckfrot: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected CK epoch in ET seconds"));
+    return env.Undefined();
+  }
+  const double et = info[1].As<Napi::Number>().DoubleValue();
+  double data[9] = {};
+  int ref = 0, found = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckfrot(id,et,data,&ref,&found,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling ckfrot",err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  Napi::Object result = MakeFound<int>(env,"ref",ref);
+  result.Set("rotate",MakeNumberArray(env,data,9));
+  return result;
+}
+
+static Napi::Value Ckfxfm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env,"ckfxfm: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected CK epoch in ET seconds"));
+    return env.Undefined();
+  }
+  const double et = info[1].As<Napi::Number>().DoubleValue();
+  double data[36] = {};
+  int ref = 0, found = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckfxfm(id,et,data,&ref,&found,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling ckfxfm",err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  Napi::Object result = MakeFound<int>(env,"ref",ref);
+  result.Set("xform",MakeNumberArray(env,data,36));
+  return result;
+}
+
+static Napi::Value Ckgr02(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env,"ckgr02: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsTypedArray() || info[1].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      info[1].As<Napi::Uint8Array>().ElementLength() != 40) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected 40 CK descriptor bytes"));
+    return env.Undefined();
+  }
+  unsigned char bytes[40];
+  memcpy(bytes,info[1].As<Napi::Uint8Array>().Data(),sizeof(bytes));
+  int recno = 0;
+  if (!CkRecordInt(env,info[2],&recno)) return env.Undefined();
+  double out[10] = {};
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckgr02(id,bytes,sizeof(bytes),recno,out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling ckgr02",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,10);
+}
+
+static Napi::Value Ckgr03(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env,"ckgr03: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsTypedArray() || info[1].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      info[1].As<Napi::Uint8Array>().ElementLength() != 40) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected 40 CK descriptor bytes"));
+    return env.Undefined();
+  }
+  unsigned char bytes[40];
+  memcpy(bytes,info[1].As<Napi::Uint8Array>().Data(),sizeof(bytes));
+  int recno = 0;
+  if (!CkRecordInt(env,info[2],&recno)) return env.Undefined();
+  double out[8] = {};
+  int nwords = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckgr03(id,bytes,sizeof(bytes),recno,out,&nwords,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling ckgr03",err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env,out,nwords);
+}
+
+static Napi::Value Ckmeta(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env,"ckmeta: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  std::string meta;
+  if (!CkRecordString(env,info[1],&meta)) return env.Undefined();
+  int out = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckmeta(id,meta.c_str(),&out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling ckmeta",err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env,out);
+}
+
+static Napi::Value Cknr02(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env,"cknr02: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsTypedArray() || info[1].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      info[1].As<Napi::Uint8Array>().ElementLength() != 40) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected 40 CK descriptor bytes"));
+    return env.Undefined();
+  }
+  unsigned char bytes[40];
+  memcpy(bytes,info[1].As<Napi::Uint8Array>().Data(),sizeof(bytes));
+  int out = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_cknr02(id,bytes,sizeof(bytes),&out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling cknr02",err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env,out);
+}
+
+static Napi::Value Cknr03(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env,"cknr03: invalid argument count"));
+    return env.Undefined();
+  }
+  int id = 0;
+  if (!CkRecordInt(env, info[0], &id)) return env.Undefined();
+  if (!info[1].IsTypedArray() || info[1].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      info[1].As<Napi::Uint8Array>().ElementLength() != 40) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Expected 40 CK descriptor bytes"));
+    return env.Undefined();
+  }
+  unsigned char bytes[40];
+  memcpy(bytes,info[1].As<Napi::Uint8Array>().Data(),sizeof(bytes));
+  int out = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_cknr03(id,bytes,sizeof(bytes),&out,err,sizeof(err))) {
+    ThrowSpiceError(env,"CSPICE failed while calling cknr03",err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env,out);
+}
+
 // --- CK file query / management --------------------------------------------
 
 static Napi::Number Cklpf(const Napi::CallbackInfo& info) {
@@ -426,6 +627,13 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "frinfo", Napi::Function::New(env, Frinfo), __func__)) return;
   if (!SetExportChecked(env, exports, "ccifrm", Napi::Function::New(env, Ccifrm), __func__)) return;
 
+  if (!SetExportChecked(env,exports,"ckfrot",Napi::Function::New(env,Ckfrot),__func__)) return;
+  if (!SetExportChecked(env,exports,"ckfxfm",Napi::Function::New(env,Ckfxfm),__func__)) return;
+  if (!SetExportChecked(env,exports,"ckgr02",Napi::Function::New(env,Ckgr02),__func__)) return;
+  if (!SetExportChecked(env,exports,"ckgr03",Napi::Function::New(env,Ckgr03),__func__)) return;
+  if (!SetExportChecked(env,exports,"ckmeta",Napi::Function::New(env,Ckmeta),__func__)) return;
+  if (!SetExportChecked(env,exports,"cknr02",Napi::Function::New(env,Cknr02),__func__)) return;
+  if (!SetExportChecked(env,exports,"cknr03",Napi::Function::New(env,Cknr03),__func__)) return;
   // CK read-only helpers.
   if (!SetExportChecked(env, exports, "cklpf", Napi::Function::New(env, Cklpf), __func__)) return;
   if (!SetExportChecked(env, exports, "ckupf", Napi::Function::New(env, Ckupf), __func__)) return;

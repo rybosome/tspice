@@ -28,10 +28,12 @@ class FileIoHandleState:
     kind: str
     closeWith: str
     isOpen: bool
+    path: str | None = None
 
 
 @dataclass
 class FileIoState:
+    ckSummaries: dict[str, tuple[FileIoHandleState, bytes]] = field(default_factory=dict)
     handles: dict[str, FileIoHandleState] = field(default_factory=dict)
     descriptors: dict[str, Any] = field(default_factory=dict)
     spatialIndexes: dict[str, tuple[Any, Any]] = field(default_factory=dict)

@@ -1308,6 +1308,14 @@ int tspice_ckgpav(
 
 // --- CK file query / management (read-only) --------------------------------
 
+int tspice_ckfrot(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckfxfm(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes);
+int tspice_ckgr02(int handle, const unsigned char *bytes, int size, int recno, double *out, char *err, int errMaxBytes);
+int tspice_ckgr03(int handle, const unsigned char *bytes, int size, int recno, double *out, int *nwords, char *err, int errMaxBytes);
+int tspice_ckmeta(int ckid, const char *meta, int *out, char *err, int errMaxBytes);
+int tspice_cknr02(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
+int tspice_cknr03(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes);
+
 // cklpf_c: load a CK file for access by pointing routines.
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes);
 

@@ -1,0 +1,979 @@
+{
+  "schemaVersion": 1,
+  "batch": "c13-ck-records",
+  "traceFiles": [
+    "docs/step8-ck-records.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/frames.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/frames.cc",
+    "packages/backend-node/src/domains/frames.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ck-record-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/domains/frames.c",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/ck-record-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/ck-records.ts",
+    "packages/core/src/spice-runtime/shared/daf.ts",
+    "packages/core/src/spice-runtime/shared/mat3.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py",
+    "packages/py-parity-checking/fixtures/generate-ck-records.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-record-directory.bc",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-record-limit.bc",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+    "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+    "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/frames/ckfrot.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckfxfm.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckgr02.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckgr03.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckmeta.cases.json",
+    "packages/py-parity-checking/src/cases/frames/cknr02.cases.json",
+    "packages/py-parity-checking/src/cases/frames/cknr03.cases.json",
+    "packages/py-parity-checking/src/cases/frames/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/ck-record-science.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c13-567cf58f-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c13-567cf58f-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ckfrot_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfrot_c.html",
+      "semantics": "Search in ET for zero-tolerance instrument-to-base rotation and reference frame ID.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckfrot-empty-state",
+          "coverage": ["success", "edge"],
+          "observes": "Query two CK class IDs before loading any CK or clock. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-missing-clock",
+          "coverage": ["success", "edge"],
+          "observes": "A loaded CK alone has no usable ET to encoded-clock conversion. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-et-interval-gap",
+          "coverage": ["success", "edge"],
+          "observes": "ET zero maps to tick 1000. Query endpoints, unequal interior rotations, an interpolation gap and an out-of-range ET. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-av-eligibility",
+          "coverage": ["success", "edge"],
+          "observes": "The third segment contains quaternions without angular velocity. Compare raw lookup for that instrument and one with AV. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-b1950",
+          "coverage": ["success", "edge"],
+          "observes": "Type 2 pointing in B1950 has reference code 2, different packet rates and a gap. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-file-priority",
+          "coverage": ["success", "edge"],
+          "observes": "Load a second overlapping CK and unload it to recover the earlier segment. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-clock-override",
+          "coverage": ["success", "edge"],
+          "observes": "A changed CK clock association makes a hit unavailable until the correct clock ID is restored. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfrot-bad-clock-value",
+          "coverage": ["error", "edge"],
+          "observes": "The SCLK metadata value exceeds the signed toolkit range; the underlying GIPOOL conversion signals its actual error. Requires OUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Query two CK class IDs before loading any CK or clock. A loaded CK alone has no usable ET to encoded-clock conversion. ET zero maps to tick 1000. Query endpoints, unequal interior rotations, an interpolation gap and an out-of-range ET. The third segment contains quaternions without angular velocity. Compare raw lookup for that instrument and one with AV. Type 2 pointing in B1950 has reference code 2, different packet rates and a gap. Load a second overlapping CK and unload it to recover the earlier segment. A changed CK clock association makes a hit unavailable until the correct clock ID is restored.",
+      "errorAssessment": "Independent terminal diagnostics include OUTOFRANGE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-limit.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 abaf7a7eda4a806585b73a3a1ac46ec7c0e6e31b76b65a71f832cd85407f1800"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 ac946f4e1a251b2562b46d34369471a33018548912f08f532af8bcc75704f8c9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 609d7f8d8563964d231855833a859bd594e4ed831872842f54cb491865d1efa8"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "clock-negation-and-found-output",
+          "status": "repaired",
+          "summary": "ZZSCLK negates signed clock metadata. Outer C wrappers transpose matrix storage even on a miss.",
+          "repair": "Resolve genuine metadata and handle conversion errors before dispatch. Reject unrepresentable negation on a loaded CK, initialize private matrix storage and publish only found fields.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": [
+            "frames-ckfrot-bad-clock-value",
+            "frames-ckfrot-empty-state"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckfrot -> native adapter and mutex-protected N-API handler -> tspice_ckfrot -> ckfrot_c. Independent comparison uses SpiceyPy 6.0.3 ckfrot.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckfrot -> validated WASM heap adapter and required compiled export -> tspice_ckfrot -> ckfrot_c. Independent comparison uses SpiceyPy 6.0.3 ckfrot.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckfxfm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfxfm_c.html",
+      "semantics": "Search AV-bearing segments for the instrument-to-base state transform and derivative at ET.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckfxfm-empty-state",
+          "coverage": ["success", "edge"],
+          "observes": "Query two CK class IDs before loading any CK or clock. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-missing-clock",
+          "coverage": ["success", "edge"],
+          "observes": "A loaded CK alone has no usable ET to encoded-clock conversion. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-et-interval-gap",
+          "coverage": ["success", "edge"],
+          "observes": "ET zero maps to tick 1000. Query endpoints, unequal interior rotations, an interpolation gap and an out-of-range ET. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-av-eligibility",
+          "coverage": ["success", "edge"],
+          "observes": "The third segment contains quaternions without angular velocity. Compare raw lookup for that instrument and one with AV. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-b1950",
+          "coverage": ["success", "edge"],
+          "observes": "Type 2 pointing in B1950 has reference code 2, different packet rates and a gap. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-file-priority",
+          "coverage": ["success", "edge"],
+          "observes": "Load a second overlapping CK and unload it to recover the earlier segment. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-clock-override",
+          "coverage": ["success", "edge"],
+          "observes": "A changed CK clock association makes a hit unavailable until the correct clock ID is restored. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckfxfm-bad-clock-value",
+          "coverage": ["error", "edge"],
+          "observes": "The SCLK metadata value exceeds the signed toolkit range; the underlying GIPOOL conversion signals its actual error. Requires OUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Query two CK class IDs before loading any CK or clock. A loaded CK alone has no usable ET to encoded-clock conversion. ET zero maps to tick 1000. Query endpoints, unequal interior rotations, an interpolation gap and an out-of-range ET. The third segment contains quaternions without angular velocity. Compare raw lookup for that instrument and one with AV. Type 2 pointing in B1950 has reference code 2, different packet rates and a gap. Load a second overlapping CK and unload it to recover the earlier segment. A changed CK clock association makes a hit unavailable until the correct clock ID is restored.",
+      "errorAssessment": "Independent terminal diagnostics include OUTOFRANGE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-limit.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 abaf7a7eda4a806585b73a3a1ac46ec7c0e6e31b76b65a71f832cd85407f1800"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing-priority.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 ac946f4e1a251b2562b46d34369471a33018548912f08f532af8bcc75704f8c9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 609d7f8d8563964d231855833a859bd594e4ed831872842f54cb491865d1efa8"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "clock-negation-and-found-output",
+          "status": "repaired",
+          "summary": "ZZSCLK negates signed clock metadata. Outer C wrappers transpose matrix storage even on a miss.",
+          "repair": "Resolve genuine metadata and handle conversion errors before dispatch. Reject unrepresentable negation on a loaded CK, initialize private matrix storage and publish only found fields.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": [
+            "frames-ckfxfm-bad-clock-value",
+            "frames-ckfxfm-empty-state"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckfxfm -> native adapter and mutex-protected N-API handler -> tspice_ckfxfm -> ckfxfm_c. Independent comparison uses SpiceyPy 6.0.3 ckfxfm.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckfxfm -> validated WASM heap adapter and required compiled export -> tspice_ckfxfm -> ckfxfm_c. Independent comparison uses SpiceyPy 6.0.3 ckfxfm.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckgr02_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr02_c.html",
+      "semantics": "Read every field in a one-based type 2 interval including the stored seconds per tick.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckgr02-all-packets",
+          "coverage": ["success", "edge"],
+          "observes": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr02-cursor-independent",
+          "coverage": ["success", "edge"],
+          "observes": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr02-wrong-segment-type",
+          "coverage": ["error", "edge"],
+          "observes": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE. Requires CKWRONGDATATYPE."
+        },
+        {
+          "caseId": "frames-ckgr02-ordinal-0",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 0 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr02-ordinal-negative1",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal -1 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr02-ordinal-4",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 4 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr02-ordinal-2147483647",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 2147483647 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr02-second-summary-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample. Compare the full independent result."
+        }
+      ],
+      "edgeAssessment": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+      "errorAssessment": "Independent terminal diagnostics include CKNONEXISTREC, CKWRONGDATATYPE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-directory.bc",
+          "provenance": "MIT-authored directory-bearing type 2 and type 3 segments on the second physical summary record.",
+          "distribution": "Checked-in fixture, SHA-256 d2fdb305a195e5629794446892da16434cfb582821395e51dd52cc5e099ad75f"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "descriptor-membership-and-storage",
+          "status": "repaired",
+          "summary": "N0067 trusts the supplied segment descriptor and its referenced addresses. The type 3 readers convert an unchecked on-disk count.",
+          "repair": "Verify CK DAF membership by walking physical summaries without moving a search, then check the applicable full record layout and storage.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": ["frames-ckgr02-cursor-independent"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckgr02 -> native adapter and mutex-protected N-API handler -> tspice_ckgr02 -> ckgr02_c. Independent comparison uses SpiceyPy 6.0.3 ckgr02.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckgr02 -> validated WASM heap adapter and required compiled export -> tspice_ckgr02 -> ckgr02_c. Independent comparison uses SpiceyPy 6.0.3 ckgr02.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckgr03_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr03_c.html",
+      "semantics": "Read a one-based tick and quaternion and return AV only when the descriptor declares it.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckgr03-all-packets",
+          "coverage": ["success", "edge"],
+          "observes": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr03-cursor-independent",
+          "coverage": ["success", "edge"],
+          "observes": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr03-wrong-segment-type",
+          "coverage": ["error", "edge"],
+          "observes": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE. Requires CKWRONGDATATYPE."
+        },
+        {
+          "caseId": "frames-ckgr03-separate-segments",
+          "coverage": ["success", "edge"],
+          "observes": "Read two independently retained descriptors in reverse order while a third array is selected. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr03-missing-av",
+          "coverage": ["success", "edge"],
+          "observes": "Select the type 3 segment without angular velocities; compare each defined data word or its count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckgr03-ordinal-0",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 0 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr03-ordinal-negative1",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal -1 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr03-ordinal-5",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 5 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr03-ordinal-2147483647",
+          "coverage": ["error", "edge"],
+          "observes": "One-based ordinal 2147483647 lies outside this actual segment. Requires CKNONEXISTREC."
+        },
+        {
+          "caseId": "frames-ckgr03-second-summary-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample. Compare the full independent result."
+        }
+      ],
+      "edgeAssessment": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Read two independently retained descriptors in reverse order while a third array is selected. Select the type 3 segment without angular velocities; compare each defined data word or its count. Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+      "errorAssessment": "Independent terminal diagnostics include CKNONEXISTREC, CKWRONGDATATYPE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-directory.bc",
+          "provenance": "MIT-authored directory-bearing type 2 and type 3 segments on the second physical summary record.",
+          "distribution": "Checked-in fixture, SHA-256 d2fdb305a195e5629794446892da16434cfb582821395e51dd52cc5e099ad75f"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "descriptor-membership-and-storage",
+          "status": "repaired",
+          "summary": "N0067 trusts the supplied segment descriptor and its referenced addresses. The type 3 readers convert an unchecked on-disk count.",
+          "repair": "Verify CK DAF membership by walking physical summaries without moving a search, then check the applicable full record layout and storage.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": ["frames-ckgr03-cursor-independent"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckgr03 -> native adapter and mutex-protected N-API handler -> tspice_ckgr03 -> ckgr03_c. Independent comparison uses SpiceyPy 6.0.3 ckgr03.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckgr03 -> validated WASM heap adapter and required compiled export -> tspice_ckgr03 -> ckgr03_c. Independent comparison uses SpiceyPy 6.0.3 ckgr03.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckmeta_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckmeta_c.html",
+      "semantics": "Resolve the selected SCLK or SPK ID with live pool overrides and signed conventional defaults.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckmeta-division",
+          "coverage": ["success", "edge"],
+          "observes": "Test default truncating signed spacecraft conventions at both sides of the −1000 threshold and the signed CK ID endpoints. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckmeta-selectors",
+          "coverage": ["success", "edge"],
+          "observes": "Compare selectors with case and outer-blank handling and conventional SPK/SCLK IDs. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckmeta-independent-overrides",
+          "coverage": ["success", "edge"],
+          "observes": "Set separate SCLK and SPK variables and read each value, including signed values and zero. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckmeta-watchers",
+          "coverage": ["success", "edge"],
+          "observes": "Changing and clearing metadata invalidates CKMETA’s saved cache. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-ckmeta-unknown",
+          "coverage": ["error", "edge"],
+          "observes": "Unrecognized metadata reaches SPICE(UNKNOWNCKMETA). Requires UNKNOWNCKMETA."
+        },
+        {
+          "caseId": "frames-ckmeta-empty",
+          "coverage": ["error", "edge"],
+          "observes": "The C wrapper reports its true empty string diagnostic. Requires EMPTYSTRING."
+        },
+        {
+          "caseId": "frames-ckmeta-conversion-error",
+          "coverage": ["error", "edge"],
+          "observes": "GIPOOL signals when numeric pool content is outside the integer range. Requires OUTOFRANGE."
+        }
+      ],
+      "edgeAssessment": "Test default truncating signed spacecraft conventions at both sides of the −1000 threshold and the signed CK ID endpoints. Compare selectors with case and outer-blank handling and conventional SPK/SCLK IDs. Set separate SCLK and SPK variables and read each value, including signed values and zero. Changing and clearing metadata invalidates CKMETA’s saved cache.",
+      "errorAssessment": "Independent terminal diagnostics include EMPTYSTRING, OUTOFRANGE, UNKNOWNCKMETA. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [],
+      "fixtureRationale": "The selected integer metadata is fully specified by each workflow and its kernel-pool writes.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckmeta -> native adapter and mutex-protected N-API handler -> tspice_ckmeta -> ckmeta_c. Independent comparison uses SpiceyPy 6.0.3 ckmeta.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckmeta -> validated WASM heap adapter and required compiled export -> tspice_ckmeta -> ckmeta_c. Independent comparison uses SpiceyPy 6.0.3 ckmeta.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "cknr02_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr02_c.html",
+      "semantics": "Read the number of constant-rate intervals in a genuine packed type 2 segment.",
+      "scenarios": [
+        {
+          "caseId": "frames-cknr02-all-packets",
+          "coverage": ["success", "edge"],
+          "observes": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr02-cursor-independent",
+          "coverage": ["success", "edge"],
+          "observes": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr02-wrong-segment-type",
+          "coverage": ["error", "edge"],
+          "observes": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE. Requires CKWRONGDATATYPE."
+        },
+        {
+          "caseId": "frames-cknr02-second-summary-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample. Compare the full independent result."
+        }
+      ],
+      "edgeAssessment": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+      "errorAssessment": "Independent terminal diagnostics include CKWRONGDATATYPE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-directory.bc",
+          "provenance": "MIT-authored directory-bearing type 2 and type 3 segments on the second physical summary record.",
+          "distribution": "Checked-in fixture, SHA-256 d2fdb305a195e5629794446892da16434cfb582821395e51dd52cc5e099ad75f"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "descriptor-membership-and-storage",
+          "status": "repaired",
+          "summary": "N0067 trusts the supplied segment descriptor and its referenced addresses. The type 3 readers convert an unchecked on-disk count.",
+          "repair": "Verify CK DAF membership by walking physical summaries without moving a search, then check the applicable full record layout and storage.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": ["frames-cknr02-cursor-independent"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.cknr02 -> native adapter and mutex-protected N-API handler -> tspice_cknr02 -> cknr02_c. Independent comparison uses SpiceyPy 6.0.3 cknr02.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.cknr02 -> validated WASM heap adapter and required compiled export -> tspice_cknr02 -> cknr02_c. Independent comparison uses SpiceyPy 6.0.3 cknr02.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "cknr03_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr03_c.html",
+      "semantics": "Read the number of discrete pointing records across the interpolation intervals.",
+      "scenarios": [
+        {
+          "caseId": "frames-cknr03-all-packets",
+          "coverage": ["success", "edge"],
+          "observes": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr03-cursor-independent",
+          "coverage": ["success", "edge"],
+          "observes": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr03-wrong-segment-type",
+          "coverage": ["error", "edge"],
+          "observes": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE. Requires CKWRONGDATATYPE."
+        },
+        {
+          "caseId": "frames-cknr03-separate-segments",
+          "coverage": ["success", "edge"],
+          "observes": "Read two independently retained descriptors in reverse order while a third array is selected. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr03-missing-av",
+          "coverage": ["success", "edge"],
+          "observes": "Select the type 3 segment without angular velocities; compare each defined data word or its count. Compare all defined fields with a separate locked SpiceyPy process."
+        },
+        {
+          "caseId": "frames-cknr03-second-summary-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample. Compare the full independent result."
+        }
+      ],
+      "edgeAssessment": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count. Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor. Read two independently retained descriptors in reverse order while a third array is selected. Select the type 3 segment without angular velocities; compare each defined data word or its count. Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+      "errorAssessment": "Independent terminal diagnostics include CKWRONGDATATYPE. Additional adapter-only input or ownership checks are covered in focused tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-records.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 36dd652d87eb7fbf7ac808056e440afa7beff30225842df113ff741b6b79cf93"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "MIT-authored synthetic CK or matching encoded-clock model.",
+          "distribution": "Checked-in fixture, SHA-256 b6866c4adb858d4c1b3e847bc8281aaf360c9ad8076eb1bb9799af73da2b7f0f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-record-directory.bc",
+          "provenance": "MIT-authored directory-bearing type 2 and type 3 segments on the second physical summary record.",
+          "distribution": "Checked-in fixture, SHA-256 d2fdb305a195e5629794446892da16434cfb582821395e51dd52cc5e099ad75f"
+        }
+      ],
+      "fixtureRationale": "Use distinct frame IDs, rates, interval breaks and presence of AV to distinguish complete scientific outputs.",
+      "cleanup": "Close each DAF token, release loaded files and clear kernel state. Terminal errors reset through the adapter. Per-case finalizers release resources after errors.",
+      "tolerance": "Registered workflows keep the existing comparison policy. Supplemental storage, flags and counts compare exactly; ordinary derivative differences use centered finite differences and exceptional cancellation is scoped to one independently identified matrix component.",
+      "findings": [
+        {
+          "id": "descriptor-membership-and-storage",
+          "status": "repaired",
+          "summary": "N0067 trusts the supplied segment descriptor and its referenced addresses. The type 3 readers convert an unchecked on-disk count.",
+          "repair": "Verify CK DAF membership by walking physical summaries without moving a search, then check the applicable full record layout and storage.",
+          "evidence": [
+            "docs/step8-ck-records.md",
+            "packages/py-parity-checking/test/ck-record-science.test.ts",
+            "packages/backend-shim-c/src/domains/frames.c"
+          ],
+          "caseIds": ["frames-cknr03-cursor-independent"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.cknr03 -> native adapter and mutex-protected N-API handler -> tspice_cknr03 -> cknr03_c. Independent comparison uses SpiceyPy 6.0.3 cknr03.",
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.cknr03 -> validated WASM heap adapter and required compiled export -> tspice_cknr03 -> cknr03_c. Independent comparison uses SpiceyPy 6.0.3 cknr03.",
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

@@ -78,3 +78,7 @@ reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
 ## DAF records
 
 C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
+
+## CK frame and record access
+
+C13 compares complete CK rotations, state transforms, metadata IDs and type 2/3 records against locked SpiceyPy, with independent physical units and cursor checks. [Scientific evidence and fixture provenance](step8-ck-records.md) [Per-routine judgments](../data/parity-audits/c13-ck-records.json)

@@ -1040,7 +1040,8 @@
         "frames-ckupf-open-close-success",
         "frames-ckupf-unknown-handle-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c02-0138a1b3-wasm",
@@ -1098,7 +1099,8 @@
         "frames-ckupf-open-close-success",
         "frames-ckupf-unknown-handle-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-node",
@@ -1158,7 +1160,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-wasm",
@@ -1218,7 +1221,244 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-c13-567cf58f-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cfd547ebc19de33be20707b12137625957dbda9f6512fba60f3aadb8812290d2",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c13-567cf58f-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cfd547ebc19de33be20707b12137625957dbda9f6512fba60f3aadb8812290d2",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cfd547ebc19de33be20707b12137625957dbda9f6512fba60f3aadb8812290d2",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cfd547ebc19de33be20707b12137625957dbda9f6512fba60f3aadb8812290d2",
+      "caseIds": [
+        "frames-ckcov-audit-absent-instrument",
+        "frames-ckcov-audit-accumulate-across-files",
+        "frames-ckcov-audit-capacity-excess",
+        "frames-ckcov-audit-clock-converted-tdb",
+        "frames-ckcov-audit-empty-zero-window",
+        "frames-ckcov-audit-interval",
+        "frames-ckcov-audit-missing-clock-for-tdb",
+        "frames-ckcov-audit-negative-tolerance",
+        "frames-ckcov-audit-no-av-filtered",
+        "frames-ckcov-audit-no-av-included",
+        "frames-ckcov-audit-segment",
+        "frames-ckcov-audit-tolerance-merges",
+        "frames-ckcov-audit-wrong-daf-type",
+        "frames-ckcov-missing-file-error",
+        "frames-ckcov-open-query-close-success",
+        "frames-ckgp-audit-empty-reference",
+        "frames-ckgp-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgp-audit-no-loaded-files",
+        "frames-ckgp-audit-reference-and-no-av",
+        "frames-ckgp-audit-unknown-reference",
+        "frames-ckgp-open-query-close-success",
+        "frames-ckgp-out-of-coverage-found-false-success",
+        "frames-ckgpav-audit-empty-reference",
+        "frames-ckgpav-audit-interpolation-gaps-clock-tolerance",
+        "frames-ckgpav-audit-no-loaded-files",
+        "frames-ckgpav-audit-reference-and-no-av",
+        "frames-ckgpav-audit-unknown-reference",
+        "frames-ckgpav-open-query-close-success",
+        "frames-ckgpav-out-of-coverage-found-false-success",
+        "frames-cklpf-audit-does-not-register-furnsh-table",
+        "frames-cklpf-audit-observable-search-priority",
+        "frames-cklpf-missing-file-error",
+        "frames-cklpf-open-query-close-success",
+        "frames-ckobj-audit-accumulate-across-files",
+        "frames-ckobj-audit-all-distinct-instruments",
+        "frames-ckobj-audit-empty-zero-capacity",
+        "frames-ckobj-audit-insufficient-capacity",
+        "frames-ckobj-audit-populated-zero-capacity",
+        "frames-ckobj-audit-wrong-daf-type",
+        "frames-ckobj-missing-file-error",
+        "frames-ckobj-open-query-close-success",
+        "frames-ckupf-audit-kclear-makes-handle-unloaded",
+        "frames-ckupf-audit-no-loaded-files-after-close",
+        "frames-ckupf-audit-unload-effects-and-alias-noop",
+        "frames-ckupf-open-close-success",
+        "frames-ckupf-unknown-handle-error"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -1331,11 +1571,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cklpf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -1350,11 +1592,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.cklpf -> WASM adapter -> actual configured compiled _tspice_cklpf export -> shared tspice_cklpf -> cklpf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -1473,11 +1717,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckupf -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -1492,11 +1738,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckupf -> WASM adapter -> actual configured compiled _tspice_ckupf export -> shared tspice_ckupf -> ckupf_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -1635,11 +1883,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckobj -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -1654,11 +1904,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckobj -> WASM adapter -> actual configured compiled _tspice_ckobj export -> shared tspice_ckobj -> ckobj_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -1849,11 +2101,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckcov -> Node typed adapter -> actual registered N-API frames.cc -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -1868,11 +2122,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckcov -> WASM adapter -> actual configured compiled _tspice_ckcov export -> shared tspice_ckcov -> ckcov_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -2017,11 +2273,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgp -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -2036,11 +2294,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgp -> WASM adapter -> actual configured compiled _tspice_ckgp export -> shared tspice_ckgp -> ckgp_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -2185,11 +2445,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgpav -> Node typed adapter -> actual registered N-API ephemeris.cc -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
           "history": [
@@ -2204,11 +2466,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ckgpav -> WASM adapter -> actual configured compiled _tspice_ckgpav export -> shared tspice_ckgpav -> ckgpav_c. Registered workflow propagates the actual output/effect; locked SpiceyPy calls the same CSPICE routine without a fallback.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     }

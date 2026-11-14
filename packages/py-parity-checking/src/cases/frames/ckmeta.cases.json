@@ -1,0 +1,201 @@
+[
+  {
+    "caseId": "frames-ckmeta-division",
+    "description": "Test default truncating signed spacecraft conventions at both sides of the \u22121000 threshold and the signed CK ID endpoints.",
+    "workflow": [
+      {
+        "op": "frames.ckmeta",
+        "ckid": -2147483648,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123999,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -1001,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -1000,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -999,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 0,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 2147483647,
+        "meta": "SCLK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-selectors",
+    "description": "Compare selectors with case and outer-blank handling and conventional SPK/SCLK IDs.",
+    "workflow": [
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123001,
+        "meta": "SPK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123001,
+        "meta": " sclk"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123001,
+        "meta": "spk "
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123001,
+        "meta": "SCLK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-independent-overrides",
+    "description": "Set separate SCLK and SPK variables and read each value, including signed values and zero.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_42_SCLK",
+        "values": [-123]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_42_SPK",
+        "values": [699]
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 42,
+        "meta": "SPK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 42,
+        "meta": "sclk"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_42_SCLK",
+        "values": [0]
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 42,
+        "meta": "SCLK"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 42,
+        "meta": "SPK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-watchers",
+    "description": "Changing and clearing metadata invalidates CKMETA\u2019s saved cache.",
+    "workflow": [
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123000,
+        "meta": "SPK"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_-123000_SPK",
+        "values": [301]
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123000,
+        "meta": "SPK"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123000,
+        "meta": "SPK"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-unknown",
+    "description": "Unrecognized metadata reaches SPICE(UNKNOWNCKMETA).",
+    "workflow": [
+      {
+        "op": "frames.ckmeta",
+        "ckid": -123000,
+        "meta": "FRAME"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNCKMETA"]
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-empty",
+    "description": "The C wrapper reports its true empty string diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.ckmeta",
+        "ckid": 0,
+        "meta": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "frames-ckmeta-conversion-error",
+    "description": "GIPOOL signals when numeric pool content is outside the integer range.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "CK_35_SPK",
+        "values": [2147483648]
+      },
+      {
+        "op": "frames.ckmeta",
+        "ckid": 35,
+        "meta": "SPK"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["OUTOFRANGE"]
+    }
+  }
+]
