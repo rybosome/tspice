@@ -1093,6 +1093,266 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43542559918/job/132286223439",
       "observation": "Observed uncached Linux Node22 native-required CI success:2318 live Node/WASM comparisons and2543 parity-package tests, zero skips, production-addon guard executed;120native,646WASM,34core,152facade tests passed. Complete final-head matrix gates readiness separately.",
       "historical": true
+    },
+    {
+      "id": "local-a12-snapshot-279dc29b-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e7102313f3b18845f772b97e28bb649bd2e236b220040c68d1ba34e2699e4a9b",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a12-snapshot-279dc29b-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e7102313f3b18845f772b97e28bb649bd2e236b220040c68d1ba34e2699e4a9b",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a12-snapshot-279dc29b-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e7102313f3b18845f772b97e28bb649bd2e236b220040c68d1ba34e2699e4a9b",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a12-snapshot-279dc29b-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e7102313f3b18845f772b97e28bb649bd2e236b220040c68d1ba34e2699e4a9b",
+      "caseIds": [
+        "ek-ekaclc-audit-all-null-variable",
+        "ek-ekaclc-audit-blank-strings",
+        "ek-ekaclc-audit-fixed-vectors-and-null",
+        "ek-ekaclc-audit-single-character-slots",
+        "ek-ekaclc-audit-variable-vectors-and-null",
+        "ek-ekaclc-audit-wrong-column-type",
+        "ek-ekaclc-happy-char-column-visible-via-ekgc",
+        "ek-ekaclc-missing-column-error",
+        "ek-ekacld-audit-all-null-variable",
+        "ek-ekacld-audit-fixed-vectors-and-null",
+        "ek-ekacld-audit-variable-vectors-and-null",
+        "ek-ekacld-audit-wrong-column-type",
+        "ek-ekacld-happy-double-column-visible-via-ekgd",
+        "ek-ekacld-missing-column-error",
+        "ek-ekacli-audit-all-null-variable",
+        "ek-ekacli-audit-fixed-vectors-and-null",
+        "ek-ekacli-audit-variable-vectors-and-null",
+        "ek-ekacli-audit-wrong-column-type",
+        "ek-ekacli-happy-integer-column-visible-via-ekgi",
+        "ek-ekacli-missing-column-error",
+        "ek-ekffld-audit-persisted-multitype-columns",
+        "ek-ekffld-audit-wrong-active-segment",
+        "ek-ekffld-happy-finalize-and-count-segments",
+        "ek-ekffld-missing-segment-id-error",
+        "ek-ekfind-audit-full-parse-diagnostic",
+        "ek-ekfind-audit-syntax-and-column-order",
+        "ek-ekfind-audit-zero-rows-and-replacement",
+        "ek-ekfind-happy-query-loaded-fixture",
+        "ek-ekfind-query-error-shape-success",
+        "ek-ekgc-audit-empty-result-row",
+        "ek-ekgc-audit-full-1024-character-value",
+        "ek-ekgc-audit-invalid-selected-index",
+        "ek-ekgc-audit-vectors-nulls-and-missing",
+        "ek-ekgc-audit-wrong-selected-type",
+        "ek-ekgc-happy-read-two-rows",
+        "ek-ekgc-invalid-row-error",
+        "ek-ekgd-audit-empty-result-row",
+        "ek-ekgd-audit-invalid-selected-index",
+        "ek-ekgd-audit-vectors-nulls-and-missing",
+        "ek-ekgd-audit-wrong-selected-type",
+        "ek-ekgd-happy-read-double-results",
+        "ek-ekgd-invalid-row-error",
+        "ek-ekgd-invalid-selidx-error",
+        "ek-ekgd-valid-row-out-of-range-element-found-false",
+        "ek-ekgi-audit-empty-result-row",
+        "ek-ekgi-audit-invalid-selected-index",
+        "ek-ekgi-audit-vectors-nulls-and-missing",
+        "ek-ekgi-audit-wrong-selected-type",
+        "ek-ekgi-happy-read-integer-results",
+        "ek-ekgi-invalid-row-error",
+        "ek-ekgi-invalid-selidx-error",
+        "ek-ekgi-valid-row-out-of-range-element-found-false"
+      ],
+      "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -1192,11 +1452,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekacli -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1210,11 +1474,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekacli -> typed WASM helper -> configured/generated/binary _tspice_ekacli -> actual shared tspice_ekacli -> ekacli_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1314,11 +1582,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekacld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1332,11 +1604,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekacld -> typed WASM helper -> configured/generated/binary _tspice_ekacld -> actual shared tspice_ekacld -> ekacld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1467,11 +1743,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekaclc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1485,11 +1765,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekaclc -> typed WASM helper -> configured/generated/binary _tspice_ekaclc -> actual shared tspice_ekaclc -> ekaclc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1577,11 +1861,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekffld -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1595,11 +1883,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekffld -> typed WASM helper -> configured/generated/binary _tspice_ekffld -> actual shared tspice_ekffld -> ekffld_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1694,11 +1986,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekfind -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1712,11 +2008,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekfind -> typed WASM helper -> configured/generated/binary _tspice_ekfind -> actual shared tspice_ekfind -> ekfind_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1825,11 +2125,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgc -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1843,11 +2147,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgc -> typed WASM helper -> configured/generated/binary _tspice_ekgc -> actual shared tspice_ekgc -> ekgc_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -1959,11 +2267,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgd -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1977,11 +2289,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgd -> typed WASM helper -> configured/generated/binary _tspice_ekgd -> actual shared tspice_ekgd -> ekgd_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     },
@@ -2093,11 +2409,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgi -> typed Node adapter -> native N-API EK handler -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-node",
+            "ci-a12-snapshot-279dc29b-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -2111,14 +2431,18 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.ekgi -> typed WASM helper -> configured/generated/binary _tspice_ekgi -> actual shared tspice_ekgi -> ekgi_c. Actual schema metadata is checked before writer/finalizer access. Registered dispatcher invokes this raw operation. Python executes locked SpiceyPy or its same actual CSPICE character primitive with explicitly sized storage; real output reaches StepOutput.value, with no harness fallback.",
-          "executions": []
+          "executions": [
+            "local-a12-snapshot-279dc29b-wasm",
+            "ci-a12-snapshot-279dc29b-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
