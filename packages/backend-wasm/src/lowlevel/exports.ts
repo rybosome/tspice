@@ -511,6 +511,54 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_bltfrm(
+    frameClass: number,
+    ids: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pxfrm2(
+    fromPtr: number,
+    toPtr: number,
+    etfrom: number,
+    etto: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tipbod(
+    refPtr: number,
+    body: number,
+    et: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tisbod(
+    refPtr: number,
+    body: number,
+    et: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_tkfram(
+    typeId: number,
+    out: number,
+    frame: number,
+    found: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xfmsta(
+    state: number,
+    fromPtr: number,
+    toPtr: number,
+    bodyPtr: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_pxform(
     fromPtr: number,
     toPtr: number,
@@ -2226,6 +2274,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_ckupf",
   "_tspice_ckobj",
   "_tspice_ckcov",
+  "_tspice_bltfrm",
+  "_tspice_pxfrm2",
+  "_tspice_tipbod",
+  "_tspice_tisbod",
+  "_tspice_tkfram",
+  "_tspice_xfmsta",
   "_tspice_pxform",
   "_tspice_sxform",
   "_tspice_spkezr",

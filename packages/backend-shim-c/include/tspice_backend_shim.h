@@ -666,6 +666,13 @@ int tspice_ccifrm(
     char *err,
     int errMaxBytes);
 
+int tspice_bltfrm(int frameClass, uintptr_t handle, char *err, int errMaxBytes);
+int tspice_pxfrm2(const char *from, const char *to, double etfrom, double etto, double *out, char *err, int errMaxBytes);
+int tspice_tipbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes);
+int tspice_tisbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes);
+int tspice_tkfram(int typeId, double *out, int *frame, int *found, char *err, int errMaxBytes);
+int tspice_xfmsta(const double *state, const char *from, const char *to, const char *body, double *out, char *err, int errMaxBytes);
+
 // pxform_c: compute frame transformation matrix.
 //
 // Output matrix is written as 9 doubles in row-major order:

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `bltfrm_c` | Built-in frame IDs |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -123,6 +124,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -165,6 +167,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sxform_c` | State Transformation Matrix |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
+| `tipbod_c` | Transformation, inertial position to bodyfixed |
+| `tisbod_c` | Transformation, inertial state to bodyfixed |
+| `tkfram_c` | TK frame, find position rotation |
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
@@ -183,6 +188,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
 | `wnvald_c` | Validate a DP window |
+| `xfmsta_c` | Transform state between coordinate systems |
 
 ## Planned (not yet implemented)
 
@@ -196,7 +202,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
-| `bltfrm_c` | Built-in frame IDs |
 | `bodvcd_c` | Return d.p. values from the kernel pool |
 | `bodvrd_c` | Return d.p. values from the kernel pool |
 | `brcktd_c` | Bracket a d.p. value within an interval |
@@ -508,7 +513,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `prsint_c` | Parse integer with error checking |
 | `psv2pl_c` | Point and spanning vectors to plane |
 | `putcml_c` | Get the command line |
-| `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
 | `qcktrc_c` | Get Quick Traceback |
 | `qderiv_c` | Quadratic derivative |
@@ -603,9 +607,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
-| `tipbod_c` | Transformation, inertial position to bodyfixed |
-| `tisbod_c` | Transformation, inertial state to bodyfixed |
-| `tkfram_c` | TK frame, find position rotation |
 | `tparch_c` | Parse check---check format of strings |
 | `trace_c` | Trace of a 3x3 matrix |
 | `trcdep_c` | Traceback depth |
@@ -671,7 +672,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `wnunid_c` | Union two DP windows |
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
-| `xfmsta_c` | Transform state between coordinate systems |
 | `xpose_c` | Transpose a matrix, 3x3 |
 | `xpose6_c` | Transpose a matrix, 6x6 |
 | `xposeg_c` | Transpose a matrix, general |

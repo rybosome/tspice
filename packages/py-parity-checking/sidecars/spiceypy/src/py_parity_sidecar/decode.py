@@ -112,6 +112,12 @@ from .models import (
     StepFramesFrinfo,
     StepFramesFrmnam,
     StepFramesNamfrm,
+    StepFramesBltfrm,
+    StepFramesPxfrm2,
+    StepFramesTipbod,
+    StepFramesTisbod,
+    StepFramesTkfram,
+    StepFramesXfmsta,
     StepFramesPxform,
     StepFramesSxform,
     StepGeometryIlumin,
@@ -1290,6 +1296,51 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 reset=_expect_bool(step.get("reset", True), label="frames.ckcov.reset"),
             )
 
+        case "frames.bltfrm":
+            return StepFramesBltfrm(
+                op=op,
+                frameClass=_expect_int(step.get("frameClass"), label="frames.bltfrm.frameClass"),
+                idsId=_expect_string(step.get("idsId"), label="frames.bltfrm.idsId"),
+                maxCard=_expect_int(step.get("maxCard"), label="frames.bltfrm.maxCard"),
+            )
+        case "frames.pxfrm2":
+            return StepFramesPxfrm2(
+                op=op,
+                from_=_expect_string(step.get("from"), label="frames.pxfrm2.from"),
+                to=_expect_string(step.get("to"), label="frames.pxfrm2.to"),
+                etfrom=_expect_number(step.get("etfrom"), label="frames.pxfrm2.etfrom"),
+                etto=_expect_number(step.get("etto"), label="frames.pxfrm2.etto"),
+            )
+        case "frames.tipbod":
+            return StepFramesTipbod(
+                op=op,
+                ref=_expect_string(step.get("ref"), label="frames.tipbod.ref"),
+                body=_expect_int(step.get("body"), label="frames.tipbod.body"),
+                et=_expect_number(step.get("et"), label="frames.tipbod.et"),
+            )
+        case "frames.tisbod":
+            return StepFramesTisbod(
+                op=op,
+                ref=_expect_string(step.get("ref"), label="frames.tisbod.ref"),
+                body=_expect_int(step.get("body"), label="frames.tisbod.body"),
+                et=_expect_number(step.get("et"), label="frames.tisbod.et"),
+            )
+        case "frames.tkfram":
+            return StepFramesTkfram(
+                op=op,
+                typeId=_expect_int(step.get("typeId"), label="frames.tkfram.typeId"),
+            )
+        case "frames.xfmsta":
+            state = _expect_number_list(step.get("state"), label="frames.xfmsta.state")
+            if len(state) != 6:
+                raise ValueError("frames.xfmsta.state must have six components")
+            return StepFramesXfmsta(
+                op=op,
+                state=state,
+                from_=_expect_string(step.get("from"), label="frames.xfmsta.from"),
+                to=_expect_string(step.get("to"), label="frames.xfmsta.to"),
+                body=_expect_string(step.get("body"), label="frames.xfmsta.body"),
+            )
         case "frames.pxform":
             return StepFramesPxform(
                 op=op,

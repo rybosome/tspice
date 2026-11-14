@@ -1,9 +1,11 @@
 #include "tspice_backend_shim.h"
 
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
 
 #include "../handle_validation.h"
 
+#include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -757,5 +759,195 @@ int tspice_ckcov(
     return 1;
   }
 
+  return 0;
+}
+
+static int finish_frame_call(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// ZZBODKER builds the ID hash from paired name/code mappings. N0067
+// ZZHASHI takes signed abs(code), which has no representation for INT_MIN.
+static int check_body_mapping_codes(char *err, int errMaxBytes) {
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt names = 0, codes = 0;
+  SpiceChar type[2] = {0};
+  dtpool_c("NAIF_BODY_NAME", &found, &names, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found || type[0] != 'C' || names > 14983) return 0;
+  dtpool_c("NAIF_BODY_CODE", &found, &codes, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found || type[0] != 'N' || names != codes) return 0;
+  int unsafe = 0;
+  for (SpiceInt start = 0; start < codes; start += 64) {
+    SpiceDouble values[64];
+    SpiceInt used = 0;
+    gdpool_c("NAIF_BODY_CODE", start, 64, &used, values, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      // GIPOOL validates and rounds all codes before any hashes are built.
+      // Let it report its own conversion error, including in a mixed table.
+      if (!(values[i] >= (double)INT_MIN && values[i] <= (double)INT_MAX)) return 0;
+      if (values[i] <= (double)INT_MIN + 0.5) unsafe = 1;
+    }
+  }
+  if (!unsafe) return 0;
+  // ZZBODKER also diagnoses blank names (in a 36-byte record) before
+  // entering ZZBODINI. Preserve that ordinary error and its traceback.
+  for (SpiceInt start = 0; start < names; start += 64) {
+    SpiceChar rows[64][37];
+    SpiceInt used = 0;
+    gcpool_c("NAIF_BODY_NAME", start, 64, 37, &used, rows, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      if (!rows[i][0]) return 0;
+    }
+  }
+  return tspice_frames_invalid_arg(err, errMaxBytes, "NAIF_BODY_CODE outside the safe N0067 body hash range");
+}
+
+
+// A text PCK phase degree is converted by i_dnnt before TISBOD checks it.
+// Require exactly one readable, safely roundable value when the phase table
+// is present. Ordinary representable unsupported degrees keep CSPICE errors.
+static int check_phase_degree(int body, char *err, int errMaxBytes) {
+  int system = body >= 100 && body <= 999 ? body / 100 :
+               body >= 10000 && body <= 99999 ? body / 10000 : body;
+  char item[48], type[2];
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt n = 0;
+  snprintf(item, sizeof(item), "BODY%d_NUT_PREC_ANGLES", system);
+  dtpool_c(item, &found, &n, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found) return 0;
+  snprintf(item, sizeof(item), "BODY%d_MAX_PHASE_DEGREE", system);
+  dtpool_c(item, &found, &n, type);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!found) return 0;
+  if (type[0] == 'N' && n == 1) {
+    SpiceDouble degree = 0;
+    gdpool_c(item, 0, 1, &n, &degree, &found);
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+    if (degree > (double)INT_MIN - 0.5 && degree < (double)INT_MAX + 0.5) return 0;
+  }
+  return tspice_frames_invalid_arg(err, errMaxBytes, "Invalid N0067 PCK phase degree storage or integer range");
+}
+
+int tspice_bltfrm(int frameClass, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  SpiceCell *ids = NULL;
+  int status = tspice_frames_validate_cell_handle(handle, SPICE_INT, "cell", "bltfrm()", &ids, err, errMaxBytes);
+  if (status != 0) return status;
+  bltfrm_c(frameClass, ids);
+  return finish_frame_call(err, errMaxBytes);
+}
+
+int tspice_pxfrm2(const char *from, const char *to, double etfrom, double etto, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !from || !to) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing pxfrm2 argument storage");
+  // PXFRM2 multiplies two automatic arrays unconditionally. REFCHG can
+  // return without writing one after an orientation error. Preflight both
+  // exact legs in order, under the caller's SPICE lock, before dispatch.
+  if (*from && *to) {
+    integer fromId = 0, toId = 0, j2000 = 1;
+    SpiceDouble scratch[9] = {0};
+    chkin_c("pxfrm2_c");
+    chkin_c("PXFRM2");
+    namfrm_c(from, &fromId);
+    if (!failed_c()) namfrm_c(to, &toId);
+    if (!failed_c() && fromId && toId) {
+      if (fromId == INT_MIN || toId == INT_MIN) {
+        chkout_c("PXFRM2");
+        chkout_c("pxfrm2_c");
+        return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+      }
+      refchg_(&fromId, &j2000, &etfrom, scratch);
+      if (!failed_c()) refchg_(&j2000, &toId, &etto, scratch);
+    }
+    chkout_c("PXFRM2");
+    chkout_c("pxfrm2_c");
+    if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  }
+  SpiceDouble result[3][3] = {0};
+  pxfrm2_c(from, to, etfrom, etto, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tipbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !ref) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tipbod argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (body == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  int status = check_phase_degree(body, err, errMaxBytes);
+  if (status != 0) return status;
+  SpiceDouble result[3][3] = {0};
+  tipbod_c(ref, body, et, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tisbod(const char *ref, int body, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !ref) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tisbod argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (body == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  int status = check_phase_degree(body, err, errMaxBytes);
+  if (status != 0) return status;
+  SpiceDouble result[6][6] = {0};
+  tisbod_c(ref, body, et, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_tkfram(int typeId, double *out, int *frame, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !frame || !found) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing tkfram argument storage");
+  // ZZHASHI uses signed abs() on the lookup ID.
+  if (typeId == INT_MIN) return tspice_frames_invalid_arg(err, errMaxBytes, "ID outside the N0067 frame hash range");
+  SpiceBoolean hasRotation = SPICEFALSE;
+  SpiceInt baseFrame = 0;
+  *found = 0;
+  SpiceDouble result[3][3] = {0};
+  tkfram_c(typeId, result, &baseFrame, &hasRotation);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!hasRotation) return 0;
+  *found = 1;
+  *frame = baseFrame;
+  memcpy(out, result, sizeof(result));
+  return 0;
+}
+
+int tspice_xfmsta(const double *state, const char *from, const char *to, const char *body, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  if (!out || !state || !from || !to || !body) return tspice_frames_invalid_arg(err, errMaxBytes, "Missing xfmsta argument storage");
+  // Only unequal coordinate systems involving a spheroid resolve the body.
+  if (*from && *to && *body && !eqstr_c(from, to) &&
+      (eqstr_c(from, "GEODETIC") || eqstr_c(to, "GEODETIC") ||
+       eqstr_c(from, "PLANETOGRAPHIC") || eqstr_c(to, "PLANETOGRAPHIC"))) {
+    int status = check_body_mapping_codes(err, errMaxBytes);
+    if (status != 0) return status;
+  }
+  SpiceDouble result[6] = {0};
+  xfmsta_c(state, from, to, body, result);
+  if (failed_c()) return finish_frame_call(err, errMaxBytes);
+  memcpy(out, result, sizeof(result));
   return 0;
 }

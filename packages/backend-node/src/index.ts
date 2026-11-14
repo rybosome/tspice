@@ -44,6 +44,7 @@ export function spiceVersion(): string {
 export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const native = getNodeBinding();
   const stager = createKernelStager();
+  const ownedIntCells = new Set<number>();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
   const timeApi = createTimeApi(native);
@@ -56,7 +57,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native, stager),
+      ...createFramesApi(native, stager, ownedIntCells),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
@@ -70,7 +71,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
     kit: {
       ...createTimeKitApi(native),
       ...createFileIoKitApi(outputs),
-      ...createCellsWindowsKitApi(native),
+      ...createCellsWindowsKitApi(native, ownedIntCells),
     },
   };
 

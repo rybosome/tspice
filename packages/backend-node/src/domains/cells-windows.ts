@@ -85,6 +85,7 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
 /** Create backend kit hooks for cells/windows backed by the native Node addon. */
 export function createCellsWindowsKitApi(
   native: NativeAddon,
+  ownedIntCells: Set<number>,
 ): CellsWindowsKitApi {
   return {
     newIntCell: (size) => {
@@ -94,6 +95,7 @@ export function createCellsWindowsKitApi(
         typeof handle === "number",
         "Expected newIntCell() to return a number handle",
       );
+      ownedIntCells.add(handle);
       return handle as SpiceIntCell;
     },
     newDoubleCell: (size) => {
@@ -128,6 +130,7 @@ export function createCellsWindowsKitApi(
     freeCell: (cell) => {
       assertSpiceInt32NonNegative(cell as unknown as number, "freeCell(cell)");
       native.freeCell(cell);
+      ownedIntCells.delete(cell);
     },
     freeWindow: (window) => {
       assertSpiceInt32NonNegative(

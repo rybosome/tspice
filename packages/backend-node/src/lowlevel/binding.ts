@@ -341,6 +341,30 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export ckgpav(inst, sclkdp, tol, ref)",
   );
   invariant(
+    typeof native.bltfrm === "function",
+    "Expected native addon to export bltfrm",
+  );
+  invariant(
+    typeof native.pxfrm2 === "function",
+    "Expected native addon to export pxfrm2",
+  );
+  invariant(
+    typeof native.tipbod === "function",
+    "Expected native addon to export tipbod",
+  );
+  invariant(
+    typeof native.tisbod === "function",
+    "Expected native addon to export tisbod",
+  );
+  invariant(
+    typeof native.tkfram === "function",
+    "Expected native addon to export tkfram",
+  );
+  invariant(
+    typeof native.xfmsta === "function",
+    "Expected native addon to export xfmsta",
+  );
+  invariant(
     typeof native.pxform === "function",
     "Expected native addon to export pxform(from, to, et)",
   );

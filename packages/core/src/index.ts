@@ -87,6 +87,7 @@ export {
   assertMat3ArrayLike9,
   isMat3ArrayLike9,
   brandMat3ColMajor,
+  brandMat3RowMajorResult,
   brandMat3RowMajor,
   isBrandedMat3ColMajor,
   isBrandedMat3RowMajor,

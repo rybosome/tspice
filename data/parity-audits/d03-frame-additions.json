@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "batch": "d03-frame-additions",
+  "traceFiles": [
+    "docs/step8-frame-metadata.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/frames.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/domains/frames.cc",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/domains/frames.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/frame-metadata-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/frames.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/frame-metadata-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/mat3.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_transform_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/frame-metadata.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-d03-dc3b5c59-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-d03-dc3b5c59-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d03-dc3b5c59-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "commit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+      "observation": "Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d03-dc3b5c59-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "commit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+      "observation": "Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "bltfrm_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bltfrm_c.html",
+      "semantics": "Replace a live integer cell with all built-in IDs for class or −1. N0067 requires room for 145 including empty classes.",
+      "scenarios": [
+        {
+          "caseId": "frames-bltfrm-all",
+          "coverage": ["success", "edge"],
+          "observes": "Every built-in ID is compared at the exact N0067 capacity. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-bltfrm-classes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete sorted sets in the same cell as the class changes, including empty sets. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-bltfrm-replace",
+          "coverage": ["success", "edge"],
+          "observes": "A previously inserted unrelated ID disappears when BLTFRM overwrites the caller cell. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-bltfrm-loaded-fk",
+          "coverage": ["success", "edge"],
+          "observes": "Kernel-defined frames do not enter the built-in IDs. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-bltfrm-undersized",
+          "coverage": ["error", "edge"],
+          "observes": "N0067 requires the full built-in capacity even for a class with no members. Require SETTOOSMALL."
+        },
+        {
+          "caseId": "frames-bltfrm-zero-room",
+          "coverage": ["error", "edge"],
+          "observes": "Zero room signals the actual capacity diagnostic. Require SETTOOSMALL."
+        },
+        {
+          "caseId": "frames-bltfrm-invalid-minus2",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
+        },
+        {
+          "caseId": "frames-bltfrm-invalid-0",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
+        },
+        {
+          "caseId": "frames-bltfrm-invalid-7",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported class precedes capacity validation. Require BADFRAMECLASS."
+        }
+      ],
+      "edgeAssessment": "Every built-in ID is compared at the exact N0067 capacity. Compare complete sorted sets in the same cell as the class changes, including empty sets. A previously inserted unrelated ID disappears when BLTFRM overwrites the caller cell. Kernel-defined frames do not enter the built-in IDs.",
+      "errorAssessment": "Registered real diagnostics include BADFRAMECLASS, SETTOOSMALL. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Handwritten synthetic repository fixture; see fixtures/README.md.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 8c6a302c2554a49e837220bbae7f5ceb5191a27584ab43b343a39db07474ebda"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.bltfrm -> FramesApi serialized Node native registration -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.bltfrm -> FramesApi WASM export with scoped buffers -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "pxfrm2_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxfrm2_c.html",
+      "semantics": "Evaluate orientation of two named frames at independently specified TDB epochs and return nine row-major components.",
+      "scenarios": [
+        {
+          "caseId": "frames-pxfrm2-inertial",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete inertial rotations in both directions at distinct epochs. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-pxfrm2-dynamic",
+          "coverage": ["success", "edge"],
+          "observes": "One evolving frame at different epochs need not map to itself by identity. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-pxfrm2-mixed-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Map between independently moving frames and vary each time separately. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-pxfrm2-missing-from",
+          "coverage": ["error", "edge"],
+          "observes": "The first known frame lacks orientation coverage. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-pxfrm2-missing-to",
+          "coverage": ["error", "edge"],
+          "observes": "The second known frame lacks orientation coverage. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-pxfrm2-unknown-before-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown names are diagnosed before evaluating either leg. Require UNKNOWNFRAME."
+        },
+        {
+          "caseId": "frames-pxfrm2-empty",
+          "coverage": ["error", "edge"],
+          "observes": "An empty name signals the original C string error. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "frames-pxfrm2-unloaded",
+          "coverage": ["error", "edge"],
+          "observes": "Unloading a resolved rotating frame invalidates its transform. Require UNKNOWNFRAME."
+        }
+      ],
+      "edgeAssessment": "Compare complete inertial rotations in both directions at distinct epochs. One evolving frame at different epochs need not map to itself by identity. Map between independently moving frames and vary each time separately.",
+      "errorAssessment": "Registered real diagnostics include EMPTYSTRING, FRAMEDATANOTFOUND, UNKNOWNFRAME. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Handwritten synthetic repository fixture; see fixtures/README.md.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 8c6a302c2554a49e837220bbae7f5ceb5191a27584ab43b343a39db07474ebda"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing NAIF generic text PCK pck00010, distributed unchanged with the repository.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [
+        {
+          "id": "pxfrm2-failed-leg-automatic-storage",
+          "status": "repaired",
+          "summary": "A failing leg in the original f2c PXFRM2 can leave automatic input to the unconditional matrix product uninitialized.",
+          "repair": "Preflight both REFCHG calls into initialized scratch. Preserve the scientific error and trace before returning; use canonical PXFRM2 for the actual successful matrix.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/frames.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/frame_transform_oracle.py",
+            "docs/step8-frame-metadata.md"
+          ],
+          "caseIds": ["frames-pxfrm2-missing-from", "frames-pxfrm2-missing-to"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pxfrm2 -> FramesApi serialized Node native registration -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.pxfrm2 -> FramesApi WASM export with scoped buffers -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tipbod_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tipbod_c.html",
+      "semantics": "Rotate inertial positions into a body-fixed PCK class frame at ET, which is measured in TDB seconds past J2000.",
+      "scenarios": [
+        {
+          "caseId": "frames-tipbod-earth-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tipbod-reference-bodies",
+          "coverage": ["success", "edge"],
+          "observes": "Change the inertial reference and PCK body class ID independently. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tipbod-missing",
+          "coverage": ["error", "edge"],
+          "observes": "A missing orientation kernel produces the real toolkit message. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-tipbod-ref-error",
+          "coverage": ["error", "edge"],
+          "observes": "A loaded body orientation does not make a body-fixed reference inertial. Require IRFNOTREC."
+        },
+        {
+          "caseId": "frames-tipbod-frame-not-body",
+          "coverage": ["error", "edge"],
+          "observes": "An IAU frame ID is distinct from its PCK body class ID. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-tipbod-reloaded",
+          "coverage": ["success", "edge"],
+          "observes": "PCK unload and reload invalidate and rebuild orientation caches. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tipbod-empty",
+          "coverage": ["error", "edge"],
+          "observes": "An empty inertial reference signals EMPTYSTRING. Require EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Change the inertial reference and PCK body class ID independently. PCK unload and reload invalidate and rebuild orientation caches.",
+      "errorAssessment": "Registered real diagnostics include EMPTYSTRING, FRAMEDATANOTFOUND, IRFNOTREC. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing NAIF generic text PCK pck00010, distributed unchanged with the repository.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tipbod -> FramesApi serialized Node native registration -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tipbod -> FramesApi WASM export with scoped buffers -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tisbod_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tisbod_c.html",
+      "semantics": "Return 36 row-major components transforming position/velocity, including the derivative per second.",
+      "scenarios": [
+        {
+          "caseId": "frames-tisbod-earth-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tisbod-reference-bodies",
+          "coverage": ["success", "edge"],
+          "observes": "Change the inertial reference and PCK body class ID independently. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tisbod-missing",
+          "coverage": ["error", "edge"],
+          "observes": "A missing orientation kernel produces the real toolkit message. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-tisbod-ref-error",
+          "coverage": ["error", "edge"],
+          "observes": "A loaded body orientation does not make a body-fixed reference inertial. Require IRFNOTREC."
+        },
+        {
+          "caseId": "frames-tisbod-frame-not-body",
+          "coverage": ["error", "edge"],
+          "observes": "An IAU frame ID is distinct from its PCK body class ID. Require FRAMEDATANOTFOUND."
+        },
+        {
+          "caseId": "frames-tisbod-reloaded",
+          "coverage": ["success", "edge"],
+          "observes": "PCK unload and reload invalidate and rebuild orientation caches. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tisbod-empty",
+          "coverage": ["error", "edge"],
+          "observes": "An empty inertial reference signals EMPTYSTRING. Require EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "Compare every row-major component for a rotating Earth at negative, zero and positive ET. Change the inertial reference and PCK body class ID independently. PCK unload and reload invalidate and rebuild orientation caches.",
+      "errorAssessment": "Registered real diagnostics include EMPTYSTRING, FRAMEDATANOTFOUND, IRFNOTREC. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing NAIF generic text PCK pck00010, distributed unchanged with the repository.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tisbod -> FramesApi serialized Node native registration -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tisbod -> FramesApi WASM export with scoped buffers -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "tkfram_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkfram_c.html",
+      "semantics": "Look up a TK class ID and publish rotation to the base frame and its numeric ID on a successful true flag.",
+      "scenarios": [
+        {
+          "caseId": "frames-tkfram-class-not-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve the explicit class ID distinct from the frame identification code. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tkfram-angles-and-matrix",
+          "coverage": ["success", "edge"],
+          "observes": "Check both matrix and angle specifications with asymmetric rotation and base ID. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tkfram-reload",
+          "coverage": ["success", "edge"],
+          "observes": "The same fixed frame responds to a live kernel angle change. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-tkfram-zero",
+          "coverage": ["error", "edge"],
+          "observes": "Zero is an invalid frame class ID. Require ZEROFRAMEID."
+        },
+        {
+          "caseId": "frames-tkfram-unknown",
+          "coverage": ["error", "edge"],
+          "observes": "An unknown frame signals a real incomplete-frame exception. Require INCOMPLETEFRAME."
+        },
+        {
+          "caseId": "frames-tkfram-mismatched-id",
+          "coverage": ["error", "edge"],
+          "observes": "Looking up the frame code instead of its distinct class ID lacks a required definition. Require VARIABLENOTFOUND."
+        },
+        {
+          "caseId": "frames-tkfram-invalid-relative",
+          "coverage": ["error", "edge"],
+          "observes": "An unknown base frame triggers a toolkit diagnostic. Require BADFRAMESPEC."
+        },
+        {
+          "caseId": "frames-tkfram-unloaded",
+          "coverage": ["error", "edge"],
+          "observes": "Unloading this FK expires both class metadata and cached fixed rotations. Require INCOMPLETEFRAME."
+        }
+      ],
+      "edgeAssessment": "Resolve the explicit class ID distinct from the frame identification code. Check both matrix and angle specifications with asymmetric rotation and base ID. The same fixed frame responds to a live kernel angle change.",
+      "errorAssessment": "Registered real diagnostics include BADFRAMESPEC, INCOMPLETEFRAME, VARIABLENOTFOUND, ZEROFRAMEID. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-frames.tf",
+          "provenance": "Handwritten synthetic repository fixture; see fixtures/README.md.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 8c6a302c2554a49e837220bbae7f5ceb5191a27584ab43b343a39db07474ebda"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Handwritten synthetic repository fixture; see fixtures/README.md.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tkfram -> FramesApi serialized Node native registration -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.tkfram -> FramesApi WASM export with scoped buffers -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "xfmsta_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xfmsta_c.html",
+      "semantics": "Transform position components and rates between six coordinate systems with km, radians and seconds, including kernel-dependent spheroid shape and longitude sense.",
+      "scenarios": [
+        {
+          "caseId": "frames-xfmsta-rectangular-to-all",
+          "coverage": ["success", "edge"],
+          "observes": "Compare each coordinate, ordering and derivative for every destination. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-cylindrical-to-rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-latitudinal-to-rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-spherical-to-rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-geodetic-to-rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-planetographic-to-rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the six output components and all three velocity contributions. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-same-system",
+          "coverage": ["success", "edge"],
+          "observes": "Identical systems copy before resolving radii or checking singularities. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-axis",
+          "coverage": ["success", "edge"],
+          "observes": "A purely axial velocity has directly specified rates even at a pole or origin. Compare each returned value on both compiled backends."
+        },
+        {
+          "caseId": "frames-xfmsta-transverse",
+          "coverage": ["error", "edge"],
+          "observes": "A nonzero transverse velocity at a pole makes the coordinate derivative undefined. Require INVALIDSTATE."
+        },
+        {
+          "caseId": "frames-xfmsta-bad-system",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown coordinate system produces the CSPICE protocol error. Require COORDSYSNOTREC."
+        },
+        {
+          "caseId": "frames-xfmsta-empty-body",
+          "coverage": ["error", "edge"],
+          "observes": "The C wrapper requires nonempty body even for rectangular identity. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "frames-xfmsta-missing-radii",
+          "coverage": ["error", "edge"],
+          "observes": "A known body can lack required spheroid radii. Require KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "frames-xfmsta-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "Conversion involving planetographic coordinates resolves actual body IDs. Require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "frames-xfmsta-triaxial",
+          "coverage": ["error", "edge"],
+          "observes": "The loaded triaxial body has unequal equatorial radii. Require NOTSUPPORTED."
+        },
+        {
+          "caseId": "frames-xfmsta-longitude-override",
+          "coverage": ["success", "edge"],
+          "observes": "Explicit east-positive Mars longitude changes planetographic coordinates and angular rates. Compare each returned value on both compiled backends."
+        }
+      ],
+      "edgeAssessment": "Compare each coordinate, ordering and derivative for every destination. Compare the six output components and all three velocity contributions. Compare the six output components and all three velocity contributions. Compare the six output components and all three velocity contributions. Compare the six output components and all three velocity contributions. Compare the six output components and all three velocity contributions. Identical systems copy before resolving radii or checking singularities. A purely axial velocity has directly specified rates even at a pole or origin. Explicit east-positive Mars longitude changes planetographic coordinates and angular rates.",
+      "errorAssessment": "Registered real diagnostics include COORDSYSNOTREC, EMPTYSTRING, IDCODENOTFOUND, INVALIDSTATE, KERNELVARNOTFOUND, NOTSUPPORTED. Wrapper validation is tested separately from toolkit errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Handwritten synthetic repository fixture; see fixtures/README.md.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/pck00010.tpc",
+          "provenance": "Existing NAIF generic text PCK pck00010, distributed unchanged with the repository.",
+          "distribution": "Existing repository test fixture; no new external data. SHA-256 59468328349aa730d18bf1f8d7e86efe6e40b75dfb921908f99321b3a7a701d2"
+        }
+      ],
+      "fixtureRationale": "Reuse the exact pinned versions of checked-in authored FK definitions and the generic text PCK as required by the registered scenarios; kernel-free requests exercise actual missing-data paths.",
+      "cleanup": "Every scenario isolates kernel state. Shared C captures/reset toolkit errors, the WASM adapter frees partial allocations, Node serializes SPICE calls. The caller releases owned BLTFRM cells; public tests dispose clients.",
+      "tolerance": "Unchanged registered numeric comparator, 1e-12 absolute or relative, on every numerical component. Supplemental finite-difference checks use 2e-12 absolute and IEEE classifications are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xfmsta -> FramesApi serialized Node native registration -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.xfmsta -> FramesApi WASM export with scoped buffers -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
