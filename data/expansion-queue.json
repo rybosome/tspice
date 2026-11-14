@@ -2709,18 +2709,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/745"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "108 registered live comparisons, eight public, seven Node and 26 actual WASM tests passed. The real Chrome worker matched all three at two epochs and recovered after missing orientation data. 54 workflows, 246 steps, 124 new-method calls, 36 genuine terminal errors. See docs/step8-geometry-quantities.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
+          "result": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run complete required local lanes, inspect canonical CI on the source and recheck final-head CI and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-geometry-quantities",
       "branch": "codex/expand-geometry-quantities",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "108 registered live comparisons, eight public, seven Node and 26 actual WASM tests passed. The real Chrome worker matched all three at two epochs and recovered after missing orientation data."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 7ae2be19. 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "108 registered live comparisons, eight public, seven Node and 26 actual WASM tests passed. The real Chrome worker matched all three at two epochs and recovered after missing orientation data."
     },
     {
       "id": "E17-plate-math",

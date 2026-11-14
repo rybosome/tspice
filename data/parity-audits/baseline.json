@@ -414,8 +414,8 @@
       "id": "e16-geometry-quantities",
       "routines": ["phaseq_c", "lspcn_c", "trgsep_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Capture the complete native-required and JavaScript lanes, inspected canonical CI and final-head checks before marking these reviewed routines verified."
+      "prs": ["https://github.com/rybosome/tspice/pull/745"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
