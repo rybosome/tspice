@@ -1342,6 +1342,77 @@ export type StepDskDski02 = {
   start: number;
   room: number;
 };
+export type StepDskIllumPl02 = {
+  op: "dsk.illum_pl02";
+  handleId: string;
+  dladscId: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  obsrvr: string;
+  spoint: Vec3;
+};
+export type StepDskIllumPlidPl02 = {
+  op: "dsk.illum_plid_pl02";
+  handleId: string;
+  dladscId: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  obsrvr: string;
+  spoint: Vec3;
+  plid: number;
+};
+export type StepDskLimbPl02 = {
+  op: "dsk.limb_pl02";
+  handleId: string;
+  dladscId: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  obsrvr: string;
+  npts: number;
+};
+export type StepDskLlgridPl02 = {
+  op: "dsk.llgrid_pl02";
+  handleId: string;
+  dladscId: string;
+  grid: [number, number][];
+};
+export type StepDskSubptPl02 = {
+  op: "dsk.subpt_pl02";
+  handleId: string;
+  dladscId: string;
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  obsrvr: string;
+};
+export type StepDskSubsolPl02 = {
+  op: "dsk.subsol_pl02";
+  handleId: string;
+  dladscId: string;
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  obsrvr: string;
+};
+export type StepDskTermPl02 = {
+  op: "dsk.term_pl02";
+  handleId: string;
+  dladscId: string;
+  trmtyp: string;
+  source: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  obsrvr: string;
+  npts: number;
+};
 export type StepDskDskx02 = {
   op: "dsk.dskx02";
   handleId: string;
@@ -1600,6 +1671,13 @@ export type WorkflowStep =
   | StepDskDlabfs
   | StepDskDskd02
   | StepDskDski02
+  | StepDskIllumPl02
+  | StepDskIllumPlidPl02
+  | StepDskLimbPl02
+  | StepDskLlgridPl02
+  | StepDskSubptPl02
+  | StepDskSubsolPl02
+  | StepDskTermPl02
   | StepDskDskx02
   | StepDskDskxsi
   | StepDskDskxv
@@ -2081,6 +2159,39 @@ export type StepOutput =
   | { op: "dsk.dlabfs"; value: { found: boolean } }
   | { op: "dsk.dskd02"; value: number[] }
   | { op: "dsk.dski02"; value: number[] }
+  | {
+      op: "dsk.illum_pl02";
+      value: { phase: number; solar: number; emissn: number };
+    }
+  | {
+      op: "dsk.illum_plid_pl02";
+      value: {
+        trgepc: number;
+        srfvec: Vec3;
+        phase: number;
+        solar: number;
+        emissn: number;
+        visible: boolean;
+        lit: boolean;
+      };
+    }
+  | {
+      op: "dsk.limb_pl02";
+      value: { trgepc: number; obspos: Vec3; lmbpts: Vec3[]; pltids: number[] };
+    }
+  | { op: "dsk.llgrid_pl02"; value: { srfpts: Vec3[]; pltids: number[] } }
+  | {
+      op: "dsk.subpt_pl02";
+      value: { spoint: Vec3; alt: number; plateID: number };
+    }
+  | {
+      op: "dsk.subsol_pl02";
+      value: { spoint: Vec3; dist: number; plateID: number };
+    }
+  | {
+      op: "dsk.term_pl02";
+      value: { trgepc: number; obspos: Vec3; trmpts: Vec3[]; pltids: number[] };
+    }
   | {
       op: "dsk.dskx02";
       value: { found: false } | { found: true; xpt: Vec3; plid: number };

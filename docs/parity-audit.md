@@ -78,3 +78,7 @@ E19 compares type 2 plate intercepts, loaded surface search and source metadata,
 ## Extended surface geometry
 
 E20 compares surface grids, normals and complete dense limb and terminator arrays on analytic and disconnected geometry. [Source checks and independent observations](step8-extended-surfaces.md) · [Per-routine judgments](../data/parity-audits/e20-extended-surfaces.json)
+
+## Legacy plate geometry
+
+E21 compares every defined field of the seven legacy, segment-specific plate operations through their literal N0067 ABI. [Methods and source checks](step8-legacy-plates.md) · [Per-routine evidence](../data/parity-audits/e21-legacy-plate-geometry.json)

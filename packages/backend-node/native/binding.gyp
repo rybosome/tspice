@@ -7,7 +7,13 @@
     {
       "target_name": "tspice_backend_node",
       "sources": [
-        "generated/limbpt.c",
+        "<!@(node ../../../scripts/stage-aberration-cache.mjs)",
+        "generated/limb_pl02.c",
+        "generated/term_pl02.c",
+        "generated/subsol_pl02.c",
+        "generated/dskx02_c.c",
+        "generated/inedpl_c.c",
+        "generated/edlimb_c.c",
         "src/addon.cc",
         "src/addon_common.cc",
         "src/cell_handles.cc",
@@ -56,6 +62,7 @@
       "conditions": [
         ["OS=='linux'", { "libraries": ["-lm"] }]
       ],
+      "cflags_c": ["-std=gnu11"],
       "cflags": ["-fno-exceptions"],
       "cflags_cc": ["-std=c++17", "-fno-exceptions"]
     },

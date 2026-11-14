@@ -456,6 +456,18 @@ explicit contract preconditions, not claims of executing CSPICE error paths.
 
 ## Domain: `dsk` queries (`DskApi`)
 
+[Legacy plate methods, checked source paths and independent reference](step8-legacy-plates.md)
+
+| Raw method        | CSPICE entry      | Result                                                                                                                                                                            |
+| ----------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `illum_pl02`      | `illum_pl02`      | Use the radially selected facet normal and supplied surface point to compute phase, solar incidence and emission angles.                                                          |
+| `illum_plid_pl02` | `illum_plid_pl02` | Use the supplied one-based plate and surface point on a latitudinal segment. Return target epoch, surface vector, three angles and independent illumination and visibility flags. |
+| `limb_pl02`       | `limb_pl02`       | Project the reference-ellipsoid limb samples onto the selected plate mesh and return epoch, observer position, points and IDs in calculation order.                               |
+| `llgrid_pl02`     | `llgrid_pl02`     | Use each ordered longitude and latitude to locate a radial plate intercept, retaining every point/plate-ID pair.                                                                  |
+| `subpt_pl02`      | `subpt_pl02`      | Choose an intercept or ellipsoid-near-point ray and return its sub-observer point, signed altitude and plate ID.                                                                  |
+| `subsol_pl02`     | `subsol_pl02`     | Choose a solar intercept or ellipsoid-near-point ray and return the subsolar surface point, distance to the observer and plate ID.                                                |
+| `term_pl02`       | `term_pl02`       | Project the penumbral or umbral extended-source terminator onto the selected mesh and return epoch, observer position and all point/plate-ID pairs.                               |
+
 [Ray intersections, source metadata and tolerance lifecycle](step8-dsk-intersections.md)
 
 | Raw method | CSPICE operation                                | Contract effect                                                                                                    |

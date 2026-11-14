@@ -2321,6 +2321,27 @@ export function createFakeBackend(
 
     // -- DSK ----------------------------------------------------------------
 
+    illum_pl02: () => {
+      throw new Error("Fake backend: illum_pl02 is not implemented");
+    },
+    illum_plid_pl02: () => {
+      throw new Error("Fake backend: illum_plid_pl02 is not implemented");
+    },
+    limb_pl02: () => {
+      throw new Error("Fake backend: limb_pl02 is not implemented");
+    },
+    llgrid_pl02: () => {
+      throw new Error("Fake backend: llgrid_pl02 is not implemented");
+    },
+    subpt_pl02: () => {
+      throw new Error("Fake backend: subpt_pl02 is not implemented");
+    },
+    subsol_pl02: () => {
+      throw new Error("Fake backend: subsol_pl02 is not implemented");
+    },
+    term_pl02: () => {
+      throw new Error("Fake backend: term_pl02 is not implemented");
+    },
     dskx02: () => {
       throw new Error("Fake backend: dskx02 is not implemented");
     },

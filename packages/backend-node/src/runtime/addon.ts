@@ -230,6 +230,85 @@ export type NativeAddon = {
 
   dskobj(dsk: string, bodidsCellHandle: number): void;
   dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
+  illum_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    spoint: Float64Array,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  illum_plid_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    spoint: Float64Array,
+    plid: number,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  limb_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obsrvr: string,
+    npts: number,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  llgrid_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    npts: number,
+    grid: Float64Array,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  subpt_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  subsol_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
+  term_pl02(
+    handle: number,
+    descr: DlaDescriptor,
+    trmtyp: string,
+    source: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obsrvr: string,
+    npts: number,
+    out: Float64Array,
+    ids: Int32Array,
+  ): void;
   dskx02(
     handle: number,
     dladsc: DlaDescriptor,

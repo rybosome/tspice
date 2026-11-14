@@ -58,6 +58,13 @@ from .models import (
     StepDskDskb02,
     StepDskDskd02,
     StepDskDski02,
+    StepDskIllumPl02,
+    StepDskIllumPlidPl02,
+    StepDskLimbPl02,
+    StepDskLlgridPl02,
+    StepDskSubptPl02,
+    StepDskSubsolPl02,
+    StepDskTermPl02,
     StepDskDskx02,
     StepDskDskxsi,
     StepDskDskxv,
@@ -1555,6 +1562,84 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 room=_expect_int(step.get("room"), label="dsk.dski02.room"),
             )
 
+        case "dsk.illum_pl02":
+            return StepDskIllumPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.illum_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.illum_pl02.dladscId"),
+                target=_expect_string(step.get("target"),label="dsk.illum_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.illum_pl02.et"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.illum_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.illum_pl02.obsrvr"),
+                spoint=_expect_vec3(step.get("spoint"),label="dsk.illum_pl02.spoint"),
+            )
+        case "dsk.illum_plid_pl02":
+            return StepDskIllumPlidPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.illum_plid_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.illum_plid_pl02.dladscId"),
+                target=_expect_string(step.get("target"),label="dsk.illum_plid_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.illum_plid_pl02.et"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.illum_plid_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.illum_plid_pl02.obsrvr"),
+                spoint=_expect_vec3(step.get("spoint"),label="dsk.illum_plid_pl02.spoint"),
+                plid=_expect_int(step.get("plid"),label="dsk.illum_plid_pl02.plid"),
+            )
+        case "dsk.limb_pl02":
+            return StepDskLimbPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.limb_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.limb_pl02.dladscId"),
+                target=_expect_string(step.get("target"),label="dsk.limb_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.limb_pl02.et"),
+                fixref=_expect_string(step.get("fixref"),label="dsk.limb_pl02.fixref"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.limb_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.limb_pl02.obsrvr"),
+                npts=_expect_int(step.get("npts"),label="dsk.limb_pl02.npts"),
+            )
+        case "dsk.llgrid_pl02":
+            return StepDskLlgridPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.llgrid_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.llgrid_pl02.dladscId"),
+                grid=_expect_lonlat_rows(step.get("grid"),label="dsk.llgrid_pl02.grid"),
+            )
+        case "dsk.subpt_pl02":
+            return StepDskSubptPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.subpt_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.subpt_pl02.dladscId"),
+                method=_expect_string(step.get("method"),label="dsk.subpt_pl02.method"),
+                target=_expect_string(step.get("target"),label="dsk.subpt_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.subpt_pl02.et"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.subpt_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.subpt_pl02.obsrvr"),
+            )
+        case "dsk.subsol_pl02":
+            return StepDskSubsolPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.subsol_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.subsol_pl02.dladscId"),
+                method=_expect_string(step.get("method"),label="dsk.subsol_pl02.method"),
+                target=_expect_string(step.get("target"),label="dsk.subsol_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.subsol_pl02.et"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.subsol_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.subsol_pl02.obsrvr"),
+            )
+        case "dsk.term_pl02":
+            return StepDskTermPl02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.term_pl02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.term_pl02.dladscId"),
+                trmtyp=_expect_string(step.get("trmtyp"),label="dsk.term_pl02.trmtyp"),
+                source=_expect_string(step.get("source"),label="dsk.term_pl02.source"),
+                target=_expect_string(step.get("target"),label="dsk.term_pl02.target"),
+                et=_expect_number(step.get("et"),label="dsk.term_pl02.et"),
+                fixref=_expect_string(step.get("fixref"),label="dsk.term_pl02.fixref"),
+                abcorr=_expect_string(step.get("abcorr"),label="dsk.term_pl02.abcorr"),
+                obsrvr=_expect_string(step.get("obsrvr"),label="dsk.term_pl02.obsrvr"),
+                npts=_expect_int(step.get("npts"),label="dsk.term_pl02.npts"),
+            )
         case "dsk.dskx02":
             return StepDskDskx02(
                 op=op,

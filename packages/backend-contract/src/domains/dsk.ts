@@ -46,6 +46,102 @@ export type DskType2Bookkeeping = {
 
 /** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
+  /** Compute phase, solar incidence and emission angles in radians. The surface direction locates a plate in the selected segment; its normal determines the angles. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_pl02.html */
+  illum_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    spoint: Readonly<SpiceVector3>,
+  ): { phase: number; solar: number; emissn: number };
+  /** Measure the angles in radians for a supplied surface point and one-based plate ID. Return the target epoch (TDB seconds), observer-to-point vector (km), and independent visibility and illumination flags. The routine requires a latitudinal type 2 segment. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_plid_pl02.html */
+  illum_plid_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+    spoint: Readonly<SpiceVector3>,
+    plid: number,
+  ): {
+    trgepc: number;
+    srfvec: SpiceVector3;
+    phase: number;
+    solar: number;
+    emissn: number;
+    visible: boolean;
+    lit: boolean;
+  };
+  /** Sample npts limb locations in their native cyclic order and return every corresponding one-based plate ID, observer position (km) and target epoch. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/limb_pl02.html */
+  limb_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obsrvr: string,
+    npts: number,
+  ): {
+    trgepc: number;
+    obspos: SpiceVector3;
+    lmbpts: SpiceVector3[];
+    pltids: number[];
+  };
+  /** Intersect radial directions defined by longitude and latitude in radians with the selected segment. Result rows (km) and their one-based plate IDs follow the input order, including repeated directions. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/llgrid_pl02.html */
+  llgrid_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    grid: readonly (readonly [number, number])[],
+  ): { srfpts: SpiceVector3[]; pltids: number[] };
+  /** Find the sub-observer point using INTERCEPT or ELLIPSOID NEAR POINT. Return the segment-frame point (km), altitude (km) and one-based plate ID. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subpt_pl02.html */
+  subpt_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+  ): { spoint: SpiceVector3; alt: number; plateID: number };
+  /** Find the subsolar point using INTERCEPT or ELLIPSOID NEAR POINT. Return the segment-frame point (km), distance from the observer (km) and one-based plate ID. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subsol_pl02.html */
+  subsol_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    obsrvr: string,
+  ): { spoint: SpiceVector3; dist: number; plateID: number };
+  /** Sample the UMBRAL or PENUMBRAL terminator of the named extended source in native order. Return target epoch, observer position and all point/one-based plate ID pairs. Use an owned open DAS and its traversed DLA descriptor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/term_pl02.html */
+  term_pl02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    trmtyp: string,
+    source: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    obsrvr: string,
+    npts: number,
+  ): {
+    trgepc: number;
+    obspos: SpiceVector3;
+    trmpts: SpiceVector3[];
+    pltids: number[];
+  };
   /** Return the nearest intercept (km) and one-based plate ID for a ray in the selected type 2 segment frame. Supply the traversed descriptor from the owning open DAS; a zero direction signals RAYISZEROVECTOR.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskx02_c.html */
   dskx02(

@@ -1,0 +1,524 @@
+[
+  {
+    "caseId": "dsk-term_pl02-geometry",
+    "description": "Compare complete physical results for a moving observer at separated signed epochs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": -47,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 31,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-unknown-target",
+    "description": "Unknown body text preserves the legacy lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "UNIDENTIFIED_LEGACY_TARGET",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-segment-target",
+    "description": "A mismatched center is diagnosed before any plate result is returned.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100103",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DSKTARGETMISMATCH"]
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-dense-order",
+    "description": "Compare all one, four and nine points in native angular order, including each discrete plate identity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 1
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 9
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-zero-count",
+    "description": "Zero requested points reaches the scientific count error using non-null sentinel storage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-negative-count",
+    "description": "A negative requested count reaches the same toolkit diagnostic without requesting negative storage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": -4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-shadow-type",
+    "description": "Compare penumbral and umbral cuts from a finite source, preserving all points and corresponding IDs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "PENUMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "SUN",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-term_pl02-unknown-source",
+    "description": "The terminator source is resolved independently from target and observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-plates.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-legacy-plates.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "h",
+        "dladscId": "d"
+      },
+      {
+        "op": "dsk.term_pl02",
+        "handleId": "h",
+        "dladscId": "d",
+        "trmtyp": "UMBRAL",
+        "source": "UNKNOWN_PLATE_SOURCE",
+        "target": "100101",
+        "et": 11.0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100102",
+        "npts": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTRANSLATION"]
+    }
+  }
+]

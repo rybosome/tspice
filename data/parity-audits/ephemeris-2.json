@@ -3543,7 +3543,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e20-8b8168dc-wasm",
@@ -3709,7 +3710,8 @@
         "ephemeris-spkssb-generated-segment-success",
         "ephemeris-spkssb-invalid-frame-error"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-node",
@@ -3877,7 +3879,8 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-wasm",
@@ -4045,7 +4048,8 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -4273,11 +4277,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkez -> typed node adapter -> actual N-API registered spkez binding -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4294,11 +4299,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkez -> typed wasm adapter -> actual compiled _tspice_spkez export -> shared tspice_spkez -> spkez_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkez. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -4526,11 +4532,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezp -> typed node adapter -> actual N-API registered spkezp binding -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4547,11 +4554,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezp -> typed wasm adapter -> actual compiled _tspice_spkezp export -> shared tspice_spkezp -> spkezp_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezp. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -4807,11 +4815,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezr -> typed node adapter -> actual N-API registered spkezr binding -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4828,11 +4837,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkezr -> typed wasm adapter -> actual compiled _tspice_spkezr export -> shared tspice_spkezr -> spkezr_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkezr. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -5088,11 +5098,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpos -> typed node adapter -> actual N-API registered spkpos binding -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5109,11 +5120,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpos -> typed wasm adapter -> actual compiled _tspice_spkpos export -> shared tspice_spkpos -> spkpos_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkpos. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -5265,11 +5277,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed node adapter -> actual N-API registered spkgeo binding -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5286,11 +5299,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgeo -> typed wasm adapter -> actual compiled _tspice_spkgeo export -> shared tspice_spkgeo -> spkgeo_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgeo. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -5442,11 +5456,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgps -> typed node adapter -> actual N-API registered spkgps binding -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5463,11 +5478,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkgps -> typed wasm adapter -> actual compiled _tspice_spkgps export -> shared tspice_spkgps -> spkgps_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkgps. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -5613,11 +5629,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkssb -> typed node adapter -> actual N-API registered spkssb binding -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5634,11 +5651,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkssb -> typed wasm adapter -> actual compiled _tspice_spkssb export -> shared tspice_spkssb -> spkssb_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spkssb. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -5791,11 +5809,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spksfs -> typed node adapter -> actual N-API registered spksfs binding -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5812,14 +5831,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spksfs -> typed wasm adapter -> actual compiled _tspice_spksfs export -> shared tspice_spksfs -> spksfs_c. Workflow dispatcher calls the actual raw method; Python invokes actual locked SpiceyPy spksfs. No substitute/composed numerical query.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source-bound observations remain historical for this combined E18/E19/E20/E21 delivery."
 }

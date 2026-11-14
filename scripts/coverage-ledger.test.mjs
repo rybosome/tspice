@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 178,
-    planned: 471,
+    implemented: 185,
+    planned: 464,
     excluded: 3,
-    caseFiles: 178,
-    scenarios: 1263,
+    caseFiles: 185,
+    scenarios: 1320,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -305,6 +305,36 @@ test("an existing but disconnected harness fallback does not count", (t) => {
   assert.throws(f.build, /Stale harness fallback dispatch for kplfrm/);
 });
 
+test("legacy routines require their external, unsuffixed inventory symbols", (t) => {
+  const f = fixture(t);
+  const ledger = f.build();
+  const names = [
+    "illum_pl02",
+    "illum_plid_pl02",
+    "limb_pl02",
+    "llgrid_pl02",
+    "subpt_pl02",
+    "subsol_pl02",
+    "term_pl02",
+  ];
+  for (const name of names) {
+    const entry = ledger.routines.find((row) => row.routine === name);
+    for (const backend of ["node", "wasm"]) {
+      assert.equal(
+        entry.mapping[backend].classification,
+        "same-named-cspice-entrypoint",
+      );
+      assert.ok(entry.mapping[backend].cspiceEntrypoints.includes(name));
+    }
+  }
+  f.edit(
+    "packages/backend-shim-c/src/domains/dsk.c",
+    "  llgrid_pl02(handle,",
+    "  unrelated_grid(handle,",
+  );
+  assert.throws(f.build, /Unexplained non-direct .* mapping for llgrid_pl02/);
+});
+
 test("DSKXSI requires the external SPICELIB operation and both outer trace calls", (t) => {
   const f = fixture(t);
   const routine = f.build().routines.find((row) => row.routine === "dskxsi_c");
@@ -471,7 +501,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 16);
+  assert.equal(ledger.audit.expansionRoutines, 23);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

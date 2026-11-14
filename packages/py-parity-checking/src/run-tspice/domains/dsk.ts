@@ -15,6 +15,13 @@ import type {
   StepDskDskb02,
   StepDskDskd02,
   StepDskDski02,
+  StepDskIllumPl02,
+  StepDskIllumPlidPl02,
+  StepDskLimbPl02,
+  StepDskLlgridPl02,
+  StepDskSubptPl02,
+  StepDskSubsolPl02,
+  StepDskTermPl02,
   StepDskDskx02,
   StepDskDskxsi,
   StepDskDskxv,
@@ -52,6 +59,13 @@ type DskStep =
   | StepDskDlabfs
   | StepDskDskd02
   | StepDskDski02
+  | StepDskIllumPl02
+  | StepDskIllumPlidPl02
+  | StepDskLimbPl02
+  | StepDskLlgridPl02
+  | StepDskSubptPl02
+  | StepDskSubsolPl02
+  | StepDskTermPl02
   | StepDskDskx02
   | StepDskDskxsi
   | StepDskDskxv
@@ -456,6 +470,98 @@ export function runDskStep(
       raw.dskstl(step.key, step.value);
       return { op: step.op, value: null };
     }
+    case "dsk.illum_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.illum_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.target,
+          step.et,
+          step.abcorr,
+          step.obsrvr,
+          step.spoint,
+        ),
+      };
+    case "dsk.illum_plid_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.illum_plid_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.target,
+          step.et,
+          step.abcorr,
+          step.obsrvr,
+          step.spoint,
+          step.plid,
+        ),
+      };
+    case "dsk.limb_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.limb_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.obsrvr,
+          step.npts,
+        ),
+      };
+    case "dsk.llgrid_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.llgrid_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.grid,
+        ),
+      };
+    case "dsk.subpt_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.subpt_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "dsk.subsol_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.subsol_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "dsk.term_pl02":
+      return {
+        op: step.op,
+        value: context.spice.raw.term_pl02(
+          requireTrackedHandle(context, step.handleId).handle,
+          requireDlaDescriptor(context, step.dladscId),
+          step.trmtyp,
+          step.source,
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.obsrvr,
+          step.npts,
+        ),
+      };
     case "dsk.dskx02": {
       const handle = requireTrackedHandle(context, step.handleId).handle;
       return {

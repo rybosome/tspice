@@ -2358,7 +2358,8 @@
         "geometry-gf-gfstol-invalid-value-error",
         "geometry-gf-gfstol-success"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e20-8b8168dc-wasm",
@@ -2479,7 +2480,8 @@
         "geometry-gf-gfstol-invalid-value-error",
         "geometry-gf-gfstol-success"
       ],
-      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-node",
@@ -2602,7 +2604,8 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e20-8b8168dc-wasm",
@@ -2725,7 +2728,8 @@
       ],
       "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
-      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -2806,11 +2810,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed node adapter -> actual registered N-API gfsstp binding -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2825,11 +2830,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed wasm adapter -> actual compiled _tspice_gfsstp export -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -2904,11 +2910,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed node adapter -> actual registered N-API gfstep binding -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2923,11 +2930,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed wasm adapter -> actual compiled _tspice_gfstep export -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -3007,11 +3015,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed node adapter -> actual registered N-API gfstol binding -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3026,11 +3035,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed wasm adapter -> actual compiled _tspice_gfstol export -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -3135,11 +3145,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed node adapter -> actual registered N-API gfrefn binding -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3154,11 +3165,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed wasm adapter -> actual compiled _tspice_gfrefn export -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -3309,11 +3321,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed node adapter -> actual registered N-API gfrepi binding -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3328,11 +3341,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed wasm adapter -> actual compiled _tspice_gfrepi export -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -3395,11 +3409,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed node adapter -> actual registered N-API gfrepf binding -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3414,11 +3429,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed wasm adapter -> actual compiled _tspice_gfrepf export -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -3778,11 +3794,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed node adapter -> actual registered N-API gfdist binding -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3797,11 +3814,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed wasm adapter -> actual compiled _tspice_gfdist export -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     },
@@ -4201,11 +4219,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed node adapter -> actual registered N-API gfsep binding -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4220,14 +4239,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed wasm adapter -> actual compiled _tspice_gfsep export -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source-bound observations remain historical for this combined E18/E19/E20/E21 delivery."
 }

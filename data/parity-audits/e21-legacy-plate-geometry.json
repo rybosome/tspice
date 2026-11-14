@@ -1,0 +1,741 @@
+{
+  "schemaVersion": 1,
+  "batch": "e21-legacy-plate-geometry",
+  "traceFiles": [
+    "docs/step8-legacy-plates.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/dsk.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/dsk.cc",
+    "packages/backend-node/src/domains/dsk.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/legacy-plate-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/dsk.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/domains/dsk.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/legacy-plate-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/dsk-data.ts",
+    "packages/core/src/spice-runtime/domains/dsk-rays.ts",
+    "packages/core/src/spice-runtime/domains/surface-grid.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/generate-legacy-plates.py",
+    "packages/py-parity-checking/fixtures/generate-surface-cuts.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+    "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+    "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+    "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_plates_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/uv.lock",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/dsk/illum_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/illum_plid_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/limb_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/llgrid_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/subpt_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/subsol_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/dsk/term_pl02.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
+    "packages/py-parity-checking/test/legacy-plates.test.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/generate-coverage-ledger.mjs",
+    "scripts/stage-aberration-cache.mjs",
+    "scripts/stage-legacy-plates.mjs",
+    "scripts/stage-limbpt.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "illum_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_pl02.html",
+      "semantics": "Use the radially selected facet normal and supplied surface point to compute phase, solar incidence and emission angles.",
+      "scenarios": [
+        {
+          "caseId": "dsk-illum_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-illum_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match TARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-illum_pl02-opposing-facets",
+          "coverage": ["success", "edge"],
+          "observes": "Compare incident, phase and emission angles on opposing and oblique faces, including the plate-specific shadow and visibility flags when returned. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_pl02-opposite-observer",
+          "coverage": ["success", "edge"],
+          "observes": "Changing observer hemisphere changes emission geometry independently from solar incidence. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_pl02-transmission",
+          "coverage": ["error", "edge"],
+          "observes": "The legacy illumination routine rejects transmission corrections. Match NOTSUPPORTED."
+        },
+        {
+          "caseId": "dsk-illum_pl02-origin",
+          "coverage": ["error", "edge"],
+          "observes": "The zero surface point cannot define the plate search direction. Match ZEROVECTOR."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare incident, phase and emission angles on opposing and oblique faces, including the plate-specific shadow and visibility flags when returned. Changing observer hemisphere changes emission geometry independently from solar incidence.",
+      "errorAssessment": "Fresh independent negative cases observe IDCODENOTFOUND, NOTSUPPORTED, TARGETMISMATCH, ZEROVECTOR. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.illum_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_illum_pl02 -> external unsuffixed illum_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.illum_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_illum_pl02 -> external unsuffixed illum_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "illum_plid_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_plid_pl02.html",
+      "semantics": "Use the supplied one-based plate and surface point on a latitudinal segment. Return target epoch, surface vector, three angles and independent illumination and visibility flags.",
+      "scenarios": [
+        {
+          "caseId": "dsk-illum_plid_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match TARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-opposing-facets",
+          "coverage": ["success", "edge"],
+          "observes": "Compare incident, phase and emission angles on opposing and oblique faces, including the plate-specific shadow and visibility flags when returned. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-opposite-observer",
+          "coverage": ["success", "edge"],
+          "observes": "Changing observer hemisphere changes emission geometry independently from solar incidence. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-transmission",
+          "coverage": ["error", "edge"],
+          "observes": "The legacy illumination routine rejects transmission corrections. Match NOTSUPPORTED."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-plate-index",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range one-based plate ID reaches DSKN02. Match INDEXOUTOFRANGE."
+        },
+        {
+          "caseId": "dsk-illum_plid_pl02-rectangular-parameterization",
+          "coverage": ["error", "edge"],
+          "observes": "The plate-specific routine requires a latitudinal DSK descriptor and signals its original frame diagnostic for a rectangular descriptor. Match FRAMENAMENOTFOUND."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare incident, phase and emission angles on opposing and oblique faces, including the plate-specific shadow and visibility flags when returned. Changing observer hemisphere changes emission geometry independently from solar incidence.",
+      "errorAssessment": "Fresh independent negative cases observe FRAMENAMENOTFOUND, IDCODENOTFOUND, INDEXOUTOFRANGE, NOTSUPPORTED, TARGETMISMATCH. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Same authored physical shape in rectangular coordinates.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.illum_plid_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_illum_plid_pl02 -> external unsuffixed illum_plid_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.illum_plid_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_illum_plid_pl02 -> external unsuffixed illum_plid_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "limb_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/limb_pl02.html",
+      "semantics": "Project the reference-ellipsoid limb samples onto the selected plate mesh and return epoch, observer position, points and IDs in calculation order.",
+      "scenarios": [
+        {
+          "caseId": "dsk-limb_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-limb_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-limb_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-limb_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match DSKTARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-limb_pl02-dense-order",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all one, four and nine points in native angular order, including each discrete plate identity. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-limb_pl02-zero-count",
+          "coverage": ["error", "edge"],
+          "observes": "Zero requested points reaches the scientific count error using non-null sentinel storage. Match INVALIDCOUNT."
+        },
+        {
+          "caseId": "dsk-limb_pl02-negative-count",
+          "coverage": ["error", "edge"],
+          "observes": "A negative requested count reaches the same toolkit diagnostic without requesting negative storage. Match INVALIDCOUNT."
+        },
+        {
+          "caseId": "dsk-limb_pl02-fixed-frame",
+          "coverage": ["error", "edge"],
+          "observes": "The frame center is independently required to match the target. Match INVALIDFRAME."
+        },
+        {
+          "caseId": "dsk-limb_pl02-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "An undefined requested frame is diagnosed during the frame lookup. Match UNKNOWNFRAME."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all one, four and nine points in native angular order, including each discrete plate identity.",
+      "errorAssessment": "Fresh independent negative cases observe DSKTARGETMISMATCH, IDCODENOTFOUND, INVALIDCOUNT, INVALIDFRAME, UNKNOWNFRAME. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [
+        {
+          "id": "legacy-cut-allocation-diagnostic",
+          "status": "repaired",
+          "summary": "The pinned internal angular-grid allocation failure set message text and returned without signaling its documented memory error.",
+          "repair": "Signal MEMORYFAILURE in that existing branch on both builds. Resource tests separately inject bounded failures at every wrapper allocation and check recovery.",
+          "evidence": [
+            "docs/step8-legacy-plates.md",
+            "scripts/stage-legacy-plates.mjs",
+            "packages/backend-wasm/test/legacy-plate-allocations.test.ts"
+          ],
+          "caseIds": ["dsk-limb_pl02-dense-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.limb_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_limb_pl02 -> external unsuffixed limb_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.limb_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_limb_pl02 -> external unsuffixed limb_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "llgrid_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/llgrid_pl02.html",
+      "semantics": "Use each ordered longitude and latitude to locate a radial plate intercept, retaining every point/plate-ID pair.",
+      "scenarios": [
+        {
+          "caseId": "dsk-llgrid_pl02-signed-faces",
+          "coverage": ["success", "edge"],
+          "observes": "Intersect three distinct faces and retain corresponding plate IDs and complete ordered points. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-llgrid_pl02-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated longitude/latitude pairs retain duplicate rows and plate membership. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-llgrid_pl02-periodic",
+          "coverage": ["success", "edge"],
+          "observes": "Check wrapped longitude and hemisphere sign in radians. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-llgrid_pl02-empty",
+          "coverage": ["success", "edge"],
+          "observes": "The zero-size grid checks the real descriptor and returns two owned empty arrays. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-llgrid_pl02-rectangular",
+          "coverage": ["success", "edge"],
+          "observes": "Equivalent rectangular and latitudinal segment descriptions preserve physical facet coordinates. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-llgrid_pl02-miss",
+          "coverage": ["error", "edge"],
+          "observes": "A radial ray misses the first off-axis disconnected component. Match NOINTERCEPT."
+        }
+      ],
+      "edgeAssessment": "Intersect three distinct faces and retain corresponding plate IDs and complete ordered points. Repeated longitude/latitude pairs retain duplicate rows and plate membership. Check wrapped longitude and hemisphere sign in radians. The zero-size grid checks the real descriptor and returns two owned empty arrays. Equivalent rectangular and latitudinal segment descriptions preserve physical facet coordinates.",
+      "errorAssessment": "Fresh independent negative cases observe NOINTERCEPT. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Same authored physical shape in rectangular coordinates.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-surface-cuts.bds",
+          "provenance": "Two authored octahedra plus a separately traversed off-center component.",
+          "distribution": "Project MIT-authored fixture, SHA-256 543856f821583f68cc6df8768e1944f9f3d6a35fdcf2b1469b8a86144c41f28f"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.llgrid_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_llgrid_pl02 -> external unsuffixed llgrid_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.llgrid_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_llgrid_pl02 -> external unsuffixed llgrid_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "subpt_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subpt_pl02.html",
+      "semantics": "Choose an intercept or ellipsoid-near-point ray and return its sub-observer point, signed altitude and plate ID.",
+      "scenarios": [
+        {
+          "caseId": "dsk-subpt_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match TARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-method",
+          "coverage": ["success", "edge"],
+          "observes": "Compare center intercept and ellipsoid-near-point selection on a triaxial, faceted body. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-observer",
+          "coverage": ["success", "edge"],
+          "observes": "Retain one-based facet membership and measures when the observer changes hemisphere. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-method-error",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported method preserves the original DUBIOUSMETHOD error. Match DUBIOUSMETHOD."
+        },
+        {
+          "caseId": "dsk-subpt_pl02-transmission",
+          "coverage": ["error", "edge"],
+          "observes": "Transmitted light-time is unsupported by this legacy point routine. Match NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare center intercept and ellipsoid-near-point selection on a triaxial, faceted body. Retain one-based facet membership and measures when the observer changes hemisphere.",
+      "errorAssessment": "Fresh independent negative cases observe DUBIOUSMETHOD, IDCODENOTFOUND, NOTSUPPORTED, TARGETMISMATCH. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.subpt_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_subpt_pl02 -> external unsuffixed subpt_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.subpt_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_subpt_pl02 -> external unsuffixed subpt_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "subsol_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subsol_pl02.html",
+      "semantics": "Choose a solar intercept or ellipsoid-near-point ray and return the subsolar surface point, distance to the observer and plate ID.",
+      "scenarios": [
+        {
+          "caseId": "dsk-subsol_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match TARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-method",
+          "coverage": ["success", "edge"],
+          "observes": "Compare center intercept and ellipsoid-near-point selection on a triaxial, faceted body. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-observer",
+          "coverage": ["success", "edge"],
+          "observes": "Retain one-based facet membership and measures when the observer changes hemisphere. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-method-error",
+          "coverage": ["error", "edge"],
+          "observes": "An unsupported method preserves the original DUBIOUSMETHOD error. Match DUBIOUSMETHOD."
+        },
+        {
+          "caseId": "dsk-subsol_pl02-transmission",
+          "coverage": ["error", "edge"],
+          "observes": "Transmitted light-time is unsupported by this legacy point routine. Match NOTSUPPORTED."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare center intercept and ellipsoid-near-point selection on a triaxial, faceted body. Retain one-based facet membership and measures when the observer changes hemisphere.",
+      "errorAssessment": "Fresh independent negative cases observe DUBIOUSMETHOD, IDCODENOTFOUND, NOTSUPPORTED, TARGETMISMATCH. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [
+        {
+          "id": "legacy-near-point-radii-storage",
+          "status": "repaired",
+          "summary": "The N0067 near-point branch reads three private radius words before testing the BODVRD result or count.",
+          "repair": "Check the producer status and actual count before using the three axes. The supplementary corrected-backend run verifies wrong numeric count, wrong type and ordinary-state recovery.",
+          "evidence": [
+            "docs/step8-legacy-plates.md",
+            "packages/py-parity-checking/test/legacy-plates.test.ts",
+            "scripts/stage-legacy-plates.mjs"
+          ],
+          "caseIds": ["dsk-subsol_pl02-method"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.subsol_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_subsol_pl02 -> external unsuffixed subsol_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.subsol_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_subsol_pl02 -> external unsuffixed subsol_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "term_pl02",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/term_pl02.html",
+      "semantics": "Project the penumbral or umbral extended-source terminator onto the selected mesh and return epoch, observer position and all point/plate-ID pairs.",
+      "scenarios": [
+        {
+          "caseId": "dsk-term_pl02-geometry",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete physical results for a moving observer at separated signed epochs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-term_pl02-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-term_pl02-unknown-target",
+          "coverage": ["error", "edge"],
+          "observes": "Unknown body text preserves the legacy lookup diagnostic. Match IDCODENOTFOUND."
+        },
+        {
+          "caseId": "dsk-term_pl02-segment-target",
+          "coverage": ["error", "edge"],
+          "observes": "A mismatched center is diagnosed before any plate result is returned. Match DSKTARGETMISMATCH."
+        },
+        {
+          "caseId": "dsk-term_pl02-dense-order",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all one, four and nine points in native angular order, including each discrete plate identity. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-term_pl02-zero-count",
+          "coverage": ["error", "edge"],
+          "observes": "Zero requested points reaches the scientific count error using non-null sentinel storage. Match INVALIDSIZE."
+        },
+        {
+          "caseId": "dsk-term_pl02-negative-count",
+          "coverage": ["error", "edge"],
+          "observes": "A negative requested count reaches the same toolkit diagnostic without requesting negative storage. Match INVALIDSIZE."
+        },
+        {
+          "caseId": "dsk-term_pl02-shadow-type",
+          "coverage": ["success", "edge"],
+          "observes": "Compare penumbral and umbral cuts from a finite source, preserving all points and corresponding IDs. Compare all defined fields against the independent N0067 shared library."
+        },
+        {
+          "caseId": "dsk-term_pl02-unknown-source",
+          "coverage": ["error", "edge"],
+          "observes": "The terminator source is resolved independently from target and observer. Match NOTRANSLATION."
+        }
+      ],
+      "edgeAssessment": "Compare complete physical results for a moving observer at separated signed epochs. Compare geometric, light-time and converged stellar-aberration solutions on the authored ephemeris. Compare all one, four and nine points in native angular order, including each discrete plate identity. Compare penumbral and umbral cuts from a finite source, preserving all points and corresponding IDs.",
+      "errorAssessment": "Fresh independent negative cases observe DSKTARGETMISMATCH, IDCODENOTFOUND, INVALIDSIZE, NOTRANSLATION. Corrected-backend supplemental shape/ownership and recovery tests use real Node and WASM.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original authored triaxial body radii and fixed frames.",
+          "distribution": "Project MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Original authored moving observer, target and Sun tracks.",
+          "distribution": "Project MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.tf",
+          "provenance": "Authored frame associations and 1 km spherical illuminator.",
+          "distribution": "Project MIT-authored fixture, SHA-256 a679acd51964e9e05a3a94944121a79f9b0feeaf15d5793a0c0fc545bb6d8960"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-plates.bds",
+          "provenance": "Original eight oriented facets stored in a latitudinal type 2 segment.",
+          "distribution": "Project MIT-authored fixture, SHA-256 de0a6f5a554432b69b6a532789dcaf66cc020a74b205195238d7ad4ce1b4e300"
+        }
+      ],
+      "fixtureRationale": "A checked-in authored mesh supplies known oriented plate geometry. Each descriptor is traversed within the active reader. Applicable ephemerides, frame associations and units are physically specified.",
+      "cleanup": "Close the owned DAS on successful workflows and finalize tracked claims/pool on every terminal outcome. Copy all defined results before releasing wrapper storage. Both transported cache modes exercise unload, reload and stale-handle behavior.",
+      "tolerance": "Existing live comparator for finite coordinates, angles and epochs. Counts, plate IDs and booleans are exact; supplemental analytic facet and distance checks use 13 decimal places.",
+      "findings": [
+        {
+          "id": "legacy-cut-allocation-diagnostic",
+          "status": "repaired",
+          "summary": "The pinned internal angular-grid allocation failure set message text and returned without signaling its documented memory error.",
+          "repair": "Signal MEMORYFAILURE in that existing branch on both builds. Resource tests separately inject bounded failures at every wrapper allocation and check recovery.",
+          "evidence": [
+            "docs/step8-legacy-plates.md",
+            "scripts/stage-legacy-plates.mjs",
+            "packages/backend-wasm/test/legacy-plate-allocations.test.ts"
+          ],
+          "caseIds": ["dsk-term_pl02-dense-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.term_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_term_pl02 -> external unsuffixed term_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "DskApi.term_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_term_pl02 -> external unsuffixed term_pl02. Compare independently typed locked SpiceyPy library outputs.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Run both full uncached local lanes and inspect the canonical Linux Node 22 native-required job on the combined source, then require final-head checks and rebaseability."
+}

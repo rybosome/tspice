@@ -116,6 +116,91 @@ class StepDskDski02:
 
 
 @dataclass(frozen=True)
+class StepDskIllumPl02:
+    op: Literal["dsk.illum_pl02"]
+    handleId: str
+    dladscId: str
+    target: str
+    et: float
+    abcorr: str
+    obsrvr: str
+    spoint: tuple[float,float,float]
+
+
+@dataclass(frozen=True)
+class StepDskIllumPlidPl02:
+    op: Literal["dsk.illum_plid_pl02"]
+    handleId: str
+    dladscId: str
+    target: str
+    et: float
+    abcorr: str
+    obsrvr: str
+    spoint: tuple[float,float,float]
+    plid: int
+
+
+@dataclass(frozen=True)
+class StepDskLimbPl02:
+    op: Literal["dsk.limb_pl02"]
+    handleId: str
+    dladscId: str
+    target: str
+    et: float
+    fixref: str
+    abcorr: str
+    obsrvr: str
+    npts: int
+
+
+@dataclass(frozen=True)
+class StepDskLlgridPl02:
+    op: Literal["dsk.llgrid_pl02"]
+    handleId: str
+    dladscId: str
+    grid: list[tuple[float,float]]
+
+
+@dataclass(frozen=True)
+class StepDskSubptPl02:
+    op: Literal["dsk.subpt_pl02"]
+    handleId: str
+    dladscId: str
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    obsrvr: str
+
+
+@dataclass(frozen=True)
+class StepDskSubsolPl02:
+    op: Literal["dsk.subsol_pl02"]
+    handleId: str
+    dladscId: str
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    obsrvr: str
+
+
+@dataclass(frozen=True)
+class StepDskTermPl02:
+    op: Literal["dsk.term_pl02"]
+    handleId: str
+    dladscId: str
+    trmtyp: str
+    source: str
+    target: str
+    et: float
+    fixref: str
+    abcorr: str
+    obsrvr: str
+    npts: int
+
+
+@dataclass(frozen=True)
 class StepDskDskx02:
     op: Literal["dsk.dskx02"]
     handleId: str
