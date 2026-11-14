@@ -202,6 +202,9 @@ export function dispatchStep(
     case "geometry.ilumin":
     case "geometry.illumg":
     case "geometry.illumf":
+    case "geometry.dnearp":
+    case "geometry.surfpv":
+    case "geometry.tangpt":
     case "geometry.phaseq":
     case "geometry.lspcn":
     case "geometry.trgsep":

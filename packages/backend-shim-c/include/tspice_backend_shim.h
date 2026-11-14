@@ -946,6 +946,15 @@ int tspice_spkw08_v2(
 // --- Derived geometry primitives ---
 
 // subpnt_c: compute the sub-observer point on a target body's surface.
+int tspice_dnearp(const double state[6], double a, double b, double c, double near_state[6],
+                  double altitude[2], int* found, char* err, int cap);
+int tspice_surfpv(const double vertex[6], const double direction[6], double a, double b, double c,
+                  double intercept[6], int* found, char* err, int cap);
+int tspice_tangpt(const char* method, const char* target, double et, const char* fixref,
+                  const char* abcorr, const char* corloc, const char* observer, const char* dref,
+                  const double dvec[3], double tanpt[3], double* alt, double* range,
+                  double srfpt[3], double* trgepc, double srfvec[3], char* err, int cap);
+
 int tspice_phaseq(double et, const char *target, const char *illmn, const char *observer, const char *abcorr, double *out, char *err, int errMaxBytes);
 int tspice_lspcn(const char *body, double et, const char *abcorr, double *out, char *err, int errMaxBytes);
 int tspice_trgsep(double et, const char *targ1, const char *shape1, const char *frame1, const char *targ2, const char *shape2, const char *frame2, const char *observer, const char *abcorr, double *out, char *err, int errMaxBytes);

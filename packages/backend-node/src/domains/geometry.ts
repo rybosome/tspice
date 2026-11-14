@@ -1,4 +1,4 @@
-import { spiceStringByteLength } from "@rybosome/tspice-core";
+import { surfaceVector, spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   Found,
   GeometryApi,
@@ -69,6 +69,46 @@ function geometryInputs(
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
+    dnearp: (state, a, b, c) =>
+      native.dnearp(
+        surfaceVector(state, 6, "state"),
+        geometryNumber(a, "a"),
+        geometryNumber(b, "b"),
+        geometryNumber(c, "c"),
+      ),
+    surfpv: (vertex, direction, a, b, c) =>
+      native.surfpv(
+        surfaceVector(vertex, 6, "vertex"),
+        surfaceVector(direction, 6, "direction"),
+        geometryNumber(a, "a"),
+        geometryNumber(b, "b"),
+        geometryNumber(c, "c"),
+      ),
+    tangpt: (
+      method,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      dref,
+      dvec,
+    ) => {
+      for (const s of [method, target, fixref, abcorr, corloc, observer, dref])
+        spiceStringByteLength(s, "tangpt");
+      return native.tangpt(
+        method,
+        target,
+        geometryNumber(et, "et"),
+        fixref,
+        abcorr,
+        corloc,
+        observer,
+        dref,
+        surfaceVector(dvec, 3, "dvec"),
+      );
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       spiceStringByteLength(target, "phaseq(target)");

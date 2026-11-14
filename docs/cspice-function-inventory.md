@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 165
-- Planned (not yet implemented): 484
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -53,6 +53,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dnearp_c` | Derivative of near point |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
@@ -163,8 +164,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
+| `surfpv_c` | Surface point and velocity |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `tangpt_c` | Ray-ellipsoid tangent point |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
@@ -291,7 +294,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dlaens_c` | DLA, end new segment |
 | `dlafps_c` | DLA, find previous segment |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
-| `dnearp_c` | Derivative of near point |
 | `dp2hx_c` | D.p. number to hexadecimal string |
 | `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
 | `dpmax_c` | Largest DP number |
@@ -599,9 +601,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sumai_c` | Sum of an integer array |
 | `surfnm_c` | Surface normal vector on an ellipsoid |
 | `surfpt_c` | Surface point on an ellipsoid |
-| `surfpv_c` | Surface point and velocity |
 | `szpool_c` | Get size limitations of the kernel pool |
-| `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
 | `tipbod_c` | Transformation, inertial position to bodyfixed |

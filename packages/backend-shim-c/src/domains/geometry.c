@@ -753,3 +753,109 @@ done:
   chkout_c("LSPCN"); chkout_c("lspcn_c");
   return status ? status : geometry_status(err, errMaxBytes);
 }
+
+static int finite_components(const double* values, int length) {
+  if (!values) return 0;
+  for (int i = 0; i < length; ++i)
+    if (!isfinite(values[i])) return 0;
+  return 1;
+}
+int tspice_dnearp(const double state[6], double a, double b, double c, double near_state[6],
+                  double altitude[2], int* found, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!found || !altitude || !near_state || !finite_components(state, 6) || !isfinite(a) ||
+      !isfinite(b) || !isfinite(c))
+    return geometry_input_error(err, cap, "Invalid DNEARP input or result storage");
+  SpiceBoolean valid = SPICEFALSE;
+  dnearp_c(state, a, b, c, near_state, altitude, &valid);
+  if (failed_c()) return geometry_status(err, cap);
+  *found = valid == SPICETRUE;
+  return 0;
+}
+int tspice_surfpv(const double vertex[6], const double direction[6], double a, double b, double c,
+                  double intercept[6], int* found, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!found || !intercept || !finite_components(vertex, 6) || !finite_components(direction, 6) ||
+      !isfinite(a) || !isfinite(b) || !isfinite(c))
+    return geometry_input_error(err, cap, "Invalid SURFPV input or result storage");
+  SpiceBoolean valid = SPICEFALSE;
+  // SURFPT may signal before assigning its logical. Only call the public
+  // SURFPV wrapper after its first fallible operation has completed safely.
+  double point[3] = {0};
+  logical hit = SPICEFALSE;
+  chkin_c("surfpv_c");
+  chkin_c("SURFPV");
+  surfpt_((double*)vertex, (double*)direction, &a, &b, &c, point, &hit);
+  chkout_c("SURFPV");
+  chkout_c("surfpv_c");
+  if (failed_c()) return geometry_status(err, cap);
+  surfpv_c(vertex, direction, a, b, c, intercept, &valid);
+  if (failed_c()) return geometry_status(err, cap);
+  *found = valid == SPICETRUE;
+  return 0;
+}
+
+static int check_tangent_names(const char* target, const char* observer, char* err, int cap) {
+  if (check_body_mapping_codes(err, cap)) return 1;
+  const char* names[] = {target, observer};
+  chkin_c("tangpt_c");
+  chkin_c("TANGPT");
+  int unsupported = 0;
+  for (int i = 0; i < 2; ++i) {
+    SpiceInt code;
+    logical found;
+    if (resolve_geometry_body(names[i], &code, &found)) break;
+    if (!found) {
+      setmsg_c(
+          "The #, '#', is not a recognized name for an ephemeris object. The cause of this problem "
+          "may be that you need an updated version of the SPICE Toolkit, or that you failed to "
+          "load a kernel containing a name-ID mapping for this body.");
+      errch_c("#", i == 0 ? "target" : "observer");
+      errch_c("#", names[i]);
+      sigerr_c("SPICE(IDCODENOTFOUND)");
+      break;
+    }
+    if (code == INT_MIN) {
+      unsupported = 1;
+      break;
+    }
+  }
+  chkout_c("TANGPT");
+  chkout_c("tangpt_c");
+  if (failed_c()) return geometry_status(err, cap);
+  return unsupported ? geometry_input_error(err, cap, "Body outside the N0067 signed hash domain")
+                     : 0;
+}
+int tspice_tangpt(const char* method, const char* target, double et, const char* fixref,
+                  const char* abcorr, const char* corloc, const char* observer, const char* dref,
+                  const double dvec[3], double tanpt[3], double* alt, double* range,
+                  double srfpt[3], double* trgepc, double srfvec[3], char* err, int cap) {
+  const char* strings[] = {method, target, fixref, abcorr, corloc, observer, dref};
+  if (check_geometry_arguments(et, strings, 7, tanpt, err, cap)) return 1;
+  if (!finite_components(dvec, 3) || !alt || !range || !srfpt || !trgepc || !srfvec)
+    return geometry_input_error(err, cap, "Invalid TANGPT direction or result storage");
+  // Preserve the original wrapper and method/locus/ray diagnostics, which
+  // precede name resolution. The translated routine saves the numerical
+  // result of a failed name lookup, so probe names with initialized storage.
+  int nonempty = 1;
+  for (int i = 0; i < 7; ++i)
+    if (!*strings[i]) nonempty = 0;
+  if (nonempty && eqstr_c(method, "ELLIPSOID") && !vzero_c(dvec)) {
+    integer blanks = 0;
+    char locus[15];
+    logical correction[15] = {0};
+    ljucrs_(&blanks, (char*)corloc, locus, (ftnlen)strlen(corloc), 15);
+    if (!memcmp(locus, "TANGENTPOINT   ", 15) || !memcmp(locus, "SURFACEPOINT   ", 15)) {
+      chkin_c("tangpt_c");
+      chkin_c("TANGPT");
+      zzvalcor_((char*)abcorr, correction, (ftnlen)strlen(abcorr));
+      chkout_c("TANGPT");
+      chkout_c("tangpt_c");
+      if (failed_c()) return geometry_status(err, cap);
+      if (check_tangent_names(target, observer, err, cap)) return 1;
+    }
+  }
+  tangpt_c(method, target, et, fixref, abcorr, corloc, observer, dref, dvec, tanpt, alt, range,
+           srfpt, trgepc, srfvec);
+  return geometry_status(err, cap);
+}

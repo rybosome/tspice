@@ -1,4 +1,8 @@
 import type {
+  Found,
+  NearPointDerivative,
+  TangentPoint,
+  SpiceStateVector,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -1175,6 +1179,36 @@ export type StepGeometryIllumf = {
   spoint: Vec3;
 };
 
+export type StepGeometryDnearp = {
+  op: "geometry.dnearp";
+  state: SpiceStateVector;
+  a: number;
+  b: number;
+  c: number;
+};
+
+export type StepGeometrySurfpv = {
+  op: "geometry.surfpv";
+  vertex: SpiceStateVector;
+  direction: SpiceStateVector;
+  a: number;
+  b: number;
+  c: number;
+};
+
+export type StepGeometryTangpt = {
+  op: "geometry.tangpt";
+  method: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  corloc: string;
+  observer: string;
+  dref: string;
+  dvec: Vec3;
+};
+
 export type StepGeometryPhaseq = {
   op: "geometry.phaseq";
   et: number;
@@ -1467,6 +1501,9 @@ export type WorkflowStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryDnearp
+  | StepGeometrySurfpv
+  | StepGeometryTangpt
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
@@ -1909,6 +1946,9 @@ export type StepOutput =
         lit: boolean;
       };
     }
+  | { op: "geometry.dnearp"; value: NearPointDerivative }
+  | { op: "geometry.surfpv"; value: Found<{ state: SpiceStateVector }> }
+  | { op: "geometry.tangpt"; value: TangentPoint }
   | { op: "geometry.phaseq"; value: number }
   | { op: "geometry.lspcn"; value: number }
   | { op: "geometry.trgsep"; value: number }

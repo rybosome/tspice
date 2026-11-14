@@ -13,11 +13,66 @@ import type {
   Pl2nvcResult,
   SpicePlane,
   SubPointResult,
+  SpiceStateVector,
   SpiceVector3,
 } from "../shared/types.js";
 
+/** A singular nearest-point derivative still has a defined position and altitude. */
+export type NearPointDerivative = {
+  position: SpiceVector3;
+  altitude: number;
+} & (
+  | { found: false }
+  | { found: true; velocity: SpiceVector3; altitudeRate: number }
+);
+/** Six quantities defined by CSPICE TANGPT, in the target-fixed frame. */
+export type TangentPoint = {
+  tanpt: SpiceVector3;
+  alt: number;
+  range: number;
+  srfpt: SpiceVector3;
+  trgepc: number;
+  srfvec: SpiceVector3;
+};
+
 /** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
+  /**
+   * Return the nearest surface position and signed altitude for a Cartesian state and three semiaxes. When found is true, velocity and altitudeRate are also defined. A focal-set singularity can leave both derivatives undefined while position and altitude remain meaningful. Lengths and time derivatives share the units of the input state.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dnearp_c.html
+   */
+  dnearp(
+    state: Readonly<SpiceStateVector>,
+    a: number,
+    b: number,
+    c: number,
+  ): NearPointDerivative;
+  /**
+   * Intersect a moving ray with the ellipsoid and return the position and velocity of the intercept in the input frame and units. When either is undefined, return found:false. The first three direction components specify the ray and the last three its time derivative.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfpv_c.html
+   */
+  surfpv(
+    vertex: Readonly<SpiceStateVector>,
+    direction: Readonly<SpiceStateVector>,
+    a: number,
+    b: number,
+    c: number,
+  ): Found<{ state: SpiceStateVector }>;
+  /**
+   * Find the tangent point of a ray relative to an ellipsoidal target. Supply the target-fixed frame, aberration correction, correction locus (TANGENT POINT or SURFACE POINT), observer, direction frame and nonzero ray. ET and the returned target epoch are TDB seconds past J2000. Positions, altitude and range are km. A ray entering the target can yield zero altitude.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tangpt_c.html
+   */
+  tangpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    corloc: string,
+    observer: string,
+    dref: string,
+    dvec: Readonly<SpiceVector3>,
+  ): TangentPoint;
   /**
    * Compute the angle at the target center between illuminator and observer, in radians
    * from 0 to π. Use three distinct body names or numeric strings, finite ET in TDB

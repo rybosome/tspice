@@ -97,6 +97,9 @@ import geometryIllumfCasesRaw from "./geometry/illumf.cases.json" with { type: "
 import geometryIllumgCasesRaw from "./geometry/illumg.cases.json" with { type: "json" };
 import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "json" };
 import geometryNvc2plCasesRaw from "./geometry/nvc2pl.cases.json" with { type: "json" };
+import geometryDnearpCasesRaw from "./geometry/dnearp.cases.json" with { type: "json" };
+import geometrySurfpvCasesRaw from "./geometry/surfpv.cases.json" with { type: "json" };
+import geometryTangptCasesRaw from "./geometry/tangpt.cases.json" with { type: "json" };
 import geometryPhaseqCasesRaw from "./geometry/phaseq.cases.json" with { type: "json" };
 import geometryLspcnCasesRaw from "./geometry/lspcn.cases.json" with { type: "json" };
 import geometryTrgsepCasesRaw from "./geometry/trgsep.cases.json" with { type: "json" };
@@ -263,6 +266,9 @@ export const geometryCases: ParityCase[] = [
   ...(geometryIluminCasesRaw as ParityCase[]),
   ...(geometryIllumgCasesRaw as ParityCase[]),
   ...(geometryIllumfCasesRaw as ParityCase[]),
+  ...(geometryDnearpCasesRaw as ParityCase[]),
+  ...(geometrySurfpvCasesRaw as ParityCase[]),
+  ...(geometryTangptCasesRaw as ParityCase[]),
   ...(geometryPhaseqCasesRaw as ParityCase[]),
   ...(geometryLspcnCasesRaw as ParityCase[]),
   ...(geometryTrgsepCasesRaw as ParityCase[]),

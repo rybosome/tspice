@@ -110,7 +110,8 @@
         "geometry-trgsep-two-radii",
         "geometry-trgsep-unknown-name"
       ],
-      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e16-7ae2be19-wasm",
@@ -176,7 +177,8 @@
         "geometry-trgsep-two-radii",
         "geometry-trgsep-unknown-name"
       ],
-      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e16-7ae2be19-node",
@@ -244,7 +246,8 @@
       ],
       "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
-      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e16-7ae2be19-wasm",
@@ -312,7 +315,8 @@
       ],
       "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
-      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -422,16 +426,28 @@
       "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.phaseq -> registered mutex-protected N-API function -> tspice_phaseq -> guarded phaseq_c.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.phaseq -> compiled WASM export and scoped allocation helper -> tspice_phaseq -> guarded phaseq_c.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -557,16 +573,28 @@
       "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "raw.lspcn -> registered mutex-protected N-API function -> tspice_lspcn -> guarded linked TIPBOD/SPKGEO/UCRSS/TWOVEC/SPKEZR/MXV/RECRAD composition. The same-named C entry handles the early empty-body check.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "raw.lspcn -> compiled WASM export and scoped allocation helper -> tspice_lspcn -> guarded linked TIPBOD/SPKGEO/UCRSS/TWOVEC/SPKEZR/MXV/RECRAD composition. The same-named C entry handles the early empty-body check.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -728,16 +756,28 @@
       "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.trgsep -> registered mutex-protected N-API function -> tspice_trgsep -> guarded trgsep_c.",
-          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.trgsep -> compiled WASM export and scoped allocation helper -> tspice_trgsep -> guarded trgsep_c.",
-          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+          "executions": []
         }
       },
       "findings": [
@@ -764,5 +804,5 @@
       ]
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior observations are historical. Complete local and canonical CI executions will bind reviews to this expanded source."
 }

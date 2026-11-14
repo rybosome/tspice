@@ -1951,6 +1951,15 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: spkw08() is not implemented");
     },
+    dnearp: () => {
+      throw new Error("dnearp requires a CSPICE geometry backend");
+    },
+    surfpv: () => {
+      throw new Error("surfpv requires a CSPICE geometry backend");
+    },
+    tangpt: () => {
+      throw new Error("tangpt requires a CSPICE geometry backend");
+    },
     phaseq: () => {
       throw new Error("phaseq requires a CSPICE geometry backend");
     },

@@ -1,0 +1,265 @@
+[
+  {
+    "caseId": "geometry-surfpv-moving-ray",
+    "description": "Use independently moving vertex and direction; inspect the complete intercept state.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0, 0, 0],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-front-back",
+    "description": "Distinguish a forward hit from a backward-only intersection, a perpendicular miss and an inside-to-outside hit.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [4, 0, 0, 1, 2, 3],
+        "direction": [-1, 0, 0, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [4, 0, 0, 1, 2, 3],
+        "direction": [1, 0, 0, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [4, 0, 0, 1, 2, 3],
+        "direction": [0, 1, 0, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [0, 0, 0, 0, 1, 0],
+        "direction": [1, 0, 0, 0, 0, 0.1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-exact-tangent",
+    "description": "A tangent sphere hit can have undefined velocity. Observe absence and the different results for rays just inside and outside.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [1.999, -4, 0, 0, 0.2, 0],
+        "direction": [0, 1, 0, 0, 0, 0.1],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [2, -4, 0, 0, 0.2, 0],
+        "direction": [0, 1, 0, 0, 0, 0.1],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [2.001, -4, 0, 0, 0.2, 0],
+        "direction": [0, 1, 0, 0, 0, 0.1],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-direction-scale",
+    "description": "Positive common scaling of direction and its derivative preserves the intercept velocity.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-0.25, -0.025, 0.0, 0.0025, 0.00125, 0.0125],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-128, -12.8, 0, 1.28, 0.64, 6.4],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-sphere-axis",
+    "description": "A fixed line across a moving vertex gives a stationary intercept for radial-only motion, and responds to transverse motion.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 0, 0, 0, 0, 0],
+        "direction": [-1, 0, 0, 0, 0, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 0, 0, 2, 0, 0],
+        "direction": [-1, 0, 0, 0, 0, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      },
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 0, 0, 0, 1, 2],
+        "direction": [-1, 0, 0, 0, 0, 0],
+        "a": 2,
+        "b": 2,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-zero-direction",
+    "description": "Observe the canonical moving-intercept diagnostic for zero-direction.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [0, 0, 0, 2, 1, -1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-invalid-vertex",
+    "description": "Observe the canonical moving-intercept diagnostic for invalid-vertex.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [3, 0, 0, 1, 0, 0],
+        "direction": [-1, 0, 0, 0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDVERTEX)"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-bad-axis-a",
+    "description": "Observe the canonical moving-intercept diagnostic for bad-axis-a.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 0,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-bad-axis-b",
+    "description": "Observe the canonical moving-intercept diagnostic for bad-axis-b.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 3,
+        "b": -1,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  },
+  {
+    "caseId": "geometry-surfpv-bad-axis-c",
+    "description": "Observe the canonical moving-intercept diagnostic for bad-axis-c.",
+    "workflow": [
+      {
+        "op": "geometry.surfpv",
+        "vertex": [5, 1, 0.1, 0.5, -2, 3],
+        "direction": [-2, -0.2, 0, 0.02, 0.01, 0.1],
+        "a": 3,
+        "b": 2,
+        "c": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADAXISLENGTH)"]
+    }
+  }
+]

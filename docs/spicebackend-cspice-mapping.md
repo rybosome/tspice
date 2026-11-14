@@ -697,3 +697,7 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+### Surface derivatives and tangent geometry
+
+The raw geometry methods `dnearp`, `surfpv` and `tangpt` use their matching CSPICE entry points in the shared shim. DNEARP retains position and altitude when the derivative is undefined. SURFPV returns a state only for a defined moving intercept. TANGPT returns all six target-fixed geometric quantities. The locked-library oracle, initialized name and intercept checks, and checked native/WASM geometry subroutines are documented with the public semantics. [Surface derivatives and tangent geometry](step8-surface-derivatives.md)

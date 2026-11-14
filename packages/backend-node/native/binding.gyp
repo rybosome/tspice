@@ -8,6 +8,9 @@
       "target_name": "tspice_backend_node",
       "sources": [
         "src/addon.cc",
+        "generated/inedpl.c",
+        "generated/npelpt.c",
+        "generated/npedln.c",
         "src/addon_common.cc",
         "src/cell_handles.cc",
         "src/domains/kernels.cc",

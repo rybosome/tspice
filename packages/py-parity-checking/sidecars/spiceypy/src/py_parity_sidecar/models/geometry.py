@@ -78,6 +78,39 @@ class StepGeometryIllumf:
 
 
 @dataclass(frozen=True)
+class StepGeometryDnearp:
+    op: Literal["geometry.dnearp"]
+    state: tuple[float, float, float, float, float, float]
+    a: float
+    b: float
+    c: float
+
+
+@dataclass(frozen=True)
+class StepGeometrySurfpv:
+    op: Literal["geometry.surfpv"]
+    vertex: tuple[float, float, float, float, float, float]
+    direction: tuple[float, float, float, float, float, float]
+    a: float
+    b: float
+    c: float
+
+
+@dataclass(frozen=True)
+class StepGeometryTangpt:
+    op: Literal["geometry.tangpt"]
+    method: str
+    target: str
+    et: float
+    fixref: str
+    abcorr: str
+    corloc: str
+    observer: str
+    dref: str
+    dvec: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
 class StepGeometryPhaseq:
     op: Literal["geometry.phaseq"]
     et: float

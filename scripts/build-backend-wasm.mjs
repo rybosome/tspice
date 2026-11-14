@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import { stageCheckedGeometrySources } from "./checked-geometry-sources.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -230,6 +231,11 @@ for (const shimPath of shimSources) {
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
+
+stageCheckedGeometrySources(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
 
 function patchReturnInt(filePath, symbol, indentation = "") {
   if (!fs.existsSync(filePath)) {
@@ -496,6 +502,9 @@ const exportedFunctions = [
   "_tspice_spkcls",
 
   // --- derived geometry ---
+  "_tspice_dnearp",
+  "_tspice_surfpv",
+  "_tspice_tangpt",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",
