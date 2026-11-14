@@ -538,6 +538,22 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkcls(handle)",
   );
   invariant(
+    typeof native.getfov === "function",
+    "Expected native addon to export getfov()",
+  );
+  invariant(
+    typeof native.getfvn === "function",
+    "Expected native addon to export getfvn()",
+  );
+  invariant(
+    typeof native.fovray === "function",
+    "Expected native addon to export fovray()",
+  );
+  invariant(
+    typeof native.fovtrg === "function",
+    "Expected native addon to export fovtrg()",
+  );
+  invariant(
     typeof native.phaseq === "function",
     "Native addon missing phaseq()",
   );

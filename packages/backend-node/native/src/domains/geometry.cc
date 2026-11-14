@@ -3,6 +3,10 @@
 #include <string>
 #include <cmath>
 #include <limits>
+#include <memory>
+#include <algorithm>
+#include <cstring>
+#include <new>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -43,6 +47,150 @@ static bool ReadGeometryString(Napi::Env env, const Napi::Value& value, std::str
   }
   *text = input.Utf8Value();
   return true;
+}
+
+static bool ReadInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(n) && std::trunc(n) == n && n >= -2147483648.0 && n <= 2147483647.0) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed32 integer"));
+  return false;
+}
+
+static Napi::Value StringBytes(Napi::Env env, const char* data, size_t capacity) {
+  const auto end = std::find(data, data + capacity, '\0');
+  if (end == data + capacity) {
+    ThrowSpiceError(Napi::Error::New(env, "CSPICE string result has no NUL terminator"));
+    return env.Undefined();
+  }
+  const size_t length = static_cast<size_t>(end - data);
+  const auto result = Napi::String::New(env, data, length);
+  // N-API decodes invalid UTF-8 with replacement. A round trip must preserve
+  // every byte, including a leading BOM and trailing whitespace.
+  const std::string decoded = result.Utf8Value();
+  if (decoded.size() != length || std::memcmp(decoded.data(), data, length) != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "CSPICE string result is not valid UTF-8"));
+    return env.Undefined();
+  }
+  return result;
+}
+
+static Napi::Value ReadFov(const Napi::CallbackInfo& info, bool byName) {
+  const auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected instrument, room and two text capacities"));
+    return env.Undefined();
+  }
+  std::string inst;
+  int id = 0, room, shapeLen, frameLen;
+  if (byName ? !ReadGeometryString(env, info[0], &inst) : !ReadInt(env, info[0], &id))
+    return env.Undefined();
+  if (!ReadInt(env, info[1], &room) || !ReadInt(env, info[2], &shapeLen) ||
+      !ReadInt(env, info[3], &frameLen))
+    return env.Undefined();
+  if (room < -715827882) {
+    ThrowSpiceError(Napi::RangeError::New(env, "FOV room overflows the toolkit component count"));
+    return env.Undefined();
+  }
+  room = std::min(room, 133334);
+  char shape[81] = {}, frame[81] = {}, err[tspice_backend_node::kErrMaxBytes] = {};
+  shapeLen = std::min(shapeLen, 81);
+  frameLen = std::min(frameLen, 81);
+  std::unique_ptr<double[]> bounds(new (std::nothrow) double[3 * std::max(1, room)]{});
+  if (!bounds) {
+    ThrowSpiceError(env, "FOV output allocation failed");
+    return env.Undefined();
+  }
+  double bore[3] = {};
+  int n = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  const int status = byName ? tspice_getfvn(inst.c_str(), room, shapeLen, frameLen, shape, frame,
+                                            bore, &n, bounds.get(), err, sizeof(err))
+                            : tspice_getfov(id, room, shapeLen, frameLen, shape, frame, bore, &n,
+                                            bounds.get(), err, sizeof(err));
+  if (status) {
+    ThrowSpiceError(env, byName ? "getfvn" : "getfov", err);
+    return env.Undefined();
+  }
+  const auto shapeText = StringBytes(env, shape, sizeof(shape));
+  if (env.IsExceptionPending()) return env.Undefined();
+  const auto frameText = StringBytes(env, frame, sizeof(frame));
+  if (env.IsExceptionPending()) return env.Undefined();
+  auto record = Napi::Object::New(env);
+  record.Set("shape", shapeText);
+  record.Set("frame", frameText);
+  record.Set("bsight", MakeNumberArray(env, bore, 3));
+  record.Set("n", Napi::Number::New(env, n));
+  auto rows = Napi::Array::New(env, n);
+  for (int i = 0; i < n; i++) rows.Set(i, MakeNumberArray(env, bounds.get() + 3 * i, 3));
+  record.Set("bounds", rows);
+  return record;
+}
+static Napi::Value Getfov(const Napi::CallbackInfo& info) { return ReadFov(info, false); }
+static Napi::Value Getfvn(const Napi::CallbackInfo& info) { return ReadFov(info, true); }
+
+static Napi::Value Fovray(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 6 || !info[5].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "fovray expects its full arguments and a numeric ET"));
+    return env.Undefined();
+  }
+  std::string inst;
+  if (!ReadGeometryString(env, info[0], &inst)) return env.Undefined();
+  double dir[3];
+  if (!tspice_backend_node::ReadVec3(env, info[1], dir, "raydir")) return env.Undefined();
+  std::string rframe;
+  if (!ReadGeometryString(env, info[2], &rframe)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[3], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[4], &observer)) return env.Undefined();
+  const double et = info[5].As<Napi::Number>().DoubleValue();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int out = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_fovray(inst.c_str(), dir, rframe.c_str(), abcorr.c_str(), observer.c_str(), et, &out,
+                    err, sizeof(err))) {
+    ThrowSpiceError(env, "fovray", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Value Fovtrg(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 7 || !info[6].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "fovtrg expects its full arguments and a numeric ET"));
+    return env.Undefined();
+  }
+  std::string inst;
+  if (!ReadGeometryString(env, info[0], &inst)) return env.Undefined();
+  std::string target;
+  if (!ReadGeometryString(env, info[1], &target)) return env.Undefined();
+  std::string tshape;
+  if (!ReadGeometryString(env, info[2], &tshape)) return env.Undefined();
+  std::string tframe;
+  if (!ReadGeometryString(env, info[3], &tframe)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[4], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[5], &observer)) return env.Undefined();
+  const double et = info[6].As<Napi::Number>().DoubleValue();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int out = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_fovtrg(inst.c_str(), target.c_str(), tshape.c_str(), tframe.c_str(), abcorr.c_str(),
+                    observer.c_str(), et, &out, err, sizeof(err))) {
+    ThrowSpiceError(env, "fovtrg", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, out != 0);
 }
 
 static Napi::Value Phaseq(const Napi::CallbackInfo& info) {
@@ -586,6 +734,10 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometry(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "getfov", Napi::Function::New(env, Getfov), __func__)) return;
+  if (!SetExportChecked(env, exports, "getfvn", Napi::Function::New(env, Getfvn), __func__)) return;
+  if (!SetExportChecked(env, exports, "fovray", Napi::Function::New(env, Fovray), __func__)) return;
+  if (!SetExportChecked(env, exports, "fovtrg", Napi::Function::New(env, Fovtrg), __func__)) return;
   if (!SetExportChecked(env, exports, "phaseq", Napi::Function::New(env, Phaseq), __func__)) return;
   if (!SetExportChecked(env, exports, "lspcn", Napi::Function::New(env, Lspcn), __func__)) return;
   if (!SetExportChecked(env, exports, "trgsep", Napi::Function::New(env, Trgsep), __func__)) return;

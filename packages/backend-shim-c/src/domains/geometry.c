@@ -753,3 +753,103 @@ done:
   chkout_c("LSPCN"); chkout_c("lspcn_c");
   return status ? status : geometry_status(err, errMaxBytes);
 }
+
+// A complete N0067 pool character value has 80 data bytes. The caller allocates
+// max(1, capacity) bytes and max(1, room) triples after applying the same bounds.
+static int check_fov_buffers(int room, int shapelen, int framelen, char* shape, char* frame,
+                             double* bsight, int* n, double* bounds, char* err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!shape || !frame || !bsight || !n || !bounds || room < INT_MIN / 3 || room > 133334 ||
+      shapelen > 81 || framelen > 81)
+    return geometry_input_error(err, errMaxBytes, "Invalid FOV workspace");
+  shape[0] = frame[0] = 0;
+  *n = 0;
+  return 0;
+}
+
+int tspice_getfov(int instid, int room, int shapelen, int framelen, char* shape, char* frame,
+                  double* bsight, int* n, double* bounds, char* err, int errMaxBytes) {
+  if (check_fov_buffers(room, shapelen, framelen, shape, frame, bsight, n, bounds, err,
+                        errMaxBytes))
+    return 1;
+  getfov_c(instid, room, shapelen, framelen, shape, frame, bsight, n, (SpiceDouble(*)[3])bounds);
+  if (failed_c()) return geometry_status(err, errMaxBytes);
+  if (*n < 0 || *n > room)
+    return geometry_input_error(err, errMaxBytes, "Invalid FOV boundary count");
+  return 0;
+}
+
+int tspice_getfvn(const char* inst, int room, int shapelen, int framelen, char* shape, char* frame,
+                  double* bsight, int* n, double* bounds, char* err, int errMaxBytes) {
+  if (check_fov_buffers(room, shapelen, framelen, shape, frame, bsight, n, bounds, err,
+                        errMaxBytes))
+    return 1;
+
+  if (!inst || strlen(inst) >= INT_MAX)
+    return geometry_input_error(err, errMaxBytes, "Invalid instrument string");
+  if (*inst && shapelen >= 2 && framelen >= 2) {
+    if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+    // GETFVN's ZZBODS2C caches the caller's uninitialized local code on a miss.
+    // Resolve into owned storage first and preserve the original message and trace.
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    chkin_c("getfvn_c");
+    chkin_c("GETFVN");
+    bods2c_c(inst, &code, &found);
+    if (!found && !failed_c()) {
+      setmsg_c(
+          "'#' is not a recognized name for an instrument. The cause of this problem may be that "
+          "you have not loaded a required frame kernel or instrument kernel.");
+      errch_c("#", inst);
+      sigerr_c("SPICE(IDCODENOTFOUND)");
+    }
+    chkout_c("GETFVN");
+    chkout_c("getfvn_c");
+    if (failed_c()) return geometry_status(err, errMaxBytes);
+  }
+  getfvn_c(inst, room, shapelen, framelen, shape, frame, bsight, n, (SpiceDouble(*)[3])bounds);
+  if (failed_c()) return geometry_status(err, errMaxBytes);
+  if (*n < 0 || *n > room)
+    return geometry_input_error(err, errMaxBytes, "Invalid FOV boundary count");
+  return 0;
+}
+
+int tspice_fovray(const char* inst, const double* dir, const char* rframe, const char* abcorr,
+                  const char* observer, double et, int* visible, char* err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  const char* strings[] = {inst, rframe, abcorr, observer};
+  if (!visible || !isfinite(et))
+    return geometry_input_error(err, errMaxBytes, "Invalid FOV result or ET");
+  for (size_t i = 0; i < sizeof(strings) / sizeof(strings[0]); ++i)
+    if (!strings[i] || strlen(strings[i]) >= INT_MAX)
+      return geometry_input_error(err, errMaxBytes, "Invalid FOV text");
+  if (!dir || !isfinite(dir[0]) || !isfinite(dir[1]) || !isfinite(dir[2]))
+    return geometry_input_error(err, errMaxBytes, "Invalid ray direction");
+  if (*inst && *rframe && *abcorr && *observer && check_body_mapping_codes(err, errMaxBytes))
+    return 1;
+  SpiceBoolean result = SPICEFALSE;
+  fovray_c(inst, dir, rframe, abcorr, observer, &et, &result);
+  if (failed_c()) return geometry_status(err, errMaxBytes);
+  *visible = result == SPICETRUE;
+  return 0;
+}
+
+int tspice_fovtrg(const char* inst, const char* target, const char* tshape, const char* tframe,
+                  const char* abcorr, const char* observer, double et, int* visible, char* err,
+                  int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  const char* strings[] = {inst, target, tshape, tframe, abcorr, observer};
+  if (!visible || !isfinite(et))
+    return geometry_input_error(err, errMaxBytes, "Invalid FOV result or ET");
+  for (size_t i = 0; i < sizeof(strings) / sizeof(strings[0]); ++i)
+    if (!strings[i] || strlen(strings[i]) >= INT_MAX)
+      return geometry_input_error(err, errMaxBytes, "Invalid FOV text");
+  if (*inst && *target && *tshape && *abcorr && *observer && !eqstr_c(tshape, "RAY") &&
+      check_body_mapping_codes(err, errMaxBytes))
+    return 1;
+  SpiceBoolean result = SPICEFALSE;
+  fovtrg_c(inst, target, tshape, tframe, abcorr, observer, &et, &result);
+  if (failed_c()) return geometry_status(err, errMaxBytes);
+  *visible = result == SPICETRUE;
+  return 0;
+}

@@ -16,8 +16,66 @@ import type {
   SpiceVector3,
 } from "../shared/types.js";
 
+/** Instrument kernel FOV parameters. Bounds are ordered three-component directions. */
+export type FieldOfView = {
+  shape: string;
+  frame: string;
+  bsight: SpiceVector3;
+  n: number;
+  bounds: SpiceVector3[];
+};
+
 /** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
+  /**
+   * Read the kernel-pool FOV for a numeric instrument ID. Supply room in boundary vectors. Both optional text capacities include the NUL and default to 81 bytes. Shape is read into the requested field before the toolkit interprets it. Preserves the boresight and ordered boundary magnitudes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfov_c.html
+   */
+  getfov(
+    instid: number,
+    room: number,
+    shapelen?: number,
+    framelen?: number,
+  ): FieldOfView;
+
+  /**
+   * Read the kernel-pool FOV by instrument name or numeric string. The room and output capacities follow getfov. The returned frame and bounds are independently owned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfvn_c.html
+   */
+  getfvn(
+    inst: string,
+    room: number,
+    shapelen?: number,
+    framelen?: number,
+  ): FieldOfView;
+
+  /**
+   * Test visibility of a ray direction in rframe at ephemeris time (TDB seconds past J2000), with the supplied observer and stellar aberration correction. Return the toolkit boolean, including a legitimate outside result.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/fovray_c.html
+   */
+  fovray(
+    inst: string,
+    raydir: Readonly<SpiceVector3>,
+    rframe: string,
+    abcorr: string,
+    observer: string,
+    et: number,
+  ): boolean;
+
+  /**
+   * Test a point or ellipsoidal target against the instrument FOV at ephemeris time. Input strings retain their CSPICE meanings. An empty target frame is permitted for a point; an ellipsoid needs a body-fixed frame and radii.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/fovtrg_c.html
+   */
+  fovtrg(
+    inst: string,
+    target: string,
+    tshape: string,
+    tframe: string,
+    abcorr: string,
+    observer: string,
+    et: number,
+  ): boolean;
+
   /**
    * Compute the angle at the target center between illuminator and observer, in radians
    * from 0 to π. Use three distinct body names or numeric strings, finite ET in TDB

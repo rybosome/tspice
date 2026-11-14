@@ -1,4 +1,3 @@
-import { spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   Found,
   GeometryApi,
@@ -10,7 +9,13 @@ import type {
   SpiceVector3,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  fovRayDirection,
+  fovWorkspace,
+  invariant,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
@@ -69,6 +74,29 @@ function geometryInputs(
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
+    getfov: (id, room, shapelen = 81, framelen = 81) => {
+      assertSpiceInt32(id, "instid");
+      const w = fovWorkspace(room, shapelen, framelen);
+      return native.getfov(id, w.room, w.shapelen, w.framelen);
+    },
+    getfvn: (name, room, shapelen = 81, framelen = 81) => {
+      spiceStringByteLength(name, "inst");
+      const w = fovWorkspace(room, shapelen, framelen);
+      return native.getfvn(name, w.room, w.shapelen, w.framelen);
+    },
+    fovray: (inst, raydir, rframe, abcorr, observer, et) => {
+      const dir = fovRayDirection(raydir);
+      for (const text of [inst, rframe, abcorr, observer])
+        spiceStringByteLength(text, "fovray argument");
+      geometryNumber(et, "et");
+      return native.fovray(inst, dir, rframe, abcorr, observer, et);
+    },
+    fovtrg: (inst, target, tshape, tframe, abcorr, observer, et) => {
+      for (const text of [inst, target, tshape, tframe, abcorr, observer])
+        spiceStringByteLength(text, "fovtrg argument");
+      geometryNumber(et, "et");
+      return native.fovtrg(inst, target, tshape, tframe, abcorr, observer, et);
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       spiceStringByteLength(target, "phaseq(target)");

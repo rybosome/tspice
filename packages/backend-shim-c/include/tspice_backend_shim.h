@@ -946,6 +946,15 @@ int tspice_spkw08_v2(
 // --- Derived geometry primitives ---
 
 // subpnt_c: compute the sub-observer point on a target body's surface.
+int tspice_getfov(int instid, int room, int shapelen, int framelen, char* shape, char* frame,
+                  double* bsight, int* n, double* bounds, char* err, int errMaxBytes);
+int tspice_getfvn(const char* inst, int room, int shapelen, int framelen, char* shape, char* frame,
+                  double* bsight, int* n, double* bounds, char* err, int errMaxBytes);
+int tspice_fovray(const char* inst, const double* dir, const char* rframe, const char* abcorr,
+                  const char* observer, double et, int* visible, char* err, int errMaxBytes);
+int tspice_fovtrg(const char* inst, const char* target, const char* tshape, const char* tframe,
+                  const char* abcorr, const char* observer, double et, int* visible, char* err,
+                  int errMaxBytes);
 int tspice_phaseq(double et, const char *target, const char *illmn, const char *observer, const char *abcorr, double *out, char *err, int errMaxBytes);
 int tspice_lspcn(const char *body, double et, const char *abcorr, double *out, char *err, int errMaxBytes);
 int tspice_trgsep(double et, const char *targ1, const char *shape1, const char *frame1, const char *targ2, const char *shape2, const char *frame2, const char *observer, const char *abcorr, double *out, char *err, int errMaxBytes);

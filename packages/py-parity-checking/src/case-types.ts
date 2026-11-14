@@ -1,4 +1,5 @@
 import type {
+  FieldOfView,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -1175,6 +1176,43 @@ export type StepGeometryIllumf = {
   spoint: Vec3;
 };
 
+export type StepGeometryGetfov = {
+  op: "geometry.getfov";
+  instid: number;
+  room: number;
+  shapelen: number;
+  framelen: number;
+};
+
+export type StepGeometryGetfvn = {
+  op: "geometry.getfvn";
+  inst: string;
+  room: number;
+  shapelen: number;
+  framelen: number;
+};
+
+export type StepGeometryFovray = {
+  op: "geometry.fovray";
+  inst: string;
+  raydir: Vec3;
+  rframe: string;
+  abcorr: string;
+  observer: string;
+  et: number;
+};
+
+export type StepGeometryFovtrg = {
+  op: "geometry.fovtrg";
+  inst: string;
+  target: string;
+  tshape: string;
+  tframe: string;
+  abcorr: string;
+  observer: string;
+  et: number;
+};
+
 export type StepGeometryPhaseq = {
   op: "geometry.phaseq";
   et: number;
@@ -1467,6 +1505,10 @@ export type WorkflowStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryGetfov
+  | StepGeometryGetfvn
+  | StepGeometryFovray
+  | StepGeometryFovtrg
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
@@ -1909,6 +1951,10 @@ export type StepOutput =
         lit: boolean;
       };
     }
+  | { op: "geometry.getfov"; value: FieldOfView }
+  | { op: "geometry.getfvn"; value: FieldOfView }
+  | { op: "geometry.fovray"; value: boolean }
+  | { op: "geometry.fovtrg"; value: boolean }
   | { op: "geometry.phaseq"; value: number }
   | { op: "geometry.lspcn"; value: number }
   | { op: "geometry.trgsep"; value: number }

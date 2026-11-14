@@ -67,6 +67,7 @@ import type { TimeApi, TimeKitApi } from "./domains/time.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
+export type { FieldOfView } from "./domains/geometry.js";
 import type { GeometryApi } from "./domains/geometry.js";
 import type { GeometryGfApi } from "./domains/geometry-gf.js";
 import type { CoordsVectorsApi } from "./domains/coords-vectors.js";

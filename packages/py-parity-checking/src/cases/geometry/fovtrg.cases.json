@@ -1,0 +1,898 @@
+[
+  {
+    "caseId": "geometry-fovtrg-limb-contact",
+    "description": "The ellipsoid remains visible after its center has left the field. Sample both sides of center and limb transitions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 49.99
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 49.99
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 50.01
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 50.01
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 57
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 57
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 70
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 70
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": -100
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": -100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-corrections",
+    "description": "Compare geometric, light-time, stellar and transmission modes at the time-dependent visibility boundary.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "LT",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "CN",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "LT+S",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "CN+S",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XLT",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XCN",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XLT+S",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XCN+S",
+        "observer": "100103",
+        "et": 49.99999
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "LT",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "CN",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "LT+S",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "CN+S",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XLT",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XCN",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XLT+S",
+        "observer": "100103",
+        "et": 50.00001
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "XCN+S",
+        "observer": "100103",
+        "et": 50.00001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-apparent-size",
+    "description": "Increasing the ellipsoid semiaxes changes limb visibility with a fixed center and sightline.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [9, 8, 7]
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-shapes-and-frame",
+    "description": "Use all four FOVs, with the last defined in a rotated frame, and reverse observer and target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100103",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_ELLIPSE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_ELLIPSE",
+        "target": "100103",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_RECT",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_RECT",
+        "target": "100103",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_POLYGON",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_POLYGON",
+        "target": "100103",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-point-frame",
+    "description": "A point accepts an empty or unused target frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "UNUSED",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-clear-reload",
+    "description": "Read before and after clearing and reloading the participating kernels.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 100
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-missing-spk",
+    "description": "Observe the actual target-visibility diagnostic for missing-spk.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-unknown-target",
+    "description": "Observe the actual target-visibility diagnostic for unknown-target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "UNKNOWN TARGET",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-unknown-observer",
+    "description": "Observe the actual target-visibility diagnostic for unknown-observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "UNKNOWN OBSERVER",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-same-body",
+    "description": "Observe the actual target-visibility diagnostic for same-body.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100101",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-invalid-shape",
+    "description": "Observe the actual target-visibility diagnostic for invalid-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "CUBE",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSHAPE)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-ray-shape",
+    "description": "Observe the actual target-visibility diagnostic for ray-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "RAY",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-bad-correction",
+    "description": "Observe the actual target-visibility diagnostic for bad-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "S",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-ellipsoid-frame",
+    "description": "Observe the actual target-visibility diagnostic for ellipsoid-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "ELLIPSOID",
+        "tframe": "UNKNOWN FRAME",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovtrg-outside-coverage",
+    "description": "Observe the actual target-visibility diagnostic for outside-coverage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovtrg",
+        "inst": "AUDIT_CIRCLE",
+        "target": "100101",
+        "tshape": "POINT",
+        "tframe": "",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 10001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  }
+]

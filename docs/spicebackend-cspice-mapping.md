@@ -697,3 +697,7 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+### Instrument geometry
+
+`getfov`, `getfvn`, `fovray` and `fovtrg` use their same-named public C routines on the serialized native and compiled WASM paths. Both lookup methods preserve complete ordered vectors and the caller's string capacities. A missing instrument name takes the initialized translation path with the original GETFVN diagnostic. The two visibility predicates compare the actual toolkit booleans. [Field-of-view semantics and evidence](step8-field-of-view.md)

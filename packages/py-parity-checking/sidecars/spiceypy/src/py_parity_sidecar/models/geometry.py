@@ -78,6 +78,47 @@ class StepGeometryIllumf:
 
 
 @dataclass(frozen=True)
+class StepGeometryGetfov:
+    op: Literal["geometry.getfov"]
+    instid: int
+    room: int
+    shapelen: int
+    framelen: int
+
+
+@dataclass(frozen=True)
+class StepGeometryGetfvn:
+    op: Literal["geometry.getfvn"]
+    inst: str
+    room: int
+    shapelen: int
+    framelen: int
+
+
+@dataclass(frozen=True)
+class StepGeometryFovray:
+    op: Literal["geometry.fovray"]
+    inst: str
+    raydir: tuple[float, float, float]
+    rframe: str
+    abcorr: str
+    observer: str
+    et: float
+
+
+@dataclass(frozen=True)
+class StepGeometryFovtrg:
+    op: Literal["geometry.fovtrg"]
+    inst: str
+    target: str
+    tshape: str
+    tframe: str
+    abcorr: str
+    observer: str
+    et: float
+
+
+@dataclass(frozen=True)
 class StepGeometryPhaseq:
     op: Literal["geometry.phaseq"]
     et: float
