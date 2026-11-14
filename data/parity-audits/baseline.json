@@ -431,8 +431,8 @@
         "ekucei_c"
       ],
       "dependsOn": ["c08-ek-records"],
-      "prs": [],
-      "nextAction": "Capture the full local and canonical CI lanes on this combined source, then confirm final-head CI and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/762"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
