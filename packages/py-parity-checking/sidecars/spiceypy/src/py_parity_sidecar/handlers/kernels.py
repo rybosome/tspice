@@ -138,15 +138,36 @@ def _normalize_kplfrm(value: Any) -> dict[str, Any]:
     return {"ids": sorted(int(item) for item in value)}
 
 
+def _ek_files(context):
+    if context.state.ek.lastSuccessfulFindNmrows is None and not context.state.ek.loads:
+        return ()
+    return tuple(sp.kdata(i,"EK")[3] for i in range(sp.ktotal("EK")))
+
+
+def _changed_ek_files(context, prior):
+    current = _ek_files(context)
+    if current == prior:
+        return
+    context.state.ek.lastSuccessfulFindNmrows = None
+    removed = set(prior) - set(current)
+    for name in context.state.ek.loads:
+        if context.state.ek.handles.get(name) in removed:
+            context.state.ek.expiredLoads.add(name)
+
+
 def run_kernels_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepKernelsFurnsh):
         resolved_file = resolve_path_ref(context.paths, step.file)
+        prior = _ek_files(context)
         sp.furnsh(resolved_file)
+        _changed_ek_files(context, prior)
         context.state.kernels.loadedVirtualKernelPaths.append(_to_virtual_kernel_path(step.file))
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepKernelsKclear):
+        prior = _ek_files(context)
         sp.kclear()
+        _changed_ek_files(context, prior)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepKernelsKinfo):
@@ -220,7 +241,9 @@ def run_kernels_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         })
 
     if isinstance(step, StepKernelsUnload):
+        prior = _ek_files(context)
         sp.unload(step.path if not step.path.strip() else resolve_path_ref(context.paths, step.path))
+        _changed_ek_files(context, prior)
         return StepOutput(op=step.op, value=None)
 
     return None

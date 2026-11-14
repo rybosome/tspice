@@ -92,6 +92,26 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "ekcii": {
+      "node": {
+        "reason": "The original C wrapper reads a private unwritten attribute descriptor after errors. Use initialized ekcii_ under the canonical outer trace, preserve zero-based type/index mapping and use the C width diagnostic.",
+        "expectedEntrypoints": ["ekcii_", "chkin_c", "chkout_c", "ekcii_c"]
+      },
+      "wasm": {
+        "reason": "The original C wrapper reads a private unwritten attribute descriptor after errors. Use initialized ekcii_ under the canonical outer trace, preserve zero-based type/index mapping and use the C width diagnostic.",
+        "expectedEntrypoints": ["ekcii_", "chkin_c", "chkout_c", "ekcii_c"]
+      }
+    },
+    "eknelt": {
+      "node": {
+        "reason": "The C wrapper returns an unwritten private integer on errors. Use initialized eknelt_ under the canonical outer trace, preserving one-based input conversion and actual query results.",
+        "expectedEntrypoints": ["eknelt_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "The C wrapper returns an unwritten private integer on errors. Use initialized eknelt_ under the canonical outer trace, preserving one-based input conversion and actual query results.",
+        "expectedEntrypoints": ["eknelt_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

@@ -188,6 +188,17 @@ export function getNodeBinding(): NativeAddon {
   );
 
   // --- EK ---
+  invariant(typeof native.ekccnt === "function", "Expected native ekccnt");
+  invariant(typeof native.ekcii === "function", "Expected native ekcii");
+  invariant(typeof native.eklef === "function", "Expected native eklef");
+  invariant(typeof native.eknelt === "function", "Expected native eknelt");
+  invariant(typeof native.ekpsel === "function", "Expected native ekpsel");
+  invariant(typeof native.ekssum === "function", "Expected native ekssum");
+  invariant(typeof native.ekuef === "function", "Expected native ekuef");
+  invariant(
+    typeof native.ekload_nseg === "function",
+    "Expected native ekload_nseg",
+  );
   invariant(
     typeof native.ekopr === "function",
     "Expected native addon to export ekopr(path)",

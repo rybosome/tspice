@@ -391,6 +391,14 @@ const exportedFunctions = [
   "_tspice_dlacls",
 
   // --- EK ---
+  "_tspice_ekccnt",
+  "_tspice_ekcii",
+  "_tspice_eklef",
+  "_tspice_eknelt",
+  "_tspice_ekpsel",
+  "_tspice_ekssum",
+  "_tspice_ekuef",
+  "_tspice_ekload_nseg",
   "_tspice_ekopr",
   "_tspice_ekopw",
   "_tspice_ekopn",

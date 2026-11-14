@@ -1,5 +1,11 @@
 import type { EkApi, SpiceHandle } from "@rybosome/tspice-backend-contract";
 import {
+  decodeEkColumn,
+  decodeEkSummary,
+  decodeEkSelect,
+  ekMetadataText,
+  ekMetadataOrdinal,
+  ekMetadataLayout,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
@@ -178,6 +184,25 @@ function callVoidHandle(
   });
 }
 
+function metadataCall<T>(
+  module: EmscriptenModule,
+  input: Uint8Array | undefined,
+  sizes: readonly number[],
+  run: (s: number, out: number[], err: number) => T,
+) {
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, ...(input ? [input.length + 1] : []), ...sizes],
+    (err, ...pointers) => {
+      const s = input ? pointers.shift()! : 0;
+      if (input) {
+        module.HEAPU8.set(input, s >>> 0);
+        module.HEAPU8[(s >>> 0) + input.length] = 0;
+      }
+      return run(s, pointers, err);
+    },
+  );
+}
 function assertArray(value: unknown, label: string): void {
   if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
 }
@@ -207,7 +232,99 @@ export function createEkApi(
 ): EkApi {
   const TABLE_NAME_MAX_BYTES = 256;
 
+  const loads = new Map<number, SpiceHandle>();
+  function loadToken(generation: number) {
+    const existing = loads.get(generation);
+    if (existing !== undefined) return existing;
+    const token = spiceHandles.register("EK-LOAD", generation);
+    loads.set(generation, token);
+    return token;
+  }
+  function checked(status: number, err: number) {
+    if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+  }
+  function scalar(
+    input: Uint8Array | undefined,
+    call: (s: number, out: number, err: number, cap: number) => number,
+  ) {
+    return metadataCall(module, input, [4], (s, [out], err) => {
+      checked(call(s, out!, err, WASM_ERR_MAX_BYTES), err);
+      return readHeapI32(module, (out! >>> 0) / 4, "EK metadata");
+    });
+  }
+  function result(
+    kind: keyof typeof ekMetadataLayout,
+    input: Uint8Array | undefined,
+    call: (s: number, w: number, b: number, err: number, cap: number) => number,
+  ) {
+    const [nw, nb] = ekMetadataLayout[kind];
+    return metadataCall(module, input, [nw * 4, nb], (s, [w, b], err) => {
+      checked(call(s, w!, b!, err, WASM_ERR_MAX_BYTES), err);
+      return {
+        words: module.HEAP32.slice((w! >>> 0) / 4, (w! >>> 0) / 4 + nw),
+        text: module.HEAPU8.slice(b! >>> 0, (b! >>> 0) + nb),
+      };
+    });
+  }
   const api = {
+    ekccnt: (table: string) => {
+      return scalar(ekMetadataText(table), module._tspice_ekccnt);
+    },
+    ekcii: (table: string, cindex: number, collen = 33) => {
+      ekMetadataOrdinal(cindex);
+      assertSpiceInt32(collen, "EK column width");
+      return decodeEkColumn(
+        result("ekcii", ekMetadataText(table), (s, w, b, e, z) =>
+          module._tspice_ekcii(s, cindex, collen, w, b, e, z),
+        ),
+      );
+    },
+    eklef: (path: string) => {
+      ekMetadataText(path);
+      return loadToken(
+        scalar(
+          ekMetadataText(path ? resolveKernelPath(path) : path),
+          module._tspice_eklef,
+        ),
+      );
+    },
+    eknelt: (selidx: number, row: number) => {
+      ekMetadataOrdinal(selidx);
+      ekMetadataOrdinal(row);
+      return scalar(undefined, (_s, o, e, z) =>
+        module._tspice_eknelt(selidx, row, o, e, z),
+      );
+    },
+    ekpsel: (query: string) => {
+      return decodeEkSelect(
+        result("ekpsel", ekMetadataText(query), module._tspice_ekpsel),
+      );
+    },
+    ekssum: (handle: SpiceHandle, segno: number) => {
+      ekMetadataOrdinal(segno);
+      const { nativeHandle, kind } = spiceHandles.lookup(
+        handle,
+        ["EK", "EK-LOAD"],
+        "ekssum",
+      );
+      const loaded = Number(kind === "EK-LOAD");
+      return decodeEkSummary(
+        result("ekssum", undefined, (_s, w, b, e, z) =>
+          module._tspice_ekssum(nativeHandle, loaded, segno, w, b, e, z),
+        ),
+      );
+    },
+    ekuef: (handle: SpiceHandle) => {
+      spiceHandles.close(
+        handle,
+        ["EK-LOAD"],
+        ({ nativeHandle }) => {
+          callVoidHandle(module, module._tspice_ekuef, nativeHandle);
+          loads.delete(nativeHandle);
+        },
+        "ekuef",
+      );
+    },
     ekopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -367,22 +484,18 @@ export function createEkApi(
     },
 
     eknseg: (handle: SpiceHandle) => {
-      const nativeHandle = spiceHandles.lookup(
-        handle,
-        EK_ONLY,
-        "eknseg",
-      ).nativeHandle;
+      const entry = spiceHandles.lookup(handle, ["EK", "EK-LOAD"], "eknseg");
+      const nativeHandle = entry.nativeHandle;
       return withAllocs(
         module,
         [4, WASM_ERR_MAX_BYTES],
         (outNsegPtr, errPtr) => {
           module.HEAP32[outNsegPtr >> 2] = 0;
-          const code = module._tspice_eknseg(
-            nativeHandle,
-            outNsegPtr,
-            errPtr,
-            WASM_ERR_MAX_BYTES,
-          );
+          const code = (
+            entry.kind === "EK-LOAD"
+              ? module._tspice_ekload_nseg
+              : module._tspice_eknseg
+          )(nativeHandle, outNsegPtr, errPtr, WASM_ERR_MAX_BYTES);
           if (code !== 0) {
             throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
           }

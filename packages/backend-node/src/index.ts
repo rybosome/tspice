@@ -127,6 +127,8 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
               (e) => native.dafcls(e.nativeHandle),
               "disposeAll:dafcls",
             );
+          } else if (entry.kind === "EK-LOAD") {
+            backend.raw.ekuef(handle);
           } else if (entry.kind === "EK") {
             spiceHandles.close(
               handle,

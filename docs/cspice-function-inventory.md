@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 169
+- Planned (not yet implemented): 480
 - Excluded: 3
 
 ## Implemented now
@@ -64,6 +64,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
+| `ekccnt_c` | EK, column count |
+| `ekcii_c` | EK, column info by index |
 | `ekcls_c` | EK, close file |
 | `ekffld_c` | EK, finish fast write |
 | `ekfind_c` | EK, find data |
@@ -71,12 +73,17 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekgd_c` | EK, get event data, double precision |
 | `ekgi_c` | EK, get event data, integer |
 | `ekifld_c` | EK, initialize segment for fast write |
+| `eklef_c` | EK, load event file |
+| `eknelt_c` | EK, get number of elements in column entry |
 | `eknseg_c` | EK, number of segments in file |
 | `ekntab_c` | EK, return number of loaded tables |
 | `ekopn_c` | EK, open new file |
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
+| `ekpsel_c` | EK, parse SELECT clause |
+| `ekssum_c` | EK, return segment summary |
 | `ektnam_c` | EK, return name of loaded table |
+| `ekuef_c` | EK, unload event file |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -330,22 +337,15 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekacei_c` | EK, add integer data to column |
 | `ekappr_c` | EK, append record onto segment |
 | `ekbseg_c` | EK, start new segment |
-| `ekccnt_c` | EK, column count |
-| `ekcii_c` | EK, column info by index |
 | `ekdelr_c` | EK, delete record from segment |
 | `ekinsr_c` | EK, insert record into segment |
-| `eklef_c` | EK, load event file |
-| `eknelt_c` | EK, get number of elements in column entry |
 | `ekops_c` | EK, open scratch file |
-| `ekpsel_c` | EK, parse SELECT clause |
 | `ekrcec_c` | EK, read column entry element, character |
 | `ekrced_c` | EK, read column entry element, d.p. |
 | `ekrcei_c` | EK, read column entry element, integer |
-| `ekssum_c` | EK, return segment summary |
 | `ekucec_c` | EK, update character column entry |
 | `ekuced_c` | EK, update d.p. column entry |
 | `ekucei_c` | EK, update integer column entry |
-| `ekuef_c` | EK, unload event file |
 | `el2cgv_c` | Ellipse to center and generating vectors |
 | `elemc_c` | Element of a character set |
 | `elemd_c` | Element of a double precision set |

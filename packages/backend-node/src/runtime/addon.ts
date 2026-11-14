@@ -113,6 +113,22 @@ export type NativeAddon = {
   dlacls(handle: number): void;
 
   // --- EK ---
+  ekccnt(table: string): number;
+  ekcii(
+    table: string,
+    cindex: number,
+    collen: number,
+  ): import("@rybosome/tspice-core").EkMetadataBuffers;
+  eklef(path: string): number;
+  eknelt(selidx: number, row: number): number;
+  ekpsel(query: string): import("@rybosome/tspice-core").EkMetadataBuffers;
+  ekssum(
+    id: number,
+    loaded: number,
+    segment: number,
+  ): import("@rybosome/tspice-core").EkMetadataBuffers;
+  ekuef(generation: number): void;
+  ekload_nseg(generation: number): number;
   ekopr(path: string): number;
   ekopw(path: string): number;
   ekopn(path: string, ifname: string, ncomch: number): number;

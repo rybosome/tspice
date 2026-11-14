@@ -48,6 +48,13 @@ import ekEkgiCasesRaw from "./ek/ekgi.cases.json" with { type: "json" };
 import ekEkifldCasesRaw from "./ek/ekifld.cases.json" with { type: "json" };
 import ekEknsegCasesRaw from "./ek/eknseg.cases.json" with { type: "json" };
 import ekEkntabCasesRaw from "./ek/ekntab.cases.json" with { type: "json" };
+import ekEkccntCasesRaw from "./ek/ekccnt.cases.json" with { type: "json" };
+import ekEkciiCasesRaw from "./ek/ekcii.cases.json" with { type: "json" };
+import ekEklefCasesRaw from "./ek/eklef.cases.json" with { type: "json" };
+import ekEkneltCasesRaw from "./ek/eknelt.cases.json" with { type: "json" };
+import ekEkpselCasesRaw from "./ek/ekpsel.cases.json" with { type: "json" };
+import ekEkssumCasesRaw from "./ek/ekssum.cases.json" with { type: "json" };
+import ekEkuefCasesRaw from "./ek/ekuef.cases.json" with { type: "json" };
 import ekEkopnCasesRaw from "./ek/ekopn.cases.json" with { type: "json" };
 import ekEkoprCasesRaw from "./ek/ekopr.cases.json" with { type: "json" };
 import ekEkopwCasesRaw from "./ek/ekopw.cases.json" with { type: "json" };
@@ -228,6 +235,13 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkw08CasesRaw as ParityCase[]),
 ];
 export const ekCases: ParityCase[] = [
+  ...(ekEkccntCasesRaw as ParityCase[]),
+  ...(ekEkciiCasesRaw as ParityCase[]),
+  ...(ekEklefCasesRaw as ParityCase[]),
+  ...(ekEkneltCasesRaw as ParityCase[]),
+  ...(ekEkpselCasesRaw as ParityCase[]),
+  ...(ekEkssumCasesRaw as ParityCase[]),
+  ...(ekEkuefCasesRaw as ParityCase[]),
   ...(ekEkopnCasesRaw as ParityCase[]),
   ...(ekEkoprCasesRaw as ParityCase[]),
   ...(ekEkopwCasesRaw as ParityCase[]),

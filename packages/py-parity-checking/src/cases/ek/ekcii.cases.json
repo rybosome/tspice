@@ -1,0 +1,193 @@
+[
+  {
+    "caseId": "ek-ekcii-all-descriptors",
+    "description": "Inspect all seven physical storage classes, flags, scalar/fixed/variable sizes and types in logical column order.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 0,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 1,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 2,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 3,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 4,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 5,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 6,
+        "collen": 33
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekcii-output-width",
+    "description": "Inspect truncated names and full descriptors at widths two, three, 33 and signed maximum.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 6,
+        "collen": 2
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 6,
+        "collen": 3
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 6,
+        "collen": 33
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 6,
+        "collen": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekcii-case-folded-table",
+    "description": "Lowercase and trailing blanks identify the loaded logical table.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "audit_shared  ",
+        "cindex": 0,
+        "collen": 33
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekcii-negative-index",
+    "description": "Observe genuine INVALIDINDEX in the column descriptor path.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": -1,
+        "collen": 33
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekcii-past-column",
+    "description": "Observe genuine INVALIDINDEX in the column descriptor path.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "AUDIT_QUERY",
+        "cindex": 7,
+        "collen": 33
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekcii-missing-table",
+    "description": "Observe genuine TABLENOTLOADED in the column descriptor path.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "OTHER",
+        "cindex": 0,
+        "collen": 33
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(TABLENOTLOADED)"]
+    }
+  },
+  {
+    "caseId": "ek-ekcii-short-width",
+    "description": "Observe genuine STRINGTOOSHORT in the column descriptor path.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekcii",
+        "table": "OTHER",
+        "cindex": 0,
+        "collen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  }
+]

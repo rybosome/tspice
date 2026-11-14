@@ -150,6 +150,57 @@ export type EmscriptenModule = {
 
   // --- EK ---
 
+  _tspice_ekccnt(
+    table: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekcii(
+    table: number,
+    index: number,
+    width: number,
+    words: number,
+    name: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_eklef(
+    path: number,
+    generation: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_eknelt(
+    selectIndex: number,
+    row: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekpsel(
+    query: number,
+    words: number,
+    text: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekssum(
+    id: number,
+    loaded: number,
+    segment: number,
+    words: number,
+    text: number,
+    err: number,
+    size: number,
+  ): number;
+  _tspice_ekuef(generation: number, err: number, size: number): number;
+  _tspice_ekload_nseg(
+    generation: number,
+    count: number,
+    err: number,
+    size: number,
+  ): number;
   _tspice_ekopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -2284,6 +2335,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_recgeo",
 
   // EK
+  "_tspice_ekccnt",
+  "_tspice_ekcii",
+  "_tspice_eklef",
+  "_tspice_eknelt",
+  "_tspice_ekpsel",
+  "_tspice_ekssum",
+  "_tspice_ekuef",
+  "_tspice_ekload_nseg",
   "_tspice_ekopr",
   "_tspice_ekopw",
   "_tspice_ekopn",

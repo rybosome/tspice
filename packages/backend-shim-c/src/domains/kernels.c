@@ -1,4 +1,5 @@
 #include "tspice_backend_shim.h"
+#include "ek_metadata_state.h"
 #include "tspice_error.h"
 
 #include "../handle_validation.h"
@@ -16,11 +17,14 @@ int tspice_furnsh(const char *path, char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  tspice_ek_saved_keeper();
   furnsh_c(path);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    tspice_ek_changed_keeper();
     return 1;
   }
+  tspice_ek_changed_keeper();
 
   return 0;
 }
@@ -32,11 +36,14 @@ int tspice_unload(const char *path, char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  tspice_ek_saved_keeper();
   unload_c(path);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    tspice_ek_changed_keeper();
     return 1;
   }
+  tspice_ek_changed_keeper();
 
   return 0;
 }
@@ -48,11 +55,14 @@ int tspice_kclear(char *err, int errMaxBytes) {
     err[0] = '\0';
   }
 
+  tspice_ek_saved_keeper();
   kclear_c();
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    tspice_ek_changed_keeper();
     return 1;
   }
+  tspice_ek_changed_keeper();
 
   return 0;
 }

@@ -1,0 +1,165 @@
+[
+  {
+    "caseId": "ek-ekpsel-mixed-types",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for mixed-types.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY,CV, DV FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-alias-offsets",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for alias-offsets.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": " select a.KEY,  a.CV, a.DV from AUDIT_QUERY a "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-duplicate-projection",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for duplicate-projection.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT IV,IV,KEY,IV FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-fifty-items",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for fifty-items.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-over-item-limit",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for over-item-limit.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY,KEY FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-missing-column",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for missing-column.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT BAD FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-unsupported-expression",
+    "description": "Observe every defined SELECT result field or the actual parser diagnostic for unsupported-expression.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY+1 FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-two-table-aliases",
+    "description": "Return table and column names plus exact qualified spans for a two-table query.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-tables-one.ek"
+      },
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT A.ID,S.ID FROM AUDIT_ALPHA A,AUDIT_SHARED S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-missing-table",
+    "description": "A query on an unloaded table returns a parse diagnostic.",
+    "workflow": [
+      {
+        "op": "ek.ekpsel",
+        "query": "SELECT KEY,CV, DV FROM AUDIT_QUERY"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekpsel-empty-string",
+    "description": "C-level empty query signals a structured string error.",
+    "workflow": [
+      {
+        "op": "ek.ekpsel",
+        "query": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  }
+]

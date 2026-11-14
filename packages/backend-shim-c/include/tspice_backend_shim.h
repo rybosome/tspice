@@ -158,6 +158,15 @@ int tspice_dlacls(int handle, char *err, int errMaxBytes);
 
 // --- EK --------------------------------------------------------------------
 
+int tspice_ekccnt(const char *table, int *count, char *err, int errMaxBytes);
+int tspice_ekcii(const char *table, int index, int width, int *words, char *name, char *err, int errMaxBytes);
+int tspice_eklef(const char *path, int *generation, char *err, int errMaxBytes);
+int tspice_eknelt(int selectIndex, int row, int *count, char *err, int errMaxBytes);
+int tspice_ekpsel(const char *query, int *words, char *text, char *err, int errMaxBytes);
+int tspice_ekssum(int id, int loaded, int segment, int *words, char *text, char *err, int errMaxBytes);
+int tspice_ekuef(int generation, char *err, int errMaxBytes);
+int tspice_ekload_nseg(int generation, int *count, char *err, int errMaxBytes);
+
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes);
 
