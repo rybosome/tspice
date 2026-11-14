@@ -267,3 +267,210 @@ int tspice_dskb02(int handle, const int32_t *dladscInts8, int32_t *outInts10, do
 
   return 0;
 }
+
+static int data_status(char* err, int cap) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, cap);
+  return 1;
+}
+
+typedef struct {
+  SpiceDLADescr descriptor;
+  int nv, np, npt, npl, nvpl, ncgr;
+} DskDataSegment;
+
+// DLA stores its eight descriptor words immediately before the integer component.
+// Check the supplied value against the open file, including across RPC copies.
+// Basic file sizes and header arithmetic are checked using 64 bits before N0067
+// computes its addresses or multiplies a scale in 32-bit signed storage.
+static int data_segment(int handle, const int32_t* d, DskDataSegment* s, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err, cap);
+  if (!d || d[2] < 8 || d[3] < 10 || d[4] < 0 || d[5] < 34 || d[6] < 0 || d[7] < 0)
+    return tspice_return_error(err, cap, "Expected a type-2 DLA segment descriptor");
+  int c = 0, db = 0, ib = 0, actual[8] = {0}, header[10] = {0};
+  daslla_c(handle, &c, &db, &ib);
+  if (failed_c()) return data_status(err, cap);
+  if ((int64_t)d[2] + d[3] > ib || (int64_t)d[4] + d[5] > db || (int64_t)d[6] + d[7] > c)
+    return tspice_return_error(err, cap, "DLA descriptor exceeds the open file");
+  dasrdi_c(handle, d[2] - 7, d[2], actual);
+  if (failed_c()) return data_status(err, cap);
+  if (memcmp(actual, d, sizeof(actual)) != 0)
+    return tspice_return_error(err, cap, "DLA descriptor does not match the open file");
+  double dtype = 0;
+  dasrdd_c(handle, d[4] + 4, d[4] + 4, &dtype);
+  if (failed_c()) return data_status(err, cap);
+  if (dtype != 2) return tspice_return_error(err, cap, "Expected DSK data type 2");
+  dasrdi_c(handle, d[2] + 1, d[2] + 10, header);
+  if (failed_c()) return data_status(err, cap);
+  for (int i = 0; i < 10; ++i)
+    if (header[i] < 0) return tspice_return_error(err, cap, "Negative type-2 DSK component size");
+  int scale = header[6];
+  // 1290 is the largest positive integer whose cube fits signed SpiceInt.
+  if (scale < 1 || scale > 1290)
+    return tspice_return_error(err, cap, "Invalid type-2 DSK coarse scale");
+  s->nv = header[0];
+  s->np = header[1];
+  s->npt = header[7];
+  s->npl = header[8];
+  s->nvpl = header[9];
+  s->ncgr = header[2] / (scale * scale * scale);
+  int64_t isize = 10 + 3LL * s->np + s->npt + s->npl + s->nv + s->nvpl + s->ncgr;
+  int64_t dsize = 34 + 3LL * s->nv;
+  if (isize > d[3] || dsize > d[5])
+    return tspice_return_error(err, cap, "Type-2 DSK arrays exceed their segment");
+  // The translated readers form end = start + count - 1 left-to-right.
+  if ((int64_t)d[2]+isize >= INT32_MAX || (int64_t)d[4]+dsize >= INT32_MAX)
+    return tspice_return_error(err, cap, "DSK endpoint exceeds translated address arithmetic");
+  tspice_write_dla_descr_from_ints(&s->descriptor, d);
+  return 0;
+}
+
+static int scalar_integer_item(int item) {
+  return item == 1 || item == 2 || item == 3 || (item >= 5 && item <= 8);
+}
+
+static int item_page_ok(const DskDataSegment* s, int integers, int item, int start, int room,
+                        char* err, int cap) {
+  if (start == INT32_MAX)
+    return tspice_return_error(err, cap, "Item start plus one exceeds signed 32-bit range");
+  if (room <= 0) return 0;  // The Fortran room check precedes address computation.
+  int64_t base = 0, offset = 0;
+  if (integers) {
+    if (scalar_integer_item(item)) {
+      if (start != 0)
+        return tspice_return_error(err, cap, "Scalar DSK integer items require start zero");
+      return 0;
+    }
+    base = s->descriptor.ibase;
+    if (item == 4)
+      offset = 4;
+    else if (item >= 9 && item <= 14) {
+      offset = 11;
+      if (item >= 10) offset += 3LL * s->np;
+      if (item >= 11) offset += s->npt;
+      if (item >= 12) offset += s->npl;
+      if (item >= 13) offset += s->nv;
+      if (item >= 14) offset += s->nvpl;
+    } else
+      return 0;
+  } else {
+    const int offsets[] = {1, 25, 31, 34, 35};
+    if (item < 15 || item > 19) return 0;
+    offset = offsets[item - 15];
+    base = s->descriptor.dbase;
+  }
+  // The translated expression adds the one-based start before subtracting one.
+  if (base + offset + start + 1 > INT32_MAX || base + offset > INT32_MAX)
+    return tspice_return_error(err, cap, "DSK item address exceeds signed 32-bit arithmetic");
+  return 0;
+}
+
+static int data_room(int requested, int words, int stride, int storage, int* effective, char* err,
+                     int cap) {
+  if (requested < INT32_MIN / stride)
+    return tspice_return_error(err, cap, "DSK room times row width exceeds signed 32-bit range");
+  // No item or row page can contain more than its entire physical component.
+  // Clipping surplus positive room avoids allocating huge unused output tables.
+  int rows = words / stride;
+  *effective = requested > rows ? rows : requested;
+  if (*effective > 0 && (int64_t)*effective * stride > storage)
+    return tspice_return_error(err, cap, "Insufficient DSK page output storage");
+  return 0;
+}
+
+int tspice_dskd02(int handle, const int32_t* descr, int item, int start, int room, int storage,
+                  int* count, double* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !count || storage < 1)
+    return tspice_return_error(err, cap, "Invalid DSK output storage");
+  int effective = 0;
+  if (data_room(room, descr[5], 1, storage, &effective, err, cap)) return 1;
+  *count = 0;
+  if (item_page_ok(&segment, 0, item, start, effective, err, cap)) return 1;
+  dskd02_c(handle, &segment.descriptor, item, start, effective, count, out);
+  if (!failed_c() && (*count < 0 || (int64_t)*count * 1 > storage))
+    return tspice_return_error(err, cap, "Invalid returned DSK page count");
+  return data_status(err, cap);
+}
+
+int tspice_dski02(int handle, const int32_t* descr, int item, int start, int room, int storage,
+                  int* count, int* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !count || storage < 1)
+    return tspice_return_error(err, cap, "Invalid DSK output storage");
+  int effective = 0;
+  if (data_room(room, descr[3], 1, storage, &effective, err, cap)) return 1;
+  *count = 0;
+  if (item_page_ok(&segment, 1, item, start, effective, err, cap)) return 1;
+  dski02_c(handle, &segment.descriptor, item, start, effective, count, out);
+  if (!failed_c() && (*count < 0 || (int64_t)*count * 1 > storage))
+    return tspice_return_error(err, cap, "Invalid returned DSK page count");
+  return data_status(err, cap);
+}
+
+int tspice_dskn02(int handle, const int32_t* descr, int plid, double* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out) return tspice_return_error(err, cap, "Invalid DSK output storage");
+  if (plid >= 1 && plid <= segment.np) {
+    int indices[3] = {0};
+    int begin = segment.descriptor.ibase + 11 + 3 * (plid - 1);
+    dasrdi_c(handle, begin, begin + 2, indices);
+    if (failed_c()) return data_status(err, cap);
+    for (int i = 0; i < 3; ++i)
+      if (indices[i] < 1 || indices[i] > segment.nv)
+        return tspice_return_error(err, cap, "Plate contains an invalid one-based vertex ID");
+  }
+  dskn02_c(handle, &segment.descriptor, plid, out);
+  return data_status(err, cap);
+}
+
+int tspice_dskp02(int handle, const int32_t* descr, int start, int room, int storage, int* count,
+                  int* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !count || storage < 1)
+    return tspice_return_error(err, cap, "Invalid DSK output storage");
+  int effective = 0;
+  if (data_room(room, descr[3], 3, storage, &effective, err, cap)) return 1;
+  *count = 0;
+  dskp02_c(handle, &segment.descriptor, start, effective, count, (int (*)[3])out);
+  if (!failed_c() && (*count < 0 || (int64_t)*count * 3 > storage))
+    return tspice_return_error(err, cap, "Invalid returned DSK page count");
+  return data_status(err, cap);
+}
+
+int tspice_dskv02(int handle, const int32_t* descr, int start, int room, int storage, int* count,
+                  double* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out || !count || storage < 1)
+    return tspice_return_error(err, cap, "Invalid DSK output storage");
+  int effective = 0;
+  if (data_room(room, descr[5], 3, storage, &effective, err, cap)) return 1;
+  *count = 0;
+  dskv02_c(handle, &segment.descriptor, start, effective, count, (double (*)[3])out);
+  if (!failed_c() && (*count < 0 || (int64_t)*count * 3 > storage))
+    return tspice_return_error(err, cap, "Invalid returned DSK page count");
+  return data_status(err, cap);
+}
+
+int tspice_dskz02(int handle, const int32_t* descr, int* out, char* err, int cap) {
+  DskDataSegment segment = {0};
+  if (data_segment(handle, descr, &segment, err, cap)) return 1;
+  if (!out) return tspice_return_error(err, cap, "Invalid DSK output storage");
+  dskz02_c(handle, &segment.descriptor, out, out + 1);
+  return data_status(err, cap);
+}
+
+int tspice_dskcls(int handle, int optmiz, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err, cap);
+  if (optmiz != 0 && optmiz != 1)
+    return tspice_return_error(err, cap, "Expected boolean optimize flag");
+  dskcls_c(handle, optmiz);
+  return data_status(err, cap);
+}

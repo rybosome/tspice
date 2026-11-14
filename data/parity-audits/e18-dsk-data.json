@@ -1,0 +1,619 @@
+{
+  "schemaVersion": 1,
+  "batch": "e18-dsk-data",
+  "traceFiles": [
+    "docs/step8-dsk-data.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/dsk.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/dsk.cc",
+    "packages/backend-node/src/domains/dsk.ts",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/dsk-data-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/dsk.c",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/dsk.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/dsk-data-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/dsk-data.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/test/dsk-data.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "dskd02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskd02_c.html",
+      "semantics": "Read up to room double components of a type-2 item. The scalar offset start is zero-based. Return only initialized values reported by CSPICE, including a shorter final page. Keywords 15 through 19 select the descriptor, vertex bounds, voxel origin, voxel size and flattened xyz vertices.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskd02-descriptor-fields",
+          "coverage": ["success", "edge"],
+          "observes": "Read both halves of the 24-double segment descriptor and a final short page."
+        },
+        {
+          "caseId": "dsk-dskd02-bounds-and-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six vertex bounds, three voxel origins and scalar voxel size, with oversized room."
+        },
+        {
+          "caseId": "dsk-dskd02-vertex-component-pages",
+          "coverage": ["success", "edge"],
+          "observes": "Zero-based scalar starts span vertex rows; the final page contains no padding."
+        },
+        {
+          "caseId": "dsk-dskd02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Get the next DLA descriptor and inspect its different time interval and geometry."
+        },
+        {
+          "caseId": "dsk-dskd02-large-room",
+          "coverage": ["success", "edge"],
+          "observes": "A large signed positive room on a tiny physical segment still returns just the remaining data."
+        },
+        {
+          "caseId": "dsk-dskd02-unsupported",
+          "coverage": ["error", "edge"],
+          "observes": "An integer-section keyword is unsupported by the double reader."
+        },
+        {
+          "caseId": "dsk-dskd02-negative-offset",
+          "coverage": ["error", "edge"],
+          "observes": "The converted Fortran offset is outside this double item."
+        },
+        {
+          "caseId": "dsk-dskd02-past-last-offset",
+          "coverage": ["error", "edge"],
+          "observes": "The converted Fortran offset is outside this double item."
+        },
+        {
+          "caseId": "dsk-dskd02-nonpositive-room",
+          "coverage": ["error", "edge"],
+          "observes": "Negative room reaches the toolkit room diagnostic before keyword checks."
+        }
+      ],
+      "edgeAssessment": "Compare all five double keywords, zero-based starts across xyz rows, full descriptor components including epoch changes in the second linked segment, final short pages and oversized signed room. The physical count and every returned double are independently read.",
+      "errorAssessment": "Invalid keyword produces NOTSUPPORTED; invalid zero-based starts for array-valued items give INDEXOUTOFRANGE. Nonpositive room takes precedence. Undefined signed offset arithmetic and malformed or foreign handles are guarded separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact. Registered finite coordinates use existing scientific comparison; independent authored readback checks all physical values and trailing slots exactly.",
+      "findings": [
+        {
+          "id": "capture-actual-c-page-count",
+          "status": "repaired",
+          "summary": "The pinned high-level SpiceyPy page wrapper returns the full output buffer while discarding the actual C output count.",
+          "repair": "Read n from a separately typed locked canonical binding, check untouched surrounding and trailing storage, compare the complete determined prefix, and cross-check that prefix with the ordinary Python wrapper on a positive tail page.",
+          "caseIds": [
+            "dsk-dskd02-vertex-component-pages",
+            "dsk-dskd02-large-room"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "docs/step8-dsk-data.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskd02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskd02 -> dskd02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskd02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskd02 -> dskd02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dski02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dski02_c.html",
+      "semantics": "Read up to room integer components of a type-2 item at a zero-based scalar offset. The result is trimmed to the reported count. Keywords 1–14 cover size metadata, grid extents, connectivity, index lists and coarse-grid pointers. Scalar items require start zero because N0067 leaves its internal size unset on other offsets.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dski02-scalar-keywords",
+          "coverage": ["success", "edge"],
+          "observes": "Read all seven scalar model and list counts with extra output space."
+        },
+        {
+          "caseId": "dsk-dski02-grid-and-plate-components",
+          "coverage": ["success", "edge"],
+          "observes": "Read voxel grid extents and one-based connectivity with offsets crossing plate rows."
+        },
+        {
+          "caseId": "dsk-dski02-pointer-lists",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect all four supported voxel/vertex pointer and plate-list arrays plus coarse grid pointers."
+        },
+        {
+          "caseId": "dsk-dski02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Use the next DLA descriptor and read both count and a final partial plate-data page."
+        },
+        {
+          "caseId": "dsk-dski02-large-room",
+          "coverage": ["success", "edge"],
+          "observes": "Only the reported prefix is returned even when the original capacity is INT32_MAX."
+        },
+        {
+          "caseId": "dsk-dski02-unsupported",
+          "coverage": ["error", "edge"],
+          "observes": "The integer reader rejects a double keyword."
+        },
+        {
+          "caseId": "dsk-dski02-negative-offset",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the actual index diagnostic on the array-valued plate keyword."
+        },
+        {
+          "caseId": "dsk-dski02-past-last-offset",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the actual index diagnostic on the array-valued plate keyword."
+        },
+        {
+          "caseId": "dsk-dski02-nonpositive-room",
+          "coverage": ["error", "edge"],
+          "observes": "The canonical nonpositive room diagnostic precedes even an invalid scalar item start."
+        }
+      ],
+      "edgeAssessment": "Compare all fourteen integer keywords including scalar sizes, grid extents, voxel/vertex pointers and their lists. Offset one reads the second scalar component of the physical plate table; final one-element pages retain original one-based vertex numbering.",
+      "errorAssessment": "Invalid double keyword gives NOTSUPPORTED. Negative or past-last starts on the physical plate array give INDEXOUTOFRANGE; room zero retains the genuine VALUEOUTOFRANGE before scalar range checking. A positive room and wrong scalar offset are rejected before the unsafe N0067 branch.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact.",
+      "findings": [
+        {
+          "id": "capture-actual-c-page-count",
+          "status": "repaired",
+          "summary": "The pinned high-level SpiceyPy page wrapper returns the full output buffer while discarding the actual C output count.",
+          "repair": "Read n from a separately typed locked canonical binding, check untouched surrounding and trailing storage, compare the complete determined prefix, and cross-check that prefix with the ordinary Python wrapper on a positive tail page.",
+          "caseIds": ["dsk-dski02-large-room"],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "docs/step8-dsk-data.md"
+          ]
+        },
+        {
+          "id": "guard-scalar-item-offset",
+          "status": "repaired",
+          "summary": "On a scalar keyword with a nonzero start the N0067 routine reaches an unset size and address local.",
+          "repair": "Require start zero for scalar integer items with positive room. The original nonpositive-room diagnostic precedes this guard. Independently exercise the guard and subsequent reads; never send the undefined combination to the toolkit.",
+          "caseIds": [
+            "dsk-dski02-scalar-keywords",
+            "dsk-dski02-nonpositive-room"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/dsk.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "packages/backend-node/test/dsk-data-domain.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dski02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dski02 -> dski02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dski02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dski02 -> dski02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskn02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskn02_c.html",
+      "semantics": "Return the oriented unit normal of the one-based triangular plate ID. The right-handed vertex order determines its direction. A degenerate face may return zero.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskn02-axis-normals",
+          "coverage": ["success", "edge"],
+          "observes": "Full right-handed unit normals of three orthogonal tetrahedral faces, preserving outward signs."
+        },
+        {
+          "caseId": "dsk-dskn02-inclined-face",
+          "coverage": ["success", "edge"],
+          "observes": "The oblique face has nonzero x, y and z components and unit length."
+        },
+        {
+          "caseId": "dsk-dskn02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat nontrivial and axial normals using a different linked segment descriptor."
+        },
+        {
+          "caseId": "dsk-dskn02-minimum-index",
+          "coverage": ["error", "edge"],
+          "observes": "Zero is not a valid plate number."
+        },
+        {
+          "caseId": "dsk-dskn02-past-last",
+          "coverage": ["error", "edge"],
+          "observes": "The final valid plate and the next index distinguish the upper endpoint."
+        }
+      ],
+      "edgeAssessment": "Check three axis-aligned faces and the inclined tetrahedron face whose normalized outward direction is proportional to [20,15,12]. Compare the entire vector, scaled unit length and orientation after changing segment.",
+      "errorAssessment": "Zero and one beyond the last plate produce genuine INDEXOUTOFRANGE. The shared shim establishes the segment and selected connectivity before the callee can use unavailable private data. Wrapper-level descriptor mutation, foreign claims and invalid scalar shape are tested separately.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact. Floating normal components use the existing geometric comparator, with an independently derived non-axis unit direction checked to fourteen decimal places.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskn02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskn02 -> dskn02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskn02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskn02 -> dskn02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskp02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskp02_c.html",
+      "semantics": "Read up to room plate triples starting with one-based plate number start. Each owned triple contains three one-based vertex IDs. A final partial page contains only actual plates.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskp02-ordered-rows",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all four authored one-based index triples from first to last."
+        },
+        {
+          "caseId": "dsk-dskp02-window-and-tail",
+          "coverage": ["success", "edge"],
+          "observes": "One-based starts fetch a prefix, an interior page and a single unpadded final row."
+        },
+        {
+          "caseId": "dsk-dskp02-largest-room",
+          "coverage": ["success", "edge"],
+          "observes": "An otherwise excessive room on the final row is bounded by physical geometry and yields a single triple."
+        },
+        {
+          "caseId": "dsk-dskp02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Read the next linked segment and compare the complete first and final rows."
+        },
+        {
+          "caseId": "dsk-dskp02-invalid-start-precedence",
+          "coverage": ["error", "edge"],
+          "observes": "A zero row number fails before the nested scalar room validation."
+        },
+        {
+          "caseId": "dsk-dskp02-past-last",
+          "coverage": ["error", "edge"],
+          "observes": "One past the final row is a toolkit error, not an empty result."
+        },
+        {
+          "caseId": "dsk-dskp02-no-room",
+          "coverage": ["error", "edge"],
+          "observes": "A valid row number with zero room reaches the nested item reader with initialized count."
+        }
+      ],
+      "edgeAssessment": "Read distinct rows including the first, middle and final plate. One-based vertex IDs retain their order. Huge requested room yields a single trailing row. Compare all connectivity read from independently reopened emitted files.",
+      "errorAssessment": "One-based zero or beyond-end indices signal INDEXOUTOFRANGE, including before a zero room. At a valid row, zero room reaches nested DSKI02 and signals VALUEOUTOFRANGE. Too-negative room is rejected before its internal multiplication.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact.",
+      "findings": [
+        {
+          "id": "capture-actual-c-page-count",
+          "status": "repaired",
+          "summary": "The pinned high-level SpiceyPy page wrapper returns the full output buffer while discarding the actual C output count.",
+          "repair": "Read n from a separately typed locked canonical binding, check untouched surrounding and trailing storage, compare the complete determined prefix, and cross-check that prefix with the ordinary Python wrapper on a positive tail page.",
+          "caseIds": ["dsk-dskp02-window-and-tail", "dsk-dskp02-largest-room"],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "docs/step8-dsk-data.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskp02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskp02 -> dskp02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskp02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskp02 -> dskp02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskv02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskv02_c.html",
+      "semantics": "Read up to room Cartesian vertex triples starting with one-based vertex number start. Each owned xyz row is in km in the segment frame. The final partial page stops at the last vertex.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskv02-ordered-rows",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all four authored Cartesian vertex triples from first to last."
+        },
+        {
+          "caseId": "dsk-dskv02-window-and-tail",
+          "coverage": ["success", "edge"],
+          "observes": "One-based starts fetch a prefix, an interior page and a single unpadded final row."
+        },
+        {
+          "caseId": "dsk-dskv02-largest-room",
+          "coverage": ["success", "edge"],
+          "observes": "An otherwise excessive room on the final row is bounded by physical geometry and yields a single triple."
+        },
+        {
+          "caseId": "dsk-dskv02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Read the next linked segment and compare the complete first and final rows."
+        },
+        {
+          "caseId": "dsk-dskv02-invalid-start-precedence",
+          "coverage": ["error", "edge"],
+          "observes": "A zero row number fails before the nested scalar room validation."
+        },
+        {
+          "caseId": "dsk-dskv02-past-last",
+          "coverage": ["error", "edge"],
+          "observes": "One past the final row is a toolkit error, not an empty result."
+        },
+        {
+          "caseId": "dsk-dskv02-no-room",
+          "coverage": ["error", "edge"],
+          "observes": "A valid row number with zero room reaches the nested item reader with initialized count."
+        }
+      ],
+      "edgeAssessment": "Read complete xyz rows in km across different page windows, different segment descriptors and oversized tail requests. Mutate a returned inner row and confirm a subsequent actual read returns the original vertex.",
+      "errorAssessment": "A bad row start precedes the room diagnostic. Valid start and zero room enters nested DSKD02 and yields VALUEOUTOFRANGE. Wrapper byte/stride bounds are tested before dangerous allocation.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact. Registered finite coordinates use existing scientific comparison; independent authored readback checks all physical values and trailing slots exactly.",
+      "findings": [
+        {
+          "id": "capture-actual-c-page-count",
+          "status": "repaired",
+          "summary": "The pinned high-level SpiceyPy page wrapper returns the full output buffer while discarding the actual C output count.",
+          "repair": "Read n from a separately typed locked canonical binding, check untouched surrounding and trailing storage, compare the complete determined prefix, and cross-check that prefix with the ordinary Python wrapper on a positive tail page.",
+          "caseIds": ["dsk-dskv02-window-and-tail", "dsk-dskv02-largest-room"],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/dsk_data_oracle.py",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "docs/step8-dsk-data.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskv02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskv02 -> dskv02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskv02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskv02 -> dskv02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskz02_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskz02_c.html",
+      "semantics": "Return vertex and triangular plate counts from the selected type-2 DSK segment.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskz02-authored-tetrahedron",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both distinct named count fields for the authored tetrahedron."
+        },
+        {
+          "caseId": "dsk-dskz02-second-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Count a later segment using the current handle and next DLA descriptor."
+        },
+        {
+          "caseId": "dsk-dskz02-minimal",
+          "coverage": ["success", "edge"],
+          "observes": "A separately generated minimal segment has differing vertex and plate counts."
+        },
+        {
+          "caseId": "dsk-dskz02-reader-aliases",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat a size query through independently opened references to the same physical segment."
+        }
+      ],
+      "edgeAssessment": "Compare both vertex and plate counts for the authored four-segment DSK and independently sourced Apophis geometry with unequal counts. Two readers of one file retain separate ownership after the first closes.",
+      "errorAssessment": "The count lookup requires actual initialized type-2 metadata and a live token. Descriptor mismatch and expired/foreign handles reject before publishing either count. No scientific error is invented for an ordinary valid DSK.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing copy of the Apophis radar shape DSK from the dsk-minimal fixture documented in fixtures/README.md.",
+          "distribution": "Existing repository fixture used unchanged under its recorded provenance. No new external data."
+        }
+      ],
+      "fixtureRationale": "Known geometry, integer and double components from actual DSK files support page, size and normal comparisons without an external kernel pool.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskz02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskz02 -> dskz02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskz02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskz02 -> dskz02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dskcls_c",
+      "contract": "packages/backend-contract/src/domains/dsk.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskcls_c.html",
+      "semantics": "Close an owned DAS-backed DSK reference. On a writer, true requests DAS segregation and false flushes buffered data before low-level closure. Successful closure invalidates this token. A DSK loaded by furnsh must instead be released with unload or kclear.",
+      "scenarios": [
+        {
+          "caseId": "dsk-dskcls-writer-unsegregated",
+          "coverage": ["success", "edge"],
+          "observes": "Physically close a generated DSK writer, reopen the file and read the authored vertex and plate rows."
+        },
+        {
+          "caseId": "dsk-dskcls-reader-unsegregated",
+          "coverage": ["success", "edge"],
+          "observes": "Close one read reference and observe complete geometry counts through the remaining reference."
+        },
+        {
+          "caseId": "dsk-dskcls-empty-unsegregated",
+          "coverage": ["success", "edge"],
+          "observes": "Finalize and reopen an empty DSK with comment room; DLA traversal reports no first segment."
+        },
+        {
+          "caseId": "dsk-dskcls-writer-optimized",
+          "coverage": ["success", "edge"],
+          "observes": "Physically close a generated DSK writer, reopen the file and read the authored vertex and plate rows."
+        },
+        {
+          "caseId": "dsk-dskcls-reader-optimized",
+          "coverage": ["success", "edge"],
+          "observes": "Close one read reference and observe complete geometry counts through the remaining reference."
+        },
+        {
+          "caseId": "dsk-dskcls-empty-optimized",
+          "coverage": ["success", "edge"],
+          "observes": "Finalize and reopen an empty DSK with comment room; DLA traversal reports no first segment."
+        }
+      ],
+      "edgeAssessment": "Exercise both physical close modes on empty and populated DSK writers, read references and duplicate open aliases. A separate locked SpiceyPy process opens each actual two-segment Node/WASM output and verifies ordered vertices, plate topology and center IDs. Retry the same writer workflow on one live client.",
+      "errorAssessment": "Double close and foreign claims reject at the public ownership boundary. A controlled failed closure leaves its claim live until a successful retry. Both optimized and unsegregated real file closes have durable readback, plus explicit independent kernel cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "Four invented tetrahedral DSK segments generated and read back by the existing generate-audit-dsk.py using locked SpiceyPy.",
+          "distribution": "Project-authored fixture under the repository MIT license, reused unchanged."
+        }
+      ],
+      "fixtureRationale": "Read-only authored tetrahedron with multiple descriptors; close tests generate independent scratch outputs with live geometry.",
+      "cleanup": "Every successful open is finalized or closed by case cleanup and public clients dispose in finally. Native holds the process mutex. WASM frees all acquired buffers after failures and successful calls and retains the opaque file claim until physical closure succeeds. Returned pages and rows are independently owned.",
+      "tolerance": "All integer outputs, page dimensions, ordering, counts, flags and toolkit error categories are exact.",
+      "findings": [
+        {
+          "id": "isolate-repeated-writer-workflows",
+          "status": "repaired",
+          "summary": "A repeated DSK workflow could reuse its previous scratch filename in a retained WASM filesystem.",
+          "repair": "Namespace scratch paths by the current case run and require new writer workflows to target scratch storage. Run the identical registered writer twice on each real client.",
+          "caseIds": ["dsk-dskcls-writer-optimized"],
+          "evidence": [
+            "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
+            "packages/py-parity-checking/test/dsk-data.test.ts",
+            "docs/step8-dsk-data.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskcls -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskcls -> dskcls_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dskcls -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskcls -> dskcls_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "47 workflows, 94 compiled comparisons, 11 public/oracle, 14 native, 31 WASM and real Chrome observed. New full source-bound local and canonical CI evidence is pending."
+}

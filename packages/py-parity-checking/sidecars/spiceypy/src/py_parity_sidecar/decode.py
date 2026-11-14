@@ -56,6 +56,14 @@ from .models import (
     StepDskDasopr,
     StepDskDlabfs,
     StepDskDskb02,
+    StepDskDskd02,
+    StepDskDski02,
+    StepDskDskn02,
+    StepDskDskp02,
+    StepDskDskv02,
+    StepDskDskz02,
+    StepDskDskcls,
+    StepDskDlafns,
     StepDskDskgd,
     StepDskDskmi2,
     StepDskDskobj,
@@ -1506,6 +1514,74 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 handleId=_expect_string(step.get("handleId"), label="dsk.dlabfs.handleId"),
                 dladscId=_expect_string(step.get("dladscId"), label="dsk.dlabfs.dladscId"),
+            )
+
+        case "dsk.dskd02":
+            return StepDskDskd02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskd02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskd02.dladscId"),
+                item=_expect_int(step.get("item"), label="dsk.dskd02.item"),
+                start=_expect_int(step.get("start"), label="dsk.dskd02.start"),
+                room=_expect_int(step.get("room"), label="dsk.dskd02.room"),
+            )
+
+        case "dsk.dski02":
+            return StepDskDski02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dski02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dski02.dladscId"),
+                item=_expect_int(step.get("item"), label="dsk.dski02.item"),
+                start=_expect_int(step.get("start"), label="dsk.dski02.start"),
+                room=_expect_int(step.get("room"), label="dsk.dski02.room"),
+            )
+
+        case "dsk.dskn02":
+            return StepDskDskn02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskn02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskn02.dladscId"),
+                plid=_expect_int(step.get("plid"), label="dsk.dskn02.plid"),
+            )
+
+        case "dsk.dskp02":
+            return StepDskDskp02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskp02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskp02.dladscId"),
+                start=_expect_int(step.get("start"), label="dsk.dskp02.start"),
+                room=_expect_int(step.get("room"), label="dsk.dskp02.room"),
+            )
+
+        case "dsk.dskv02":
+            return StepDskDskv02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskv02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskv02.dladscId"),
+                start=_expect_int(step.get("start"), label="dsk.dskv02.start"),
+                room=_expect_int(step.get("room"), label="dsk.dskv02.room"),
+            )
+
+        case "dsk.dskz02":
+            return StepDskDskz02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskz02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dskz02.dladscId"),
+            )
+
+        case "dsk.dskcls":
+            return StepDskDskcls(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dskcls.handleId"),
+                optmiz=_expect_bool(step.get("optmiz"), label="dsk.dskcls.optmiz"),
+            )
+
+        case "dsk.dlafns":
+            return StepDskDlafns(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="dsk.dlafns.handleId"),
+                dladscId=_expect_string(step.get("dladscId"), label="dsk.dlafns.dladscId"),
+                nextId=_expect_string(step.get("nextId"), label="dsk.dlafns.nextId"),
             )
 
         case "dsk.dskgd":

@@ -1,3 +1,8 @@
+import {
+  snapshotDskDataDescriptor,
+  dskPageStorage,
+  dskDataRows,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   DskApi,
@@ -169,6 +174,22 @@ function normalizeDskType2Bookkeeping(
   };
 }
 
+function readDskData(
+  value: unknown,
+  maxLength: number,
+  integer: boolean,
+): number[] {
+  if (!Array.isArray(value) || value.length > maxLength)
+    throw new RangeError("Unexpected native DSK data length");
+  const result: number[] = [];
+  for (const n of value) {
+    if (integer) assertI32(n, "DSK integer result");
+    if (typeof n !== "number") throw new TypeError("Expected numeric DSK data");
+    result.push(n);
+  }
+  return result;
+}
+
 /** Create a {@link DskApi} implementation backed by the native Node addon. */
 export function createDskApi(
   native: NativeAddon,
@@ -178,6 +199,99 @@ export function createDskApi(
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    dskd02(handle, dladsc, item, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskd02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertI32(item, "dskd02(item)");
+      assertI32(start, "dskd02(start)");
+      assertI32(room, "dskd02(room)");
+      const words = dskPageStorage(descriptor.dsize, room, 1, 8, 2147483647);
+      const result = readDskData(
+        native.dskd02(actual, descriptor, item, start, room),
+        words,
+        false,
+      );
+      return result;
+    },
+    dski02(handle, dladsc, item, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dski02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertI32(item, "dski02(item)");
+      assertI32(start, "dski02(start)");
+      assertI32(room, "dski02(room)");
+      const words = dskPageStorage(descriptor.isize, room, 1, 4, 2147483647);
+      const result = readDskData(
+        native.dski02(actual, descriptor, item, start, room),
+        words,
+        true,
+      );
+      return result;
+    },
+    dskn02(handle, dladsc, plid) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskn02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertI32(plid, "dskn02(plid)");
+      const words = 3;
+      const result = readDskData(
+        native.dskn02(actual, descriptor, plid),
+        words,
+        false,
+      );
+      if (result.length !== words)
+        throw new RangeError("Invalid DSK result length");
+      return [result[0]!, result[1]!, result[2]!];
+    },
+    dskp02(handle, dladsc, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskp02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertI32(start, "dskp02(start)");
+      assertI32(room, "dskp02(room)");
+      const words = dskPageStorage(descriptor.isize, room, 3, 4, 2147483647);
+      const result = readDskData(
+        native.dskp02(actual, descriptor, start, room),
+        words,
+        true,
+      );
+      return dskDataRows(result);
+    },
+    dskv02(handle, dladsc, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskv02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertI32(start, "dskv02(start)");
+      assertI32(room, "dskv02(room)");
+      const words = dskPageStorage(descriptor.dsize, room, 3, 8, 2147483647);
+      const result = readDskData(
+        native.dskv02(actual, descriptor, start, room),
+        words,
+        false,
+      );
+      return dskDataRows(result);
+    },
+    dskz02(handle, dladsc) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskz02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      const words = 2;
+      const result = readDskData(
+        native.dskz02(actual, descriptor),
+        words,
+        true,
+      );
+      if (result.length !== words)
+        throw new RangeError("Invalid DSK result length");
+      return { nv: result[0]!, np: result[1]! };
+    },
+    dskcls(handle, optmiz) {
+      if (typeof optmiz !== "boolean")
+        throw new TypeError("Expected boolean optimize flag");
+      handles.close(
+        handle,
+        DAS_BACKED,
+        (entry) => {
+          native.dskcls(entry.nativeHandle, optmiz);
+        },
+        "dskcls",
+      );
+    },
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
       native.dskobj(resolvePath(dsk), bodids);
     },

@@ -9,11 +9,20 @@ from spiceypy.utils.exceptions import NotFoundError
 from spiceypy.utils import support_types as stypes
 from spiceypy.utils.libspicehelper import libspice
 
+from ..dsk_data_oracle import read_page
 from ..models import (
     StepDskDascls,
     StepDskDasopr,
     StepDskDlabfs,
     StepDskDskb02,
+    StepDskDskd02,
+    StepDskDski02,
+    StepDskDskn02,
+    StepDskDskp02,
+    StepDskDskv02,
+    StepDskDskz02,
+    StepDskDskcls,
+    StepDskDlafns,
     StepDskDskgd,
     StepDskDskmi2,
     StepDskDskobj,
@@ -218,7 +227,9 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
     if isinstance(step, StepDskDskopn):
         path = _resolve_dsk_path(context, step.path)
         path_ref = to_path_ref(step.path)
-        if path_ref.kind == "scratch" and os.path.exists(path):
+        if path_ref.kind != "scratch":
+            raise ValueError("DSK writer workflows require a scratch path")
+        if os.path.exists(path):
             os.remove(path)
         handle = int(sp.dskopn(path, step.ifname, step.ncomch))
         _set_handle(context, step.handleId, handle, is_open=True)
@@ -295,6 +306,62 @@ def run_dsk_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutp
 
         context.state.dsk.dladsc[step.dladscId] = descr
         return StepOutput(op=step.op, value={"found": True})
+
+    if isinstance(step, StepDskDskd02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        value = read_page("dskd02", handle, descriptor, step.item, step.start, step.room)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDski02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        value = read_page("dski02", handle, descriptor, step.item, step.start, step.room)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskn02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        value = sp.dskn02(handle, descriptor, step.plid).tolist()
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskp02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        value = read_page("dskp02", handle, descriptor, None, step.start, step.room)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskv02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        value = read_page("dskv02", handle, descriptor, None, step.start, step.room)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskz02):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        nv, np = sp.dskz02(handle, descriptor)
+        value = {"nv": int(nv), "np": int(np)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDskcls):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        sp.dskcls(handle, step.optmiz)
+        _set_handle(context, step.handleId, handle, is_open=False)
+        value = None
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepDskDlafns):
+        handle = int(_require_handle(context, step.handleId)["handle"])
+        descriptor = _require_dladsc(context, step.dladscId)
+        with sp.no_found_check():
+            following, found = sp.dlafns(handle, descriptor)
+        if found:
+            context.state.dsk.dladsc[step.nextId] = following
+        else:
+            context.state.dsk.dladsc.pop(step.nextId, None)
+        value = {"found": bool(found)}
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepDskDskgd):
         tracked = _require_handle(context, step.handleId)

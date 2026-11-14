@@ -1277,6 +1277,58 @@ export type StepDskDlabfs = {
   dladscId: string;
 };
 
+export type StepDskDskd02 = {
+  op: "dsk.dskd02";
+  handleId: string;
+  dladscId: string;
+  item: number;
+  start: number;
+  room: number;
+};
+export type StepDskDski02 = {
+  op: "dsk.dski02";
+  handleId: string;
+  dladscId: string;
+  item: number;
+  start: number;
+  room: number;
+};
+export type StepDskDskn02 = {
+  op: "dsk.dskn02";
+  handleId: string;
+  dladscId: string;
+  plid: number;
+};
+export type StepDskDskp02 = {
+  op: "dsk.dskp02";
+  handleId: string;
+  dladscId: string;
+  start: number;
+  room: number;
+};
+export type StepDskDskv02 = {
+  op: "dsk.dskv02";
+  handleId: string;
+  dladscId: string;
+  start: number;
+  room: number;
+};
+export type StepDskDskz02 = {
+  op: "dsk.dskz02";
+  handleId: string;
+  dladscId: string;
+};
+export type StepDskDskcls = {
+  op: "dsk.dskcls";
+  handleId: string;
+  optmiz: boolean;
+};
+export type StepDskDlafns = {
+  op: "dsk.dlafns";
+  handleId: string;
+  dladscId: string;
+  nextId: string;
+};
 export type StepDskDskgd = {
   op: "dsk.dskgd";
   handleId: string;
@@ -1457,6 +1509,14 @@ export type WorkflowStep =
   | StepDskDasopr
   | StepDskDascls
   | StepDskDlabfs
+  | StepDskDskd02
+  | StepDskDski02
+  | StepDskDskn02
+  | StepDskDskp02
+  | StepDskDskv02
+  | StepDskDskz02
+  | StepDskDskcls
+  | StepDskDlafns
   | StepDskDskgd
   | StepDskDskb02;
 
@@ -1905,6 +1965,14 @@ export type StepOutput =
   | { op: "dsk.dasopr"; value: null }
   | { op: "dsk.dascls"; value: null }
   | { op: "dsk.dlabfs"; value: { found: boolean } }
+  | { op: "dsk.dskd02"; value: number[] }
+  | { op: "dsk.dski02"; value: number[] }
+  | { op: "dsk.dskn02"; value: Vec3 }
+  | { op: "dsk.dskp02"; value: Vec3[] }
+  | { op: "dsk.dskv02"; value: Vec3[] }
+  | { op: "dsk.dskz02"; value: { nv: number; np: number } }
+  | { op: "dsk.dskcls"; value: null }
+  | { op: "dsk.dlafns"; value: { found: boolean } }
   | { op: "dsk.dskgd"; value: DskDescriptorPayload }
   | { op: "dsk.dskb02"; value: DskType2BookkeepingPayload };
 

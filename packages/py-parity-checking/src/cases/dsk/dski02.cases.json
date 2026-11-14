@@ -1,0 +1,422 @@
+[
+  {
+    "caseId": "dsk-dski02-scalar-keywords",
+    "description": "Read all seven scalar model and list counts with extra output space.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 1,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 2,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 3,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 5,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 6,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 7,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 8,
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dski02-grid-and-plate-components",
+    "description": "Read voxel grid extents and one-based connectivity with offsets crossing plate rows.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 4,
+        "start": 0,
+        "room": 8
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 1,
+        "room": 3
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 6,
+        "room": 4
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 11,
+        "room": 9
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dski02-pointer-lists",
+    "description": "Inspect all four supported voxel/vertex pointer and plate-list arrays plus coarse grid pointers.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 10,
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 11,
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 12,
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 13,
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 14,
+        "start": 0,
+        "room": 3
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dski02-second-segment",
+    "description": "Use the next DLA descriptor and read both count and a final partial plate-data page.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "R",
+        "dladscId": "S",
+        "nextId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 2,
+        "start": 0,
+        "room": 10
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 10,
+        "room": 8
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dski02-large-room",
+    "description": "Only the reported prefix is returned even when the original capacity is INT32_MAX.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 4,
+        "start": 1,
+        "room": 2147483647
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 11,
+        "room": 2147483647
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dski02-unsupported",
+    "description": "The integer reader rejects a double keyword.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 0,
+        "room": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "dsk-dski02-negative-offset",
+    "description": "Observe the actual index diagnostic on the array-valued plate keyword.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": -2,
+        "room": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dski02-past-last-offset",
+    "description": "Observe the actual index diagnostic on the array-valued plate keyword.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 12,
+        "room": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dski02-nonpositive-room",
+    "description": "The canonical nonpositive room diagnostic precedes even an invalid scalar item start.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dski02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 1,
+        "start": 19,
+        "room": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

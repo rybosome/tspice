@@ -96,6 +96,74 @@ class StepDskDlabfs:
 
 
 @dataclass(frozen=True)
+class StepDskDskd02:
+    op: Literal["dsk.dskd02"]
+    handleId: str
+    dladscId: str
+    item: int
+    start: int
+    room: int
+
+
+@dataclass(frozen=True)
+class StepDskDski02:
+    op: Literal["dsk.dski02"]
+    handleId: str
+    dladscId: str
+    item: int
+    start: int
+    room: int
+
+
+@dataclass(frozen=True)
+class StepDskDskn02:
+    op: Literal["dsk.dskn02"]
+    handleId: str
+    dladscId: str
+    plid: int
+
+
+@dataclass(frozen=True)
+class StepDskDskp02:
+    op: Literal["dsk.dskp02"]
+    handleId: str
+    dladscId: str
+    start: int
+    room: int
+
+
+@dataclass(frozen=True)
+class StepDskDskv02:
+    op: Literal["dsk.dskv02"]
+    handleId: str
+    dladscId: str
+    start: int
+    room: int
+
+
+@dataclass(frozen=True)
+class StepDskDskz02:
+    op: Literal["dsk.dskz02"]
+    handleId: str
+    dladscId: str
+
+
+@dataclass(frozen=True)
+class StepDskDskcls:
+    op: Literal["dsk.dskcls"]
+    handleId: str
+    optmiz: bool
+
+
+@dataclass(frozen=True)
+class StepDskDlafns:
+    op: Literal["dsk.dlafns"]
+    handleId: str
+    dladscId: str
+    nextId: str
+
+
+@dataclass(frozen=True)
 class StepDskDskgd:
     op: Literal["dsk.dskgd"]
     handleId: str

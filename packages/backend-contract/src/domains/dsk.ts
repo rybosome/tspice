@@ -46,6 +46,76 @@ export type DskType2Bookkeeping = {
 
 /** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
+  /** Read up to room double components of a type-2 item. The scalar offset start is zero-based. Return only initialized values reported by CSPICE, including a shorter final page. Keywords 15 through 19 select the descriptor, vertex bounds, voxel origin, voxel size and flattened xyz vertices.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskd02_c.html
+   */
+  dskd02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    item: number,
+    start: number,
+    room: number,
+  ): number[];
+
+  /** Read up to room integer components of a type-2 item at a zero-based scalar offset. The result is trimmed to the reported count. Keywords 1–14 cover size metadata, grid extents, connectivity, index lists and coarse-grid pointers. Scalar items require start zero because N0067 leaves its internal size unset on other offsets.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dski02_c.html
+   */
+  dski02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    item: number,
+    start: number,
+    room: number,
+  ): number[];
+
+  /** Return the oriented unit normal of the one-based triangular plate ID. The right-handed vertex order determines its direction. A degenerate face may return zero.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskn02_c.html
+   */
+  dskn02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    plid: number,
+  ): SpiceVector3;
+
+  /** Read up to room plate triples starting with one-based plate number start. Each owned triple contains three one-based vertex IDs. A final partial page contains only actual plates.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskp02_c.html
+   */
+  dskp02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    start: number,
+    room: number,
+  ): SpiceVector3[];
+
+  /** Read up to room Cartesian vertex triples starting with one-based vertex number start. Each owned xyz row is in km in the segment frame. The final partial page stops at the last vertex.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskv02_c.html
+   */
+  dskv02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    start: number,
+    room: number,
+  ): SpiceVector3[];
+
+  /** Return vertex and triangular plate counts from the selected type-2 DSK segment.
+   * Use a DLA descriptor for this segment obtained by traversal of the open file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskz02_c.html
+   */
+  dskz02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+  ): { nv: number; np: number };
+
+  /** Close an owned DAS-backed DSK reference. On a writer, true requests DAS segregation and false flushes buffered data before low-level closure. Successful closure invalidates this token. A DSK loaded by furnsh must instead be released with unload or kclear.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskcls_c.html
+   */
+  dskcls(handle: SpiceHandle, optmiz: boolean): void;
+
   /**
    * Union this DSK's body IDs into an initialized integer set cell.
    * Existing IDs are retained and results sorted/deduplicated. CSPICE appends

@@ -1,3 +1,8 @@
+import {
+  snapshotDskDataDescriptor,
+  dskPageStorage,
+  dskDataRows,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   DskApi,
@@ -8,6 +13,7 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import { invariant, assertSpiceInt32 } from "@rybosome/tspice-core";
 
+import { WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
 import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
@@ -263,6 +269,247 @@ export function createDskApi(
   handles: SpiceHandleRegistry,
 ): DskApi {
   return {
+    dskd02(handle, dladsc, item, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskd02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertSpiceInt32(item, "dskd02(item)");
+      assertSpiceInt32(start, "dskd02(start)");
+      assertSpiceInt32(room, "dskd02(room)");
+      const words = dskPageStorage(
+        descriptor.dsize,
+        room,
+        1,
+        8,
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [32, 4, words * 8, WASM_ERR_MAX_BYTES],
+        (descr, count, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          module.HEAP32[count / 4] = 0;
+          const code = module._tspice_dskd02(
+            actual,
+            descr,
+            item,
+            start,
+            room,
+            words,
+            count,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = module.HEAP32[count / 4]! * 1;
+          if (length < 0 || length > words)
+            throw new RangeError("Invalid WASM DSK count");
+          const result = Array.from(
+            module.HEAPF64.subarray(out / 8, out / 8 + length),
+          );
+          return result;
+        },
+      );
+    },
+    dski02(handle, dladsc, item, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dski02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertSpiceInt32(item, "dski02(item)");
+      assertSpiceInt32(start, "dski02(start)");
+      assertSpiceInt32(room, "dski02(room)");
+      const words = dskPageStorage(
+        descriptor.isize,
+        room,
+        1,
+        4,
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [32, 4, words * 4, WASM_ERR_MAX_BYTES],
+        (descr, count, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          module.HEAP32[count / 4] = 0;
+          const code = module._tspice_dski02(
+            actual,
+            descr,
+            item,
+            start,
+            room,
+            words,
+            count,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = module.HEAP32[count / 4]! * 1;
+          if (length < 0 || length > words)
+            throw new RangeError("Invalid WASM DSK count");
+          const result = Array.from(
+            module.HEAP32.subarray(out / 4, out / 4 + length),
+          );
+          return result;
+        },
+      );
+    },
+    dskn02(handle, dladsc, plid) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskn02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertSpiceInt32(plid, "dskn02(plid)");
+      const words = 3;
+      return withAllocs(
+        module,
+        [32, words * 8, WASM_ERR_MAX_BYTES],
+        (descr, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          const code = module._tspice_dskn02(
+            actual,
+            descr,
+            plid,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = words;
+          const result = Array.from(
+            module.HEAPF64.subarray(out / 8, out / 8 + length),
+          );
+          if (result.length !== words)
+            throw new RangeError("Invalid DSK result length");
+          return [result[0]!, result[1]!, result[2]!];
+        },
+      );
+    },
+    dskp02(handle, dladsc, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskp02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertSpiceInt32(start, "dskp02(start)");
+      assertSpiceInt32(room, "dskp02(room)");
+      const words = dskPageStorage(
+        descriptor.isize,
+        room,
+        3,
+        4,
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [32, 4, words * 4, WASM_ERR_MAX_BYTES],
+        (descr, count, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          module.HEAP32[count / 4] = 0;
+          const code = module._tspice_dskp02(
+            actual,
+            descr,
+            start,
+            room,
+            words,
+            count,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = module.HEAP32[count / 4]! * 3;
+          if (length < 0 || length > words)
+            throw new RangeError("Invalid WASM DSK count");
+          const result = Array.from(
+            module.HEAP32.subarray(out / 4, out / 4 + length),
+          );
+          return dskDataRows(result);
+        },
+      );
+    },
+    dskv02(handle, dladsc, start, room) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskv02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      assertSpiceInt32(start, "dskv02(start)");
+      assertSpiceInt32(room, "dskv02(room)");
+      const words = dskPageStorage(
+        descriptor.dsize,
+        room,
+        3,
+        8,
+        WASM_MAX_ALLOC_BYTES,
+      );
+      return withAllocs(
+        module,
+        [32, 4, words * 8, WASM_ERR_MAX_BYTES],
+        (descr, count, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          module.HEAP32[count / 4] = 0;
+          const code = module._tspice_dskv02(
+            actual,
+            descr,
+            start,
+            room,
+            words,
+            count,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = module.HEAP32[count / 4]! * 3;
+          if (length < 0 || length > words)
+            throw new RangeError("Invalid WASM DSK count");
+          const result = Array.from(
+            module.HEAPF64.subarray(out / 8, out / 8 + length),
+          );
+          return dskDataRows(result);
+        },
+      );
+    },
+    dskz02(handle, dladsc) {
+      const actual = handles.lookup(handle, DAS_BACKED, "dskz02").nativeHandle;
+      const descriptor = snapshotDskDataDescriptor(dladsc);
+      const words = 2;
+      return withAllocs(
+        module,
+        [32, words * 4, WASM_ERR_MAX_BYTES],
+        (descr, out, err) => {
+          writeDlaDescr8(module, descr, descriptor);
+          const code = module._tspice_dskz02(
+            actual,
+            descr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const length = words;
+          const result = Array.from(
+            module.HEAP32.subarray(out / 4, out / 4 + length),
+          );
+          if (result.length !== words)
+            throw new RangeError("Invalid DSK result length");
+          return { nv: result[0]!, np: result[1]! };
+        },
+      );
+    },
+    dskcls(handle, optmiz) {
+      if (typeof optmiz !== "boolean")
+        throw new TypeError("Expected boolean optimize flag");
+      handles.close(
+        handle,
+        DAS_BACKED,
+        (entry) => {
+          withMalloc(module, WASM_ERR_MAX_BYTES, (err) => {
+            const code = module._tspice_dskcls(
+              entry.nativeHandle,
+              optmiz ? 1 : 0,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (code)
+              throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          });
+        },
+        "dskcls",
+      );
+    },
     dskobj: (dsk: string, bodids: SpiceIntCell) => {
       assertWasmOwnedCellHandle(module, bodids, "dskobj(bodids)");
       tspiceCallDskobj(module, dsk, bodids);

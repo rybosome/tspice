@@ -1,0 +1,366 @@
+[
+  {
+    "caseId": "dsk-dskd02-descriptor-fields",
+    "description": "Read both halves of the 24-double segment descriptor and a final short page.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 15,
+        "start": 0,
+        "room": 12
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 15,
+        "start": 12,
+        "room": 12
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 15,
+        "start": 22,
+        "room": 12
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-bounds-and-grid",
+    "description": "Observe all six vertex bounds, three voxel origins and scalar voxel size, with oversized room.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 16,
+        "start": 0,
+        "room": 22
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 17,
+        "start": 0,
+        "room": 17
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 18,
+        "start": 0,
+        "room": 6
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-vertex-component-pages",
+    "description": "Zero-based scalar starts span vertex rows; the final page contains no padding.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 1,
+        "room": 4
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 5,
+        "room": 3
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 10,
+        "room": 8
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-second-segment",
+    "description": "Get the next DLA descriptor and inspect its different time interval and geometry.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "R",
+        "dladscId": "S",
+        "nextId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 15,
+        "start": 20,
+        "room": 4
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 0,
+        "room": 9
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-large-room",
+    "description": "A large signed positive room on a tiny physical segment still returns just the remaining data.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 10,
+        "room": 2147483647
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 18,
+        "start": 0,
+        "room": 2147483647
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-unsupported",
+    "description": "An integer-section keyword is unsupported by the double reader.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 9,
+        "start": 0,
+        "room": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-negative-offset",
+    "description": "The converted Fortran offset is outside this double item.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": -1,
+        "room": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-past-last-offset",
+    "description": "The converted Fortran offset is outside this double item.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": 19,
+        "start": 12,
+        "room": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INDEXOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "dsk-dskd02-nonpositive-room",
+    "description": "Negative room reaches the toolkit room diagnostic before keyword checks.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskd02",
+        "handleId": "R",
+        "dladscId": "S",
+        "item": -1,
+        "start": 0,
+        "room": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

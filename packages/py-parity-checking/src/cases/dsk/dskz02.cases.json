@@ -1,0 +1,154 @@
+[
+  {
+    "caseId": "dsk-dskz02-authored-tetrahedron",
+    "description": "Observe both distinct named count fields for the authored tetrahedron.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskz02",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskz02-second-segment",
+    "description": "Count a later segment using the current handle and next DLA descriptor.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dlafns",
+        "handleId": "R",
+        "dladscId": "S",
+        "nextId": "S"
+      },
+      {
+        "op": "dsk.dskz02",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskz02-minimal",
+    "description": "A separately generated minimal segment has differing vertex and plate counts.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "R",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/file-io-minimal.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dskz02",
+        "handleId": "R",
+        "dladscId": "S"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskz02-reader-aliases",
+    "description": "Repeat a size query through independently opened references to the same physical segment.",
+    "workflow": [
+      {
+        "op": "dsk.dasopr",
+        "handleId": "A",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "A",
+        "dladscId": "A0"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "B",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "B",
+        "dladscId": "B0"
+      },
+      {
+        "op": "dsk.dskz02",
+        "handleId": "A",
+        "dladscId": "A0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "A"
+      },
+      {
+        "op": "dsk.dskz02",
+        "handleId": "B",
+        "dladscId": "B0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "B"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

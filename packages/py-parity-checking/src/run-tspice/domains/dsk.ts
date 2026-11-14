@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 
 import type {
   SpiceHandle,
@@ -13,6 +14,14 @@ import type {
   StepDskDasopr,
   StepDskDlabfs,
   StepDskDskb02,
+  StepDskDskd02,
+  StepDskDski02,
+  StepDskDskn02,
+  StepDskDskp02,
+  StepDskDskv02,
+  StepDskDskz02,
+  StepDskDskcls,
+  StepDskDlafns,
   StepDskDskgd,
   StepDskDskmi2,
   StepDskDskobj,
@@ -37,6 +46,14 @@ type DskStep =
   | StepDskDasopr
   | StepDskDascls
   | StepDskDlabfs
+  | StepDskDskd02
+  | StepDskDski02
+  | StepDskDskn02
+  | StepDskDskp02
+  | StepDskDskv02
+  | StepDskDskz02
+  | StepDskDskcls
+  | StepDskDlafns
   | StepDskDskgd
   | StepDskDskb02;
 
@@ -87,7 +104,11 @@ function resolveDskPathRef(
     return virtualPath;
   }
 
-  const scratchPath = toVirtualKernelPath(pathRef);
+  // A retained WASM worker has one filesystem across case lifecycles.
+  const scratchPath = toVirtualKernelPath({
+    kind: "scratch",
+    rel: path.posix.join(path.basename(context.paths.scratchRoot), pathRef.rel),
+  });
   context.state.dsk.resolvedPathRefs.set(key, scratchPath);
   return scratchPath;
 }
@@ -285,6 +306,8 @@ export function runDskStep(
     }
 
     case "dsk.dskopn": {
+      if (toPathRef(step.path).kind !== "scratch")
+        throw new Error("DSK writer workflows require a scratch path");
       const handle = context.spice.raw.dskopn(
         resolveDskPathRef(context, step.path),
         step.ifname,
@@ -388,6 +411,85 @@ export function runDskStep(
       return { op: step.op, value: { found: true } };
     }
 
+    case "dsk.dskd02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dskd02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+        step.item,
+        step.start,
+        step.room,
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dski02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dski02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+        step.item,
+        step.start,
+        step.room,
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dskn02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dskn02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+        step.plid,
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dskp02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dskp02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+        step.start,
+        step.room,
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dskv02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dskv02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+        step.start,
+        step.room,
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dskz02": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dskz02(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+      );
+      return { op: step.op, value };
+    }
+    case "dsk.dskcls": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      context.spice.raw.dskcls(tracked.handle, step.optmiz);
+      context.state.dsk.handles.set(step.handleId, {
+        handle: tracked.handle,
+        isOpen: false,
+      });
+      return { op: step.op, value: null };
+    }
+    case "dsk.dlafns": {
+      const tracked = requireTrackedHandle(context, step.handleId);
+      const value = context.spice.raw.dlafns(
+        tracked.handle,
+        requireDlaDescriptor(context, step.dladscId),
+      );
+      if (value.found)
+        context.state.dsk.dlaDescriptors.set(step.nextId, value.descr);
+      else context.state.dsk.dlaDescriptors.delete(step.nextId);
+      return { op: step.op, value: { found: value.found } };
+    }
     case "dsk.dskgd": {
       const tracked = requireTrackedHandle(context, step.handleId);
       const dladsc = requireDlaDescriptor(context, step.dladscId);
