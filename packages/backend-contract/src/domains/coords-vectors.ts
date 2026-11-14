@@ -8,6 +8,149 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Evaluate an equally spaced Hermite interpolating polynomial at x.
+   *
+   * For point first + i * step, yvals[2*i] is the function value and
+   * yvals[2*i+1] its first derivative with respect to the abscissa.
+   * yvals must have even length; n = yvals.length / 2. Return { f, df },
+   * the polynomial value and derivative at x. Negative step is allowed;
+   * zero step signals CSPICE(INVALIDSTEPSIZE). No points signals
+   * CSPICE(INVALIDSIZE). The maximum n is 67108863, keeping the pinned
+   * CSPICE wrapper's internal 32*n workspace byte count within signed32.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * Interpolation is not clamped to the sample interval; extrapolation,
+   * high degree and poorly spaced points can amplify numerical error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmesp_c.html
+   */
+  hrmesp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+
+  /**
+   * Evaluate a Hermite interpolating polynomial at x.
+   *
+   * xvals contains the abscissae; yvals must have exactly twice as many
+   * entries, interleaving function value and first derivative for each
+   * point. Return { f, df }, the value and derivative with respect to the
+   * abscissa. Input order is preserved. Duplicate abscissae signal
+   * CSPICE(DIVIDEBYZERO); no points signals CSPICE(INVALIDSIZE).
+   * The maximum point count is 357913941, keeping the pinned translated
+   * routine's intermediate 6*n-1 workspace index within signed32.
+   * The internal workspace contains 4*n doubles.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * Interpolation is not clamped to the sample interval; extrapolation,
+   * high degree and poorly spaced points can amplify numerical error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmint_c.html
+   */
+  hrmint(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { f: number; df: number };
+
+  /**
+   * Evaluate a Lagrange polynomial on equally spaced points at x.
+   *
+   * yvals[i] is the function value at first + i * step. The inferred point
+   * count is yvals.length. Negative step is allowed; zero step signals
+   * CSPICE(INVALIDSTEPSIZE). No points signals CSPICE(INVALIDSIZE).
+   * The maximum point count is 268435455, keeping the pinned wrapper's
+   * internal 8*n workspace byte count within signed32.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * Interpolation is not clamped to the sample interval; extrapolation,
+   * high degree and poorly spaced points can amplify numerical error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgresp_c.html
+   */
+  lgresp(
+    first: number,
+    step: number,
+    yvals: readonly number[],
+    x: number,
+  ): number;
+
+  /**
+   * Evaluate a Lagrange polynomial and its derivative at x.
+   *
+   * xvals and yvals must have equal lengths and give corresponding
+   * abscissae and values. Return { p, dp }, the value and derivative with
+   * respect to the abscissa. NAIF specifies distinct, increasing xvals;
+   * this raw wrapper preserves input order without sorting or deduplication.
+   * Duplicates signal CSPICE(DIVIDEBYZERO); no points signals
+   * CSPICE(INVALIDSIZE). The maximum point count is 715827882, keeping the
+   * pinned translated routine's intermediate 3*n index within signed32.
+   * The internal workspace contains 2*n doubles.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * Interpolation is not clamped to the sample interval; extrapolation,
+   * high degree and poorly spaced points can amplify numerical error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrind_c.html
+   */
+  lgrind(
+    xvals: readonly number[],
+    yvals: readonly number[],
+    x: number,
+  ): { p: number; dp: number };
+
+  /**
+   * Evaluate a Lagrange interpolating polynomial at x.
+   *
+   * xvals and yvals must have equal lengths and give corresponding
+   * abscissae and values. NAIF specifies distinct, increasing xvals;
+   * this raw wrapper preserves input order without sorting or deduplication.
+   * Duplicates signal CSPICE(DIVIDEBYZERO); no points signals
+   * CSPICE(INVALIDSIZE). The maximum point count is 268435455, keeping the
+   * pinned wrapper's internal 8*n workspace byte count within signed32.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * Interpolation is not clamped to the sample interval; extrapolation,
+   * high degree and poorly spaced points can amplify numerical error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrint_c.html
+   */
+  lgrint(xvals: readonly number[], yvals: readonly number[], x: number): number;
+
+  /**
+   * Estimate a vector function's derivative at the midpoint of two samples.
+   *
+   * f0 and f2 contain function values at abscissae separated by 2*delta.
+   * They must have equal, nonzero lengths. delta may be negative; zero
+   * signals CSPICE(DIVIDEBYZERO). Return an independent array containing
+   * the actual CSPICE derivative estimates. The pinned routine forms
+   * (0.5/delta)*f2 + (-0.5/delta)*f0; its overflow, underflow and cancellation
+   * behavior can differ from subtracting first and dividing afterwards.
+   * Empty vectors are rejected because NAIF does not define a portable
+   * zero-dimensional call. The maximum dimension is 2147483646 to avoid
+   * overflow of the pinned translated routine's inclusive loop counter.
+   *
+   * Inputs are finite numbers and readonly arrays of finite numbers; no input
+   * is modified. WASM limits each input, output and workspace buffer to
+   * 256 MiB, including workspace allocated inside CSPICE. No kernels are
+   * needed. Numerical outputs, including nonfinite results, are retained.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qderiv_c.html
+   */
+  qderiv(f0: readonly number[], f2: readonly number[], delta: number): number[];
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

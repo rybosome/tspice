@@ -1,0 +1,525 @@
+{
+  "schemaVersion": 1,
+  "batch": "a17-interpolation",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/interpolation.test.ts",
+    "packages/py-parity-checking/test/interpolation-extremes.test.ts",
+    "packages/backend-wasm/test/interpolation-allocations.test.ts",
+    "packages/backend-node/test/interpolation-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/interpolation_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-interpolation.md",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-node/native/src/addon_common.cc"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "hrmesp_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmesp_c.html",
+      "semantics": "Read flat interleaved ordinate/first-derivative pairs at first+i*step; infer n from exactly half the even array length. Return both {f,df} for degree at most 2n\u22121; df is measured against x, not node index. Preserve negative nonzero step and extrapolation. Inputs are finite and arrays readonly. The signed internal 32*n workspace byte count limits n to 67,108,863. WASM caps the hidden workspace at 256 MiB (8,388,608 nodes).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-hrmesp-single-point",
+          "coverage": ["success", "edge"],
+          "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-cubic-at-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-zero-and-constant",
+          "coverage": ["success", "edge"],
+          "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-zero-step-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
+        },
+        {
+          "caseId": "coords-vectors-hrmesp-empty-table-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
+        }
+      ],
+      "edgeAssessment": "One-node tangent, cubic endpoints/interior/extrapolation, constant/zero tables, reversed and shifted grids and extreme coordinate/ordinate scales distinguish interpolation value and physical slope. Tagged finite/nonfinite controls compare both fields.",
+      "errorAssessment": "Actual INVALIDSIZE on zero nodes and INVALIDSTEPSIZE on zero nonempty spacing. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests. The internal CSPICE allocation-failure branch is source-reviewed; adapter allocation fault injection does not establish a forced internal MALLOCFAILED.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. The C wrapper frees hidden 4*n-double workspace after its underlying routine.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hrmesp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hrmesp -> typed WASM adapter -> checked buffers -> exported _tspice_hrmesp -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "hrmint_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/hrmint_c.html",
+      "semantics": "Infer n from xvals and require exactly 2n interleaved [value,derivative] entries. Preserve each distinct abscissa and its corresponding pair in the submitted order. Return degree-at-most-2n\u22121 Hermite value and first derivative in x as {f,df}; do not sort the nodes. Inputs are finite and arrays readonly. The translated unreduced 6*n\u22121 workspace index limits n to 357,913,941. WASM caps the 4*n-double workspace at 256 MiB (8,388,608 nodes).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-hrmint-single-point",
+          "coverage": ["success", "edge"],
+          "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-cubic-at-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-cubic-interior-and-extrapolation",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-zero-and-constant",
+          "coverage": ["success", "edge"],
+          "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-irregular-distinct-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-permuted-distinct-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve nonmonotonic distinct Hermite nodes and move each value/derivative pair with its abscissa; off-node value and derivative remain observable."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-duplicate-node-error",
+          "coverage": ["error"],
+          "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
+        },
+        {
+          "caseId": "coords-vectors-hrmint-empty-table-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
+        }
+      ],
+      "edgeAssessment": "One-node tangent, irregular/permuted distinct nodes, cubic endpoints/interior/extrapolation and reciprocal abscissa/slope scaling expose pairing and derivative-unit errors. Tagged finite/nonfinite controls compare both fields.",
+      "errorAssessment": "Actual INVALIDSIZE on zero nodes and DIVIDEBYZERO on repeated abscissae. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. Adapter-owned explicit 4*n-double workspace is released on success and failure.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [
+        {
+          "id": "native-validated-paired-count",
+          "status": "repaired",
+          "summary": "The native boundary re-read array length during copy after validating the paired dimensions. A change between validation and copy could make the owned buffer shorter than its validated count.",
+          "repair": "Copy precisely the previously validated number of finite entries (2*n for Hermite ordinates); reject a missing entry before the scientific call. The typed adapter and actual addon boundary tests cover changing paired inputs, and normal registered calls retain the same scientific semantics.",
+          "evidence": [
+            "packages/backend-node/native/src/domains/coords_vectors.cc",
+            "packages/backend-node/test/interpolation-domain.test.ts",
+            "docs/step8-interpolation.md"
+          ],
+          "caseIds": ["coords-vectors-hrmint-irregular-distinct-grid"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hrmint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.hrmint -> typed WASM adapter -> checked buffers -> exported _tspice_hrmint -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lgresp_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgresp_c.html",
+      "semantics": "Infer n from all ordinates at first+i*step, including a negative nonzero step. Return scalar Lagrange polynomial value of degree at most n\u22121 at the supplied x. Preserve grid origin, signs, node order and extrapolation. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-lgresp-single-point",
+          "coverage": ["success", "edge"],
+          "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-cubic-at-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-cubic-interior-and-extrapolation",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-zero-and-constant",
+          "coverage": ["success", "edge"],
+          "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-zero-step-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
+        },
+        {
+          "caseId": "coords-vectors-lgresp-empty-table-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
+        }
+      ],
+      "edgeAssessment": "One-node/zero/constant samples, shifted forward and reversed grids, all cubic nodes and interior/extrapolation distinguish the implied uniform abscissae. Large/small ordinate and abscissa scales plus tagged extremes observe scalar recurrence behavior.",
+      "errorAssessment": "Actual INVALIDSIZE on zero nodes and INVALIDSTEPSIZE on zero nonempty spacing. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests. The internal CSPICE allocation-failure branch is source-reviewed; adapter allocation fault injection does not establish a forced internal MALLOCFAILED.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. The C wrapper frees hidden n-double workspace after its underlying routine.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgresp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgresp -> typed WASM adapter -> checked buffers -> exported _tspice_lgresp -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lgrind_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrind_c.html",
+      "semantics": "Infer n from explicit xvals and require one corresponding yval per node. The published successful domain uses distinct increasing abscissae. Retain input order and return both the degree-at-most-n\u22121 polynomial and its first derivative in x as {p,dp}. Inputs are finite and arrays readonly. The translated unreduced 3*n workspace index limits n to 715,827,882. WASM caps the 2*n-double workspace at 256 MiB (16,777,216 nodes).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-lgrind-single-point",
+          "coverage": ["success", "edge"],
+          "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-cubic-at-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-cubic-interior-and-extrapolation",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-zero-and-constant",
+          "coverage": ["success", "edge"],
+          "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-irregular-distinct-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-duplicate-node-error",
+          "coverage": ["error"],
+          "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
+        },
+        {
+          "caseId": "coords-vectors-lgrind-empty-table-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
+        }
+      ],
+      "edgeAssessment": "One-point constant and zero derivative, irregular increasing points, cubic values/slopes at nodes, off-node interpolation and extrapolation distinguish the two fields. Extreme ordinate/abscissa scales and tagged probes retain actual floating results.",
+      "errorAssessment": "Actual INVALIDSIZE on zero nodes and DIVIDEBYZERO on repeated abscissae. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. Adapter-owned explicit 2*n-double workspace is released on success and failure.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [
+        {
+          "id": "native-validated-paired-count",
+          "status": "repaired",
+          "summary": "The native boundary re-read array length during copy after validating the paired dimensions. A change between validation and copy could make the owned buffer shorter than its validated count.",
+          "repair": "Copy precisely the previously validated number of finite entries (2*n for Hermite ordinates); reject a missing entry before the scientific call. The typed adapter and actual addon boundary tests cover changing paired inputs, and normal registered calls retain the same scientific semantics.",
+          "evidence": [
+            "packages/backend-node/native/src/domains/coords_vectors.cc",
+            "packages/backend-node/test/interpolation-domain.test.ts",
+            "docs/step8-interpolation.md"
+          ],
+          "caseIds": ["coords-vectors-lgrind-irregular-distinct-grid"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgrind -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgrind -> typed WASM adapter -> checked buffers -> exported _tspice_lgrind -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lgrint_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lgrint_c.html",
+      "semantics": "Infer n from explicit xvals and require equal ordinate count. Return the scalar degree-at-most-n\u22121 Lagrange value at x. Use the documented distinct increasing successful domain; do not sort, merge repeated nodes, clamp x or manufacture derivatives. Inputs are finite and arrays readonly. The signed internal 8*n workspace byte count limits n to 268,435,455; WASM caps the hidden workspace at 256 MiB (33,554,432 nodes).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-lgrint-single-point",
+          "coverage": ["success", "edge"],
+          "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-cubic-at-nodes",
+          "coverage": ["success", "edge"],
+          "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-cubic-interior-and-extrapolation",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-zero-and-constant",
+          "coverage": ["success", "edge"],
+          "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-irregular-distinct-grid",
+          "coverage": ["success", "edge"],
+          "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-duplicate-node-error",
+          "coverage": ["error"],
+          "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
+        },
+        {
+          "caseId": "coords-vectors-lgrint-empty-table-error",
+          "coverage": ["error"],
+          "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
+        }
+      ],
+      "edgeAssessment": "One-point/zero/constant samples, irregular increasing grids and cubic nodes/interior/extrapolation observe the actual scalar value. Large/small ordinate and abscissa scales plus tagged extremes distinguish loss of scale.",
+      "errorAssessment": "Actual INVALIDSIZE on zero nodes and DIVIDEBYZERO on repeated abscissae. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests. The internal CSPICE allocation-failure branch is source-reviewed; adapter allocation fault injection does not establish a forced internal MALLOCFAILED.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. The C wrapper frees hidden n-double workspace after its underlying routine.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [
+        {
+          "id": "native-validated-paired-count",
+          "status": "repaired",
+          "summary": "The native boundary re-read array length during copy after validating the paired dimensions. A change between validation and copy could make the owned buffer shorter than its validated count.",
+          "repair": "Copy precisely the previously validated number of finite entries (2*n for Hermite ordinates); reject a missing entry before the scientific call. The typed adapter and actual addon boundary tests cover changing paired inputs, and normal registered calls retain the same scientific semantics.",
+          "evidence": [
+            "packages/backend-node/native/src/domains/coords_vectors.cc",
+            "packages/backend-node/test/interpolation-domain.test.ts",
+            "docs/step8-interpolation.md"
+          ],
+          "caseIds": ["coords-vectors-lgrint-irregular-distinct-grid"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgrint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lgrint -> typed WASM adapter -> checked buffers -> exported _tspice_lgrint -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "qderiv_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qderiv_c.html",
+      "semantics": "Infer a positive common dimension from the two complete endpoint vectors f0 and f2. The signed nonzero delta is half their abscissa separation; return an owned vector of all midpoint derivative estimates. Retain canonical scaled endpoint addition through VLComG, including its overflow/underflow behavior. Inputs are finite and arrays readonly. The inclusive translated signed VLComG loop limits dimension to 2,147,483,646. WASM caps each endpoint/output buffer at 256 MiB (33,554,432 components).",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-qderiv-half-interval-and-orientation",
+          "coverage": ["success", "edge"],
+          "observes": "Use scalar/vector endpoints with signed half-spacing and reversed endpoints. Compare every derivative sign and factor of two."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-variable-dimensions",
+          "coverage": ["success", "edge"],
+          "observes": "Compare each component and the exact inferred output length at several positive dimensions, including dimensions greater than three."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-constant-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Compare zero derivatives for identical endpoints across all vector components; preserve the dynamic length."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-scaled-ordinates",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e\u2212100. Focused comparisons divide every output by the input scale and compare the full results."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-scaled-abscissas",
+          "coverage": ["success", "edge"],
+          "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e\u2212100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-balanced-extreme-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Opposite maximum-finite endpoints with maximum-finite half-spacing keep two components near \u00b11 and a third nonzero subnormal. Focused rescaling observes the small component separately."
+        },
+        {
+          "caseId": "coords-vectors-qderiv-zero-delta-error",
+          "coverage": ["error"],
+          "observes": "Observe actual DIVIDEBYZERO with equal positive-length endpoint arrays and zero half-spacing; empty-vector rejection instead belongs to caller validation."
+        }
+      ],
+      "edgeAssessment": "Singleton and variable-length vectors, constant endpoints, signed half-spacing, reversed endpoints and scaled endpoint/abscissa fixtures test every component. Opposite maximum-finite endpoints with maximum-finite delta expose scaled combination before cancellation; tiny nonzero delta can return NaN without a SPICE error.",
+      "errorAssessment": "Actual DIVIDEBYZERO on zero delta with positive dimension. Empty dimension is outside the documented portable domain and is rejected before C; do not count that guard as a scientific error. Focused scientific-error tests compare independent SpiceyPy, require backend reset and exercise a succeeding call. Malformed/nonfinite entries, shape mismatches where applicable and unsafe counts/byte products are separate boundary tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored sample grids, polynomial values/slopes, endpoint vectors, scales and query points; no kernels, external datasets or restricted scientific assets. Synthetic length/allocation checks are separate from canonical outputs.",
+      "cleanup": "Kernel-free inputs have no persistent fixture. Native owns input/output buffers under the existing global SPICE mutex; shared C checks pointers/counts, calls the exact canonical entrypoint and captures/resets SPICE errors. WASM bounds each buffer and releases transactional allocations; adapters read and copy outputs after successful status. Focused clients are disposed and genuine errors must leave succeeding calls usable. Both endpoint buffers and the independent output buffer have the validated positive dimension; no returned vector aliases temporary storage.",
+      "tolerance": "Registered finite comparisons use unchanged atol=1e-12 and rtol=1e-12. Focused comparisons scale small physical magnitudes back to observable units rather than increasing the shared tolerance. Tagged comparisons preserve full field/array structure, IEEE categories and zero signs with a relative-only finite comparison.",
+      "findings": [
+        {
+          "id": "native-validated-paired-count",
+          "status": "repaired",
+          "summary": "The native boundary re-read array length during copy after validating the paired dimensions. A change between validation and copy could make the owned buffer shorter than its validated count.",
+          "repair": "Copy precisely the previously validated number of finite entries (2*n for Hermite ordinates); reject a missing entry before the scientific call. The typed adapter and actual addon boundary tests cover changing paired inputs, and normal registered calls retain the same scientific semantics.",
+          "evidence": [
+            "packages/backend-node/native/src/domains/coords_vectors.cc",
+            "packages/backend-node/test/interpolation-domain.test.ts",
+            "docs/step8-interpolation.md"
+          ],
+          "caseIds": ["coords-vectors-qderiv-variable-dimensions"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.qderiv -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.qderiv -> typed WASM adapter -> checked buffers -> exported _tspice_qderiv -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Reviewed pinned primary sources, public shapes and bounds, independent locked wrapper symbols, scientific cases and adapter resource handling. Original Step 7 execution records are historical. Fresh required local and observed canonical CI records are needed for final source-bound verification."
+}

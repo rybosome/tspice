@@ -22,6 +22,12 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsHrmesp,
+    StepCoordsVectorsHrmint,
+    StepCoordsVectorsLgresp,
+    StepCoordsVectorsLgrind,
+    StepCoordsVectorsLgrint,
+    StepCoordsVectorsQderiv,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +500,56 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.hrmesp":
+            return StepCoordsVectorsHrmesp(
+                op=op,
+                first=_expect_number(step.get("first"), label="coords-vectors.hrmesp.first"),
+                step=_expect_number(step.get("step"), label="coords-vectors.hrmesp.step"),
+                yvals=_expect_number_list(step.get("yvals"), label="coords-vectors.hrmesp.yvals"),
+                x=_expect_number(step.get("x"), label="coords-vectors.hrmesp.x"),
+            )
+
+        case "coords-vectors.hrmint":
+            return StepCoordsVectorsHrmint(
+                op=op,
+                xvals=_expect_number_list(step.get("xvals"), label="coords-vectors.hrmint.xvals"),
+                yvals=_expect_number_list(step.get("yvals"), label="coords-vectors.hrmint.yvals"),
+                x=_expect_number(step.get("x"), label="coords-vectors.hrmint.x"),
+            )
+
+        case "coords-vectors.lgresp":
+            return StepCoordsVectorsLgresp(
+                op=op,
+                first=_expect_number(step.get("first"), label="coords-vectors.lgresp.first"),
+                step=_expect_number(step.get("step"), label="coords-vectors.lgresp.step"),
+                yvals=_expect_number_list(step.get("yvals"), label="coords-vectors.lgresp.yvals"),
+                x=_expect_number(step.get("x"), label="coords-vectors.lgresp.x"),
+            )
+
+        case "coords-vectors.lgrind":
+            return StepCoordsVectorsLgrind(
+                op=op,
+                xvals=_expect_number_list(step.get("xvals"), label="coords-vectors.lgrind.xvals"),
+                yvals=_expect_number_list(step.get("yvals"), label="coords-vectors.lgrind.yvals"),
+                x=_expect_number(step.get("x"), label="coords-vectors.lgrind.x"),
+            )
+
+        case "coords-vectors.lgrint":
+            return StepCoordsVectorsLgrint(
+                op=op,
+                xvals=_expect_number_list(step.get("xvals"), label="coords-vectors.lgrint.xvals"),
+                yvals=_expect_number_list(step.get("yvals"), label="coords-vectors.lgrint.yvals"),
+                x=_expect_number(step.get("x"), label="coords-vectors.lgrint.x"),
+            )
+
+        case "coords-vectors.qderiv":
+            return StepCoordsVectorsQderiv(
+                op=op,
+                f0=_expect_number_list(step.get("f0"), label="coords-vectors.qderiv.f0"),
+                f2=_expect_number_list(step.get("f2"), label="coords-vectors.qderiv.f2"),
+                delta=_expect_number(step.get("delta"), label="coords-vectors.qderiv.delta"),
             )
 
         case "coords-vectors.reclat":

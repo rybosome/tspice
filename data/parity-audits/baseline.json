@@ -408,5 +408,21 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a17-interpolation",
+      "routines": [
+        "hrmesp_c",
+        "hrmint_c",
+        "lgresp_c",
+        "lgrind_c",
+        "lgrint_c",
+        "qderiv_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review point/derivative layouts, hidden workspace and translated-index bounds, explicit invalid-size/spacing/duplicate errors and qderiv midpoint/domain semantics. Require complete independent outputs, cleanup and both required local plus observed CI evidence before verification. No merge authorized."
+    }
   ]
 }
