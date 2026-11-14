@@ -2139,6 +2139,30 @@ export function createFakeBackend(
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
     },
+    dafbbs: () => {
+      throw new Error("Fake backend: dafbbs() is not implemented");
+    },
+    dafcs: () => {
+      throw new Error("Fake backend: dafcs() is not implemented");
+    },
+    daffpa: () => {
+      throw new Error("Fake backend: daffpa() is not implemented");
+    },
+    dafgh: () => {
+      throw new Error("Fake backend: dafgh() is not implemented");
+    },
+    dafgn: () => {
+      throw new Error("Fake backend: dafgn() is not implemented");
+    },
+    dafgs: () => {
+      throw new Error("Fake backend: dafgs() is not implemented");
+    },
+    dafhsf: () => {
+      throw new Error("Fake backend: dafhsf() is not implemented");
+    },
+    dafopw: () => {
+      throw new Error("Fake backend: dafopw() is not implemented");
+    },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
     },

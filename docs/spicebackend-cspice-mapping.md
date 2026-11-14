@@ -386,16 +386,26 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
-| Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |
-| ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `dafopr(path)`   | `dafopr_c`                 | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
-| `dafcls(handle)` | `dafcls_c`                 | Release one read claim; public tokens close once and are rejected after close.                                       |
-| `dafbfs(handle)` | `dafbfs_c`                 | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
-| `daffna(handle)` | `dafcs_c` then `daffna_c`  | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
-| `dasopr(path)`   | `dasopr_c`                 | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
-| `dascls(handle)` | `dascls_c`                 | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
-| `dlabfs(handle)` | `dlabfs_c`                 | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
-| `dlacls(handle)` | tspice alias of `dascls_c` | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+| Raw method               | Actual CSPICE route                  | Semantic observations                                                                                                |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `dafopr(path)`           | `dafopr_c`                           | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
+| `dafcls(handle)`         | `dafcls_c`                           | Release one read or write claim; public tokens close once and are rejected after close.                              |
+| `dafbfs(handle)`         | `dafbfs_c`                           | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
+| `daffna(handle)`         | `dafcs_c` then `daffna_c`            | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
+| `dafbbs(handle)`         | `dafbbs_c`                           | Begin or restart a backward search at the end of the selected DAF.                                                   |
+| `dafcs(handle)`          | `dafcs_c`                            | Select an already-started search without advancing its cursor.                                                       |
+| `daffpa(handle)`         | `dafcs_c`, traced SPICELIB `daffpa_` | Advance exactly once on the selected DAF using an initialized logical output.                                        |
+| `dafgh()`                | `dafgh_c`                            | Return the oldest surviving local DAF claim matching the toolkit’s current file.                                     |
+| `dafgn(handle, namlen?)` | `dafcs_c`, `dafgn_c`                 | Return the current name using a NUL-inclusive byte capacity and strict UTF-8.                                        |
+| `dafgs(handle)`          | `dafcs_c`, `dafhsf_c`, `dafgs_c`     | Return the packed summary as owned bytes, preserving integer pairs and NaN payloads.                                 |
+| `dafhsf(handle)`         | `dafhsf_c`                           | Return file-wide integer counts `{nd, ni}` independent of current array position.                                    |
+| `dafopw(path)`           | `dafopw_c`                           | Acquire a write claim on an existing native-format DAF and close it with `dafcls`.                                   |
+| `dasopr(path)`           | `dasopr_c`                           | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
+| `dascls(handle)`         | `dascls_c`                           | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
+| `dlabfs(handle)`         | `dlabfs_c`                           | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
+| `dlacls(handle)`         | tspice alias of `dascls_c`           | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+
+The C01 review records the initialized DAFFPA alias, cross-client ownership, and exact byte evidence. [DAF navigation](step8-daf-navigation.md)
 
 The opaque-handle contract rejects foreign (within the same host realm), wrong-kind
 and already-closed tokens before FFI. CSPICE's numeric close primitives themselves

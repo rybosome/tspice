@@ -1,6 +1,8 @@
 #include "file_io.h"
 
 #include <string>
+#include <algorithm>
+#include <cstring>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -145,6 +147,139 @@ static Napi::Object Getfat(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static bool DafArgs(const Napi::CallbackInfo& info, size_t count) {
+  if (info.Length() == count) return true;
+  ThrowSpiceError(Napi::TypeError::New(info.Env(), "Incorrect DAF argument count"));
+  return false;
+}
+
+static bool DafSuccess(Napi::Env env, int status, const char* op, const char* err) {
+  if (status == 0) return true;
+  ThrowSpiceError(env, std::string("CSPICE failed while calling ") + op, err);
+  return false;
+}
+
+static Napi::Value Dafbbs(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (!DafSuccess(env, tspice_dafbbs(handle, err, sizeof(err)), "dafbbs", err)) return env.Undefined();
+  return env.Undefined();
+}
+
+static Napi::Value Dafcs(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (!DafSuccess(env, tspice_dafcs(handle, err, sizeof(err)), "dafcs", err)) return env.Undefined();
+  return env.Undefined();
+}
+
+static Napi::Value Daffpa(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int found = 0;
+  if (!DafSuccess(env, tspice_daffpa(handle, &found, err, sizeof(err)), "daffpa", err)) return env.Undefined();
+  return Napi::Boolean::New(env, found != 0);
+}
+
+static Napi::Value Dafgh(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 0)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int handle = 0;
+  if (!DafSuccess(env, tspice_dafgh(&handle, err, sizeof(err)), "dafgh", err)) return env.Undefined();
+  return Napi::Number::New(env, handle);
+}
+
+static Napi::Value Dafgn(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 2)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  int32_t namlen = 0;
+  if (!ReadInt32Checked(env, info[1], "namlen", &namlen)) return env.Undefined();
+  namlen = std::min<int32_t>(namlen, TSPICE_DAF_NAME_BYTES);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  char out[TSPICE_DAF_NAME_BYTES] = {};
+  if (!DafSuccess(env, tspice_dafgn(handle, namlen, out, err, sizeof(err)), "dafgn", err)) return env.Undefined();
+  const size_t length = std::find(out, out + sizeof(out), char(0)) - out;
+  auto result = Napi::Uint8Array::New(env, length);
+  std::memcpy(result.Data(), out, length);
+  return result;
+}
+
+static Napi::Value Dafgs(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  unsigned char out[TSPICE_DAF_SUMMARY_BYTES] = {};
+  int length = 0;
+  if (!DafSuccess(env, tspice_dafgs(handle, out, sizeof(out), &length, err, sizeof(err)), "dafgs", err)) return env.Undefined();
+  auto result = Napi::Uint8Array::New(env, length);
+  std::memcpy(result.Data(), out, length);
+  return result;
+}
+
+static Napi::Value Dafhsf(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "DAF handle", &handle)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int nd = 0, ni = 0;
+  if (!DafSuccess(env, tspice_dafhsf(handle, &nd, &ni, err, sizeof(err)), "dafhsf", err)) return env.Undefined();
+  auto out = Napi::Object::New(env);
+  out.Set("nd", nd);
+  out.Set("ni", ni);
+  return out;
+}
+
+static Napi::Value Dafopw(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (!DafArgs(info, 1)) return env.Undefined();
+  if (!info[0].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "DAF path must be a string"));
+    return env.Undefined();
+  }
+  const auto value = info[0].As<Napi::String>();
+  const auto utf16 = value.Utf16Value();
+  for (size_t i = 0; i < utf16.size(); ++i) {
+    const char16_t ch = utf16[i];
+    if (ch == 0 || (ch >= 0xdc00 && ch <= 0xdfff) ||
+        (ch >= 0xd800 && ch <= 0xdbff &&
+         (++i == utf16.size() || utf16[i] < 0xdc00 || utf16[i] > 0xdfff))) {
+      ThrowSpiceError(Napi::TypeError::New(env, "DAF path must be well-formed text without NUL"));
+      return env.Undefined();
+    }
+  }
+  const std::string path = value.Utf8Value();
+  if (path.size() >= INT32_MAX) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAF path exceeds signed byte count"));
+    return env.Undefined();
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int handle = 0;
+  if (!DafSuccess(env, tspice_dafopw(path.c_str(), &handle, err, sizeof(err)), "dafopw", err)) return env.Undefined();
+  return Napi::Number::New(env, handle);
+}
 static Napi::Number Dafopr(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -874,6 +1009,14 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "exists", Napi::Function::New(env, Exists), __func__)) return;
   if (!SetExportChecked(env, exports, "getfat", Napi::Function::New(env, Getfat), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "dafbbs", Napi::Function::New(env, Dafbbs), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafcs", Napi::Function::New(env, Dafcs), __func__)) return;
+  if (!SetExportChecked(env, exports, "daffpa", Napi::Function::New(env, Daffpa), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafgh", Napi::Function::New(env, Dafgh), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafgn", Napi::Function::New(env, Dafgn), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafgs", Napi::Function::New(env, Dafgs), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafhsf", Napi::Function::New(env, Dafhsf), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafopw", Napi::Function::New(env, Dafopw), __func__)) return;
   if (!SetExportChecked(env, exports, "dafopr", Napi::Function::New(env, Dafopr), __func__)) return;
   if (!SetExportChecked(env, exports, "dafcls", Napi::Function::New(env, Dafcls), __func__)) return;
   if (!SetExportChecked(env, exports, "dafbfs", Napi::Function::New(env, Dafbfs), __func__)) return;

@@ -81,6 +81,14 @@ from .models import (
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
+    StepFileIoDafbbs,
+    StepFileIoDafcs,
+    StepFileIoDaffpa,
+    StepFileIoDafgh,
+    StepFileIoDafgn,
+    StepFileIoDafgs,
+    StepFileIoDafhsf,
+    StepFileIoDafopw,
     StepFileIoDafopr,
     StepFileIoDascls,
     StepFileIoDasopr,
@@ -1037,6 +1045,56 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepFileIoGetfat(
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="file-io.getfat.path"),
+            )
+
+        case "file-io.dafbbs":
+            return StepFileIoDafbbs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafbbs.handleId"),
+            )
+
+        case "file-io.dafcs":
+            return StepFileIoDafcs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafcs.handleId"),
+            )
+
+        case "file-io.daffpa":
+            return StepFileIoDaffpa(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.daffpa.handleId"),
+            )
+
+        case "file-io.dafgh":
+            return StepFileIoDafgh(
+                op=op,
+            )
+
+        case "file-io.dafgn":
+            return StepFileIoDafgn(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafgn.handleId"),
+                namlen=_expect_int(step.get("namlen", 1001), label="file-io.dafgn.namlen"),
+                captureError=_expect_bool(step.get("captureError", False), label="file-io.dafgn.captureError"),
+            )
+
+        case "file-io.dafgs":
+            return StepFileIoDafgs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafgs.handleId"),
+            )
+
+        case "file-io.dafhsf":
+            return StepFileIoDafhsf(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafhsf.handleId"),
+            )
+
+        case "file-io.dafopw":
+            return StepFileIoDafopw(
+                op=op,
+                path=_decode_path_ref(step.get("path"), label="file-io.dafopw.path"),
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafopw.handleId"),
             )
 
         case "file-io.dafopr":

@@ -149,6 +149,38 @@ export function getNodeBinding(): NativeAddon {
   );
 
   invariant(
+    typeof native.dafbbs === "function",
+    "Expected native addon to export dafbbs",
+  );
+  invariant(
+    typeof native.dafcs === "function",
+    "Expected native addon to export dafcs",
+  );
+  invariant(
+    typeof native.daffpa === "function",
+    "Expected native addon to export daffpa",
+  );
+  invariant(
+    typeof native.dafgh === "function",
+    "Expected native addon to export dafgh",
+  );
+  invariant(
+    typeof native.dafgn === "function",
+    "Expected native addon to export dafgn",
+  );
+  invariant(
+    typeof native.dafgs === "function",
+    "Expected native addon to export dafgs",
+  );
+  invariant(
+    typeof native.dafhsf === "function",
+    "Expected native addon to export dafhsf",
+  );
+  invariant(
+    typeof native.dafopw === "function",
+    "Expected native addon to export dafopw",
+  );
+  invariant(
     typeof native.dafopr === "function",
     "Expected native addon to export dafopr(path)",
   );

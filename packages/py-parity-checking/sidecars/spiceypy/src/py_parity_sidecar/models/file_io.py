@@ -7,6 +7,56 @@ from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
+class StepFileIoDafbbs:
+    op: Literal["file-io.dafbbs"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDafcs:
+    op: Literal["file-io.dafcs"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDaffpa:
+    op: Literal["file-io.daffpa"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDafgh:
+    op: Literal["file-io.dafgh"]
+
+
+@dataclass(frozen=True)
+class StepFileIoDafgn:
+    op: Literal["file-io.dafgn"]
+    handleId: str
+    namlen: int = 1001
+    captureError: bool = False
+
+
+@dataclass(frozen=True)
+class StepFileIoDafgs:
+    op: Literal["file-io.dafgs"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDafhsf:
+    op: Literal["file-io.dafhsf"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDafopw:
+    op: Literal["file-io.dafopw"]
+    path: PathRefInput
+    handleId: str
+
+
+@dataclass(frozen=True)
 class StepFileIoExists:
     op: Literal["file-io.exists"]
     path: PathRefInput
