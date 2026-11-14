@@ -2392,6 +2392,32 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // This fake does not model CSPICE string and wildcard semantics.
+    cmprss: () => {
+      throw new Error("Fake backend does not model cmprss()");
+    },
+    eqstr: () => {
+      throw new Error("Fake backend does not model eqstr()");
+    },
+    iswhsp: () => {
+      throw new Error("Fake backend does not model iswhsp()");
+    },
+    lastnb: () => {
+      throw new Error("Fake backend does not model lastnb()");
+    },
+    lcase: () => {
+      throw new Error("Fake backend does not model lcase()");
+    },
+    ucase: () => {
+      throw new Error("Fake backend does not model ucase()");
+    },
+    matchi: () => {
+      throw new Error("Fake backend does not model matchi()");
+    },
+    matchw: () => {
+      throw new Error("Fake backend does not model matchw()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

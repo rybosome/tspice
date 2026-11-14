@@ -529,6 +529,15 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  cmprss(delim: string, n: number, input: string, lenout: number): string;
+  eqstr(a: string, b: string): boolean;
+  iswhsp(input: string): boolean;
+  lastnb(input: string): number;
+  lcase(input: string, lenout: number): string;
+  ucase(input: string, lenout: number): string;
+  matchi(input: string, templ: string, wstr: string, wchr: string): boolean;
+  matchw(input: string, templ: string, wstr: string, wchr: string): boolean;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

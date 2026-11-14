@@ -3,6 +3,7 @@ import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 import * as emscriptenExports from "../lowlevel/exports.js";
 
+import { createStringsApi } from "../domains/strings.js";
 import { createCoordsVectorsApi } from "../domains/coords-vectors.js";
 import {
   createCellsWindowsApi,
@@ -483,6 +484,7 @@ export async function createWasmBackend(
       ...createEphemerisApi(module, spiceHandles, virtualOutputs),
       ...createGeometryApi(module),
       ...createGeometryGfApi(module),
+      ...createStringsApi(module),
       ...createCoordsVectorsApi(module),
       ...fileIoApi,
       ...createErrorApi(module),

@@ -151,6 +151,12 @@ export {
   assertGetmsgWhich,
 } from "./spice-runtime/domains/error.js";
 
+export {
+  spiceStringByteLength,
+  spiceAsciiChar,
+  spiceStringOutputCapacity,
+} from "./spice-runtime/domains/string-bytes.js";
+
 export { normalizeBodItem } from "./spice-runtime/domains/ids-names-normalize.js";
 
 export {

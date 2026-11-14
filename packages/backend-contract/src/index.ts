@@ -48,6 +48,7 @@ export type { KernelKindInput, KernelsApi } from "./domains/kernels.js";
 export * from "./domains/kernels.js";
 export * from "./domains/kernel-pool.js";
 export * from "./domains/ek.js";
+export * from "./domains/strings.js";
 export * from "./domains/time.js";
 export * from "./domains/ids-names.js";
 export * from "./domains/frames.js";
@@ -64,6 +65,7 @@ import type { KernelsApi } from "./domains/kernels.js";
 import type { KernelPoolApi } from "./domains/kernel-pool.js";
 import type { EkApi } from "./domains/ek.js";
 import type { TimeApi, TimeKitApi } from "./domains/time.js";
+import type { StringsApi } from "./domains/strings.js";
 import type { IdsNamesApi } from "./domains/ids-names.js";
 import type { FramesApi } from "./domains/frames.js";
 import type { EphemerisApi } from "./domains/ephemeris.js";
@@ -84,6 +86,7 @@ export type SpiceBackendKind = "node" | "wasm" | "fake";
 export interface SpiceRawBackend
   extends
     TimeApi,
+    StringsApi,
     KernelsApi,
     KernelPoolApi,
     EkApi,

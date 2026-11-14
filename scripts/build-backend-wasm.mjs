@@ -190,6 +190,14 @@ const shimSources = [
     "backend-shim-c",
     "src",
     "domains",
+    "strings.c",
+  ),
+  path.join(
+    repoRoot,
+    "packages",
+    "backend-shim-c",
+    "src",
+    "domains",
     "coords_vectors.c",
   ),
   path.join(
@@ -511,6 +519,14 @@ const exportedFunctions = [
   "_tspice_gfdist",
 
   // --- coords/vectors ---
+  "_tspice_cmprss",
+  "_tspice_eqstr",
+  "_tspice_iswhsp",
+  "_tspice_lastnb",
+  "_tspice_lcase",
+  "_tspice_ucase",
+  "_tspice_matchi",
+  "_tspice_matchw",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

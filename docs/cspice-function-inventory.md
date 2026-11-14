@@ -8,13 +8,13 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceRawBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `GeometryGfApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
+SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `GeometryGfApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -40,6 +40,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cklpf_c` | CK, load pointing file |
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
+| `cmprss_c` | Compress a character string |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
@@ -77,6 +78,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `eqstr_c` | Equivalent strings |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -105,13 +107,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `iswhsp_c` | Determine whether a string is white space |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
 | `kplfrm_c` | Kernel pool frame IDs |
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
+| `lastnb_c` | Last non-blank character |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `lcase_c` | Convert to lowercase |
+| `matchi_c` | Match string against wildcard template |
+| `matchw_c` | Match string against wildcard template |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -168,6 +175,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `ucase_c` | Convert to uppercase |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -229,7 +237,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cleari_c` | Clear an integer array |
 | `clight_c` | C, Speed of light in a vacuum |
 | `clpool_c` | Clear the pool of kernel variables |
-| `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
 | `copy_c` | Copy a SPICE cell |
@@ -351,7 +358,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `elemd_c` | Element of a double precision set |
 | `elemi_c` | Element of an integer set |
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
-| `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |
 | `errch_c` | Insert String into Error Message Text |
 | `errdev_c` | Get/Set Error Output Device Name |
@@ -412,17 +418,14 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `isrchd_c` | Search in a double precision array |
 | `isrchi_c` | Search in an integer array |
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
-| `iswhsp_c` | Determine whether a string is white space |
 | `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
 | `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
 | `j2000_c` | Julian Date of 2000 JAN 1.5 |
 | `j2100_c` | Julian Date of 2100 JAN 1.5 |
 | `jyear_c` | Seconds per julian year |
-| `lastnb_c` | Last non-blank character |
 | `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latsph_c` | Latitudinal to spherical coordinates |
 | `latsrf_c` | Latitudinal grid to surface points |
-| `lcase_c` | Convert to lowercase |
 | `ldpool_c` | Load variables from a kernel file into the pool |
 | `lgresp_c` | Lagrange interpolation on equally spaced points |
 | `lgrind_c` | Lagrange polynomial interpolation with derivative |
@@ -449,8 +452,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lxqstr_c` | Lex quoted string |
 | `m2eul_c` | Matrix to Euler angles |
 | `m2q_c` | Matrix to quaternion |
-| `matchi_c` | Match string against wildcard template |
-| `matchw_c` | Match string against wildcard template |
 | `maxd_c` | Maximum of a set of double precision values |
 | `maxi_c` | Maximum of a set of integers |
 | `mequ_c` | Matrix equal to another, 3x3 |
@@ -617,7 +618,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
 | `tyear_c` | Seconds per tropical year |
-| `ucase_c` | Convert to uppercase |
 | `ucrss_c` | Unitized cross product, 3x3 |
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
 | `uddf_c` | First derivative of a function, df(x)/dx |

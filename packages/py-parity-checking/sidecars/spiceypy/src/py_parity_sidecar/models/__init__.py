@@ -186,6 +186,16 @@ from .kernels import (
     StepKernelsKxtrct,
     StepKernelsUnload,
 )
+from .strings import (
+    StepStringsCmprss,
+    StepStringsEqstr,
+    StepStringsIswhsp,
+    StepStringsLastnb,
+    StepStringsLcase,
+    StepStringsUcase,
+    StepStringsMatchi,
+    StepStringsMatchw,
+)
 from .time import (
     DeltetEptype,
     TimdefItem,
@@ -224,6 +234,14 @@ __all__ = [
     "TimdefItem",
     "TkvrsnItem",
     "DeltetEptype",
+    "StepStringsCmprss",
+    "StepStringsEqstr",
+    "StepStringsIswhsp",
+    "StepStringsLastnb",
+    "StepStringsLcase",
+    "StepStringsUcase",
+    "StepStringsMatchi",
+    "StepStringsMatchw",
     "StepTimeStr2Et",
     "StepTimeEt2Utc",
     "StepTimeTkvrsn",

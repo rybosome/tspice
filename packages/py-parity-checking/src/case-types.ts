@@ -21,6 +21,58 @@ export type PathRef = {
 /** Preferred path contract (`PathRef`) with string fixture compatibility for existing case JSON. */
 export type PathRefLike = PathRef | string;
 
+export type StepStringsCmprss = {
+  op: "strings.cmprss";
+  delim: string;
+  n: number;
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsEqstr = {
+  op: "strings.eqstr";
+  a: string;
+  b: string;
+};
+
+export type StepStringsIswhsp = {
+  op: "strings.iswhsp";
+  input: string;
+};
+
+export type StepStringsLastnb = {
+  op: "strings.lastnb";
+  input: string;
+};
+
+export type StepStringsLcase = {
+  op: "strings.lcase";
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsUcase = {
+  op: "strings.ucase";
+  input: string;
+  lenout?: number;
+};
+
+export type StepStringsMatchi = {
+  op: "strings.matchi";
+  input: string;
+  template: string;
+  wstr: string;
+  wchr: string;
+};
+
+export type StepStringsMatchw = {
+  op: "strings.matchw";
+  input: string;
+  template: string;
+  wstr: string;
+  wchr: string;
+};
+
 export type StepTimeStr2Et = {
   op: "time.str2et";
   time: string;
@@ -1290,6 +1342,14 @@ export type StepDskDskb02 = {
 };
 
 export type WorkflowStep =
+  | StepStringsCmprss
+  | StepStringsEqstr
+  | StepStringsIswhsp
+  | StepStringsLastnb
+  | StepStringsLcase
+  | StepStringsUcase
+  | StepStringsMatchi
+  | StepStringsMatchw
   | StepTimeStr2Et
   | StepTimeEt2Utc
   | StepTimeTkvrsn
@@ -1484,6 +1544,14 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "strings.cmprss"; value: string }
+  | { op: "strings.eqstr"; value: boolean }
+  | { op: "strings.iswhsp"; value: boolean }
+  | { op: "strings.lastnb"; value: number }
+  | { op: "strings.lcase"; value: string }
+  | { op: "strings.ucase"; value: string }
+  | { op: "strings.matchi"; value: boolean }
+  | { op: "strings.matchw"; value: boolean }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }
