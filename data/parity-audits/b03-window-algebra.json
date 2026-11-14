@@ -48,13 +48,378 @@
     "packages/tspice/test/cells-lifecycle-recovery.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-b03-b664f159-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d8c5439d26ad014dd1d79585e7716390b81adea1dc0cb91e4a4dd100c61e927d",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-b03-b664f159-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d8c5439d26ad014dd1d79585e7716390b81adea1dc0cb91e4a4dd100c61e927d",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b03-b664f159-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d8c5439d26ad014dd1d79585e7716390b81adea1dc0cb91e4a4dd100c61e927d",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b03-b664f159-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d8c5439d26ad014dd1d79585e7716390b81adea1dc0cb91e4a4dd100c61e927d",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "wncomd_c",
       "contract": "packages/backend-contract/src/domains/cells-windows.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wncomd_c.html",
-      "semantics": "Write the closure of the input window\u2019s complement relative to the closed interval [left,right]. Clip at the bounds, retain closure endpoints and replace the caller-owned destination, which must be distinct from the input.",
+      "semantics": "Write the closure of the input window’s complement relative to the closed interval [left,right]. Clip at the bounds, retain closure endpoints and replace the caller-owned destination, which must be distinct from the input.",
       "scenarios": [
         {
           "caseId": "cells-windows-wncomd-closure-overwrites-result",
@@ -97,12 +462,12 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [
         {
           "id": "caller-result-capacity-wncomd",
           "status": "repaired",
-          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller’s capacity and existing contents, including observable state after a failed write.",
           "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
           "evidence": [
             "packages/py-parity-checking/src/cases/cells-windows/wncomd.cases.json",
@@ -117,16 +482,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wncomd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wncomd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -167,20 +532,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wncond -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wncond -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -231,12 +596,12 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [
         {
           "id": "caller-result-capacity-wndifd",
           "status": "repaired",
-          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller’s capacity and existing contents, including observable state after a failed write.",
           "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
           "evidence": [
             "packages/py-parity-checking/src/cases/cells-windows/wndifd.cases.json",
@@ -251,16 +616,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wndifd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wndifd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -296,20 +661,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The scientific return is boolean and equality is exact.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnelmd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnelmd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -350,20 +715,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnexpd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnexpd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -409,7 +774,7 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [
         {
           "id": "canonical-byte-selector",
@@ -429,16 +794,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnextd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnextd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -479,20 +844,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnfild -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnfild -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -533,20 +898,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnfltd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnfltd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -582,20 +947,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The scientific return is boolean and equality is exact.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnincd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnincd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -642,16 +1007,16 @@
         }
       ],
       "edgeAssessment": "Compare operand reversal, identical handles, empties, interleaved/nested/disjoint windows, touching points, exact capacity and undersized output.",
-      "errorAssessment": "The intersection can require more output intervals than fit in the caller\u2019s result. This raises SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "errorAssessment": "The intersection can require more output intervals than fit in the caller’s result. This raises SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [
         {
           "id": "caller-result-capacity-wnintd",
           "status": "repaired",
-          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller’s capacity and existing contents, including observable state after a failed write.",
           "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
           "evidence": [
             "packages/py-parity-checking/src/cases/cells-windows/wnintd.cases.json",
@@ -666,16 +1031,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnintd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnintd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -731,20 +1096,20 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The scientific return is boolean and equality is exact.",
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnreld -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnreld -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -752,7 +1117,7 @@
       "routine": "wnsumd_c",
       "contract": "packages/backend-contract/src/domains/cells-windows.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnsumd_c.html",
-      "semantics": "Return meas, avg, stddev, shortest and longest. Finite interval measures use the population standard deviation. The first shortest/longest interval wins ties. Both indices are zero-based offsets to its left endpoint in flattened storage (0,2,4,\u2026). For an empty window the three statistics are zero and both C indices are \u22121.",
+      "semantics": "Return meas, avg, stddev, shortest and longest. Finite interval measures use the population standard deviation. The first shortest/longest interval wins ties. Both indices are zero-based offsets to its left endpoint in flattened storage (0,2,4,…). For an empty window the three statistics are zero and both C indices are −1.",
       "scenarios": [
         {
           "caseId": "cells-windows-wnsumd-empty",
@@ -791,16 +1156,16 @@
         }
       ],
       "edgeAssessment": "Inspect all five summary fields on empty windows, tied lengths with first winners at nonzero offsets, all-equal/zero widths, tiny and large finite intervals, mixed known population variance and deliberately odd cardinality.",
-      "errorAssessment": "With one endpoint deliberately exposed by scard, the translated routine diagnoses SPICE(INVALIDCARDINALITY) before reading the odd pair. Initialized index outputs safely accommodate the C wrapper\u2019s postcall index adjustment. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "errorAssessment": "With one endpoint deliberately exposed by scard, the translated routine diagnoses SPICE(INVALIDCARDINALITY) before reading the odd pair. Initialized index outputs safely accommodate the C wrapper’s postcall index adjustment. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). Focused summary checks cover small measures and separately classify finite-input IEEE results and integer offset fields.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). Focused summary checks cover small measures and separately classify finite-input IEEE results and integer offset fields.",
       "findings": [
         {
           "id": "canonical-empty-summary-indices",
           "status": "repaired",
-          "summary": "The empty translated summary returns two zero indices, after which the pinned C wrapper decrements both. The actual empty endpoint-offset sentinels are \u22121.",
+          "summary": "The empty translated summary returns two zero indices, after which the pinned C wrapper decrements both. The actual empty endpoint-offset sentinels are −1.",
           "repair": "Expose both signed indices directly together with the three double statistics. Test empty results, first-tie selection and offsets greater than one, and let the actual canonical routine diagnose odd cardinality.",
           "evidence": [
             "packages/py-parity-checking/src/cases/cells-windows/wnsumd.cases.json",
@@ -816,16 +1181,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnsumd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnsumd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     },
@@ -881,12 +1246,12 @@
       "fixtures": [],
       "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
       "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
-      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e−12 absolute or relative). The workflow reads every resulting interval in order.",
       "findings": [
         {
           "id": "caller-result-capacity-wnunid",
           "status": "repaired",
-          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller’s capacity and existing contents, including observable state after a failed write.",
           "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
           "evidence": [
             "packages/py-parity-checking/src/cases/cells-windows/wnunid.cases.json",
@@ -913,19 +1278,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnunid -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.wnunid -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": []
+          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Source and locked oracle reviewed. Historical executions for the inherited routines are retained. Fresh local Node/WASM lanes and observed canonical CI are required for source-bound verification."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

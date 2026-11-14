@@ -1189,19 +1189,26 @@
         "missingTopLevelWrappers": [],
         "assessment": "SpiceyPy 6.0.3 provides all thirteen wrappers. The independent sidecar uses typed calls to the locked library for four explicit result-cell capacities and a single-byte selector when the high-level wnextd wrapper preempts canonical behavior. Ordinary remaining calls use the locked wrappers."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/722"],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
           "result": "156 registered actual Node/WASM comparisons, 45 native, 11 public/oracle and 37 WASM allocation/ownership tests passed.",
           "scope": "Focused compiled window algebra only; the source-bound full required lanes and canonical CI must still be recorded."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b664f15909c03adc55c4434523438742e1f3a5e7",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
+          "result": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Record both required full local lanes and observed canonical source CI, then check the complete final-head matrix and explicit rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-window-algebra",
       "branch": "codex/expand-window-algebra",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "All 156 registered Node/WASM comparisons, 45 native, 11 public/oracle and 37 WASM allocation/ownership tests passed. Source review covers 78 workflows / 207 canonical new operation calls and ten genuine errors, including observed partial output and capacity-dependent successful union. Required full local lanes and observed canonical CI remain pending."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source b664f159. 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All 156 registered Node/WASM comparisons, 45 native, 11 public/oracle and 37 WASM allocation/ownership tests passed. Source review covers 78 workflows / 207 canonical new operation calls and ten genuine errors, including observed partial output and capacity-dependent successful union. Required full local lanes and observed canonical CI remain pending."
     },
     {
       "id": "B04-string-set",

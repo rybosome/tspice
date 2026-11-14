@@ -428,8 +428,8 @@
         "wnunid_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review caller-owned window capacity, exact interval/state observations, documented endpoint and relation errors and complete summary metrics. Record both required local lanes and observed canonical CI for the actual source before verification."
+      "prs": ["https://github.com/rybosome/tspice/pull/722"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
