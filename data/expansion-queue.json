@@ -1847,18 +1847,25 @@
         "missingTopLevelWrappers": [],
         "assessment": "Four locked bindings inspected. Code-to-name byte output and isName are read through a typed caller-owned C buffer. Name-to-code uses locked SpiceyPy wrappers with scoped found handling. The undefined signed surface hash is rejected before translation in both independent routes."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/723"],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
           "result": "92 actual registered Node/WASM comparisons, 7 public/oracle, 28 native, 24 WASM tests passed with the hash guard."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+          "result": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both required full local lanes and inspect the uncached canonical source CI, then regenerate source-bound evidence and check the final head.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-surface-names",
       "worktree": "/private/tmp/tspice-step8-surface-names",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Guarded surface-name translations, 46 workflows / 120 canonical calls and 26 genuine errors reviewed. Actual focused runs passed 92 registered Node/WASM, 7 public/oracle, 28 native and 24 WASM tests. Required full source lanes and canonical CI pending."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 849d5336. 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Guarded surface-name translations, 46 workflows / 120 canonical calls and 26 genuine errors reviewed. Actual focused runs passed 92 registered Node/WASM, 7 public/oracle, 28 native and 24 WASM tests. Required full source lanes and canonical CI pending."
     },
     {
       "id": "E01-orbital-elements",

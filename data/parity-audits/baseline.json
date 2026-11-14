@@ -414,8 +414,8 @@
       "id": "d04-surface-names",
       "routines": ["srfc2s_c", "srfcss_c", "srfs2c_c", "srfscc_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Verify the complete caller-visible surface translation outputs, pool lifecycle, errors and hash boundary on the required local lanes and canonical CI before source verification."
+      "prs": ["https://github.com/rybosome/tspice/pull/723"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
