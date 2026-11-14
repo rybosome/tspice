@@ -1125,7 +1125,7 @@
         "status": "independent-route-investigation-required",
         "missingTopLevelWrappers": ["repml_c"]
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/737"],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1134,13 +1134,20 @@
         {
           "kind": "source-and-abi",
           "result": "REPML independent canonical typed C symbol; HX2DP bounded scientific-equivalent exponent gate and unchanged-error sentinel; INTTXT minimum gate only for performed word conversion. WASM SHA-256 76c3236935cb0becc673efa64cfa2b11ca436ec5096267210c765279cb05a33c."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+          "result": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed. Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
         }
       ],
-      "nextAction": "Run full required lanes on A18+A21 and obtain canonical CI, then confirm final head and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-string-numbers",
       "worktree": "/private/tmp/tspice-step8-string-numbers",
       "baseCommit": "92b3050e86d486d3cc445239355e2d89562dc8ad",
-      "progressNote": "All eleven matching shared calls, independent evidence and browser smoke complete. Full local and canonical CI need the final combined source."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source d53e2c8a. 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed.",
+      "priorCheckpoint": "All eleven matching shared calls, independent evidence and browser smoke complete. Full local and canonical CI need the final combined source."
     },
     {
       "id": "A22-array-search",
@@ -1483,7 +1490,7 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": ["https://github.com/rybosome/tspice/pull/733"],
+      "prs": ["https://github.com/rybosome/tspice/pull/734"],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1501,7 +1508,7 @@
         },
         {
           "kind": "source-ci-reference",
-          "result": "PR #733, source a2689f58, canonical run 43565795548. Refer to its branch for matched evidence."
+          "result": "PR #734, corrected source 2b1e2fc5, successful Linux Node 22 native-required job 132358391458 on run 43565521263."
         }
       ],
       "nextAction": "Run full required local lanes, capture canonical CI and inspect final checks and rebaseability.",

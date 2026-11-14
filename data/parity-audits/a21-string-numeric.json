@@ -51,7 +51,320 @@
     "packages/tspice/test/_helpers/fakeWorker.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a21-d53e2c8a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "599c8c0135ef65181d84aa8cd5ebc0c3030352b95273da0073ae60cf5e97eb30",
+      "caseIds": [
+        "strings-dp2hx-binary-limits",
+        "strings-dp2hx-invalid-room-1",
+        "strings-dp2hx-invalid-room-1neg",
+        "strings-dp2hx-normalized",
+        "strings-dp2hx-truncation",
+        "strings-hx2dp-capacity",
+        "strings-hx2dp-empty",
+        "strings-hx2dp-exponent-range",
+        "strings-hx2dp-message-room",
+        "strings-hx2dp-normalized",
+        "strings-hx2dp-returned-diagnostics",
+        "strings-prsdp-blank",
+        "strings-prsdp-empty",
+        "strings-prsdp-grammar",
+        "strings-prsdp-invalid",
+        "strings-prsdp-limits",
+        "strings-prsdp-pi",
+        "strings-prsdp-range",
+        "strings-prsint-blank",
+        "strings-prsint-bounds",
+        "strings-prsint-empty",
+        "strings-prsint-grammar",
+        "strings-prsint-invalid",
+        "strings-prsint-limits",
+        "strings-prsint-pi",
+        "strings-prsint-range",
+        "strings-repmc-bad-room",
+        "strings-repmc-capacity",
+        "strings-repmc-first-marker",
+        "strings-repmc-miss-and-blank",
+        "strings-repmc-values",
+        "strings-repmct-bad-room",
+        "strings-repmct-capacity",
+        "strings-repmct-case-folding",
+        "strings-repmct-first-marker",
+        "strings-repmct-invalid-case",
+        "strings-repmct-miss-and-blank",
+        "strings-repmd-bad-room",
+        "strings-repmd-capacity",
+        "strings-repmd-digits",
+        "strings-repmd-first-marker",
+        "strings-repmd-miss-and-blank",
+        "strings-repmf-bad-room",
+        "strings-repmf-capacity",
+        "strings-repmf-digits",
+        "strings-repmf-first-marker",
+        "strings-repmf-format",
+        "strings-repmf-miss-and-blank",
+        "strings-repmi-bad-room",
+        "strings-repmi-capacity",
+        "strings-repmi-first-marker",
+        "strings-repmi-integer-endpoints",
+        "strings-repmi-miss-and-blank",
+        "strings-repml-bad-room",
+        "strings-repml-capacity",
+        "strings-repml-case-folding",
+        "strings-repml-first-marker",
+        "strings-repml-invalid-case",
+        "strings-repml-miss-and-blank",
+        "strings-repmot-bad-room",
+        "strings-repmot-capacity",
+        "strings-repmot-case-folding",
+        "strings-repmot-first-marker",
+        "strings-repmot-invalid-case",
+        "strings-repmot-miss-and-blank"
+      ],
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "local-a21-d53e2c8a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "599c8c0135ef65181d84aa8cd5ebc0c3030352b95273da0073ae60cf5e97eb30",
+      "caseIds": [
+        "strings-dp2hx-binary-limits",
+        "strings-dp2hx-invalid-room-1",
+        "strings-dp2hx-invalid-room-1neg",
+        "strings-dp2hx-normalized",
+        "strings-dp2hx-truncation",
+        "strings-hx2dp-capacity",
+        "strings-hx2dp-empty",
+        "strings-hx2dp-exponent-range",
+        "strings-hx2dp-message-room",
+        "strings-hx2dp-normalized",
+        "strings-hx2dp-returned-diagnostics",
+        "strings-prsdp-blank",
+        "strings-prsdp-empty",
+        "strings-prsdp-grammar",
+        "strings-prsdp-invalid",
+        "strings-prsdp-limits",
+        "strings-prsdp-pi",
+        "strings-prsdp-range",
+        "strings-prsint-blank",
+        "strings-prsint-bounds",
+        "strings-prsint-empty",
+        "strings-prsint-grammar",
+        "strings-prsint-invalid",
+        "strings-prsint-limits",
+        "strings-prsint-pi",
+        "strings-prsint-range",
+        "strings-repmc-bad-room",
+        "strings-repmc-capacity",
+        "strings-repmc-first-marker",
+        "strings-repmc-miss-and-blank",
+        "strings-repmc-values",
+        "strings-repmct-bad-room",
+        "strings-repmct-capacity",
+        "strings-repmct-case-folding",
+        "strings-repmct-first-marker",
+        "strings-repmct-invalid-case",
+        "strings-repmct-miss-and-blank",
+        "strings-repmd-bad-room",
+        "strings-repmd-capacity",
+        "strings-repmd-digits",
+        "strings-repmd-first-marker",
+        "strings-repmd-miss-and-blank",
+        "strings-repmf-bad-room",
+        "strings-repmf-capacity",
+        "strings-repmf-digits",
+        "strings-repmf-first-marker",
+        "strings-repmf-format",
+        "strings-repmf-miss-and-blank",
+        "strings-repmi-bad-room",
+        "strings-repmi-capacity",
+        "strings-repmi-first-marker",
+        "strings-repmi-integer-endpoints",
+        "strings-repmi-miss-and-blank",
+        "strings-repml-bad-room",
+        "strings-repml-capacity",
+        "strings-repml-case-folding",
+        "strings-repml-first-marker",
+        "strings-repml-invalid-case",
+        "strings-repml-miss-and-blank",
+        "strings-repmot-bad-room",
+        "strings-repmot-capacity",
+        "strings-repmot-case-folding",
+        "strings-repmot-first-marker",
+        "strings-repmot-invalid-case",
+        "strings-repmot-miss-and-blank"
+      ],
+      "observation": "Both complete required lanes passed locally on d53e2c8aa001cd5b343c8f3c73da546def15d75b. JavaScript: 2,706 parity tests and one expected guard skip. Native-required: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-a21-d53e2c8a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "599c8c0135ef65181d84aa8cd5ebc0c3030352b95273da0073ae60cf5e97eb30",
+      "caseIds": [
+        "strings-dp2hx-binary-limits",
+        "strings-dp2hx-invalid-room-1",
+        "strings-dp2hx-invalid-room-1neg",
+        "strings-dp2hx-normalized",
+        "strings-dp2hx-truncation",
+        "strings-hx2dp-capacity",
+        "strings-hx2dp-empty",
+        "strings-hx2dp-exponent-range",
+        "strings-hx2dp-message-room",
+        "strings-hx2dp-normalized",
+        "strings-hx2dp-returned-diagnostics",
+        "strings-prsdp-blank",
+        "strings-prsdp-empty",
+        "strings-prsdp-grammar",
+        "strings-prsdp-invalid",
+        "strings-prsdp-limits",
+        "strings-prsdp-pi",
+        "strings-prsdp-range",
+        "strings-prsint-blank",
+        "strings-prsint-bounds",
+        "strings-prsint-empty",
+        "strings-prsint-grammar",
+        "strings-prsint-invalid",
+        "strings-prsint-limits",
+        "strings-prsint-pi",
+        "strings-prsint-range",
+        "strings-repmc-bad-room",
+        "strings-repmc-capacity",
+        "strings-repmc-first-marker",
+        "strings-repmc-miss-and-blank",
+        "strings-repmc-values",
+        "strings-repmct-bad-room",
+        "strings-repmct-capacity",
+        "strings-repmct-case-folding",
+        "strings-repmct-first-marker",
+        "strings-repmct-invalid-case",
+        "strings-repmct-miss-and-blank",
+        "strings-repmd-bad-room",
+        "strings-repmd-capacity",
+        "strings-repmd-digits",
+        "strings-repmd-first-marker",
+        "strings-repmd-miss-and-blank",
+        "strings-repmf-bad-room",
+        "strings-repmf-capacity",
+        "strings-repmf-digits",
+        "strings-repmf-first-marker",
+        "strings-repmf-format",
+        "strings-repmf-miss-and-blank",
+        "strings-repmi-bad-room",
+        "strings-repmi-capacity",
+        "strings-repmi-first-marker",
+        "strings-repmi-integer-endpoints",
+        "strings-repmi-miss-and-blank",
+        "strings-repml-bad-room",
+        "strings-repml-capacity",
+        "strings-repml-case-folding",
+        "strings-repml-first-marker",
+        "strings-repml-invalid-case",
+        "strings-repml-miss-and-blank",
+        "strings-repmot-bad-room",
+        "strings-repmot-capacity",
+        "strings-repmot-case-folding",
+        "strings-repmot-first-marker",
+        "strings-repmot-invalid-case",
+        "strings-repmot-miss-and-blank"
+      ],
+      "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+    },
+    {
+      "id": "ci-a21-d53e2c8a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "599c8c0135ef65181d84aa8cd5ebc0c3030352b95273da0073ae60cf5e97eb30",
+      "caseIds": [
+        "strings-dp2hx-binary-limits",
+        "strings-dp2hx-invalid-room-1",
+        "strings-dp2hx-invalid-room-1neg",
+        "strings-dp2hx-normalized",
+        "strings-dp2hx-truncation",
+        "strings-hx2dp-capacity",
+        "strings-hx2dp-empty",
+        "strings-hx2dp-exponent-range",
+        "strings-hx2dp-message-room",
+        "strings-hx2dp-normalized",
+        "strings-hx2dp-returned-diagnostics",
+        "strings-prsdp-blank",
+        "strings-prsdp-empty",
+        "strings-prsdp-grammar",
+        "strings-prsdp-invalid",
+        "strings-prsdp-limits",
+        "strings-prsdp-pi",
+        "strings-prsdp-range",
+        "strings-prsint-blank",
+        "strings-prsint-bounds",
+        "strings-prsint-empty",
+        "strings-prsint-grammar",
+        "strings-prsint-invalid",
+        "strings-prsint-limits",
+        "strings-prsint-pi",
+        "strings-prsint-range",
+        "strings-repmc-bad-room",
+        "strings-repmc-capacity",
+        "strings-repmc-first-marker",
+        "strings-repmc-miss-and-blank",
+        "strings-repmc-values",
+        "strings-repmct-bad-room",
+        "strings-repmct-capacity",
+        "strings-repmct-case-folding",
+        "strings-repmct-first-marker",
+        "strings-repmct-invalid-case",
+        "strings-repmct-miss-and-blank",
+        "strings-repmd-bad-room",
+        "strings-repmd-capacity",
+        "strings-repmd-digits",
+        "strings-repmd-first-marker",
+        "strings-repmd-miss-and-blank",
+        "strings-repmf-bad-room",
+        "strings-repmf-capacity",
+        "strings-repmf-digits",
+        "strings-repmf-first-marker",
+        "strings-repmf-format",
+        "strings-repmf-miss-and-blank",
+        "strings-repmi-bad-room",
+        "strings-repmi-capacity",
+        "strings-repmi-first-marker",
+        "strings-repmi-integer-endpoints",
+        "strings-repmi-miss-and-blank",
+        "strings-repml-bad-room",
+        "strings-repml-capacity",
+        "strings-repml-case-folding",
+        "strings-repml-first-marker",
+        "strings-repml-invalid-case",
+        "strings-repml-miss-and-blank",
+        "strings-repmot-bad-room",
+        "strings-repmot-capacity",
+        "strings-repmot-case-folding",
+        "strings-repmot-first-marker",
+        "strings-repmot-invalid-case",
+        "strings-repmot-miss-and-blank"
+      ],
+      "commit": "d53e2c8aa001cd5b343c8f3c73da546def15d75b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43566870555/job/132362525304",
+      "observation": "Inspected successful Linux Node 22 native-required job 132362525304 on d53e2c8aa001cd5b343c8f3c73da546def15d75b: 2,476 registered Node/WASM live comparisons; 2,707 parity-package tests with no skips, including the native-required guard; 118 native wrapper, 692 WASM, 28 core and 151 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "dp2hx_c",
@@ -94,16 +407,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dp2hx → StringsApi serialized native addon → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dp2hx → StringsApi WASM adapter with owned call-scoped buffers → tspice_dp2hx → dp2hx_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -167,16 +480,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hx2dp → StringsApi serialized native addon → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.hx2dp → StringsApi WASM adapter with owned call-scoped buffers → tspice_hx2dp → hx2dp_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -231,16 +544,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.prsdp → StringsApi serialized native addon → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.prsdp → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsdp → prsdp_c. Independent locked library checked high-level wrapper.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -300,16 +613,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.prsint → StringsApi serialized native addon → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.prsint → StringsApi WASM adapter with owned call-scoped buffers → tspice_prsint → prsint_c. Independent locked library checked high-level wrapper.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -354,16 +667,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmc → StringsApi serialized native addon → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmc → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmc → repmc_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -430,16 +743,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmct → StringsApi serialized native addon → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmct → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmct → repmct_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -484,16 +797,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmd → StringsApi serialized native addon → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmd → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmd → repmd_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -543,16 +856,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmf → StringsApi serialized native addon → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmf → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmf → repmf_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -597,16 +910,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmi → StringsApi serialized native addon → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmi → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmi → repmi_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -672,16 +985,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repml → StringsApi serialized native addon → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repml → StringsApi WASM adapter with owned call-scoped buffers → tspice_repml → repml_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     },
@@ -748,19 +1061,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmot → StringsApi serialized native addon → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-node", "ci-a21-d53e2c8a-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.repmot → StringsApi WASM adapter with owned call-scoped buffers → tspice_repmot → repmot_c. Independent locked library canonical typed C symbol.",
-          "executions": []
+          "executions": ["local-a21-d53e2c8a-wasm", "ci-a21-d53e2c8a-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused compiled, independent oracle and actual Chrome runs passed. Full source-local and canonical CI observations are required separately for each backend."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

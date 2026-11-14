@@ -442,8 +442,8 @@
         "repmot_c"
       ],
       "dependsOn": ["a18-string-transform"],
-      "prs": [],
-      "nextAction": "Record source-matched full local and observed canonical CI executions for both backends, inspect final checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/737"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
