@@ -12,7 +12,7 @@ scenarios** at that base. Absence was derived from the ledger's `implementation`
 field and actual contract, not the inventory's `planned` decision. The exclusions
 remain `ftncls_c`, `getcml_c`, and `prompt_c`.
 
-The initial queue has **75 batches**: 27 routines in three active batches and 460
+The initial queue has **75 batches**: 35 routines in four active batches and 452
 routines in planned batches. Zero Step 8 routines are recorded as PR-ready,
 landed or blocked. These are scheduling counts, not implementation or scientific
 verification claims. The base's 162 routines and Step 7 repairs are not Step 8
@@ -21,31 +21,48 @@ anything lands on main; never report that increase as merged coverage.
 
 ## Active ownership and next deliveries
 
-`Codex Step 8 (/root)` owns all three active batches and their integration. The first
+`Codex Step 8 (/root)` owns all four active batches and their integration. The first
 batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.
 The second uses `/private/tmp/tspice-step8-scalar-constants`, branch
 `codex/expand-scalar-constants`. The third uses `/private/tmp/tspice-step8-cylindrical`,
-branch `codex/expand-cylindrical-coordinates`, independently based on `73f3fec8`. The agent
+branch `codex/expand-cylindrical-coordinates`, independently based on `73f3fec8`.
+The fourth uses `/private/tmp/tspice-step8-vector-basics`, branch
+`codex/expand-vector-basics`, also based on `73f3fec8`. The agent
 coordinating Step 7 was notified of the first exact routine list after its merged
 completion was inspected. No open Step 7 PR was found when this work began.
 
-| Batch                       | Exact canonical routines                                                                                        | Public placement                                                                                          | Next action                                                                                                                                       |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                       | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods. | Complete both compiled paths, live parity and wrapper checks; regenerate artifacts; record source-bound local and required CI evidence in its PR. |
-| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c` | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                   | Implement independently while A01 awaits review; verify epoch units, exact integer limits and finite platform double limits.                      |
-| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                  | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                  | Complete both compiled paths, distinguishing live coordinate cases, wrapper checks and required local/CI evidence; no verified claim yet.         |
+| Batch                       | Exact canonical routines                                                                                        | Public placement                                                                                          | Next action                                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                       | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods. | [Draft PR #707](https://github.com/rybosome/tspice/pull/707) is open; required CI pending. Inspect results and record source-bound evidence before marking PR-ready. |
+| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c` | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                   | [Draft PR #708](https://github.com/rybosome/tspice/pull/708) is open; required CI pending. Inspect results and record source-bound evidence before marking PR-ready. |
+| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                  | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                  | Compiled implementation; focused 80 live comparisons and 6 public tests passed locally. Full required lanes and CI pending; no verified claim.                       |
+| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                           | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed. | Source implementation active; complete both backend paths, live parity, wrapper checks and required local/CI validation.                                             |
 
 The two constant batches are kernel-free and have source wrappers in locked SpiceyPy 6.0.3. The epoch
 constants return Julian dates, not seconds past J2000. Zero-argument constants
 need real value comparisons and public-path tests, but no fabricated invalid
 input or resource-lifecycle scenarios. No kernel/data fixture is introduced.
 
-After these deliveries, the next independent candidate is `A08-vector-basics`
-(`vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`,
-`vsep_c`). It fits existing scalar/Vec3 types and has locked source wrappers.
+The focused A05 results above are an integration-owner progress observation,
+not source-bound audit certification; its full lanes remain pending. All four
+active batches remain in progress, and open draft PRs are not PR-ready or landed
+coverage.
+
+After these deliveries, the next independent candidate is `A09-vector-combinations`
+(`vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`,
+`vtmv_c`). It fits existing Vec3/Mat3 types and has locked source wrappers.
 Refresh main, inspect active ownership, and complete primary-semantic review
-before taking it. All three active batches remain in progress; implemented source
-does not establish verified or landed coverage.
+before taking it.
+
+## Verified source checkpoints
+
+A01 source `bfedb1098e738e821b831ba9d1f9d6f7bc24c637` passed all 15
+[canonical jobs](https://github.com/rybosome/tspice/actions/runs/43536295333)
+and both required local lanes. The inspected Linux Node 22 native-required job
+ran 2,254 live comparisons and all 2,471 parity-package tests without skips.
+GitHub explicitly reported this source rebaseable on main `73f3fec8`.
+PR #707 remains in progress until final verification metadata checks complete;
+no implementation is claimed landed.
 
 ## Reading and maintaining the queue
 
