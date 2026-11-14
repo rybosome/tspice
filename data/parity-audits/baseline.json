@@ -440,8 +440,8 @@
         "lxqstr_c"
       ],
       "dependsOn": ["a18-string-transform"],
-      "prs": [],
-      "nextAction": "Record full required local and canonical CI evidence on the combined source and inspect the final-head matrix and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/735"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
