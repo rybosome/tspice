@@ -1,0 +1,152 @@
+[
+  {
+    "caseId": "coords-vectors-filli-prefix-and-unchanged-tail",
+    "description": "Initialize distinct destination elements and observe the entire mutated prefix and untouched suffix.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 1,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 4,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filli-single-and-full-buffer",
+    "description": "Single-element, non-three and full-capacity writes retain every resulting value.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 1,
+        "values": [23],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 6,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 3,
+        "values": [11, 22, -33],
+        "value": -71
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filli-zero-and-negative-count",
+    "description": "Nonpositive signed counts call the canonical C loop and retain initialized numeric storage.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 0,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": -1,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": -2147483648,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -71
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filli-empty-storage",
+    "description": "Pass a valid non-null dummy through each no-write operation and return the empty logical array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 0,
+        "values": [],
+        "value": -71
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": -11,
+        "values": [],
+        "value": -71
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filli-signed-int32-limits",
+    "description": "Signed 32-bit extrema exercise integer marshalling and retained suffix elements.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": 2147483647
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 3,
+        "values": [-991, 101, 2147483647, -31, 17, -2147483648],
+        "value": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filli-distinct-fill-values",
+    "description": "Changing the fill scalar independently of count detects swapped arguments and no-op implementations.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": 0
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": 9
+      },
+      {
+        "op": "coords-vectors.filli",
+        "ndim": 2,
+        "values": [-2147483648, 17, -31, 2147483647, 101, -991],
+        "value": -21
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

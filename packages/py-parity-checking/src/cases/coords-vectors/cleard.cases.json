@@ -1,0 +1,116 @@
+[
+  {
+    "caseId": "coords-vectors-cleard-prefix-and-unchanged-tail",
+    "description": "Initialize distinct destination elements and observe the entire mutated prefix and untouched suffix.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 1,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 2,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 4,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleard-single-and-full-buffer",
+    "description": "Single-element, non-three and full-capacity writes retain every resulting value.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 1,
+        "values": [23]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 6,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 3,
+        "values": [11, 22, -33]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleard-zero-and-negative-count",
+    "description": "Nonpositive signed counts call the canonical C loop and retain initialized numeric storage.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 0,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": -1,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": -2147483648,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleard-empty-storage",
+    "description": "Pass a valid non-null dummy through each no-write operation and return the empty logical array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 0,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": -11,
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-cleard-extreme-finite-storage",
+    "description": "Exact finite double storage includes opposite extremes and least subnormals, which focused tests compare without numeric tolerance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 2,
+        "values": [
+          1.7976931348623157e308, -1.7976931348623157e308, 5e-324, -5e-324
+        ]
+      },
+      {
+        "op": "coords-vectors.cleard",
+        "ndim": 1,
+        "values": [
+          -5e-324, 1.7976931348623157e308, 5e-324, -1.7976931348623157e308
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

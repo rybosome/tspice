@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -40,6 +40,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cklpf_c` | CK, load pointing file |
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
+| `clearc_c` | Clear a two-dimensional character array |
+| `cleard_c` | Clear a double precision array |
+| `cleari_c` | Clear an integer array |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
@@ -81,6 +84,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
+| `filld_c` | Fill a double precision array |
+| `filli_c` | Fill an integer array |
 | `frinfo_c` | Frame Information |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
@@ -112,6 +117,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `moved_c` | Move a double precision array to another |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -224,9 +230,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |
 | `ckw03_c` | C-Kernel, write segment to C-kernel, data type 3 |
 | `ckw05_c` | Write CK segment, type 5 |
-| `clearc_c` | Clear a two-dimensional character array |
-| `cleard_c` | Clear a double precision array |
-| `cleari_c` | Clear an integer array |
 | `clight_c` | C, Speed of light in a vacuum |
 | `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
@@ -364,8 +367,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
 | `evsgp4_c` | Evaluate "two-line" element data |
-| `filld_c` | Fill a double precision array |
-| `filli_c` | Fill an integer array |
 | `fovray_c` | Is ray in FOV at time? |
 | `fovtrg_c` | Is target in FOV at time? |
 | `frame_c` | Build a right handed coordinate frame |
@@ -457,7 +458,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mequg_c` | Matrix equal to another, general dimension |
 | `mind_c` | Minimum of a set of double precision values |
 | `mini_c` | minimum of a set of integers |
-| `moved_c` | Move a double precision array to another |
 | `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxmg_c` | Matrix transpose times matrix, general dimension |
 | `mtxvg_c` | Matrix transpose times vector, general dimension |

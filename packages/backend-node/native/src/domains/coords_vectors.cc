@@ -1,5 +1,10 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+#include <cstdint>
+#include <memory>
+#include <new>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +12,257 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadStorageNumber(Napi::Env env, const Napi::Value& value, double* out) {
+  if (!value.IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a double storage value"));
+    return false;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static bool ReadStorageNumber(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double number = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(number) && std::trunc(number) == number &&
+        number >= INT32_MIN && number <= INT32_MAX) {
+      *out = static_cast<int>(number);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed 32-bit integer"));
+  return false;
+}
+
+static bool ReadStorageNumber(Napi::Env env, const Napi::Value& value, unsigned char* out) {
+  if (value.IsNumber()) {
+    const double number = value.As<Napi::Number>().DoubleValue();
+    if (number >= 0 && number <= 255 && std::trunc(number) == number) {
+      *out = static_cast<unsigned char>(number);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a byte from 0 to 255"));
+  return false;
+}
+
+static bool ReadStorageLength(Napi::Env env, const Napi::Value& value, size_t elementSize, int* out) {
+  if (!value.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a storage array"));
+    return false;
+  }
+  const uint32_t length = value.As<Napi::Array>().Length();
+  if (length > INT32_MAX || static_cast<size_t>(length) > SIZE_MAX / elementSize) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Storage array is too large"));
+    return false;
+  }
+  *out = static_cast<int>(length);
+  return true;
+}
+
+template<typename T>
+static std::unique_ptr<T[]> CopyStorageArray(Napi::Env env, const Napi::Array& array, int length) {
+  // Use the checked length even if an element getter changes an input array.
+  std::unique_ptr<T[]> copy(new (std::nothrow) T[length > 0 ? length : 1]);
+  if (!copy) {
+    ThrowSpiceError(Napi::Error::New(env, "Storage allocation failed"));
+    return nullptr;
+  }
+  if (length == 0) copy[0] = 0;
+  for (int i = 0; i < length; i++) {
+    const Napi::Value item = array.Get(static_cast<uint32_t>(i));
+    if (env.IsExceptionPending() || !ReadStorageNumber(env, item, &copy[i])) return nullptr;
+  }
+  return copy;
+}
+
+template<typename T>
+static Napi::Array StorageResult(Napi::Env env, const T* values, int length) {
+  const Napi::Array out = Napi::Array::New(env, static_cast<size_t>(length));
+  for (int i = 0; i < length; i++) {
+    out.Set(static_cast<uint32_t>(i), Napi::Number::New(env, values[i]));
+  }
+  return out;
+}
+
+static Napi::Array Clearc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "clearc() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[0], &ndim)) return Napi::Array::New(env);
+  int arrlen = 0;
+  if (!ReadStorageNumber(env, info[1], &arrlen)) return Napi::Array::New(env);
+  int bytesLength = 0;
+  if (!ReadStorageLength(env, info[2], sizeof(unsigned char), &bytesLength)) return Napi::Array::New(env);
+  if (ndim > 0 && arrlen >= 2 && ndim > bytesLength / arrlen) {
+    ThrowSpiceError(Napi::RangeError::New(env, "clearc() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto bytes = CopyStorageArray<unsigned char>(env, info[2].As<Napi::Array>(), bytesLength);
+  if (!bytes) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_clearc(ndim, arrlen, bytes.get(), bytesLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling clearc", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, bytes.get(), bytesLength);
+}
+
+static Napi::Array Cleard(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cleard() expects 2 arguments"));
+    return Napi::Array::New(env);
+  }
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[0], &ndim)) return Napi::Array::New(env);
+  int valuesLength = 0;
+  if (!ReadStorageLength(env, info[1], sizeof(double), &valuesLength)) return Napi::Array::New(env);
+  if (ndim > valuesLength) {
+    ThrowSpiceError(Napi::RangeError::New(env, "cleard() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto values = CopyStorageArray<double>(env, info[1].As<Napi::Array>(), valuesLength);
+  if (!values) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_cleard(ndim, values.get(), valuesLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling cleard", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, values.get(), valuesLength);
+}
+
+static Napi::Array Cleari(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "cleari() expects 2 arguments"));
+    return Napi::Array::New(env);
+  }
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[0], &ndim)) return Napi::Array::New(env);
+  int valuesLength = 0;
+  if (!ReadStorageLength(env, info[1], sizeof(int), &valuesLength)) return Napi::Array::New(env);
+  if (ndim > valuesLength) {
+    ThrowSpiceError(Napi::RangeError::New(env, "cleari() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto values = CopyStorageArray<int>(env, info[1].As<Napi::Array>(), valuesLength);
+  if (!values) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_cleari(ndim, values.get(), valuesLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling cleari", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, values.get(), valuesLength);
+}
+
+static Napi::Array Filld(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "filld() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  double value = 0;
+  if (!ReadStorageNumber(env, info[0], &value)) return Napi::Array::New(env);
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[1], &ndim)) return Napi::Array::New(env);
+  int valuesLength = 0;
+  if (!ReadStorageLength(env, info[2], sizeof(double), &valuesLength)) return Napi::Array::New(env);
+  if (ndim > valuesLength) {
+    ThrowSpiceError(Napi::RangeError::New(env, "filld() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto values = CopyStorageArray<double>(env, info[2].As<Napi::Array>(), valuesLength);
+  if (!values) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_filld(value, ndim, values.get(), valuesLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling filld", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, values.get(), valuesLength);
+}
+
+static Napi::Array Filli(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "filli() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  int value = 0;
+  if (!ReadStorageNumber(env, info[0], &value)) return Napi::Array::New(env);
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[1], &ndim)) return Napi::Array::New(env);
+  int valuesLength = 0;
+  if (!ReadStorageLength(env, info[2], sizeof(int), &valuesLength)) return Napi::Array::New(env);
+  if (ndim > valuesLength) {
+    ThrowSpiceError(Napi::RangeError::New(env, "filli() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto values = CopyStorageArray<int>(env, info[2].As<Napi::Array>(), valuesLength);
+  if (!values) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_filli(value, ndim, values.get(), valuesLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling filli", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, values.get(), valuesLength);
+}
+
+static Napi::Array Moved(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "moved() expects 3 arguments"));
+    return Napi::Array::New(env);
+  }
+  int sourceLength = 0;
+  if (!ReadStorageLength(env, info[0], sizeof(double), &sourceLength)) return Napi::Array::New(env);
+  int ndim = 0;
+  if (!ReadStorageNumber(env, info[1], &ndim)) return Napi::Array::New(env);
+  int destinationLength = 0;
+  if (!ReadStorageLength(env, info[2], sizeof(double), &destinationLength)) return Napi::Array::New(env);
+  if (ndim < 0 || ndim > sourceLength || ndim > destinationLength) {
+    ThrowSpiceError(Napi::RangeError::New(env, "moved() count does not fit the supplied storage"));
+    return Napi::Array::New(env);
+  }
+  auto source = CopyStorageArray<double>(env, info[0].As<Napi::Array>(), sourceLength);
+  if (!source) return Napi::Array::New(env);
+  auto destination = CopyStorageArray<double>(env, info[2].As<Napi::Array>(), destinationLength);
+  if (!destination) return Napi::Array::New(env);
+  {
+    std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+    char err[tspice_backend_node::kErrMaxBytes];
+    const int status = tspice_moved(source.get(), sourceLength, ndim, destination.get(), destinationLength, err, static_cast<int>(sizeof(err)));
+    if (status != 0) {
+      ThrowSpiceError(env, "CSPICE failed while calling moved", err);
+      return Napi::Array::New(env);
+    }
+  }
+  return StorageResult(env, destination.get(), destinationLength);
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +828,12 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "clearc", Napi::Function::New(env, Clearc), __func__)) return;
+  if (!SetExportChecked(env, exports, "cleard", Napi::Function::New(env, Cleard), __func__)) return;
+  if (!SetExportChecked(env, exports, "cleari", Napi::Function::New(env, Cleari), __func__)) return;
+  if (!SetExportChecked(env, exports, "filld", Napi::Function::New(env, Filld), __func__)) return;
+  if (!SetExportChecked(env, exports, "filli", Napi::Function::New(env, Filli), __func__)) return;
+  if (!SetExportChecked(env, exports, "moved", Napi::Function::New(env, Moved), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

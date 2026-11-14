@@ -2,6 +2,7 @@
 
 #include "SpiceUsr.h"
 
+#include <stdint.h>
 #include <string.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
@@ -20,6 +21,108 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int InvalidStorageBuffer(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "Invalid storage count or buffer length", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_clearc(
+    int ndim, int arrlen, unsigned char *bytes, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // With positive count, CSPICE diagnoses widths below two before writing.
+  if (!bytes || length < 0 || (ndim > 0 && arrlen >= 2 && ndim > length / arrlen)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  clearc_c(ndim, arrlen, bytes);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_cleard(
+    int ndim, double *values, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || length < 0 || ndim > length || (size_t)length > SIZE_MAX / sizeof(double)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  cleard_c(ndim, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_cleari(
+    int ndim, int *values, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || length < 0 || ndim > length || (size_t)length > SIZE_MAX / sizeof(int)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  cleari_c(ndim, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_filld(
+    double value, int ndim, double *values, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || length < 0 || ndim > length || (size_t)length > SIZE_MAX / sizeof(double)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  filld_c(value, ndim, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_filli(
+    int value, int ndim, int *values, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || length < 0 || ndim > length || (size_t)length > SIZE_MAX / sizeof(int)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  filli_c(value, ndim, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_moved(
+    const double *source, int sourceLength, int ndim, double *destination, int destinationLength, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  // The pinned MOVED macro converts ndim to an unsigned memmove byte count.
+  if (!source || !destination || ndim < 0 || ndim > sourceLength || ndim > destinationLength ||
+      (size_t)ndim > SIZE_MAX / sizeof(double)) {
+    return InvalidStorageBuffer(err, errMaxBytes);
+  }
+  moved_c(source, ndim, destination);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 int tspice_reclat(

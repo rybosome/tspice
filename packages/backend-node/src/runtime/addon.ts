@@ -529,6 +529,17 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  clearc(ndim: number, arrlen: number, bytes: readonly number[]): number[];
+  cleard(ndim: number, values: readonly number[]): number[];
+  cleari(ndim: number, values: readonly number[]): number[];
+  filld(value: number, ndim: number, values: readonly number[]): number[];
+  filli(value: number, ndim: number, values: readonly number[]): number[];
+  moved(
+    source: readonly number[],
+    ndim: number,
+    destination: readonly number[],
+  ): number[];
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

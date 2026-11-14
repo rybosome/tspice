@@ -4,6 +4,9 @@ import type {
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
+  assertSpiceStorageFits,
+  copySpiceStorage,
+  spiceStorageLength,
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
@@ -11,6 +14,7 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs, WASM_MAX_ALLOC_BYTES } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -777,6 +781,244 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    clearc: (ndim, arrlen, bytes) => {
+      assertSpiceInt32(ndim, "clearc(ndim)");
+      assertSpiceInt32(arrlen, "clearc(arrlen)");
+      const bytesLength = spiceStorageLength(
+        bytes,
+        "clearc(bytes)",
+        WASM_MAX_ALLOC_BYTES,
+      );
+      // CSPICE handles widths below two before accessing the buffer.
+      if (arrlen >= 2)
+        assertSpiceStorageFits(ndim, bytesLength, "clearc()", arrlen);
+      const bytesCopy = copySpiceStorage(
+        bytes,
+        bytesLength,
+        "byte",
+        "clearc(bytes)",
+      );
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, bytesCopy.length)],
+        (errPtr, bytesPtr) => {
+          module.HEAPU8.set(bytesCopy, bytesPtr >>> 0);
+          const status = module._tspice_clearc(
+            ndim,
+            arrlen,
+            bytesPtr,
+            bytesCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = bytesPtr >>> 0;
+          return Array.from(
+            module.HEAPU8.subarray(begin, begin + bytesCopy.length),
+          );
+        },
+      );
+    },
+    cleard: (ndim, values) => {
+      assertSpiceInt32(ndim, "cleard(ndim)");
+      const valuesLength = spiceStorageLength(
+        values,
+        "cleard(values)",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      assertSpiceStorageFits(ndim, valuesLength, "cleard(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "double",
+        "cleard(values)",
+      );
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, valuesCopy.length) * 8],
+        (errPtr, valuesPtr) => {
+          module.HEAPF64.set(valuesCopy, valuesPtr >>> 3);
+          const status = module._tspice_cleard(
+            ndim,
+            valuesPtr,
+            valuesCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = valuesPtr >>> 3;
+          return Array.from(
+            module.HEAPF64.subarray(begin, begin + valuesCopy.length),
+          );
+        },
+      );
+    },
+    cleari: (ndim, values) => {
+      assertSpiceInt32(ndim, "cleari(ndim)");
+      const valuesLength = spiceStorageLength(
+        values,
+        "cleari(values)",
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      assertSpiceStorageFits(ndim, valuesLength, "cleari(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "int",
+        "cleari(values)",
+      );
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, valuesCopy.length) * 4],
+        (errPtr, valuesPtr) => {
+          module.HEAP32.set(valuesCopy, valuesPtr >>> 2);
+          const status = module._tspice_cleari(
+            ndim,
+            valuesPtr,
+            valuesCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = valuesPtr >>> 2;
+          return Array.from(
+            module.HEAP32.subarray(begin, begin + valuesCopy.length),
+          );
+        },
+      );
+    },
+    filld: (value, ndim, values) => {
+      if (typeof value !== "number")
+        throw new TypeError("filld(value) must be a number");
+      assertSpiceInt32(ndim, "filld(ndim)");
+      const valuesLength = spiceStorageLength(
+        values,
+        "filld(values)",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      assertSpiceStorageFits(ndim, valuesLength, "filld(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "double",
+        "filld(values)",
+      );
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, valuesCopy.length) * 8],
+        (errPtr, valuesPtr) => {
+          module.HEAPF64.set(valuesCopy, valuesPtr >>> 3);
+          const status = module._tspice_filld(
+            value,
+            ndim,
+            valuesPtr,
+            valuesCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = valuesPtr >>> 3;
+          return Array.from(
+            module.HEAPF64.subarray(begin, begin + valuesCopy.length),
+          );
+        },
+      );
+    },
+    filli: (value, ndim, values) => {
+      assertSpiceInt32(value, "filli(value)");
+      assertSpiceInt32(ndim, "filli(ndim)");
+      const valuesLength = spiceStorageLength(
+        values,
+        "filli(values)",
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      assertSpiceStorageFits(ndim, valuesLength, "filli(values)");
+      const valuesCopy = copySpiceStorage(
+        values,
+        valuesLength,
+        "int",
+        "filli(values)",
+      );
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, valuesCopy.length) * 4],
+        (errPtr, valuesPtr) => {
+          module.HEAP32.set(valuesCopy, valuesPtr >>> 2);
+          const status = module._tspice_filli(
+            value,
+            ndim,
+            valuesPtr,
+            valuesCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = valuesPtr >>> 2;
+          return Array.from(
+            module.HEAP32.subarray(begin, begin + valuesCopy.length),
+          );
+        },
+      );
+    },
+    moved: (source, ndim, destination) => {
+      assertSpiceInt32(ndim, "moved(ndim)", { min: 0 });
+      const sourceLength = spiceStorageLength(
+        source,
+        "moved(source)",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      const destinationLength = spiceStorageLength(
+        destination,
+        "moved(destination)",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      assertSpiceStorageFits(ndim, sourceLength, "moved(source)");
+      assertSpiceStorageFits(ndim, destinationLength, "moved(destination)");
+      const sourceCopy = copySpiceStorage(
+        source,
+        sourceLength,
+        "double",
+        "moved(source)",
+      );
+      const destinationCopy = copySpiceStorage(
+        destination,
+        destinationLength,
+        "double",
+        "moved(destination)",
+      );
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          Math.max(1, sourceCopy.length) * 8,
+          Math.max(1, destinationCopy.length) * 8,
+        ],
+        (errPtr, sourcePtr, destinationPtr) => {
+          module.HEAPF64.set(sourceCopy, sourcePtr >>> 3);
+          module.HEAPF64.set(destinationCopy, destinationPtr >>> 3);
+          const status = module._tspice_moved(
+            sourcePtr,
+            sourceCopy.length,
+            ndim,
+            destinationPtr,
+            destinationCopy.length,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const begin = destinationPtr >>> 3;
+          return Array.from(
+            module.HEAPF64.subarray(begin, begin + destinationCopy.length),
+          );
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

@@ -47,6 +47,12 @@ export function dispatchStep(
     case "ids-names.bodvar":
       return runIdsNamesStep(context, step);
 
+    case "coords-vectors.clearc":
+    case "coords-vectors.cleard":
+    case "coords-vectors.cleari":
+    case "coords-vectors.filld":
+    case "coords-vectors.filli":
+    case "coords-vectors.moved":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
