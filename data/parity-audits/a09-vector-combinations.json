@@ -235,6 +235,210 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43540881828/job/132280923832",
       "observation": "Inspected successful uncached Linux Node 22 native-required job: 2294 live Node/WASM comparisons and 2517 parity-package tests with zero skips and production native guard executed. Both compiled paths preserve pinned vperp zero-reference behavior and all reviewed output fields. Complete final-head matrix gates PR readiness separately.",
       "historical": true
+    },
+    {
+      "id": "local-a09-snapshot-bdb51dc6-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9afef5630c2a1768e9870256f3af7a347ae131e6aaae2140c88657f167e0a830",
+      "caseIds": [
+        "coords-vectors-rotvec-coordinate-rotation-basis",
+        "coords-vectors-rotvec-mixed-negative-angle",
+        "coords-vectors-rotvec-unwrapped-angle",
+        "coords-vectors-rotvec-wrapped-axis-indices",
+        "coords-vectors-rotvec-zero-vector-and-zero-angle",
+        "coords-vectors-vlcom-distinct-coefficients",
+        "coords-vectors-vlcom-dyadic-cancellation",
+        "coords-vectors-vlcom-scaled-magnitudes",
+        "coords-vectors-vlcom-zero-and-identity-coefficients",
+        "coords-vectors-vlcom3-distinct-coefficients",
+        "coords-vectors-vlcom3-each-coefficient-slot",
+        "coords-vectors-vlcom3-scaled-magnitudes",
+        "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+        "coords-vectors-vperp-input-scaled-magnitudes",
+        "coords-vectors-vperp-mixed-and-reversed",
+        "coords-vectors-vperp-parallel-opposed-orthogonal",
+        "coords-vectors-vperp-reference-scale-and-sign",
+        "coords-vectors-vperp-zero-input-and-zero-reference",
+        "coords-vectors-vproj-input-scaled-magnitudes",
+        "coords-vectors-vproj-mixed-and-reversed",
+        "coords-vectors-vproj-parallel-opposed-orthogonal",
+        "coords-vectors-vproj-reference-scale-and-sign",
+        "coords-vectors-vproj-zero-input-and-zero-reference",
+        "coords-vectors-vrel-mixed-and-reversed",
+        "coords-vectors-vrel-nearby-large-components",
+        "coords-vectors-vrel-parallel-and-opposed",
+        "coords-vectors-vrel-scaled-magnitudes",
+        "coords-vectors-vrel-zero-and-identical",
+        "coords-vectors-vrotv-axis-scale-and-sign",
+        "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+        "coords-vectors-vrotv-parallel-axis",
+        "coords-vectors-vrotv-right-handed-basis",
+        "coords-vectors-vrotv-zero-and-unwrapped-angle",
+        "coords-vectors-vrotv-zero-vector-and-zero-axis",
+        "coords-vectors-vtmv-balanced-scales",
+        "coords-vectors-vtmv-nonsymmetric-matrix",
+        "coords-vectors-vtmv-row-column-basis",
+        "coords-vectors-vtmv-zero-and-identity"
+      ],
+      "observation": "Corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. JS-required passed 2,294 registered comparisons and 2,516 parity tests with 1 expected native-required guard skip. Native-required passed 2,294 live comparisons, 2,517 parity tests, 103 native, 642 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a09-snapshot-bdb51dc6-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9afef5630c2a1768e9870256f3af7a347ae131e6aaae2140c88657f167e0a830",
+      "caseIds": [
+        "coords-vectors-rotvec-coordinate-rotation-basis",
+        "coords-vectors-rotvec-mixed-negative-angle",
+        "coords-vectors-rotvec-unwrapped-angle",
+        "coords-vectors-rotvec-wrapped-axis-indices",
+        "coords-vectors-rotvec-zero-vector-and-zero-angle",
+        "coords-vectors-vlcom-distinct-coefficients",
+        "coords-vectors-vlcom-dyadic-cancellation",
+        "coords-vectors-vlcom-scaled-magnitudes",
+        "coords-vectors-vlcom-zero-and-identity-coefficients",
+        "coords-vectors-vlcom3-distinct-coefficients",
+        "coords-vectors-vlcom3-each-coefficient-slot",
+        "coords-vectors-vlcom3-scaled-magnitudes",
+        "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+        "coords-vectors-vperp-input-scaled-magnitudes",
+        "coords-vectors-vperp-mixed-and-reversed",
+        "coords-vectors-vperp-parallel-opposed-orthogonal",
+        "coords-vectors-vperp-reference-scale-and-sign",
+        "coords-vectors-vperp-zero-input-and-zero-reference",
+        "coords-vectors-vproj-input-scaled-magnitudes",
+        "coords-vectors-vproj-mixed-and-reversed",
+        "coords-vectors-vproj-parallel-opposed-orthogonal",
+        "coords-vectors-vproj-reference-scale-and-sign",
+        "coords-vectors-vproj-zero-input-and-zero-reference",
+        "coords-vectors-vrel-mixed-and-reversed",
+        "coords-vectors-vrel-nearby-large-components",
+        "coords-vectors-vrel-parallel-and-opposed",
+        "coords-vectors-vrel-scaled-magnitudes",
+        "coords-vectors-vrel-zero-and-identical",
+        "coords-vectors-vrotv-axis-scale-and-sign",
+        "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+        "coords-vectors-vrotv-parallel-axis",
+        "coords-vectors-vrotv-right-handed-basis",
+        "coords-vectors-vrotv-zero-and-unwrapped-angle",
+        "coords-vectors-vrotv-zero-vector-and-zero-axis",
+        "coords-vectors-vtmv-balanced-scales",
+        "coords-vectors-vtmv-nonsymmetric-matrix",
+        "coords-vectors-vtmv-row-column-basis",
+        "coords-vectors-vtmv-zero-and-identity"
+      ],
+      "observation": "Corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. JS-required passed 2,294 registered comparisons and 2,516 parity tests with 1 expected native-required guard skip. Native-required passed 2,294 live comparisons, 2,517 parity tests, 103 native, 642 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a09-snapshot-bdb51dc6-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9afef5630c2a1768e9870256f3af7a347ae131e6aaae2140c88657f167e0a830",
+      "caseIds": [
+        "coords-vectors-rotvec-coordinate-rotation-basis",
+        "coords-vectors-rotvec-mixed-negative-angle",
+        "coords-vectors-rotvec-unwrapped-angle",
+        "coords-vectors-rotvec-wrapped-axis-indices",
+        "coords-vectors-rotvec-zero-vector-and-zero-angle",
+        "coords-vectors-vlcom-distinct-coefficients",
+        "coords-vectors-vlcom-dyadic-cancellation",
+        "coords-vectors-vlcom-scaled-magnitudes",
+        "coords-vectors-vlcom-zero-and-identity-coefficients",
+        "coords-vectors-vlcom3-distinct-coefficients",
+        "coords-vectors-vlcom3-each-coefficient-slot",
+        "coords-vectors-vlcom3-scaled-magnitudes",
+        "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+        "coords-vectors-vperp-input-scaled-magnitudes",
+        "coords-vectors-vperp-mixed-and-reversed",
+        "coords-vectors-vperp-parallel-opposed-orthogonal",
+        "coords-vectors-vperp-reference-scale-and-sign",
+        "coords-vectors-vperp-zero-input-and-zero-reference",
+        "coords-vectors-vproj-input-scaled-magnitudes",
+        "coords-vectors-vproj-mixed-and-reversed",
+        "coords-vectors-vproj-parallel-opposed-orthogonal",
+        "coords-vectors-vproj-reference-scale-and-sign",
+        "coords-vectors-vproj-zero-input-and-zero-reference",
+        "coords-vectors-vrel-mixed-and-reversed",
+        "coords-vectors-vrel-nearby-large-components",
+        "coords-vectors-vrel-parallel-and-opposed",
+        "coords-vectors-vrel-scaled-magnitudes",
+        "coords-vectors-vrel-zero-and-identical",
+        "coords-vectors-vrotv-axis-scale-and-sign",
+        "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+        "coords-vectors-vrotv-parallel-axis",
+        "coords-vectors-vrotv-right-handed-basis",
+        "coords-vectors-vrotv-zero-and-unwrapped-angle",
+        "coords-vectors-vrotv-zero-vector-and-zero-axis",
+        "coords-vectors-vtmv-balanced-scales",
+        "coords-vectors-vtmv-nonsymmetric-matrix",
+        "coords-vectors-vtmv-row-column-basis",
+        "coords-vectors-vtmv-zero-and-identity"
+      ],
+      "commit": "bdb51dc6536adef891bde221f3caad79bea6ef7d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550204344/job/132310685814",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310685814 on corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. Its uncached parity package ran 2,294 registered comparisons and passed 2,517 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a09-snapshot-bdb51dc6-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9afef5630c2a1768e9870256f3af7a347ae131e6aaae2140c88657f167e0a830",
+      "caseIds": [
+        "coords-vectors-rotvec-coordinate-rotation-basis",
+        "coords-vectors-rotvec-mixed-negative-angle",
+        "coords-vectors-rotvec-unwrapped-angle",
+        "coords-vectors-rotvec-wrapped-axis-indices",
+        "coords-vectors-rotvec-zero-vector-and-zero-angle",
+        "coords-vectors-vlcom-distinct-coefficients",
+        "coords-vectors-vlcom-dyadic-cancellation",
+        "coords-vectors-vlcom-scaled-magnitudes",
+        "coords-vectors-vlcom-zero-and-identity-coefficients",
+        "coords-vectors-vlcom3-distinct-coefficients",
+        "coords-vectors-vlcom3-each-coefficient-slot",
+        "coords-vectors-vlcom3-scaled-magnitudes",
+        "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+        "coords-vectors-vperp-input-scaled-magnitudes",
+        "coords-vectors-vperp-mixed-and-reversed",
+        "coords-vectors-vperp-parallel-opposed-orthogonal",
+        "coords-vectors-vperp-reference-scale-and-sign",
+        "coords-vectors-vperp-zero-input-and-zero-reference",
+        "coords-vectors-vproj-input-scaled-magnitudes",
+        "coords-vectors-vproj-mixed-and-reversed",
+        "coords-vectors-vproj-parallel-opposed-orthogonal",
+        "coords-vectors-vproj-reference-scale-and-sign",
+        "coords-vectors-vproj-zero-input-and-zero-reference",
+        "coords-vectors-vrel-mixed-and-reversed",
+        "coords-vectors-vrel-nearby-large-components",
+        "coords-vectors-vrel-parallel-and-opposed",
+        "coords-vectors-vrel-scaled-magnitudes",
+        "coords-vectors-vrel-zero-and-identical",
+        "coords-vectors-vrotv-axis-scale-and-sign",
+        "coords-vectors-vrotv-mixed-axis-and-reversed-angle",
+        "coords-vectors-vrotv-parallel-axis",
+        "coords-vectors-vrotv-right-handed-basis",
+        "coords-vectors-vrotv-zero-and-unwrapped-angle",
+        "coords-vectors-vrotv-zero-vector-and-zero-axis",
+        "coords-vectors-vtmv-balanced-scales",
+        "coords-vectors-vtmv-nonsymmetric-matrix",
+        "coords-vectors-vtmv-row-column-basis",
+        "coords-vectors-vtmv-zero-and-identity"
+      ],
+      "commit": "bdb51dc6536adef891bde221f3caad79bea6ef7d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550204344/job/132310685814",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310685814 on corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. Its uncached parity package ran 2,294 registered comparisons and passed 2,517 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -293,11 +497,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcom -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom shared C shim -> vlcom_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -305,11 +513,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcom -> WASM typed adapter -> configured _tspice_vlcom export -> tspice_vlcom shared C shim -> vlcom_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -368,11 +580,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcom3 -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vlcom3 shared C shim -> vlcom3_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -380,11 +596,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vlcom3 -> WASM typed adapter -> configured _tspice_vlcom3 export -> tspice_vlcom3 shared C shim -> vlcom3_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -465,11 +685,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vperp -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vperp shared C shim -> vperp_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -478,11 +702,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vperp -> WASM typed adapter -> configured _tspice_vperp export -> tspice_vperp shared C shim -> vperp_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -546,11 +774,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vproj -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vproj shared C shim -> vproj_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -558,11 +790,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vproj -> WASM typed adapter -> configured _tspice_vproj export -> tspice_vproj shared C shim -> vproj_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -626,11 +862,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vrel -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrel shared C shim -> vrel_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -638,11 +878,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vrel -> WASM typed adapter -> configured _tspice_vrel export -> tspice_vrel shared C shim -> vrel_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -711,11 +955,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vrotv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vrotv shared C shim -> vrotv_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -723,11 +971,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vrotv -> WASM typed adapter -> configured _tspice_vrotv export -> tspice_vrotv shared C shim -> vrotv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -791,11 +1043,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotvec -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_rotvec shared C shim -> rotvec_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -803,11 +1059,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.rotvec -> WASM typed adapter -> configured _tspice_rotvec export -> tspice_rotvec shared C shim -> rotvec_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     },
@@ -866,11 +1126,15 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vtmv -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vtmv shared C shim -> vtmv_c; complete scalar/vector result copied and propagated.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-node",
+            "ci-a09-snapshot-bdb51dc6-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -878,14 +1142,18 @@
             "reviewed",
             "verified",
             "needs-repair",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.vtmv -> WASM typed adapter -> configured _tspice_vtmv export -> tspice_vtmv shared C shim -> vtmv_c; complete result copied from heap before withAllocs cleanup. Regenerated artifact/export and execution evidence remain required.",
-          "executions": []
+          "executions": [
+            "local-a09-snapshot-bdb51dc6-wasm",
+            "ci-a09-snapshot-bdb51dc6-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
