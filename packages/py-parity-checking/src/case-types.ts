@@ -1175,6 +1175,35 @@ export type StepGeometryIllumf = {
   spoint: Vec3;
 };
 
+export type StepGeometryPhaseq = {
+  op: "geometry.phaseq";
+  et: number;
+  target: string;
+  illmn: string;
+  observer: string;
+  abcorr: string;
+};
+
+export type StepGeometryLspcn = {
+  op: "geometry.lspcn";
+  body: string;
+  et: number;
+  abcorr: string;
+};
+
+export type StepGeometryTrgsep = {
+  op: "geometry.trgsep";
+  et: number;
+  targ1: string;
+  shape1: string;
+  frame1: string;
+  targ2: string;
+  shape2: string;
+  frame2: string;
+  observer: string;
+  abcorr: string;
+};
+
 export type StepGeometryOccult = {
   op: "geometry.occult";
   targ1: string;
@@ -1438,6 +1467,9 @@ export type WorkflowStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryPhaseq
+  | StepGeometryLspcn
+  | StepGeometryTrgsep
   | StepGeometryOccult
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc
@@ -1877,6 +1909,9 @@ export type StepOutput =
         lit: boolean;
       };
     }
+  | { op: "geometry.phaseq"; value: number }
+  | { op: "geometry.lspcn"; value: number }
+  | { op: "geometry.trgsep"; value: number }
   | { op: "geometry.occult"; value: number }
   | { op: "geometry.nvc2pl"; value: SpicePlane }
   | {

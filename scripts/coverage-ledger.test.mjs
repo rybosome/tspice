@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 165,
+    planned: 484,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 165,
+    scenarios: 1163,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -314,6 +314,32 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
+test("LSPCN's empty-string entry cannot establish the scientific composition", (t) => {
+  const f = fixture(t);
+  const routine = f.build().routines.find((r) => r.routine === "lspcn_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("lspcn_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("recrad_"));
+  }
+  const source = "packages/backend-shim-c/src/domains/geometry.c";
+  for (const call of [
+    'tipbod_("J2000", &id, &et, tip, 5);',
+    'spkgeo_(&id, &et, "J2000", &sun, state, &lt, 5);',
+    "ucrss_(state, state + 3, axis);",
+    "twovec_(axis, &z, pole, &y, frame);",
+    'spkezr_("SUN", &et, "J2000", (char *)abcorr, (char *)body, ss, &lt, 3, 5,',
+    "mxv_(frame, ss, pos);",
+    "recrad_(pos, &range, &angle, &lat);",
+  ]) {
+    const replaced = "unrelated_stage(" + call.slice(call.indexOf("(") + 1);
+    f.edit(source, call, replaced);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.lspcn/);
+    f.edit(source, replaced, call);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -445,7 +471,12 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 3);
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +501,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("clight_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

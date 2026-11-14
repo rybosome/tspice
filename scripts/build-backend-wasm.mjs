@@ -496,6 +496,9 @@ const exportedFunctions = [
   "_tspice_spkcls",
 
   // --- derived geometry ---
+  "_tspice_phaseq",
+  "_tspice_lspcn",
+  "_tspice_trgsep",
   "_tspice_subpnt",
   "_tspice_subslr",
   "_tspice_sincpt",

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 165
+- Planned (not yet implemented): 484
 - Excluded: 3
 
 ## Implemented now
@@ -112,6 +112,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `lspcn_c` | Longitude of the sun, planetocentric |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -120,6 +121,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
+| `phaseq_c` | Phase angle quantity between bodies centers |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
@@ -168,6 +170,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `trgsep_c` | Separation quantity from observer |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -434,7 +437,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lparse_c` | Parse items from a list |
 | `lparsm_c` | Parse a list of items having multiple delimiters |
 | `lparss_c` | Parse a list of items; return a set |
-| `lspcn_c` | Longitude of the sun, planetocentric |
 | `lstlec_c` | Last character element less than or equal to. |
 | `lstled_c` | Last double precision element less than or equal |
 | `lstlei_c` | Last integer element less than or equal to |
@@ -490,7 +492,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pckuof_c` | PCK, unload binary file |
 | `pckw02_c` | PCK, write type 2 segment |
 | `pgrrec_c` | Planetographic to rectangular |
-| `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvp_c` | Plane to normal vector and point |
@@ -611,7 +612,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `trcdep_c` | Traceback depth |
 | `trcnam_c` | Get module name from traceback |
 | `trcoff_c` | Turn tracing off |
-| `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |
 | `twopi_c` | Twice the value of pi |
 | `twovec_c` | Two vectors defining an orthonormal frame |

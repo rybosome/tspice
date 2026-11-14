@@ -1,6 +1,8 @@
 #include "geometry.h"
 
 #include <string>
+#include <cmath>
+#include <limits>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -10,6 +12,129 @@ using tspice_napi::MakeNotFound;
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadGeometryString(Napi::Env env, const Napi::Value& value, std::string* text) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
+    return false;
+  }
+  size_t bytes = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &bytes) != napi_ok || bytes >= std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "String exceeds its UTF-8 byte limit"));
+    return false;
+  }
+  const Napi::String input = value.As<Napi::String>();
+  // N-API replaces unpaired surrogates when encoding UTF-8. Validate the
+  // original UTF-16 units before making the C string.
+  const std::u16string units = input.Utf16Value();
+  for (size_t i = 0; i < units.size(); i++) {
+    const char16_t c = units[i];
+    if (c == 0) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Input contains an embedded NUL"));
+      return false;
+    }
+    if (c >= 0xd800 && c <= 0xdfff) {
+      if (c > 0xdbff || i + 1 == units.size() || units[i+1] < 0xdc00 || units[i+1] > 0xdfff) {
+        ThrowSpiceError(Napi::TypeError::New(env, "Input contains an unpaired UTF-16 surrogate"));
+        return false;
+      }
+      i++;
+    }
+  }
+  *text = input.Utf8Value();
+  return true;
+}
+
+static Napi::Value Phaseq(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5 || !info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "phaseq() requires its complete argument list and a finite ET"));
+    return env.Undefined();
+  }
+  const double et = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ET must be finite"));
+    return env.Undefined();
+  }
+  std::string target;
+  if (!ReadGeometryString(env, info[1], &target)) return env.Undefined();
+  std::string illmn;
+  if (!ReadGeometryString(env, info[2], &illmn)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[3], &observer)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[4], &abcorr)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  if (tspice_phaseq(et, target.c_str(), illmn.c_str(), observer.c_str(), abcorr.c_str(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling phaseq", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Lspcn(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3 || !info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lspcn() requires its complete argument list and a finite ET"));
+    return env.Undefined();
+  }
+  const double et = info[1].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ET must be finite"));
+    return env.Undefined();
+  }
+  std::string body;
+  if (!ReadGeometryString(env, info[0], &body)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[2], &abcorr)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  if (tspice_lspcn(body.c_str(), et, abcorr.c_str(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling lspcn", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Trgsep(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 9 || !info[0].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "trgsep() requires its complete argument list and a finite ET"));
+    return env.Undefined();
+  }
+  const double et = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(et)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "ET must be finite"));
+    return env.Undefined();
+  }
+  std::string targ1;
+  if (!ReadGeometryString(env, info[1], &targ1)) return env.Undefined();
+  std::string shape1;
+  if (!ReadGeometryString(env, info[2], &shape1)) return env.Undefined();
+  std::string frame1;
+  if (!ReadGeometryString(env, info[3], &frame1)) return env.Undefined();
+  std::string targ2;
+  if (!ReadGeometryString(env, info[4], &targ2)) return env.Undefined();
+  std::string shape2;
+  if (!ReadGeometryString(env, info[5], &shape2)) return env.Undefined();
+  std::string frame2;
+  if (!ReadGeometryString(env, info[6], &frame2)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[7], &observer)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[8], &abcorr)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0;
+  if (tspice_trgsep(et, targ1.c_str(), shape1.c_str(), frame1.c_str(), targ2.c_str(), shape2.c_str(), frame2.c_str(), observer.c_str(), abcorr.c_str(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling trgsep", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
 
 static Napi::Object Subpnt(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -461,6 +586,9 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometry(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "phaseq", Napi::Function::New(env, Phaseq), __func__)) return;
+  if (!SetExportChecked(env, exports, "lspcn", Napi::Function::New(env, Lspcn), __func__)) return;
+  if (!SetExportChecked(env, exports, "trgsep", Napi::Function::New(env, Trgsep), __func__)) return;
   if (!SetExportChecked(env, exports, "subpnt", Napi::Function::New(env, Subpnt), __func__)) return;
   if (!SetExportChecked(env, exports, "subslr", Napi::Function::New(env, Subslr), __func__)) return;
   if (!SetExportChecked(env, exports, "sincpt", Napi::Function::New(env, Sincpt), __func__)) return;

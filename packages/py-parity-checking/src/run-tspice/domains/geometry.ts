@@ -4,6 +4,9 @@ import type {
   StepGeometryIllumf,
   StepGeometryIllumg,
   StepGeometryNvc2pl,
+  StepGeometryPhaseq,
+  StepGeometryLspcn,
+  StepGeometryTrgsep,
   StepGeometryOccult,
   StepGeometryPl2nvc,
   StepGeometrySincpt,
@@ -21,6 +24,9 @@ type GeometryStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryPhaseq
+  | StepGeometryLspcn
+  | StepGeometryTrgsep
   | StepGeometryOccult
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc;
@@ -178,6 +184,37 @@ export function runGeometryStep(
       };
     }
 
+    case "geometry.phaseq":
+      return {
+        op: step.op,
+        value: context.spice.raw.phaseq(
+          step.et,
+          step.target,
+          step.illmn,
+          step.observer,
+          step.abcorr,
+        ),
+      };
+    case "geometry.lspcn":
+      return {
+        op: step.op,
+        value: context.spice.raw.lspcn(step.body, step.et, step.abcorr),
+      };
+    case "geometry.trgsep":
+      return {
+        op: step.op,
+        value: context.spice.raw.trgsep(
+          step.et,
+          step.targ1,
+          step.shape1,
+          step.frame1,
+          step.targ2,
+          step.shape2,
+          step.frame2,
+          step.observer,
+          step.abcorr,
+        ),
+      };
     case "geometry.occult": {
       const out = context.spice.raw.occult(
         step.targ1,

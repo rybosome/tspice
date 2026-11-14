@@ -78,6 +78,38 @@ class StepGeometryIllumf:
 
 
 @dataclass(frozen=True)
+class StepGeometryPhaseq:
+    op: Literal["geometry.phaseq"]
+    et: float
+    target: str
+    illmn: str
+    observer: str
+    abcorr: str
+
+
+@dataclass(frozen=True)
+class StepGeometryLspcn:
+    op: Literal["geometry.lspcn"]
+    body: str
+    et: float
+    abcorr: str
+
+
+@dataclass(frozen=True)
+class StepGeometryTrgsep:
+    op: Literal["geometry.trgsep"]
+    et: float
+    targ1: str
+    shape1: str
+    frame1: str
+    targ2: str
+    shape2: str
+    frame2: str
+    observer: str
+    abcorr: str
+
+
+@dataclass(frozen=True)
 class StepGeometryOccult:
     op: Literal["geometry.occult"]
     targ1: str

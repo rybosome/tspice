@@ -1,3 +1,4 @@
+import { spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   AbCorr,
   Found,
@@ -13,9 +14,29 @@ import type {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { withAllocs } from "../codec/alloc.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+const geometryTextEncoder = new TextEncoder();
+
+function writeGeometryText(
+  module: EmscriptenModule,
+  ptr: number,
+  bytes: number,
+  value: string,
+): void {
+  const start = ptr >>> 0;
+  geometryTextEncoder.encodeInto(
+    value,
+    module.HEAPU8.subarray(start, start + bytes),
+  );
+  module.HEAPU8[start + bytes] = 0;
+}
 
 function geometryInputs(
   et: unknown,
@@ -697,6 +718,206 @@ function assertFiniteNumberArrayFixed(
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
+    phaseq: (et, target, illmn, observer, abcorr) => {
+      geometryNumber(et, "phaseq(et)");
+      const targetBytes = spiceStringByteLength(
+        target,
+        "phaseq(target)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const illmnBytes = spiceStringByteLength(
+        illmn,
+        "phaseq(illmn)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "phaseq(observer)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "phaseq(abcorr)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          targetBytes + 1,
+          illmnBytes + 1,
+          observerBytes + 1,
+          abcorrBytes + 1,
+          8,
+        ],
+        (errPtr, targetPtr, illmnPtr, observerPtr, abcorrPtr, outPtr) => {
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, illmnPtr, illmnBytes, illmn);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          const status = module._tspice_phaseq(
+            et,
+            targetPtr,
+            illmnPtr,
+            observerPtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const result = module.HEAPF64[outPtr >>> 3];
+          if (result === undefined)
+            throw new TypeError("Missing geometry result");
+          return result;
+        },
+      );
+    },
+    lspcn: (body, et, abcorr) => {
+      geometryNumber(et, "lspcn(et)");
+      const bodyBytes = spiceStringByteLength(
+        body,
+        "lspcn(body)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "lspcn(abcorr)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bodyBytes + 1, abcorrBytes + 1, 8],
+        (errPtr, bodyPtr, abcorrPtr, outPtr) => {
+          writeGeometryText(module, bodyPtr, bodyBytes, body);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          const status = module._tspice_lspcn(
+            bodyPtr,
+            et,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const result = module.HEAPF64[outPtr >>> 3];
+          if (result === undefined)
+            throw new TypeError("Missing geometry result");
+          return result;
+        },
+      );
+    },
+    trgsep: (
+      et,
+      targ1,
+      shape1,
+      frame1,
+      targ2,
+      shape2,
+      frame2,
+      observer,
+      abcorr,
+    ) => {
+      geometryNumber(et, "trgsep(et)");
+      const targ1Bytes = spiceStringByteLength(
+        targ1,
+        "trgsep(targ1)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const shape1Bytes = spiceStringByteLength(
+        shape1,
+        "trgsep(shape1)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const frame1Bytes = spiceStringByteLength(
+        frame1,
+        "trgsep(frame1)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const targ2Bytes = spiceStringByteLength(
+        targ2,
+        "trgsep(targ2)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const shape2Bytes = spiceStringByteLength(
+        shape2,
+        "trgsep(shape2)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const frame2Bytes = spiceStringByteLength(
+        frame2,
+        "trgsep(frame2)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "trgsep(observer)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "trgsep(abcorr)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          targ1Bytes + 1,
+          shape1Bytes + 1,
+          frame1Bytes + 1,
+          targ2Bytes + 1,
+          shape2Bytes + 1,
+          frame2Bytes + 1,
+          observerBytes + 1,
+          abcorrBytes + 1,
+          8,
+        ],
+        (
+          errPtr,
+          targ1Ptr,
+          shape1Ptr,
+          frame1Ptr,
+          targ2Ptr,
+          shape2Ptr,
+          frame2Ptr,
+          observerPtr,
+          abcorrPtr,
+          outPtr,
+        ) => {
+          writeGeometryText(module, targ1Ptr, targ1Bytes, targ1);
+          writeGeometryText(module, shape1Ptr, shape1Bytes, shape1);
+          writeGeometryText(module, frame1Ptr, frame1Bytes, frame1);
+          writeGeometryText(module, targ2Ptr, targ2Bytes, targ2);
+          writeGeometryText(module, shape2Ptr, shape2Bytes, shape2);
+          writeGeometryText(module, frame2Ptr, frame2Bytes, frame2);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          const status = module._tspice_trgsep(
+            et,
+            targ1Ptr,
+            shape1Ptr,
+            frame1Ptr,
+            targ2Ptr,
+            shape2Ptr,
+            frame2Ptr,
+            observerPtr,
+            abcorrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const result = module.HEAPF64[outPtr >>> 3];
+          if (result === undefined)
+            throw new TypeError("Missing geometry result");
+          return result;
+        },
+      );
+    },
     subpnt: (
       method: string,
       target: string,

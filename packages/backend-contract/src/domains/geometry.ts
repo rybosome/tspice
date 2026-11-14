@@ -19,6 +19,51 @@ import type {
 /** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
   /**
+   * Compute the angle at the target center between illuminator and observer, in radians
+   * from 0 to π. Use three distinct body names or numeric strings, finite ET in TDB
+   * seconds past J2000, and a geometric or reception correction. An SPK must connect the
+   * bodies at the required epochs.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/phaseq_c.html
+   */
+  phaseq(
+    et: number,
+    target: string,
+    illmn: string,
+    observer: string,
+    abcorr: AbCorr | string,
+  ): number;
+
+  /**
+   * Return the planetocentric solar longitude in radians from 0 to 2π, measured from the
+   * ascending equinox in the instantaneous orbital plane. Provide a central body name or
+   * numeric string, finite TDB seconds past J2000 and an aberration correction for the
+   * apparent Sun state. Requires body orientation and geometric heliocentric state. The
+   * linked N0067 stages are checked before consuming their results.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lspcn_c.html
+   */
+  lspcn(body: string, et: number, abcorr: AbCorr | string): number;
+
+  /**
+   * Return the apparent angular gap between two targets as seen from the observer, in
+   * radians. POINT has zero radius; SPHERE uses the largest PCK semi-axis. A negative
+   * gap means apparent overlap. Provide three distinct body names or numeric strings, a
+   * finite epoch in TDB seconds past J2000 and an aberration correction. Both frame
+   * strings must be nonempty; N0067 ignores their values for these two shapes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trgsep_c.html
+   */
+  trgsep(
+    et: number,
+    targ1: string,
+    shape1: string,
+    frame1: string,
+    targ2: string,
+    shape2: string,
+    frame2: string,
+    observer: string,
+    abcorr: AbCorr | string,
+  ): number;
+
+  /**
    * Compute the sub-observer point using nearest/radial ellipsoid or nadir/radial DSK geometry.
    * Returns the complete target-fixed point and observer-to-point vector (km),
    * and the target surface epoch in TDB seconds past J2000. `et` must be finite;

@@ -1951,6 +1951,15 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: spkw08() is not implemented");
     },
+    phaseq: () => {
+      throw new Error("phaseq requires a CSPICE geometry backend");
+    },
+    lspcn: () => {
+      throw new Error("lspcn requires a CSPICE geometry backend");
+    },
+    trgsep: () => {
+      throw new Error("trgsep requires a CSPICE geometry backend");
+    },
     subpnt: (_method, target, et, fixref, abcorr, observer) => {
       void (abcorr satisfies AbCorr | string);
 

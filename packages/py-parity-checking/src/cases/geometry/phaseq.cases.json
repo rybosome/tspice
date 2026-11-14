@@ -1,0 +1,544 @@
+[
+  {
+    "caseId": "geometry-phaseq-epochs",
+    "description": "Observe changing target-centered phase in radians across the authored moving tracks.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": -8000,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": -3000,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 8000,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-reception-corrections",
+    "description": "Compare geometric, one-pass, converged and stellar-corrected two-leg light paths.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "LT"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "LT+S"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "CN"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "CN+S"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "LT"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "LT+S"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "CN"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "CN+S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-orientation-extrema",
+    "description": "Use distinct bodies on the same sightline and opposite sightlines, then change which center defines the angle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "100103",
+        "observer": "100105",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "100104",
+        "observer": "100105",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "100106",
+        "observer": "SUN",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "100102",
+        "observer": "SUN",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100102",
+        "illmn": "SUN",
+        "observer": "100101",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-translation",
+    "description": "Body names and padded numeric codes reach the same native target and source identifiers.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["AUDIT TARGET"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "NAIF_BODY_CODE",
+        "values": [100101]
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": " audit target ",
+        "illmn": " sun ",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": " 100101 ",
+        "illmn": "10",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-reinitialize",
+    "description": "Clear and reload the SPK, preserving independent center geometry and finite observables.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 3500,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-target",
+    "description": "Observe the resolved scientific or argument diagnostic for target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "UNKNOWN TARGET",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-illuminator",
+    "description": "Observe the resolved scientific or argument diagnostic for illuminator.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "UNKNOWN SOURCE",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-observer",
+    "description": "Observe the resolved scientific or argument diagnostic for observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "UNKNOWN OBSERVER",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-same-target-observer",
+    "description": "Observe the resolved scientific or argument diagnostic for same-target-observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100101",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-same-source-observer",
+    "description": "Observe the resolved scientific or argument diagnostic for same-source-observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "SUN",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-same-target-source",
+    "description": "Observe the resolved scientific or argument diagnostic for same-target-source.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "100101",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-transmission",
+    "description": "Observe the resolved scientific or argument diagnostic for transmission.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "XLT+S"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-invalid-correction",
+    "description": "Observe the resolved scientific or argument diagnostic for invalid-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "BOGUS"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-empty-name",
+    "description": "Observe the resolved scientific or argument diagnostic for empty-name.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-empty-correction",
+    "description": "Observe the resolved scientific or argument diagnostic for empty-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-no-ephemeris",
+    "description": "Valid distinct bodies without an SPK require ephemeris data.",
+    "workflow": [
+      {
+        "op": "geometry.phaseq",
+        "et": 0,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOLOADEDFILES)"]
+    }
+  },
+  {
+    "caseId": "geometry-phaseq-light-time-endpoint",
+    "description": "The geometric boundary epoch is covered but the retarded target epoch is outside the authored segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": -10000,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "NONE"
+      },
+      {
+        "op": "geometry.phaseq",
+        "et": -10000,
+        "target": "100101",
+        "illmn": "SUN",
+        "observer": "100102",
+        "abcorr": "LT"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  }
+]

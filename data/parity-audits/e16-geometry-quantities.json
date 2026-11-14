@@ -1,0 +1,768 @@
+{
+  "schemaVersion": 1,
+  "batch": "e16-geometry-quantities",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-geometry-quantities.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/geometry-quantities-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/geometry-quantities-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-seasonal-pole.tpc",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/geometry-quantities.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e16-7ae2be19-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4a8c526c3634ce4b4d03bedba2bfdb82d0b3afcac862c335ae543a656dc2c113",
+      "caseIds": [
+        "geometry-lspcn-alternate-poles",
+        "geometry-lspcn-corrections",
+        "geometry-lspcn-coverage",
+        "geometry-lspcn-empty-body",
+        "geometry-lspcn-empty-correction",
+        "geometry-lspcn-equinox-and-epochs",
+        "geometry-lspcn-invalid-correction",
+        "geometry-lspcn-light-time-endpoint",
+        "geometry-lspcn-missing-pole",
+        "geometry-lspcn-missing-spk",
+        "geometry-lspcn-pole-and-meridian",
+        "geometry-lspcn-reinitialize",
+        "geometry-lspcn-translation",
+        "geometry-lspcn-unknown-body",
+        "geometry-lspcn-zero-orbit-normal",
+        "geometry-phaseq-empty-correction",
+        "geometry-phaseq-empty-name",
+        "geometry-phaseq-epochs",
+        "geometry-phaseq-illuminator",
+        "geometry-phaseq-invalid-correction",
+        "geometry-phaseq-light-time-endpoint",
+        "geometry-phaseq-no-ephemeris",
+        "geometry-phaseq-observer",
+        "geometry-phaseq-orientation-extrema",
+        "geometry-phaseq-reception-corrections",
+        "geometry-phaseq-reinitialize",
+        "geometry-phaseq-same-source-observer",
+        "geometry-phaseq-same-target-observer",
+        "geometry-phaseq-same-target-source",
+        "geometry-phaseq-target",
+        "geometry-phaseq-translation",
+        "geometry-phaseq-transmission",
+        "geometry-trgsep-bad-correction",
+        "geometry-trgsep-bad-shape1",
+        "geometry-trgsep-bad-shape2",
+        "geometry-trgsep-contact",
+        "geometry-trgsep-corrections",
+        "geometry-trgsep-empty-first-frame",
+        "geometry-trgsep-empty-first-shape",
+        "geometry-trgsep-empty-second-frame",
+        "geometry-trgsep-frame-bytes",
+        "geometry-trgsep-inside-first-target",
+        "geometry-trgsep-missing-radii",
+        "geometry-trgsep-no-spk",
+        "geometry-trgsep-nonpositive-axis",
+        "geometry-trgsep-on-second-sphere",
+        "geometry-trgsep-outside-coverage",
+        "geometry-trgsep-point-no-radii",
+        "geometry-trgsep-same-bodies",
+        "geometry-trgsep-shapes",
+        "geometry-trgsep-target-order",
+        "geometry-trgsep-triaxial-max",
+        "geometry-trgsep-two-radii",
+        "geometry-trgsep-unknown-name"
+      ],
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e16-7ae2be19-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4a8c526c3634ce4b4d03bedba2bfdb82d0b3afcac862c335ae543a656dc2c113",
+      "caseIds": [
+        "geometry-lspcn-alternate-poles",
+        "geometry-lspcn-corrections",
+        "geometry-lspcn-coverage",
+        "geometry-lspcn-empty-body",
+        "geometry-lspcn-empty-correction",
+        "geometry-lspcn-equinox-and-epochs",
+        "geometry-lspcn-invalid-correction",
+        "geometry-lspcn-light-time-endpoint",
+        "geometry-lspcn-missing-pole",
+        "geometry-lspcn-missing-spk",
+        "geometry-lspcn-pole-and-meridian",
+        "geometry-lspcn-reinitialize",
+        "geometry-lspcn-translation",
+        "geometry-lspcn-unknown-body",
+        "geometry-lspcn-zero-orbit-normal",
+        "geometry-phaseq-empty-correction",
+        "geometry-phaseq-empty-name",
+        "geometry-phaseq-epochs",
+        "geometry-phaseq-illuminator",
+        "geometry-phaseq-invalid-correction",
+        "geometry-phaseq-light-time-endpoint",
+        "geometry-phaseq-no-ephemeris",
+        "geometry-phaseq-observer",
+        "geometry-phaseq-orientation-extrema",
+        "geometry-phaseq-reception-corrections",
+        "geometry-phaseq-reinitialize",
+        "geometry-phaseq-same-source-observer",
+        "geometry-phaseq-same-target-observer",
+        "geometry-phaseq-same-target-source",
+        "geometry-phaseq-target",
+        "geometry-phaseq-translation",
+        "geometry-phaseq-transmission",
+        "geometry-trgsep-bad-correction",
+        "geometry-trgsep-bad-shape1",
+        "geometry-trgsep-bad-shape2",
+        "geometry-trgsep-contact",
+        "geometry-trgsep-corrections",
+        "geometry-trgsep-empty-first-frame",
+        "geometry-trgsep-empty-first-shape",
+        "geometry-trgsep-empty-second-frame",
+        "geometry-trgsep-frame-bytes",
+        "geometry-trgsep-inside-first-target",
+        "geometry-trgsep-missing-radii",
+        "geometry-trgsep-no-spk",
+        "geometry-trgsep-nonpositive-axis",
+        "geometry-trgsep-on-second-sphere",
+        "geometry-trgsep-outside-coverage",
+        "geometry-trgsep-point-no-radii",
+        "geometry-trgsep-same-bodies",
+        "geometry-trgsep-shapes",
+        "geometry-trgsep-target-order",
+        "geometry-trgsep-triaxial-max",
+        "geometry-trgsep-two-radii",
+        "geometry-trgsep-unknown-name"
+      ],
+      "observation": "Both complete required lanes passed locally on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e16-7ae2be19-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4a8c526c3634ce4b4d03bedba2bfdb82d0b3afcac862c335ae543a656dc2c113",
+      "caseIds": [
+        "geometry-lspcn-alternate-poles",
+        "geometry-lspcn-corrections",
+        "geometry-lspcn-coverage",
+        "geometry-lspcn-empty-body",
+        "geometry-lspcn-empty-correction",
+        "geometry-lspcn-equinox-and-epochs",
+        "geometry-lspcn-invalid-correction",
+        "geometry-lspcn-light-time-endpoint",
+        "geometry-lspcn-missing-pole",
+        "geometry-lspcn-missing-spk",
+        "geometry-lspcn-pole-and-meridian",
+        "geometry-lspcn-reinitialize",
+        "geometry-lspcn-translation",
+        "geometry-lspcn-unknown-body",
+        "geometry-lspcn-zero-orbit-normal",
+        "geometry-phaseq-empty-correction",
+        "geometry-phaseq-empty-name",
+        "geometry-phaseq-epochs",
+        "geometry-phaseq-illuminator",
+        "geometry-phaseq-invalid-correction",
+        "geometry-phaseq-light-time-endpoint",
+        "geometry-phaseq-no-ephemeris",
+        "geometry-phaseq-observer",
+        "geometry-phaseq-orientation-extrema",
+        "geometry-phaseq-reception-corrections",
+        "geometry-phaseq-reinitialize",
+        "geometry-phaseq-same-source-observer",
+        "geometry-phaseq-same-target-observer",
+        "geometry-phaseq-same-target-source",
+        "geometry-phaseq-target",
+        "geometry-phaseq-translation",
+        "geometry-phaseq-transmission",
+        "geometry-trgsep-bad-correction",
+        "geometry-trgsep-bad-shape1",
+        "geometry-trgsep-bad-shape2",
+        "geometry-trgsep-contact",
+        "geometry-trgsep-corrections",
+        "geometry-trgsep-empty-first-frame",
+        "geometry-trgsep-empty-first-shape",
+        "geometry-trgsep-empty-second-frame",
+        "geometry-trgsep-frame-bytes",
+        "geometry-trgsep-inside-first-target",
+        "geometry-trgsep-missing-radii",
+        "geometry-trgsep-no-spk",
+        "geometry-trgsep-nonpositive-axis",
+        "geometry-trgsep-on-second-sphere",
+        "geometry-trgsep-outside-coverage",
+        "geometry-trgsep-point-no-radii",
+        "geometry-trgsep-same-bodies",
+        "geometry-trgsep-shapes",
+        "geometry-trgsep-target-order",
+        "geometry-trgsep-triaxial-max",
+        "geometry-trgsep-two-radii",
+        "geometry-trgsep-unknown-name"
+      ],
+      "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e16-7ae2be19-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4a8c526c3634ce4b4d03bedba2bfdb82d0b3afcac862c335ae543a656dc2c113",
+      "caseIds": [
+        "geometry-lspcn-alternate-poles",
+        "geometry-lspcn-corrections",
+        "geometry-lspcn-coverage",
+        "geometry-lspcn-empty-body",
+        "geometry-lspcn-empty-correction",
+        "geometry-lspcn-equinox-and-epochs",
+        "geometry-lspcn-invalid-correction",
+        "geometry-lspcn-light-time-endpoint",
+        "geometry-lspcn-missing-pole",
+        "geometry-lspcn-missing-spk",
+        "geometry-lspcn-pole-and-meridian",
+        "geometry-lspcn-reinitialize",
+        "geometry-lspcn-translation",
+        "geometry-lspcn-unknown-body",
+        "geometry-lspcn-zero-orbit-normal",
+        "geometry-phaseq-empty-correction",
+        "geometry-phaseq-empty-name",
+        "geometry-phaseq-epochs",
+        "geometry-phaseq-illuminator",
+        "geometry-phaseq-invalid-correction",
+        "geometry-phaseq-light-time-endpoint",
+        "geometry-phaseq-no-ephemeris",
+        "geometry-phaseq-observer",
+        "geometry-phaseq-orientation-extrema",
+        "geometry-phaseq-reception-corrections",
+        "geometry-phaseq-reinitialize",
+        "geometry-phaseq-same-source-observer",
+        "geometry-phaseq-same-target-observer",
+        "geometry-phaseq-same-target-source",
+        "geometry-phaseq-target",
+        "geometry-phaseq-translation",
+        "geometry-phaseq-transmission",
+        "geometry-trgsep-bad-correction",
+        "geometry-trgsep-bad-shape1",
+        "geometry-trgsep-bad-shape2",
+        "geometry-trgsep-contact",
+        "geometry-trgsep-corrections",
+        "geometry-trgsep-empty-first-frame",
+        "geometry-trgsep-empty-first-shape",
+        "geometry-trgsep-empty-second-frame",
+        "geometry-trgsep-frame-bytes",
+        "geometry-trgsep-inside-first-target",
+        "geometry-trgsep-missing-radii",
+        "geometry-trgsep-no-spk",
+        "geometry-trgsep-nonpositive-axis",
+        "geometry-trgsep-on-second-sphere",
+        "geometry-trgsep-outside-coverage",
+        "geometry-trgsep-point-no-radii",
+        "geometry-trgsep-same-bodies",
+        "geometry-trgsep-shapes",
+        "geometry-trgsep-target-order",
+        "geometry-trgsep-triaxial-max",
+        "geometry-trgsep-two-radii",
+        "geometry-trgsep-unknown-name"
+      ],
+      "commit": "7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43572332323/job/132379191565",
+      "observation": "Inspected successful Linux Node 22 native-required job 132379191565 on 7ae2be19cfbce4b379d506cb4e8bdd96d38a27e2: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 73 native wrapper, 626 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "phaseq_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/phaseq_c.html",
+      "semantics": "Measure the angle at the target between illuminator and observer in radians. On reception the illuminating leg is evaluated at the target epoch appropriate to the target-to-observer light time. All three bodies must be distinct.",
+      "edgeAssessment": "Kernel-independent translation setup, exact zero and pi with distinct collinear bodies, mixed and moving sightlines, changing target, light time and stellar correction, initial/reloaded geometry.",
+      "errorAssessment": "IDCODENOTFOUND in each role, BODIESNOTDISTINCT for every pair, INVALIDOPTION for transmission/unknown corrections, EMPTYSTRING, NOLOADEDFILES, SPKINSUFFDATA at an emission endpoint. Failing translations use the checked original error path prior to the cache.",
+      "scenarios": [
+        {
+          "caseId": "geometry-phaseq-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Observe changing target-centered phase in radians across the authored moving tracks."
+        },
+        {
+          "caseId": "geometry-phaseq-reception-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, one-pass, converged and stellar-corrected two-leg light paths."
+        },
+        {
+          "caseId": "geometry-phaseq-orientation-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Use distinct bodies on the same sightline and opposite sightlines, then change which center defines the angle."
+        },
+        {
+          "caseId": "geometry-phaseq-translation",
+          "coverage": ["success", "edge"],
+          "observes": "Body names and padded numeric codes reach the same native target and source identifiers."
+        },
+        {
+          "caseId": "geometry-phaseq-reinitialize",
+          "coverage": ["success", "edge"],
+          "observes": "Clear and reload the SPK, preserving independent center geometry and finite observables."
+        },
+        {
+          "caseId": "geometry-phaseq-target",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for target."
+        },
+        {
+          "caseId": "geometry-phaseq-illuminator",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for illuminator."
+        },
+        {
+          "caseId": "geometry-phaseq-observer",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for observer."
+        },
+        {
+          "caseId": "geometry-phaseq-same-target-observer",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for same-target-observer."
+        },
+        {
+          "caseId": "geometry-phaseq-same-source-observer",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for same-source-observer."
+        },
+        {
+          "caseId": "geometry-phaseq-same-target-source",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for same-target-source."
+        },
+        {
+          "caseId": "geometry-phaseq-transmission",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for transmission."
+        },
+        {
+          "caseId": "geometry-phaseq-invalid-correction",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for invalid-correction."
+        },
+        {
+          "caseId": "geometry-phaseq-empty-name",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for empty-name."
+        },
+        {
+          "caseId": "geometry-phaseq-empty-correction",
+          "coverage": ["error"],
+          "observes": "Observe the resolved scientific or argument diagnostic for empty-correction."
+        },
+        {
+          "caseId": "geometry-phaseq-no-ephemeris",
+          "coverage": ["error"],
+          "observes": "Valid distinct bodies without an SPK require ephemeris data."
+        },
+        {
+          "caseId": "geometry-phaseq-light-time-endpoint",
+          "coverage": ["error"],
+          "observes": "The geometric boundary epoch is covered but the retarded target epoch is outside the authored segment."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Seven constant/linear SPK segments with invented bodies and explicit analytic trajectories in generate-audit-geometry.py.",
+          "distribution": "Project-authored, distributed under the repository MIT license. No mission observations or external scientific catalog."
+        }
+      ],
+      "fixtureRationale": "Authored constant and linear ephemerides distinguish signs, angular corrections and endpoints. Only the orientation or radii required for each call are loaded.",
+      "cleanup": "Owned clients clear kernels and dispose on all exits. Successive calls check the cleared failure state, restoration of the original fixture results and explicit cleanup after injected allocation failures and genuine toolkit errors.",
+      "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.phaseq -> registered mutex-protected N-API function -> tspice_phaseq -> guarded phaseq_c.",
+          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.phaseq -> compiled WASM export and scoped allocation helper -> tspice_phaseq -> guarded phaseq_c.",
+          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "phaseq-source-oracle",
+          "status": "repaired",
+          "summary": "Name-cache initialization and original translation errors. The pinned ZZBODS2C cache may copy the unset code on a name miss.",
+          "repair": "Resolve with initialized BODS2C storage and preserve the original role, text and trace before entering the cache. Successful science is measured by direct phaseq_c on both compiled paths and sp.phaseq independently.",
+          "evidence": [
+            "docs/step8-geometry-quantities.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/geometry-quantities.test.ts",
+            "packages/backend-node/test/geometry-quantities-domain.test.ts",
+            "packages/backend-wasm/test/geometry-quantities-allocations.test.ts"
+          ],
+          "caseIds": [
+            "geometry-phaseq-target",
+            "geometry-phaseq-observer",
+            "geometry-phaseq-orientation-extrema"
+          ]
+        }
+      ]
+    },
+    {
+      "routine": "lspcn_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lspcn_c.html",
+      "semantics": "Measure the solar longitude in radians relative to the instantaneous ascending equinox. Use the geometric heliocentric state and the body north pole to construct the frame, then use the corrected apparent solar direction.",
+      "edgeAssessment": "Epochs on both sides of J2000, pole changes, meridian invariance, alternate quadrants, reception and transmission corrections, unload and reload.",
+      "errorAssessment": "NOTRANSLATION, EMPTYSTRING, FRAMEDATANOTFOUND, NOLOADEDFILES, SPKINSUFFDATA, INVALIDOPTION and DEPENDENTVECTORS. Each failed stage is checked before its output is read. Scalar boundaries and PCK metadata guards are tested separately.",
+      "scenarios": [
+        {
+          "caseId": "geometry-lspcn-equinox-and-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Project the Sun into the orbital plane using the tilted authored north pole at five epochs."
+        },
+        {
+          "caseId": "geometry-lspcn-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Use geometric orbital normal while changing the apparent solar state through reception and transmission modes supported by SPKEZR."
+        },
+        {
+          "caseId": "geometry-lspcn-pole-and-meridian",
+          "coverage": ["success", "edge"],
+          "observes": "Change the prime-meridian angle and spin, then rotate the pole. Only the pole orientation changes the season frame."
+        },
+        {
+          "caseId": "geometry-lspcn-alternate-poles",
+          "coverage": ["success", "edge"],
+          "observes": "Observe longitudes in different quadrants for a reversed pole and independent changes in pole right ascension."
+        },
+        {
+          "caseId": "geometry-lspcn-translation",
+          "coverage": ["success", "edge"],
+          "observes": "A body mapping and its numeric identifier produce the same angle."
+        },
+        {
+          "caseId": "geometry-lspcn-reinitialize",
+          "coverage": ["success", "edge"],
+          "observes": "Unload all kernels and rebuild the original orientation and ephemeris before a repeat observation."
+        },
+        {
+          "caseId": "geometry-lspcn-unknown-body",
+          "coverage": ["error"],
+          "observes": "Report the canonical missing translation within the LSPCN outer trace."
+        },
+        {
+          "caseId": "geometry-lspcn-empty-body",
+          "coverage": ["error"],
+          "observes": "Empty name is diagnosed by the public C wrapper before accessing orientation."
+        },
+        {
+          "caseId": "geometry-lspcn-missing-pole",
+          "coverage": ["error"],
+          "observes": "Read the original TIPBOD failure before consuming the missing orientation."
+        },
+        {
+          "caseId": "geometry-lspcn-missing-spk",
+          "coverage": ["error"],
+          "observes": "Orientation is available but the Sun/body state is unavailable."
+        },
+        {
+          "caseId": "geometry-lspcn-coverage",
+          "coverage": ["error"],
+          "observes": "Request a geometric state beyond authored coverage after a successful call."
+        },
+        {
+          "caseId": "geometry-lspcn-light-time-endpoint",
+          "coverage": ["error"],
+          "observes": "At the lower endpoint the geometric state exists but the retarded solar state does not."
+        },
+        {
+          "caseId": "geometry-lspcn-invalid-correction",
+          "coverage": ["error"],
+          "observes": "The final apparent-state operation reports its own correction diagnostic."
+        },
+        {
+          "caseId": "geometry-lspcn-empty-correction",
+          "coverage": ["error"],
+          "observes": "N0067 forwards the empty aberration string to SPKEZR after obtaining the frame."
+        },
+        {
+          "caseId": "geometry-lspcn-zero-orbit-normal",
+          "coverage": ["error"],
+          "observes": "Use SUN as its own central body and supply its orientation, giving a genuinely zero geometric heliocentric state."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Seven constant/linear SPK segments with invented bodies and explicit analytic trajectories in generate-audit-geometry.py.",
+          "distribution": "Project-authored, distributed under the repository MIT license. No mission observations or external scientific catalog."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-seasonal-pole.tpc",
+          "provenance": "Authored constant north pole at RA 37 degrees and DEC 53 degrees, and linear prime meridian for synthetic body 100101.",
+          "distribution": "Project-authored, distributed under the repository MIT license. No mission observations or external scientific catalog."
+        }
+      ],
+      "fixtureRationale": "Authored constant and linear ephemerides distinguish signs, angular corrections and endpoints. Only the orientation or radii required for each call are loaded.",
+      "cleanup": "Owned clients clear kernels and dispose on all exits. Successive calls check the cleared failure state, restoration of the original fixture results and explicit cleanup after injected allocation failures and genuine toolkit errors.",
+      "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "raw.lspcn -> registered mutex-protected N-API function -> tspice_lspcn -> guarded linked TIPBOD/SPKGEO/UCRSS/TWOVEC/SPKEZR/MXV/RECRAD composition. The same-named C entry handles the early empty-body check.",
+          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "raw.lspcn -> compiled WASM export and scoped allocation helper -> tspice_lspcn -> guarded linked TIPBOD/SPKGEO/UCRSS/TWOVEC/SPKEZR/MXV/RECRAD composition. The same-named C entry handles the early empty-body check.",
+          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "lspcn-source-oracle",
+          "status": "repaired",
+          "summary": "Checked SPICELIB seasonal geometry. The original translated implementation consumes TIPBOD, SPKGEO and SPKEZR intermediates following a failed prerequisite.",
+          "repair": "Reproduce the pinned sequence with linked scientific stages, original error frames and initialized storage. Preflight the independent library before calling successful public sp.lspcn. Require all scientific stages in the structural mapping, even though the empty-string error reaches public lspcn_c.",
+          "evidence": [
+            "docs/step8-geometry-quantities.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/geometry-quantities.test.ts",
+            "packages/backend-node/test/geometry-quantities-domain.test.ts",
+            "packages/backend-wasm/test/geometry-quantities-allocations.test.ts"
+          ],
+          "caseIds": [
+            "geometry-lspcn-missing-pole",
+            "geometry-lspcn-coverage",
+            "geometry-lspcn-zero-orbit-normal",
+            "geometry-lspcn-equinox-and-epochs"
+          ]
+        }
+      ]
+    },
+    {
+      "routine": "trgsep_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trgsep_c.html",
+      "semantics": "Measure signed apparent center separation less the two angular radii in radians. POINT contributes zero. SPHERE uses the maximum of three positive radii. A negative result is overlap.",
+      "edgeAssessment": "Two targets swapped, point/sphere in both positions, triaxial permutations, mixed limb contact before and after tangency, arbitrary nonempty frame text, reception and transmission corrections, absent radii on two points.",
+      "errorAssessment": "Canonical EMPTYSTRING for either frame, NOTRECOGNIZED, INVALIDOPTION, BODIESNOTDISTINCT, IDCODENOTFOUND, NOLOADEDFILES, SPKINSUFFDATA, KERNELVARNOTFOUND, INVALIDCOUNT, BADAXISLENGTH and INSIDEBODY, including equality at the surface.",
+      "scenarios": [
+        {
+          "caseId": "geometry-trgsep-shapes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe POINT/POINT, POINT/SPHERE, SPHERE/POINT, and SPHERE/SPHERE on separated and overlapping disks."
+        },
+        {
+          "caseId": "geometry-trgsep-contact",
+          "coverage": ["success", "edge"],
+          "observes": "Bracket apparent point/sphere tangency at the authored analytic contact epoch. Inspect negative, nearly zero and positive gaps."
+        },
+        {
+          "caseId": "geometry-trgsep-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare reception and transmission including stellar aberration with a moving observer."
+        },
+        {
+          "caseId": "geometry-trgsep-target-order",
+          "coverage": ["success", "edge"],
+          "observes": "Reverse the complete target/shape/frame groups and keep the same observer."
+        },
+        {
+          "caseId": "geometry-trgsep-frame-bytes",
+          "coverage": ["success", "edge"],
+          "observes": "Pass unrelated nonempty frame strings through the C wrapper. POINT/SPHERE do not consult their orientation."
+        },
+        {
+          "caseId": "geometry-trgsep-triaxial-max",
+          "coverage": ["success", "edge"],
+          "observes": "Change one radius through the largest semi-axis while retaining the others; spheres use the maximum of all three."
+        },
+        {
+          "caseId": "geometry-trgsep-point-no-radii",
+          "coverage": ["success", "edge"],
+          "observes": "The pure point geometry uses the SPK alone."
+        },
+        {
+          "caseId": "geometry-trgsep-empty-first-frame",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for empty-first-frame with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-empty-second-frame",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for empty-second-frame with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-empty-first-shape",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for empty-first-shape with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-bad-shape1",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for bad-shape1 with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-bad-shape2",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for bad-shape2 with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for bad-correction with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-same-bodies",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for same-bodies with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-unknown-name",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for unknown-name with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-no-spk",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for no-spk with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for outside-coverage with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-missing-radii",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for missing-radii with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-two-radii",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for two-radii with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-nonpositive-axis",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for nonpositive-axis with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-inside-first-target",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for inside-first-target with unchanged error handling."
+        },
+        {
+          "caseId": "geometry-trgsep-on-second-sphere",
+          "coverage": ["error"],
+          "observes": "Observe the actual toolkit diagnostic for on-second-sphere with unchanged error handling."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Seven constant/linear SPK segments with invented bodies and explicit analytic trajectories in generate-audit-geometry.py.",
+          "distribution": "Project-authored, distributed under the repository MIT license. No mission observations or external scientific catalog."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Authored semiaxes, fixed orientations and arbitrary body/frame IDs in generate-audit-geometry.py.",
+          "distribution": "Project-authored, distributed under the repository MIT license. No mission observations or external scientific catalog."
+        }
+      ],
+      "fixtureRationale": "Authored constant and linear ephemerides distinguish signs, angular corrections and endpoints. Only the orientation or radii required for each call are loaded.",
+      "cleanup": "Owned clients clear kernels and dispose on all exits. Successive calls check the cleared failure state, restoration of the original fixture results and explicit cleanup after injected allocation failures and genuine toolkit errors.",
+      "tolerance": "The existing absolute and relative scalar tolerances are 1e-12. Public tests require absolute angular agreement below 2e-13 radians against independent geometry formulas, including signed contact crossings.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.trgsep -> registered mutex-protected N-API function -> tspice_trgsep -> guarded trgsep_c.",
+          "executions": ["local-e16-7ae2be19-node", "ci-e16-7ae2be19-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.trgsep -> compiled WASM export and scoped allocation helper -> tspice_trgsep -> guarded trgsep_c.",
+          "executions": ["local-e16-7ae2be19-wasm", "ci-e16-7ae2be19-wasm"]
+        }
+      },
+      "findings": [
+        {
+          "id": "trgsep-source-oracle",
+          "status": "repaired",
+          "summary": "Preserve both caller frame arguments in the independent oracle. SpiceyPy 6.0.3 replaces both supplied frames with NULL string literals. Its high-level wrapper masks real empty-frame errors.",
+          "repair": "Bind the actual independent C function with a double-valued result, double epoch and eight byte strings. Compare both empty-field diagnostics and the full signed angular gap.",
+          "evidence": [
+            "docs/step8-geometry-quantities.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/geometry-quantities.test.ts",
+            "packages/backend-node/test/geometry-quantities-domain.test.ts",
+            "packages/backend-wasm/test/geometry-quantities-allocations.test.ts"
+          ],
+          "caseIds": [
+            "geometry-trgsep-empty-first-frame",
+            "geometry-trgsep-empty-second-frame",
+            "geometry-trgsep-contact",
+            "geometry-trgsep-triaxial-max"
+          ]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
