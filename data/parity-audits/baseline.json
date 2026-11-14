@@ -408,5 +408,14 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "d02-sclk-additions",
+      "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Review the pinned SPICELIB alias, defined-error oracle, partition capacities and field bounds. Record both required local lanes and actual source CI before verification."
+    }
   ]
 }

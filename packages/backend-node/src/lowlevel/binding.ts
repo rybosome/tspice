@@ -312,6 +312,16 @@ export function getNodeBinding(): NativeAddon {
     typeof native.scs2e === "function",
     "Expected native addon to export scs2e(sc, sclkch)",
   );
+  invariant(typeof native.sce2t === "function", "Native addon missing sce2t()");
+  invariant(typeof native.scfmt === "function", "Native addon missing scfmt()");
+  invariant(
+    typeof native.scpart === "function",
+    "Native addon missing scpart()",
+  );
+  invariant(
+    typeof native.sctiks === "function",
+    "Native addon missing sctiks()",
+  );
   invariant(
     typeof native.sce2s === "function",
     "Expected native addon to export sce2s(sc, et)",

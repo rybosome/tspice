@@ -114,6 +114,34 @@ class StepTimeSct2e:
 
 
 @dataclass(frozen=True)
+class StepTimeSce2t:
+    op: Literal["time.sce2t"]
+    sc: int
+    et: float
+
+
+@dataclass(frozen=True)
+class StepTimeScfmt:
+    op: Literal["time.scfmt"]
+    sc: int
+    ticks: float
+    clklen: int = 2048
+
+
+@dataclass(frozen=True)
+class StepTimeScpart:
+    op: Literal["time.scpart"]
+    sc: int
+
+
+@dataclass(frozen=True)
+class StepTimeSctiks:
+    op: Literal["time.sctiks"]
+    sc: int
+    clkstr: str
+
+
+@dataclass(frozen=True)
 class StepTimeSce2c:
     op: Literal["time.sce2c"]
     sc: int

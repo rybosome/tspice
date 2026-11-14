@@ -142,6 +142,87 @@ export interface TimeApi {
   scs2e(sc: number, sclkch: string): number;
 
   /**
+   * Convert finite ET seconds past J2000 to partition-aware spacecraft
+   * clock ticks rounded to a whole tick. The pinned type-1 algorithm rounds
+   * half ticks away from zero and checks the rounded count against the clock
+   * range. Load the spacecraft clock kernel and time-system conversion data
+   * required by that clock. The result is a CSPICE double.
+   *
+   * The backend uses N0067's linked SPICELIB SCE2T implementation with
+   * initialized output and the C wrapper's trace frame. The pinned C wrapper
+   * otherwise copies its own uninitialized temporary on early errors.
+   *
+   * sc is a signed 32-bit spacecraft ID except -2147483648, since the
+   * pinned clock routines negate it to construct kernel variable names.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2t_c.html
+   */
+  sce2t(sc: number, et: number): number;
+
+  /**
+   * Format finite raw clock ticks using the spacecraft's type-1 field
+   * moduli, offsets, widths and output delimiter. The string omits the
+   * partition number. Fractional ticks round to nearest, with half ticks
+   * away from zero. A rounded negative count signals SPICE(VALUEOUTOFRANGE).
+   *
+   * clklen includes the NUL terminator and defaults to 2048 bytes. A signed
+   * capacity below two signals SPICE(STRINGTOOSHORT). A capacity that cannot
+   * hold the nominal field widths signals SPICE(SCLKTRUNCATED). A field
+   * exceeding its nominal width can instead be truncated by CSPICE's final
+   * string assignment. Values above 3100 use 3100 physical bytes, sufficient
+   * for all ten possible finite-double nominal widths and delimiters.
+   *
+   * N0067 uses a 30-byte numeric scratch field. Unsafe field-width logarithms,
+   * nonfinite modulus products, or potential component magnitudes reaching
+   * 10^28 (including a 14-significant-digit rounding margin) are rejected
+   * before formatting. The multi-field guard also excludes the final floating-
+   * point rounding margin below DBL_MAX for the translated remainder operation.
+   * These checks use conservative magnitude bounds and may reject unusual
+   * clock definitions for which a particular formatted component would fit.
+   * They inspect available type-1 field data even when the nominal clock
+   * type differs, because a partition read can populate N0067's clock cache.
+   *
+   * sc is a signed 32-bit spacecraft ID except -2147483648, since the
+   * pinned clock routines negate it to construct kernel variable names.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scfmt_c.html
+   */
+  scfmt(sc: number, ticks: number, clklen?: number): string;
+
+  /**
+   * Read the spacecraft's clock partitions in kernel order. Return fresh
+   * pstart and pstop arrays of equal length. At index i they contain the
+   * inclusive raw starting and stopping ticks of partition i+1. The numbers
+   * are the clock kernel's partition values, before cumulative partition
+   * offsets. Read the count from pstart.length.
+   *
+   * Both physical output buffers hold SPICE_SCLK_MXPART (9999) doubles, as
+   * required by N0067's room-less API. Only the returned entries are copied.
+   * Missing kernel variables and inconsistent start/stop counts reach CSPICE.
+   *
+   * sc is a signed 32-bit spacecraft ID except -2147483648, since the
+   * pinned clock routines negate it to construct kernel variable names.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scpart_c.html
+   */
+  scpart(sc: number): { pstart: number[]; pstop: number[] };
+
+  /**
+   * Convert a clock string to raw double-precision ticks relative to the
+   * start of the spacecraft's clock. Supply the clock fields without a
+   * partition prefix. Type-1 parsing accepts the clock delimiters and applies
+   * field offsets. Missing trailing fields default to their minimum values.
+   * A numeric field can exceed its usual modulus, and trailing zeros in a
+   * field are significant. Load the spacecraft's clock kernel.
+   *
+   * The input is well-formed UTF-8 text without an embedded NUL. Empty input
+   * signals SPICE(EMPTYSTRING). Blank or malformed fields reach CSPICE.
+   * WASM limits the terminated input buffer to 256 MiB.
+   *
+   * sc is a signed 32-bit spacecraft ID except -2147483648, since the
+   * pinned clock routines negate it to construct kernel variable names.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sctiks_c.html
+   */
+  sctiks(sc: number, clkstr: string): number;
+
+  /**
    * Convert ET seconds past J2000 to a partitioned clock string, rounded to the
    * nearest tick, for a signed 32-bit spacecraft ID. Requires its clock kernel
    * and any conversion information required by that clock's time system.

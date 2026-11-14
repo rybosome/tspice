@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import sclk_oracle
 from ..models import (
     StepOutput,
     StepTimeDeltet,
     StepTimeEt2Utc,
     StepTimeScdecd,
     StepTimeScencd,
+    StepTimeSce2t,
+    StepTimeScfmt,
+    StepTimeScpart,
+    StepTimeSctiks,
     StepTimeSce2c,
     StepTimeSce2s,
     StepTimeScs2e,
@@ -125,6 +130,18 @@ def run_time_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOu
     if isinstance(step, StepTimeSct2e):
         et = float(sp.sct2e(step.sc, step.sclkdp))
         return StepOutput(op=step.op, value=et)
+
+    if isinstance(step, StepTimeSce2t):
+        return StepOutput(op=step.op, value=sclk_oracle.sce2t(step.sc, step.et))
+
+    if isinstance(step, StepTimeScfmt):
+        return StepOutput(op=step.op, value=sclk_oracle.scfmt(step.sc, step.ticks, step.clklen))
+
+    if isinstance(step, StepTimeScpart):
+        return StepOutput(op=step.op, value=sclk_oracle.scpart(step.sc))
+
+    if isinstance(step, StepTimeSctiks):
+        return StepOutput(op=step.op, value=sclk_oracle.sctiks(step.sc, step.clkstr))
 
     if isinstance(step, StepTimeSce2c):
         sclkdp = float(sp.sce2c(step.sc, step.et))

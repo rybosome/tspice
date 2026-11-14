@@ -1,5 +1,12 @@
 #include "time.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+#include <limits>
+#include <memory>
+#include <new>
 #include <string>
 
 #include "../addon_common.h"
@@ -9,6 +16,167 @@
 using tspice_napi::SetExportChecked;
 using tspice_napi::PreviewForError;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadClockText(Napi::Env env, const Napi::Value& value, std::string* text) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a string"));
+    return false;
+  }
+  size_t bytes = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &bytes) != napi_ok || bytes >= std::numeric_limits<int>::max()) {
+    ThrowSpiceError(Napi::RangeError::New(env, "String exceeds its UTF-8 byte limit"));
+    return false;
+  }
+  const Napi::String input = value.As<Napi::String>();
+  // N-API replaces unpaired surrogates when encoding UTF-8. Validate the
+  // original UTF-16 units before making the C string.
+  const std::u16string units = input.Utf16Value();
+  for (size_t i = 0; i < units.size(); i++) {
+    const char16_t c = units[i];
+    if (c == 0) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Input contains an embedded NUL"));
+      return false;
+    }
+    if (c >= 0xd800 && c <= 0xdfff) {
+      if (c > 0xdbff || i + 1 == units.size() || units[i+1] < 0xdc00 || units[i+1] > 0xdfff) {
+        ThrowSpiceError(Napi::TypeError::New(env, "Input contains an unpaired UTF-16 surrogate"));
+        return false;
+      }
+      i++;
+    }
+  }
+  *text = input.Utf8Value();
+  return true;
+}
+
+static bool ReadClockInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double n = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(n) && std::trunc(n) == n && n >= -2147483648.0 && n <= 2147483647.0) {
+      *out = static_cast<int>(n);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a signed32 integer"));
+  return false;
+}
+
+static Napi::Value Sce2t(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sce2t() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite clock value"));
+    return env.Undefined();
+  }
+  const double value = info[1].As<Napi::Number>().DoubleValue();
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_sce2t(sc, value, &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sce2t", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Scfmt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "scfmt() expects 3 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite clock value"));
+    return env.Undefined();
+  }
+  const double value = info[1].As<Napi::Number>().DoubleValue();
+  int clklen = 0;
+  if (!ReadClockInt(env, info[2], &clklen)) return env.Undefined();
+  clklen = std::min(clklen, TSPICE_SCLK_FORMAT_MAX_BYTES);
+  char out[TSPICE_SCLK_FORMAT_MAX_BYTES] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_scfmt(sc, value, clklen, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling scfmt", err);
+    return env.Undefined();
+  }
+  const char* end = std::find(out, out + std::max(1, clklen), '\0');
+  if (end == out + std::max(1, clklen)) {
+    ThrowSpiceError(Napi::Error::New(env, "Missing clock string terminator"));
+    return env.Undefined();
+  }
+  return Napi::String::New(env, out, static_cast<size_t>(end - out));
+}
+
+static Napi::Value Scpart(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "scpart() expects 1 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  auto start = std::unique_ptr<double[]>(new (std::nothrow) double[TSPICE_SCLK_MAX_PARTITIONS]);
+  auto stop = std::unique_ptr<double[]>(new (std::nothrow) double[TSPICE_SCLK_MAX_PARTITIONS]);
+  if (!start || !stop) {
+    ThrowSpiceError(Napi::Error::New(env, "Clock partition buffer allocation failed"));
+    return env.Undefined();
+  }
+  int count = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_scpart(sc, TSPICE_SCLK_MAX_PARTITIONS, &count, start.get(), stop.get(), err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling scpart", err);
+    return env.Undefined();
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("pstart", tspice_napi::MakeNumberArray(env, start.get(), static_cast<size_t>(count)));
+  result.Set("pstop", tspice_napi::MakeNumberArray(env, stop.get(), static_cast<size_t>(count)));
+  return result;
+}
+
+static Napi::Value Sctiks(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "sctiks() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int sc = 0;
+  if (!ReadClockInt(env, info[0], &sc)) return env.Undefined();
+  if (sc == INT32_MIN) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Clock ID cannot be negated as a SpiceInt"));
+    return env.Undefined();
+  }
+  std::string text;
+  if (!ReadClockText(env, info[1], &text)) return env.Undefined();
+  double out = 0.0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_sctiks(sc, text.c_str(), &out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling sctiks", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
 
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -387,6 +555,10 @@ void RegisterTime(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "timdefSet", Napi::Function::New(env, TimdefSet), __func__)) return;
 
   if (!SetExportChecked(env, exports, "scs2e", Napi::Function::New(env, Scs2e), __func__)) return;
+  if (!SetExportChecked(env, exports, "sce2t", Napi::Function::New(env, Sce2t), __func__)) return;
+  if (!SetExportChecked(env, exports, "scfmt", Napi::Function::New(env, Scfmt), __func__)) return;
+  if (!SetExportChecked(env, exports, "scpart", Napi::Function::New(env, Scpart), __func__)) return;
+  if (!SetExportChecked(env, exports, "sctiks", Napi::Function::New(env, Sctiks), __func__)) return;
   if (!SetExportChecked(env, exports, "sce2s", Napi::Function::New(env, Sce2s), __func__)) return;
   if (!SetExportChecked(env, exports, "scencd", Napi::Function::New(env, Scencd), __func__)) return;
   if (!SetExportChecked(env, exports, "scdecd", Napi::Function::New(env, Scdecd), __func__)) return;

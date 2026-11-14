@@ -2,9 +2,16 @@
 
 #include "SpiceUsr.h"
 
+#include <float.h>
+#include <limits.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "SpiceZfc.h"
 
 #define TSPICE_TIMDEF_VALUE_MAX 1024
 
@@ -472,6 +479,138 @@ int tspice_scs2e(
     *outEt = (double)et;
   }
 
+  return 0;
+}
+
+_Static_assert(SPICE_SCLK_MXPART == TSPICE_SCLK_MAX_PARTITIONS, "SCPART array bound changed");
+_Static_assert(sizeof(integer) == sizeof(SpiceInt) && sizeof(SpiceInt) == 4, "Unexpected N0067 integer ABI");
+_Static_assert(sizeof(doublereal) == sizeof(SpiceDouble) && sizeof(SpiceDouble) == sizeof(double), "Unexpected N0067 double ABI");
+
+static int SclkError(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// A gdpool miss or structurally invalid array is diagnosed by SC01 before
+// the formatter uses it. Read at most one extra value to recognize oversize
+// arrays without truncating their logical field count.
+static int ClockPoolValues(const char *prefix, int sc, int room, int *count,
+                           double *values, char *err, int errMaxBytes) {
+  char key[64];
+  snprintf(key, sizeof(key), "%s_%d", prefix, -sc);
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt n = 0;
+  gdpool_c(key, 0, room, &n, values, &found);
+  if (SclkError(err, errMaxBytes)) return 1;
+  *count = found ? n : 0;
+  return 0;
+}
+
+static int CheckClockFormat(int sc, double ticks, int clklen, char *err, int errMaxBytes) {
+  if (clklen < 2) return 0;  // The C wrapper itself diagnoses this first.
+  // SCPR01 can populate the shared type-1 cache even when the pool's
+  // nominal type differs. Inspect the formatter data regardless of that code.
+  double moduli[11], offsets[11];
+  int nmod = 0, noff = 0;
+  if (ClockPoolValues("SCLK01_MODULI", sc, 11, &nmod, moduli, err, errMaxBytes) ||
+      ClockPoolValues("SCLK01_OFFSETS", sc, 11, &noff, offsets, err, errMaxBytes)) return 1;
+  if (nmod == 0 || nmod > 10 || nmod != noff) return 0;
+  for (int i = 0; i < nmod; i++) {
+    if (moduli[i] < 1.0) return 0;  // SCLD01 signals VALUEOUTOFRANGE.
+  }
+
+  // SCFM01 takes log10(modulus + offset - 1 + 0.5) and converts it
+  // to a signed integer. Screen nonrepresentable width calculations.
+  double base[10];
+  base[nmod - 1] = 1.0;
+  for (int i = nmod - 1; i >= 0; i--) {
+    const double widthArg = (moduli[i] + offsets[i] - 1.0) + 0.5;
+    if (!(widthArg > 0.0) || !isfinite(widthArg))
+      return tspice_time_invalid_arg(err, errMaxBytes, "Clock format field width is outside the N0067 formatter domain");
+    if (i > 0) {
+      base[i - 1] = base[i] * moduli[i];
+      if (!isfinite(base[i - 1]))
+        return tspice_time_invalid_arg(err, errMaxBytes, "Clock modulus product exceeds the N0067 formatter domain");
+    }
+  }
+
+  // The toolkit uses 30 fixed bytes per component, including its sign and
+  // decimal point. Bound the component magnitudes conservatively without
+  // deriving fields or constructing the returned clock string. For f2c's
+  // d_mod (x - y*floor(x/y)), allow rounding in both arithmetic operations.
+  const double rounded = floor(ticks + 0.5);
+  if (rounded < 0.0) return 0;  // SCFM01 diagnoses rounded negative ticks.
+  // Near DBL_MAX even a rounded quotient times its divisor can overflow
+  // in the pinned d_mod subtraction. A single field performs no division.
+  if (nmod > 1 && rounded > DBL_MAX * (1.0 - 8.0 * DBL_EPSILON))
+    return tspice_time_invalid_arg(err, errMaxBytes, "Clock tick remainder exceeds the N0067 formatter domain");
+  double remainderBound = rounded;
+  for (int i = 0; i < nmod; i++) {
+    const double componentBound = remainderBound / base[i] + fabs(offsets[i]);
+    // DPSTRF rounds to at most 14 significant digits: leave one unit
+    // at that precision so rounding cannot create a 29th integer digit.
+    if (!(componentBound < 1e28 * (1.0 - 1e-13)))
+      return tspice_time_invalid_arg(err, errMaxBytes, "Clock component exceeds the N0067 28-digit formatter domain");
+    if (i + 1 < nmod) {
+      const double subtractionBound = base[i] + 8.0 * DBL_EPSILON * remainderBound;
+      remainderBound = fmin(remainderBound, subtractionBound);
+    }
+  }
+  return 0;
+}
+
+int tspice_sce2t(int sc, double et, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (sc == INT32_MIN || !out || !isfinite(et))
+    return tspice_time_invalid_arg(err, errMaxBytes, "Invalid sce2t scalar or output storage");
+  // N0067 sce2t_c copies its uninitialized private local even when
+  // sce2t_ returns early. Use the exact linked callee and outer trace.
+  integer spacecraft = sc;
+  doublereal epoch = et, encoded = 0.0;
+  chkin_c("sce2t_c");
+  sce2t_(&spacecraft, &epoch, &encoded);
+  chkout_c("sce2t_c");
+  if (SclkError(err, errMaxBytes)) return 1;
+  *out = encoded;
+  return 0;
+}
+
+int tspice_scfmt(int sc, double ticks, int clklen, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (sc == INT32_MIN || !out || !isfinite(ticks) || clklen > TSPICE_SCLK_FORMAT_MAX_BYTES)
+    return tspice_time_invalid_arg(err, errMaxBytes, "Invalid scfmt scalar or output storage");
+  if (CheckClockFormat(sc, ticks, clklen, err, errMaxBytes)) return 1;
+  scfmt_c(sc, ticks, clklen, out);
+  if (SclkError(err, errMaxBytes)) return 1;
+  return 0;
+}
+
+int tspice_scpart(int sc, int room, int *count, double *pstart, double *pstop, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (sc == INT32_MIN || !count || !pstart || !pstop || room < SPICE_SCLK_MXPART)
+    return tspice_time_invalid_arg(err, errMaxBytes, "Invalid scpart scalar or output storage");
+  SpiceInt n = 0;
+  scpart_c(sc, &n, pstart, pstop);
+  if (SclkError(err, errMaxBytes)) return 1;
+  if (n < 0 || n > SPICE_SCLK_MXPART)
+    return tspice_time_invalid_arg(err, errMaxBytes, "Invalid N0067 clock partition count");
+  *count = n;
+  return 0;
+}
+
+int tspice_sctiks(int sc, const char *clkstr, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (sc == INT32_MIN || !out || !clkstr || strlen(clkstr) >= INT32_MAX)
+    return tspice_time_invalid_arg(err, errMaxBytes, "Invalid sctiks scalar or output storage");
+  double ticks = 0.0;
+  sctiks_c(sc, clkstr, &ticks);
+  if (SclkError(err, errMaxBytes)) return 1;
+  *out = ticks;
   return 0;
 }
 

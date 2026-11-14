@@ -92,6 +92,16 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "sce2t": {
+      "node": {
+        "reason": "N0067 sce2t_c unconditionally copies a private uninitialized double after early errors. The shared wrapper preserves its outer CSPICE trace frame and calls the same linked SPICELIB sce2t_ implementation with initialized output storage.",
+        "expectedEntrypoints": ["sce2t_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "N0067 sce2t_c unconditionally copies a private uninitialized double after early errors. The shared wrapper preserves its outer CSPICE trace frame and calls the same linked SPICELIB sce2t_ implementation with initialized output storage.",
+        "expectedEntrypoints": ["sce2t_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

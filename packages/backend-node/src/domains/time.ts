@@ -1,11 +1,47 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
 import {
+  spiceStringByteLength,
   assertNever,
   assertSpiceInt32,
   invariant,
 } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
+
+function clockPartitions(value: unknown): {
+  pstart: number[];
+  pstop: number[];
+} {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("pstart" in value) ||
+    !("pstop" in value)
+  )
+    throw new TypeError("Expected partition start and stop arrays");
+  const { pstart, pstop } = value;
+  if (!Array.isArray(pstart) || !Array.isArray(pstop))
+    throw new TypeError("Expected partition start and stop arrays");
+  const count = pstart.length;
+  if (
+    !Number.isInteger(count) ||
+    count < 0 ||
+    count > 9999 ||
+    pstop.length !== count
+  )
+    throw new RangeError("Invalid clock partition count");
+  const start: number[] = [],
+    stop: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const a: unknown = pstart[i],
+      b: unknown = pstop[i];
+    if (typeof a !== "number" || typeof b !== "number")
+      throw new TypeError("Expected numeric clock partition endpoints");
+    start.push(a);
+    stop.push(b);
+  }
+  return { pstart: start, pstop: stop };
+}
 
 /** Create a {@link TimeApi} implementation backed by the native Node addon. */
 export function createTimeApi(native: NativeAddon): TimeApi {
@@ -126,6 +162,34 @@ export function createTimeApi(native: NativeAddon): TimeApi {
       return et;
     },
 
+    sce2t: (sc, et) => {
+      assertSpiceInt32(sc, "sce2t(sc)", { min: -2147483647 });
+      if (!Number.isFinite(et))
+        throw new TypeError("sce2t(et) must be a finite number");
+      const out = native.sce2t(sc, et);
+      invariant(typeof out === "number", "Expected numeric encoded ticks");
+      return out;
+    },
+    scfmt: (sc, ticks, clklen = 2048) => {
+      assertSpiceInt32(sc, "scfmt(sc)", { min: -2147483647 });
+      if (!Number.isFinite(ticks))
+        throw new TypeError("scfmt(ticks) must be a finite number");
+      assertSpiceInt32(clklen, "scfmt(clklen)");
+      const out = native.scfmt(sc, ticks, Math.min(clklen, 3100));
+      invariant(typeof out === "string", "Expected clock string");
+      return out;
+    },
+    scpart: (sc) => {
+      assertSpiceInt32(sc, "scpart(sc)", { min: -2147483647 });
+      return clockPartitions(native.scpart(sc));
+    },
+    sctiks: (sc, clkstr) => {
+      assertSpiceInt32(sc, "sctiks(sc)", { min: -2147483647 });
+      spiceStringByteLength(clkstr, "sctiks(clkstr)");
+      const out = native.sctiks(sc, clkstr);
+      invariant(typeof out === "number", "Expected numeric clock ticks");
+      return out;
+    },
     sce2s: (sc, et) => {
       assertSpiceInt32(sc, "sce2s(sc)");
       const out = native.sce2s(sc, et);

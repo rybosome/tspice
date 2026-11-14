@@ -93,6 +93,23 @@ For generic solar system work, these NAIF standards are commonly used:
 
 ## Domain: `time` (`TimeApi`)
 
+The additional clock methods use an explicit spacecraft ID and the existing
+kernel lifecycle. `sce2t` converts ET to rounded, partition-aware encoded
+ticks. The remaining methods format or parse raw clock fields or read the
+partition table.
+
+| Raw method                  | Scientific route                                               | Observable result                                                                                      |
+| --------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `sce2t(sc, et)`             | Linked SPICELIB `sce2t_` with the public wrapper’s trace frame | Rounded encoded tick count as a number.                                                                |
+| `scfmt(sc, ticks, clklen?)` | `scfmt_c`                                                      | Clock field string without a partition prefix. Optional capacity defaults to 2048 bytes including NUL. |
+| `scpart(sc)`                | `scpart_c`                                                     | Owned `{pstart, pstop}` arrays, with every returned raw start and stop in original order.              |
+| `sctiks(sc, clkstr)`        | `sctiks_c`                                                     | Raw tick count from a clock field string using the configured field moduli and offsets.                |
+
+The `sce2t_` alias preserves the pinned implementation with defined storage
+on early errors. Clock-field formatting also has a bounded numeric domain
+derived from the implementation’s fixed field workspace.
+[Clock semantics and reviewed source routes](step8-sclk-additions.md)
+
 | domain.method                       | CSPICE entrypoint(s)  | Args (TS shape)                                          | Returns (TS shape) | Comparison notes (tolerance/normalization)                                   | Statefulness / required kernels                                                                                                       |
 | ----------------------------------- | --------------------- | -------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `time.spiceVersion()`               | `tkvrsn_c("TOOLKIT")` | `(): string`                                             | `string`           | exact string match                                                           | none                                                                                                                                  |

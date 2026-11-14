@@ -1522,6 +1522,19 @@ export function createFakeBackend(
       return Number.isFinite(n) ? n : 0;
     },
 
+    sce2t: () => {
+      throw new Error("Fake backend does not model sce2t()");
+    },
+    scfmt: () => {
+      throw new Error("Fake backend does not model scfmt()");
+    },
+    scpart: () => {
+      throw new Error("Fake backend does not model scpart()");
+    },
+    sctiks: () => {
+      throw new Error("Fake backend does not model sctiks()");
+    },
+
     sce2s: (_sc: number, et: number) => {
       // Minimal deterministic stub.
       return String(et);

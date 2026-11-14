@@ -35,6 +35,10 @@ export function dispatchStep(
     case "time.scencd":
     case "time.scdecd":
     case "time.sct2e":
+    case "time.sce2t":
+    case "time.scfmt":
+    case "time.scpart":
+    case "time.sctiks":
     case "time.sce2c":
       return runTimeStep(context, step);
 
