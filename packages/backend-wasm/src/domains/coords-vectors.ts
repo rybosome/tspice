@@ -783,15 +783,46 @@ function assertFixedMatrixScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertFixedMatrix2(
-  value: unknown,
-): asserts value is readonly [number, number, number, number] {
+function copyFixedMatrix2(value: unknown): [number, number, number, number] {
+  const label = "diags2(symmat)";
   if (!Array.isArray(value) || value.length !== 4)
-    throw new TypeError(
-      "diags2(symmat) must contain exactly four finite numbers",
-    );
-  for (let i = 0; i < 4; i++)
-    assertFixedMatrixScalar(value[i], `diags2(symmat)[${i}]`);
+    throw new TypeError(`${label} must contain exactly four finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertFixedMatrixScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
+function copyMatrixInput(value: unknown, label: string): number[] {
+  // As with the structural Mat3 contract, accept numeric TypedArrays as well
+  // as ordinary arrays. Read by index only; a caller iterator is not trusted.
+  if (
+    !(
+      Array.isArray(value) ||
+      value instanceof Float64Array ||
+      value instanceof Float32Array ||
+      value instanceof Int8Array ||
+      value instanceof Uint8Array ||
+      value instanceof Uint8ClampedArray ||
+      value instanceof Int16Array ||
+      value instanceof Uint16Array ||
+      value instanceof Int32Array ||
+      value instanceof Uint32Array
+    ) ||
+    value.length !== 9
+  ) {
+    throw new TypeError(`${label} must contain exactly nine finite numbers`);
+  }
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component: unknown = value[i];
+    assertFixedMatrixScalar(component, `${label}[${i}]`);
+    copy.push(component);
+  }
+  return copy;
 }
 
 function readFixedMatrixResult(
@@ -820,12 +851,12 @@ export function createCoordsVectorsApi(
 ): CoordsVectorsApi {
   return {
     det: (m) => {
-      assertMat3ArrayLike9(m, { label: "det(m)" });
+      const mCopy = copyMatrixInput(m, "det(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 8],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_det(
             mPtr,
             outPtr,
@@ -839,12 +870,12 @@ export function createCoordsVectorsApi(
       );
     },
     diags2: (symmat) => {
-      assertFixedMatrix2(symmat);
+      const symmatCopy = copyFixedMatrix2(symmat);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 32, 32, 32],
         (errPtr, symmatPtr, diagPtr, rotatePtr) => {
-          module.HEAPF64.set(symmat, symmatPtr >> 3);
+          module.HEAPF64.set(symmatCopy, symmatPtr >> 3);
           const status = module._tspice_diags2(
             symmatPtr,
             diagPtr,
@@ -870,12 +901,12 @@ export function createCoordsVectorsApi(
       });
     },
     invert: (m) => {
-      assertMat3ArrayLike9(m, { label: "invert(m)" });
+      const mCopy = copyMatrixInput(m, "invert(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_invert(
             mPtr,
             outPtr,
@@ -889,12 +920,12 @@ export function createCoordsVectorsApi(
       );
     },
     invort: (m) => {
-      assertMat3ArrayLike9(m, { label: "invort(m)" });
+      const mCopy = copyMatrixInput(m, "invort(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_invort(
             mPtr,
             outPtr,
@@ -908,14 +939,14 @@ export function createCoordsVectorsApi(
       );
     },
     isrot: (m, ntol, dtol) => {
-      assertMat3ArrayLike9(m, { label: "isrot(m)" });
+      const mCopy = copyMatrixInput(m, "isrot(m)");
       assertFixedMatrixScalar(ntol, "isrot(ntol)");
       assertFixedMatrixScalar(dtol, "isrot(dtol)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 4],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_isrot(
             mPtr,
             ntol,
@@ -931,12 +962,12 @@ export function createCoordsVectorsApi(
       );
     },
     mequ: (m) => {
-      assertMat3ArrayLike9(m, { label: "mequ(m)" });
+      const mCopy = copyMatrixInput(m, "mequ(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_mequ(
             mPtr,
             outPtr,
@@ -950,14 +981,14 @@ export function createCoordsVectorsApi(
       );
     },
     mtxm: (a, b) => {
-      assertMat3ArrayLike9(a, { label: "mtxm(a)" });
-      assertMat3ArrayLike9(b, { label: "mtxm(b)" });
+      const aCopy = copyMatrixInput(a, "mtxm(a)");
+      const bCopy = copyMatrixInput(b, "mtxm(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72, 72],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_mtxm(
             aPtr,
             bPtr,
@@ -972,14 +1003,14 @@ export function createCoordsVectorsApi(
       );
     },
     mxmt: (a, b) => {
-      assertMat3ArrayLike9(a, { label: "mxmt(a)" });
-      assertMat3ArrayLike9(b, { label: "mxmt(b)" });
+      const aCopy = copyMatrixInput(a, "mxmt(a)");
+      const bCopy = copyMatrixInput(b, "mxmt(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72, 72],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_mxmt(
             aPtr,
             bPtr,
@@ -994,12 +1025,12 @@ export function createCoordsVectorsApi(
       );
     },
     trace: (m) => {
-      assertMat3ArrayLike9(m, { label: "trace(m)" });
+      const mCopy = copyMatrixInput(m, "trace(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 8],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_trace(
             mPtr,
             outPtr,
@@ -1013,12 +1044,12 @@ export function createCoordsVectorsApi(
       );
     },
     xpose: (m) => {
-      assertMat3ArrayLike9(m, { label: "xpose(m)" });
+      const mCopy = copyMatrixInput(m, "xpose(m)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 72, 72],
         (errPtr, mPtr, outPtr) => {
-          module.HEAPF64.set(m, mPtr >> 3);
+          module.HEAPF64.set(mCopy, mPtr >> 3);
           const status = module._tspice_xpose(
             mPtr,
             outPtr,

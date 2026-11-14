@@ -36,7 +36,9 @@
     "packages/tspice/src/transport/rpc/protocol.ts",
     "packages/tspice/src/transport/rpc/taskScheduling.ts",
     "packages/tspice/src/worker/transport/createWorkerTransport.ts",
-    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts"
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts"
   ],
   "executions": [
     {
@@ -99,7 +101,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed2318 live Node/WASM comparisons and2543 parity-package tests with zero skips and production-addon guard executed;120 native,646 WASM,34 core,152 facade tests passed. Full scientific outputs, genuine SPICE error recovery, matrix result ownership and RPC nonfinite/signed-zero boundaries exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed2318 live Node/WASM comparisons and2543 parity-package tests with zero skips and production-addon guard executed;120 native,646 WASM,34 core,152 facade tests passed. Full scientific outputs, genuine SPICE error recovery, matrix result ownership and RPC nonfinite/signed-zero boundaries exercised.",
+      "historical": true
     },
     {
       "id": "local-a12-72bd1365-wasm",
@@ -161,7 +164,8 @@
         "coords-vectors-xpose-ordered-asymmetric",
         "coords-vectors-xpose-zero-and-identity"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed2318 live Node/WASM comparisons and2543 parity-package tests with zero skips and production-addon guard executed;120 native,646 WASM,34 core,152 facade tests passed. Full scientific outputs, genuine SPICE error recovery, matrix result ownership and RPC nonfinite/signed-zero boundaries exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed2318 live Node/WASM comparisons and2543 parity-package tests with zero skips and production-addon guard executed;120 native,646 WASM,34 core,152 facade tests passed. Full scientific outputs, genuine SPICE error recovery, matrix result ownership and RPC nonfinite/signed-zero boundaries exercised.",
+      "historical": true
     },
     {
       "id": "ci-a12-72bd1365-node",
@@ -225,7 +229,8 @@
       ],
       "commit": "72bd136594136641758355de3ca2c3011b7b7174",
       "url": "https://github.com/rybosome/tspice/actions/runs/43542559918/job/132286223439",
-      "observation": "Observed uncached Linux Node22 native-required CI success:2318 live Node/WASM comparisons and2543 parity-package tests, zero skips, production-addon guard executed;120native,646WASM,34core,152facade tests passed. Complete final-head matrix gates readiness separately."
+      "observation": "Observed uncached Linux Node22 native-required CI success:2318 live Node/WASM comparisons and2543 parity-package tests, zero skips, production-addon guard executed;120native,646WASM,34core,152facade tests passed. Complete final-head matrix gates readiness separately.",
+      "historical": true
     },
     {
       "id": "ci-a12-72bd1365-wasm",
@@ -289,7 +294,8 @@
       ],
       "commit": "72bd136594136641758355de3ca2c3011b7b7174",
       "url": "https://github.com/rybosome/tspice/actions/runs/43542559918/job/132286223439",
-      "observation": "Observed uncached Linux Node22 native-required CI success:2318 live Node/WASM comparisons and2543 parity-package tests, zero skips, production-addon guard executed;120native,646WASM,34core,152facade tests passed. Complete final-head matrix gates readiness separately."
+      "observation": "Observed uncached Linux Node22 native-required CI success:2318 live Node/WASM comparisons and2543 parity-package tests, zero skips, production-addon guard executed;120native,646WASM,34core,152facade tests passed. Complete final-head matrix gates readiness separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -326,19 +332,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls det_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "The unchanged shared 1e-12 absolute-or-relative comparator observes the scalar. A focused 1e150/1e-150 rescaling compares tiny/huge finite determinant results to the live oracle and requires a distinguishing nonzero value. Overflow uses explicit nonfinite classification without rounding or a global tolerance change.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-det-asymmetric-and-transpose"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.det -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_det shared C shim -> det_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.det -> typed WASM adapter -> configured _tspice_det export -> tspice_det shared C shim -> det_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -380,19 +412,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls diags2_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 4 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "All eight returned entries use the unchanged shared comparator. Tiny diagonal entries are independently rescaled and compared live; rotate entries remain compared directly at their ordinary magnitude. No eigenvalue sorting, sign canonicalization or invariant-only substitute is used. The scoped probe retains both outputs, including nonfinite entries.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-diags2-distinct-eigenvalues-and-signs"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.diags2 -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_diags2 shared C shim -> diags2_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.diags2 -> typed WASM adapter -> configured _tspice_diags2 export -> tspice_diags2 shared C shim -> diags2_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -422,16 +480,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.ident -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_ident shared C shim -> ident_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.ident -> typed WASM adapter -> configured _tspice_ident export -> tspice_ident shared C shim -> ident_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -514,20 +572,47 @@
             "coords-vectors-invert-nonsymmetric-positive-negative",
             "coords-vectors-invert-singular-zero-and-dependent"
           ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-invert-nonsymmetric-positive-negative"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.invert -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invert shared C shim -> invert_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.invert -> typed WASM adapter -> configured _tspice_invert export -> tspice_invert shared C shim -> invert_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -594,19 +679,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls invort_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "Every entry reaches the unchanged shared comparator. Focused live result scaling distinguishes tiny reciprocals, while the 1e-308 valid-column control is checked at an ordinary scaled magnitude. Error identifiers are observed separately from numeric tolerance. The extreme probe retains all output rows, including a numerically zero huge-column row.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-invort-orthogonal-scaled-columns"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.invort -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invort shared C shim -> invort_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.invort -> typed WASM adapter -> configured _tspice_invort export -> tspice_invort shared C shim -> invort_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -653,19 +764,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls isrot_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "Boolean results are exact. Boundary and loose-tolerance cases exercise the actual inclusive criteria, not a numeric closeness surrogate. Error tokens and same-client failed()==false recovery are separate observations; negative scientific tolerances are not blocked by finite-input validation.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-isrot-proper-reflection-singular"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.isrot -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_isrot shared C shim -> isrot_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.isrot -> typed WASM adapter -> configured _tspice_isrot export -> tspice_isrot shared C shim -> isrot_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -697,19 +834,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls mequ_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "Registered entries use the unchanged shared comparator; the focused finite-extreme workflow is additionally compared exactly to live SpiceyPy, distinguishing subnormal loss. Object.is separately checks signed zero, since generic JSON parity alone cannot certify its sign.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mequ-ordered-asymmetric"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mequ -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mequ shared C shim -> mequ_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mequ -> typed WASM adapter -> configured _tspice_mequ export -> tspice_mequ shared C shim -> mequ_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -766,20 +929,47 @@
             "coords-vectors-mtxm-gram-matrix",
             "coords-vectors-mtxm-balanced-scales"
           ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mtxm-asymmetric-operand-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mtxm -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mtxm shared C shim -> mtxm_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mtxm -> typed WASM adapter -> configured _tspice_mtxm export -> tspice_mtxm shared C shim -> mtxm_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -836,20 +1026,47 @@
             "coords-vectors-mxmt-gram-matrix",
             "coords-vectors-mxmt-balanced-scales"
           ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mxmt-asymmetric-operand-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mxmt -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mxmt shared C shim -> mxmt_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mxmt -> typed WASM adapter -> configured _tspice_mxmt export -> tspice_mxmt shared C shim -> mxmt_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -881,19 +1098,45 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls trace_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "The scalar uses the unchanged shared comparator. Focused live rescaling of tiny sums prevents accepting zero through absolute tolerance alone. Off-diagonal mutations preserve the same expected trace. Explicit overflow classification keeps the real nonfinite scalar.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-trace-diagonal-selection"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.trace -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_trace shared C shim -> trace_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.trace -> typed WASM adapter -> configured _tspice_trace export -> tspice_trace shared C shim -> trace_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     },
@@ -925,22 +1168,48 @@
       "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
       "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls xpose_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
       "tolerance": "Every registered entry reaches the unchanged shared comparator. The finite-extreme case also uses exact live output equality, and literal Object.is assertions separately observe signed zero. All positions are retained, with no invariant-only or norm-only comparison.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/backend-wasm/test/fixed-matrices-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-xpose-ordered-asymmetric"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.xpose -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_xpose shared C shim -> xpose_c; complete scalar/boolean/matrix output copied and propagated.",
-          "executions": ["local-a12-72bd1365-node", "ci-a12-72bd1365-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.xpose -> typed WASM adapter -> configured _tspice_xpose export -> tspice_xpose shared C shim -> xpose_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
-          "executions": ["local-a12-72bd1365-wasm", "ci-a12-72bd1365-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }
