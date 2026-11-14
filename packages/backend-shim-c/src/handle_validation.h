@@ -35,6 +35,9 @@ SpiceCell *tspice_validate_window_kind(uintptr_t handle, char *err, int errMaxBy
 int tspice_preserves_window_control(const SpiceCell *window);
 void tspice_set_window_control_preserved(const SpiceCell *window, int preserve);
 
+// Validate a live normalized, bounded input window for an in-place query.
+SpiceCell *tspice_validate_input_window(uintptr_t handle, char *err, int errMaxBytes);
+
 // Enforce the caller precondition that a size cannot exceed original allocated
 // backing storage. CSPICE cannot detect this from the mutable cell descriptor.
 int tspice_validate_cell_capacity(

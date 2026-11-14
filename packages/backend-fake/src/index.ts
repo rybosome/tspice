@@ -1556,6 +1556,27 @@ export function createFakeBackend(
       return { found: false };
     },
 
+    pckcls: () => {
+      throw new Error("Fake backend: pckcls() is not implemented");
+    },
+    pckcov: () => {
+      throw new Error("Fake backend: pckcov() is not implemented");
+    },
+    pckfrm: () => {
+      throw new Error("Fake backend: pckfrm() is not implemented");
+    },
+    pcklof: () => {
+      throw new Error("Fake backend: pcklof() is not implemented");
+    },
+    pckopn: () => {
+      throw new Error("Fake backend: pckopn() is not implemented");
+    },
+    pckuof: () => {
+      throw new Error("Fake backend: pckuof() is not implemented");
+    },
+    pckw02: () => {
+      throw new Error("Fake backend: pckw02() is not implemented");
+    },
     cklpf: (_ck: string) => {
       throw new Error("Fake backend: cklpf() is not implemented");
     },

@@ -75,3 +75,7 @@ and every interval through the public API and independent oracle. The audit
 also checks handle lifetimes, output capacity, closed boundaries, genuine
 errors and source-specific summary indices.
 [Window semantics and evidence](step8-window-algebra.md)
+
+## Binary PCK orientation files
+
+The seven C11 routines use independent binary fixtures and writers. Both compiled backends export physical DAF records for an independent reader and evaluate complete state and rotation matrices. [Binary PCK behavior and scoped observations](step8-pck-binary.md) [Per-routine audit](../data/parity-audits/c11-pck-binary.json)

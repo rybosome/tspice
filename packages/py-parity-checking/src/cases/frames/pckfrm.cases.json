@@ -1,0 +1,148 @@
+[
+  {
+    "caseId": "frames-pckfrm-fixture-classes",
+    "description": "Observe sorted class IDs from three physical segments, two sharing one ID.",
+    "workflow": [
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/audit-orientation.bpc",
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckfrm-accumulate",
+    "description": "Owned output preserves the original duplicate classes and a new negative class across files.",
+    "workflow": [
+      {
+        "op": "frames.pckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "ifname": "TSPICE TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.pckw02",
+        "handleId": "w",
+        "classId": -2001,
+        "frame": "J2000",
+        "first": 0,
+        "last": 20,
+        "segid": "TWO RECORDS",
+        "intlen": 10,
+        "n": 2,
+        "degree": 1,
+        "coefficients": [
+          0.2, 0.03, 0.5, -0.02, 0.7, 0.04, 0.4, -0.01, 0.8, 0.01, 1.1, -0.06
+        ],
+        "btime": 0
+      },
+      {
+        "op": "frames.pckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/audit-orientation.bpc",
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": true
+      },
+      {
+        "op": "frames.pckfrm",
+        "path": {
+          "kind": "scratch",
+          "rel": "output.bpc"
+        },
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": false
+      },
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/audit-orientation.bpc",
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckfrm-tight",
+    "description": "A two-element cell exactly fits both distinct fixture classes.",
+    "workflow": [
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/audit-orientation.bpc",
+        "idsId": "ids",
+        "maxCard": 2,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-pckfrm-capacity",
+    "description": "A second distinct ID exceeds the one-element integer set.",
+    "workflow": [
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/audit-orientation.bpc",
+        "idsId": "ids",
+        "maxCard": 1,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "frames-pckfrm-missing",
+    "description": "Missing binary PCK path produces actual file diagnostics.",
+    "workflow": [
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/missing-c11.bpc",
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "frames-pckfrm-text",
+    "description": "Text PCK is a valid kernel but has no DAF segment IDs.",
+    "workflow": [
+      {
+        "op": "frames.pckfrm",
+        "path": "kernels/pck00010.tpc",
+        "idsId": "ids",
+        "maxCard": 8,
+        "reset": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARCHTYPE"]
+    }
+  }
+]

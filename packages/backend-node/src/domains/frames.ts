@@ -1,8 +1,13 @@
 import type {
+  SpiceHandle,
+  VirtualOutput,
+  SpiceHandleRegistry,
   FramesApi,
   SpiceMatrix6x6,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copyPckCoefficients,
+  requirePckString,
   assertSpiceInt32,
   brandMat6RowMajor,
   brandMat3RowMajor,
@@ -10,6 +15,7 @@ import {
   invariant,
 } from "@rybosome/tspice-core";
 
+import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 
@@ -98,14 +104,139 @@ function validateCkPointing(
     throw new TypeError("CK reference must be a string");
 }
 
+function pckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected a PCK path or VirtualOutput");
+  return { kind: "virtual-output", path: requirePckString(file.path) };
+}
+
 /** Create a {@link FramesApi} implementation backed by the native Node addon. */
 export function createFramesApi(
   native: NativeAddon,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  handles: SpiceHandleRegistry,
+  outputs: VirtualOutputStager,
+  destinations: { ids: ReadonlySet<number>; windows: ReadonlySet<number> },
 ): FramesApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+  const resolveRead = (file: string | VirtualOutput) =>
+    typeof file === "string"
+      ? resolvePath(requirePckString(file))
+      : outputs.resolvePathForSpice(pckOutput(file));
+  const writerOutputs = new Map<SpiceHandle, VirtualOutput>();
 
+  const loaded = new Map<number, SpiceHandle>();
   return {
+    pckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "pckopn ncomch");
+      requirePckString(ifname);
+      const target =
+        typeof file === "string" ? requirePckString(file) : pckOutput(file);
+      const path = outputs.resolvePathForSpice(target);
+      const value = native.pckopn(path, ifname, ncomch);
+      try {
+        const handle = handles.register("PCK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(target);
+          writerOutputs.set(handle, target);
+        }
+        return handle;
+      } catch (error) {
+        native.dafcls(value);
+        throw error;
+      }
+    },
+    pckcls: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-WRITER"],
+        (entry) => native.pckcls(entry.nativeHandle),
+        "pckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    pcklof: (file) => {
+      const path = resolveRead(file);
+      const value = native.pcklof(path);
+      const existing = loaded.get(value);
+      if (existing !== undefined) return existing;
+      try {
+        const handle = handles.register("PCK-LOADED", value);
+        loaded.set(value, handle);
+        return handle;
+      } catch (error) {
+        native.pckuof(value);
+        throw error;
+      }
+    },
+    pckuof: (handle) => {
+      handles.close(
+        handle,
+        ["PCK-LOADED"],
+        (entry) => {
+          native.pckuof(entry.nativeHandle);
+          loaded.delete(entry.nativeHandle);
+        },
+        "pckuof",
+      );
+    },
+    pckcov: (file, classId, cover) => {
+      const path = resolveRead(file);
+      assertSpiceInt32(classId, "pckcov classId");
+      if (!destinations.windows.has(cover))
+        throw new RangeError("Expected an owned live PCK query destination");
+      assertOpaqueHandle(cover, "pckcov");
+      native.pckcov(path, classId, cover);
+    },
+    pckfrm: (file, ids) => {
+      const path = resolveRead(file);
+      if (!destinations.ids.has(ids))
+        throw new RangeError("Expected an owned live PCK query destination");
+      assertOpaqueHandle(ids, "pckfrm");
+      native.pckfrm(path, ids);
+    },
+    pckw02: (
+      handle,
+      classId,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      coefficients,
+      btime,
+    ) => {
+      const values = copyPckCoefficients(n, degree, coefficients);
+      assertSpiceInt32(classId, "pckw02 classId");
+      requirePckString(frame);
+      requirePckString(segid);
+      if (![first, last, intlen, btime].every(Number.isFinite))
+        throw new RangeError("PCK epochs and interval must be finite");
+      const writer = handles.lookup(
+        handle,
+        ["PCK-WRITER"],
+        "pckw02",
+      ).nativeHandle;
+      native.pckw02(
+        writer,
+        classId,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        values,
+        btime,
+      );
+    },
     namfrm: (name) => {
       const out = native.namfrm(name);
       if (!out.found) {

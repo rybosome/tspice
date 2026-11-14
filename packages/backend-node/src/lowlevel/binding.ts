@@ -498,6 +498,34 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export cellGetc(cell, index)",
   );
   invariant(
+    typeof native.pckcls === "function",
+    "Expected native addon to export pckcls",
+  );
+  invariant(
+    typeof native.pckcov === "function",
+    "Expected native addon to export pckcov",
+  );
+  invariant(
+    typeof native.pckfrm === "function",
+    "Expected native addon to export pckfrm",
+  );
+  invariant(
+    typeof native.pcklof === "function",
+    "Expected native addon to export pcklof",
+  );
+  invariant(
+    typeof native.pckopn === "function",
+    "Expected native addon to export pckopn",
+  );
+  invariant(
+    typeof native.pckuof === "function",
+    "Expected native addon to export pckuof",
+  );
+  invariant(
+    typeof native.pckw02 === "function",
+    "Expected native addon to export pckw02",
+  );
+  invariant(
     typeof native.wncomd === "function",
     "Native addon missing wncomd()",
   );

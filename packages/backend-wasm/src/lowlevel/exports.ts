@@ -1638,6 +1638,51 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_pckcls(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_pckcov(
+    path: number,
+    classId: number,
+    dest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckfrm(
+    path: number,
+    dest: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pcklof(
+    path: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckopn(
+    path: number,
+    ifname: number,
+    ncomch: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pckuof(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_pckw02(
+    handle: number,
+    classId: number,
+    frame: number,
+    first: number,
+    last: number,
+    segid: number,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: number,
+    count: number,
+    btime: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cklpf(
     ckPathPtr: number,
     outHandlePtr: number,
@@ -2412,6 +2457,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",
+  "_tspice_pckcls",
+  "_tspice_pckcov",
+  "_tspice_pckfrm",
+  "_tspice_pcklof",
+  "_tspice_pckopn",
+  "_tspice_pckuof",
+  "_tspice_pckw02",
   "_tspice_cklpf",
   "_tspice_ckupf",
   "_tspice_ckobj",

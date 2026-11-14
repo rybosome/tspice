@@ -142,6 +142,10 @@ export type {
   Vec3,
   Vec6,
 } from "./spice-runtime/shared/types.js";
+export {
+  copyPckCoefficients,
+  requirePckString,
+} from "./spice-runtime/shared/pck.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";

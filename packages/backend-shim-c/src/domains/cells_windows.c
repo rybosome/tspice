@@ -929,6 +929,10 @@ static int AlgebraCard(const SpiceCell *window) {
   return (int)((const double *)window->base)[SPICE_CELL_CTRLSZ - 1];
 }
 
+SpiceCell *tspice_validate_input_window(uintptr_t handle, char *err, int errMaxBytes) {
+  return AlgebraWindow(handle, WINDOW_INPUT, err, errMaxBytes);
+}
+
 int tspice_wncomd(
     double left, double right, uintptr_t windowHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();

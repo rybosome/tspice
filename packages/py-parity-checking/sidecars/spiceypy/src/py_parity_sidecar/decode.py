@@ -118,6 +118,13 @@ from .models import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesPckcls,
+    StepFramesPckcov,
+    StepFramesPckfrm,
+    StepFramesPcklof,
+    StepFramesPckopn,
+    StepFramesPckuof,
+    StepFramesPckw02,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -1351,6 +1358,69 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgpav.sclkdp"),
                 tol=_expect_number(step.get("tol"), label="frames.ckgpav.tol"),
                 ref=_expect_string(step.get("ref"), label="frames.ckgpav.ref"),
+            )
+
+        case "frames.pckcls":
+            return StepFramesPckcls(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.pckcls.handleId"),
+            )
+
+        case "frames.pckcov":
+            return StepFramesPckcov(
+                op=op,
+                path=_decode_path_ref(step.get("path"), label="frames.pckcov.path"),
+                classId=_expect_int(step.get("classId"), label="frames.pckcov.classId"),
+                coverId=_expect_string(step.get("coverId"), label="frames.pckcov.coverId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="frames.pckcov.maxIntervals"),
+                reset=_expect_bool(step.get("reset"), label="frames.pckcov.reset"),
+            )
+
+        case "frames.pckfrm":
+            return StepFramesPckfrm(
+                op=op,
+                path=_decode_path_ref(step.get("path"), label="frames.pckfrm.path"),
+                idsId=_expect_string(step.get("idsId"), label="frames.pckfrm.idsId"),
+                maxCard=_expect_int(step.get("maxCard"), label="frames.pckfrm.maxCard"),
+                reset=_expect_bool(step.get("reset"), label="frames.pckfrm.reset"),
+            )
+
+        case "frames.pcklof":
+            return StepFramesPcklof(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.pcklof.handleId"),
+                path=_decode_path_ref(step.get("path"), label="frames.pcklof.path"),
+            )
+
+        case "frames.pckopn":
+            return StepFramesPckopn(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.pckopn.handleId"),
+                path=_decode_path_ref(step.get("path"), label="frames.pckopn.path"),
+                ifname=_expect_string(step.get("ifname"), label="frames.pckopn.ifname"),
+                ncomch=_expect_int(step.get("ncomch"), label="frames.pckopn.ncomch"),
+            )
+
+        case "frames.pckuof":
+            return StepFramesPckuof(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.pckuof.handleId"),
+            )
+
+        case "frames.pckw02":
+            return StepFramesPckw02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.pckw02.handleId"),
+                classId=_expect_int(step.get("classId"), label="frames.pckw02.classId"),
+                frame=_expect_string(step.get("frame"), label="frames.pckw02.frame"),
+                first=_expect_number(step.get("first"), label="frames.pckw02.first"),
+                last=_expect_number(step.get("last"), label="frames.pckw02.last"),
+                segid=_expect_string(step.get("segid"), label="frames.pckw02.segid"),
+                intlen=_expect_number(step.get("intlen"), label="frames.pckw02.intlen"),
+                n=_expect_int(step.get("n"), label="frames.pckw02.n"),
+                degree=_expect_int(step.get("degree"), label="frames.pckw02.degree"),
+                coefficients=_expect_number_list(step.get("coefficients"), label="frames.pckw02.coefficients"),
+                btime=_expect_number(step.get("btime"), label="frames.pckw02.btime"),
             )
 
         case "frames.cklpf":

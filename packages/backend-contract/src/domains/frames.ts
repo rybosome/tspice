@@ -5,6 +5,8 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 import type {
+  SpiceHandle,
+  VirtualOutput,
   Found,
   Mat3RowMajor,
   SpiceMatrix6x6,
@@ -21,6 +23,68 @@ export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
 /** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
+  /**
+   * Close an owned PCK writer and release its virtual output for readback. An empty writer signals NOSEGMENTSFOUND and remains open for a corrected write.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcls_c.html
+   */
+  pckcls(handle: SpiceHandle): void;
+
+  /**
+   * Union the coverage of a binary PCK frame class ID into a caller-owned, normalized window. Endpoints are TDB seconds past J2000. An absent ID adds nothing. On WINDOWEXCESS the toolkit can leave partial intervals accessible through the window routines. Reset or free the window before reusing it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckcov_c.html
+   */
+  pckcov(
+    file: string | VirtualOutput,
+    classId: number,
+    cover: SpiceWindow,
+  ): void;
+
+  /**
+   * Insert all frame class IDs from a binary PCK into the supplied integer set, retaining existing members. These are class IDs (e.g. 3000 for ITRF93). Capacity errors may leave partial storage. Reset the cardinality or free the set before reuse.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckfrm_c.html
+   */
+  pckfrm(file: string | VirtualOutput, ids: SpiceIntCell): void;
+
+  /**
+   * Load a binary PCK into the low-level orientation search and return an owner-local handle. Loading a file again promotes its priority. One unload removes the file regardless of repeated loads. Direct PCK loads share toolkit state with KEEPER. Coordinate their lifetimes when using both interfaces.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pcklof_c.html
+   */
+  pcklof(file: string | VirtualOutput): SpiceHandle;
+
+  /**
+   * Create a binary PCK writer with an internal file name and reserved comment characters. Nonpositive reservations allocate no comments. Use a VirtualOutput for portable readback after successful close. A string addresses the native file system on Node or the virtual kernel namespace on WASM.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckopn_c.html
+   */
+  pckopn(
+    file: string | VirtualOutput,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
+
+  /**
+   * Unload a binary PCK registered through pcklof. Lower-priority frame data becomes eligible again. The supplied handle belongs to this backend.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckuof_c.html
+   */
+  pckuof(handle: SpiceHandle): void;
+
+  /**
+   * Write one type 2 orientation segment for a frame class ID relative to a named inertial frame. first, last and btime are TDB seconds past J2000. Each of n equal records spans intlen seconds, starting at btime. Supply exactly 3 × (degree + 1) finite Chebyshev coefficients per record in Euler angle order (phi, delta, W), in radians. The rotation is [W]3 [delta]1 [phi]3. Degrees 0–41 fit the N0067 orientation reader. Coefficient buffers are limited to 256 MiB. Nonpositive n uses an empty coefficient array to expose the toolkit diagnostic. Roundoff in extreme time ranges must leave representable radii, epochs and record indices.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pckw02_c.html
+   */
+  pckw02(
+    handle: SpiceHandle,
+    classId: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: readonly number[],
+    btime: number,
+  ): void;
+
   /**
    * Resolve a frame name; case and outer blanks are insignificant.
    * @param name Frame name; empty strings signal EMPTYSTRING.

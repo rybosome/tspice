@@ -283,6 +283,25 @@ export type NativeAddon = {
     ref: string,
   ): { found: boolean; cmat?: number[]; av?: number[]; clkout?: number };
 
+  pckcls(handle: number): void;
+  pckcov(path: string, classId: number, cover: number): void;
+  pckfrm(path: string, ids: number): void;
+  pcklof(path: string): number;
+  pckopn(path: string, ifname: string, ncomch: number): number;
+  pckuof(handle: number): void;
+  pckw02(
+    handle: number,
+    classId: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    coefficients: readonly number[],
+    btime: number,
+  ): void;
   cklpf(ck: string): number;
   ckupf(handle: number): void;
   ckobj(ck: string, idsCellHandle: number): void;

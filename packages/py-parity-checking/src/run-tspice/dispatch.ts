@@ -201,6 +201,13 @@ export function dispatchStep(
     case "frames.ccifrm":
     case "frames.ckgp":
     case "frames.ckgpav":
+    case "frames.pckcls":
+    case "frames.pckcov":
+    case "frames.pckfrm":
+    case "frames.pcklof":
+    case "frames.pckopn":
+    case "frames.pckuof":
+    case "frames.pckw02":
     case "frames.cklpf":
     case "frames.ckupf":
     case "frames.ckobj":
