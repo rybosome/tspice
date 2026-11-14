@@ -1509,7 +1509,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised.",
+      "historical": true
     },
     {
       "id": "local-a06-18576cc4-wasm",
@@ -1535,7 +1536,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised.",
+      "historical": true
     },
     {
       "id": "ci-a06-18576cc4-node",
@@ -1563,7 +1565,8 @@
       ],
       "commit": "18576cc465e7d9da8f084c03a009654ffe429d8e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544195073/job/132291465391",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately.",
+      "historical": true
     },
     {
       "id": "ci-a06-18576cc4-wasm",
@@ -1591,7 +1594,8 @@
       ],
       "commit": "18576cc465e7d9da8f084c03a009654ffe429d8e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544195073/job/132291465391",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1702,11 +1706,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1721,11 +1726,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -1883,11 +1889,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1902,11 +1909,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -2053,11 +2061,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2072,14 +2081,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

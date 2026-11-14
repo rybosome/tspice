@@ -782,14 +782,17 @@ function assertConventionScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertConventionVector(
-  value: unknown,
-  label: string,
-): asserts value is Readonly<SpiceVector3> {
+function copyConventionVector(value: unknown, label: string): SpiceVector3 {
   if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(`${label} must contain exactly three finite numbers`);
-  for (let i = 0; i < 3; i++)
-    assertConventionScalar(value[i], `${label}[${i}]`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
 }
 
 function assertConventionBoolean(
@@ -845,14 +848,14 @@ export function createCoordsVectorsApi(
       });
     },
     recazl: (rect, azccw, elplsz) => {
-      assertConventionVector(rect, "recazl(rect)");
+      const rectCopy = copyConventionVector(rect, "recazl(rect)");
       assertConventionBoolean(azccw, "recazl(azccw)");
       assertConventionBoolean(elplsz, "recazl(elplsz)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, rectPtr, outPtr) => {
-          module.HEAPF64.set(rect, rectPtr >> 3);
+          module.HEAPF64.set(rectCopy, rectPtr >> 3);
           const status = module._tspice_recazl(
             rectPtr,
             azccw ? 1 : 0,
@@ -901,7 +904,7 @@ export function createCoordsVectorsApi(
     },
     recpgr: (body, rect, re, f) => {
       assertConventionBody(body, "recpgr(body)");
-      assertConventionVector(rect, "recpgr(rect)");
+      const rectCopy = copyConventionVector(rect, "recpgr(rect)");
       assertConventionScalar(re, "recpgr(re)");
       assertConventionScalar(f, "recpgr(f)");
       const bodyBytes = new TextEncoder().encode(body);
@@ -911,7 +914,7 @@ export function createCoordsVectorsApi(
         (errPtr, bodyPtr, rectPtr, outPtr) => {
           module.HEAPU8.set(bodyBytes, bodyPtr);
           module.HEAPU8[bodyPtr + bodyBytes.length] = 0;
-          module.HEAPF64.set(rect, rectPtr >> 3);
+          module.HEAPF64.set(rectCopy, rectPtr >> 3);
           const status = module._tspice_recpgr(
             bodyPtr,
             rectPtr,
@@ -947,12 +950,12 @@ export function createCoordsVectorsApi(
       });
     },
     recrad: (rect) => {
-      assertConventionVector(rect, "recrad(rect)");
+      const rectCopy = copyConventionVector(rect, "recrad(rect)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, rectPtr, outPtr) => {
-          module.HEAPF64.set(rect, rectPtr >> 3);
+          module.HEAPF64.set(rectCopy, rectPtr >> 3);
           const status = module._tspice_recrad(
             rectPtr,
             outPtr,

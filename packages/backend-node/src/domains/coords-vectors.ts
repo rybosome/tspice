@@ -23,14 +23,17 @@ function assertConventionScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertConventionVector(
-  value: unknown,
-  label: string,
-): asserts value is Readonly<SpiceVector3> {
+function copyConventionVector(value: unknown, label: string): SpiceVector3 {
   if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(`${label} must contain exactly three finite numbers`);
-  for (let i = 0; i < 3; i++)
-    assertConventionScalar(value[i], `${label}[${i}]`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
 }
 
 function assertConventionBoolean(
@@ -79,10 +82,10 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       return conventionOutputVector(out, "azlrec result");
     },
     recazl: (rect, azccw, elplsz) => {
-      assertConventionVector(rect, "recazl(rect)");
+      const rectCopy = copyConventionVector(rect, "recazl(rect)");
       assertConventionBoolean(azccw, "recazl(azccw)");
       assertConventionBoolean(elplsz, "recazl(elplsz)");
-      const out: unknown = native.recazl(rect, azccw, elplsz);
+      const out: unknown = native.recazl(rectCopy, azccw, elplsz);
       invariant(isPlainObject(out), "Expected recazl() to return an object");
       return {
         range: conventionOutputNumber(out.range, "recazl().range"),
@@ -102,10 +105,10 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
     },
     recpgr: (body, rect, re, f) => {
       assertConventionBody(body, "recpgr(body)");
-      assertConventionVector(rect, "recpgr(rect)");
+      const rectCopy = copyConventionVector(rect, "recpgr(rect)");
       assertConventionScalar(re, "recpgr(re)");
       assertConventionScalar(f, "recpgr(f)");
-      const out: unknown = native.recpgr(body, rect, re, f);
+      const out: unknown = native.recpgr(body, rectCopy, re, f);
       invariant(isPlainObject(out), "Expected recpgr() to return an object");
       return {
         lon: conventionOutputNumber(out.lon, "recpgr().lon"),
@@ -121,8 +124,8 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       return conventionOutputVector(out, "radrec result");
     },
     recrad: (rect) => {
-      assertConventionVector(rect, "recrad(rect)");
-      const out: unknown = native.recrad(rect);
+      const rectCopy = copyConventionVector(rect, "recrad(rect)");
+      const out: unknown = native.recrad(rectCopy);
       invariant(isPlainObject(out), "Expected recrad() to return an object");
       return {
         range: conventionOutputNumber(out.range, "recrad().range"),

@@ -32,7 +32,10 @@
     "packages/py-parity-checking/fixtures/README.md",
     "docs/step8-coordinate-conventions.md",
     "packages/backend-wasm/src/codec/calls.ts",
-    "packages/backend-wasm/src/domains/kernels.ts"
+    "packages/backend-wasm/src/domains/kernels.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
   ],
   "executions": [
     {
@@ -102,7 +105,8 @@
         "coords-vectors-srfrec-triaxial-mixed-and-axes",
         "coords-vectors-srfrec-zero-axis-radii-error"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised.",
+      "historical": true
     },
     {
       "id": "local-a06-18576cc4-wasm",
@@ -171,7 +175,8 @@
         "coords-vectors-srfrec-triaxial-mixed-and-axes",
         "coords-vectors-srfrec-zero-axis-radii-error"
       ],
-      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised."
+      "observation": "Both complete required local lanes passed. Native-required executed 2332 live Node/WASM comparisons and2559 parity-package tests with zero skips and production-addon guard executed;108 native,626 WASM,28 core,150 facade tests passed. Authored fixture, pool transitions, scientific error recovery, allocation cleanup and complete numerical results exercised.",
+      "historical": true
     },
     {
       "id": "ci-a06-18576cc4-node",
@@ -242,7 +247,8 @@
       ],
       "commit": "18576cc465e7d9da8f084c03a009654ffe429d8e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544195073/job/132291465391",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately.",
+      "historical": true
     },
     {
       "id": "ci-a06-18576cc4-wasm",
@@ -313,7 +319,8 @@
       ],
       "commit": "18576cc465e7d9da8f084c03a009654ffe429d8e",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544195073/job/132291465391",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job: 2332 actual Node/WASM live comparisons and 2559 parity-package tests passed with no skips; production native availability guard passed. Both required local lanes also passed at this source; 108 native, 626 WASM, 28 core and 150 facade tests. Final-head full matrix is tracked separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -353,16 +360,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.azlrec -> typed Node coords-vectors adapter -> native binding azlrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_azlrec shared shim -> azlrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.azlrec -> typed WASM coords-vectors adapter -> exported _tspice_azlrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> azlrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -399,19 +406,44 @@
       "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
       "cleanup": "The shared shim uses fixed local storage, calls recazl_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
       "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance. The scoped ten-observation extreme test uses independently classified finite/NaN/signed-infinity values and the existing comparator; it retains all components and finite controls. Ordinary JSON cases cannot encode nonfinite output. See docs/step8-coordinate-conventions.md.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-recazl-all-direction-flags"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recazl -> typed Node coords-vectors adapter -> native binding recazl in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recazl shared shim -> recazl_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recazl -> typed WASM coords-vectors adapter -> exported _tspice_recazl (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recazl_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -507,16 +539,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.pgrrec -> typed Node coords-vectors adapter -> native binding pgrrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_pgrrec shared shim -> pgrrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.pgrrec -> typed WASM coords-vectors adapter -> exported _tspice_pgrrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> pgrrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -614,19 +646,44 @@
       "fixtureRationale": "Authored body names, PM coefficients and ellipsoid radii exercise current kernel-pool semantics; workflow pool edits are synthetic and isolated. No LSK, SPK, frame kernel or measured planetary parameters are needed.",
       "cleanup": "The shared shim uses fixed local storage, calls recpgr_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned. Both workflow runtimes clear kernel/error state around cases through their existing lifecycle; explicit workflows also observe pool overwrite and clear/reload effects. Focused state/error tests reset and kclear in finally before disposing. This is shared SPICE-state testing, not independent-client isolation.",
       "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-recpgr-earth-name-and-numeric-id"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recpgr -> typed Node coords-vectors adapter -> native binding recpgr in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recpgr shared shim -> recpgr_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recpgr -> typed WASM coords-vectors adapter -> exported _tspice_recpgr (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recpgr_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -666,16 +723,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.radrec -> typed Node coords-vectors adapter -> native binding radrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_radrec shared shim -> radrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.radrec -> typed WASM coords-vectors adapter -> exported _tspice_radrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> radrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -712,19 +769,44 @@
       "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
       "cleanup": "The shared shim uses fixed local storage, calls recrad_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
       "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance. The positive near-axis RA is multiplied by 1e15 and compared to actual oracle output. The scoped ten-observation extreme test uses independently classified finite/NaN/signed-infinity values and the existing comparator; it retains all components and finite controls. Ordinary JSON cases cannot encode nonfinite output. See docs/step8-coordinate-conventions.md.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-recrad-mixed-quadrants"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recrad -> typed Node coords-vectors adapter -> native binding recrad in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recrad shared shim -> recrad_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.recrad -> typed WASM coords-vectors adapter -> exported _tspice_recrad (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recrad_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     },
@@ -824,19 +906,25 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.srfrec -> typed Node coords-vectors adapter -> native binding srfrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_srfrec shared shim -> srfrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-node", "ci-a06-18576cc4-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfrec -> typed WASM coords-vectors adapter -> exported _tspice_srfrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> srfrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
-          "executions": ["local-a06-18576cc4-wasm", "ci-a06-18576cc4-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }
