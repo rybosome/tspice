@@ -1,0 +1,322 @@
+[
+  {
+    "caseId": "cells-windows-appndc-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Az"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "Az"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "char",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-exact-capacity",
+    "description": "Use every storage slot, inspect ordered and repeated physical values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A",
+        "maxCardinality": 2
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "char",
+        "targetId": "S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-full",
+    "description": "Overflow after successful mutation reports the toolkit capacity error.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "",
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-zero-capacity",
+    "description": "An ordinary zero-capacity cell cannot accept an element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A",
+        "maxCardinality": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-complete-bytes",
+    "description": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "éZ12",
+        "length": 4
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "éZ"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "éZ12"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "ÉZ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-terminal-tab",
+    "description": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A\t"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A\t"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndc-fortran-blanks",
+    "description": "A padded item compares equal in orderedness, clearing set status on duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Z  "
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "Z"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  }
+]

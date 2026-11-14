@@ -14,6 +14,66 @@ class StepCellsWindowsCard:
 
 
 @dataclass(frozen=True)
+class StepCellsWindowsAppndc:
+    op: Literal["cells-windows.appndc"]
+    cellId: str
+    item: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsAppndd:
+    op: Literal["cells-windows.appndd"]
+    cellId: str
+    item: float
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsAppndi:
+    op: Literal["cells-windows.appndi"]
+    cellId: str
+    item: int
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsCopy:
+    op: Literal["cells-windows.copy"]
+    kind: Literal["char", "int", "double"]
+    sourceId: str
+    resultId: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsElemc:
+    op: Literal["cells-windows.elemc"]
+    cellId: str
+    item: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsElemd:
+    op: Literal["cells-windows.elemd"]
+    cellId: str
+    item: float
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsElemi:
+    op: Literal["cells-windows.elemi"]
+    cellId: str
+    item: int
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
 class StepCellsWindowsInsrtc:
     op: Literal["cells-windows.insrtc"]
     cellId: str

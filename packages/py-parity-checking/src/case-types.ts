@@ -305,6 +305,59 @@ export type StepCellsWindowsCard = {
   targetId: string;
 };
 
+export type StepCellsWindowsAppndc = {
+  op: "cells-windows.appndc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsAppndd = {
+  op: "cells-windows.appndd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsAppndi = {
+  op: "cells-windows.appndi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsCopy = {
+  op: "cells-windows.copy";
+  kind: "int" | "double" | "char";
+  sourceId: string;
+  resultId: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsElemc = {
+  op: "cells-windows.elemc";
+  cellId: string;
+  item: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
+export type StepCellsWindowsElemd = {
+  op: "cells-windows.elemd";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
+export type StepCellsWindowsElemi = {
+  op: "cells-windows.elemi";
+  cellId: string;
+  item: number;
+  maxCardinality?: number;
+};
+
 export type StepCellsWindowsInsrtc = {
   op: "cells-windows.insrtc";
   cellId: string;
@@ -1424,6 +1477,13 @@ export type WorkflowStep =
   | StepCoordsVectorsMxv
   | StepCoordsVectorsMtxv
   | StepCellsWindowsCard
+  | StepCellsWindowsAppndc
+  | StepCellsWindowsAppndd
+  | StepCellsWindowsAppndi
+  | StepCellsWindowsCopy
+  | StepCellsWindowsElemc
+  | StepCellsWindowsElemd
+  | StepCellsWindowsElemi
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -1648,6 +1708,13 @@ export type StepOutput =
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.card"; value: number }
+  | { op: "cells-windows.appndc"; value: string[] }
+  | { op: "cells-windows.appndd"; value: number[] }
+  | { op: "cells-windows.appndi"; value: number[] }
+  | { op: "cells-windows.copy"; value: number[] | string[] }
+  | { op: "cells-windows.elemc"; value: boolean }
+  | { op: "cells-windows.elemd"; value: boolean }
+  | { op: "cells-windows.elemi"; value: boolean }
   | { op: "cells-windows.insrtc"; value: string[] }
   | { op: "cells-windows.insrtd"; value: number[] }
   | { op: "cells-windows.insrti"; value: number[] }

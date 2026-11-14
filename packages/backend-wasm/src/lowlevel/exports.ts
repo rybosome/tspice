@@ -1128,6 +1128,51 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_appndc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_copy(
+    source: number,
+    destination: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -2171,6 +2216,51 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_appndc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_copy(
+    source: number,
+    destination: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -2514,6 +2604,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_valid",
   "_tspice_insrti",
   "_tspice_insrtd",
+  "_tspice_appndc",
+  "_tspice_appndd",
+  "_tspice_appndi",
+  "_tspice_elemc",
+  "_tspice_elemd",
+  "_tspice_elemi",
+  "_tspice_copy",
   "_tspice_insrtc",
   "_tspice_cell_geti",
   "_tspice_cell_getd",

@@ -89,6 +89,76 @@ export interface CellsWindowsApi {
   // -- Cells ------------------------------------------------------------------
 
   /**
+   * Append a NUL-free string to an ordinary character cell, retaining order and duplicates.
+   * CSPICE compares the full UTF-8 input with the previous stored row before copying
+   * at most length−1 bytes. Thus two distinct inputs can store the same prefix while
+   * isSet remains true. Truncating a UTF-8 scalar is rejected before writing.
+   * A full cell signals SPICE(CELLTOOSMALL), even for duplicates.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndc_c.html
+   */
+  appndc(item: string, cell: SpiceCharCell): void;
+
+  /**
+   * Append an ordered double, including either infinity, to an ordinary double cell.
+   * Duplicates and out-of-order values are stored and clear the set flag.
+   * NaN is rejected. A full cell signals SPICE(CELLTOOSMALL).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndd_c.html
+   */
+  appndd(item: number, cell: SpiceDoubleCell): void;
+
+  /**
+   * Append a signed 32-bit integer to an ordinary integer cell without sorting.
+   * Duplicates and out-of-order values are stored and clear the set flag.
+   * A full cell signals SPICE(CELLTOOSMALL), even for duplicates.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/appndi_c.html
+   */
+  appndi(item: number, cell: SpiceIntCell): void;
+
+  /**
+   * Test membership in a sorted, set-flagged character cell. The full NUL-free
+   * UTF-8 key is compared case-sensitively with stored bytes. Trailing ASCII
+   * spaces are insignificant, tabs are significant. An empty set returns false.
+   * An unset set flag signals SPICE(NOTASET).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemc_c.html
+   */
+  elemc(item: string, cell: SpiceCharCell): boolean;
+
+  /**
+   * Test exact membership in a sorted, set-flagged double cell, including
+   * either infinity. NaN is rejected. An empty set returns false and an unset
+   * set flag signals SPICE(NOTASET).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemd_c.html
+   */
+  elemd(item: number, cell: SpiceDoubleCell): boolean;
+
+  /**
+   * Test exact membership of a signed 32-bit integer in a sorted, set-flagged
+   * integer cell. An empty set returns false and an unset set flag signals
+   * SPICE(NOTASET).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemi_c.html
+   */
+  elemi(item: number, cell: SpiceIntCell): boolean;
+
+  /**
+   * Copy elements in order into a live, same-type ordinary cell, preserving its
+   * capacity and set flag. Self-copy is supported. Use valid before membership if
+   * the copied contents were unsorted. Numeric copies that signal CELLTOOSMALL
+   * can write the fitting prefix while the destination descriptor retains its old
+   * cardinality. Reset with scard(0, destination) before reusing it as empty.
+   * Character copies use temporary storage, trim trailing ASCII spaces on success,
+   * and leave the destination untouched on capacity or row-width errors. Both
+   * character widths must accommodate the five-byte Fortran control encoding
+   * plus NUL. Narrower destination rows can accept values whose nonblank bytes fit.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/copy_c.html
+   */
+  copy(
+    ...args:
+      | [source: SpiceCharCell, destination: SpiceCharCell]
+      | [source: SpiceDoubleCell, destination: SpiceDoubleCell]
+      | [source: SpiceIntCell, destination: SpiceIntCell]
+  ): void;
+
+  /**
    * Set logical capacity and clear cardinality, preserving backing allocation.
    * The non-negative size must not exceed the capacity originally allocated.
    * A previously reduced size may be restored within that original bound.

@@ -13,14 +13,17 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 175
-- Planned (not yet implemented): 474
+- Implemented now (SpiceRawBackend): 182
+- Planned (not yet implemented): 467
 - Excluded: 3
 
 ## Implemented now
 
 | Routine | Purpose (1 line) |
 | --- | --- |
+| `appndc_c` | Append an item to a character cell |
+| `appndd_c` | Append an item to a double precision cell |
+| `appndi_c` | Append an item to an integer cell |
 | `axisar_c` | Axis and angle to rotation |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
@@ -41,6 +44,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
+| `copy_c` | Copy a SPICE cell |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
@@ -77,6 +81,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `elemc_c` | Element of a character set |
+| `elemd_c` | Element of a double precision set |
+| `elemi_c` | Element of an integer set |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -201,9 +208,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 
 | Routine | Purpose (1 line) |
 | --- | --- |
-| `appndc_c` | Append an item to a character cell |
-| `appndd_c` | Append an item to a double precision cell |
-| `appndi_c` | Append an item to an integer cell |
 | `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
@@ -245,7 +249,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
-| `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
 | `cposr_c` | Character position, reverse |
 | `cyllat_c` | Cylindrical to latitudinal |
@@ -360,9 +363,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekucei_c` | EK, update integer column entry |
 | `ekuef_c` | EK, unload event file |
 | `el2cgv_c` | Ellipse to center and generating vectors |
-| `elemc_c` | Element of a character set |
-| `elemd_c` | Element of a double precision set |
-| `elemi_c` | Element of an integer set |
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |

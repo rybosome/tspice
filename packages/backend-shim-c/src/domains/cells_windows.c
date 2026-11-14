@@ -726,6 +726,133 @@ int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxB
   return 0;
 }
 
+static int CellCallStatus(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// copy_c reads numeric size/card from the translated control area. On
+// CELLTOOSMALL the written cardinality there may differ from cell->card.
+static int CheckCopyStorage(const SpiceCell *cell, char *err, int errMaxBytes) {
+  if (cell->dtype == SPICE_CHR) {
+    // C2F_MAP_CELL and the C string repacking loops use signed SpiceInt offsets.
+    if (cell->length < 1 || cell->size > INT32_MAX - SPICE_CELL_CTRLSZ ||
+        cell->size + SPICE_CELL_CTRLSZ > INT32_MAX / cell->length) {
+      return tspice_return_error(err, errMaxBytes, "Character cell exceeds CSPICE copy workspace bounds");
+    }
+    return 0;
+  }
+
+  double size, card;
+  if (cell->dtype == SPICE_DP) {
+    const SpiceDouble *base = cell->base;
+    size = base[SPICE_CELL_CTRLSZ - 2];
+    card = base[SPICE_CELL_CTRLSZ - 1];
+  } else {
+    const SpiceInt *base = cell->base;
+    size = base[SPICE_CELL_CTRLSZ - 2];
+    card = base[SPICE_CELL_CTRLSZ - 1];
+  }
+  if (size != cell->size || !(card >= 0 && card <= size) || trunc(card) != card ||
+      card > INT32_MAX - (SPICE_CELL_CTRLSZ - 1)) {
+    return tspice_return_error(err, errMaxBytes, "Invalid numeric cell copy control or index bounds");
+  }
+  return 0;
+}
+
+int tspice_appndc(const char *item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!item || strlen(item) >= INT32_MAX)
+    return tspice_return_error(err, errMaxBytes, "Invalid cell item string or byte length");
+  if (cell->dtype == SPICE_CHR && cell->card < cell->size) {
+    if (cell->length < 1 || cell->card > INT32_MAX / cell->length)
+      return tspice_return_error(err, errMaxBytes, "Character cell offset exceeds CSPICE index bounds");
+    // appndc truncates to length-1 bytes. Reject a split scalar before mutation.
+    const size_t limit = (size_t)cell->length - 1;
+    if (strlen(item) > limit && (((unsigned char)item[limit] & 0xc0) == 0x80))
+      return tspice_return_error(err, errMaxBytes, "Character cell width splits a UTF-8 scalar");
+  }
+  appndc_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_appndd(double item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (isnan(item)) return tspice_return_error(err, errMaxBytes, "Cell item must be an ordered number");
+  appndd_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_appndi(int item, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  appndi_c(item, cell);
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_elemc(const char *item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing cell membership output");
+  if (!item || strlen(item) >= INT32_MAX)
+    return tspice_return_error(err, errMaxBytes, "Invalid cell item string or byte length");
+  if (cell->dtype == SPICE_CHR && cell->isSet && (cell->card > INT32_MAX / 2 + 1 || cell->length < 1 ||
+       cell->card - 1 > INT32_MAX / cell->length))
+    return tspice_return_error(err, errMaxBytes, "Cell exceeds CSPICE binary search index bounds");
+  *out = elemc_c(item, cell) ? 1 : 0;
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_elemd(double item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing cell membership output");
+  if (isnan(item)) return tspice_return_error(err, errMaxBytes, "Cell item must be an ordered number");
+  if (cell->dtype == SPICE_DP && cell->isSet && cell->card > INT32_MAX / 2)
+    return tspice_return_error(err, errMaxBytes, "Cell exceeds CSPICE binary search index bounds");
+  *out = elemd_c(item, cell) ? 1 : 0;
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_elemi(int item, uintptr_t handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *cell = tspice_validate_ordinary_cell(handle, err, errMaxBytes);
+  if (!cell) return 1;
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing cell membership output");
+  if (cell->dtype == SPICE_INT && cell->isSet && cell->card > INT32_MAX / 2)
+    return tspice_return_error(err, errMaxBytes, "Cell exceeds CSPICE binary search index bounds");
+  *out = elemi_c(item, cell) ? 1 : 0;
+  return CellCallStatus(err, errMaxBytes);
+}
+
+int tspice_copy(uintptr_t sourceHandle, uintptr_t destinationHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  SpiceCell *source = tspice_validate_ordinary_cell(sourceHandle, err, errMaxBytes);
+  if (!source) return 1;
+  SpiceCell *destination = tspice_validate_ordinary_cell(destinationHandle, err, errMaxBytes);
+  if (!destination) return 1;
+  // Mismatched types are diagnosed by copy_c before it touches either array.
+  if (source->dtype == destination->dtype &&
+      (CheckCopyStorage(source, err, errMaxBytes) || CheckCopyStorage(destination, err, errMaxBytes))) return 1;
+  copy_c(source, destination);
+  return CellCallStatus(err, errMaxBytes);
+}
+
 int tspice_cell_geti(uintptr_t cellHandle, int index, int *outItem, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {

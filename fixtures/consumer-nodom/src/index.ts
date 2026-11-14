@@ -74,3 +74,52 @@ export async function windowAlgebraConsumer(
     }
   }
 }
+
+/** Exercise ordinary cell mutation, same-kind copies and membership on both public facades. */
+export async function cellArrayConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  {
+    const c = spice.kit.newCharCell(2, 8);
+    const i = spice.kit.newIntCell(2);
+    const d = spice.kit.newDoubleCell(2);
+    try {
+      spice.raw.appndc("x", c);
+      spice.raw.copy(c, c);
+      const hasC: boolean = spice.raw.elemc("x", c);
+      spice.raw.appndi(-2, i);
+      spice.raw.copy(i, i);
+      const hasI: boolean = spice.raw.elemi(-2, i);
+      spice.raw.appndd(0.5, d);
+      spice.raw.copy(d, d);
+      const hasD: boolean = spice.raw.elemd(0.5, d);
+      void [hasC, hasI, hasD];
+    } finally {
+      spice.kit.freeCell(d);
+      spice.kit.freeCell(i);
+      spice.kit.freeCell(c);
+    }
+  }
+  {
+    const c = await asyncSpice.kit.newCharCell(2, 8);
+    const i = await asyncSpice.kit.newIntCell(2);
+    const d = await asyncSpice.kit.newDoubleCell(2);
+    try {
+      await asyncSpice.raw.appndc("x", c);
+      await asyncSpice.raw.copy(c, c);
+      const hasC: boolean = await asyncSpice.raw.elemc("x", c);
+      await asyncSpice.raw.appndi(-2, i);
+      await asyncSpice.raw.copy(i, i);
+      const hasI: boolean = await asyncSpice.raw.elemi(-2, i);
+      await asyncSpice.raw.appndd(0.5, d);
+      await asyncSpice.raw.copy(d, d);
+      const hasD: boolean = await asyncSpice.raw.elemd(0.5, d);
+      void [hasC, hasI, hasD];
+    } finally {
+      await asyncSpice.kit.freeCell(d);
+      await asyncSpice.kit.freeCell(i);
+      await asyncSpice.kit.freeCell(c);
+    }
+  }
+}

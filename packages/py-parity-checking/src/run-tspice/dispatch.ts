@@ -70,6 +70,13 @@ export function dispatchStep(
       return runCoordsVectorsStep(context, step);
 
     case "cells-windows.card":
+    case "cells-windows.appndc":
+    case "cells-windows.appndd":
+    case "cells-windows.appndi":
+    case "cells-windows.copy":
+    case "cells-windows.elemc":
+    case "cells-windows.elemd":
+    case "cells-windows.elemi":
     case "cells-windows.insrtc":
     case "cells-windows.insrtd":
     case "cells-windows.insrti":

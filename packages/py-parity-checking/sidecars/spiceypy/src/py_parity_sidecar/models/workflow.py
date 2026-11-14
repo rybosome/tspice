@@ -4,6 +4,13 @@ from typing import TypeAlias
 
 from .cells_windows import (
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -258,6 +265,13 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
     | StepCellsWindowsCard
+    | StepCellsWindowsAppndc
+    | StepCellsWindowsAppndd
+    | StepCellsWindowsAppndi
+    | StepCellsWindowsCopy
+    | StepCellsWindowsElemc
+    | StepCellsWindowsElemd
+    | StepCellsWindowsElemi
     | StepCellsWindowsInsrtc
     | StepCellsWindowsInsrtd
     | StepCellsWindowsInsrti

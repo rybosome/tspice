@@ -389,6 +389,21 @@ interval. The complete status and readback checks include the actual
 N0067 full-capacity union, first-tie summary indices and empty sentinels.
 [Window algebra and failure state](step8-window-algebra.md)
 
+### Ordinary cell arrays
+
+| Raw method                  | Canonical routine | Behavior                                                           |
+| --------------------------- | ----------------- | ------------------------------------------------------------------ |
+| `appndc(item, cell)`        | `appndc_c`        | Append to a fixed-width character row, retaining significant tabs. |
+| `appndd(item, cell)`        | `appndd_c`        | Append a binary64 value, including infinity and signed zero.       |
+| `appndi(item, cell)`        | `appndi_c`        | Append a signed32 integer in caller order.                         |
+| `elemc(item, cell)`         | `elemc_c`         | Determine full-key membership, ignoring trailing ASCII spaces.     |
+| `elemd(item, cell)`         | `elemd_c`         | Test exact membership of an ordered binary64 value.                |
+| `elemi(item, cell)`         | `elemi_c`         | Test exact signed32 membership.                                    |
+| `copy(source, destination)` | `copy_c`          | Copy ordered rows into the caller's same-type ordinary cell.       |
+
+Append can clear the cell's set flag. Copy retains the destination flag and
+can leave a partial numeric prefix on capacity error. [State, errors and exact membership observations](step8-cell-arrays.md)
+
 ### Kernel-pool observations and boundaries
 
 Kernel-pool reads preserve zero-based paging, complete values, found flags and CSPICE name order (which is not generally sorted). Missing/wrong-type values differ from an empty page of an existing variable. `gipool` rounds halfway values away from zero and signals `INTOUTOFRANGE` for unrepresentable values. Paging arguments must fit signed SpiceInt on both backends before allocation or native conversion.

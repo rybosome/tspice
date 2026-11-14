@@ -28,6 +28,7 @@ int tspice_registry_add(SpiceCell *cell, int isWindow, const char *ctx, char *er
 int tspice_registry_remove(SpiceCell *cell);
 
 // Accept only a live allocation issued specifically as a window.
+SpiceCell *tspice_validate_ordinary_cell(uintptr_t handle, char *err, int errMaxBytes);
 SpiceCell *tspice_validate_window_kind(uintptr_t handle, char *err, int errMaxBytes);
 
 // Failed B03 result calls can leave the written Fortran cardinality different

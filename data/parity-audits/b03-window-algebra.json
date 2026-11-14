@@ -137,7 +137,8 @@
         "cells-windows-wnunid-touching-and-singletons",
         "cells-windows-wnunid-undersized-result"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-b03-b664f159-wasm",
@@ -227,7 +228,8 @@
         "cells-windows-wnunid-touching-and-singletons",
         "cells-windows-wnunid-undersized-result"
       ],
-      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-node",
@@ -319,7 +321,8 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-b03-b664f159-wasm",
@@ -411,7 +414,372 @@
       ],
       "commit": "b664f15909c03adc55c4434523438742e1f3a5e7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
-      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-b01-4ab87429-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fc649b10dbcd7b2c4ddc1e120e8542379491ea4b745f32373013695167572608",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-b01-4ab87429-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fc649b10dbcd7b2c4ddc1e120e8542379491ea4b745f32373013695167572608",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "observation": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b01-4ab87429-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fc649b10dbcd7b2c4ddc1e120e8542379491ea4b745f32373013695167572608",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "commit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43561148351/job/132344875851",
+      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b01-4ab87429-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fc649b10dbcd7b2c4ddc1e120e8542379491ea4b745f32373013695167572608",
+      "caseIds": [
+        "cells-windows-wncomd-clipped-and-disjoint",
+        "cells-windows-wncomd-closure-overwrites-result",
+        "cells-windows-wncomd-empty-window",
+        "cells-windows-wncomd-reversed-endpoints",
+        "cells-windows-wncomd-singleton-closure",
+        "cells-windows-wncomd-undersized-result",
+        "cells-windows-wncomd-zero-capacity-empty-result",
+        "cells-windows-wncond-asymmetric-margins",
+        "cells-windows-wncond-coalescing-at-boundary",
+        "cells-windows-wncond-crossed-and-equal-endpoints",
+        "cells-windows-wncond-empty-and-zero",
+        "cells-windows-wncond-negative-and-mixed-margins",
+        "cells-windows-wndifd-empty-operands",
+        "cells-windows-wndifd-exact-capacity",
+        "cells-windows-wndifd-interleaved-and-reversed",
+        "cells-windows-wndifd-nested-and-disjoint",
+        "cells-windows-wndifd-same-input",
+        "cells-windows-wndifd-touching-and-singletons",
+        "cells-windows-wndifd-undersized-result",
+        "cells-windows-wnelmd-adjacent-representable-values",
+        "cells-windows-wnelmd-closed-boundaries-and-gaps",
+        "cells-windows-wnelmd-empty",
+        "cells-windows-wnelmd-signed-extrema",
+        "cells-windows-wnexpd-asymmetric-margins",
+        "cells-windows-wnexpd-coalescing-at-boundary",
+        "cells-windows-wnexpd-crossed-and-equal-endpoints",
+        "cells-windows-wnexpd-empty-and-zero",
+        "cells-windows-wnexpd-negative-and-mixed-margins",
+        "cells-windows-wnextd-empty",
+        "cells-windows-wnextd-left-endpoints",
+        "cells-windows-wnextd-lowercase-left",
+        "cells-windows-wnextd-lowercase-right",
+        "cells-windows-wnextd-right-endpoints",
+        "cells-windows-wnextd-unrecognized-selector",
+        "cells-windows-wnfild-all-intervals",
+        "cells-windows-wnfild-empty",
+        "cells-windows-wnfild-isolated-single",
+        "cells-windows-wnfild-negative-zero-and-singletons",
+        "cells-windows-wnfild-threshold-equality",
+        "cells-windows-wnfltd-all-intervals",
+        "cells-windows-wnfltd-empty",
+        "cells-windows-wnfltd-isolated-single",
+        "cells-windows-wnfltd-negative-zero-and-singletons",
+        "cells-windows-wnfltd-threshold-equality",
+        "cells-windows-wnincd-empty",
+        "cells-windows-wnincd-isolated-point",
+        "cells-windows-wnincd-reversed-endpoint-arguments",
+        "cells-windows-wnincd-whole-and-contained",
+        "cells-windows-wnintd-empty-operands",
+        "cells-windows-wnintd-exact-capacity",
+        "cells-windows-wnintd-interleaved-and-reversed",
+        "cells-windows-wnintd-nested-and-disjoint",
+        "cells-windows-wnintd-same-input",
+        "cells-windows-wnintd-touching-and-singletons",
+        "cells-windows-wnintd-undersized-result",
+        "cells-windows-wnreld-empty-operator",
+        "cells-windows-wnreld-empty-relations",
+        "cells-windows-wnreld-equal-handles-and-values",
+        "cells-windows-wnreld-incomparable-overlap",
+        "cells-windows-wnreld-leading-blank",
+        "cells-windows-wnreld-proper-subset-and-superset",
+        "cells-windows-wnreld-trailing-blanks",
+        "cells-windows-wnreld-unknown-operator",
+        "cells-windows-wnsumd-all-fields-and-ties",
+        "cells-windows-wnsumd-empty",
+        "cells-windows-wnsumd-equal-width-and-singleton",
+        "cells-windows-wnsumd-large-scale",
+        "cells-windows-wnsumd-mixed-width-population",
+        "cells-windows-wnsumd-odd-cardinality",
+        "cells-windows-wnsumd-small-scale",
+        "cells-windows-wnunid-empty-operands",
+        "cells-windows-wnunid-exact-capacity",
+        "cells-windows-wnunid-full-capacity-overlap",
+        "cells-windows-wnunid-interleaved-and-reversed",
+        "cells-windows-wnunid-nested-and-disjoint",
+        "cells-windows-wnunid-same-input",
+        "cells-windows-wnunid-touching-and-singletons",
+        "cells-windows-wnunid-undersized-result"
+      ],
+      "commit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43561148351/job/132344875851",
+      "observation": "Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -482,16 +850,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wncomd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wncomd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -536,16 +918,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wncond -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wncond -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -616,16 +1010,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wndifd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wndifd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -665,16 +1073,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnelmd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnelmd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -719,16 +1139,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnexpd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnexpd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -794,16 +1226,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnextd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnextd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -848,16 +1294,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnfild -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnfild -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -902,16 +1360,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnfltd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnfltd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -951,16 +1421,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnincd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnincd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -1031,16 +1513,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnintd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnintd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -1100,16 +1596,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnreld -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnreld -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -1181,16 +1689,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnsumd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnsumd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     },
@@ -1278,16 +1800,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnunid -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-node", "ci-b03-b664f159-node"]
+          "executions": ["local-b01-4ab87429-node", "ci-b01-4ab87429-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.wnunid -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
-          "executions": ["local-b03-b664f159-wasm", "ci-b03-b664f159-wasm"]
+          "executions": ["local-b01-4ab87429-wasm", "ci-b01-4ab87429-wasm"]
         }
       }
     }

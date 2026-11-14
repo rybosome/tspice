@@ -581,6 +581,13 @@ export type NativeAddon = {
 
   insrti(item: number, cell: number): void;
   insrtd(item: number, cell: number): void;
+  appndc(item: string, cell: number): void;
+  appndd(item: number, cell: number): void;
+  appndi(item: number, cell: number): void;
+  elemc(item: string, cell: number): boolean;
+  elemd(item: number, cell: number): boolean;
+  elemi(item: number, cell: number): boolean;
+  copy(source: number, destination: number): void;
   insrtc(item: string, cell: number): void;
 
   cellGeti(cell: number, index: number): number;

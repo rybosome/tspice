@@ -1,0 +1,612 @@
+[
+  {
+    "caseId": "cells-windows-copy-char-overwrite",
+    "description": "Copy replaces the destination contents but retains its capacity; both cells remain independent.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " B"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": "T",
+        "maxCardinality": 5
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.size",
+        "targetKind": "char",
+        "targetId": "T"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "T"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "T"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-self",
+    "description": "Self-copy on initialized data retains canonical contents and membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " B"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "S"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-small",
+    "description": "Target cannot hold all source values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " B"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": "T",
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-empty",
+    "description": "Empty source clears the target cardinality without changing its capacity.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " B"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": "T"
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "T"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-target-not-a-set",
+    "description": "Target set flag remains false even when source data was sorted.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " B"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": "T"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": " B"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-double-overwrite",
+    "description": "Copy replaces the destination contents but retains its capacity; both cells remain independent.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -123.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": 1024.125,
+        "maxCardinality": 5
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "double",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.size",
+        "targetKind": "double",
+        "targetId": "T"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1024.125
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": 1024.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-double-self",
+    "description": "Self-copy on initialized data retains canonical contents and membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -123.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "double",
+        "sourceId": "S",
+        "resultId": "S"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": 1e-6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-double-small",
+    "description": "Target cannot hold all source values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -123.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": 1024.125,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "double",
+        "sourceId": "S",
+        "resultId": "T"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-double-empty",
+    "description": "Empty source clears the target cardinality without changing its capacity.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "S",
+        "item": -123.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": 1024.125
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "double",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": 1024.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-double-target-not-a-set",
+    "description": "Target set flag remains false even when source data was sorted.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "S",
+        "item": -123.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": 1024.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "T",
+        "item": 1e-6
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "double",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemd",
+        "cellId": "T",
+        "item": -123.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-int-overwrite",
+    "description": "Copy replaces the destination contents but retains its capacity; both cells remain independent.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 117
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": 2147483647,
+        "maxCardinality": 5
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "int",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.size",
+        "targetKind": "int",
+        "targetId": "T"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": 117
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-int-self",
+    "description": "Self-copy on initialized data retains canonical contents and membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 117
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "int",
+        "sourceId": "S",
+        "resultId": "S"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 117
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-int-small",
+    "description": "Target cannot hold all source values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 117
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": 2147483647,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "int",
+        "sourceId": "S",
+        "resultId": "T"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-int-empty",
+    "description": "Empty source clears the target cardinality without changing its capacity.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "int",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-int-target-not-a-set",
+    "description": "Target set flag remains false even when source data was sorted.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": 117
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "int",
+        "sourceId": "S",
+        "resultId": "T"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-short-row",
+    "description": "Widths differ and significant source data cannot fit.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "ABCDEF",
+        "length": 10
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T",
+        "length": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ELEMENTSTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-small-control-width",
+    "description": "Fortran character-cell controls require five physical text characters; a four-byte C row cannot represent them.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "AB",
+        "length": 10
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T",
+        "length": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INSUFFLEN"]
+    }
+  },
+  {
+    "caseId": "cells-windows-copy-char-blank-tail",
+    "description": "A narrower target can still represent significant bytes when remaining bytes are only spaces.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A     ",
+        "length": 12
+      },
+      {
+        "op": "cells-windows.copy",
+        "kind": "char",
+        "sourceId": "S",
+        "resultId": "T",
+        "length": 6
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -183,6 +183,22 @@ SpiceCell *tspice_validate_handle(
   return (SpiceCell *)handle;
 }
 
+SpiceCell *tspice_validate_ordinary_cell(uintptr_t handle, char *err, int errMaxBytes) {
+  int found = 0;
+  const size_t idx = tspice_registry_lower_bound(handle, &found);
+  if (!found || tspice_cells_registry.items[idx].isWindow) {
+    tspice_write_error(err, errMaxBytes, "Expected a live ordinary cell handle");
+    return NULL;
+  }
+  SpiceCell *cell = (SpiceCell *)handle;
+  if (cell->size < 0 || cell->size > tspice_cells_registry.items[idx].capacity ||
+      cell->card < 0 || cell->card > cell->size) {
+    tspice_write_error(err, errMaxBytes, "Invalid cell descriptor bounds");
+    return NULL;
+  }
+  return cell;
+}
+
 SpiceCell *tspice_validate_window_kind(uintptr_t handle, char *err, int errMaxBytes) {
   int found = 0;
   const size_t idx = tspice_registry_lower_bound(handle, &found);

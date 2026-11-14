@@ -429,6 +429,21 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/722"],
+      "nextAction": "Revalidate B03 on the combined B03/B01 source. The original source-bound evidence remains recorded for PR #722."
+    },
+    {
+      "id": "b01-cell-arrays",
+      "routines": [
+        "appndc_c",
+        "appndd_c",
+        "appndi_c",
+        "copy_c",
+        "elemc_c",
+        "elemd_c",
+        "elemi_c"
+      ],
+      "dependsOn": ["b03-window-algebra"],
+      "prs": ["https://github.com/rybosome/tspice/pull/728"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]

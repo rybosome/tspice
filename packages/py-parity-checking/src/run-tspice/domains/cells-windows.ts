@@ -1,6 +1,13 @@
 import type {
   CellsWindowsTargetKind,
   StepCellsWindowsCard,
+  StepCellsWindowsAppndc,
+  StepCellsWindowsAppndd,
+  StepCellsWindowsAppndi,
+  StepCellsWindowsCopy,
+  StepCellsWindowsElemc,
+  StepCellsWindowsElemd,
+  StepCellsWindowsElemi,
   StepCellsWindowsInsrtc,
   StepCellsWindowsInsrtd,
   StepCellsWindowsInsrti,
@@ -41,6 +48,13 @@ import {
 
 type CellsWindowsStep =
   | StepCellsWindowsCard
+  | StepCellsWindowsAppndc
+  | StepCellsWindowsAppndd
+  | StepCellsWindowsAppndi
+  | StepCellsWindowsCopy
+  | StepCellsWindowsElemc
+  | StepCellsWindowsElemd
+  | StepCellsWindowsElemi
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -144,6 +158,131 @@ export function runCellsWindowsStep(
       return { op: step.op, value };
     }
 
+    case "cells-windows.appndc": {
+      const cell = getOrCreateCharCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+        step.length ?? 32,
+      );
+      context.spice.raw.appndc(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetc(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.appndd": {
+      const cell = getOrCreateDoubleCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      context.spice.raw.appndd(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGetd(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.appndi": {
+      const cell = getOrCreateIntCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      context.spice.raw.appndi(step.item, cell);
+      return {
+        op: step.op,
+        value: Array.from({ length: context.spice.raw.card(cell) }, (_, i) =>
+          context.spice.kit.cellGeti(cell, i),
+        ),
+      };
+    }
+    case "cells-windows.copy": {
+      switch (step.kind) {
+        case "int": {
+          const source = requireIntCell(context, step.sourceId);
+          const target = getOrCreateIntCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+          );
+          context.spice.raw.copy(source, target);
+          return {
+            op: step.op,
+            value: Array.from(
+              { length: context.spice.raw.card(target) },
+              (_, i) => context.spice.kit.cellGeti(target, i),
+            ),
+          };
+        }
+        case "double": {
+          const source = requireDoubleCell(context, step.sourceId);
+          const target = getOrCreateDoubleCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+          );
+          context.spice.raw.copy(source, target);
+          return {
+            op: step.op,
+            value: Array.from(
+              { length: context.spice.raw.card(target) },
+              (_, i) => context.spice.kit.cellGetd(target, i),
+            ),
+          };
+        }
+        case "char": {
+          const source = requireCharCell(context, step.sourceId);
+          const target = getOrCreateCharCell(
+            context,
+            step.resultId,
+            step.maxCardinality ?? 8,
+            step.length ?? 32,
+          );
+          context.spice.raw.copy(source, target);
+          return {
+            op: step.op,
+            value: Array.from(
+              { length: context.spice.raw.card(target) },
+              (_, i) => context.spice.kit.cellGetc(target, i),
+            ),
+          };
+        }
+        default: {
+          const unexpected: never = step.kind;
+          throw new Error(`Unknown cell copy kind: ${String(unexpected)}`);
+        }
+      }
+    }
+    case "cells-windows.elemc": {
+      const cell = getOrCreateCharCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+        step.length ?? 32,
+      );
+      return { op: step.op, value: context.spice.raw.elemc(step.item, cell) };
+    }
+    case "cells-windows.elemd": {
+      const cell = getOrCreateDoubleCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      return { op: step.op, value: context.spice.raw.elemd(step.item, cell) };
+    }
+    case "cells-windows.elemi": {
+      const cell = getOrCreateIntCell(
+        context,
+        step.cellId,
+        step.maxCardinality ?? 8,
+      );
+      return { op: step.op, value: context.spice.raw.elemi(step.item, cell) };
+    }
     case "cells-windows.insrtc": {
       const cell = getOrCreateCharCell(
         context,
