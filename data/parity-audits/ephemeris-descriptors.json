@@ -684,6 +684,134 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
       "observation": "Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-a13-022e25af-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c68daae590d3a80ea1855e2b38b953fe3f5871f5825a6eb2a554c3332f5ed2",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 022e25afb0b643067998f42735247c59dcd9b289. JavaScript: 2,740 parity tests and one expected guard skip. Native-required: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a13-022e25af-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c68daae590d3a80ea1855e2b38b953fe3f5871f5825a6eb2a554c3332f5ed2",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 022e25afb0b643067998f42735247c59dcd9b289. JavaScript: 2,740 parity tests and one expected guard skip. Native-required: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a13-022e25af-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c68daae590d3a80ea1855e2b38b953fe3f5871f5825a6eb2a554c3332f5ed2",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "022e25afb0b643067998f42735247c59dcd9b289",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562610201/job/132349412920",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349412920 on 022e25afb0b643067998f42735247c59dcd9b289: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a13-022e25af-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c68daae590d3a80ea1855e2b38b953fe3f5871f5825a6eb2a554c3332f5ed2",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "022e25afb0b643067998f42735247c59dcd9b289",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562610201/job/132349412920",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349412920 on 022e25afb0b643067998f42735247c59dcd9b289: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
     }
   ],
   "routines": [
@@ -808,11 +936,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
           "history": [
@@ -828,11 +957,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -927,11 +1057,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
           "history": [
@@ -947,14 +1078,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Original source fingerprints and execution evidence are retained. The combined A10/A13 source requires fresh source-bound required local and canonical CI observations on both backends."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

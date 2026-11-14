@@ -37,7 +37,300 @@
     "scripts/coverage-ledger/source-analysis.mjs",
     "scripts/coverage-ledger.test.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a13-022e25af-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9ac0fea1e145b593e8852231bbe3ee5869ac1ad468831302a9bebc06de1785cb",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "observation": "Both complete required lanes passed locally on 022e25afb0b643067998f42735247c59dcd9b289. JavaScript: 2,740 parity tests and one expected guard skip. Native-required: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-a13-022e25af-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9ac0fea1e145b593e8852231bbe3ee5869ac1ad468831302a9bebc06de1785cb",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "observation": "Both complete required lanes passed locally on 022e25afb0b643067998f42735247c59dcd9b289. JavaScript: 2,740 parity tests and one expected guard skip. Native-required: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a13-022e25af-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9ac0fea1e145b593e8852231bbe3ee5869ac1ad468831302a9bebc06de1785cb",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "commit": "022e25afb0b643067998f42735247c59dcd9b289",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562610201/job/132349412920",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349412920 on 022e25afb0b643067998f42735247c59dcd9b289: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-a13-022e25af-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9ac0fea1e145b593e8852231bbe3ee5869ac1ad468831302a9bebc06de1785cb",
+      "caseIds": [
+        "coords-vectors-mequg-empty-axes",
+        "coords-vectors-mequg-growing-and-shrinking",
+        "coords-vectors-mequg-row-column-scalar",
+        "coords-vectors-mequg-small-and-large",
+        "coords-vectors-mequg-stride-and-interior-cycles",
+        "coords-vectors-mequg-unequal-rectangles",
+        "coords-vectors-mtxmg-negative-inner",
+        "coords-vectors-mtxmg-ordered-cancellation",
+        "coords-vectors-mtxmg-row-selection",
+        "coords-vectors-mtxmg-scalar-row-and-column",
+        "coords-vectors-mtxmg-scaled-fractions",
+        "coords-vectors-mtxmg-unequal-rectangles",
+        "coords-vectors-mtxmg-zero-columns",
+        "coords-vectors-mtxmg-zero-contraction",
+        "coords-vectors-mtxmg-zero-outer",
+        "coords-vectors-mtxvg-ordered-cancellation",
+        "coords-vectors-mtxvg-row-selection",
+        "coords-vectors-mtxvg-scalar-row-and-column",
+        "coords-vectors-mtxvg-scaled-fractions",
+        "coords-vectors-mtxvg-unequal-rectangles",
+        "coords-vectors-mtxvg-zero-contraction",
+        "coords-vectors-mtxvg-zero-outer",
+        "coords-vectors-mxmg-negative-inner",
+        "coords-vectors-mxmg-ordered-cancellation",
+        "coords-vectors-mxmg-row-selection",
+        "coords-vectors-mxmg-scalar-row-and-column",
+        "coords-vectors-mxmg-scaled-fractions",
+        "coords-vectors-mxmg-unequal-rectangles",
+        "coords-vectors-mxmg-zero-columns",
+        "coords-vectors-mxmg-zero-contraction",
+        "coords-vectors-mxmg-zero-outer",
+        "coords-vectors-mxmtg-ordered-cancellation",
+        "coords-vectors-mxmtg-row-selection",
+        "coords-vectors-mxmtg-scalar-row-and-column",
+        "coords-vectors-mxmtg-scaled-fractions",
+        "coords-vectors-mxmtg-unequal-rectangles",
+        "coords-vectors-mxmtg-zero-columns",
+        "coords-vectors-mxmtg-zero-contraction",
+        "coords-vectors-mxmtg-zero-outer",
+        "coords-vectors-mxvg-ordered-cancellation",
+        "coords-vectors-mxvg-row-selection",
+        "coords-vectors-mxvg-scalar-row-and-column",
+        "coords-vectors-mxvg-scaled-fractions",
+        "coords-vectors-mxvg-unequal-rectangles",
+        "coords-vectors-mxvg-zero-contraction",
+        "coords-vectors-mxvg-zero-outer",
+        "coords-vectors-vtmvg-ordered-cancellation",
+        "coords-vectors-vtmvg-row-selection",
+        "coords-vectors-vtmvg-scalar-row-and-column",
+        "coords-vectors-vtmvg-scaled-fractions",
+        "coords-vectors-vtmvg-unequal-rectangles",
+        "coords-vectors-vtmvg-zero-contraction",
+        "coords-vectors-vtmvg-zero-outer",
+        "coords-vectors-xposeg-empty-axes",
+        "coords-vectors-xposeg-growing-and-shrinking",
+        "coords-vectors-xposeg-nonpositive-no-write",
+        "coords-vectors-xposeg-row-column-scalar",
+        "coords-vectors-xposeg-small-and-large",
+        "coords-vectors-xposeg-stride-and-interior-cycles",
+        "coords-vectors-xposeg-unequal-rectangles"
+      ],
+      "commit": "022e25afb0b643067998f42735247c59dcd9b289",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562610201/job/132349412920",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349412920 on 022e25afb0b643067998f42735247c59dcd9b289: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "mequg_c",
@@ -98,16 +391,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mequg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mequg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mequg -> mequg_c. Independent oracle: exact locked C copy ABI.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -189,16 +482,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mtxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mtxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxmg -> mtxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -269,16 +562,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mtxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mtxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mtxvg -> mtxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -360,16 +653,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxmg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxmg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmg -> mxmg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -445,16 +738,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxmtg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxmtg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxmtg -> mxmtg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -525,16 +818,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.mxvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_mxvg -> mxvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -605,16 +898,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.vtmvg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.vtmvg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_vtmvg -> vtmvg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     },
@@ -685,19 +978,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xposeg -> finite shape-checked, owned Node snapshots and mutex-serialized native addon -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-node", "ci-a13-022e25af-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xposeg -> module-local shape-checked snapshots, transactional allocation and typed WASM export -> tspice_xposeg -> xposeg_c. Independent oracle: locked SpiceyPy wrapper on positive shapes, exact locked C ABI on degenerate shapes.",
-          "executions": []
+          "executions": ["local-a13-022e25af-wasm", "ci-a13-022e25af-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Local focused backend, oracle and public results are supplemental. Verification on the combined A10/A13 source requires complete source-bound required local and canonical CI evidence."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

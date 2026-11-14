@@ -711,18 +711,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/731"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "120 actual registered comparisons, 11 public/oracle, 19 native and 42 WASM focused tests passed. A real headless Chrome inline worker followed the normal facade build and fetched the WASM module, exercising all eight methods, degenerate dimensions, validation and recovery. Full source-bound verification is separate."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "022e25afb0b643067998f42735247c59dcd9b289",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43562610201/job/132349412920",
+          "result": "Both complete required lanes passed locally on 022e25afb0b643067998f42735247c59dcd9b289. JavaScript: 2,740 parity tests and one expected guard skip. Native-required: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132349412920 on 022e25afb0b643067998f42735247c59dcd9b289: 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Record full required local and canonical CI evidence on the combined A10/A13 source, then confirm complete final-head CI and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-general-matrices",
       "worktree": "/private/tmp/tspice-step8-general-matrices",
       "baseCommit": "fb98c999a8a9f5cb7729a0bb7984e1fd6819287a",
-      "progressNote": "Stacked on A10 #715 at fb98c999. All 60 registered cases (132 calls) and their 120 compiled live comparisons passed. Also passed 11 public/oracle, 19 native, 42 WASM tests and a real headless Chrome inline Web Worker check."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 022e25af. 2,502 registered Node/WASM live comparisons; 2,741 parity-package tests with no skips, including the native-required guard; 203 native wrapper, 717 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "Stacked on A10 #715 at fb98c999. All 60 registered cases (132 calls) and their 120 compiled live comparisons passed. Also passed 11 public/oracle, 19 native, 42 WASM tests and a real headless Chrome inline Web Worker check."
     },
     {
       "id": "A14-rotation-representations",
