@@ -1,0 +1,494 @@
+[
+  {
+    "caseId": "ephemeris-spk14e-end-and-reopen",
+    "description": "Finish, then begin a second segment on the same writer with different degree and record stride. Later coverage takes precedence.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-end-and-reopen.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "STREAM",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 1
+      },
+      {
+        "op": "ephemeris.spk14a",
+        "handleId": "H",
+        "count": 2,
+        "records": [
+          2, 2, 1, 2, 4, -1, 9, 0.25, -3, 0.5, 8, 1, 2, -2, 8, 4, 11, 3, -2, 2,
+          1, 5, 3, 1, -4, 0.5, 6, 2
+        ],
+        "epochs": [0, 4]
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "SECOND",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 0
+      },
+      {
+        "op": "ephemeris.spk14a",
+        "handleId": "H",
+        "count": 1,
+        "records": [6, 6, 33, 22, 11, -3, -2, -1],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-end-and-reopen.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 6
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-end-and-reopen.bsp"
+        },
+        "idcode": 196014,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-end-and-reopen.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196014,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 4,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 12,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spk14e-metadata-only",
+    "description": "Ending an empty stream writes genuine generic metadata. Observe the object, descriptor and coverage without evaluating absent packets.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-metadata-only.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "STREAM",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 1
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-metadata-only.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 6
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-metadata-only.bsp"
+        },
+        "idcode": 196014,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-metadata-only.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196014,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spk14e-twice",
+    "description": "A repeated end after completing a valid segment reaches the real no-active-writer error.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-twice.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "STREAM",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 1
+      },
+      {
+        "op": "ephemeris.spk14a",
+        "handleId": "H",
+        "count": 1,
+        "records": [2, 2, 1, 2, 4, -1, 9, 0.25, -3, 0.5, 8, 1, 2, -2],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CALLEDOUTOFORDER)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spk14e-no-begin",
+    "description": "An end on a newly opened writer with no generic stream raises CALLEDOUTOFORDER.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-no-begin.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CALLEDOUTOFORDER)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spk14e-discontinuous-records",
+    "description": "Ending commits all variable-interval Chebyshev records with distinct six-component coefficients, including an exact boundary jump.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-discontinuous-records.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "STREAM",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 1
+      },
+      {
+        "op": "ephemeris.spk14a",
+        "handleId": "H",
+        "count": 2,
+        "records": [
+          2, 2, 1, 2, 4, -1, 9, 0.25, -3, 0.5, 8, 1, 2, -2, 8, 4, 11, 3, -2, 2,
+          1, 5, 3, 1, -4, 0.5, 6, 2
+        ],
+        "epochs": [0, 4]
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-discontinuous-records.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 6
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-discontinuous-records.bsp"
+        },
+        "idcode": 196014,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-discontinuous-records.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196014,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 3.999,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 4,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 4.001,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 12,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spk14e-nonstandard-radius",
+    "description": "CSPICE stores a negative time radius as supplied; reversed normalized polynomial arguments produce the expected signed slope.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-nonstandard-radius.bsp"
+        },
+        "ifname": "AUTHORED TYPE 14",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spk14b",
+        "handleId": "H",
+        "segid": "STREAM",
+        "body": 196014,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 12,
+        "degree": 1
+      },
+      {
+        "op": "ephemeris.spk14a",
+        "handleId": "H",
+        "count": 1,
+        "records": [2, -2, 1, 2, 4, -1, 9, 0.25, -3, 0.5, 8, 1, 2, -2],
+        "epochs": [0]
+      },
+      {
+        "op": "ephemeris.spk14e",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-nonstandard-radius.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 6
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spk14e-nonstandard-radius.bsp"
+        },
+        "idcode": 196014,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spk14e-nonstandard-radius.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196014,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 2,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196014,
+        "et": 3,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

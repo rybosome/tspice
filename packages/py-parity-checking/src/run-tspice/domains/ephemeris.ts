@@ -26,6 +26,9 @@ import type {
   StepEphemerisSpkw10,
   StepEphemerisSpkw15,
   StepEphemerisSpkw17,
+  StepEphemerisSpk14b,
+  StepEphemerisSpk14a,
+  StepEphemerisSpk14e,
   StepEphemerisSpkw08,
   StepOutput,
 } from "../../case-types.js";
@@ -66,6 +69,9 @@ type EphemerisStep =
   | StepEphemerisSpkw10
   | StepEphemerisSpkw15
   | StepEphemerisSpkw17
+  | StepEphemerisSpk14b
+  | StepEphemerisSpk14a
+  | StepEphemerisSpk14e
   | StepEphemerisSpkw08;
 
 function toVec3(vec: readonly number[]): [number, number, number] {
@@ -521,6 +527,32 @@ export function runEphemerisStep(
         step.rapol,
         step.decpol,
       );
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14b": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14b(
+        handle,
+        step.segid,
+        step.body,
+        step.center,
+        step.frame,
+        step.first,
+        step.last,
+        step.degree,
+      );
+      context.state.ephemeris.openSpk14.add(handle);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14a": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14a(handle, step.count, step.records, step.epochs);
+      return { op: step.op, value: null };
+    }
+    case "ephemeris.spk14e": {
+      const handle = requireSpkHandle(context, step.handleId);
+      context.spice.raw.spk14e(handle);
+      context.state.ephemeris.openSpk14.delete(handle);
       return { op: step.op, value: null };
     }
     case "ephemeris.spkw08": {

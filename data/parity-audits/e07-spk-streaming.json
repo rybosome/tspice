@@ -1,0 +1,790 @@
+{
+  "schemaVersion": 1,
+  "batch": "e07-spk-streaming",
+  "traceFiles": [
+    "docs/step8-spk-streaming.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/spk-dispose.test.ts",
+    "packages/backend-node/test/spk-streaming-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/spk-streaming-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-chebyshev.ts",
+    "packages/core/src/spice-runtime/domains/spk-streaming.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/analytic_spk_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/streaming_spk_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/kernels.ts",
+    "packages/py-parity-checking/src/workflow-normalization/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/types.ts",
+    "packages/py-parity-checking/test/_helpers/spk_streaming_oracle.py",
+    "packages/py-parity-checking/test/spk-streaming-files.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e07-90107a0e-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "5e58de7db2cdfdae8d0cfad95f350ddf3137cde4e3ef563f57c44ac81f7fc40f",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-860084ff-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bd27d50a843f8a1cf83432b616f34ee146366e00ca75c9fa905b29ddf0ed7874",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-860084ff-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bd27d50a843f8a1cf83432b616f34ee146366e00ca75c9fa905b29ddf0ed7874",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bd27d50a843f8a1cf83432b616f34ee146366e00ca75c9fa905b29ddf0ed7874",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "bd27d50a843f8a1cf83432b616f34ee146366e00ca75c9fa905b29ddf0ed7874",
+      "caseIds": [
+        "ephemeris-spk14a-before-prior",
+        "ephemeris-spk14a-degree-two",
+        "ephemeris-spk14a-degree-zero",
+        "ephemeris-spk14a-duplicate-in-batch",
+        "ephemeris-spk14a-duplicate-prior",
+        "ephemeris-spk14a-interleaved-type10",
+        "ephemeris-spk14a-negative-count",
+        "ephemeris-spk14a-reference-directory",
+        "ephemeris-spk14a-reversed-in-batch",
+        "ephemeris-spk14a-single-batch",
+        "ephemeris-spk14a-two-batches",
+        "ephemeris-spk14a-without-begin",
+        "ephemeris-spk14a-zero-count",
+        "ephemeris-spk14b-bad-frame",
+        "ephemeris-spk14b-barycenter-target",
+        "ephemeris-spk14b-degree-boundary",
+        "ephemeris-spk14b-descriptor-and-coverage",
+        "ephemeris-spk14b-duplicate-begin",
+        "ephemeris-spk14b-empty-frame",
+        "ephemeris-spk14b-empty-id",
+        "ephemeris-spk14b-long-id",
+        "ephemeris-spk14b-negative-degree",
+        "ephemeris-spk14b-nonprinting-id",
+        "ephemeris-spk14b-physical-degree32",
+        "ephemeris-spk14b-reversed-span",
+        "ephemeris-spk14b-self-center",
+        "ephemeris-spk14b-zero-span",
+        "ephemeris-spk14e-discontinuous-records",
+        "ephemeris-spk14e-end-and-reopen",
+        "ephemeris-spk14e-metadata-only",
+        "ephemeris-spk14e-no-begin",
+        "ephemeris-spk14e-nonstandard-radius",
+        "ephemeris-spk14e-twice"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spk14b_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14b_c.html",
+      "semantics": "Begin a streamed type 14 generic DAF segment on an owned open SPK writer. Its descriptor and single logical constant define coverage, reference frame and fixed packet width 2+6*(degree+1).",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spk14b-descriptor-and-coverage",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The first begin supplies target, center, frame, segment identifier, two coverage endpoints and the degree used for both variable-width records."
+        },
+        {
+          "caseId": "ephemeris-spk14b-negative-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real INVALIDARGUMENT before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-bad-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real INVALIDREFFRAME before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real EMPTYSTRING before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-empty-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real EMPTYSTRING before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-long-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real SEGIDTOOLONG before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-nonprinting-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real NONPRINTINGCHARS before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-self-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real BODYANDCENTERSAME before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-barycenter-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real BARYCENTEREPHEM before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-zero-span",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real BADDESCRTIMES before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-reversed-span",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the real BADDESCRTIMES before opening a new physical segment."
+        },
+        {
+          "caseId": "ephemeris-spk14b-duplicate-begin",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A second begin on the current active handle raises CALLEDOUTOFORDER; cleanup finishes the first accepted record."
+        },
+        {
+          "caseId": "ephemeris-spk14b-degree-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Degree 31 fits the N0067 state evaluator workspace. Compare all six Chebyshev polynomials across the interval."
+        },
+        {
+          "caseId": "ephemeris-spk14b-physical-degree32",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Degree 32 writes a complete segment. SPKPVN detects the too-large 201-word evaluation buffer before reading the packet."
+        }
+      ],
+      "edgeAssessment": "The C entry fixes packet size before any physical write. Degree zero and 31 evaluate; degree 32 writes successfully but SPKPVN rejects evaluation with a 198-word workspace limit. Simultaneous streams preserve distinct degrees and owner tokens.",
+      "errorAssessment": "Independent registered workflows observe SPICE(BADDESCRTIMES), SPICE(BARYCENTEREPHEM), SPICE(BODYANDCENTERSAME), SPICE(CALLEDOUTOFORDER), SPICE(EMPTYSTRING), SPICE(INVALIDARGUMENT), SPICE(INVALIDREFFRAME), SPICE(NONPRINTINGCHARS), SPICE(SEGIDTOOLONG), SPICE(SPKRECTOOLARGE). Handle ownership, oversized storage, active-stream close and structurally conflicting generic operations have focused wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spk14b.cases.json",
+          "provenance": "Project-authored streaming packets and transient independently written SPK files.",
+          "distribution": "MIT project source; no binary fixture is added."
+        }
+      ],
+      "fixtureRationale": "Synthetic coefficient sets use the built-in J2000 frame. The mixed type 10 workflow also furnishes the existing NAIF0012 LSK for evaluation.",
+      "cleanup": "Explicit end and close finish each successful stream. Both workflow finalizers end any outstanding segment before closing the physical writer on terminal errors. Native disposal does the same for owned interrupted streams. WASM fault tests free partially acquired buffers and retry the same operation.",
+      "tolerance": "Compare exact identifier, integer metadata, physical records, reference and directory words. Manually selected degree-one states use exact representable double inputs and outputs. Other registered states use existing tolerances. Compare structured toolkit error identities and distinguish scratch-path-only differences in repeated long messages.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "Generic file-table begin lookup can change SGSEQW’s saved index even on an error.",
+          "repair": "Scope begin to owned writers; guard conflicting active handles, invalid new identifiers and an exhausted table. A valid different-file generic write remains supported.",
+          "caseIds": ["ephemeris-spk14b-duplicate-begin"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-streaming-files.test.ts",
+            "docs/step8-spk-streaming.md",
+            "packages/backend-node/test/spk-streaming-domain.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14b -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14b -> spk14b_c. Locked sidecar invokes actual SpiceyPy spk14b and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spk14a_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14a_c.html",
+      "semantics": "Append complete time-tagged Chebyshev records to the actual open stream. References have variable spacings and must be strictly increasing within and across calls; the six polynomials independently encode Cartesian position and velocity.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spk14a-two-batches",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Stream independently supplied position and velocity coefficients in two additions with unequal time radii. Check the transition, endpoints, descriptor and all six outputs."
+        },
+        {
+          "caseId": "ephemeris-spk14a-single-batch",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The same packets written in one physical addition give all six expected components on either side of their knot."
+        },
+        {
+          "caseId": "ephemeris-spk14a-degree-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Constant position and independently constant velocity are retained, including a discontinuity at the exact new packet start."
+        },
+        {
+          "caseId": "ephemeris-spk14a-degree-two",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Nonzero second-order coefficients are evaluated in all six components at midpoint, boundaries and two interior offsets."
+        },
+        {
+          "caseId": "ephemeris-spk14a-reference-directory",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Multiple additions cross the 100-reference directory boundary. Inspect exact knots and interpolated states on both sides."
+        },
+        {
+          "caseId": "ephemeris-spk14a-zero-count",
+          "coverage": ["error", "edge", "state"],
+          "observes": "SPK14A checks a nonpositive count before reading packet storage."
+        },
+        {
+          "caseId": "ephemeris-spk14a-negative-count",
+          "coverage": ["error", "edge", "state"],
+          "observes": "SPK14A checks a nonpositive count before reading packet storage."
+        },
+        {
+          "caseId": "ephemeris-spk14a-duplicate-in-batch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "SGWFPK checks all reference epochs in the failing batch before changing the segment."
+        },
+        {
+          "caseId": "ephemeris-spk14a-reversed-in-batch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "SGWFPK checks all reference epochs in the failing batch before changing the segment."
+        },
+        {
+          "caseId": "ephemeris-spk14a-duplicate-prior",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The first epoch of a new addition must be later than the final epoch from the preceding accepted batch."
+        },
+        {
+          "caseId": "ephemeris-spk14a-before-prior",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The first epoch of a new addition must be later than the final epoch from the preceding accepted batch."
+        },
+        {
+          "caseId": "ephemeris-spk14a-without-begin",
+          "coverage": ["error", "edge", "state"],
+          "observes": "After finishing a valid segment, adding another batch before begin receives the real no-active-writer diagnostic."
+        },
+        {
+          "caseId": "ephemeris-spk14a-interleaved-type10",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A complete type 10 writer opens and closes its own generic segment between two type 14 packet additions. Reopen both files, inspect both descriptors and compare the independent physical states."
+        }
+      ],
+      "edgeAssessment": "Complete physical data include midpoint, radius, six coefficient groups and a separate epoch per record. One, multiple and 102 records cover exact knots, edge selection and directory indexing. Cross-file type 10 completion between additions preserves selection and state. Degree/count/word guards retain addressable sentinel data for genuine zero-count diagnostics.",
+      "errorAssessment": "Independent registered workflows observe SPICE(CALLEDOUTOFORDER), SPICE(INVALIDARGUMENT), SPICE(UNORDEREDREFS). Handle ownership, oversized storage, active-stream close and structurally conflicting generic operations have focused wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spk14a.cases.json",
+          "provenance": "Project-authored streaming packets and transient independently written SPK files.",
+          "distribution": "MIT project source; no binary fixture is added."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "Existing NAIF0012 leap-seconds fixture for the accompanying type 10 segment state.",
+          "distribution": "Preexisting fixture; no external binary added."
+        }
+      ],
+      "fixtureRationale": "Synthetic coefficient sets use the built-in J2000 frame. The mixed type 10 workflow also furnishes the existing NAIF0012 LSK for evaluation.",
+      "cleanup": "Explicit end and close finish each successful stream. Both workflow finalizers end any outstanding segment before closing the physical writer on terminal errors. Native disposal does the same for owned interrupted streams. WASM fault tests free partially acquired buffers and retry the same operation.",
+      "tolerance": "Compare exact identifier, integer metadata, physical records, reference and directory words. Manually selected degree-one states use exact representable double inputs and outputs. Other registered states use existing tolerances. Compare structured toolkit error identities and distinguish scratch-path-only differences in repeated long messages.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "Other SPK writers can change the physical current DAF array independently of SGSEQW’s cached handle. Type 10 also uses the same generic table.",
+          "repair": "Select the owned live array before every add/end and share generic begin preflight with type 10. Verify both files after successful and failed interleaving.",
+          "caseIds": ["ephemeris-spk14a-interleaved-type10"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-streaming-files.test.ts",
+            "docs/step8-spk-streaming.md",
+            "packages/backend-node/test/spk-streaming-domain.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14a -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14a -> spk14a_c. Locked sidecar invokes actual SpiceyPy spk14a and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spk14e_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14e_c.html",
+      "semantics": "Finish a type 14 generic segment. The metadata and reference directory become readable after file close. The same file handle can immediately start another segment; ending an empty stream yields legitimate metadata-only coverage.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spk14e-end-and-reopen",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Finish, then begin a second segment on the same writer with different degree and record stride. Later coverage takes precedence."
+        },
+        {
+          "caseId": "ephemeris-spk14e-metadata-only",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ending an empty stream writes genuine generic metadata. Observe the object, descriptor and coverage without evaluating absent packets."
+        },
+        {
+          "caseId": "ephemeris-spk14e-twice",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A repeated end after completing a valid segment reaches the real no-active-writer error."
+        },
+        {
+          "caseId": "ephemeris-spk14e-no-begin",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An end on a newly opened writer with no generic stream raises CALLEDOUTOFORDER."
+        },
+        {
+          "caseId": "ephemeris-spk14e-discontinuous-records",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Ending commits all variable-interval Chebyshev records with distinct six-component coefficients, including an exact boundary jump."
+        },
+        {
+          "caseId": "ephemeris-spk14e-nonstandard-radius",
+          "coverage": ["success", "edge", "state"],
+          "observes": "CSPICE stores a negative time radius as supplied; reversed normalized polynomial arguments produce the expected signed slope."
+        }
+      ],
+      "edgeAssessment": "Checks repeated end, end without begin, zero-packet metadata, overlapping replacement segment and 22 interrupted native writer disposals. Cross-client and two-active-file isolation and interleaved physical output are externally read back.",
+      "errorAssessment": "Independent registered workflows observe SPICE(CALLEDOUTOFORDER). Handle ownership, oversized storage, active-stream close and structurally conflicting generic operations have focused wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spk14e.cases.json",
+          "provenance": "Project-authored streaming packets and transient independently written SPK files.",
+          "distribution": "MIT project source; no binary fixture is added."
+        }
+      ],
+      "fixtureRationale": "Synthetic coefficient sets use the built-in J2000 frame. The mixed type 10 workflow also furnishes the existing NAIF0012 LSK for evaluation.",
+      "cleanup": "Explicit end and close finish each successful stream. Both workflow finalizers end any outstanding segment before closing the physical writer on terminal errors. Native disposal does the same for owned interrupted streams. WASM fault tests free partially acquired buffers and retry the same operation.",
+      "tolerance": "Compare exact identifier, integer metadata, physical records, reference and directory words. Manually selected degree-one states use exact representable double inputs and outputs. Other registered states use existing tolerances. Compare structured toolkit error identities and distinguish scratch-path-only differences in repeated long messages.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "SGWES removes a generic table slot without clearing its cached last handle. An abandoned active stream also retains the toolkit’s finite writer slot.",
+          "repair": "Preserve completed and inactive owner boundaries. Explicit close requires ending first, native disposal finishes an owned stream, and both harnesses finish live streams before close on error. Independent disposal readback and a twenty-first writer check verify recovery.",
+          "caseIds": ["ephemeris-spk14e-metadata-only"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-streaming-files.test.ts",
+            "docs/step8-spk-streaming.md",
+            "packages/backend-node/test/spk-streaming-domain.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> native addon under the CSPICE mutex -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "Public spk14e -> owner-local token lookup, successful degree state and checked typed fields -> WASM export and checked heap allocations -> shared tspice_spk14e -> spk14e_c. Locked sidecar invokes actual SpiceyPy spk14e and a separate DAF reader inspects independently emitted files.",
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

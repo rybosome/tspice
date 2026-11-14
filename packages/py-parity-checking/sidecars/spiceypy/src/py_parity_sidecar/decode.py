@@ -58,6 +58,9 @@ from .models import (
     StepEphemerisSpkw10,
     StepEphemerisSpkw15,
     StepEphemerisSpkw17,
+    StepEphemerisSpk14b,
+    StepEphemerisSpk14a,
+    StepEphemerisSpk14e,
     StepEphemerisSpkw08,
     StepDskDascls,
     StepDskDasopr,
@@ -1131,6 +1134,31 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 eqel=_expect_number_list(step.get("eqel"),label="ephemeris.spkw17.eqel"),
                 rapol=_expect_number(step.get("rapol"),label="ephemeris.spkw17.rapol"),
                 decpol=_expect_number(step.get("decpol"),label="ephemeris.spkw17.decpol"),
+            )
+        case "ephemeris.spk14b":
+            return StepEphemerisSpk14b(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spk14b.handleId"),
+                segid=_expect_string(step.get("segid"),label="ephemeris.spk14b.segid"),
+                body=_expect_int(step.get("body"),label="ephemeris.spk14b.body"),
+                center=_expect_int(step.get("center"),label="ephemeris.spk14b.center"),
+                frame=_expect_string(step.get("frame"),label="ephemeris.spk14b.frame"),
+                first=_expect_number(step.get("first"),label="ephemeris.spk14b.first"),
+                last=_expect_number(step.get("last"),label="ephemeris.spk14b.last"),
+                degree=_expect_int(step.get("degree"),label="ephemeris.spk14b.degree"),
+            )
+        case "ephemeris.spk14a":
+            return StepEphemerisSpk14a(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spk14a.handleId"),
+                count=_expect_int(step.get("count"),label="ephemeris.spk14a.count"),
+                records=_expect_number_list(step.get("records"),label="ephemeris.spk14a.records"),
+                epochs=_expect_number_list(step.get("epochs"),label="ephemeris.spk14a.epochs"),
+            )
+        case "ephemeris.spk14e":
+            return StepEphemerisSpk14e(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spk14e.handleId"),
             )
         case "ephemeris.spkw08":
             return StepEphemerisSpkw08(

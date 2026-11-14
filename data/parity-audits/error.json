@@ -1092,7 +1092,8 @@
         "error-sigerr-audit-short-buffer-boundary",
         "error-sigerr-signals-error-path"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e06-f4a21a96-wasm",
@@ -1127,7 +1128,8 @@
         "error-sigerr-audit-short-buffer-boundary",
         "error-sigerr-signals-error-path"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-node",
@@ -1164,7 +1166,8 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-wasm",
@@ -1201,7 +1204,300 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-860084ff-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-860084ff-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "320a4a696fda6daba8ec32218942253b915e8b14d83b7520e6f0ed37a673ab47",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1279,11 +1575,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1302,11 +1602,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1395,11 +1699,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1418,11 +1726,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1472,11 +1784,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1494,11 +1810,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1566,11 +1886,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1589,11 +1913,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1638,11 +1966,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1660,11 +1992,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1719,11 +2055,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1741,11 +2081,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1818,11 +2162,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1841,11 +2189,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     }

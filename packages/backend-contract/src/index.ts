@@ -104,6 +104,9 @@ export interface SpiceKitBackend
 
 /** Unified backend contract */
 export interface SpiceBackend {
+  /** Release resources owned by this backend instance when a client that created it is disposed. */
+  disposeAll?(): void;
+
   /** Low-level, CSPICE-analogous functions. */
   raw: SpiceRawBackend;
 

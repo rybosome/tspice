@@ -20,6 +20,7 @@ import {
   packSpk10,
   packSpk15,
   packSpk17,
+  copySpk14Packets,
   validateSpkChebyshevFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
@@ -891,6 +892,7 @@ export function createEphemerisApi(
   handles: SpiceHandleRegistry,
   virtualOutputs: VirtualOutputRegistry,
 ): EphemerisApi {
+  const spk14Degrees = new Map<SpiceHandle, number>();
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
   return {
@@ -1338,6 +1340,80 @@ export function createEphemerisApi(
           WASM_ERR_MAX_BYTES,
         ),
       );
+    },
+    spk14b: (handle, segid, body, center, frame, first, last, degree) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14b").nativeHandle;
+      assertSpiceInt32(degree, "degree");
+      validateSpkChebyshevFields(body, center, frame, segid, first, last);
+      if (degree > 357913939)
+        throw new RangeError(
+          "Type 14 record width exceeds signed CSPICE indexing",
+        );
+      const id = writeUtf8CString(module, segid);
+      try {
+        const ref = writeUtf8CString(module, frame);
+        try {
+          withAllocs(module, [WASM_ERR_MAX_BYTES], (err) => {
+            const status = module._tspice_spk14b(
+              h,
+              id,
+              body,
+              center,
+              ref,
+              first,
+              last,
+              degree,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (status)
+              throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          });
+        } finally {
+          module._free(ref);
+        }
+      } finally {
+        module._free(id);
+      }
+      spk14Degrees.set(handle, degree);
+    },
+    spk14a: (handle, count, records, epochs) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14a").nativeHandle;
+      const { data, times } = copySpk14Packets(
+        spk14Degrees.get(handle),
+        count,
+        records,
+        epochs,
+      );
+      withAllocs(
+        module,
+        [
+          Math.max(8, data.byteLength),
+          Math.max(8, times.byteLength),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (p, t, err) => {
+          module.HEAPF64.set(data, p / 8);
+          module.HEAPF64.set(times, t / 8);
+          const status = module._tspice_spk14a(
+            h,
+            count,
+            p,
+            data.length,
+            t,
+            times.length,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    },
+    spk14e: (handle) => {
+      const h = handles.lookup(handle, ["SPK"], "spk14e").nativeHandle;
+      callVoidHandle(module, module._tspice_spk14e, h);
+      spk14Degrees.delete(handle);
     },
     spkw08: (
       handle: SpiceHandle,

@@ -937,6 +937,74 @@ static void WriteAnalyticSpk(const Napi::CallbackInfo& info) {
   if (status) ThrowSpiceError(env, "CSPICE failed writing analytic SPK segment", err);
 }
 
+static void BeginSpk14(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 8 || !info[1].IsString() || !info[4].IsString() || !info[5].IsNumber() ||
+      !info[6].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid SPK14 begin arguments"));
+    return;
+  }
+  int32_t h, b, c, d;
+  if (!ReadInt32Checked(env, info[0], "handle", &h) ||
+      !ReadInt32Checked(env, info[2], "body", &b) ||
+      !ReadInt32Checked(env, info[3], "center", &c) ||
+      !ReadInt32Checked(env, info[7], "degree", &d))
+    return;
+  auto id = info[1].As<Napi::String>().Utf8Value(), frame = info[4].As<Napi::String>().Utf8Value();
+  if (id.find('\0') != std::string::npos || frame.find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Embedded NUL in SPK14 string"));
+    return;
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_spk14b(h, id.c_str(), b, c, frame.c_str(), info[5].As<Napi::Number>().DoubleValue(),
+                    info[6].As<Napi::Number>().DoubleValue(), d, err, sizeof(err)))
+    ThrowSpiceError(env, "SPK14 begin failed", err);
+}
+static void AddSpk14(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid SPK14 add arguments"));
+    return;
+  }
+  int32_t h, n;
+  if (!ReadInt32Checked(env, info[0], "handle", &h) || !ReadInt32Checked(env, info[1], "count", &n))
+    return;
+  for (size_t i = 2; i < 4; i++)
+    if (!info[i].IsTypedArray() ||
+        info[i].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected owned SPK14 Float64Array"));
+      return;
+    }
+  auto rows = info[2].As<Napi::Float64Array>(), epochs = info[3].As<Napi::Float64Array>();
+  if (rows.ElementLength() > 33554432 || epochs.ElementLength() > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "SPK14 data exceeds 256 MiB"));
+    return;
+  }
+  const double zero = 0;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_spk14a(h, n, rows.ElementLength() ? rows.Data() : &zero, rows.ElementLength(),
+                    epochs.ElementLength() ? epochs.Data() : &zero, epochs.ElementLength(), err,
+                    sizeof(err)))
+    ThrowSpiceError(env, "SPK14 add failed", err);
+}
+template <bool Dispose>
+static void EndSpk14(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  int32_t h;
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected SPK14 handle"));
+    return;
+  }
+  if (!ReadInt32Checked(env, info[0], "handle", &h)) return;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int code = Dispose ? tspice_spk14_finish_if_active(h, err, sizeof(err))
+                     : tspice_spk14e(h, err, sizeof(err));
+  if (code) ThrowSpiceError(env, "SPK14 end failed", err);
+}
+
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
@@ -966,6 +1034,16 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
     return;
   if (!SetExportChecked(env, exports, "spkw17", Napi::Function::New(env, WriteAnalyticSpk<17>),
                         __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spk14b", Napi::Function::New(env, BeginSpk14), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spk14a", Napi::Function::New(env, AddSpk14), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spk14e", Napi::Function::New(env, EndSpk14<false>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spk14FinishIfActive",
+                        Napi::Function::New(env, EndSpk14<true>), __func__))
     return;
   if (!SetExportChecked(env, exports, "spkw08", Napi::Function::New(env, Spkw08), __func__)) return;
   if (!SetExportChecked(env, exports, "spkcls", Napi::Function::New(env, Spkcls), __func__)) return;

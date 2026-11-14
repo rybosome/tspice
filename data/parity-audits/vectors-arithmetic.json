@@ -2215,7 +2215,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e06-f4a21a96-wasm",
@@ -2246,7 +2247,8 @@
         "coords-vectors-vsub-audit-equal-and-reversed",
         "coords-vectors-vsub-happy-componentwise-difference"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-node",
@@ -2279,7 +2281,8 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-wasm",
@@ -2312,7 +2315,268 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-860084ff-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-860084ff-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "35cf4625fbfb5e15f2a7ae14cf6ff13a56fbb9fb536e98871ac9d1bc56d8bd10",
+      "caseIds": [
+        "coords-vectors-vadd-audit-cancellation-and-fractions",
+        "coords-vectors-vadd-happy-componentwise-sum",
+        "coords-vectors-vcrss-audit-mixed-and-reversed",
+        "coords-vectors-vcrss-audit-parallel-and-zero",
+        "coords-vectors-vcrss-happy-right-handed-basis",
+        "coords-vectors-vdot-audit-orthogonal-and-cancellation",
+        "coords-vectors-vdot-happy-basic-dot",
+        "coords-vectors-vhat-audit-mixed-normalization",
+        "coords-vectors-vhat-audit-wide-dynamic-range",
+        "coords-vectors-vhat-happy-zero-vector",
+        "coords-vectors-vminus-audit-zero-and-fractions",
+        "coords-vectors-vminus-happy-negation",
+        "coords-vectors-vnorm-audit-large-mixed",
+        "coords-vectors-vnorm-audit-zero",
+        "coords-vectors-vnorm-happy-pythagorean",
+        "coords-vectors-vscl-audit-zero-and-fractional-scale",
+        "coords-vectors-vscl-happy-negative-scale",
+        "coords-vectors-vsub-audit-equal-and-reversed",
+        "coords-vectors-vsub-happy-componentwise-difference"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -2371,11 +2635,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> Node TypeScript adapter -> registered vadd native handler -> tspice_vadd shared C shim -> vadd_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2396,11 +2664,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vadd -> WASM helper -> typed/configured/binary _tspice_vadd -> shared C shim -> vadd_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2467,11 +2739,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> Node TypeScript adapter -> registered vcrss native handler -> tspice_vcrss shared C shim -> vcrss_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2492,11 +2768,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vcrss -> WASM helper -> typed/configured/binary _tspice_vcrss -> shared C shim -> vcrss_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2555,11 +2835,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> Node TypeScript adapter -> registered vdot native handler -> tspice_vdot shared C shim -> vdot_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2580,11 +2864,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vdot -> WASM helper -> typed/configured/binary _tspice_vdot -> shared C shim -> vdot_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2651,11 +2939,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> Node TypeScript adapter -> registered vhat native handler -> tspice_vhat shared C shim -> vhat_c; exact scalar/3-vector return propagated. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2676,11 +2968,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vhat -> WASM helper -> typed/configured/binary _tspice_vhat -> shared C shim -> vhat_c; HEAPF64 result copied before freeing buffers. Zero input returns zero in the shared shim; nonzero scenarios now exercise the actual CSPICE call.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2739,11 +3035,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> Node TypeScript adapter -> registered vminus native handler -> tspice_vminus shared C shim -> vminus_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2764,11 +3064,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vminus -> WASM helper -> typed/configured/binary _tspice_vminus -> shared C shim -> vminus_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2835,11 +3139,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> Node TypeScript adapter -> registered vnorm native handler -> tspice_vnorm shared C shim -> vnorm_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2860,11 +3168,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vnorm -> WASM helper -> typed/configured/binary _tspice_vnorm -> shared C shim -> vnorm_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2923,11 +3235,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> Node TypeScript adapter -> registered vscl native handler -> tspice_vscl shared C shim -> vscl_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2948,11 +3264,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vscl -> WASM helper -> typed/configured/binary _tspice_vscl -> shared C shim -> vscl_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -3011,11 +3331,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> Node TypeScript adapter -> registered vsub native handler -> tspice_vsub shared C shim -> vsub_c; exact scalar/3-vector return propagated.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -3036,11 +3360,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vsub -> WASM helper -> typed/configured/binary _tspice_vsub -> shared C shim -> vsub_c; HEAPF64 result copied before freeing buffers.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     }

@@ -775,6 +775,28 @@ export type StepEphemerisSpkw17 = {
   decpol: number;
 };
 
+export type StepEphemerisSpk14b = {
+  op: "ephemeris.spk14b";
+  handleId: string;
+  segid: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  degree: number;
+};
+
+export type StepEphemerisSpk14a = {
+  op: "ephemeris.spk14a";
+  handleId: string;
+  count: number;
+  records: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpk14e = { op: "ephemeris.spk14e"; handleId: string };
+
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
   handleId: string;
@@ -1501,6 +1523,9 @@ export type WorkflowStep =
   | StepEphemerisSpkw10
   | StepEphemerisSpkw15
   | StepEphemerisSpkw17
+  | StepEphemerisSpk14b
+  | StepEphemerisSpk14a
+  | StepEphemerisSpk14e
   | StepEphemerisSpkw08
   | StepFileIoExists
   | StepFileIoGetfat
@@ -1804,6 +1829,9 @@ export type StepOutput =
   | { op: "ephemeris.spkw10"; value: null }
   | { op: "ephemeris.spkw15"; value: null }
   | { op: "ephemeris.spkw17"; value: null }
+  | { op: "ephemeris.spk14b"; value: null }
+  | { op: "ephemeris.spk14a"; value: null }
+  | { op: "ephemeris.spk14e"; value: null }
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }

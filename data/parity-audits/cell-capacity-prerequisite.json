@@ -1621,7 +1621,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e06-f4a21a96-wasm",
@@ -1647,7 +1648,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-node",
@@ -1675,7 +1677,8 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-wasm",
@@ -1703,7 +1706,228 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-90107a0e-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-e07-90107a0e-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
+      "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e07-860084ff-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-860084ff-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "936cc72c1d81eb302092a06adcadda8f1a59210c8c54dbd9ec2883a46af0dd7c",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1816,11 +2040,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1837,11 +2065,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2001,11 +2233,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2022,11 +2258,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2175,11 +2415,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2196,11 +2440,15 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     }

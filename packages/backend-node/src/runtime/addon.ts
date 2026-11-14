@@ -505,6 +505,24 @@ export type NativeAddon = {
     n: number,
     data: Float64Array,
   ): void;
+  spk14b(
+    handle: number,
+    segid: string,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    degree: number,
+  ): void;
+  spk14a(
+    handle: number,
+    count: number,
+    records: Float64Array,
+    epochs: Float64Array,
+  ): void;
+  spk14e(handle: number): void;
+  spk14FinishIfActive(handle: number): void;
   spkw08(
     handle: number,
     body: number,

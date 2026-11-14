@@ -834,6 +834,29 @@ export type EmscriptenModule = {
     err: number,
     cap: number,
   ): number;
+  _tspice_spk14b(
+    handle: number,
+    segid: number,
+    body: number,
+    center: number,
+    frame: number,
+    first: number,
+    last: number,
+    degree: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spk14a(
+    handle: number,
+    count: number,
+    records: number,
+    words: number,
+    epochs: number,
+    nEpochs: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_spk14e(handle: number, err: number, cap: number): number;
   _tspice_spkw08(
     handle: number,
     body: number,
@@ -2363,6 +2386,9 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkw10",
   "_tspice_spkw15",
   "_tspice_spkw17",
+  "_tspice_spk14b",
+  "_tspice_spk14a",
+  "_tspice_spk14e",
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",

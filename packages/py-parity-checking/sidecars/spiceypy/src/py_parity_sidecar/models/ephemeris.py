@@ -275,3 +275,31 @@ class StepEphemerisSpkw17:
     eqel: list[float]
     rapol: float
     decpol: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14b:
+    op: Literal["ephemeris.spk14b"]
+    handleId: str
+    segid: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    degree: int
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14a:
+    op: Literal["ephemeris.spk14a"]
+    handleId: str
+    count: int
+    records: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpk14e:
+    op: Literal["ephemeris.spk14e"]
+    handleId: str

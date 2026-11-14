@@ -76,6 +76,9 @@ def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
         _reset_best_effort()
         for handle_id, handle in list(context.state.ephemeris.spkHandles.items()):
             try:
+                if handle in context.state.ephemeris.spk14_degrees:
+                    sp.spk14e(handle)
+                    del context.state.ephemeris.spk14_degrees[handle]
                 sp.spkcls(handle)
                 context.state.ephemeris.spkHandles.pop(handle_id, None)
             except BaseException:

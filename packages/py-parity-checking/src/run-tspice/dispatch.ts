@@ -154,6 +154,9 @@ export function dispatchStep(
     case "ephemeris.spkw10":
     case "ephemeris.spkw15":
     case "ephemeris.spkw17":
+    case "ephemeris.spk14b":
+    case "ephemeris.spk14a":
+    case "ephemeris.spk14e":
     case "ephemeris.spkw08":
       return runEphemerisStep(context, step);
 
