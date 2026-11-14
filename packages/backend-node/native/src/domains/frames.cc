@@ -227,6 +227,178 @@ static Napi::Object Ccifrm(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static bool FrameString(Napi::Env env, const Napi::Value& value, std::string& out) {
+  if (value.IsString()) {
+    out = value.As<Napi::String>().Utf8Value();
+    if (out.find('\0') == std::string::npos && out.size() <= static_cast<size_t>(INT32_MAX)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a string representable as a CSPICE C string"));
+  return false;
+}
+
+static bool FrameDouble(Napi::Env env, const Napi::Value& value, double& out) {
+  if (value.IsNumber()) {
+    out = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(out)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a finite frame argument"));
+  return false;
+}
+
+static bool FrameInt(Napi::Env env, const Napi::Value& value, int& out) {
+  double number;
+  if (!FrameDouble(env, value, number)) return false;
+  if (number < INT32_MIN || number > INT32_MAX || number != std::trunc(number)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit frame argument"));
+    return false;
+  }
+  out = static_cast<int>(number);
+  return true;
+}
+
+static Napi::Value Bltfrm(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bltfrm() expects 2 arguments"));
+    return env.Undefined();
+  }
+  int frameClass;
+  if (!FrameInt(env, info[0], frameClass)) return env.Undefined();
+  uint32_t handle = 0;
+  if (!tspice_backend_node::ReadCellHandleArg(env, info[1], "ids", &handle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  const uintptr_t ids = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, handle, SPICE_INT, "bltfrm(ids)", "SpiceIntCell");
+  if (env.IsExceptionPending()) return env.Undefined();
+  if (tspice_bltfrm(frameClass, ids, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bltfrm", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Pxfrm2(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pxfrm2() expects 4 arguments"));
+    return env.Undefined();
+  }
+  std::string from;
+  if (!FrameString(env, info[0], from)) return env.Undefined();
+  std::string to;
+  if (!FrameString(env, info[1], to)) return env.Undefined();
+  double etfrom;
+  if (!FrameDouble(env, info[2], etfrom)) return env.Undefined();
+  double etto;
+  if (!FrameDouble(env, info[3], etto)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0};
+  if (tspice_pxfrm2(from.c_str(), to.c_str(), etfrom, etto, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling pxfrm2", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Tipbod(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "tipbod() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string ref;
+  if (!FrameString(env, info[0], ref)) return env.Undefined();
+  int body;
+  if (!FrameInt(env, info[1], body)) return env.Undefined();
+  double et;
+  if (!FrameDouble(env, info[2], et)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0};
+  if (tspice_tipbod(ref.c_str(), body, et, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling tipbod", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Value Tisbod(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "tisbod() expects 3 arguments"));
+    return env.Undefined();
+  }
+  std::string ref;
+  if (!FrameString(env, info[0], ref)) return env.Undefined();
+  int body;
+  if (!FrameInt(env, info[1], body)) return env.Undefined();
+  double et;
+  if (!FrameDouble(env, info[2], et)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[36] = {0};
+  if (tspice_tisbod(ref.c_str(), body, et, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling tisbod", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 36);
+}
+
+static Napi::Value Tkfram(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "tkfram() expects 1 arguments"));
+    return env.Undefined();
+  }
+  int typeId;
+  if (!FrameInt(env, info[0], typeId)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0};
+  int frame = 0, found = 0;
+  if (tspice_tkfram(typeId, out, &frame, &found, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling tkfram", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  auto result = MakeFound(env, "frame", frame);
+  result.Set("rot", MakeNumberArray(env, out, 9));
+  return result;
+}
+
+static Napi::Value Xfmsta(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xfmsta() expects 4 arguments"));
+    return env.Undefined();
+  }
+  double state[6];
+  if (!info[0].IsArray() || info[0].As<Napi::Array>().Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a six-component state"));
+    return env.Undefined();
+  }
+  const auto array = info[0].As<Napi::Array>();
+  for (uint32_t i = 0; i < 6; ++i) {
+    const auto value = array.Get(i);
+    if (env.IsExceptionPending() || !FrameDouble(env, value, state[i])) return env.Undefined();
+  }
+  std::string from;
+  if (!FrameString(env, info[1], from)) return env.Undefined();
+  std::string to;
+  if (!FrameString(env, info[2], to)) return env.Undefined();
+  std::string body;
+  if (!FrameString(env, info[3], body)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[6] = {0};
+  if (tspice_xfmsta(state, from.c_str(), to.c_str(), body.c_str(), out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling xfmsta", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
 static Napi::Array Pxform(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -432,6 +604,12 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "ckobj", Napi::Function::New(env, Ckobj), __func__)) return;
   if (!SetExportChecked(env, exports, "ckcov", Napi::Function::New(env, Ckcov), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "bltfrm", Napi::Function::New(env, Bltfrm), __func__)) return;
+  if (!SetExportChecked(env, exports, "pxfrm2", Napi::Function::New(env, Pxfrm2), __func__)) return;
+  if (!SetExportChecked(env, exports, "tipbod", Napi::Function::New(env, Tipbod), __func__)) return;
+  if (!SetExportChecked(env, exports, "tisbod", Napi::Function::New(env, Tisbod), __func__)) return;
+  if (!SetExportChecked(env, exports, "tkfram", Napi::Function::New(env, Tkfram), __func__)) return;
+  if (!SetExportChecked(env, exports, "xfmsta", Napi::Function::New(env, Xfmsta), __func__)) return;
   if (!SetExportChecked(env, exports, "pxform", Napi::Function::New(env, Pxform), __func__)) return;
   if (!SetExportChecked(env, exports, "sxform", Napi::Function::New(env, Sxform), __func__)) return;
 }

@@ -12,6 +12,12 @@ import cnmfrmCasesRaw from "./cnmfrm.cases.json" with { type: "json" };
 import frinfoCasesRaw from "./frinfo.cases.json" with { type: "json" };
 import frmnamCasesRaw from "./frmnam.cases.json" with { type: "json" };
 import namfrmCasesRaw from "./namfrm.cases.json" with { type: "json" };
+import bltfrmCasesRaw from "./bltfrm.cases.json" with { type: "json" };
+import pxfrm2CasesRaw from "./pxfrm2.cases.json" with { type: "json" };
+import tipbodCasesRaw from "./tipbod.cases.json" with { type: "json" };
+import tisbodCasesRaw from "./tisbod.cases.json" with { type: "json" };
+import tkframCasesRaw from "./tkfram.cases.json" with { type: "json" };
+import xfmstaCasesRaw from "./xfmsta.cases.json" with { type: "json" };
 import pxformCasesRaw from "./pxform.cases.json" with { type: "json" };
 import sxformCasesRaw from "./sxform.cases.json" with { type: "json" };
 
@@ -27,6 +33,12 @@ export const framesCnmfrmCases = cnmfrmCasesRaw as ParityCase[];
 export const framesFrinfoCases = frinfoCasesRaw as ParityCase[];
 export const framesFrmnamCases = frmnamCasesRaw as ParityCase[];
 export const framesNamfrmCases = namfrmCasesRaw as ParityCase[];
+export const framesBltfrmCases = bltfrmCasesRaw as ParityCase[];
+export const framesPxfrm2Cases = pxfrm2CasesRaw as ParityCase[];
+export const framesTipbodCases = tipbodCasesRaw as ParityCase[];
+export const framesTisbodCases = tisbodCasesRaw as ParityCase[];
+export const framesTkframCases = tkframCasesRaw as ParityCase[];
+export const framesXfmstaCases = xfmstaCasesRaw as ParityCase[];
 export const framesPxformCases = pxformCasesRaw as ParityCase[];
 export const framesSxformCases = sxformCasesRaw as ParityCase[];
 
@@ -43,6 +55,12 @@ export const framesCases: ParityCase[] = [
   ...framesFrinfoCases,
   ...framesFrmnamCases,
   ...framesNamfrmCases,
+  ...framesBltfrmCases,
+  ...framesPxfrm2Cases,
+  ...framesTipbodCases,
+  ...framesTisbodCases,
+  ...framesTkframCases,
+  ...framesXfmstaCases,
   ...framesPxformCases,
   ...framesSxformCases,
 ];

@@ -1,10 +1,12 @@
 import type {
   FramesApi,
+  SpiceStateVector,
   SpiceMatrix6x6,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
   brandMat6RowMajor,
+  brandMat3RowMajorResult,
   brandMat3RowMajor,
   brandVec3,
   invariant,
@@ -12,6 +14,87 @@ import {
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
+
+function frameText(value: unknown): string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(
+      "Expected a NUL-free frame or coordinate-system string",
+    );
+  return value;
+}
+
+function frameEpoch(value: number): number {
+  if (!Number.isFinite(value)) throw new TypeError("Expected a finite epoch");
+  return value;
+}
+
+function frameState(value: unknown, input: boolean): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError("Expected a six-component state");
+  const component = (i: number): number => {
+    const v: unknown = value[i];
+    if (typeof v !== "number" || (input && !Number.isFinite(v)))
+      throw new TypeError("Invalid state component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
+}
+
+function bodyStateMatrix(value: unknown): SpiceMatrix6x6 {
+  if (!Array.isArray(value) || value.length !== 36)
+    throw new TypeError("Expected a 36-component TISBOD result");
+  const component = (index: number): number => {
+    const v: unknown = value[index];
+    if (typeof v !== "number")
+      throw new TypeError("Invalid TISBOD matrix component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+    component(6),
+    component(7),
+    component(8),
+    component(9),
+    component(10),
+    component(11),
+    component(12),
+    component(13),
+    component(14),
+    component(15),
+    component(16),
+    component(17),
+    component(18),
+    component(19),
+    component(20),
+    component(21),
+    component(22),
+    component(23),
+    component(24),
+    component(25),
+    component(26),
+    component(27),
+    component(28),
+    component(29),
+    component(30),
+    component(31),
+    component(32),
+    component(33),
+    component(34),
+    component(35),
+  ];
+}
 
 function copyStateMatrix(value: unknown): SpiceMatrix6x6 {
   const matrix = brandMat6RowMajor(value, { label: "sxform()" });
@@ -102,10 +185,69 @@ function validateCkPointing(
 export function createFramesApi(
   native: NativeAddon,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  ownedIntCells: ReadonlySet<number>,
 ): FramesApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    bltfrm: (frameClass, ids) => {
+      assertSpiceInt32(frameClass, "bltfrm(frameClass)");
+      assertOpaqueHandle(ids, "bltfrm(ids)");
+      if (!ownedIntCells.has(ids))
+        throw new RangeError(
+          "bltfrm requires a live integer cell owned by this backend",
+        );
+      native.bltfrm(frameClass, ids);
+    },
+    pxfrm2: (from, to, etfrom, etto) =>
+      brandMat3RowMajorResult(
+        native.pxfrm2(
+          frameText(from),
+          frameText(to),
+          frameEpoch(etfrom),
+          frameEpoch(etto),
+        ),
+        { label: "pxfrm2()" },
+      ),
+    tipbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tipbod(body)");
+      return brandMat3RowMajorResult(
+        native.tipbod(frameText(ref), body, frameEpoch(et)),
+        { label: "tipbod()" },
+      );
+    },
+    tisbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tisbod(body)");
+      return bodyStateMatrix(
+        native.tisbod(frameText(ref), body, frameEpoch(et)),
+      );
+    },
+    tkfram: (typeId) => {
+      assertSpiceInt32(typeId, "tkfram(typeId)");
+      const result = native.tkfram(typeId);
+      if (typeof result.found !== "boolean")
+        throw new TypeError("Invalid tkfram found flag");
+      if (!result.found) return { found: false };
+      const frame = result.frame;
+      if (typeof frame !== "number")
+        throw new TypeError("Invalid tkfram base frame");
+      assertSpiceInt32(frame, "tkfram base frame");
+      return {
+        found: true,
+        frame,
+        rot: brandMat3RowMajorResult(result.rot, { label: "tkfram().rot" }),
+      };
+    },
+    xfmsta: (state, from, to, body) =>
+      frameState(
+        native.xfmsta(
+          frameState(state, true),
+          frameText(from),
+          frameText(to),
+          frameText(body),
+        ),
+        false,
+      ),
     namfrm: (name) => {
       const out = native.namfrm(name);
       if (!out.found) {

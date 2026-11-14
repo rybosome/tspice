@@ -8,6 +8,7 @@ import type {
   Found,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpiceStateVector,
   SpiceVector3,
 } from "../shared/types.js";
 
@@ -21,6 +22,69 @@ export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
 /** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
+  /**
+   * Replace the contents of a live caller-owned integer cell with sorted built-in frame IDs.
+   * Classes 1 through 6 select a class and −1 selects all. N0067 requires capacity
+   * 145 for any class, including a class with no built-in frames. Loaded FK definitions
+   * are excluded. After an error reset cardinality before reusing the cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bltfrm_c.html
+   */
+  bltfrm(frameClass: number, ids: SpiceIntCell): void;
+
+  /**
+   * Map positions from the source frame at etfrom to the destination frame at etto
+   * in TDB seconds past J2000. Even one rotating frame can yield a nonidentity
+   * transform between epochs. Both legs need orientation coverage at their own epoch.
+   * Returns all nine row-major elements. Missing orientation or unknown names throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxfrm2_c.html
+   */
+  pxfrm2(from: string, to: string, etfrom: number, etto: number): Mat3RowMajor;
+
+  /**
+   * Transform an inertial position to the equator and prime meridian of a PCK body
+   * at ET (TDB seconds past J2000). The reference must be a supported inertial frame.
+   * The signed body argument identifies the PCK class ID; the signed minimum is outside
+   * the toolkit hash range. The caller supplies valid PCK data for this epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tipbod_c.html
+   */
+  tipbod(ref: string, body: number, et: number): Mat3RowMajor;
+
+  /**
+   * Transform inertial position and velocity into PCK body-fixed coordinates at ET.
+   * Return all 36 row-major elements of [R,0;dR/dt,R] with derivative per second.
+   * The body is a PCK class ID. The reference, orientation coverage and minimum-ID
+   * restriction follow tipbod. PCK coefficients must be valid for the requested epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tisbod_c.html
+   */
+  tisbod(ref: string, body: number, et: number): SpiceMatrix6x6;
+
+  /**
+   * Look up a fixed TK rotation by its signed class ID, which can differ from its
+   * frame ID. The rotation maps TK coordinates to the returned base frame ID.
+   * N0067 signals errors for incomplete, unknown or zero IDs. A successful found
+   * flag controls payload availability. The signed minimum exceeds the hash range.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkfram_c.html
+   */
+  tkfram(typeId: number): Found<{ rot: Mat3RowMajor; frame: number }>;
+
+  /**
+   * Convert a six-component coordinate state, including its three rates. The
+   * systems are RECTANGULAR (x,y,z), CYLINDRICAL (r,lon,z), LATITUDINAL
+   * (r,lon,lat), SPHERICAL (r,colat,lon), GEODETIC and PLANETOGRAPHIC (lon,lat,alt).
+   * Units are km, radians and rates per second. Unequal systems involving a spheroid
+   * require body radii with equal equatorial axes; planetographic longitude also
+   * depends on the body rotation convention. Equal systems copy the input. For
+   * other systems use a blank body string. An empty string signals EMPTYSTRING.
+   * Transverse velocity on the polar axis can signal INVALIDSTATE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xfmsta_c.html
+   */
+  xfmsta(
+    state: Readonly<SpiceStateVector>,
+    from: string,
+    to: string,
+    body: string,
+  ): SpiceStateVector;
+
   /**
    * Resolve a frame name; case and outer blanks are insignificant.
    * @param name Frame name; empty strings signal EMPTYSTRING.

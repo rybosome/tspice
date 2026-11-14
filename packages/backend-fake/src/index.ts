@@ -1580,6 +1580,24 @@ export function createFakeBackend(
       throw new Error("Fake backend: ckcov() is not implemented");
     },
 
+    bltfrm: () => {
+      throw new Error("Fake backend does not model bltfrm");
+    },
+    pxfrm2: () => {
+      throw new Error("Fake backend does not model pxfrm2");
+    },
+    tipbod: () => {
+      throw new Error("Fake backend does not model tipbod");
+    },
+    tisbod: () => {
+      throw new Error("Fake backend does not model tisbod");
+    },
+    tkfram: () => {
+      throw new Error("Fake backend does not model tkfram");
+    },
+    xfmsta: () => {
+      throw new Error("Fake backend does not model xfmsta");
+    },
     pxform: (from: string, to: string, et: number) => {
       const f = parseFrameName(from);
       const t = parseFrameName(to);

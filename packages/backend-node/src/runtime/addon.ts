@@ -526,6 +526,17 @@ export type NativeAddon = {
     cnfine: SpiceWindow,
     result: SpiceWindow,
   ): void;
+  bltfrm(frameClass: number, ids: number): void;
+  pxfrm2(from: string, to: string, etfrom: number, etto: number): number[];
+  tipbod(ref: string, body: number, et: number): number[];
+  tisbod(ref: string, body: number, et: number): number[];
+  tkfram(typeId: number): { found: boolean; rot?: number[]; frame?: number };
+  xfmsta(
+    state: readonly number[],
+    from: string,
+    to: string,
+    body: string,
+  ): number[];
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 

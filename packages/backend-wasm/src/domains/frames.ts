@@ -5,6 +5,7 @@ import type {
   FramesApi,
   Mat3RowMajor,
   SpiceIntCell,
+  SpiceStateVector,
   SpiceMatrix6x6,
   SpiceVector3,
   SpiceWindow,
@@ -14,6 +15,7 @@ import {
   assertSpiceInt32NonNegative,
   brandMat6RowMajor,
   brandVec3,
+  brandMat3RowMajorResult,
   brandMat3RowMajor,
 } from "@rybosome/tspice-core";
 
@@ -31,6 +33,93 @@ import {
   wasmCellPointer,
   wasmWindowPointer,
 } from "./cells-windows.js";
+
+const frameEncoder = new TextEncoder();
+
+function frameBytes(value: string): Uint8Array {
+  return frameEncoder.encode(frameText(value));
+}
+
+function frameText(value: unknown): string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(
+      "Expected a NUL-free frame or coordinate-system string",
+    );
+  return value;
+}
+
+function frameEpoch(value: number): number {
+  if (!Number.isFinite(value)) throw new TypeError("Expected a finite epoch");
+  return value;
+}
+
+function frameState(value: unknown, input: boolean): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError("Expected a six-component state");
+  const component = (i: number): number => {
+    const v: unknown = value[i];
+    if (typeof v !== "number" || (input && !Number.isFinite(v)))
+      throw new TypeError("Invalid state component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
+}
+
+function bodyStateMatrix(value: unknown): SpiceMatrix6x6 {
+  if (!Array.isArray(value) || value.length !== 36)
+    throw new TypeError("Expected a 36-component TISBOD result");
+  const component = (index: number): number => {
+    const v: unknown = value[index];
+    if (typeof v !== "number")
+      throw new TypeError("Invalid TISBOD matrix component");
+    return v;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+    component(6),
+    component(7),
+    component(8),
+    component(9),
+    component(10),
+    component(11),
+    component(12),
+    component(13),
+    component(14),
+    component(15),
+    component(16),
+    component(17),
+    component(18),
+    component(19),
+    component(20),
+    component(21),
+    component(22),
+    component(23),
+    component(24),
+    component(25),
+    component(26),
+    component(27),
+    component(28),
+    component(29),
+    component(30),
+    component(31),
+    component(32),
+    component(33),
+    component(34),
+    component(35),
+  ];
+}
 
 function copyStateMatrix(value: unknown): SpiceMatrix6x6 {
   const matrix = brandMat6RowMajor(value, { label: "sxform()" });
@@ -619,6 +708,173 @@ function validateCkPointing(
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
 export function createFramesApi(module: EmscriptenModule): FramesApi {
   return {
+    bltfrm: (frameClass, ids) => {
+      assertSpiceInt32(frameClass, "bltfrm(frameClass)");
+      const cell = wasmCellPointer(module, ids, "bltfrm(ids)");
+      return withAllocs(module, [WASM_ERR_MAX_BYTES], (errPtr) => {
+        const code = module._tspice_bltfrm(
+          frameClass,
+          cell,
+          errPtr,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code !== 0)
+          throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+      });
+    },
+    pxfrm2: (from, to, etfrom, etto) => {
+      frameEpoch(etfrom);
+      frameEpoch(etto);
+      const fromBytes = frameBytes(from);
+      const toBytes = frameBytes(to);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, fromBytes.length + 1, toBytes.length + 1, 72],
+        (errPtr, fromPtr, toPtr, out) => {
+          module.HEAPU8.set(fromBytes, fromPtr);
+          module.HEAPU8[fromPtr + fromBytes.length] = 0;
+          module.HEAPU8.set(toBytes, toPtr);
+          module.HEAPU8[toPtr + toBytes.length] = 0;
+          const code = module._tspice_pxfrm2(
+            fromPtr,
+            toPtr,
+            etfrom,
+            etto,
+            out,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return brandMat3RowMajorResult(
+            module.HEAPF64.subarray(out / 8, out / 8 + 9),
+            { label: "pxfrm2()" },
+          );
+        },
+      );
+    },
+    tipbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tipbod(body)");
+      frameEpoch(et);
+      const refBytes = frameBytes(ref);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, refBytes.length + 1, 72],
+        (errPtr, refPtr, out) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          const code = module._tspice_tipbod(
+            refPtr,
+            body,
+            et,
+            out,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return brandMat3RowMajorResult(
+            module.HEAPF64.subarray(out / 8, out / 8 + 9),
+            { label: "tipbod()" },
+          );
+        },
+      );
+    },
+    tisbod: (ref, body, et) => {
+      assertSpiceInt32(body, "tisbod(body)");
+      frameEpoch(et);
+      const refBytes = frameBytes(ref);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, refBytes.length + 1, 288],
+        (errPtr, refPtr, out) => {
+          module.HEAPU8.set(refBytes, refPtr);
+          module.HEAPU8[refPtr + refBytes.length] = 0;
+          const code = module._tspice_tisbod(
+            refPtr,
+            body,
+            et,
+            out,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return bodyStateMatrix(
+            Array.from(module.HEAPF64.subarray(out / 8, out / 8 + 36)),
+          );
+        },
+      );
+    },
+    tkfram: (typeId) => {
+      assertSpiceInt32(typeId, "tkfram(typeId)");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 72, 4, 4],
+        (errPtr, out, framePtr, foundPtr) => {
+          const code = module._tspice_tkfram(
+            typeId,
+            out,
+            framePtr,
+            foundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          if (!module.HEAP32[foundPtr / 4]) return { found: false };
+          return {
+            found: true,
+            frame: module.HEAP32[framePtr / 4]!,
+            rot: brandMat3RowMajorResult(
+              module.HEAPF64.subarray(out / 8, out / 8 + 9),
+              { label: "tkfram().rot" },
+            ),
+          };
+        },
+      );
+    },
+    xfmsta: (state, from, to, body) => {
+      const snapshot = frameState(state, true);
+      const fromBytes = frameBytes(from);
+      const toBytes = frameBytes(to);
+      const bodyBytes = frameBytes(body);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          fromBytes.length + 1,
+          toBytes.length + 1,
+          bodyBytes.length + 1,
+          48,
+          48,
+        ],
+        (errPtr, fromPtr, toPtr, bodyPtr, statePtr, out) => {
+          module.HEAPU8.set(fromBytes, fromPtr);
+          module.HEAPU8[fromPtr + fromBytes.length] = 0;
+          module.HEAPU8.set(toBytes, toPtr);
+          module.HEAPU8[toPtr + toBytes.length] = 0;
+          module.HEAPU8.set(bodyBytes, bodyPtr);
+          module.HEAPU8[bodyPtr + bodyBytes.length] = 0;
+          module.HEAPF64.set(snapshot, statePtr / 8);
+          const code = module._tspice_xfmsta(
+            statePtr,
+            fromPtr,
+            toPtr,
+            bodyPtr,
+            out,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, code);
+          return frameState(
+            Array.from(module.HEAPF64.subarray(out / 8, out / 8 + 6)),
+            false,
+          );
+        },
+      );
+    },
     namfrm: (name: string) => {
       assertFrameString(name, "namfrm(name)");
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, name);

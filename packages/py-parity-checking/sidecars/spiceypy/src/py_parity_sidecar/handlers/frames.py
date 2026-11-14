@@ -19,11 +19,18 @@ from ..models import (
     StepFramesFrinfo,
     StepFramesFrmnam,
     StepFramesNamfrm,
+    StepFramesBltfrm,
+    StepFramesPxfrm2,
+    StepFramesTipbod,
+    StepFramesTisbod,
+    StepFramesTkfram,
+    StepFramesXfmsta,
     StepFramesPxform,
     StepFramesSxform,
     StepOutput,
     WorkflowStep,
 )
+from ..frame_transform_oracle import checked_pxfrm2
 from ..runtime import SidecarRuntimeContext, resolve_path_ref
 
 
@@ -336,6 +343,42 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
             sp.scard(0, cover)
         sp.ckcov(ck_path, step.idcode, step.needav, step.level, step.tol, step.timsys, cover)
         return StepOutput(op=step.op, value={"intervals": _window_to_intervals(cover)})
+
+    if isinstance(step, StepFramesBltfrm):
+        ids = context.state.cellsWindows.intCells.get(step.idsId)
+        if ids is None:
+            ids = SPICEINT_CELL(step.maxCard)
+            context.state.cellsWindows.intCells[step.idsId] = ids
+            context.register_finalizer(f"cellsWindows.release:{step.idsId}", lambda: context.state.cellsWindows.intCells.pop(step.idsId, None))
+        sp.bltfrm(step.frameClass, ids)
+        return StepOutput(op=step.op, value={"ids": [int(v) for v in ids]})
+
+    if isinstance(step, StepFramesPxfrm2):
+        out = checked_pxfrm2(step.from_, step.to, step.etfrom, step.etto)
+        return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesTipbod):
+        if step.body == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        out = sp.tipbod(step.ref, step.body, step.et)
+        return StepOutput(op=step.op, value=_to_matrix3(out))
+
+    if isinstance(step, StepFramesTisbod):
+        if step.body == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        out = sp.tisbod(step.ref, step.body, step.et)
+        return StepOutput(op=step.op, value=_to_matrix6(out))
+
+    if isinstance(step, StepFramesTkfram):
+        if step.typeId == -2147483648:
+            raise ValueError("ID outside N0067 frame hash range")
+        with sp.no_found_check():
+            rot, frame, found = sp.tkfram(step.typeId)
+        return StepOutput(op=step.op, value={"found": True, "rot": _to_matrix3(rot), "frame": int(frame)} if found else {"found": False})
+
+    if isinstance(step, StepFramesXfmsta):
+        out = sp.xfmsta(step.state, step.from_, step.to, step.body)
+        return StepOutput(op=step.op, value=out.tolist())
 
     if isinstance(step, StepFramesPxform):
         out = sp.pxform(step.from_, step.to, step.et)

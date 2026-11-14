@@ -16,6 +16,12 @@ import type {
   StepFramesFrinfo,
   StepFramesFrmnam,
   StepFramesNamfrm,
+  StepFramesBltfrm,
+  StepFramesPxfrm2,
+  StepFramesTipbod,
+  StepFramesTisbod,
+  StepFramesTkfram,
+  StepFramesXfmsta,
   StepFramesPxform,
   StepFramesSxform,
   StepOutput,
@@ -46,6 +52,12 @@ type FramesStep =
   | StepFramesCkupf
   | StepFramesCkobj
   | StepFramesCkcov
+  | StepFramesBltfrm
+  | StepFramesPxfrm2
+  | StepFramesTipbod
+  | StepFramesTisbod
+  | StepFramesTkfram
+  | StepFramesXfmsta
   | StepFramesPxform
   | StepFramesSxform;
 
@@ -397,6 +409,54 @@ export function runFramesStep(
       };
     }
 
+    case "frames.bltfrm": {
+      const ids = getOrCreateIntCell(context, step.idsId, step.maxCard);
+      context.spice.raw.bltfrm(step.frameClass, ids);
+      const count = context.spice.raw.card(ids);
+      return {
+        op: step.op,
+        value: {
+          ids: Array.from({ length: count }, (_, i) =>
+            context.spice.kit.cellGeti(ids, i),
+          ),
+        },
+      };
+    }
+    case "frames.pxfrm2": {
+      const out = context.spice.raw.pxfrm2(
+        step.from,
+        step.to,
+        step.etfrom,
+        step.etto,
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+    case "frames.tipbod": {
+      const out = context.spice.raw.tipbod(step.ref, step.body, step.et);
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+    case "frames.tisbod": {
+      const out = context.spice.raw.tisbod(step.ref, step.body, step.et);
+      return { op: step.op, value: toMatrix6x6(out) };
+    }
+    case "frames.tkfram": {
+      const out = context.spice.raw.tkfram(step.typeId);
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, rot: unflattenMatrix(out.rot), frame: out.frame }
+          : { found: false },
+      };
+    }
+    case "frames.xfmsta": {
+      const out = context.spice.raw.xfmsta(
+        step.state,
+        step.from,
+        step.to,
+        step.body,
+      );
+      return { op: step.op, value: out };
+    }
     case "frames.pxform": {
       const matrix = context.spice.raw.pxform(step.from, step.to, step.et);
       return { op: step.op, value: unflattenMatrix(matrix) };

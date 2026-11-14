@@ -11,7 +11,10 @@ describe("@rybosome/tspice-backend-node cells/windows validation", () => {
     const freeCell = vi.fn();
     const freeWindow = vi.fn();
 
-    const api = createCellsWindowsKitApi({ freeCell, freeWindow } as never);
+    const api = createCellsWindowsKitApi(
+      { freeCell, freeWindow } as never,
+      new Set(),
+    );
 
     expect(() => api.freeCell(-1 as never)).toThrow(/freeCell\(cell\)/);
     expect(() => api.freeCell(1.25 as never)).toThrow(/freeCell\(cell\)/);

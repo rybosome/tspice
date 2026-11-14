@@ -177,6 +177,34 @@ export function brandMat3RowMajor(
 }
 
 /**
+ * Copy and brand a backend result as a row-major Mat3, preserving NaN and infinities.
+ *
+ * Accepts exactly nine numeric array or numeric TypedArray entries. The returned
+ * matrix owns its storage and uses the usual freeze option. This validates a
+ * result's shape, not numerical suitability: a nonfinite result is still
+ * rejected by the finite-only matrix input validators and branding helpers.
+ */
+export function brandMat3RowMajorResult(
+  value: unknown,
+  options?: BrandMat3Options,
+): Mat3RowMajor {
+  const label = options?.label ?? "Mat3RowMajor result";
+  if (!isLength9ArrayLike(value))
+    throw new TypeError(`${label}: expected a length-9 array of numbers`);
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component = value[i];
+    if (typeof component !== "number")
+      throw new TypeError(`${label}: component ${i} must be a number`);
+    copy.push(component);
+  }
+  tryDefineBrand(copy, MAT3_ROW_MAJOR_BRAND);
+  if (!isBrandedMat3RowMajor(copy))
+    throw new Error(`${label}: could not brand the matrix result`);
+  return maybeFreeze(copy, options?.freeze ?? DEFAULT_FREEZE_MODE);
+}
+
+/**
  * Validate + brand a value as a column-major Mat3.
  */
 export function brandMat3ColMajor(
@@ -195,7 +223,7 @@ export function brandMat3ColMajor(
 }
 
 /**
- * Brand-only check: verifies that a value was produced by `brandMat3RowMajor()`.
+ * Brand-only check: verifies that a value was produced by a row-major Mat3 branding helper.
  */
 export function isBrandedMat3RowMajor(value: unknown): value is Mat3RowMajor {
   if (!isLength9ArrayLike(value)) return false;
