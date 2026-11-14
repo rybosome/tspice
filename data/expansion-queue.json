@@ -3536,18 +3536,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/773"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "60 registered workflows, 195 steps, 75 target calls, 31 terminal scientific errors. Both backends passed all 120 comparisons; 10 public analytic/ownership/cache checks, one native boundary test, and 37 WASM allocation positions passed. Final Chrome checked all four operations and complete DSK terminators on surfaces 103 and 104."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
+          "result": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run the full uncached local and canonical CI lanes on this combined source, then check the final PR matrix and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-extended-surfaces",
       "branch": "codex/expand-extended-surfaces",
       "baseCommit": "fa248102497b120ed8ba563575853784f140b1f2",
-      "progressNote": "Four direct surface queries. Shared cumulative limb capacity check, checked WASM traversal stack and independently verified complete dense cut arrays."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 8b8168dc. 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Four direct surface queries. Shared cumulative limb capacity check, checked WASM traversal stack and independently verified complete dense cut arrays."
     },
     {
       "id": "E21-legacy-plate-geometry",

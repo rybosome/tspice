@@ -436,8 +436,8 @@
       "id": "e20-extended-surfaces",
       "routines": ["latsrf_c", "srfnrm_c", "limbpt_c", "termpt_c"],
       "dependsOn": ["e19-dsk-intersections"],
-      "prs": [],
-      "nextAction": "Run the full uncached local and canonical CI lanes on this combined source, then check the final PR matrix and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/773"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
