@@ -2770,18 +2770,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/761"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "82 workflows, 488 steps, 142 target invocations and 56 genuine errors. All 164 registered backend comparisons, 5 public/oracle, 8 native, 27 WASM and real Chrome checks passed."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "0d93643cf09e42205eefd526f7030cdc14b1a8a9",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43580704855/job/132404634303",
+          "result": "Both complete required lanes passed locally on 0d93643cf09e42205eefd526f7030cdc14b1a8a9. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,488 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 645 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132404634303 on 0d93643cf09e42205eefd526f7030cdc14b1a8a9: 2,488 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both required local lanes and inspect canonical source CI on the E04/E05 combined source.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-interpolation",
       "branch": "codex/expand-spk-interpolation",
       "baseCommit": "71311abe5008a37b400943710b03b5e26bdace8c",
-      "progressNote": "82 workflows, 488 steps, 142 target invocations and 56 genuine errors. All 164 registered backend comparisons, 5 public/oracle, 8 native, 27 WASM and real Chrome checks passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 0d93643c. 2,488 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "82 workflows, 488 steps, 142 target invocations and 56 genuine errors. All 164 registered backend comparisons, 5 public/oracle, 8 native, 27 WASM and real Chrome checks passed."
     },
     {
       "id": "E06-spk-analytic",
