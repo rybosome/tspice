@@ -9,6 +9,15 @@ import type {
   StepFileIoDafcls,
   StepFileIoDaffna,
   StepFileIoDafopr,
+  StepFileIoDasonw,
+  StepFileIoDasops,
+  StepFileIoDasopw,
+  StepFileIoDashfn,
+  StepFileIoDashfs,
+  StepFileIoDaslla,
+  StepFileIoDasllc,
+  StepFileIoDasrfr,
+  StepFileIoDaswbr,
   StepFileIoDascls,
   StepFileIoDasopr,
   StepFileIoDlabfs,
@@ -22,7 +31,7 @@ import type {
   StepFileIoGetfat,
   StepOutput,
 } from "../../case-types.js";
-import { toVirtualKernelPath } from "../../fixtures.js";
+import { toPathRef, toVirtualKernelPath } from "../../fixtures.js";
 import type { RunTspiceContext } from "../context.js";
 
 type FileIoStep =
@@ -33,6 +42,15 @@ type FileIoStep =
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasonw
+  | StepFileIoDasops
+  | StepFileIoDasopw
+  | StepFileIoDashfn
+  | StepFileIoDashfs
+  | StepFileIoDaslla
+  | StepFileIoDasllc
+  | StepFileIoDasrfr
+  | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
   | StepFileIoDlabfs
@@ -142,6 +160,76 @@ export function runFileIoStep(
       };
     }
 
+    case "file-io.dasonw":
+    case "file-io.dasops":
+    case "file-io.dasopw": {
+      if (context.state.fileIo.handles.get(step.handleId)?.isOpen)
+        throw new Error("File-io handle already open: " + step.handleId);
+      const raw = context.spice.raw;
+      let handle: SpiceHandle;
+      if (step.op === "file-io.dasops") handle = raw.dasops();
+      else {
+        if (toPathRef(step.path).kind !== "scratch")
+          throw new Error("DAS writer workflows require a scratch path");
+        const path = resolveFileIoPath(step.path);
+        handle =
+          step.op === "file-io.dasopw"
+            ? raw.dasopw(path)
+            : raw.dasonw(path, step.ftype, step.ifname, step.ncomr);
+      }
+      registerHandleState(context, step.handleId, handle, "dascls");
+      return { op: step.op, value: null };
+    }
+    case "file-io.dashfn": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const raw = context.spice.raw;
+      const value = raw.dashfn(handle, step.namlen);
+      const full = raw.dashfn(handle);
+      // Remove the backend-generated staging root, retaining every logical
+      // directory. Capacity applies to the physical path before normalization.
+      const name = full.replace(/^.*?\/py-parity\//, "");
+      return {
+        op: step.op,
+        value: {
+          name,
+          prefixMatches: value === full.slice(0, (step.namlen ?? 256) - 1),
+        },
+      };
+    }
+    case "file-io.dashfs":
+      return {
+        op: step.op,
+        value: context.spice.raw.dashfs(
+          requireHandleState(context, step.handleId).handle,
+        ),
+      };
+    case "file-io.daslla":
+      return {
+        op: step.op,
+        value: context.spice.raw.daslla(
+          requireHandleState(context, step.handleId).handle,
+        ),
+      };
+    case "file-io.dasrfr":
+      return {
+        op: step.op,
+        value: context.spice.raw.dasrfr(
+          requireHandleState(context, step.handleId).handle,
+          step.idwlen,
+          step.ifnlen,
+        ),
+      };
+    case "file-io.daswbr":
+      context.spice.raw.daswbr(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dasllc": {
+      const state = requireHandleState(context, step.handleId);
+      context.spice.raw.dasllc(state.handle);
+      state.isOpen = false;
+      return { op: step.op, value: null };
+    }
     case "file-io.dasopr": {
       const handle = context.spice.raw.dasopr(resolveFileIoPath(step.path));
       registerHandleState(context, step.handleId, handle, "dascls");

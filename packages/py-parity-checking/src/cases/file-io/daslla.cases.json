@@ -1,0 +1,143 @@
+[
+  {
+    "caseId": "file-io-daslla-full-ek",
+    "description": "Read the existing independently generated full-ek; preserve every named output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-daslla-dsk-with-comments",
+    "description": "Read the existing independently generated dsk-with-comments; preserve every named output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-daslla-authored-mesh",
+    "description": "Read the existing independently generated authored-mesh; preserve every named output.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-daslla-zero",
+    "description": "A newly opened empty file has zero addresses and reserved comment records.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 4
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-daslla-two-claims",
+    "description": "Closing one read claim leaves the duplicate claim usable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "b",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -8,6 +8,42 @@ import type { NativeAddon } from "../runtime/addon.js";
  */
 export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
+  invariant(
+    typeof native.dasonw === "function",
+    "Expected native addon to export dasonw",
+  );
+  invariant(
+    typeof native.dasops === "function",
+    "Expected native addon to export dasops",
+  );
+  invariant(
+    typeof native.dasopw === "function",
+    "Expected native addon to export dasopw",
+  );
+  invariant(
+    typeof native.dashfn === "function",
+    "Expected native addon to export dashfn",
+  );
+  invariant(
+    typeof native.dashfs === "function",
+    "Expected native addon to export dashfs",
+  );
+  invariant(
+    typeof native.daslla === "function",
+    "Expected native addon to export daslla",
+  );
+  invariant(
+    typeof native.dasllc === "function",
+    "Expected native addon to export dasllc",
+  );
+  invariant(
+    typeof native.dasrfr === "function",
+    "Expected native addon to export dasrfr",
+  );
+  invariant(
+    typeof native.daswbr === "function",
+    "Expected native addon to export daswbr",
+  );
 
   invariant(
     typeof native.furnsh === "function",

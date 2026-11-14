@@ -1,0 +1,153 @@
+[
+  {
+    "caseId": "file-io-dashfn-full-logical-path",
+    "description": "Distinguish two identical basenames beneath different staged directories.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "one/field.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dasonw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "two/field.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dashfn-width",
+    "description": "Check raw physical prefixes at multiple capacities and compare every component of the logical name.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 2
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 6
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 14
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 111
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dashfn-reader",
+    "description": "Observe the existing kernel path after the writer and reader paths have been separated.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dashfn-unnamed",
+    "description": "A scratch file has no external filename in the pinned C runtime.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dashfn-short",
+    "description": "One byte has no room for both text and terminator.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h",
+        "namlen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

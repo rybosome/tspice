@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 1,
+  "batch": "c04-das-lifecycle",
+  "traceFiles": [
+    "docs/step8-das-lifecycle.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/das-lifecycle-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/das-lifecycle-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/das-files.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_file_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/das-lifecycle-public.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "dasonw_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasonw_c.html",
+      "semantics": "Create a named DAS writer with case-sensitive four-byte type and 60-byte internal name. Reserve ncomr fixed 1024-byte records for comments.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasonw-record-and-persistence",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect all header fields and counters, close, and reopen the same file. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasonw-type-and-name-width",
+          "coverage": ["success", "edge"],
+          "observes": "Mixed-case type truncation and a 60-byte internal name survive close/reopen. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasonw-two-new-files",
+          "coverage": ["success", "edge"],
+          "observes": "Distinct same-basename paths keep their names, headers and reservation counts. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasonw-negative-records",
+          "coverage": ["error", "edge"],
+          "observes": "The new-file entrypoint preserves its own input diagnostic. Require INVALIDCOUNT."
+        },
+        {
+          "caseId": "file-io-dasonw-empty-type",
+          "coverage": ["error", "edge"],
+          "observes": "The new-file entrypoint preserves its own input diagnostic. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "file-io-dasonw-blank-type",
+          "coverage": ["error", "edge"],
+          "observes": "The new-file entrypoint preserves its own input diagnostic. Require BLANKFILETYPE."
+        },
+        {
+          "caseId": "file-io-dasonw-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "The new-file entrypoint preserves its own input diagnostic. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "file-io-dasonw-existing-file",
+          "coverage": ["error", "edge"],
+          "observes": "A closed file cannot be created anew. Require FILEOPENFAIL."
+        }
+      ],
+      "edgeAssessment": "Create two independent files with identical basenames, retain their distinct headers, and verify persisted case-sensitive, truncated file identifiers, internal names and reserved record counts after close and reopen.",
+      "errorAssessment": "Compare INVALIDCOUNT for a negative comment allocation, EMPTYSTRING for an empty type or internal name, BLANKFILETYPE for an ASCII-blank type, and FILEOPENFAIL for a pre-existing file. Verify that failed opens do not return a token.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and the locked oracle create their named and scratch files at run time.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasonw -> serialized native addon and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasonw -> WASM export, scoped allocation and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dasops_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasops_c.html",
+      "semantics": "Open an actual temporary DAS and return an owned writer claim. Its external name may be empty and its internal name is DAS SCRATCH FILE.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasops-scratch-metadata",
+          "coverage": ["success", "edge"],
+          "observes": "Control the prior ID word before reading the N0067 scratch record and complete descriptors. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasops-two-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Two anonymous files are independent; the second remains usable after a low-level close. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasops-cleanup-on-failure",
+          "coverage": ["error", "edge"],
+          "observes": "An anonymous file is still owned by the workflow after a downstream error. Require STRINGTOOSHORT."
+        }
+      ],
+      "edgeAssessment": "Control the prior named DAS identification word before opening scratch, and inspect the complete resulting header and descriptor. Low-closing one of two scratch files leaves the other usable.",
+      "errorAssessment": "DASOPS has no public scalar parameters. Exercise registration rollback, allocation failure, independently owned scratch lifetimes and cleanup after downstream STRINGTOOSHORT.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and the locked oracle create their named and scratch files at run time.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [
+        {
+          "id": "dasops-state-dependent-header-word",
+          "status": "repaired",
+          "summary": "Assuming a fixed scratch ID word would hide N0067 scratch header dependence on prior named opens.",
+          "repair": "Seed the prior DAS ID word using an explicit named open and independently observe the actual scratch header and external filename.",
+          "evidence": [
+            "docs/step8-das-lifecycle.md",
+            "packages/py-parity-checking/src/cases/file-io/dasops.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_file_oracle.py"
+          ],
+          "caseIds": ["file-io-dasops-scratch-metadata"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasops -> serialized native addon and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasops -> WASM export, scoped allocation and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dasopw_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasopw_c.html",
+      "semantics": "Open an existing DAS for exclusive write. Toolkit open conflicts and file absence are observed independently.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasopw-reopen-modify",
+          "coverage": ["success", "edge"],
+          "observes": "Reopen a named file for writing, observe the full header, flush, close and reread. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasopw-missing",
+          "coverage": ["error", "edge"],
+          "observes": "Write-open on a nonexistent named file reports the canonical diagnostic. Require FILENOTFOUND."
+        },
+        {
+          "caseId": "file-io-dasopw-read-conflict",
+          "coverage": ["error", "edge"],
+          "observes": "An existing read claim prevents opening for write. Require FILEOPENCONFLICT."
+        },
+        {
+          "caseId": "file-io-dasopw-write-conflict",
+          "coverage": ["error", "edge"],
+          "observes": "A second independent write open conflicts with the first writer. Require FILEOPENCONFLICT."
+        }
+      ],
+      "edgeAssessment": "Open an existing file for update and observe its original header, its physical filename and all three logical address limits, including through virtual-output and string-path reopen.",
+      "errorAssessment": "Use the registered missing-file and already-open read/write cases for exact open diagnostics; a subsequent explicit close releases the claim. A virtual-output from a different owner is rejected before dispatch.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and the locked oracle create their named and scratch files at run time.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasopw -> serialized native addon and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasopw -> WASM export, scoped allocation and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dashfn_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dashfn_c.html",
+      "semantics": "Return the actual file name with caller namlen including NUL; the 255-byte toolkit field and unnamed scratch behavior are preserved.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dashfn-full-logical-path",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish two identical basenames beneath different staged directories. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfn-width",
+          "coverage": ["success", "edge"],
+          "observes": "Check raw physical prefixes at multiple capacities and compare every component of the logical name. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfn-reader",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the existing kernel path after the writer and reader paths have been separated. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfn-unnamed",
+          "coverage": ["success", "edge"],
+          "observes": "A scratch file has no external filename in the pinned C runtime. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfn-short",
+          "coverage": ["error", "edge"],
+          "observes": "One byte has no room for both text and terminator. Require STRINGTOOSHORT."
+        }
+      ],
+      "edgeAssessment": "Compare complete external filenames under known staging roots, equal basenames in different subdirectories, the empty name of unnamed scratch files and bounded output truncation. Explicit byte-capacity tests distinguish a split UTF-8 sequence from a complete name.",
+      "errorAssessment": "The toolkit signals STRINGTOOSHORT for a one-byte buffer. A cut inside a valid UTF-8 sequence is a strict decoding error at the public representation boundary. Stale or wrong-kind token failures are separate from CSPICE diagnostics.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dashfn -> serialized native addon and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dashfn -> WASM export, scoped allocation and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dashfs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dashfs_c.html",
+      "semantics": "Read four reserved/comment counters, the first free record and three ordered triples of logical addresses, directory record numbers and word locations.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dashfs-full-ek",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfs-dsk-with-comments",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfs-authored-mesh",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfs-zero",
+          "coverage": ["success", "edge"],
+          "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dashfs-two-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
+        }
+      ],
+      "edgeAssessment": "Compare every one of the fourteen file-summary integers on a populated EK, a DSK with comments, an authored mesh and an empty writer. Each of the three returned triples is constructed from an owned result.",
+      "errorAssessment": "Check owned handle lifetime, the exact summary shape and all WASM acquisition failures. Registered observations use valid native-format DAS files.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing Apophis DSK redistributed with the fixture bundle.",
+          "distribution": "Already in repository fixtures. SHA-256 1d37677ca5b694589590eb9f8b465eff4f077b7d2470b546f5487b2e811b3cce"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dashfs -> serialized native addon and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dashfs -> WASM export, scoped allocation and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "daslla_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daslla_c.html",
+      "semantics": "Return the last logical character, double and integer addresses. All three values are observed independently.",
+      "scenarios": [
+        {
+          "caseId": "file-io-daslla-full-ek",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daslla-dsk-with-comments",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daslla-authored-mesh",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daslla-zero",
+          "coverage": ["success", "edge"],
+          "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daslla-two-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
+        }
+      ],
+      "edgeAssessment": "Observe all three integer address limits on independently sourced EK/DSK fixtures, a new empty file, multiple read claims, and dirty-versus-flushed DLA files reopened in isolated processes.",
+      "errorAssessment": "Check owner, kind, and stale-token handling. The shared C adapter publishes its three logical addresses only on successful completion.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing Apophis DSK redistributed with the fixture bundle.",
+          "distribution": "Already in repository fixtures. SHA-256 1d37677ca5b694589590eb9f8b465eff4f077b7d2470b546f5487b2e811b3cce"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.daslla -> serialized native addon and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.daslla -> WASM export, scoped allocation and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dasllc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasllc_c.html",
+      "semantics": "Release just one claim without flushing or segregating. Dirty data and process buffers require explicit caller handling.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasllc-clean-writer",
+          "coverage": ["success", "edge"],
+          "observes": "Close the empty writer without segregation; reopen and inspect its persisted header and address counters. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasllc-flush",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasllc-scratch",
+          "coverage": ["success", "edge"],
+          "observes": "Closing an anonymous file releases its claim; open another and inspect its addresses. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasllc-read-claim",
+          "coverage": ["success", "edge"],
+          "observes": "Release exactly one duplicate read claim while continuing to use the remaining one. Compare all exposed fields against the independent paired file workflow."
+        }
+      ],
+      "edgeAssessment": "Low-close a clean or explicitly flushed writer, reopen it and inspect its persisted addresses. Low-close one of two shared read claims, then read using the remaining claim. Isolated dirty low-close observations compare reopened DLA byte state against the locked toolkit.",
+      "errorAssessment": "Any invalid token is rejected before scientific dispatch. The deliberate dirty-close observation uses subprocess isolation because N0067 may retain stale global buffer entries after dropping unwritten records.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [
+        {
+          "id": "dasllc-dirty-record-lifetime",
+          "status": "repaired",
+          "summary": "Low-closing a dirty writer can leave process-global DAS buffers referring to a closed file. Later independent operations in the same process may be affected.",
+          "repair": "Document the native behavior and use clean or explicitly flushed writers for registered reusable-process cases. Isolate deliberate dirty-close observations from other workflows.",
+          "evidence": [
+            "packages/backend-contract/src/domains/file-io.ts",
+            "docs/step8-das-lifecycle.md",
+            "packages/py-parity-checking/src/cases/file-io/dasllc.cases.json",
+            "packages/py-parity-checking/test/das-lifecycle-public.test.ts"
+          ],
+          "caseIds": [
+            "file-io-dasllc-clean-writer",
+            "file-io-dasllc-flush",
+            "file-io-dasllc-scratch",
+            "file-io-dasllc-read-claim"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasllc -> serialized native addon and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasllc -> WASM export, scoped allocation and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dasrfr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrfr_c.html",
+      "semantics": "Read the on-disk fixed header, including its eight-byte identification word, 60-byte internal name and all four counts. Output capacities are independent.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasrfr-full-ek",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated full-ek; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-dsk-with-comments",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated dsk-with-comments; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-authored-mesh",
+          "coverage": ["success", "edge"],
+          "observes": "Read the existing independently generated authored-mesh; preserve every named output. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-zero",
+          "coverage": ["success", "edge"],
+          "observes": "A newly opened empty file has zero addresses and reserved comment records. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-two-claims",
+          "coverage": ["success", "edge"],
+          "observes": "Closing one read claim leaves the duplicate claim usable. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-independent-widths",
+          "coverage": ["success", "edge"],
+          "observes": "Fixed ID word and file name have independent widths and preserve leading blanks. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-dasrfr-idwlen-short",
+          "coverage": ["error", "edge"],
+          "observes": "A one-byte output returns the toolkit capacity error. Require STRINGTOOSHORT."
+        },
+        {
+          "caseId": "file-io-dasrfr-ifnlen-short",
+          "coverage": ["error", "edge"],
+          "observes": "A one-byte output returns the toolkit capacity error. Require STRINGTOOSHORT."
+        }
+      ],
+      "edgeAssessment": "Compare both strings and the full four-counter record against populated EK/DSK fixtures and physically serialized bytes. Exercise each independent byte capacity, preserve leading blanks, and reject partial UTF-8 without consuming the handle.",
+      "errorAssessment": "Independently demand STRINGTOOSHORT for either undersized output. A partial UTF-8 field is a public decoding error; full subsequent reads on the handle still work.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8b9e1ff4b0e093691243eee7a8b9fdef6b4dd6f48c6b9953fa451dfdc6274907"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/file-io-minimal.bds",
+          "provenance": "Existing Apophis DSK redistributed with the fixture bundle.",
+          "distribution": "Already in repository fixtures. SHA-256 1d37677ca5b694589590eb9f8b465eff4f077b7d2470b546f5487b2e811b3cce"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrfr -> serialized native addon and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.dasrfr -> WASM export, scoped allocation and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "daswbr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daswbr_c.html",
+      "semantics": "Flush updated buffered data records of a live writer. A reader signals the toolkit access diagnostic; the writer stays open.",
+      "scenarios": [
+        {
+          "caseId": "file-io-daswbr-ordinary",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daswbr-flush",
+          "coverage": ["success", "edge"],
+          "observes": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state. Compare all exposed fields against the independent paired file workflow."
+        },
+        {
+          "caseId": "file-io-daswbr-reader",
+          "coverage": ["error", "edge"],
+          "observes": "A read-only file rejects buffer flushing and is cleaned up after failure. Require DASINVALIDACCESS."
+        },
+        {
+          "caseId": "file-io-daswbr-scratch",
+          "coverage": ["success", "edge"],
+          "observes": "Scratch storage allows explicit buffer flushing, and its summary remains readable. Compare all exposed fields against the independent paired file workflow."
+        }
+      ],
+      "edgeAssessment": "Explicit flushing preserves DLA integer addresses across low-close and reopen. Scratch and named writers remain usable. Independent runs verify the different dirty-close result after omitting the flush.",
+      "errorAssessment": "Compare the genuine DASINVALIDACCESS diagnostic on a reader. Successful writer flushes preserve access to the file and allow subsequent full reads and close.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bds",
+          "provenance": "Existing project-authored synthetic DAS-backed fixture.",
+          "distribution": "Already in repository fixtures. SHA-256 8d771a5ae801b0009b5507e46bb1ab67f152e9c79a32158fb805cb7a22f408e9"
+        }
+      ],
+      "fixtureRationale": "The workflow uses existing DAS-backed fixtures listed below, and independent run-local named files and scratch files.",
+      "cleanup": "One catalog token per owned claim; finalizers close remaining DAS claims. Explicit low close, normal close, output readback and registration rollback are tested. Dirty-close observations require process isolation.",
+      "tolerance": "Integer metadata, each descriptor word, logical addresses, serialized strings and error short codes are exact. Known staging roots are normalized for complete external filename comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.daswbr -> serialized native addon and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "FileIoApi.daswbr -> WASM export, scoped allocation and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused evidence does not establish full-source verification. Both expanded backends remain reviewed until their required full local and canonical CI jobs are observed."
+}

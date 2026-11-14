@@ -5,6 +5,7 @@
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
+#include <limits.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -177,6 +178,115 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
 
   *outFound = foundC == SPICETRUE ? 1 : 0;
   return 0;
+}
+
+static int finish_das_call(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!path || !ftype || !ifname || !out) return tspice_return_error(err, errMaxBytes, "Invalid dasonw storage");
+  // The DDH filename field is 255 bytes; never open a silently truncated path.
+  if (strlen(path) >= TSPICE_DAS_PATH_BYTES)
+    return tspice_return_error(err, errMaxBytes, "DAS physical pathname exceeds 255 bytes");
+  // DASONW stores ncomr+3 in a SpiceInt and DUE seeks to the end of
+  // record ncomr+2 through a signed C long offset (32 bits in wasm32).
+  if (ncomr > INT_MAX - 3 || (long long)ncomr + 2 > LONG_MAX / 1024)
+    return tspice_return_error(err, errMaxBytes, "DAS comment records exceed the addressable file range");
+  SpiceInt value = 0;
+  dasonw_c(path, ftype, ifname, ncomr, &value);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  *out = value;
+  return 0;
+}
+
+int tspice_dasops(int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_return_error(err, errMaxBytes, "Invalid dasops storage");
+  SpiceInt value = 0;
+  dasops_c(&value);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  *out = value;
+  return 0;
+}
+
+int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!path || !out) return tspice_return_error(err, errMaxBytes, "Invalid dasopw storage");
+  // The DDH filename field is 255 bytes; never open a silently truncated path.
+  if (strlen(path) >= TSPICE_DAS_PATH_BYTES)
+    return tspice_return_error(err, errMaxBytes, "DAS physical pathname exceeds 255 bytes");
+  SpiceInt value = 0;
+  dasopw_c(path, &value);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  *out = value;
+  return 0;
+}
+
+int tspice_dashfn(int handle, int namlen, char *name, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!name || namlen > TSPICE_DAS_PATH_BYTES) return tspice_return_error(err, errMaxBytes, "Invalid dashfn storage");
+  // INQUIRE does not write a filename for an unnamed scratch unit.
+  // Initialize every available byte before CSPICE's Fortran-string conversion.
+  if (namlen > 0) memset(name, 0, (size_t)namlen);
+  dashfn_c(handle, namlen, name);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dashfs(int handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_return_error(err, errMaxBytes, "Invalid dashfs storage");
+  SpiceInt values[14] = {0};
+  dashfs_c(handle, values + 0, values + 1, values + 2, values + 3, values + 4, values + 5, values + 8, values + 11);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  memcpy(out, values, sizeof(values));
+  return 0;
+}
+
+int tspice_daslla(int handle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_return_error(err, errMaxBytes, "Invalid daslla storage");
+  SpiceInt values[3] = {0};
+  daslla_c(handle, values, values + 1, values + 2);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  memcpy(out, values, sizeof(values));
+  return 0;
+}
+
+int tspice_dasllc(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  dasllc_c(handle);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasrfr(int handle, int idwlen, int ifnlen, char *idword, char *ifname, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!idword || !ifname || !out || idwlen > TSPICE_DAS_ID_BYTES || ifnlen > TSPICE_DAS_IFNAME_BYTES) return tspice_return_error(err, errMaxBytes, "Invalid dasrfr storage");
+  if (idwlen > 0) memset(idword, 0, (size_t)idwlen);
+  if (ifnlen > 0) memset(ifname, 0, (size_t)ifnlen);
+  SpiceInt values[4] = {0};
+  dasrfr_c(handle, idwlen, ifnlen, idword, ifname, values, values + 1, values + 2, values + 3);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  memcpy(out, values, sizeof(values));
+  return 0;
+}
+
+int tspice_daswbr(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  daswbr_c(handle);
+  return finish_das_call(err, errMaxBytes);
 }
 
 int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) {

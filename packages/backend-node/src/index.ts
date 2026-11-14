@@ -47,7 +47,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
   const timeApi = createTimeApi(native);
-  const fileIoApi = createFileIoApi(native, spiceHandles, stager);
+  const fileIoApi = createFileIoApi(native, spiceHandles, stager, outputs);
 
   const backend: SpiceBackend & { kind: "node" } = {
     kind: "node",
