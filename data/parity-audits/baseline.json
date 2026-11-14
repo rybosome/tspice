@@ -408,5 +408,23 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a08-vector-basics",
+      "routines": [
+        "vdist_c",
+        "vequ_c",
+        "vpack_c",
+        "vupack_c",
+        "vzero_c",
+        "unorm_c",
+        "ucrss_c",
+        "vsep_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/710"],
+      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310665780 verified corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
+    }
   ]
 }

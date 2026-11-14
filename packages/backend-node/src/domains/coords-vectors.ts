@@ -15,9 +15,104 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertBasicScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyBasicVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertBasicScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
+}
+
+function basicOutputNumber(value: unknown, label: string): number {
+  // Preserve CSPICE's IEEE-754 overflow/NaN behavior for extreme finite inputs.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function basicOutputVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must have length three`);
+  return [
+    basicOutputNumber(value[0], label),
+    basicOutputNumber(value[1], label),
+    basicOutputNumber(value[2], label),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    vdist: (a, b) => {
+      const aCopy = copyBasicVector(a, "vdist(a)");
+      const bCopy = copyBasicVector(b, "vdist(b)");
+      const out = native.vdist(aCopy, bCopy);
+      return basicOutputNumber(out, "vdist result");
+    },
+    vequ: (v) => {
+      const vCopy = copyBasicVector(v, "vequ(v)");
+      const out = native.vequ(vCopy);
+      return basicOutputVector(out, "vequ result");
+    },
+    vpack: (x, y, z) => {
+      assertBasicScalar(x, "vpack(x)");
+      assertBasicScalar(y, "vpack(y)");
+      assertBasicScalar(z, "vpack(z)");
+      const out = native.vpack(x, y, z);
+      return basicOutputVector(out, "vpack result");
+    },
+    vupack: (v) => {
+      const vCopy = copyBasicVector(v, "vupack(v)");
+      const out = native.vupack(vCopy);
+      if (!isPlainObject(out))
+        throw new TypeError("vupack result must be an object");
+      return {
+        x: basicOutputNumber(out.x, "vupack result.x"),
+        y: basicOutputNumber(out.y, "vupack result.y"),
+        z: basicOutputNumber(out.z, "vupack result.z"),
+      };
+    },
+    vzero: (v) => {
+      const vCopy = copyBasicVector(v, "vzero(v)");
+      const out = native.vzero(vCopy);
+      if (typeof out !== "boolean")
+        throw new TypeError("vzero result must be a boolean");
+      return out;
+    },
+    unorm: (v) => {
+      const vCopy = copyBasicVector(v, "unorm(v)");
+      const out = native.unorm(vCopy);
+      if (!isPlainObject(out))
+        throw new TypeError("unorm result must be an object");
+      return {
+        unit: basicOutputVector(out.unit, "unorm result.unit"),
+        norm: basicOutputNumber(out.norm, "unorm result.norm"),
+      };
+    },
+    ucrss: (a, b) => {
+      const aCopy = copyBasicVector(a, "ucrss(a)");
+      const bCopy = copyBasicVector(b, "ucrss(b)");
+      const out = native.ucrss(aCopy, bCopy);
+      return basicOutputVector(out, "ucrss result");
+    },
+    vsep: (a, b) => {
+      const aCopy = copyBasicVector(a, "vsep(a)");
+      const bCopy = copyBasicVector(b, "vsep(b)");
+      const out = native.vsep(aCopy, bCopy);
+      return basicOutputNumber(out, "vsep result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

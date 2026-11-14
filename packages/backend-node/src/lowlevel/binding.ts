@@ -10,6 +10,39 @@ export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
 
   invariant(
+    typeof native.vdist === "function",
+    "Expected native addon to export vdist()",
+  );
+  invariant(
+    typeof native.vequ === "function",
+    "Expected native addon to export vequ()",
+  );
+  invariant(
+    typeof native.vpack === "function",
+    "Expected native addon to export vpack()",
+  );
+  invariant(
+    typeof native.vupack === "function",
+    "Expected native addon to export vupack()",
+  );
+  invariant(
+    typeof native.vzero === "function",
+    "Expected native addon to export vzero()",
+  );
+  invariant(
+    typeof native.unorm === "function",
+    "Expected native addon to export unorm()",
+  );
+  invariant(
+    typeof native.ucrss === "function",
+    "Expected native addon to export ucrss()",
+  );
+  invariant(
+    typeof native.vsep === "function",
+    "Expected native addon to export vsep()",
+  );
+
+  invariant(
     typeof native.furnsh === "function",
     "Expected native addon to export furnsh(path)",
   );

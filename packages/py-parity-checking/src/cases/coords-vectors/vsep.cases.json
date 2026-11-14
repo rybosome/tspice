@@ -1,0 +1,121 @@
+[
+  {
+    "caseId": "coords-vectors-vsep-acute-obtuse-reversed",
+    "description": "vsep: acute-obtuse-reversed; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, -2, 3],
+        "b": [4, 5, -6]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [4, 5, -6],
+        "b": [1, -2, 3]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 2, 3],
+        "b": [2, 3, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsep-zero",
+    "description": "vsep: zero; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [0, 0, 0],
+        "b": [2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [2, -3, 4],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [0, 0, 0],
+        "b": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsep-parallel-opposed",
+    "description": "vsep: parallel-opposed; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 2, 3],
+        "b": [2, 4, 6]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 2, 3],
+        "b": [-2, -4, -6]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsep-orthogonal",
+    "description": "vsep: orthogonal; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 0, 0],
+        "b": [0, -2, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsep-scaled-magnitudes",
+    "description": "vsep: scaled-magnitudes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1e200, -2e200, 3e200],
+        "b": [4e200, 5e200, -6e200]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1e-200, -2e-200, 3e-200],
+        "b": [4e-200, 5e-200, -6e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vsep-near-parallel-opposed",
+    "description": "vsep: near-parallel-opposed; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 0, 0],
+        "b": [1, 1e-9, 0]
+      },
+      {
+        "op": "coords-vectors.vsep",
+        "a": [1, 0, 0],
+        "b": [-1, 1e-9, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

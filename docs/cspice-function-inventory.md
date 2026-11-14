@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -168,17 +168,25 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `ucrss_c` | Unitized cross product, 3x3 |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
+| `unorm_c` | Unit vector and norm, 3 dimensional |
 | `vadd_c` | Vector addition, 3 dimensional |
 | `valid_c` | Validate a set |
 | `vcrss_c` | Vector cross product, 3 dimensions |
+| `vdist_c` | Vector distance |
 | `vdot_c` | Vector dot product, 3 dimensions |
+| `vequ_c` | Vector equality, 3 dimensions |
 | `vhat_c` | "V-Hat", unit vector along V, 3 dimensions |
 | `vminus_c` | Negate vector, "-v", 3 dimensions |
 | `vnorm_c` | Vector norm, 3 dimensions |
+| `vpack_c` | Pack three scalar components into a vector |
 | `vscl_c` | Vector scaling, 3 dimensions |
+| `vsep_c` | Angular separation of vectors, 3 dimensions |
 | `vsub_c` | Vector subtraction, 3 dimensions |
+| `vupack_c` | Unpack three scalar components from a vector |
+| `vzero_c` | Is a vector the zero vector? |
 | `wncard_c` | Cardinality of a double precision window |
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
@@ -618,19 +626,15 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `twovxf_c` | Two states defining a frame transformation |
 | `tyear_c` | Seconds per tropical year |
 | `ucase_c` | Convert to uppercase |
-| `ucrss_c` | Unitized cross product, 3x3 |
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
 | `uddf_c` | First derivative of a function, df(x)/dx |
 | `udf_c` | GF, dummy function |
 | `union_c` | Union of two sets |
-| `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
 | `utc2et_c` | UTC to Ephemeris Time |
 | `vaddg_c` | Vector addition, general dimension |
-| `vdist_c` | Vector distance |
 | `vdistg_c` | Vector distance, general dimension |
 | `vdotg_c` | Vector dot product, general dimension |
-| `vequ_c` | Vector equality, 3 dimensions |
 | `vequg_c` | Vector equality, general dimension |
 | `vhatg_c` | "V-Hat", unit vector along V, general dimension |
 | `vlcom_c` | Vector linear combination, 3 dimensions |
@@ -638,7 +642,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vlcomg_c` | Vector linear combination, general dimension |
 | `vminug_c` | Negate vector, "-v", general dimension |
 | `vnormg_c` | Vector norm, general dimension |
-| `vpack_c` | Pack three scalar components into a vector |
 | `vperp_c` | Perpendicular component of a 3-vector |
 | `vprjp_c` | Vector projection onto plane |
 | `vprjpi_c` | Vector projection onto plane, inverted |
@@ -648,13 +651,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vrelg_c` | Vector relative difference, general dimension |
 | `vrotv_c` | Vector rotation about an axis |
 | `vsclg_c` | Vector scaling, general dimension |
-| `vsep_c` | Angular separation of vectors, 3 dimensions |
 | `vsepg_c` | Angular separation of vectors, general dimension |
 | `vsubg_c` | Vector subtraction, general dimension |
 | `vtmv_c` | Vector transpose times matrix times vector, 3 dim |
 | `vtmvg_c` | Vector transpose times matrix times vector |
-| `vupack_c` | Unpack three scalar components from a vector |
-| `vzero_c` | Is a vector the zero vector? |
 | `vzerog_c` | Is a vector the zero vector? -- general dim. |
 | `wncomd_c` | Complement a DP window |
 | `wncond_c` | Contract the intervals of a DP window |

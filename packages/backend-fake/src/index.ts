@@ -2431,6 +2431,40 @@ export function createFakeBackend(
       ];
     },
 
+    // Toy vector operations; these do not execute CSPICE or serve as an oracle.
+    vdist: (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]),
+    vequ: (v) => [v[0], v[1], v[2]],
+    vpack: (x, y, z) => [x, y, z],
+    vupack: (v) => ({ x: v[0], y: v[1], z: v[2] }),
+    vzero: (v) => v[0] === 0 && v[1] === 0 && v[2] === 0,
+    unorm: (v) => {
+      const norm = Math.hypot(v[0], v[1], v[2]);
+      const unit: SpiceVector3 =
+        norm === 0 ? [0, 0, 0] : [v[0] / norm, v[1] / norm, v[2] / norm];
+      return { unit, norm };
+    },
+    ucrss: (a, b) => {
+      const x = a[1] * b[2] - a[2] * b[1];
+      const y = a[2] * b[0] - a[0] * b[2];
+      const z = a[0] * b[1] - a[1] * b[0];
+      const norm = Math.hypot(x, y, z);
+      return norm === 0 ? [0, 0, 0] : [x / norm, y / norm, z / norm];
+    },
+    vsep: (a, b) => {
+      const na = Math.hypot(a[0], a[1], a[2]),
+        nb = Math.hypot(b[0], b[1], b[2]);
+      if (na === 0 || nb === 0) return 0;
+      return Math.acos(
+        clamp(
+          (a[0] / na) * (b[0] / nb) +
+            (a[1] / na) * (b[1] / nb) +
+            (a[2] / na) * (b[2] / nb),
+          -1,
+          1,
+        ),
+      );
+    },
+
     vnorm: (v) => vnorm(v),
     vhat: (v) => vhat(v),
     vdot: (a, b) => vdot(a, b),

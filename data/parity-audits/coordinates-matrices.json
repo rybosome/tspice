@@ -925,7 +925,8 @@
         "coords-vectors-sphrec-audit-zero-and-poles",
         "coords-vectors-sphrec-happy-equatorial-quarter-turn"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "local-706-main-c5f0b058-wasm",
@@ -977,7 +978,8 @@
         "coords-vectors-sphrec-audit-zero-and-poles",
         "coords-vectors-sphrec-happy-equatorial-quarter-turn"
       ],
-      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-node",
@@ -1031,7 +1033,8 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
     },
     {
       "id": "ci-706-main-c5f0b058-wasm",
@@ -1085,7 +1088,436 @@
       ],
       "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
-      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
+      "historical": true
+    },
+    {
+      "id": "local-a08-6fe56303-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c7ddb2fa121e8b828789d49efe2cd127bbf86dd5f448236ef137664194ed20",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
+    },
+    {
+      "id": "local-a08-6fe56303-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c7ddb2fa121e8b828789d49efe2cd127bbf86dd5f448236ef137664194ed20",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
+    },
+    {
+      "id": "ci-a08-6fe56303-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c7ddb2fa121e8b828789d49efe2cd127bbf86dd5f448236ef137664194ed20",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a08-6fe56303-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f6c7ddb2fa121e8b828789d49efe2cd127bbf86dd5f448236ef137664194ed20",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a08-snapshot-d82a5d99-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e6408c4c9048ef87094dadd66b39729bca7d83407cbdec8ebc7320cdcbe31d1c",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. JS-required passed 2,282 registered comparisons and 2,504 parity tests with 1 expected native-required guard skip. Native-required passed 2,282 live comparisons, 2,505 parity tests, 96 native, 636 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a08-snapshot-d82a5d99-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e6408c4c9048ef87094dadd66b39729bca7d83407cbdec8ebc7320cdcbe31d1c",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. JS-required passed 2,282 registered comparisons and 2,504 parity tests with 1 expected native-required guard skip. Native-required passed 2,282 live comparisons, 2,505 parity tests, 96 native, 636 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a08-snapshot-d82a5d99-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e6408c4c9048ef87094dadd66b39729bca7d83407cbdec8ebc7320cdcbe31d1c",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550198267/job/132310665780",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310665780 on corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Its uncached parity package ran 2,282 registered comparisons and passed 2,505 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a08-snapshot-d82a5d99-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e6408c4c9048ef87094dadd66b39729bca7d83407cbdec8ebc7320cdcbe31d1c",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550198267/job/132310665780",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310665780 on corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Its uncached parity package ran 2,282 registered comparisons and passed 2,505 parity tests without skips. Final-head readiness remains pending."
     }
   ],
   "routines": [
@@ -1145,13 +1577,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1165,13 +1601,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1250,13 +1690,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1270,13 +1714,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1337,13 +1785,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1357,13 +1809,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1416,13 +1872,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1436,13 +1896,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1503,13 +1967,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1523,13 +1991,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1582,13 +2054,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1602,13 +2078,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1687,13 +2167,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1707,13 +2191,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1774,13 +2262,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1794,13 +2286,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1861,13 +2357,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1881,13 +2381,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -1964,13 +2468,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -1984,13 +2492,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -2067,13 +2579,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -2087,13 +2603,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
@@ -2154,13 +2674,17 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
           "executions": [
-            "local-706-main-c5f0b058-node",
-            "ci-706-main-c5f0b058-node"
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
           ]
         },
         "wasm": {
@@ -2174,17 +2698,21 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
           "executions": [
-            "local-706-main-c5f0b058-wasm",
-            "ci-706-main-c5f0b058-wasm"
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
           ]
         }
       }
     }
   ],
-  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

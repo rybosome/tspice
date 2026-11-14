@@ -1,0 +1,78 @@
+[
+  {
+    "caseId": "coords-vectors-vdist-mixed-and-reversed",
+    "description": "vdist: mixed-and-reversed; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdist",
+        "a": [1.25, -4, 7],
+        "b": [-2.75, 8, -5]
+      },
+      {
+        "op": "coords-vectors.vdist",
+        "a": [-2.75, 8, -5],
+        "b": [1.25, -4, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vdist-identical-and-zero",
+    "description": "vdist: identical-and-zero; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdist",
+        "a": [2, -3, 7],
+        "b": [2, -3, 7]
+      },
+      {
+        "op": "coords-vectors.vdist",
+        "a": [0, 0, 0],
+        "b": [3, -4, 12]
+      },
+      {
+        "op": "coords-vectors.vdist",
+        "a": [3, -4, 12],
+        "b": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vdist-scaled-magnitudes",
+    "description": "vdist: scaled-magnitudes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdist",
+        "a": [3e200, -4e200, 1.2e201],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vdist",
+        "a": [3e-200, -4e-200, 1.2e-199],
+        "b": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vdist-nearby-large-components",
+    "description": "vdist: nearby-large-components; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vdist",
+        "a": [1000000000000000.0, -1000000000000000.0, 1000000000000000.0],
+        "b": [1000000000000003.0, -999999999999996.0, 1000000000000012.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

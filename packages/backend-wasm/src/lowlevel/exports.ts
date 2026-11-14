@@ -12,6 +12,61 @@ export type EmscriptenModule = {
   HEAP32: Int32Array;
   HEAPF64: Float64Array;
 
+  _tspice_vdist(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vequ(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vpack(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vupack(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vzero(
+    vPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_unorm(
+    vPtr: number,
+    outPtr: number,
+    normPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucrss(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_vsep(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   // --- error/status utilities ---
   _tspice_get_last_error_short(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;

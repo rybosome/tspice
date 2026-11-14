@@ -172,6 +172,51 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsVdist = {
+  op: "coords-vectors.vdist";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVequ = {
+  op: "coords-vectors.vequ";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVpack = {
+  op: "coords-vectors.vpack";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsVupack = {
+  op: "coords-vectors.vupack";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsVzero = {
+  op: "coords-vectors.vzero";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsUnorm = {
+  op: "coords-vectors.unorm";
+  v: Vector3;
+};
+
+export type StepCoordsVectorsUcrss = {
+  op: "coords-vectors.ucrss";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVsep = {
+  op: "coords-vectors.vsep";
+  a: Vector3;
+  b: Vector3;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1358,14 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsVdist
+  | StepCoordsVectorsVequ
+  | StepCoordsVectorsVpack
+  | StepCoordsVectorsVupack
+  | StepCoordsVectorsVzero
+  | StepCoordsVectorsUnorm
+  | StepCoordsVectorsUcrss
+  | StepCoordsVectorsVsep
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1537,14 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.vdist"; value: number }
+  | { op: "coords-vectors.vequ"; value: Vector3 }
+  | { op: "coords-vectors.vpack"; value: Vector3 }
+  | { op: "coords-vectors.vupack"; value: { x: number; y: number; z: number } }
+  | { op: "coords-vectors.vzero"; value: boolean }
+  | { op: "coords-vectors.unorm"; value: { unit: Vector3; norm: number } }
+  | { op: "coords-vectors.ucrss"; value: Vector3 }
+  | { op: "coords-vectors.vsep"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

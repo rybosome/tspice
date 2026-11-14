@@ -1,0 +1,1065 @@
+{
+  "schemaVersion": 1,
+  "batch": "a08-vector-basics",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/vector-basics.test.ts",
+    "packages/py-parity-checking/test/vector-basics-overflow.test.ts",
+    "packages/backend-wasm/test/vector-basics-allocations.test.ts",
+    "packages/backend-node/test/vector-basics-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-vector-numerics.md",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-a08-6fe56303-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "877ae1b6cda86101a996f13bb224d5f343ac29c1820f4544c5900267f0c63310",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
+    },
+    {
+      "id": "local-a08-6fe56303-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "877ae1b6cda86101a996f13bb224d5f343ac29c1820f4544c5900267f0c63310",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "observation": "Both complete required local lanes passed against current source. Native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips, including production-addon guard; 95 native, 635 WASM, 28 core and 150 facade tests passed. JS lane passed with only the expected native-required guard skip. Numerical conditioning limits and retained original ucrss mismatch are documented; no global tolerance or production arithmetic changes.",
+      "historical": true
+    },
+    {
+      "id": "ci-a08-6fe56303-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "877ae1b6cda86101a996f13bb224d5f343ac29c1820f4544c5900267f0c63310",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a08-6fe56303-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "877ae1b6cda86101a996f13bb224d5f343ac29c1820f4544c5900267f0c63310",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
+      "observation": "Inspected successful uncached Linux Node 22 native-required job: 2282 live Node/WASM comparisons and 2505 parity-package tests, production native guard executed, zero skips. ucrss conditioning limitation remains explicitly documented. Full final-head matrix gates PR readiness separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a08-snapshot-d82a5d99-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e49f252ee1c891d31ece76e127e07a890d4ed0fb70ae80c380501114cbfee3d",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "observation": "Corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. JS-required passed 2,282 registered comparisons and 2,504 parity tests with 1 expected native-required guard skip. Native-required passed 2,282 live comparisons, 2,505 parity tests, 96 native, 636 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "local-a08-snapshot-d82a5d99-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e49f252ee1c891d31ece76e127e07a890d4ed0fb70ae80c380501114cbfee3d",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "observation": "Corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. JS-required passed 2,282 registered comparisons and 2,504 parity tests with 1 expected native-required guard skip. Native-required passed 2,282 live comparisons, 2,505 parity tests, 96 native, 636 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical."
+    },
+    {
+      "id": "ci-a08-snapshot-d82a5d99-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e49f252ee1c891d31ece76e127e07a890d4ed0fb70ae80c380501114cbfee3d",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "commit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550198267/job/132310665780",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310665780 on corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Its uncached parity package ran 2,282 registered comparisons and passed 2,505 parity tests without skips. Final-head readiness remains pending."
+    },
+    {
+      "id": "ci-a08-snapshot-d82a5d99-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9e49f252ee1c891d31ece76e127e07a890d4ed0fb70ae80c380501114cbfee3d",
+      "caseIds": [
+        "coords-vectors-ucrss-axis-handedness",
+        "coords-vectors-ucrss-mixed-handedness",
+        "coords-vectors-ucrss-near-parallel",
+        "coords-vectors-ucrss-scaled-magnitudes",
+        "coords-vectors-ucrss-zero-parallel-opposed",
+        "coords-vectors-unorm-mixed-and-negative",
+        "coords-vectors-unorm-scaled-magnitudes",
+        "coords-vectors-unorm-subnormal-axis",
+        "coords-vectors-unorm-zero-and-axes",
+        "coords-vectors-vdist-identical-and-zero",
+        "coords-vectors-vdist-mixed-and-reversed",
+        "coords-vectors-vdist-nearby-large-components",
+        "coords-vectors-vdist-scaled-magnitudes",
+        "coords-vectors-vequ-finite-extremes",
+        "coords-vectors-vequ-ordered-mixed-components",
+        "coords-vectors-vequ-zero-and-axes",
+        "coords-vectors-vpack-finite-extremes",
+        "coords-vectors-vpack-ordered-mixed-components",
+        "coords-vectors-vpack-zero-and-axes",
+        "coords-vectors-vsep-acute-obtuse-reversed",
+        "coords-vectors-vsep-near-parallel-opposed",
+        "coords-vectors-vsep-orthogonal",
+        "coords-vectors-vsep-parallel-opposed",
+        "coords-vectors-vsep-scaled-magnitudes",
+        "coords-vectors-vsep-zero",
+        "coords-vectors-vupack-finite-extremes",
+        "coords-vectors-vupack-ordered-mixed-components",
+        "coords-vectors-vupack-zero-and-axes",
+        "coords-vectors-vzero-each-nonzero-slot",
+        "coords-vectors-vzero-mixed-components",
+        "coords-vectors-vzero-subnormal-nonzero",
+        "coords-vectors-vzero-zero"
+      ],
+      "commit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550198267/job/132310665780",
+      "observation": "Inspected successful Linux Node 22 native-required job 132310665780 on corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Its uncached parity package ran 2,282 registered comparisons and passed 2,505 parity tests without skips. Final-head readiness remains pending."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "vdist_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vdist_c.html",
+      "semantics": "raw.vdist(a,b) accepts two readonly finite three-number tuples and returns their Euclidean distance in the input units. The pinned routine subtracts the vectors before computing their norm; finite inputs may yield Infinity or NaN through intermediate overflow, which is preserved rather than turned into an invented SPICE error. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vdist-mixed-and-reversed",
+          "coverage": ["success"],
+          "observes": "Compare scalar distance for asymmetric mixed components in both operand orders; a dot product, omitted component or sign mistake gives a different value. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vdist-identical-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact zero for equal vectors and the complete norm to/from the origin. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vdist-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare tiny/huge distance outputs; focused scale-normalized assertions separately prevent accepting zero for tiny distance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vdist-nearby-large-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the 13-unit difference between vectors near 1e15, retaining cancellation before norm computation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Registered cases compare asymmetric signed vectors, exact equality/origin, 1e-200/1e200 scales, and small representable differences around 1e15. Focused tests divide tiny/huge distances by the known scale to make a spurious zero observable. A separate live test distinguishes subtraction-generated NaN, norm-generated Infinity and finite controls, then checks recovery.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error. Finite-input numerical overflow is compared independently in vector-basics-overflow.test.ts and is not converted into an error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vdist_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 4 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "The shared 1e-12 absolute-or-relative comparator is unchanged. Normal asymmetric distances and a 13-unit difference around 1e15 distinguish sign/order/component errors. For 1e-200/1e200 inputs a separate scale-normalized literal assertion prevents a zero distance from passing solely due to absolute tolerance. Nonfinite outputs are tagged before oracle JSON, decoded without rounding, and compared with the existing NaN/infinity policy.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vdist-mixed-and-reversed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdist -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vdist shared C shim -> vdist_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vdist -> WASM typed adapter -> configured _tspice_vdist export -> tspice_vdist shared C shim -> vdist_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "vequ_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vequ_c.html",
+      "semantics": "raw.vequ(v) accepts a readonly finite three-number tuple and returns an independently owned [x,y,z] copy. It preserves component order and every finite value, including subnormals and signed zero; it neither normalizes nor mutates the input. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vequ-ordered-mixed-components",
+          "coverage": ["success"],
+          "observes": "Observe each copied component in its original position and sign; no vector normalization. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vequ-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all-zero and a single negative-axis component. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vequ-finite-extremes",
+          "coverage": ["success", "edge"],
+          "observes": "Retain maximum doubles, minimum subnormal and mixed magnitudes; the focused live test compares these complete outputs exactly. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Registered cases cover mixed order/signs, zero/axis vectors and maximum/minimum finite magnitudes. The focused test compares finite-extreme workflow outputs exactly against live SpiceyPy, so generic absolute tolerance cannot hide a lost subnormal. Separate literal Object.is checks cover signed zero; caller mutation and later heap reuse must not alter saved copies.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vequ_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 3 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Ordinary registered cases use the unchanged shared tolerance. The focused test reruns the finite-extremes case against the live oracle using exact deep equality, including minimum subnormals and maximum doubles. Signed zero is asserted separately with Object.is on real public raw results because ordinary JSON/tolerant parity is not evidence of its sign.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vequ-ordered-mixed-components"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vequ -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vequ shared C shim -> vequ_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vequ -> WASM typed adapter -> configured _tspice_vequ export -> tspice_vequ shared C shim -> vequ_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "vpack_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vpack_c.html",
+      "semantics": "raw.vpack(x,y,z) takes three finite scalar components and returns an independently owned [x,y,z] tuple in that order. It performs the actual CSPICE pack call, retaining signed zero and finite extreme values without normalization or unit conversion. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vpack-ordered-mixed-components",
+          "coverage": ["success"],
+          "observes": "Observe x/y/z scalar order in all three output slots. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vpack-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact zero slots and negative y-axis placement. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vpack-finite-extremes",
+          "coverage": ["success", "edge"],
+          "observes": "Retain maximum doubles, minimum subnormal and mixed magnitudes in their intended slots; exact focused live comparison supplements tolerance. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Registered cases cover each ordered component, zero/axis placement and maximum/subnormal inputs. Exact live comparisons supplement the normal tolerance for finite-extreme cases. Literal signed-zero tests, pack/unpack composition, caller mutation and later allocations check the new tuple representation and ownership.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vpack_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 2 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Ordinary registered cases use the unchanged shared tolerance. The focused finite-extremes workflow is compared to live SpiceyPy with exact deep equality; this distinguishes copied subnormal values from zero. Signed-zero preservation is a separate real-raw literal assertion, not a claim about generic JSON parity.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vpack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vpack shared C shim -> vpack_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vpack -> WASM typed adapter -> configured _tspice_vpack export -> tspice_vpack shared C shim -> vpack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "vupack_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vupack_c.html",
+      "semantics": "raw.vupack(v) accepts a readonly finite three-number tuple and returns {x,y,z}, preserving each corresponding component, including subnormals and signed zero. Input units and values are unchanged; the returned object owns its scalar values. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vupack-ordered-mixed-components",
+          "coverage": ["success"],
+          "observes": "Observe each vector slot as its corresponding named x/y/z field. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vupack-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all named zero fields and a negative y value. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vupack-finite-extremes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe maximum/subnormal/mixed values in every named field, with exact focused live comparison. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Registered cases preserve all named scalar fields for mixed, axis and finite-extreme vectors. The focused live comparison is exact for extreme copy values; separate literal checks preserve negative zero. Mutating the source or other returned values and subsequent heap reuse must not change the saved x/y/z object.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vupack_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 3 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Ordinary registered cases use the unchanged shared tolerance. Exact deep equality against the live finite-extremes workflow observes each x/y/z value, including subnormal and maximum doubles. Object.is separately checks signed zero on the public raw result; JSON/tolerant parity alone does not certify its sign.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vupack-ordered-mixed-components"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vupack -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vupack shared C shim -> vupack_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vupack -> WASM typed adapter -> configured _tspice_vupack export -> tspice_vupack shared C shim -> vupack_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "vzero_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vzero_c.html",
+      "semantics": "raw.vzero(v) accepts a readonly finite three-number tuple and returns a boolean that is true exactly when all components equal zero. Both signs of zero count as zero, but any nonzero subnormal component makes it false; no epsilon or norm threshold is applied. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vzero-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the true result for exactly zero in all slots. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vzero-each-nonzero-slot",
+          "coverage": ["success", "edge"],
+          "observes": "Observe false separately when x, y or z alone is nonzero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vzero-subnormal-nonzero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe false for the minimum nonzero double in each slot, including a negative component. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vzero-mixed-components",
+          "coverage": ["success", "edge"],
+          "observes": "Observe false for cancelling mixed signs and huge components; a sum-based predicate would incorrectly accept one case. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Registered exact boolean comparisons cover the all-zero vector, each nonzero component slot, each signed subnormal slot and mixed/large values. Literal checks additionally distinguish signed zero from the minimum nonzero double. This is an exact zero predicate, so a tolerance-based implementation cannot satisfy the subnormal cases.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vzero_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 3 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Boolean observations are exact under the shared comparator. Subnormal nonzero inputs yield false and cannot be normalized away by a numeric epsilon. Signed zero is checked literally as a true zero input.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vzero-zero"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vzero -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vzero shared C shim -> vzero_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vzero -> WASM typed adapter -> configured _tspice_vzero export -> tspice_vzero shared C shim -> vzero_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "unorm_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unorm_c.html",
+      "semantics": "raw.unorm(v) accepts a readonly finite three-number tuple and returns {unit:[x,y,z],norm}. The norm uses the input units; unit is dimensionless. The zero input returns zero unit and norm. The actual N0067 normalization and norm-overflow behavior are retained, including an infinite norm with zero unit components for the tested overflowing finite vector. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-unorm-mixed-and-negative",
+          "coverage": ["success"],
+          "observes": "Compare all unit direction components and norm together, distinguishing sign loss or output swaps. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-unorm-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the zero result and each signed-axis unit vector plus its magnitude. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-unorm-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare order-one directions and tiny/huge norms; focused norm/scale assertions separately distinguish a zero norm. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-unorm-subnormal-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the nonzero unit direction for a minimum-subnormal component; exact focused norm assertion supplements the small scalar comparison. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Every registered workflow observes all three unit components and norm: mixed signs, zero/all axes, tiny/huge scales and subnormal axes. Focused tests compare norm divided by the input scale and unit direction to a 3/-4/12 vector, plus an exact minimum-subnormal axis result. The separate live probe compares all four fields for finite overflow and a finite control.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error. Finite-input numerical overflow is compared independently in vector-basics-overflow.test.ts and is not converted into an error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls unorm_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 4 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Every unit component and norm reaches the unchanged 1e-12 absolute-or-relative comparison. Unit outputs remain order one for tiny nonzero inputs; focused norm/scale assertions and an exact subnormal-axis norm prevent absolute tolerance hiding a zero norm. Overflow uses a scoped live classification of every scalar, with exact nonfinite class/sign comparison and no global tolerance change.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-unorm-mixed-and-negative"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.unorm -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_unorm shared C shim -> unorm_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.unorm -> WASM typed adapter -> configured _tspice_unorm export -> tspice_unorm shared C shim -> unorm_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ucrss_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ucrss_c.html",
+      "semantics": "raw.ucrss(a,b) accepts two readonly finite three-number tuples and returns an independently owned dimensionless normalized a cross b. Operand order determines handedness. A zero input or exactly zero computed cross product returns [0,0,0]. The pinned implementation scales inputs before the cross product to reduce overflow and underflow. Near parallelism, normalization can amplify compiler-dependent cancellation residuals into different directions, even for nominally parallel inputs; direct CSPICE floating behavior is preserved. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-ucrss-mixed-handedness",
+          "coverage": ["success"],
+          "observes": "Compare all normalized cross components and sign reversal after swapping operands. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-ucrss-zero-parallel-opposed",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the zero-vector result for either zero input and [1,2,4] paired with [2,4,8] or [-2,-4,-8]. The scaled components [1/4,1/2,1] have exactly representable products, exercising the computed-zero branch without the compiler-dependent thirds-product residual documented for the original inputs. The tspice dispatcher invokes raw.ucrss and the independent sidecar invokes locked SpiceyPy ucrss; all three output components are retained with no tolerance exception."
+        },
+        {
+          "caseId": "coords-vectors-ucrss-axis-handedness",
+          "coverage": ["success", "edge"],
+          "observes": "Observe opposite signed z unit vectors for swapped x/y axes. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-ucrss-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare normalized cross components for large/large, tiny/tiny and large/tiny inputs; naive unscaled products would overflow or disappear. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-ucrss-near-parallel",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the finite order-one direction of a cross product whose unnormalized components are around 1e-12. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Cases distinguish mixed operand order, positive/reversed basis handedness, either zero input, exactly representable dyadic parallel/opposed vectors, same-scale and mixed-scale extremes, and an axis-based near-parallel input with a small nonzero cross product. Literal basis/zero checks and saved-output reuse supplement the oracle; the scoped live probe also covers maximum doubles and minimum-subnormal axes. The original non-dyadic parallel failure and a poorly conditioned nonparallel probe are preserved in docs/step8-vector-numerics.md; equality across compiler builds for those inputs is not established.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error. Finite-input numerical overflow is compared independently in vector-basics-overflow.test.ts and is not converted into an error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls ucrss_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 4 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "All three dimensionless components use the unchanged 1e-12 absolute-or-relative comparator. Scaled and the registered axis-based near-parallel inputs yield distinguishing order-one unit outputs. Exact-zero assertions use dyadic scaled components whose products cancel with or without fused multiply-add. Original [1,2,3] x [±2,±4,±6] inputs gave zero on the pinned native archive and tspice Node/WASM but unit ∓z on the locked macOS arm64 SpiceyPy artifact; the fingerprinted source/compiler investigation also demonstrates disagreement at a poorly conditioned nonparallel pair. This known conditioning limit is documented, not hidden by a relaxed tolerance or transformed output. Well-conditioned mixed, handedness and scaled cases remain, and every registered output is compared. Extreme finite/subnormal behavior uses the scoped nonfinite-safe probe.",
+      "findings": [
+        {
+          "id": "ucrss-parallel-conditioning",
+          "status": "repaired",
+          "summary": "The initial exact-parallel assertion assumed cross-build equality for [1,2,3] x [±2,±4,±6]. Actual tspice Node/WASM and the pinned native archive returned zero while the fingerprinted locked macOS arm64 SpiceyPy library returned unit ∓z. The pinned-source and oracle-disassembly investigation attributes this to fused-arithmetic cancellation residuals amplified by normalization, rather than an adapter or mapping defect. Poorly conditioned nonparallel inputs can also differ.",
+          "repair": "Repaired the assertion strategy: retain the failing input/results and reproduction in the numerical note, use exactly representable dyadic pairs for the computed-zero branch, and retain all mixed, handedness, scaled and axis-based near-parallel cases. Public JSDoc records the conditioning caveat. No scientific implementation, compiler setting, oracle output, global tolerance or routine eligibility is changed. The finding concerns the assertion assumption; it does not claim cross-build equality at the documented ill-conditioned inputs. Fresh source-bound local and CI verification remain separate requirements.",
+          "evidence": [
+            "docs/step8-vector-numerics.md",
+            "packages/py-parity-checking/src/cases/coords-vectors/ucrss.cases.json",
+            "packages/py-parity-checking/test/vector-basics.test.ts",
+            "packages/backend-contract/src/domains/coords-vectors.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-ucrss-zero-parallel-opposed",
+            "coords-vectors-ucrss-mixed-handedness",
+            "coords-vectors-ucrss-scaled-magnitudes",
+            "coords-vectors-ucrss-near-parallel"
+          ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-ucrss-mixed-handedness"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ucrss -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_ucrss shared C shim -> ucrss_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ucrss -> WASM typed adapter -> configured _tspice_ucrss export -> tspice_ucrss shared C shim -> ucrss_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "vsep_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vsep_c.html",
+      "semantics": "raw.vsep(a,b) accepts two readonly finite three-number tuples in the same reference frame and returns separation in radians. Ordinary results lie in [0,pi], and any zero input defines a zero angle. No input normalization is invented in TypeScript; the pinned CSPICE numerical behavior for extreme finite input is retained. No kernel, file, handle, variable dimension or caller-selected output capacity is required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-vsep-acute-obtuse-reversed",
+          "coverage": ["success"],
+          "observes": "Compare scalar radians for mixed acute/obtuse cases and reversal symmetry. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vsep-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero when either or both inputs are zero. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vsep-parallel-opposed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero versus pi for parallel versus opposed vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vsep-orthogonal",
+          "coverage": ["success", "edge"],
+          "observes": "Observe pi/2 for orthogonal vectors. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vsep-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the same angle for tiny and huge versions of the same directions. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        },
+        {
+          "caseId": "coords-vectors-vsep-near-parallel-opposed",
+          "coverage": ["success", "edge"],
+          "observes": "Compare small nonzero and near-pi angles at 1e-9 perturbations; the focused scaled-angle assertion strengthens the small-angle observation. The tspice dispatcher invokes the actual raw method and the independent sidecar invokes the corresponding locked SpiceyPy wrapper; all result fields are retained."
+        }
+      ],
+      "edgeAssessment": "Cases compare acute/obtuse/reversed inputs, zero on either side, parallel/opposed vectors, orthogonality, tiny/huge scales, and 1e-9 near-parallel/opposed perturbations. A focused assertion divides the near-parallel angle by 1e-9 to expose errors hidden by the absolute tolerance. The scoped live probe compares extreme finite and nearby finite inputs without replacing their result.",
+      "errorAssessment": "NAIF documents this routine as error-free for correctly shaped inputs. No fabricated scientific error case is claimed. Both real-backend boundary tests and native adapter mocks reject malformed/nonfinite JS inputs before compiled execution and require valid-call recovery; allocation-failure behavior is wrapper resource behavior, not a CSPICE scientific error. Finite-input numerical overflow is compared independently in vector-basics-overflow.test.ts and is not converted into an error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored mathematical vectors/scalars only; no scientific kernels, downloaded data, file handles or fixture distribution changes. Locked SpiceyPy 6.0.3 wrappers were inspected and each invokes the matching libspice routine.",
+      "cleanup": "The shared shim initializes outputs, calls vsep_c using fixed local storage and publishes results after checking SPICE status; errors use the existing capture/reset policy. Native holds the process-global mutex and copies results into JS values. WASM owns 4 temporary allocations for this operation through withAllocs; source fault tests cover each failure position plus success cleanup and genuine same-module recovery. Returned arrays/objects are copied before freeing storage. Parity lifecycle clears/reset state, and focused clients dispose in finally. Execution of these assertions is still pending.",
+      "tolerance": "Angles are radians under the unchanged 1e-12 absolute-or-relative comparator. The 1e-9 separation and pi-offset cases exceed the absolute threshold; a separate angle/1e-9 assertion strengthens the near-parallel check. Extreme input probes retain the actual finite or nonfinite scalar without reducing precision.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The typed adapters validated array entries and then read the caller-owned array again when delegating or marshaling. Those later values were not necessarily the ones validated.",
+          "repair": "Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/backend-node/test/vector-basics-domain.test.ts",
+            "packages/backend-wasm/test/vector-basics-allocations.test.ts"
+          ],
+          "caseIds": ["coords-vectors-vsep-acute-obtuse-reversed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsep -> Node typed adapter -> registered native handler under global CSPICE mutex -> tspice_vsep shared C shim -> vsep_c; complete scalar/vector/object result copied and propagated.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-node",
+            "ci-a08-snapshot-d82a5d99-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.vsep -> WASM typed adapter -> configured _tspice_vsep export -> tspice_vsep shared C shim -> vsep_c; all result components copied from typed heap storage before withAllocs cleanup. Binary regeneration/export and execution verification remain required.",
+          "executions": [
+            "local-a08-snapshot-d82a5d99-wasm",
+            "ci-a08-snapshot-d82a5d99-wasm"
+          ]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

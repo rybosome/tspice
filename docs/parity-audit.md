@@ -10,6 +10,45 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Vector basics expansion
+
+The A08 record reviews `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`,
+`unorm_c`, `ucrss_c`, and `vsep_c`. Its 32 registered workflows make 70 actual
+routine calls per backend, retaining every result component. Copy/pack/unpack
+extremes receive an additional exact live comparison; signed zero is checked
+separately because ordinary JSON parity does not certify its sign. Scaled norm,
+distance and near-parallel angle assertions make small nonzero results
+observable. A scoped live probe preserves and compares nonfinite output classes
+without changing the shared comparator.
+
+The first `ucrss` run exposed a compiler-dependent residual for a mathematically
+parallel pair. The [numerical investigation](step8-vector-numerics.md) preserves
+the original inputs, observed results and source/compiler evidence. Exact-zero
+parity uses dyadic parallel/opposed vectors; mixed, scaled, handedness and
+near-parallel cases remain. This repairs the assertion's conditioning assumption
+and records a numerical limit of direct CSPICE builds; it does not establish
+identical results at ill-conditioned parallel or near-parallel inputs. No routine
+is excluded and the global
+tolerance is unchanged.
+
+Real-backend argument/recovery checks, native result-shape checks, and WASM
+allocation rollback tests cover the wrapper boundary. These are assertion-source
+descriptions, not execution claims. The audit remains `reviewed` until fresh
+source-bound local and observed canonical CI evidence satisfies the normal
+verification requirements. Prior Step 7 observations remain historical on this
+branch.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -55,3 +94,13 @@ This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.
 Error workflows can set `capture: true` on the existing `error.sigerr` step. This calls actual `raw.sigerr`, requires a structured SPICE exception, and compares its complete short/long/trace fields plus `raw.failed()` after the backend's automatic reset. No-op signaling and unrelated exceptions fail capture. The oracle calls actual `sp.sigerr`, reads full-size CSPICE buffers, and explicitly resets in `finally` to model the documented shim policy. Other steps continue normally, so stack changes, prepared messages, reset and repeated recovery have observable effects. This internal workflow option does not change public raw semantics.
 
 Both backends reset signaled errors before throwing. A persistent true failure flag cannot be reached through these raw operations alone; the audit records that limitation instead of injecting an artificial flag or claiming a constant-false implementation is fully distinguished by live workflows. The case handlers track caller-managed traceback entries and unwind remaining names in reverse order on success/error; reset alone does not remove them. Leading diagnostic blanks are significant; only trailing CSPICE padding is removed.
+
+## Validated input snapshots
+
+`vdist_c`, `vequ_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c` now marshal the same entries that the typed adapters validated.
+Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [vector-basics-domain.test.ts](../packages/backend-node/test/vector-basics-domain.test.ts), [vector-basics-allocations.test.ts](../packages/backend-wasm/test/vector-basics-allocations.test.ts). These adapter checks do not replace
+the independent scientific workflows. Earlier executions remain historical on
+their recorded fingerprints; both required local lanes and observed canonical CI
+must run on the corrected source before current verification.

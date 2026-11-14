@@ -9,6 +9,14 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVdist,
+    StepCoordsVectorsVequ,
+    StepCoordsVectorsVpack,
+    StepCoordsVectorsVupack,
+    StepCoordsVectorsVzero,
+    StepCoordsVectorsUnorm,
+    StepCoordsVectorsUcrss,
+    StepCoordsVectorsVsep,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +59,38 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsVdist):
+        out = sp.vdist(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsVequ):
+        out = sp.vequ(step.v)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVpack):
+        out = sp.vpack(step.x, step.y, step.z)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVupack):
+        x, y, z = sp.vupack(step.v)
+        return StepOutput(op=step.op, value={"x": float(x), "y": float(y), "z": float(z)})
+
+    if isinstance(step, StepCoordsVectorsVzero):
+        out = sp.vzero(step.v)
+        return StepOutput(op=step.op, value=bool(out))
+
+    if isinstance(step, StepCoordsVectorsUnorm):
+        unit, norm = sp.unorm(step.v)
+        return StepOutput(op=step.op, value={"unit": _to_vec3(unit), "norm": float(norm)})
+
+    if isinstance(step, StepCoordsVectorsUcrss):
+        out = sp.ucrss(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsVsep):
+        out = sp.vsep(step.a, step.b)
+        return StepOutput(op=step.op, value=float(out))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

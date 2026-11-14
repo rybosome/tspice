@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,202 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertBasicScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyBasicVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertBasicScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
+}
+
+function readBasicVector(module: EmscriptenModule, ptr: number): SpiceVector3 {
+  const i = ptr >> 3;
+  const h = module.HEAPF64;
+  return [h[i]!, h[i + 1]!, h[i + 2]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    vdist: (a, b) => {
+      const aCopy = copyBasicVector(a, "vdist(a)");
+      const bCopy = copyBasicVector(b, "vdist(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_vdist(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    vequ: (v) => {
+      const vCopy = copyBasicVector(v, "vequ(v)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          const status = module._tspice_vequ(
+            vPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readBasicVector(module, outPtr);
+        },
+      );
+    },
+    vpack: (x, y, z) => {
+      assertBasicScalar(x, "vpack(x)");
+      assertBasicScalar(y, "vpack(y)");
+      assertBasicScalar(z, "vpack(z)");
+      return withAllocs(module, [ERR_MAX_BYTES, 24], (errPtr, outPtr) => {
+        const status = module._tspice_vpack(
+          x,
+          y,
+          z,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readBasicVector(module, outPtr);
+      });
+    },
+    vupack: (v) => {
+      const vCopy = copyBasicVector(v, "vupack(v)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          const status = module._tspice_vupack(
+            vPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const out = readBasicVector(module, outPtr);
+          return { x: out[0], y: out[1], z: out[2] };
+        },
+      );
+    },
+    vzero: (v) => {
+      const vCopy = copyBasicVector(v, "vzero(v)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 4],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          const status = module._tspice_vzero(
+            vPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >> 2] !== 0;
+        },
+      );
+    },
+    unorm: (v) => {
+      const vCopy = copyBasicVector(v, "unorm(v)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 8],
+        (errPtr, vPtr, outPtr, normPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          const status = module._tspice_unorm(
+            vPtr,
+            outPtr,
+            normPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            unit: readBasicVector(module, outPtr),
+            norm: module.HEAPF64[normPtr >> 3]!,
+          };
+        },
+      );
+    },
+    ucrss: (a, b) => {
+      const aCopy = copyBasicVector(a, "ucrss(a)");
+      const bCopy = copyBasicVector(b, "ucrss(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_ucrss(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readBasicVector(module, outPtr);
+        },
+      );
+    },
+    vsep: (a, b) => {
+      const aCopy = copyBasicVector(a, "vsep(a)");
+      const bCopy = copyBasicVector(b, "vsep(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_vsep(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),
