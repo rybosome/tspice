@@ -23,3 +23,5 @@ N0067 SPKPVN has a 198-word evaluation buffer. A degree-31 record requires 195 w
 All 33 registered workflows passed on both compiled backends. Their 283 steps include 112 begin/add/end invocations and one inherited type 10 writer call. Writing and reading produced 21 expected toolkit errors. A real Chrome worker exercised begin, add, a genuine ordering error, corrected add, end, and close. Its six-component states agreed with the independent library at both boundaries and two additional epochs.
 
 On the combined binary, Chrome also rejected four mixed-writer errors, recovered both writers and reloaded both physical files. The six-component type 14 state at ET 4 and the six-component type 10 state at ET 1 agreed with the independent results, and CSPICE reported a clear final error state.
+
+The transport cache bypasses all three streaming writers. Repeating begin or end on the same handle reaches the live state machine, and repeating a packet at the same epoch raises the genuine ordering error. A cached client can open another segment on that handle after ending the first.

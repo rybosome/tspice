@@ -43,6 +43,42 @@ function once(values: readonly number[]) {
 for (const backend of ["node", "wasm"] as const) {
   const run = it.runIf(backend === "wasm" || nodeBackendAvailable);
   run(
+    backend + " preserves repeated streaming calls on a cached transport",
+    async () => {
+      const setup = await spiceClients.caching({}).toSync({ backend });
+      const { raw } = setup.spice;
+      const dest = {
+        kind: "virtual-output" as const,
+        path: "cached/stream.bsp",
+      };
+      const handle = raw.spkopn(dest, "STREAM", 0);
+      try {
+        const begin = () =>
+          raw.spk14b(handle, "STREAM", 196014, 0, "J2000", 0, 12, 1);
+        const add = () => raw.spk14a(handle, 1, row1, [0]);
+        begin();
+        expect(begin).toThrow();
+        add();
+        expect(add).toThrow(/UNORDEREDREFS/);
+        raw.spk14e(handle);
+        expect(() => raw.spk14e(handle)).toThrow();
+        begin();
+        add();
+        raw.spk14e(handle);
+        raw.spkcls(handle);
+        raw.furnsh({
+          path: "cached-read.bsp",
+          bytes: setup.spice.kit.readVirtualOutput(dest),
+        });
+        expect(raw.spkezr("196014", 2, "J2000", "NONE", "0").state).toEqual([
+          1, 4, 9, -3, 8, 2,
+        ]);
+      } finally {
+        await setup.dispose();
+      }
+    },
+  );
+  run(
     backend +
       " exchanges complete physical type 14 records with an independent bulk writer",
     async () => {

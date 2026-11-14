@@ -10,6 +10,10 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",
+  // Every streaming operation changes the state of the open DAF writer.
+  "raw.spk14b",
+  "raw.spk14a",
+  "raw.spk14e",
 ]) satisfies readonly string[];
 
 const DEFAULT_UNSAFE_NO_STORE_OPS_LOOKUP: Readonly<Record<string, true>> =
