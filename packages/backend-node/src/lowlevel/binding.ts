@@ -530,6 +530,18 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export spkopa(path)",
   );
   invariant(
+    typeof native.spkw02 === "function",
+    "Expected native addon to export spkw02",
+  );
+  invariant(
+    typeof native.spkw03 === "function",
+    "Expected native addon to export spkw03",
+  );
+  invariant(
+    typeof native.spkw20 === "function",
+    "Expected native addon to export spkw20",
+  );
+  invariant(
     typeof native.spkw08 === "function",
     "Expected native addon to export spkw08(handle, body, center, frame, first, last, segid, degree, states, epoch1, step)",
   );

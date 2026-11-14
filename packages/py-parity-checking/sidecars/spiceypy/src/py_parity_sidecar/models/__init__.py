@@ -54,6 +54,9 @@ from .ephemeris import (
     StepEphemerisSpksfs,
     StepEphemerisSpkssb,
     StepEphemerisSpkuds,
+    StepEphemerisSpkw02,
+    StepEphemerisSpkw03,
+    StepEphemerisSpkw20,
     StepEphemerisSpkw08,
 )
 from .dsk import (
@@ -291,6 +294,9 @@ __all__ = [
     "StepEphemerisSpksfs",
     "StepEphemerisSpkssb",
     "StepEphemerisSpkuds",
+    "StepEphemerisSpkw02",
+    "StepEphemerisSpkw03",
+    "StepEphemerisSpkw20",
     "StepEphemerisSpkw08",
     "Vec3",
     "IndexTriple",

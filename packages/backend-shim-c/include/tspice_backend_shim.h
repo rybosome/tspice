@@ -904,6 +904,17 @@ int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes);
 // spkcls_c: close an SPK file handle.
 int tspice_spkcls(int handle, char *err, int errMaxBytes);
 
+int tspice_spkw02(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap);
+int tspice_spkw03(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double btime, char* err, int cap);
+int tspice_spkw20(int handle, int body, int center, const char* frame, double first, double last,
+                  const char* segid, double intlen, int n, int degree, const double* cdata,
+                  int words, double dscale, double tscale, double initjd, double initfr, char* err,
+                  int cap);
+
 // spkw08_c: write a type 8 segment (equal time steps, Lagrange interpolation).
 //
 // `states6n` is a flat array of length `n*6` doubles.

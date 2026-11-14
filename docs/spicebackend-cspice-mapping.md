@@ -330,6 +330,16 @@ documented in the parity fixture README. The unchanged numeric comparator uses
 1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
 use 1e-9 km position and 1e-12 km/s velocity bounds.
 
+### Chebyshev SPK segment writers
+
+| Raw method                                                                                                          | N0067 route | Record semantics                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkw02(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime)`                          | `spkw02_c`  | Type 2 writes three position polynomials per fixed-duration record in seconds. SPKE02 differentiates each with respect to physical TDB seconds; each record contributes a stored midpoint, radius and coefficients. Degree 0..27.                       |
+| `spkw03(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime)`                          | `spkw03_c`  | Type 3 writes independently supplied position and velocity polynomials (km and km/s). Each of the six components contributes degree+1 ascending terms; midpoint/radius and a four-word directory are stored. Degree 0..27.                              |
+| `spkw20(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, dscale, tscale, initjd, initfr)` | `spkw20_c`  | Type 20 writes velocity coefficients and midpoint position per axis, successive records in Julian days and a seven-word directory. Distance and time scales convert physical units, and integration from each midpoint recovers position. Degree 0..50. |
+
+Each method returns void and uses an owned open SPK token. [Units, full record layouts and two-way independent file checks](step8-spk-chebyshev.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,

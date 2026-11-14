@@ -153,3 +153,57 @@ class StepEphemerisSpkw08:
     states: list[float]
     epoch1: float
     step: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw02:
+    op: Literal["ephemeris.spkw02"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    btime: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw03:
+    op: Literal["ephemeris.spkw03"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    btime: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw20:
+    op: Literal["ephemeris.spkw20"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    intlen: float
+    n: int
+    degree: int
+    cdata: list[float]
+    dscale: float
+    tscale: float
+    initjd: float
+    initfr: float

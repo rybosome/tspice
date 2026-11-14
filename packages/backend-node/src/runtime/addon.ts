@@ -416,6 +416,51 @@ export type NativeAddon = {
   spkopn(path: string, ifname: string, ncomch: number): number;
   spkopa(path: string): number;
   spkcls(handle: number): void;
+  spkw02(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    btime: number,
+  ): void;
+  spkw03(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    btime: number,
+  ): void;
+  spkw20(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: Float64Array,
+    dscale: number,
+    tscale: number,
+    initjd: number,
+    initfr: number,
+  ): void;
   spkw08(
     handle: number,
     body: number,

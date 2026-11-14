@@ -324,4 +324,75 @@ export interface EphemerisApi {
     epoch1: number,
     step: number,
   ): void;
+  /**
+   * Write type 2 position Chebyshev records; CSPICE derives velocity in km/s from the position
+   * polynomial. Each of n records contains degree+1 coefficients in ascending order for X, then
+   * Y, then Z in km. intlen is in seconds and btime is the start of the first record in seconds
+   * past J2000 TDB. Degree 0..27. The writer handle belongs to this client. Descriptor bounds
+   * first/last are seconds past J2000 TDB. Supply finite flat input words for exactly n
+   * chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw02_c.html
+   */
+  spkw02(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    btime: number,
+  ): void;
+  /**
+   * Write type 3 independent position (km) and velocity (km/s) Chebyshev expansions. Each record
+   * contains degree+1 ascending coefficients for X, Y, Z, VX, VY, VZ. intlen is in seconds and
+   * btime is the start of the first record in seconds past J2000 TDB. Degree 0..27. The writer
+   * handle belongs to this client. Descriptor bounds first/last are seconds past J2000 TDB.
+   * Supply finite flat input words for exactly n chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw03_c.html
+   */
+  spkw03(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    btime: number,
+  ): void;
+  /**
+   * Write type 20 velocity Chebyshev records. Each axis stores degree+1 ascending velocity
+   * coefficients followed by its position at the record midpoint. Positions are in units of
+   * dscale km and velocities in dscale/tscale km/s. intlen is in Julian days and initjd + initfr
+   * is the starting TDB Julian date. Degree 0..50. The writer handle belongs to this client.
+   * Descriptor bounds first/last are seconds past J2000 TDB. Supply finite flat input words for
+   * exactly n chronological records (256 MiB maximum).
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw20_c.html
+   */
+  spkw20(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    intlen: number,
+    n: number,
+    degree: number,
+    cdata: readonly number[] | Float64Array,
+    dscale: number,
+    tscale: number,
+    initjd: number,
+    initfr: number,
+  ): void;
 }

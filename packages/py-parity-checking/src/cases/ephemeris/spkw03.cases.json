@@ -1,0 +1,1321 @@
+[
+  {
+    "caseId": "ephemeris-spkw03-two-record-boundaries",
+    "description": "Evaluate every state component at both endpoints, each midpoint, off-center epochs and the shared record boundary; inspect full coverage, ID and segment descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-two-record-boundaries.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-two-record-boundaries.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-two-record-boundaries.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-two-record-boundaries.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -43200,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -21600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -8701,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 12345,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 21600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 43200,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": -43200,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-maximum-degree",
+    "description": "Evaluate the highest documented degree with distinct nonzero terms throughout each component, including an off-center epoch.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-maximum-degree.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 27,
+        "cdata": [
+          0.5, -0.625, 0.75, -0.875, 1.0, -1.125, 1.25, -1.375, 1.5, -1.625,
+          1.75, -1.875, 2.0, -2.125, 2.25, -2.375, 2.5, -2.625, 2.75, -2.875,
+          3.0, -3.125, 3.25, -3.375, 3.5, -3.625, 3.75, -3.875, -1.0, 1.25,
+          -1.5, 1.75, -2.0, 2.25, -2.5, 2.75, -3.0, 3.25, -3.5, 3.75, -4.0,
+          4.25, -4.5, 4.75, -5.0, 5.25, -5.5, 5.75, -6.0, 6.25, -6.5, 6.75,
+          -7.0, 7.25, -7.5, 7.75, 1.5, -1.875, 2.25, -2.625, 3.0, -3.375, 3.75,
+          -4.125, 4.5, -4.875, 5.25, -5.625, 6.0, -6.375, 6.75, -7.125, 7.5,
+          -7.875, 8.25, -8.625, 9.0, -9.375, 9.75, -10.125, 10.5, -10.875,
+          11.25, -11.625, -2.0, 2.5, -3.0, 3.5, -4.0, 4.5, -5.0, 5.5, -6.0, 6.5,
+          -7.0, 7.5, -8.0, 8.5, -9.0, 9.5, -10.0, 10.5, -11.0, 11.5, -12.0,
+          12.5, -13.0, 13.5, -14.0, 14.5, -15.0, 15.5, 2.5, -3.125, 3.75,
+          -4.375, 5.0, -5.625, 6.25, -6.875, 7.5, -8.125, 8.75, -9.375, 10.0,
+          -10.625, 11.25, -11.875, 12.5, -13.125, 13.75, -14.375, 15.0, -15.625,
+          16.25, -16.875, 17.5, -18.125, 18.75, -19.375, -3.0, 3.75, -4.5, 5.25,
+          -6.0, 6.75, -7.5, 8.25, -9.0, 9.75, -10.5, 11.25, -12.0, 12.75, -13.5,
+          14.25, -15.0, 15.75, -16.5, 17.25, -18.0, 18.75, -19.5, 20.25, -21.0,
+          21.75, -22.5, 23.25, 1.0, -1.25, 1.5, -1.75, 2.0, -2.25, 2.5, -2.75,
+          3.0, -3.25, 3.5, -3.75, 4.0, -4.25, 4.5, -4.75, 5.0, -5.25, 5.5,
+          -5.75, 6.0, -6.25, 6.5, -6.75, 7.0, -7.25, 7.5, -7.75, -2.0, 2.5,
+          -3.0, 3.5, -4.0, 4.5, -5.0, 5.5, -6.0, 6.5, -7.0, 7.5, -8.0, 8.5,
+          -9.0, 9.5, -10.0, 10.5, -11.0, 11.5, -12.0, 12.5, -13.0, 13.5, -14.0,
+          14.5, -15.0, 15.5, 3.0, -3.75, 4.5, -5.25, 6.0, -6.75, 7.5, -8.25,
+          9.0, -9.75, 10.5, -11.25, 12.0, -12.75, 13.5, -14.25, 15.0, -15.75,
+          16.5, -17.25, 18.0, -18.75, 19.5, -20.25, 21.0, -21.75, 22.5, -23.25,
+          -4.0, 5.0, -6.0, 7.0, -8.0, 9.0, -10.0, 11.0, -12.0, 13.0, -14.0,
+          15.0, -16.0, 17.0, -18.0, 19.0, -20.0, 21.0, -22.0, 23.0, -24.0, 25.0,
+          -26.0, 27.0, -28.0, 29.0, -30.0, 31.0, 5.0, -6.25, 7.5, -8.75, 10.0,
+          -11.25, 12.5, -13.75, 15.0, -16.25, 17.5, -18.75, 20.0, -21.25, 22.5,
+          -23.75, 25.0, -26.25, 27.5, -28.75, 30.0, -31.25, 32.5, -33.75, 35.0,
+          -36.25, 37.5, -38.75, -6.0, 7.5, -9.0, 10.5, -12.0, 13.5, -15.0, 16.5,
+          -18.0, 19.5, -21.0, 22.5, -24.0, 25.5, -27.0, 28.5, -30.0, 31.5,
+          -33.0, 34.5, -36.0, 37.5, -39.0, 40.5, -42.0, 43.5, -45.0, 46.5
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-maximum-degree.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-maximum-degree.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-maximum-degree.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -21600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 2137,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 33001,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": -21600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-constant-and-single-instant",
+    "description": "Write a degree-zero expansion with a zero-duration descriptor contained in the record. Compare evaluated state and exact coverage.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-constant-and-single-instant.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -21600,
+        "last": -21600,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 1,
+        "degree": 0,
+        "cdata": [0.5, -1.0, 1.5, -2.0, 2.5, -3.0],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-constant-and-single-instant.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-constant-and-single-instant.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-constant-and-single-instant.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -21600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": -21600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-append-priority",
+    "description": "Close and reopen for append. The later segment overlapping the same body wins inside its trimmed descriptor and earlier data remains outside.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-append-priority.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-append-priority.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -11000,
+        "last": 27000,
+        "segid": "LATER OVERLAP",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 1,
+        "cdata": [
+          0.5, -0.625, -1.0, 1.25, 1.5, -1.875, -2.0, 2.5, 2.5, -3.125, -3.0,
+          3.75, 1.0, -1.25, -2.0, 2.5, 3.0, -3.75, -4.0, 5.0, 5.0, -6.25, -6.0,
+          7.5
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-append-priority.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-append-priority.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-append-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 7200,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -36000,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 33000,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": 7200,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-trailing-blanks",
+    "description": "Keep the full forty printable identifier characters before insignificant trailing blanks. Compare SPKSFS identifier and all six state values.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-trailing-blanks.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "ABCDEFGHABCDEFGHABCDEFGHABCDEFGHABCDEFGH   ",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 1,
+        "cdata": [
+          0.5, -0.625, -1.0, 1.25, 1.5, -1.875, -2.0, 2.5, 2.5, -3.125, -3.0,
+          3.75, 1.0, -1.25, -2.0, 2.5, 3.0, -3.75, -4.0, 5.0, 5.0, -6.25, -6.0,
+          7.5
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-trailing-blanks.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-trailing-blanks.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-trailing-blanks.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 317,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": 317,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-subsecond-records",
+    "description": "Evaluate distinct subsecond records on both sides of their boundary; type 2 differentiates against the true radius while type 3 returns independent velocity coefficients.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-subsecond-records.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -0.125,
+        "last": 0.375,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 0.25,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -0.125
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-subsecond-records.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 9
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw03-subsecond-records.bsp"
+        },
+        "idcode": 195003,
+        "coverWindowId": "W",
+        "maxIntervals": 9
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-subsecond-records.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": -0.125,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0.12499,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0.125,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0.25,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 195003,
+        "et": 0.375,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 195003,
+        "et": -0.125,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-no-records",
+    "description": "Seed the writer with a valid segment, then compare the canonical NUMCOEFFSNOTPOS diagnosis for no records.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-no-records.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 0,
+        "degree": 2,
+        "cdata": [],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NUMCOEFFSNOTPOS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-negative-degree",
+    "description": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for negative degree.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-negative-degree.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": -1,
+        "cdata": [],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDDEGREE)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-above-max-degree",
+    "description": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for above max degree.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-above-max-degree.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 28,
+        "cdata": [],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDDEGREE)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-zero-interval",
+    "description": "Seed the writer with a valid segment, then compare the canonical INTLENNOTPOS diagnosis for zero interval.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-zero-interval.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 0,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INTLENNOTPOS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-unknown-frame",
+    "description": "Seed the writer with a valid segment, then compare the canonical INVALIDREFFRAME diagnosis for unknown frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-unknown-frame.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "NO SUCH AUTHOR FRAME",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDREFFRAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-reversed-descriptor",
+    "description": "Seed the writer with a valid segment, then compare the canonical BADDESCRTIMES diagnosis for reversed descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-reversed-descriptor.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": 2,
+        "last": -2,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-early-descriptor",
+    "description": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for early descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-early-descriptor.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43201,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(COVERAGEGAP)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-late-descriptor",
+    "description": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for late descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-late-descriptor.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43201,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(COVERAGEGAP)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-long-identifier",
+    "description": "Seed the writer with a valid segment, then compare the canonical IDSTRINGTOOLONG diagnosis for long identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-long-identifier.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDSTRINGTOOLONG)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-nonprinting-identifier",
+    "description": "Seed the writer with a valid segment, then compare the canonical NONPRINTABLECHARS diagnosis for nonprinting identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-nonprinting-identifier.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TAB\tID",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPRINTABLECHARS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw03-empty-frame",
+    "description": "Seed the writer with a valid segment, then compare the canonical EMPTYSTRING diagnosis for empty frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw03-empty-frame.bsp"
+        },
+        "ifname": "AUTHORED CHEBYSHEV",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "J2000",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      },
+      {
+        "op": "ephemeris.spkw03",
+        "handleId": "H",
+        "body": 195003,
+        "center": 0,
+        "frame": "",
+        "first": -43200,
+        "last": 43200,
+        "segid": "TYPE 3 AUTHORED",
+        "intlen": 43200,
+        "n": 2,
+        "degree": 2,
+        "cdata": [
+          0.5, -0.625, 0.75, -1.0, 1.25, -1.5, 1.5, -1.875, 2.25, -2.0, 2.5,
+          -3.0, 2.5, -3.125, 3.75, -3.0, 3.75, -4.5, 1.0, -1.25, 1.5, -2.0, 2.5,
+          -3.0, 3.0, -3.75, 4.5, -4.0, 5.0, -6.0, 5.0, -6.25, 7.5, -6.0, 7.5,
+          -9.0
+        ],
+        "btime": -43200
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  }
+]

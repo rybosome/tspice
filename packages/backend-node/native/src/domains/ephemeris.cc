@@ -829,6 +829,65 @@ static void Spkw08(const Napi::CallbackInfo& info) {
   }
 }
 
+template <int Type>
+static void SpkChebyshevWriter(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  const size_t nargs = Type == 20 ? 15 : 12;
+  if (info.Length() != nargs || !info[3].IsString() || !info[6].IsString() ||
+      !info[10].IsTypedArray()) {
+    ThrowSpiceError(Napi::TypeError::New(
+        env, "Expected SPK writer arguments and an owned Float64Array of coefficients"));
+    return;
+  }
+  const auto data = info[10].As<Napi::TypedArray>();
+  if (data.TypedArrayType() != napi_float64_array || data.ElementLength() > 33554432) {
+    ThrowSpiceError(
+        Napi::RangeError::New(env, "Expected at most 256 MiB of Float64Array coefficient data"));
+    return;
+  }
+  int32_t handle, body, center, n, degree;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "body", &body) ||
+      !ReadInt32Checked(env, info[2], "center", &center) ||
+      !ReadInt32Checked(env, info[8], "n", &n) ||
+      !ReadInt32Checked(env, info[9], "degree", &degree))
+    return;
+  const auto frame = info[3].As<Napi::String>().Utf8Value(),
+             segid = info[6].As<Napi::String>().Utf8Value();
+  if (frame.find('\0') != std::string::npos || segid.find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Embedded NUL in SPK frame or identifier"));
+    return;
+  }
+  double scalar[15] = {};
+  for (size_t i = 4; i < nargs; ++i) {
+    if (i == 6 || i == 8 || i == 9 || i == 10) continue;
+    if (!info[i].IsNumber() ||
+        !std::isfinite(scalar[i] = info[i].As<Napi::Number>().DoubleValue())) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected finite SPK writer input"));
+      return;
+    }
+  }
+  auto coefficients = data.As<Napi::Float64Array>();
+  int words = static_cast<int>(coefficients.ElementLength());
+  const double sentinel = 0;
+  const double* ptr = words ? coefficients.Data() : &sentinel;
+  const double first = scalar[4], last = scalar[5], intlen = scalar[7];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int code;
+  if constexpr (Type == 2)
+    code = tspice_spkw02(handle, body, center, frame.c_str(), first, last, segid.c_str(), intlen, n,
+                         degree, ptr, words, scalar[11], err, sizeof(err));
+  else if constexpr (Type == 3)
+    code = tspice_spkw03(handle, body, center, frame.c_str(), first, last, segid.c_str(), intlen, n,
+                         degree, ptr, words, scalar[11], err, sizeof(err));
+  else
+    code = tspice_spkw20(handle, body, center, frame.c_str(), first, last, segid.c_str(), intlen, n,
+                         degree, ptr, words, scalar[11], scalar[12], scalar[13], scalar[14], err,
+                         sizeof(err));
+  if (code) ThrowSpiceError(env, "CSPICE failed writing Chebyshev SPK segment", err);
+}
+
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
@@ -838,6 +897,15 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "spkpos", Napi::Function::New(env, Spkpos), __func__)) return;
   if (!SetExportChecked(env, exports, "spkopn", Napi::Function::New(env, Spkopn), __func__)) return;
   if (!SetExportChecked(env, exports, "spkopa", Napi::Function::New(env, Spkopa), __func__)) return;
+  if (!SetExportChecked(env, exports, "spkw02", Napi::Function::New(env, SpkChebyshevWriter<2>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw03", Napi::Function::New(env, SpkChebyshevWriter<3>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw20", Napi::Function::New(env, SpkChebyshevWriter<20>),
+                        __func__))
+    return;
   if (!SetExportChecked(env, exports, "spkw08", Napi::Function::New(env, Spkw08), __func__)) return;
   if (!SetExportChecked(env, exports, "spkcls", Napi::Function::New(env, Spkcls), __func__)) return;
 
