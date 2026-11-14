@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { stageCheckedTextSources } from "./checked-text-sources.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -231,6 +232,11 @@ const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
 
+stageCheckedTextSources(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
+
 function patchReturnInt(filePath, symbol, indentation = "") {
   if (!fs.existsSync(filePath)) {
     return;
@@ -371,6 +377,10 @@ const exportedFunctions = [
   "_tspice_ktotal_all",
 
   // --- file i/o primitives ---
+  "_tspice_rdtext",
+  "_tspice_putcml",
+  "_tspice_text_owner",
+  "_tspice_release_text_owner",
   "_tspice_exists",
   "_tspice_getfat",
 

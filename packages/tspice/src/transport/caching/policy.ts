@@ -7,6 +7,8 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "kit.loadKernel",
   "kit.unloadKernel",
   "kit.kclear",
+  "raw.rdtext",
+  "raw.putcml",
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",

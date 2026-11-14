@@ -93,6 +93,14 @@ export type NativeAddon = {
 
   // --- file i/o primitives ---
 
+  text_owner(): number;
+  release_text_owner(owner: number): void;
+  rdtext(
+    owner: number,
+    path: string,
+    width: number,
+  ): { bytes: Uint8Array; eof: boolean };
+  putcml(argc: number, bytes: Uint8Array): Uint8Array;
   exists(path: string): boolean;
   getfat(path: string): { arch: string; type: string };
 

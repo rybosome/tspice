@@ -5,10 +5,12 @@
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
+#include <limits.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+
 
 // --- ABI guard ---------------------------------------------------------
 //
@@ -45,6 +47,107 @@ static void tspice_read_dla_descr8(const int32_t *descr8, SpiceDLADescr *outDesc
   outDescr->dsize = (SpiceInt)descr8[5];
   outDescr->cbase = (SpiceInt)descr8[6];
   outDescr->csize = (SpiceInt)descr8[7];
+}
+
+
+// The checked N0067 reader reports every canonical EOF, read-error or CLTEXT
+// closure, including closes from other routines. A reused logical unit never
+// inherits the previous reader's clients.
+extern int tspice_last_read_text_unit(void);
+extern int tspice_close_text_unit(int);
+typedef struct TextClaim {
+  int owner,unit;
+  struct TextClaim *next;
+} TextClaim;
+static TextClaim *text_claims;
+static int next_owner;
+
+void tspice_text_unit_closed(int unit) {
+  TextClaim **link=&text_claims;
+  while(*link){
+    TextClaim *claim=*link;
+    if(claim->unit!=unit){link=&claim->next;continue;}
+    *link=claim->next;
+    free(claim);
+  }
+}
+static int text_failure(char *err,int cap,const char *message) {
+  tspice_reset(NULL,0);
+  if(err && cap>0)snprintf(err,(size_t)cap,"%s",message);
+  return 1;
+}
+static int text_status(char *err,int cap) {
+  if(!failed_c())return 0;
+  tspice_get_spice_error_message_and_reset(err,cap);
+  return 1;
+}
+int tspice_text_owner(int *owner, char *err, int errMaxBytes) {
+  if(!owner||next_owner==INT_MAX)return text_failure(err,errMaxBytes,"Text reader owner limit reached");
+  *owner=++next_owner;return 0;
+}
+int tspice_release_text_owner(int owner, char *err, int errMaxBytes) {
+  TextClaim **link=&text_claims;
+  while(*link) {
+    TextClaim *claim=*link;
+    if(claim->owner!=owner){link=&claim->next;continue;}
+    int unit=claim->unit;
+    *link=claim->next;free(claim);
+    TextClaim *other=text_claims;
+    while(other && other->unit!=unit)other=other->next;
+    if(!other)tspice_close_text_unit(unit);
+  }
+  return text_status(err,errMaxBytes);
+}
+int tspice_rdtext(int owner, const char *path, int width, char *line, int *eof, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if(!path || strlen(path)>255 || !line || !eof || owner<1 || owner>next_owner || width>256*1024*1024)
+    return text_failure(err,errMaxBytes,"Invalid text reader owner, resolved path or output width");
+  // Claim storage is acquired before advancing the shared cursor. On EOF or
+  // failure there is no fresh claim, and the canonical reader handles closure.
+  TextClaim *new_claim=malloc(sizeof(*new_claim));
+  if(!new_claim)return text_failure(err,errMaxBytes,"Unable to allocate text reader claim");
+  *eof=0;
+  rdtext_c(path,width,line,eof);
+  if(text_status(err,errMaxBytes)){free(new_claim);return 1;}
+  if(*eof){free(new_claim);return 0;}
+  // Other toolkit facilities can have a separate unit on the same filename.
+  // Associate this client only with the unit RDTEXT actually consumed.
+  const int unit=tspice_last_read_text_unit();
+  for(TextClaim *found=text_claims;found;found=found->next)if(found->owner==owner && found->unit==unit){
+    free(new_claim);return 0;
+  }
+  new_claim->owner=owner;new_claim->unit=unit;new_claim->next=text_claims;text_claims=new_claim;
+  return 0;
+}
+int tspice_putcml(int argc, int packedBytes, const char *packed, char *observed, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if(argc<0 || argc>256*1024*1024/8 || packedBytes<0 || packedBytes>256*1024*1024 || argc>packedBytes || !packed || !observed)
+    return text_failure(err,errMaxBytes,"Invalid packed command-line storage");
+  char **args=calloc((size_t)argc+1,sizeof(char*));
+  if(!args)return text_failure(err,errMaxBytes,"Unable to allocate command-line pointers");
+  int offset=0;
+  for(int i=0;i<argc;i++) {
+    const char *end=memchr(packed+offset,0,(size_t)(packedBytes-offset));
+    if(!end){free(args);return text_failure(err,errMaxBytes,"Unterminated packed command argument");}
+    args[i]=(char*)packed+offset;offset=(int)(end-packed)+1;
+  }
+  if(offset!=packedBytes){free(args);return text_failure(err,errMaxBytes,"Unexpected trailing command data");}
+  putcml_c(argc,args);
+  free(args);
+  if(text_status(err,errMaxBytes))return 1;
+  // Immediate readback only. No public getter and no observable borrowed
+  // pointers. The one-time setter retains its ordinary void contract.
+  SpiceInt count=0;char **saved=NULL;
+  getcml_c(&count,&saved);
+  if(text_status(err,errMaxBytes))return 1;
+  if(count!=argc)return text_failure(err,errMaxBytes,"Inconsistent stored command count");
+  offset=0;
+  for(int i=0;i<count;i++){
+    size_t len=strlen(saved[i])+1;
+    if(len>(size_t)(packedBytes-offset))return text_failure(err,errMaxBytes,"Inconsistent stored command length");
+    memcpy(observed+offset,saved[i],len);offset+=(int)len;
+  }
+  return offset==packedBytes?0:text_failure(err,errMaxBytes,"Incomplete stored command");
 }
 
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes) {

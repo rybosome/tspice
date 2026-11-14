@@ -82,6 +82,9 @@ def finalize_case_lifecycle(context: SidecarRuntimeContext) -> None:
                 # Preserve the claim for its registered retry before Scratch.
                 pass
 
+    if context.state.fileIo.activeTextReaders:
+        from ..text_command_oracle import finish_readers
+        finish_readers(context)
     _close_file_io_handles_best_effort(context)
     _close_dsk_handles_best_effort(context)
     _close_ek_handles_best_effort(context)

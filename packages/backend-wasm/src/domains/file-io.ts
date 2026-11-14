@@ -1,3 +1,12 @@
+import {
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  packCommandArgs,
+  verifyCommandArgs,
+  readTextResult,
+  normalizeVirtualKernelPath,
+} from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
   FileIoApi,
@@ -213,7 +222,121 @@ export function createFileIoApi(
     );
   }
 
-  return {
+  let owner: number | undefined;
+  const staged = new Map<string, string>();
+  function checked(code: number, err: number) {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+  function readPath(
+    file: import("@rybosome/tspice-backend-contract").KernelSource,
+  ) {
+    if (typeof file === "string") {
+      textBytes(file);
+      if (!file || /^ +$/.test(file)) return file;
+      return (
+        staged.get(normalizeVirtualKernelPath(file)) ?? resolveKernelPath(file)
+      );
+    }
+    if (!file || typeof file !== "object")
+      throw new TypeError("Expected a text path and bytes");
+    const { path: virtualPath, bytes } = file;
+    if (typeof virtualPath !== "string" || !(bytes instanceof Uint8Array))
+      throw new TypeError("Expected a text path and bytes");
+    textBytes(virtualPath);
+    const key = normalizeVirtualKernelPath(virtualPath),
+      prior = staged.get(key);
+    if (prior) {
+      const old = module.FS.readFile(prior, { encoding: "binary" });
+      if (old.length !== bytes.length || !old.every((b, i) => b === bytes[i]))
+        throw new Error("Text bytes changed for the staged path");
+      return prior;
+    }
+    const physical = "/tspice-text/" + owner + "-" + staged.size;
+    module.FS.mkdirTree("/tspice-text");
+    module.FS.writeFile(physical, bytes);
+    staged.set(key, physical);
+    return physical;
+  }
+  const api: FileIoApi & { [releaseTextReaders](): void } = {
+    [releaseTextReaders]: () => {
+      if (owner !== undefined) {
+        withMalloc(module, WASM_ERR_MAX_BYTES, (err) =>
+          checked(
+            module._tspice_release_text_owner(owner!, err, WASM_ERR_MAX_BYTES),
+            err,
+          ),
+        );
+        owner = undefined;
+      }
+      for (const p of staged.values()) module.FS.unlink(p);
+      staged.clear();
+    },
+    rdtext: (
+      file: import("@rybosome/tspice-backend-contract").KernelSource,
+      lineln = 1024,
+    ) => {
+      const width = textWidth(lineln);
+      owner ??= withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, id) => {
+        checked(module._tspice_text_owner(id, err, WASM_ERR_MAX_BYTES), err);
+        return readHeapI32(module, (id >>> 0) / 4, "text reader owner");
+      });
+      const p = textBytes(readPath(file));
+      if (p.length > 255)
+        throw new RangeError("Resolved text path exceeds 255 bytes");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, p.length + 1, width, 4],
+        (err, name, out, eof) => {
+          module.HEAPU8.set(p, name >>> 0);
+          module.HEAPU8[(name >>> 0) + p.length] = 0;
+          checked(
+            module._tspice_rdtext(
+              owner!,
+              name,
+              lineln,
+              out,
+              eof,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const bytes = module.HEAPU8.subarray(out >>> 0, (out >>> 0) + width),
+            end = bytes.indexOf(0);
+          if (end < 0) throw new Error("Unterminated actual text line");
+          return readTextResult(
+            bytes.subarray(0, end),
+            readHeapI32(module, (eof >>> 0) / 4, "text EOF") !== 0,
+          );
+        },
+      );
+    },
+    putcml: (argv: readonly string[]) => {
+      const { count, bytes } = packCommandArgs(argv),
+        size = Math.max(1, bytes.length);
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, size],
+        (err, input, out) => {
+          module.HEAPU8.set(bytes, input >>> 0);
+          checked(
+            module._tspice_putcml(
+              count,
+              bytes.length,
+              input,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          verifyCommandArgs(
+            bytes,
+            module.HEAPU8.subarray(out >>> 0, (out >>> 0) + bytes.length),
+          );
+        },
+      );
+    },
     exists: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);
@@ -894,7 +1017,8 @@ export function createFileIoApi(
         module._free(framePtr);
       }
     },
-  } satisfies FileIoApi;
+  };
+  return api;
 }
 
 /** Create a {@link FileIoKitApi} implementation for virtual output reads. */

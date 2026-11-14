@@ -2133,6 +2133,12 @@ export function createFakeBackend(
 
     // --- file i/o primitives (not implemented in fake backend) ---
 
+    rdtext: () => {
+      throw new Error("Fake backend does not model text files");
+    },
+    putcml: () => {
+      throw new Error("Fake backend does not model command state");
+    },
     exists: (_path: string) => {
       throw new Error("Fake backend: exists() is not implemented");
     },

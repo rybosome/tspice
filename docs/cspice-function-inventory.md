@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 164
+- Planned (not yet implemented): 485
 - Excluded: 3
 
 ## Implemented now
@@ -122,7 +122,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `putcml_c` | Get the command line |
 | `pxform_c` | Position Transformation Matrix |
+| `rdtext_c` | Read a line from a text file |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
@@ -507,7 +509,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |
 | `psv2pl_c` | Point and spanning vectors to plane |
-| `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
 | `qcktrc_c` | Get Quick Traceback |
@@ -517,7 +518,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `radrec_c` | Range, RA and DEC to rectangular coordinates |
 | `rav2xf_c` | Rotation and angular velocity to transform |
 | `raxisa_c` | Rotation axis of a matrix |
-| `rdtext_c` | Read a line from a text file |
 | `recazl_c` | Rectangular coordinates to AZ/EL |
 | `reccyl_c` | Rectangular to cylindrical coordinates |
 | `recpgr_c` | Rectangular to planetographic |

@@ -3,7 +3,7 @@ import type {
   SpiceHandle,
   SpiceHandleEntry,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import { invariant, releaseTextReaders } from "@rybosome/tspice-core";
 
 import { getNativeAddon } from "./native.js";
 
@@ -83,6 +83,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   Object.defineProperty(backend, "disposeAll", {
     value: () => {
       const errors: unknown[] = [];
+      try {
+        const release: unknown = Reflect.get(fileIoApi, releaseTextReaders);
+        if (typeof release === "function")
+          Reflect.apply(release, fileIoApi, []);
+      } catch (error) {
+        errors.push(error);
+      }
       const entries =
         (
           spiceHandles as typeof spiceHandles & {

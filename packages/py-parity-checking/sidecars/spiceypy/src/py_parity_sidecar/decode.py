@@ -91,6 +91,8 @@ from .models import (
     StepFileIoDskmi2,
     StepFileIoDskopn,
     StepFileIoDskw02,
+    StepFileIoRdtext,
+    StepFileIoPutcml,
     StepFileIoExists,
     StepFileIoGetfat,
     StepErrorChkin,
@@ -1026,6 +1028,20 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 step=_expect_number(step.get("step"), label="ephemeris.spkw08.step"),
             )
 
+
+        case "file-io.rdtext":
+            return StepFileIoRdtext(
+                op=op,
+                fileId=_expect_string(step.get("fileId"), label="file-io.rdtext.fileId"),
+                text=_expect_string(step.get("text"), label="file-io.rdtext.text"),
+                lineln=_expect_int(step.get("lineln"), label="file-io.rdtext.lineln"),
+            )
+
+        case "file-io.putcml":
+            return StepFileIoPutcml(
+                op=op,
+                argv=_expect_string_list(step.get("argv"), label="file-io.putcml.argv"),
+            )
 
         case "file-io.exists":
             return StepFileIoExists(

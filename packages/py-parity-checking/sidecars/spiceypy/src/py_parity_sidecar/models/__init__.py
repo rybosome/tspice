@@ -102,6 +102,8 @@ from .file_io import (
     StepFileIoDskmi2,
     StepFileIoDskopn,
     StepFileIoDskw02,
+    StepFileIoRdtext,
+    StepFileIoPutcml,
     StepFileIoExists,
     StepFileIoGetfat,
 )
@@ -327,6 +329,8 @@ __all__ = [
     "StepKernelsKdata",
     "StepKernelsKxtrct",
     "StepKernelsUnload",
+    "StepFileIoRdtext",
+    "StepFileIoPutcml",
     "StepFileIoExists",
     "StepFileIoGetfat",
     "StepFileIoDafopr",

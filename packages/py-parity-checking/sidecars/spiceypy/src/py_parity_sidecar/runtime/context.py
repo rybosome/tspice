@@ -32,6 +32,7 @@ class FileIoHandleState:
 
 @dataclass
 class FileIoState:
+    activeTextReaders: set[str] = field(default_factory=set)
     handles: dict[str, FileIoHandleState] = field(default_factory=dict)
     descriptors: dict[str, Any] = field(default_factory=dict)
     spatialIndexes: dict[str, tuple[Any, Any]] = field(default_factory=dict)
