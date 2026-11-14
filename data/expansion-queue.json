@@ -2258,18 +2258,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/767"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "48 scenarios and 96 registered comparisons, 7 public, 2 native and 27 WASM checks, repeated all seven through real Chrome."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+          "result": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Capture full combined local and canonical GitHub CI executions on this source, then verify the final PR head and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-ek-metadata",
       "branch": "codex/expand-ek-metadata",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Seven compiled EK query and metadata operations, complete physical segment/column/SELECT fields, generation-safe direct load/unload and named-result counts."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 43e36dc9. 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Seven compiled EK query and metadata operations, complete physical segment/column/SELECT fields, generation-safe direct load/unload and named-result counts."
     },
     {
       "id": "C11-pck-binary",

@@ -69,7 +69,252 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c10-43e36dc9-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c10-43e36dc9-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c10-43e36dc9-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c10-43e36dc9-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "18847733a1ef5dcccbf086d1113e3613d6ce27df92bdf576f212ef3b7aa740fc",
+      "caseIds": [
+        "ek-ekccnt-absent",
+        "ek-ekccnt-all-logical-tables",
+        "ek-ekccnt-direct-membership",
+        "ek-ekccnt-empty-name",
+        "ek-ekccnt-explicit-reader-only",
+        "ek-ekcii-all-descriptors",
+        "ek-ekcii-case-folded-table",
+        "ek-ekcii-missing-table",
+        "ek-ekcii-negative-index",
+        "ek-ekcii-output-width",
+        "ek-ekcii-past-column",
+        "ek-ekcii-short-width",
+        "ek-eklef-direct-only",
+        "ek-eklef-duplicate",
+        "ek-eklef-empty-ek",
+        "ek-eklef-keeper-overlap",
+        "ek-eklef-missing-file",
+        "ek-eklef-two-physical-files",
+        "ek-eknelt-all-query-entries",
+        "ek-eknelt-negative-item",
+        "ek-eknelt-negative-row",
+        "ek-eknelt-no-files",
+        "ek-eknelt-past-item",
+        "ek-eknelt-past-row",
+        "ek-eknelt-psel-preserves-results",
+        "ek-eknelt-replacement-query",
+        "ek-eknelt-zero-rows",
+        "ek-ekpsel-alias-offsets",
+        "ek-ekpsel-duplicate-projection",
+        "ek-ekpsel-empty-string",
+        "ek-ekpsel-fifty-items",
+        "ek-ekpsel-missing-column",
+        "ek-ekpsel-missing-table",
+        "ek-ekpsel-mixed-types",
+        "ek-ekpsel-over-item-limit",
+        "ek-ekpsel-two-table-aliases",
+        "ek-ekpsel-unsupported-expression",
+        "ek-ekssum-all-column-attributes",
+        "ek-ekssum-all-physical-segments",
+        "ek-ekssum-direct-and-reader",
+        "ek-ekssum-empty-ek",
+        "ek-ekssum-negative-segment",
+        "ek-ekssum-past-segment",
+        "ek-ekuef-direct-clear-release",
+        "ek-ekuef-file-specific",
+        "ek-ekuef-independent-reader",
+        "ek-ekuef-keeper-removal",
+        "ek-ekuef-repeatable-epochs"
+      ],
+      "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "ekccnt_c",
@@ -128,16 +373,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekccnt -> serialized native addon -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekccnt -> required WASM export with scoped allocations -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -217,16 +462,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "composed",
           "trace": "EkApi.ekcii -> serialized native addon -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "composed",
           "trace": "EkApi.ekcii -> required WASM export with scoped allocations -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -306,16 +551,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.eklef -> serialized native addon -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.eklef -> required WASM export with scoped allocations -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -400,16 +645,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "composed",
           "trace": "EkApi.eknelt -> serialized native addon -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "composed",
           "trace": "EkApi.eknelt -> required WASM export with scoped allocations -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -490,16 +735,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekpsel -> serialized native addon -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekpsel -> required WASM export with scoped allocations -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -574,16 +819,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekssum -> serialized native addon -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekssum -> required WASM export with scoped allocations -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     },
@@ -658,19 +903,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekuef -> serialized native addon -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekuef -> required WASM export with scoped allocations -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
-          "executions": []
+          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Capture full combined local and canonical GitHub CI executions on this source, then verify the final PR head and rebaseability."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

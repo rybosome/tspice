@@ -422,8 +422,8 @@
         "ekuef_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Capture full combined local and canonical GitHub CI executions on this source, then verify the final PR head and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/767"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
