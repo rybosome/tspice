@@ -207,3 +207,71 @@ class StepEphemerisSpkw20:
     tscale: float
     initjd: float
     initfr: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw05:
+    op: Literal["ephemeris.spkw05"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    gm: float
+    states: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw10:
+    op: Literal["ephemeris.spkw10"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    consts: list[float]
+    elems: list[float]
+    epochs: list[float]
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw15:
+    op: Literal["ephemeris.spkw15"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    epoch: float
+    tp: tuple[float,float,float]
+    pa: tuple[float,float,float]
+    p: float
+    ecc: float
+    j2flg: float
+    pv: tuple[float,float,float]
+    gm: float
+    j2: float
+    radius: float
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkw17:
+    op: Literal["ephemeris.spkw17"]
+    handleId: str
+    body: int
+    center: int
+    frame: str
+    first: float
+    last: float
+    segid: str
+    epoch: float
+    eqel: list[float]
+    rapol: float
+    decpol: float

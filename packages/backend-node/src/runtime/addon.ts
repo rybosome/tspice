@@ -461,6 +461,50 @@ export type NativeAddon = {
     initjd: number,
     initfr: number,
   ): void;
+  spkw05(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw10(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw15(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
+  spkw17(
+    handle: number,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    n: number,
+    data: Float64Array,
+  ): void;
   spkw08(
     handle: number,
     body: number,

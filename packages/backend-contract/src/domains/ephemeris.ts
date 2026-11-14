@@ -8,6 +8,7 @@ import type {
   AbCorr,
   Found,
   SpiceHandle,
+  SpiceVector3,
   SpiceStateVector,
   SpkezrResult,
   SpkposResult,
@@ -394,5 +395,97 @@ export interface EphemerisApi {
     tscale: number,
     initjd: number,
     initfr: number,
+  ): void;
+  /**
+   * Append a type 5 conic segment from successive Cartesian states (XYZ km and XYZ km/s) and
+   * increasing sample epochs in TDB seconds. GM is in km³/s². CSPICE propagates neighboring
+   * states with two-body dynamics and blends them within the sampled interval; end states
+   * can propagate outside it. Six state words are required per epoch. All numeric fields
+   * must be finite; packed input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw05_c.html
+   */
+  spkw05(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    gm: number,
+    states: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Append a type 10 space-command two-line element segment. Supply eight geophysical
+   * constants J2, J3, J4, KE, QO, SO, ER, AE, and ten words per set in GETELM order, ending
+   * in mean motion (rad/min) and element epoch (TDB seconds). Supply the corresponding
+   * increasing reference epochs; tspice checks ordering before opening the generic segment.
+   * An empty set has descriptor and coverage only. Evaluation of populated sets requires the
+   * time conversion kernel data used by SGP4. All numeric fields must be finite; packed
+   * input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw10_c.html
+   */
+  spkw10(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    consts: readonly number[] | Float64Array,
+    elems: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Append a type 15 precessing conic. Supply an epoch (TDB seconds), orbit pole, periapsis
+   * direction, positive semilatus rectum (km), eccentricity, J2 flag, body pole, positive GM
+   * (km³/s²), J2 and equatorial radius (km). The writer normalizes the three directions.
+   * Flags 0, 1, 2 and 3 request both secular effects, node only, apsides only and neither.
+   * The stored flag is a double; its truncated value must fit a signed 32-bit integer for
+   * evaluation. All numeric fields must be finite; packed input is limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw15_c.html
+   */
+  spkw15(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    epoch: number,
+    tp: Readonly<SpiceVector3>,
+    pa: Readonly<SpiceVector3>,
+    p: number,
+    ecc: number,
+    j2flg: number,
+    pv: Readonly<SpiceVector3>,
+    gm: number,
+    j2: number,
+    radius: number,
+  ): void;
+  /**
+   * Append a type 17 equinoctial segment. Supply epoch in TDB seconds, nine elements in
+   * order: semimajor axis (km), h, k, mean longitude, p, q, periapsis longitude rate, mean
+   * longitude rate, ascending node rate. Angles and rates are radians and radians/s. The
+   * final pole right ascension and declination specify the reference plane. The writer allows
+   * eccentricities through 0.9. State evaluation requires eccentricity below 0.9. All numeric fields must be finite; packed input is limited
+   * to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw17_c.html
+   */
+  spkw17(
+    handle: SpiceHandle,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    segid: string,
+    epoch: number,
+    eqel: readonly number[] | Float64Array,
+    rapol: number,
+    decpol: number,
   ): void;
 }

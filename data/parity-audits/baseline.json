@@ -416,6 +416,13 @@
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/757"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    },
+    {
+      "id": "e06-spk-analytic",
+      "routines": ["spkw05_c", "spkw10_c", "spkw15_c", "spkw17_c"],
+      "dependsOn": ["e04-spk-chebyshev"],
+      "prs": [],
+      "nextAction": "Complete the required local lanes and source-bound canonical CI; inspect the final-head matrix and rebaseability."
     }
   ]
 }

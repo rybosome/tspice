@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 1,
+  "batch": "e06-spk-analytic",
+  "traceFiles": [
+    "docs/step8-spk-analytic.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/spk-analytic-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/spk-analytic-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-analytic.ts",
+    "packages/core/src/spice-runtime/domains/spk-chebyshev.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/analytic_spk_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/kernels.ts",
+    "packages/py-parity-checking/src/workflow-normalization/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/types.ts",
+    "packages/py-parity-checking/test/_helpers/spk_analytic_oracle.py",
+    "packages/py-parity-checking/test/spk-analytic-files.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "spkw05_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw05_c.html",
+      "semantics": "Type 5 stores Cartesian states, increasing TDB sample epochs and central GM. Evaluation propagates neighbouring Keplerian states, blends with a derivative contribution to velocity, and extrapolates from the terminal state.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw05-orbit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw05-appended-coverage",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw05-multiple-osculating-states",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Unevenly spaced nonidentical conics blend and extrapolate over the descriptor, with the derivative of the weighting visible in velocity."
+        },
+        {
+          "caseId": "ephemeris-spkw05-sample-directory",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Cross the exact 100th-epoch directory with 101 complete state rows."
+        },
+        {
+          "caseId": "ephemeris-spkw05-one-instant",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The type 5 writer accepts equal descriptor times; evaluate only that instant."
+        },
+        {
+          "caseId": "ephemeris-spkw05-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw05-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw05-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw05-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw05-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw05-empty",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NUMSTATESNOTPOS diagnostic for empty."
+        },
+        {
+          "caseId": "ephemeris-spkw05-nonpositive-gm",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPOSITIVEMASS diagnostic for nonpositive gm."
+        },
+        {
+          "caseId": "ephemeris-spkw05-reversed-epochs",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual UNORDEREDTIMES diagnostic for reversed epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw05-duplicate-epochs",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual UNORDEREDTIMES diagnostic for duplicate epochs."
+        }
+      ],
+      "edgeAssessment": "One and 101 states, irregular grids, propagated endpoints, exact single-instant coverage, physical epoch directory and orbital states on both sides of the record epoch. A separate dense-grid test checks conditioning of the blend derivative.",
+      "errorAssessment": "Observed exact toolkit error identities: SPICE(BADDESCRTIMES), SPICE(EMPTYSTRING), SPICE(INVALIDREFFRAME), SPICE(NONPOSITIVEMASS), SPICE(NONPRINTABLECHARS), SPICE(NUMSTATESNOTPOS), SPICE(SEGIDTOOLONG), SPICE(UNORDEREDTIMES). Buffer shapes, ownership, finite values and narrowing guards are checked outside scientific error matching.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw05.cases.json",
+          "provenance": "Project-authored numerical orbital parameters and scratch-file workflows.",
+          "distribution": "Repository source under MIT. Binary SPKs are generated temporarily."
+        }
+      ],
+      "fixtureRationale": "Fresh independently written and application-written files are read reciprocally. All kernels are local. The J2000 frame is built in.",
+      "cleanup": "Seed valid segments before intentional writer errors, close owned writers, clear furnished kernels and discard scratch files. Compare every WASM allocation failure and same-handle retry. Isolate and explicitly finish the generic partial write in the independent ordering test.",
+      "tolerance": "Existing registered state comparator, exact metadata and physical record words except generated type 10 nutation terms checked to 17 decimal places. Reciprocal Cartesian components use eight decimal places. Dense-grid velocities have a separate absolute 1e-11 km/s bound and positions 2e-10 km, independently checked against the analytic circular orbit.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "Tightly spaced type 5 blend velocities differed by 1.98e-12 km/s at ET 47.5 against the locked wheel.",
+          "repair": "The dense one-second grid remains in an independent six-component and circular-model comparison with scoped physical units. The registered 101-record directory uses 60-second spacing and retains its original comparator.",
+          "caseIds": ["ephemeris-spkw05-sample-directory"],
+          "evidence": [
+            "docs/step8-spk-analytic.md",
+            "packages/py-parity-checking/test/spk-analytic-files.test.ts",
+            "packages/py-parity-checking/test/_helpers/spk_analytic_oracle.py"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw10_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw10_c.html",
+      "semantics": "Type 10 stores eight geophysical constants and generic fourteen-word packets containing ten TLE values and four generated nutation quantities, indexed by increasing reference epoch. Near-Earth and deep-space samples evaluate in J2000 with the LSK.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw10-orbit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw10-appended-coverage",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw10-deep-space",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Long period mean motion exercises deep-space SGP4 and the TEME-to-J2000 transform."
+        },
+        {
+          "caseId": "ephemeris-spkw10-multiple-packets",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinct element sets at irregular TDB epochs supply transitions, endpoint propagation and the generated time-dependent nutation data."
+        },
+        {
+          "caseId": "ephemeris-spkw10-empty-metadata",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A zero-packet generic segment retains its descriptor and object coverage; inspect it without requesting an orbital state."
+        },
+        {
+          "caseId": "ephemeris-spkw10-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw10-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw10-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw10-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPRINTINGCHARS diagnostic for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw10-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw10-one-instant",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant."
+        },
+        {
+          "caseId": "ephemeris-spkw10-self-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center."
+        },
+        {
+          "caseId": "ephemeris-spkw10-barycenter-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target."
+        }
+      ],
+      "edgeAssessment": "One, multiple or zero sets; different mean motions, element epochs, generic metadata, empty-shell coverage and frozen physical words. Duplicate and decreasing reference epochs receive a storage precheck to preserve a usable writer.",
+      "errorAssessment": "Observed exact toolkit error identities: SPICE(BADDESCRTIMES), SPICE(BARYCENTEREPHEM), SPICE(BODYANDCENTERSAME), SPICE(EMPTYSTRING), SPICE(INVALIDREFFRAME), SPICE(NONPRINTINGCHARS), SPICE(SEGIDTOOLONG). Buffer shapes, ownership, finite values and narrowing guards are checked outside scientific error matching.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw10.cases.json",
+          "provenance": "Project-authored numerical orbital parameters and scratch-file workflows.",
+          "distribution": "Repository source under MIT. Binary SPKs are generated temporarily."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/naif0012.tls",
+          "provenance": "NAIF0012 leap-seconds data from the existing validated kernel fixture set.",
+          "distribution": "Preexisting archived fixture; no new third-party data."
+        }
+      ],
+      "fixtureRationale": "Fresh independently written and application-written files are read reciprocally. All kernels are local. Type 10 evaluation furnishes the existing NAIF0012 LSK.",
+      "cleanup": "Seed valid segments before intentional writer errors, close owned writers, clear furnished kernels and discard scratch files. Compare every WASM allocation failure and same-handle retry. Isolate and explicitly finish the generic partial write in the independent ordering test.",
+      "tolerance": "Existing registered state comparator, exact metadata and physical record words except generated type 10 nutation terms checked to 17 decimal places. Reciprocal Cartesian components use eight decimal places. See the physical orbital data and independent comparisons in the supplemental run.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "Canonical SGWFPK detects unordered reference epochs after SGBWFS begins writing, and leaves the previous packet and persistent generic slot live.",
+          "repair": "Capture and validate order before opening a type 10 segment. The isolated canonical test confirms UNORDEREDREFS, subsequent CALLEDOUTOFORDER and the physically recoverable single-packet segment. Same-writer public retry succeeds.",
+          "caseIds": ["ephemeris-spkw10-multiple-packets"],
+          "evidence": [
+            "docs/step8-spk-analytic.md",
+            "packages/py-parity-checking/test/spk-analytic-files.test.ts",
+            "packages/py-parity-checking/test/_helpers/spk_analytic_oracle.py"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw15_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw15_c.html",
+      "semantics": "Type 15 normalizes three directions and writes a 16-word precessing-conic record using semilatus rectum, eccentricity, J2 flag and physical constants. Its evaluator applies distinct modes for secular node regression and apsidal precession.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw15-orbit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw15-appended-coverage",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw15-inclined-j2-0",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag."
+        },
+        {
+          "caseId": "ephemeris-spkw15-inclined-j2-1",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag."
+        },
+        {
+          "caseId": "ephemeris-spkw15-inclined-j2-2",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag."
+        },
+        {
+          "caseId": "ephemeris-spkw15-inclined-j2-3",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag."
+        },
+        {
+          "caseId": "ephemeris-spkw15-inclined-j2-1-75",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag."
+        },
+        {
+          "caseId": "ephemeris-spkw15-parabolic",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the unbound conic on both sides of periapsis. Secular elliptic J2 corrections do not apply."
+        },
+        {
+          "caseId": "ephemeris-spkw15-hyperbolic",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the unbound conic on both sides of periapsis. Secular elliptic J2 corrections do not apply."
+        },
+        {
+          "caseId": "ephemeris-spkw15-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw15-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw15-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw15-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw15-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw15-one-instant",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant."
+        },
+        {
+          "caseId": "ephemeris-spkw15-self-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center."
+        },
+        {
+          "caseId": "ephemeris-spkw15-barycenter-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target."
+        },
+        {
+          "caseId": "ephemeris-spkw15-invalid-p",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADLATUSRECTUM diagnostic for invalid p."
+        },
+        {
+          "caseId": "ephemeris-spkw15-negative-ecc",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADECCENTRICITY diagnostic for negative ecc."
+        },
+        {
+          "caseId": "ephemeris-spkw15-zero-gm",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPOSITIVEMASS diagnostic for zero gm."
+        },
+        {
+          "caseId": "ephemeris-spkw15-zero-orbit-pole",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero orbit pole."
+        },
+        {
+          "caseId": "ephemeris-spkw15-zero-periapsis",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero periapsis."
+        },
+        {
+          "caseId": "ephemeris-spkw15-zero-body-pole",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero body pole."
+        },
+        {
+          "caseId": "ephemeris-spkw15-negative-radius",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADRADIUS diagnostic for negative radius."
+        },
+        {
+          "caseId": "ephemeris-spkw15-nonorthogonal",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADINITSTATE diagnostic for nonorthogonal."
+        }
+      ],
+      "edgeAssessment": "All three normalized directions, inclined elliptic states with flags 0/1/2/3 and 1.75, high/low eccentricity and parabolic/hyperbolic orbits. Oversized flag-to-integer conversion is rejected separately at the typed and C boundaries.",
+      "errorAssessment": "Observed exact toolkit error identities: SPICE(BADDESCRTIMES), SPICE(BADECCENTRICITY), SPICE(BADINITSTATE), SPICE(BADLATUSRECTUM), SPICE(BADRADIUS), SPICE(BADVECTOR), SPICE(BARYCENTEREPHEM), SPICE(BODYANDCENTERSAME), SPICE(EMPTYSTRING), SPICE(INVALIDREFFRAME), SPICE(NONPOSITIVEMASS), SPICE(NONPRINTABLECHARS), SPICE(SEGIDTOOLONG). Buffer shapes, ownership, finite values and narrowing guards are checked outside scientific error matching.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw15.cases.json",
+          "provenance": "Project-authored numerical orbital parameters and scratch-file workflows.",
+          "distribution": "Repository source under MIT. Binary SPKs are generated temporarily."
+        }
+      ],
+      "fixtureRationale": "Fresh independently written and application-written files are read reciprocally. All kernels are local. The J2000 frame is built in.",
+      "cleanup": "Seed valid segments before intentional writer errors, close owned writers, clear furnished kernels and discard scratch files. Compare every WASM allocation failure and same-handle retry. Isolate and explicitly finish the generic partial write in the independent ordering test.",
+      "tolerance": "Existing registered state comparator, exact metadata and physical record words except generated type 10 nutation terms checked to 17 decimal places. Reciprocal Cartesian components use eight decimal places. See the physical orbital data and independent comparisons in the supplemental run.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw17_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw17_c.html",
+      "semantics": "Type 17 writes the epoch, nine equinoctial elements and two pole angles. Its Cartesian evaluator applies all terms in the tilted reference plane and includes angular rates in the returned velocity.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw17-orbit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw17-appended-coverage",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw17-inclined-secular",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All nine equinoctial quantities, nonzero periapsis/node rates, shifted epoch and tilted pole contribute to the Cartesian velocity and position."
+        },
+        {
+          "caseId": "ephemeris-spkw17-eccentricity-limit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The writer accepts eccentricity exactly 0.9. Inspect the descriptor before evaluating."
+        },
+        {
+          "caseId": "ephemeris-spkw17-eccentricity-limit-evaluation",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The writer succeeds at eccentricity 0.9; KEPLEQ signals ECCOUTOFBOUNDS only when the stored segment is evaluated."
+        },
+        {
+          "caseId": "ephemeris-spkw17-below-eccentricity-limit",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A high eccentricity just below the evaluator limit gives a defined six-component state."
+        },
+        {
+          "caseId": "ephemeris-spkw17-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw17-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw17-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw17-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw17-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw17-one-instant",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant."
+        },
+        {
+          "caseId": "ephemeris-spkw17-self-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center."
+        },
+        {
+          "caseId": "ephemeris-spkw17-barycenter-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target."
+        },
+        {
+          "caseId": "ephemeris-spkw17-zero-semiaxis",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADSEMIAXIS diagnostic for zero semiaxis."
+        },
+        {
+          "caseId": "ephemeris-spkw17-eccentricity-over-limit",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment and compare the actual BADECCENTRICITY diagnostic for eccentricity over limit."
+        }
+      ],
+      "edgeAssessment": "Non-equatorial reference and orbital inclinations, nonzero h/k and secular rates, positive/negative epoch offsets, circular analytic cross-check and the 0.9 eccentricity storage/evaluation distinction.",
+      "errorAssessment": "Observed exact toolkit error identities: SPICE(BADDESCRTIMES), SPICE(BADECCENTRICITY), SPICE(BADSEMIAXIS), SPICE(BARYCENTEREPHEM), SPICE(BODYANDCENTERSAME), SPICE(ECCOUTOFBOUNDS), SPICE(EMPTYSTRING), SPICE(INVALIDREFFRAME), SPICE(NONPRINTABLECHARS), SPICE(SEGIDTOOLONG). Buffer shapes, ownership, finite values and narrowing guards are checked outside scientific error matching.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw17.cases.json",
+          "provenance": "Project-authored numerical orbital parameters and scratch-file workflows.",
+          "distribution": "Repository source under MIT. Binary SPKs are generated temporarily."
+        }
+      ],
+      "fixtureRationale": "Fresh independently written and application-written files are read reciprocally. All kernels are local. The J2000 frame is built in.",
+      "cleanup": "Seed valid segments before intentional writer errors, close owned writers, clear furnished kernels and discard scratch files. Compare every WASM allocation failure and same-handle retry. Isolate and explicitly finish the generic partial write in the independent ordering test.",
+      "tolerance": "Existing registered state comparator, exact metadata and physical record words except generated type 10 nutation terms checked to 17 decimal places. Reciprocal Cartesian components use eight decimal places. See the physical orbital data and independent comparisons in the supplemental run.",
+      "findings": [
+        {
+          "status": "repaired",
+          "summary": "The original eccentricity-boundary case expected state evaluation at the writer’s inclusive 0.9 threshold.",
+          "repair": "Separate the valid write and descriptor from the real KEPLEQ ECCOUTOFBOUNDS on evaluation, preserving a neighboring successful orbital evaluation.",
+          "caseIds": ["ephemeris-spkw17-eccentricity-limit-evaluation"],
+          "evidence": [
+            "docs/step8-spk-analytic.md",
+            "packages/py-parity-checking/test/spk-analytic-files.test.ts",
+            "packages/py-parity-checking/test/_helpers/spk_analytic_oracle.py"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused real Node/WASM and Chrome checks passed. The combined source is reviewed pending fresh full required local lanes and source CI."
+}

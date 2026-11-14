@@ -1,0 +1,1073 @@
+[
+  {
+    "caseId": "ephemeris-spkw17-orbit",
+    "description": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-orbit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-orbit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-orbit.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-orbit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -11,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-appended-coverage",
+    "description": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-appended-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-appended-coverage.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -2,
+        "last": 2,
+        "segid": "APPENDED MODEL",
+        "epoch": 0,
+        "eqel": [7100, 0, 0, 0.5, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-appended-coverage.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-appended-coverage.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-appended-coverage.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -20,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 25,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-inclined-secular",
+    "description": "All nine equinoctial quantities, nonzero periapsis/node rates, shifted epoch and tilted pole contribute to the Cartesian velocity and position.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-inclined-secular.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 40,
+        "eqel": [9000, 0.08, -0.14, 0.25, -0.2, 0.07, 4e-5, 0.0008, -1e-5],
+        "rapol": 0.7,
+        "decpol": 0.6
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-inclined-secular.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-inclined-secular.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-inclined-secular.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -35,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 40,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 105,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-eccentricity-limit",
+    "description": "The writer accepts eccentricity exactly 0.9. Inspect the descriptor before evaluating.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [13000, 0, 0.9, 0.2, 0, 0.1, 0, 0.0005, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-eccentricity-limit-evaluation",
+    "description": "The writer succeeds at eccentricity 0.9; KEPLEQ signals ECCOUTOFBOUNDS only when the stored segment is evaluated.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit-evaluation.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [13000, 0, 0.9, 0.2, 0, 0.1, 0, 0.0005, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit-evaluation.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit-evaluation.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-limit-evaluation.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ECCOUTOFBOUNDS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-below-eccentricity-limit",
+    "description": "A high eccentricity just below the evaluator limit gives a defined six-component state.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-below-eccentricity-limit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [13000, 0, 0.8999, 0.2, 0, 0.1, 0, 0.0005, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-below-eccentricity-limit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw17-below-eccentricity-limit.bsp"
+        },
+        "idcode": 196017,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-below-eccentricity-limit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196017,
+        "et": -120,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": -120,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196017,
+        "et": 63,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-unknown-frame",
+    "description": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-unknown-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "UNKNOWN FRAME",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDREFFRAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-empty-frame",
+    "description": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-empty-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-long-identifier",
+    "description": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-long-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SEGIDTOOLONG)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-nonprinting-identifier",
+    "description": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-nonprinting-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "A\tB",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPRINTABLECHARS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-reversed-coverage",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-reversed-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": 10,
+        "last": -10,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-one-instant",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-one-instant.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 0,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-self-center",
+    "description": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-self-center.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 196017,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODYANDCENTERSAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-barycenter-target",
+    "description": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-barycenter-target.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 0,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BARYCENTEREPHEM)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-zero-semiaxis",
+    "description": "Seed a valid segment and compare the actual BADSEMIAXIS diagnostic for zero semiaxis.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-zero-semiaxis.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADSEMIAXIS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw17-eccentricity-over-limit",
+    "description": "Seed a valid segment and compare the actual BADECCENTRICITY diagnostic for eccentricity over limit.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw17-eccentricity-over-limit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0, 0, 0, 0, 0, 0, 0.001078007612872506, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      },
+      {
+        "op": "ephemeris.spkw17",
+        "handleId": "H",
+        "body": 196017,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 17",
+        "epoch": 0,
+        "eqel": [7000, 0.7, 0.7, 0, 0, 0, 0, 0.0001, 0],
+        "rapol": -1.5707963267948966,
+        "decpol": 1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADECCENTRICITY)"]
+    }
+  }
+]

@@ -1,0 +1,1950 @@
+[
+  {
+    "caseId": "ephemeris-spkw15-orbit",
+    "description": "Compare all six physical state components at the segment endpoints, epoch and positive/negative offsets, object set, coverage, identifier and unpacked descriptor.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-orbit.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-orbit.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-orbit.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-orbit.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -300,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -300,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -11,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 300,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-appended-coverage",
+    "description": "Append a shorter segment. Its descriptor and states take precedence at covered times; the original segment supplies outer epochs.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-appended-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkopa",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-appended-coverage.bsp"
+        },
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -2,
+        "last": 2,
+        "segid": "APPENDED MODEL",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.15,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-appended-coverage.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-appended-coverage.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-appended-coverage.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": 0,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -20,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 1,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 25,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-inclined-j2-0",
+    "description": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-0.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -7200,
+        "last": 7200,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 3, 4],
+        "pa": [2, 0, 0],
+        "p": 12000,
+        "ecc": 0.1,
+        "j2flg": 0,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-0.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-0.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-0.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -3600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -3600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 2500,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 7000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-inclined-j2-1",
+    "description": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -7200,
+        "last": 7200,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 3, 4],
+        "pa": [2, 0, 0],
+        "p": 12000,
+        "ecc": 0.1,
+        "j2flg": 1,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -3600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -3600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 2500,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 7000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-inclined-j2-2",
+    "description": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-2.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -7200,
+        "last": 7200,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 3, 4],
+        "pa": [2, 0, 0],
+        "p": 12000,
+        "ecc": 0.1,
+        "j2flg": 2,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-2.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-2.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-2.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -3600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -3600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 2500,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 7000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-inclined-j2-3",
+    "description": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-3.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -7200,
+        "last": 7200,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 3, 4],
+        "pa": [2, 0, 0],
+        "p": 12000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-3.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-3.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-3.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -3600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -3600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 2500,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 7000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-inclined-j2-1-75",
+    "description": "Differentiate secular apsidal and node terms for an inclined elliptic orbit above the reference radius, including the stored fractional flag.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1-75.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -7200,
+        "last": 7200,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 3, 4],
+        "pa": [2, 0, 0],
+        "p": 12000,
+        "ecc": 0.1,
+        "j2flg": 1.75,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1-75.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1-75.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-inclined-j2-1-75.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -3600,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -3600,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 2500,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 7000,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-parabolic",
+    "description": "Evaluate the unbound conic on both sides of periapsis. Secular elliptic J2 corrections do not apply.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-parabolic.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 15000,
+        "ecc": 1,
+        "j2flg": 0,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-parabolic.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-parabolic.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-parabolic.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -120,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -120,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 120,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-hyperbolic",
+    "description": "Evaluate the unbound conic on both sides of periapsis. Secular elliptic J2 corrections do not apply.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-hyperbolic.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 15000,
+        "ecc": 1.2,
+        "j2flg": 0,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-hyperbolic.bsp"
+        },
+        "idsCellId": "I",
+        "maxCardinality": 8
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": {
+          "kind": "scratch",
+          "rel": "spkw15-hyperbolic.bsp"
+        },
+        "idcode": 196015,
+        "coverWindowId": "W",
+        "maxIntervals": 8
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-hyperbolic.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 196015,
+        "et": -120,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": -120,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 0,
+        "ref": "J2000",
+        "observer": 0
+      },
+      {
+        "op": "ephemeris.spkgeo",
+        "target": 196015,
+        "et": 120,
+        "ref": "J2000",
+        "observer": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-unknown-frame",
+    "description": "Seed a valid segment and compare the actual INVALIDREFFRAME diagnostic for unknown frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-unknown-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "UNKNOWN FRAME",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDREFFRAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-empty-frame",
+    "description": "Seed a valid segment and compare the actual EMPTYSTRING diagnostic for empty frame.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-empty-frame.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-long-identifier",
+    "description": "Seed a valid segment and compare the actual SEGIDTOOLONG diagnostic for long identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-long-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SEGIDTOOLONG)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-nonprinting-identifier",
+    "description": "Seed a valid segment and compare the actual NONPRINTABLECHARS diagnostic for nonprinting identifier.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-nonprinting-identifier.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "A\tB",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPRINTABLECHARS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-reversed-coverage",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for reversed coverage.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-reversed-coverage.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": 10,
+        "last": -10,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-one-instant",
+    "description": "Seed a valid segment and compare the actual BADDESCRTIMES diagnostic for one instant.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-one-instant.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": 0,
+        "last": 0,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADDESCRTIMES)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-self-center",
+    "description": "Seed a valid segment and compare the actual BODYANDCENTERSAME diagnostic for self center.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-self-center.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 196015,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODYANDCENTERSAME)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-barycenter-target",
+    "description": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-barycenter-target.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 0,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BARYCENTEREPHEM)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-invalid-p",
+    "description": "Seed a valid segment and compare the actual BADLATUSRECTUM diagnostic for invalid p.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-invalid-p.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 0,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADLATUSRECTUM)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-negative-ecc",
+    "description": "Seed a valid segment and compare the actual BADECCENTRICITY diagnostic for negative ecc.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-negative-ecc.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": -0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADECCENTRICITY)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-zero-gm",
+    "description": "Seed a valid segment and compare the actual NONPOSITIVEMASS diagnostic for zero gm.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-zero-gm.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 0,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONPOSITIVEMASS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-zero-orbit-pole",
+    "description": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero orbit pole.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-zero-orbit-pole.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 0],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADVECTOR)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-zero-periapsis",
+    "description": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero periapsis.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-zero-periapsis.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [0, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADVECTOR)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-zero-body-pole",
+    "description": "Seed a valid segment and compare the actual BADVECTOR diagnostic for zero body pole.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-zero-body-pole.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 0],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADVECTOR)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-negative-radius",
+    "description": "Seed a valid segment and compare the actual BADRADIUS diagnostic for negative radius.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-negative-radius.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADRADIUS)"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkw15-nonorthogonal",
+    "description": "Seed a valid segment and compare the actual BADINITSTATE diagnostic for nonorthogonal.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "file": {
+          "kind": "scratch",
+          "rel": "spkw15-nonorthogonal.bsp"
+        },
+        "ifname": "AUTHORED ANALYTIC",
+        "ncomch": 0,
+        "handleId": "H"
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [2, 0, 0],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      },
+      {
+        "op": "ephemeris.spkw15",
+        "handleId": "H",
+        "body": 196015,
+        "center": 0,
+        "frame": "J2000",
+        "first": -300,
+        "last": 300,
+        "segid": "ANALYTIC 15",
+        "epoch": 0,
+        "tp": [0, 0, 3],
+        "pa": [1, 0, 1],
+        "p": 7000,
+        "ecc": 0.1,
+        "j2flg": 3,
+        "pv": [0, 0, 2],
+        "gm": 398600.4418,
+        "j2": 0.001,
+        "radius": 6378
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADINITSTATE)"]
+    }
+  }
+]

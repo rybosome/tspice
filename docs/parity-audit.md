@@ -70,3 +70,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## Chebyshev SPK writers
 
 The three new writers use independent cross-file verification of full segment metadata, floating state components and every physical record word. [Scientific evidence](step8-spk-chebyshev.md) [Routine audits](../data/parity-audits/e04-spk-chebyshev.json)
+
+## Analytic SPK writers
+
+The locked library and both real backends exchange four orbital models, inspect full DAF records and evaluate the resulting states. [Physical evidence](step8-spk-analytic.md) [Routine audits](../data/parity-audits/e06-spk-analytic.json)

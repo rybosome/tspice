@@ -711,6 +711,70 @@ export type StepEphemerisSpkw20 = {
   initfr: number;
 };
 
+export type StepEphemerisSpkw05 = {
+  op: "ephemeris.spkw05";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  gm: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw10 = {
+  op: "ephemeris.spkw10";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  consts: number[];
+  elems: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw15 = {
+  op: "ephemeris.spkw15";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  epoch: number;
+  tp: [number, number, number];
+  pa: [number, number, number];
+  p: number;
+  ecc: number;
+  j2flg: number;
+  pv: [number, number, number];
+  gm: number;
+  j2: number;
+  radius: number;
+};
+
+export type StepEphemerisSpkw17 = {
+  op: "ephemeris.spkw17";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  epoch: number;
+  eqel: number[];
+  rapol: number;
+  decpol: number;
+};
+
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
   handleId: string;
@@ -1433,6 +1497,10 @@ export type WorkflowStep =
   | StepEphemerisSpkw02
   | StepEphemerisSpkw03
   | StepEphemerisSpkw20
+  | StepEphemerisSpkw05
+  | StepEphemerisSpkw10
+  | StepEphemerisSpkw15
+  | StepEphemerisSpkw17
   | StepEphemerisSpkw08
   | StepFileIoExists
   | StepFileIoGetfat
@@ -1732,6 +1800,10 @@ export type StepOutput =
   | { op: "ephemeris.spkw02"; value: null }
   | { op: "ephemeris.spkw03"; value: null }
   | { op: "ephemeris.spkw20"; value: null }
+  | { op: "ephemeris.spkw05"; value: null }
+  | { op: "ephemeris.spkw10"; value: null }
+  | { op: "ephemeris.spkw15"; value: null }
+  | { op: "ephemeris.spkw17"; value: null }
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }

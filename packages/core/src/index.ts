@@ -166,3 +166,10 @@ export {
   copySpkChebyshevData,
   validateSpkChebyshevFields,
 } from "./spice-runtime/domains/spk-chebyshev.js";
+
+export {
+  packSpk05,
+  packSpk10,
+  packSpk15,
+  packSpk17,
+} from "./spice-runtime/domains/spk-analytic.js";
