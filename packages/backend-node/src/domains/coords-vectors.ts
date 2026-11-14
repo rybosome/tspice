@@ -16,16 +16,27 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function assertStateDerivativeInput(
+function copyStateDerivativeInput(
   value: unknown,
   label: string,
-): asserts value is Readonly<SpiceStateVector> {
+): SpiceStateVector {
   if (!Array.isArray(value) || value.length !== 6)
     throw new TypeError(`${label} must contain exactly six finite numbers`);
-  for (let i = 0; i < 6; i++) {
-    if (typeof value[i] !== "number" || !Number.isFinite(value[i]))
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
       throw new TypeError(`${label}[${i}] must be a finite number`);
-  }
+    return entry;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
 }
 
 function stateDerivativeOutputNumber(value: unknown, label: string): number {
@@ -55,37 +66,37 @@ function stateDerivativeOutput(
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
     ducrss: (a, b) => {
-      assertStateDerivativeInput(a, "ducrss(a)");
-      assertStateDerivativeInput(b, "ducrss(b)");
-      const out: unknown = native.ducrss(a, b);
+      const aCopy = copyStateDerivativeInput(a, "ducrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "ducrss(b)");
+      const out: unknown = native.ducrss(aCopy, bCopy);
       return stateDerivativeOutput(out, "ducrss result");
     },
     dvcrss: (a, b) => {
-      assertStateDerivativeInput(a, "dvcrss(a)");
-      assertStateDerivativeInput(b, "dvcrss(b)");
-      const out: unknown = native.dvcrss(a, b);
+      const aCopy = copyStateDerivativeInput(a, "dvcrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvcrss(b)");
+      const out: unknown = native.dvcrss(aCopy, bCopy);
       return stateDerivativeOutput(out, "dvcrss result");
     },
     dvdot: (a, b) => {
-      assertStateDerivativeInput(a, "dvdot(a)");
-      assertStateDerivativeInput(b, "dvdot(b)");
-      const out: unknown = native.dvdot(a, b);
+      const aCopy = copyStateDerivativeInput(a, "dvdot(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvdot(b)");
+      const out: unknown = native.dvdot(aCopy, bCopy);
       return stateDerivativeOutputNumber(out, "dvdot result");
     },
     dvhat: (state) => {
-      assertStateDerivativeInput(state, "dvhat(state)");
-      const out: unknown = native.dvhat(state);
+      const stateCopy = copyStateDerivativeInput(state, "dvhat(state)");
+      const out: unknown = native.dvhat(stateCopy);
       return stateDerivativeOutput(out, "dvhat result");
     },
     dvnorm: (state) => {
-      assertStateDerivativeInput(state, "dvnorm(state)");
-      const out: unknown = native.dvnorm(state);
+      const stateCopy = copyStateDerivativeInput(state, "dvnorm(state)");
+      const out: unknown = native.dvnorm(stateCopy);
       return stateDerivativeOutputNumber(out, "dvnorm result");
     },
     dvsep: (a, b) => {
-      assertStateDerivativeInput(a, "dvsep(a)");
-      assertStateDerivativeInput(b, "dvsep(b)");
-      const out: unknown = native.dvsep(a, b);
+      const aCopy = copyStateDerivativeInput(a, "dvsep(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvsep(b)");
+      const out: unknown = native.dvsep(aCopy, bCopy);
       return stateDerivativeOutputNumber(out, "dvsep result");
     },
     reclat: (rect) => {

@@ -22,9 +22,117 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
     "docs/step8-state-derivatives.md",
-    "packages/backend-wasm/src/codec/errors.ts"
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a11-b20b8172-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68d751b329d69be5a5ea266f7044bcbc84bf2aee15f6492e2cf6ec0cc2b99a2e",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a11-b20b8172-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68d751b329d69be5a5ea266f7044bcbc84bf2aee15f6492e2cf6ec0cc2b99a2e",
+      "caseIds": [
+        "coords-vectors-ducrss-dyadic-collinear-states",
+        "coords-vectors-ducrss-mixed-components-and-order",
+        "coords-vectors-ducrss-orthogonal-basis-rates",
+        "coords-vectors-ducrss-scaled-derivatives",
+        "coords-vectors-ducrss-scaled-states",
+        "coords-vectors-ducrss-zero-position-and-velocity",
+        "coords-vectors-dvcrss-dyadic-collinear-states",
+        "coords-vectors-dvcrss-mixed-components-and-order",
+        "coords-vectors-dvcrss-orthogonal-basis-rates",
+        "coords-vectors-dvcrss-scaled-derivatives",
+        "coords-vectors-dvcrss-scaled-states",
+        "coords-vectors-dvcrss-zero-position-and-velocity",
+        "coords-vectors-dvdot-dyadic-collinear-states",
+        "coords-vectors-dvdot-mixed-components-and-order",
+        "coords-vectors-dvdot-orthogonal-basis-rates",
+        "coords-vectors-dvdot-scaled-derivatives",
+        "coords-vectors-dvdot-scaled-states",
+        "coords-vectors-dvdot-zero-position-and-velocity",
+        "coords-vectors-dvhat-mixed-components",
+        "coords-vectors-dvhat-radial-and-transverse-motion",
+        "coords-vectors-dvhat-scaled-derivatives",
+        "coords-vectors-dvhat-scaled-states",
+        "coords-vectors-dvhat-zero-position-and-velocity",
+        "coords-vectors-dvhat-zero-position-exact-extrema",
+        "coords-vectors-dvnorm-mixed-components",
+        "coords-vectors-dvnorm-radial-and-transverse-motion",
+        "coords-vectors-dvnorm-scaled-derivatives",
+        "coords-vectors-dvnorm-scaled-states",
+        "coords-vectors-dvnorm-zero-position-and-velocity",
+        "coords-vectors-dvsep-axis-collinear-states",
+        "coords-vectors-dvsep-decimal-overflow-negative",
+        "coords-vectors-dvsep-decimal-overflow-positive",
+        "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+        "coords-vectors-dvsep-mixed-components-and-order",
+        "coords-vectors-dvsep-near-parallel-axis",
+        "coords-vectors-dvsep-orthogonal-basis-rates",
+        "coords-vectors-dvsep-scaled-derivatives",
+        "coords-vectors-dvsep-scaled-states",
+        "coords-vectors-dvsep-zero-position-and-velocity"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
+    }
+  ],
   "routines": [
     {
       "routine": "ducrss_c",
@@ -84,17 +192,41 @@
             "coords-vectors-ducrss-dyadic-collinear-states",
             "coords-vectors-ducrss-zero-position-and-velocity"
           ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-ducrss-mixed-components-and-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ducrss -> typed Node adapter with exact six-number validation -> actual native ducrss binding with fixed local buffers/global SPICE mutex -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.ducrss -> typed WASM adapter with exact six-number validation -> exported _tspice_ducrss with transactional buffers and copied output -> shared tspice_ducrss -> canonical ducrss_c. Independent Python calls the actual locked SpiceyPy ducrss wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -130,7 +262,7 @@
         {
           "caseId": "coords-vectors-dvcrss-scaled-states",
           "coverage": ["success", "edge"],
-          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six outputs have quadratic scale; focused comparison rescales by 1e\u00b1200."
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six outputs have quadratic scale; focused comparison rescales by 1e±200."
         },
         {
           "caseId": "coords-vectors-dvcrss-scaled-derivatives",
@@ -144,16 +276,29 @@
       "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
       "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
       "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvcrss-mixed-components-and-order"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvcrss -> typed Node adapter with exact six-number validation -> actual native dvcrss binding with fixed local buffers/global SPICE mutex -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvcrss -> typed WASM adapter with exact six-number validation -> exported _tspice_dvcrss with transactional buffers and copied output -> shared tspice_dvcrss -> canonical dvcrss_c. Independent Python calls the actual locked SpiceyPy dvcrss wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -189,7 +334,7 @@
         {
           "caseId": "coords-vectors-dvdot-scaled-states",
           "coverage": ["success", "edge"],
-          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar has quadratic scale; focused comparison rescales by 1e\u00b1200."
+          "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar has quadratic scale; focused comparison rescales by 1e±200."
         },
         {
           "caseId": "coords-vectors-dvdot-scaled-derivatives",
@@ -203,16 +348,29 @@
       "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
       "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
       "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvdot-mixed-components-and-order"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvdot -> typed Node adapter with exact six-number validation -> actual native dvdot binding with fixed local buffers/global SPICE mutex -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvdot -> typed WASM adapter with exact six-number validation -> exported _tspice_dvdot with transactional buffers and copied output -> shared tspice_dvdot -> canonical dvdot_c. Independent Python calls the actual locked SpiceyPy dvdot wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -262,16 +420,29 @@
       "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
       "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
       "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change. Exact copied extrema/subnormal and signed-zero derivative fields are checked independently of normal absolute tolerance.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvhat-mixed-components"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvhat -> typed Node adapter with exact six-number validation -> actual native dvhat binding with fixed local buffers/global SPICE mutex -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvhat -> typed WASM adapter with exact six-number validation -> exported _tspice_dvhat with transactional buffers and copied output -> shared tspice_dvhat -> canonical dvhat_c. Independent Python calls the actual locked SpiceyPy dvhat wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -316,16 +487,29 @@
       "fixtureRationale": "Project-authored numerical states, compatible frames/derivative parameters and deterministic magnitude boundaries. No kernels, external scientific data or persistent resources; no fixture provenance gap.",
       "cleanup": "Kernel-free numerical states require no file/handle/kernel lifecycle. Shared C checks non-null buffers, uses fixed local result storage, calls the actual canonical routine and publishes successful values after SPICE failure checking. Error diagnostics are captured/reset before throwing. Native copies six-element results under the existing global mutex; WASM transactionally releases allocations on failure and success and copies outputs before release. Public tests dispose clients; error tests explicitly verify recovery. Allocation instrumentation and malformed-input checks are separate from scientific output evidence.",
       "tolerance": "Normal comparison remains atol=1e-12/rtol=1e-12 for every returned scalar or six-state component. Focused live comparisons rescale tiny derivatives and squared-scale cross/dot outputs to prevent zero from satisfying absolute tolerance; position and derivative halves are handled independently. Separate tagged live observations compare every component, NaN/Inf and zero signs exactly, and finite nonzero values with relative-only 1e-12 tolerance. No global comparator change.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvnorm-mixed-components"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvnorm -> typed Node adapter with exact six-number validation -> actual native dvnorm binding with fixed local buffers/global SPICE mutex -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "needs-repair", "reviewed"],
           "route": "direct",
           "trace": "raw.dvnorm -> typed WASM adapter with exact six-number validation -> exported _tspice_dvnorm with transactional buffers and copied output -> shared tspice_dvnorm -> canonical dvnorm_c. Independent Python calls the actual locked SpiceyPy dvnorm wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -443,17 +627,41 @@
             "coords-vectors-dvsep-decimal-overflow-positive",
             "coords-vectors-dvsep-decimal-overflow-negative"
           ]
+        },
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-dvsep-mixed-components-and-order"]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dvsep -> typed Node adapter with exact six-number validation -> actual native dvsep binding with fixed local buffers/global SPICE mutex -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dvsep -> typed WASM adapter with exact six-number validation -> exported _tspice_dvsep with transactional buffers and copied output -> shared tspice_dvsep -> canonical dvsep_c. Independent Python calls the actual locked SpiceyPy dvsep wrapper and forwards every output entry/scalar.",
           "executions": []
@@ -461,5 +669,5 @@
       }
     }
   ],
-  "verificationNote": "Six routines/39 registered scenarios/106 actual calls, including two genuine dvsep errors. Primary source, complete scientific outputs, oracle routes, numeric/caller limits and safety/cleanup reviewed. Focused runtime progress does not establish final source-bound verification: fresh required local and canonical CI evidence remains pending. Original Step7 execution observations are historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

@@ -775,16 +775,27 @@ function tspiceCallRecgeo(
   }
 }
 
-function assertStateDerivativeInput(
+function copyStateDerivativeInput(
   value: unknown,
   label: string,
-): asserts value is Readonly<SpiceStateVector> {
+): SpiceStateVector {
   if (!Array.isArray(value) || value.length !== 6)
     throw new TypeError(`${label} must contain exactly six finite numbers`);
-  for (let i = 0; i < 6; i++) {
-    if (typeof value[i] !== "number" || !Number.isFinite(value[i]))
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
       throw new TypeError(`${label}[${i}] must be a finite number`);
-  }
+    return entry;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
 }
 
 function readStateDerivativeOutput(
@@ -809,14 +820,14 @@ export function createCoordsVectorsApi(
 ): CoordsVectorsApi {
   return {
     ducrss: (a, b) => {
-      assertStateDerivativeInput(a, "ducrss(a)");
-      assertStateDerivativeInput(b, "ducrss(b)");
+      const aCopy = copyStateDerivativeInput(a, "ducrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "ducrss(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 48, 48],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >>> 3);
-          module.HEAPF64.set(b, bPtr >>> 3);
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
           const status = module._tspice_ducrss(
             aPtr,
             bPtr,
@@ -831,14 +842,14 @@ export function createCoordsVectorsApi(
       );
     },
     dvcrss: (a, b) => {
-      assertStateDerivativeInput(a, "dvcrss(a)");
-      assertStateDerivativeInput(b, "dvcrss(b)");
+      const aCopy = copyStateDerivativeInput(a, "dvcrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvcrss(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 48, 48],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >>> 3);
-          module.HEAPF64.set(b, bPtr >>> 3);
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
           const status = module._tspice_dvcrss(
             aPtr,
             bPtr,
@@ -853,14 +864,14 @@ export function createCoordsVectorsApi(
       );
     },
     dvdot: (a, b) => {
-      assertStateDerivativeInput(a, "dvdot(a)");
-      assertStateDerivativeInput(b, "dvdot(b)");
+      const aCopy = copyStateDerivativeInput(a, "dvdot(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvdot(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 48, 8],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >>> 3);
-          module.HEAPF64.set(b, bPtr >>> 3);
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
           const status = module._tspice_dvdot(
             aPtr,
             bPtr,
@@ -875,12 +886,12 @@ export function createCoordsVectorsApi(
       );
     },
     dvhat: (state) => {
-      assertStateDerivativeInput(state, "dvhat(state)");
+      const stateCopy = copyStateDerivativeInput(state, "dvhat(state)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 48],
         (errPtr, statePtr, outPtr) => {
-          module.HEAPF64.set(state, statePtr >>> 3);
+          module.HEAPF64.set(stateCopy, statePtr >>> 3);
           const status = module._tspice_dvhat(
             statePtr,
             outPtr,
@@ -894,12 +905,12 @@ export function createCoordsVectorsApi(
       );
     },
     dvnorm: (state) => {
-      assertStateDerivativeInput(state, "dvnorm(state)");
+      const stateCopy = copyStateDerivativeInput(state, "dvnorm(state)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 8],
         (errPtr, statePtr, outPtr) => {
-          module.HEAPF64.set(state, statePtr >>> 3);
+          module.HEAPF64.set(stateCopy, statePtr >>> 3);
           const status = module._tspice_dvnorm(
             statePtr,
             outPtr,
@@ -913,14 +924,14 @@ export function createCoordsVectorsApi(
       );
     },
     dvsep: (a, b) => {
-      assertStateDerivativeInput(a, "dvsep(a)");
-      assertStateDerivativeInput(b, "dvsep(b)");
+      const aCopy = copyStateDerivativeInput(a, "dvsep(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvsep(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 48, 48, 8],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >>> 3);
-          module.HEAPF64.set(b, bPtr >>> 3);
+          module.HEAPF64.set(aCopy, aPtr >>> 3);
+          module.HEAPF64.set(bCopy, bPtr >>> 3);
           const status = module._tspice_dvsep(
             aPtr,
             bPtr,

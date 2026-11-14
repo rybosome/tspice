@@ -420,6 +420,70 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
       "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job.",
       "historical": true
+    },
+    {
+      "id": "local-a11-b20b8172-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ad0219b60f9d1383f473ebc3998ba62b6dbe7a18352f379fe5713576e704ecc7",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a11-b20b8172-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ad0219b60f9d1383f473ebc3998ba62b6dbe7a18352f379fe5713576e704ecc7",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required local lanes passed at sourceb20b8172. Native-required executed2296 actual Node/WASM live comparisons and2522 parity-package tests with no skips, including production native guard;98native631WASM28core150facade tests passed. JS lane passed2296live and2521parity plus expected guard skip. Canonical source CI observation remains pending.",
+      "historical": true
     }
   ],
   "routines": [
@@ -676,5 +740,5 @@
       }
     }
   ],
-  "verificationNote": "Original Step 7 executions are historical after shared-source changes. Retain semantic review; fresh source-bound required local and canonical CI evidence is needed before verification."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }
