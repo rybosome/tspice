@@ -2119,18 +2119,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/740"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "54 workflows, 145 steps, 105 new calls, 29 terminal toolkit errors. 108 live comparisons, eight public tests, eight Node tests, 37 WASM tests and real Chrome for all six."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+          "result": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run full local and canonical CI, record both backends on the final source and confirm rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-frame-metadata",
       "worktree": "/private/tmp/tspice-step8-frame-metadata",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Six frame methods reviewed on the independent main baseline. Reuses existing PCK, FK and cell/state representations."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source dc3b5c59. 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Six frame methods reviewed on the independent main baseline. Reuses existing PCK, FK and cell/state representations."
     },
     {
       "id": "D04-surface-names",

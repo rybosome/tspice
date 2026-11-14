@@ -48,7 +48,276 @@
     "packages/tspice/src/index.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-d03-dc3b5c59-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-d03-dc3b5c59-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28. JavaScript: 2,546 parity tests and one expected guard skip. Native-required: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d03-dc3b5c59-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "commit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+      "observation": "Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d03-dc3b5c59-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "7cb282ce63989f9d993eb0121b31c9f0b8b84b18e43821a667743d2742a3cbec",
+      "caseIds": [
+        "frames-bltfrm-all",
+        "frames-bltfrm-classes",
+        "frames-bltfrm-invalid-0",
+        "frames-bltfrm-invalid-7",
+        "frames-bltfrm-invalid-minus2",
+        "frames-bltfrm-loaded-fk",
+        "frames-bltfrm-replace",
+        "frames-bltfrm-undersized",
+        "frames-bltfrm-zero-room",
+        "frames-pxfrm2-dynamic",
+        "frames-pxfrm2-empty",
+        "frames-pxfrm2-inertial",
+        "frames-pxfrm2-missing-from",
+        "frames-pxfrm2-missing-to",
+        "frames-pxfrm2-mixed-epochs",
+        "frames-pxfrm2-unknown-before-coverage",
+        "frames-pxfrm2-unloaded",
+        "frames-tipbod-earth-epochs",
+        "frames-tipbod-empty",
+        "frames-tipbod-frame-not-body",
+        "frames-tipbod-missing",
+        "frames-tipbod-ref-error",
+        "frames-tipbod-reference-bodies",
+        "frames-tipbod-reloaded",
+        "frames-tisbod-earth-epochs",
+        "frames-tisbod-empty",
+        "frames-tisbod-frame-not-body",
+        "frames-tisbod-missing",
+        "frames-tisbod-ref-error",
+        "frames-tisbod-reference-bodies",
+        "frames-tisbod-reloaded",
+        "frames-tkfram-angles-and-matrix",
+        "frames-tkfram-class-not-frame",
+        "frames-tkfram-invalid-relative",
+        "frames-tkfram-mismatched-id",
+        "frames-tkfram-reload",
+        "frames-tkfram-unknown",
+        "frames-tkfram-unloaded",
+        "frames-tkfram-zero",
+        "frames-xfmsta-axis",
+        "frames-xfmsta-bad-system",
+        "frames-xfmsta-cylindrical-to-rect",
+        "frames-xfmsta-empty-body",
+        "frames-xfmsta-geodetic-to-rect",
+        "frames-xfmsta-latitudinal-to-rect",
+        "frames-xfmsta-longitude-override",
+        "frames-xfmsta-missing-radii",
+        "frames-xfmsta-planetographic-to-rect",
+        "frames-xfmsta-rectangular-to-all",
+        "frames-xfmsta-same-system",
+        "frames-xfmsta-spherical-to-rect",
+        "frames-xfmsta-transverse",
+        "frames-xfmsta-triaxial",
+        "frames-xfmsta-unknown-body"
+      ],
+      "commit": "dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43569071686/job/132369255234",
+      "observation": "Inspected successful Linux Node 22 native-required job 132369255234 on dc3b5c59960ad933c6e9de5d16fe6fd5c7d1ea28: 2,326 registered Node/WASM live comparisons; 2,547 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "bltfrm_c",
@@ -117,16 +386,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi serialized Node native registration -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bltfrm -> FramesApi WASM export with scoped buffers -> tspice_bltfrm -> bltfrm_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     },
@@ -210,16 +479,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pxfrm2 -> FramesApi serialized Node native registration -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pxfrm2 -> FramesApi WASM export with scoped buffers -> tspice_pxfrm2 -> pxfrm2_c. Known-frame orientation error uses checked REFCHG before matrix multiplication.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     },
@@ -280,16 +549,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi serialized Node native registration -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tipbod -> FramesApi WASM export with scoped buffers -> tspice_tipbod -> tipbod_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     },
@@ -350,16 +619,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi serialized Node native registration -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tisbod -> FramesApi WASM export with scoped buffers -> tspice_tisbod -> tisbod_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     },
@@ -430,16 +699,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi serialized Node native registration -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tkfram -> FramesApi WASM export with scoped buffers -> tspice_tkfram -> tkfram_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     },
@@ -545,19 +814,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi serialized Node native registration -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-node", "ci-d03-dc3b5c59-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.xfmsta -> FramesApi WASM export with scoped buffers -> tspice_xfmsta -> xfmsta_c. Independent oracle calls locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-d03-dc3b5c59-wasm", "ci-d03-dc3b5c59-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused local parity, native, WASM and real Chrome passed. The current source is reviewed until both required local lanes and canonical CI are observed."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
