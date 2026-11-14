@@ -3103,18 +3103,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/754"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "47 workflows, 235 steps, 95 target invocations and 16 toolkit errors. All 94 registered comparisons, 11 public/oracle, 14 native, 31 WASM and real Chrome checks passed. Both physical close modes verified against independent readback."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "e2273057820ca07cb1ffbcdce7879453995052fc",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43578315257/job/132397389306",
+          "result": "Both complete required lanes passed locally on e2273057820ca07cb1ffbcdce7879453995052fc. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132397389306 on e2273057820ca07cb1ffbcdce7879453995052fc: 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both complete required local lanes and inspect canonical source CI before final-head checks.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-dsk-data",
       "branch": "codex/expand-dsk-data",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "47 workflows, 235 steps, 95 target invocations and 16 toolkit errors. All 94 registered comparisons, 11 public/oracle, 14 native, 31 WASM and real Chrome checks passed. Both physical close modes verified against independent readback."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source e2273057. 2,312 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 631 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "47 workflows, 235 steps, 95 target invocations and 16 toolkit errors. All 94 registered comparisons, 11 public/oracle, 14 native, 31 WASM and real Chrome checks passed. Both physical close modes verified against independent readback."
     },
     {
       "id": "E19-dsk-intersections",
