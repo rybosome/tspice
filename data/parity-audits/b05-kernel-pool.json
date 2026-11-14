@@ -6,6 +6,7 @@
     "fixtures/consumer-nodom/src/index.ts",
     "packages/backend-contract/src/domains/kernel-pool.ts",
     "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.h",
     "packages/backend-node/native/src/domains/kernel_pool.cc",
     "packages/backend-node/native/src/napi_helpers.h",
     "packages/backend-node/src/domains/kernel-pool.ts",
@@ -114,7 +115,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.badkpv → KernelPoolApi native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.badkpv → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -199,7 +200,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.bodvcd → KernelPoolApi native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.bodvcd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -306,7 +307,7 @@
         "node": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
-          "trace": "raw.bodvrd → KernelPoolApi native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.bodvrd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -361,7 +362,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.clpool → KernelPoolApi native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.clpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -421,7 +422,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.dvpool → KernelPoolApi native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.dvpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -491,7 +492,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.ldpool → KernelPoolApi native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.ldpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -560,7 +561,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.lmpool → KernelPoolApi native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.lmpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -667,7 +668,7 @@
         "node": {
           "history": ["unreviewed", "needs-repair", "reviewed"],
           "route": "direct",
-          "trace": "raw.stpool → KernelPoolApi native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.stpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {
@@ -716,7 +717,7 @@
         "node": {
           "history": ["unreviewed", "reviewed"],
           "route": "direct",
-          "trace": "raw.szpool → KernelPoolApi native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.szpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": []
         },
         "wasm": {

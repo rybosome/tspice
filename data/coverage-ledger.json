@@ -2918,7 +2918,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 963
+                "line": 972
               },
               "calls": [
                 "tspice_badkpv"
@@ -3166,7 +3166,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.badkpv → KernelPoolApi native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.badkpv → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -5161,7 +5161,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 964
+                "line": 973
               },
               "calls": [
                 "tspice_bodvcd"
@@ -5447,7 +5447,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.bodvcd → KernelPoolApi native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.bodvcd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -5558,7 +5558,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 965
+                "line": 974
               },
               "calls": [
                 "tspice_bodvrd"
@@ -5874,7 +5874,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.bodvrd → KernelPoolApi native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.bodvrd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -9672,7 +9672,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 966
+                "line": 975
               },
               "calls": [
                 "tspice_clpool"
@@ -9833,7 +9833,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.clpool → KernelPoolApi native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.clpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -10250,7 +10250,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 983
+                "line": 992
               },
               "calls": [
                 "tspice_cvpool"
@@ -16404,7 +16404,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 976
+                "line": 985
               },
               "calls": [
                 "tspice_dtpool"
@@ -16668,7 +16668,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 967
+                "line": 976
               },
               "calls": [
                 "tspice_dvpool"
@@ -16839,7 +16839,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.dvpool → KernelPoolApi native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.dvpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -22820,7 +22820,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 984
+                "line": 993
               },
               "calls": [
                 "tspice_expool"
@@ -24277,7 +24277,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 974
+                "line": 983
               },
               "calls": [
                 "tspice_gcpool"
@@ -24523,7 +24523,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 972
+                "line": 981
               },
               "calls": [
                 "tspice_gdpool"
@@ -29912,7 +29912,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 973
+                "line": 982
               },
               "calls": [
                 "tspice_gipool"
@@ -30175,7 +30175,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 975
+                "line": 984
               },
               "calls": [
                 "tspice_gnpool"
@@ -36322,7 +36322,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 968
+                "line": 977
               },
               "calls": [
                 "tspice_ldpool"
@@ -36538,7 +36538,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.ldpool → KernelPoolApi native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.ldpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -36682,7 +36682,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 969
+                "line": 978
               },
               "calls": [
                 "tspice_lmpool"
@@ -36899,7 +36899,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.lmpool → KernelPoolApi native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.lmpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -39852,7 +39852,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 980
+                "line": 989
               },
               "calls": [
                 "tspice_pcpool"
@@ -40116,7 +40116,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 978
+                "line": 987
               },
               "calls": [
                 "tspice_pdpool"
@@ -40400,7 +40400,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 979
+                "line": 988
               },
               "calls": [
                 "tspice_pipool"
@@ -55982,7 +55982,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 970
+                "line": 979
               },
               "calls": [
                 "tspice_stpool"
@@ -56280,7 +56280,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.stpool → KernelPoolApi native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.stpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"
@@ -58443,7 +58443,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 982
+                "line": 991
               },
               "calls": [
                 "tspice_swpool"
@@ -58968,7 +58968,7 @@
               "registration": "RegisterKernelPool",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/kernel_pool.cc",
-                "line": 971
+                "line": 980
               },
               "calls": [
                 "tspice_szpool"
@@ -59105,7 +59105,7 @@
             "reviewed"
           ],
           "route": "direct",
-          "trace": "raw.szpool → KernelPoolApi native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "trace": "raw.szpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
           "executions": [],
           "status": "reviewed",
           "record": "data/parity-audits/b05-kernel-pool.json"

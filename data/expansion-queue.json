@@ -1431,7 +1431,7 @@
       "validationEvidence": [
         {
           "kind": "local-focused",
-          "result": "69 workflows, 289 total steps, 164 new method calls and 32 genuine terminal errors. Both compiled backends passed 138 registered comparisons, eight supplemental public/oracle tests, 18 Node and 34 WASM focused tests. Real Chrome exercised all nine. Source-local and CI verification are separate."
+          "result": "69 workflows, 289 total steps, 164 new method calls and 32 genuine terminal errors. Both compiled backends passed 138 registered comparisons, eight supplemental public/oracle tests, 19 Node and 34 WASM focused tests. Real Chrome exercised all nine. Source-local and CI verification are separate."
         },
         {
           "kind": "source-and-abi",

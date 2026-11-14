@@ -6,6 +6,37 @@ import { createKernelStager } from "../src/runtime/kernel-staging.js";
 import { nodeAddonAvailable } from "./_helpers/nodeAddonAvailable.js";
 
 describe("kernel-pool operation boundaries", () => {
+  it("holds the process-wide mutex through each shared call and structured error capture", () => {
+    const source = fs.readFileSync(
+      new URL("../native/src/domains/kernel_pool.cc", import.meta.url),
+      "utf8",
+    );
+    for (const name of [
+      "badkpv",
+      "bodvcd",
+      "bodvrd",
+      "clpool",
+      "dvpool",
+      "ldpool",
+      "lmpool",
+      "stpool",
+      "szpool",
+    ]) {
+      const handler = name.charAt(0).toUpperCase() + name.slice(1);
+      const start = source.indexOf("static Napi::Value " + handler + "(");
+      expect(start, name).toBeGreaterThanOrEqual(0);
+      const body = source.slice(start, source.indexOf("\n}", start));
+      const lock = body.indexOf(
+        "\n  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);",
+      );
+      const call = body.indexOf("tspice_" + name + "(");
+      const capture = body.indexOf("ThrowSpiceError(env,", call);
+      expect(lock, name).toBeGreaterThanOrEqual(0);
+      expect(call, name).toBeGreaterThan(lock);
+      expect(capture, name).toBeGreaterThan(call);
+    }
+  });
+
   const rejected = [
     ["badkpv", ["APP", "X", "=", 0.5, 1, "C"]],
     ["badkpv", ["APP", "X", "=", 0, 1, "é"]],

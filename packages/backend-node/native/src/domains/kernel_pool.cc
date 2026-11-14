@@ -167,6 +167,7 @@ static Napi::Value Badkpv(const Napi::CallbackInfo& info) {
   if (!ReadChar(env, info[5], &type)) return env.Undefined();
   int bad = 0;
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_badkpv(caller.c_str(), name.c_str(), comp.c_str(), size, divby, type, &bad, err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling badkpv()", err);
     return env.Undefined();
@@ -190,6 +191,7 @@ static Napi::Value Bodvcd(const Napi::CallbackInfo& info) {
   int dim = 0;
   std::vector<double> values(static_cast<size_t>(capacity));
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_bodvcd(body, item.c_str(), maxn, &dim, values.data(), err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling bodvcd()", err);
     return env.Undefined();
@@ -220,6 +222,7 @@ static Napi::Value Bodvrd(const Napi::CallbackInfo& info) {
   int dim = 0;
   std::vector<double> values(static_cast<size_t>(capacity));
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_bodvrd(body.c_str(), item.c_str(), maxn, &dim, values.data(), err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling bodvrd()", err);
     return env.Undefined();
@@ -241,6 +244,7 @@ static Napi::Value Clpool(const Napi::CallbackInfo& info) {
     return env.Undefined();
   }
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_clpool(err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling clpool()", err);
     return env.Undefined();
@@ -257,6 +261,7 @@ static Napi::Value Dvpool(const Napi::CallbackInfo& info) {
   std::string name;
   if (!ReadText(env, info[0], &name)) return env.Undefined();
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_dvpool(name.c_str(), err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling dvpool()", err);
     return env.Undefined();
@@ -273,6 +278,7 @@ static Napi::Value Ldpool(const Napi::CallbackInfo& info) {
   std::string path;
   if (!ReadText(env, info[0], &path)) return env.Undefined();
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_ldpool(path.c_str(), err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling ldpool()", err);
     return env.Undefined();
@@ -311,6 +317,7 @@ static Napi::Value Lmpool(const Napi::CallbackInfo& info) {
     std::memcpy(rows.data() + i * stride, lines[i].data(), lines[i].size());
   }
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_lmpool(rows.data(), static_cast<int>(stride), static_cast<int>(count), err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling lmpool()", err);
     return env.Undefined();
@@ -336,6 +343,7 @@ static Napi::Value Stpool(const Napi::CallbackInfo& info) {
   std::vector<char> text(static_cast<size_t>(capacity));
   int size = 0, found = 0;
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_stpool(item.c_str(), nth, contin.c_str(), lenout, text.data(), &size, &found, err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling stpool()", err);
     return env.Undefined();
@@ -360,6 +368,7 @@ static Napi::Value Szpool(const Napi::CallbackInfo& info) {
   if (!ReadText(env, info[0], &name)) return env.Undefined();
   int n = 0, found = 0;
   char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
   if (tspice_szpool(name.c_str(), &n, &found, err, sizeof(err)) != 0) {
     ThrowSpiceError(env, "CSPICE failed while calling szpool()", err);
     return env.Undefined();
