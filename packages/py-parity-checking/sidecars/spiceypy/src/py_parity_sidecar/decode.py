@@ -22,6 +22,12 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsClearc,
+    StepCoordsVectorsCleard,
+    StepCoordsVectorsCleari,
+    StepCoordsVectorsFilld,
+    StepCoordsVectorsFilli,
+    StepCoordsVectorsMoved,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +500,52 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.clearc":
+            return StepCoordsVectorsClearc(
+                op=op,
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.clearc.ndim"),
+                arrlen=_expect_int(step.get("arrlen"), label="coords-vectors.clearc.arrlen"),
+                bytes=_expect_int_list(step.get("bytes"), label="coords-vectors.clearc.bytes"),
+            )
+
+        case "coords-vectors.cleard":
+            return StepCoordsVectorsCleard(
+                op=op,
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.cleard.ndim"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.cleard.values"),
+            )
+
+        case "coords-vectors.cleari":
+            return StepCoordsVectorsCleari(
+                op=op,
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.cleari.ndim"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.cleari.values"),
+            )
+
+        case "coords-vectors.filld":
+            return StepCoordsVectorsFilld(
+                op=op,
+                value=_expect_number(step.get("value"), label="coords-vectors.filld.value"),
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.filld.ndim"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.filld.values"),
+            )
+
+        case "coords-vectors.filli":
+            return StepCoordsVectorsFilli(
+                op=op,
+                value=_expect_int(step.get("value"), label="coords-vectors.filli.value"),
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.filli.ndim"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.filli.values"),
+            )
+
+        case "coords-vectors.moved":
+            return StepCoordsVectorsMoved(
+                op=op,
+                source=_expect_number_list(step.get("source"), label="coords-vectors.moved.source"),
+                ndim=_expect_int(step.get("ndim"), label="coords-vectors.moved.ndim"),
+                destination=_expect_number_list(step.get("destination"), label="coords-vectors.moved.destination"),
             )
 
         case "coords-vectors.reclat":

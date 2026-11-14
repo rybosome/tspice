@@ -172,6 +172,46 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsClearc = {
+  op: "coords-vectors.clearc";
+  ndim: number;
+  arrlen: number;
+  bytes: number[];
+};
+
+export type StepCoordsVectorsCleard = {
+  op: "coords-vectors.cleard";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsCleari = {
+  op: "coords-vectors.cleari";
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilld = {
+  op: "coords-vectors.filld";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsFilli = {
+  op: "coords-vectors.filli";
+  value: number;
+  ndim: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsMoved = {
+  op: "coords-vectors.moved";
+  source: number[];
+  ndim: number;
+  destination: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1353,12 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsClearc
+  | StepCoordsVectorsCleard
+  | StepCoordsVectorsCleari
+  | StepCoordsVectorsFilld
+  | StepCoordsVectorsFilli
+  | StepCoordsVectorsMoved
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1530,12 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.clearc"; value: number[] }
+  | { op: "coords-vectors.cleard"; value: number[] }
+  | { op: "coords-vectors.cleari"; value: number[] }
+  | { op: "coords-vectors.filld"; value: number[] }
+  | { op: "coords-vectors.filli"; value: number[] }
+  | { op: "coords-vectors.moved"; value: number[] }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

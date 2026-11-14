@@ -227,6 +227,20 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+Array-storage methods operate on initialized owned copies and return the full
+destination, including the untouched suffix. All array inputs are readonly
+`number[]` and every result is an independently owned `number[]`.
+[Canonical array-storage semantics](step8-array-storage.md)
+
+| Raw method                       | Canonical routine | Complete result                                                                 |
+| -------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `clearc(ndim,arrlen,bytes)`      | `clearc_c`        | Flat bytes, with cleared rows padded with ASCII spaces and terminated with NUL. |
+| `cleard(ndim,values)`            | `cleard_c`        | Doubles with the requested prefix set to positive zero.                         |
+| `cleari(ndim,values)`            | `cleari_c`        | Signed 32-bit integers with the requested prefix set to zero.                   |
+| `filld(value,ndim,values)`       | `filld_c`         | Doubles with the requested prefix set to the supplied double.                   |
+| `filli(value,ndim,values)`       | `filli_c`         | Signed 32-bit integers with the requested prefix set to the supplied integer.   |
+| `moved(source,ndim,destination)` | `moved_c`         | Complete destination with the nonnegative copied prefix from source.            |
+
 `rotate` and `rotmat` preserve CSPICE's modulo-three axis mapping (including zero/negative integers); their typed adapters reject fractional, non-finite, or overflowing JS axes before conversion. Matrices are row-major. `rotate`/`rotmat` use passive coordinate rotation, while `axisar` returns an active vector rotation. The audit includes noncommuting matrix products, both vector multiplication directions, coordinate poles/zero inputs, and oblate/prolate geodetic conversions.
 
 Most routines in this domain are **pure math** and require no kernels.

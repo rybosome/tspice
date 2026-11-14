@@ -1079,6 +1079,20 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// Array capacities are in elements. Empty buffers still have a non-NULL address.
+int tspice_clearc(
+    int ndim, int arrlen, unsigned char *bytes, int length, char *err, int errMaxBytes);
+int tspice_cleard(
+    int ndim, double *values, int length, char *err, int errMaxBytes);
+int tspice_cleari(
+    int ndim, int *values, int length, char *err, int errMaxBytes);
+int tspice_filld(
+    double value, int ndim, double *values, int length, char *err, int errMaxBytes);
+int tspice_filli(
+    int value, int ndim, int *values, int length, char *err, int errMaxBytes);
+int tspice_moved(
+    const double *source, int sourceLength, int ndim, double *destination, int destinationLength, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

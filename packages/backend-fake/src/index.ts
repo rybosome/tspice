@@ -2392,6 +2392,25 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    clearc: () => {
+      throw new Error("Fake backend does not model clearc()");
+    },
+    cleard: () => {
+      throw new Error("Fake backend does not model cleard()");
+    },
+    cleari: () => {
+      throw new Error("Fake backend does not model cleari()");
+    },
+    filld: () => {
+      throw new Error("Fake backend does not model filld()");
+    },
+    filli: () => {
+      throw new Error("Fake backend does not model filli()");
+    },
+    moved: () => {
+      throw new Error("Fake backend does not model moved()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

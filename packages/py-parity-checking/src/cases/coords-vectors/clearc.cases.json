@@ -1,0 +1,197 @@
+[
+  {
+    "caseId": "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+    "description": "Distinct nonzero rows, internal NUL and a partial tail expose every changed space, terminator and untouched byte.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 1,
+        "arrlen": 4,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 2,
+        "arrlen": 4,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 3,
+        "arrlen": 4,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-stride-includes-terminator",
+    "description": "Row widths include the terminator. Each case checks the full destination across distinct strides.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 3,
+        "arrlen": 2,
+        "bytes": [
+          80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96
+        ]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 2,
+        "arrlen": 5,
+        "bytes": [
+          80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96
+        ]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 1,
+        "arrlen": 16,
+        "bytes": [
+          80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+    "description": "Even initially non-text bytes are valid storage and return as literal byte values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 2,
+        "arrlen": 3,
+        "bytes": [0, 255, 94, 0, 0, 122]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 1,
+        "arrlen": 2,
+        "bytes": [44, 255]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 1,
+        "arrlen": 3,
+        "bytes": [128, 127, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-zero-negative-counts",
+    "description": "Nonpositive row counts invoke canonical CLEARC without touching any storage or validating row width.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 0,
+        "arrlen": 4,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": -1,
+        "arrlen": 4,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": -2147483648,
+        "arrlen": -2147483648,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 0,
+        "arrlen": 2147483647,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-empty-storage-no-write",
+    "description": "Zero-size storage uses a valid dummy pointer and remains empty.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 0,
+        "arrlen": 0,
+        "bytes": []
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": -1,
+        "arrlen": -3,
+        "bytes": []
+      },
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 0,
+        "arrlen": 8,
+        "bytes": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-one-width-error",
+    "description": "Positive row count reaches CSPICE with sufficient non-null error-path storage and signals STRINGTOOSHORT.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 3,
+        "arrlen": 1,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-zero-width-error",
+    "description": "Positive row count reaches CSPICE with sufficient non-null error-path storage and signals STRINGTOOSHORT.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 3,
+        "arrlen": 0,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-clearc-negative-width-error",
+    "description": "Positive row count reaches CSPICE with sufficient non-null error-path storage and signals STRINGTOOSHORT.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clearc",
+        "ndim": 3,
+        "arrlen": -2147483648,
+        "bytes": [65, 0, 99, 255, 66, 10, 0, 127, 67, 68, 0, 75, 201]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

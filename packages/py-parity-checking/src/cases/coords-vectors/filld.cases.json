@@ -1,0 +1,156 @@
+[
+  {
+    "caseId": "coords-vectors-filld-prefix-and-unchanged-tail",
+    "description": "Initialize distinct destination elements and observe the entire mutated prefix and untouched suffix.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 1,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 2,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 4,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filld-single-and-full-buffer",
+    "description": "Single-element, non-three and full-capacity writes retain every resulting value.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 1,
+        "values": [23],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 6,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 3,
+        "values": [11, 22, -33],
+        "value": -71.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filld-zero-and-negative-count",
+    "description": "Nonpositive signed counts call the canonical C loop and retain initialized numeric storage.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 0,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": -1,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": -2147483648,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -71.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filld-empty-storage",
+    "description": "Pass a valid non-null dummy through each no-write operation and return the empty logical array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 0,
+        "values": [],
+        "value": -71.375
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": -11,
+        "values": [],
+        "value": -71.375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filld-extreme-finite-storage",
+    "description": "Exact finite double storage includes opposite extremes and least subnormals, which focused tests compare without numeric tolerance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 2,
+        "values": [
+          1.7976931348623157e308, -1.7976931348623157e308, 5e-324, -5e-324
+        ],
+        "value": 5e-324
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 1,
+        "values": [
+          -5e-324, 1.7976931348623157e308, 5e-324, -1.7976931348623157e308
+        ],
+        "value": -1.7976931348623157e308
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-filld-distinct-fill-values",
+    "description": "Changing the fill scalar independently of count detects swapped arguments and no-op implementations.",
+    "workflow": [
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 2,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": 0
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 2,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": 0.125
+      },
+      {
+        "op": "coords-vectors.filld",
+        "ndim": 2,
+        "values": [-11.25, 17.5, -3.75, 999.125, 101, -991],
+        "value": -3.75
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 1,
+  "batch": "a04-array-storage",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/array-storage.test.ts",
+    "packages/backend-wasm/test/array-storage-allocations.test.ts",
+    "packages/backend-node/test/array-storage-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-array-storage.md",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/array-storage.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "clearc_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/clearc_c.html",
+      "semantics": "Treat input as flat byte storage with stride arrlen. For positive count and width at least two, each cleared row becomes arrlen\u22121 ASCII spaces followed by NUL. The returned array retains the entire byte suffix. Nonpositive dimensions return before the width check. Positive count with width below two signals canonical STRINGTOOSHORT. No UTF-8 or text conversion takes place. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-clearc-nonzero-rows-and-unchanged-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every space and NUL across each cleared row and the complete preinitialized suffix, including values unrelated to text."
+        },
+        {
+          "caseId": "coords-vectors-clearc-stride-includes-terminator",
+          "coverage": ["success", "edge"],
+          "observes": "Vary row count and stride and compare all last-byte NUL positions against the actual locked C output."
+        },
+        {
+          "caseId": "coords-vectors-clearc-exact-capacity-and-leading-nuls",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise completely filled storage and storage with early NULs, observing every byte independent of C-string length."
+        },
+        {
+          "caseId": "coords-vectors-clearc-zero-negative-counts",
+          "coverage": ["success", "edge"],
+          "observes": "Observe no writes at signed nonpositive counts, including widths that would fail for a positive number of rows."
+        },
+        {
+          "caseId": "coords-vectors-clearc-empty-storage-no-write",
+          "coverage": ["success", "edge"],
+          "observes": "Pass valid non-null empty storage with no requested rows and observe an owned empty result."
+        },
+        {
+          "caseId": "coords-vectors-clearc-one-width-error",
+          "coverage": ["error"],
+          "observes": "Positive count and width one reach actual STRINGTOOSHORT with the oracle checking surrounding and destination bytes."
+        },
+        {
+          "caseId": "coords-vectors-clearc-zero-width-error",
+          "coverage": ["error"],
+          "observes": "Positive count and width zero reach actual STRINGTOOSHORT, separate from the zero-count no-write case."
+        },
+        {
+          "caseId": "coords-vectors-clearc-negative-width-error",
+          "coverage": ["error"],
+          "observes": "Positive count and negative signed width reach actual STRINGTOOSHORT with guarded storage."
+        }
+      ],
+      "edgeAssessment": "Vary rows, widths including two, exact and oversized destinations, embedded NUL and arbitrary initial bytes, nonpositive counts independently of width, and empty storage. The complete flat array, per-row final byte and suffix are observable.",
+      "errorAssessment": "Three canonical STRINGTOOSHORT cases with positive row count and widths one, zero and negative. A nonpositive row count returns before width validation. Backend reset and subsequent valid calls are observed.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Exact bytes or signed integers. All complete values, including trailing positions and no-write behavior, are observable.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-clearc-nonzero-rows-and-unchanged-tail"]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-clearc-nonzero-rows-and-unchanged-tail"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clearc -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clearc -> WASM adapter -> checked transactional complete-array allocations -> _tspice_clearc -> shared tspice_clearc -> canonical clearc_c. The independent oracle invokes clearc_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "cleard_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cleard_c.html",
+      "semantics": "Set the first ndim elements of a copied double array to positive zero. Preserve every remaining element. Signed nonpositive counts reach the canonical no-write loop and return the entire copied input. Double inputs can contain NaN, infinities and signed zeros. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-cleard-prefix-and-unchanged-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
+        },
+        {
+          "caseId": "coords-vectors-cleard-single-and-full-buffer",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
+        },
+        {
+          "caseId": "coords-vectors-cleard-zero-and-negative-count",
+          "coverage": ["success", "edge"],
+          "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
+        },
+        {
+          "caseId": "coords-vectors-cleard-empty-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
+        },
+        {
+          "caseId": "coords-vectors-cleard-extreme-finite-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
+        }
+      ],
+      "edgeAssessment": "Observe partial, singleton, full and empty arrays, nonpositive counts and unchanged suffixes. Focused tagged live probes distinguish positive and negative zero, NaN, signed infinities and subnormal values, including the untouched tail.",
+      "errorAssessment": "No canonical error occurs on the supported clear/fill loop inputs; zero/negative signed counts remain genuine no-write calls. Type/range/size validation uses separate wrapper checks.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Ordinary registered JSON cases run with the shared comparator. Focused equality checks compare full representable arrays to the independent result, and tagged IEEE probes use exact categories/signs and finite values. JavaScript NaN payloads have no public identity guarantee.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-cleard-prefix-and-unchanged-tail"]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-cleard-prefix-and-unchanged-tail"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cleard -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cleard -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleard -> shared tspice_cleard -> canonical cleard_c. The independent oracle invokes cleard_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "cleari_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cleari_c.html",
+      "semantics": "Set the first ndim elements of a copied signed32 array to integer zero. Preserve all subsequent entries. Signed nonpositive count reaches the actual no-write loop with valid storage. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-cleari-prefix-and-unchanged-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
+        },
+        {
+          "caseId": "coords-vectors-cleari-single-and-full-buffer",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
+        },
+        {
+          "caseId": "coords-vectors-cleari-zero-and-negative-count",
+          "coverage": ["success", "edge"],
+          "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
+        },
+        {
+          "caseId": "coords-vectors-cleari-empty-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
+        },
+        {
+          "caseId": "coords-vectors-cleari-signed-int32-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use actual signed32 extrema as storage or fill values and retain the entire result exactly."
+        }
+      ],
+      "edgeAssessment": "Observe partial, singleton, full and empty arrays, nonpositive counts and unchanged suffixes. Signed extrema distinguish signed32 values from unsigned conversion.",
+      "errorAssessment": "No canonical error occurs on the supported clear/fill loop inputs; zero/negative signed counts remain genuine no-write calls. Type/range/size validation uses separate wrapper checks.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Exact bytes or signed integers. All complete values, including trailing positions and no-write behavior, are observable.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-cleari-prefix-and-unchanged-tail"]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-cleari-prefix-and-unchanged-tail"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cleari -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.cleari -> WASM adapter -> checked transactional complete-array allocations -> _tspice_cleari -> shared tspice_cleari -> canonical cleari_c. The independent oracle invokes cleari_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "filld_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/filld_c.html",
+      "semantics": "Write the supplied double to the first ndim entries of a copied double array, retaining every subsequent element. Positive/negative zeros, nonfinite IEEE categories and subnormals are valid storage/fill values. The canonical signed nonpositive loop writes nothing. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-filld-prefix-and-unchanged-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
+        },
+        {
+          "caseId": "coords-vectors-filld-single-and-full-buffer",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
+        },
+        {
+          "caseId": "coords-vectors-filld-zero-and-negative-count",
+          "coverage": ["success", "edge"],
+          "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
+        },
+        {
+          "caseId": "coords-vectors-filld-empty-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
+        },
+        {
+          "caseId": "coords-vectors-filld-extreme-finite-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
+        },
+        {
+          "caseId": "coords-vectors-filld-distinct-fill-values",
+          "coverage": ["success", "edge"],
+          "observes": "Vary signed fill values and counts so that source/initial values, written prefix and suffix remain distinguishable."
+        }
+      ],
+      "edgeAssessment": "Observe partial, singleton, full and empty arrays, nonpositive counts and unchanged suffixes. Focused tagged live probes distinguish positive and negative zero, NaN, signed infinities and subnormal values, including the untouched tail.",
+      "errorAssessment": "No canonical error occurs on the supported clear/fill loop inputs; zero/negative signed counts remain genuine no-write calls. Type/range/size validation uses separate wrapper checks.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Ordinary registered JSON cases run with the shared comparator. Focused equality checks compare full representable arrays to the independent result, and tagged IEEE probes use exact categories/signs and finite values. JavaScript NaN payloads have no public identity guarantee.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-filld-prefix-and-unchanged-tail"]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-filld-prefix-and-unchanged-tail"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.filld -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.filld -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filld -> shared tspice_filld -> canonical filld_c. The independent oracle invokes filld_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "filli_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/filli_c.html",
+      "semantics": "Write the supplied signed32 value to the first ndim entries and return the entire copied integer array. Nonpositive ndim executes the canonical no-write path. Preserve minimum/maximum signed32 fill values and suffix entries. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-filli-prefix-and-unchanged-tail",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the complete initialized array after a prefix write, distinguishing changed entries and every untouched suffix element."
+        },
+        {
+          "caseId": "coords-vectors-filli-single-and-full-buffer",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise single-element and whole-buffer operations and compare the complete destination length/order."
+        },
+        {
+          "caseId": "coords-vectors-filli-zero-and-negative-count",
+          "coverage": ["success", "edge"],
+          "observes": "Pass signed nonpositive counts to the canonical loop and observe unchanged initialized storage and its boundary guards."
+        },
+        {
+          "caseId": "coords-vectors-filli-empty-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the canonical no-write path on valid non-null empty storage and retain the exact empty-result shape."
+        },
+        {
+          "caseId": "coords-vectors-filli-signed-int32-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Use actual signed32 extrema as storage or fill values and retain the entire result exactly."
+        },
+        {
+          "caseId": "coords-vectors-filli-distinct-fill-values",
+          "coverage": ["success", "edge"],
+          "observes": "Vary signed fill values and counts so that source/initial values, written prefix and suffix remain distinguishable."
+        }
+      ],
+      "edgeAssessment": "Observe partial, singleton, full and empty arrays, nonpositive counts and unchanged suffixes. Signed extrema distinguish signed32 values from unsigned conversion.",
+      "errorAssessment": "No canonical error occurs on the supported clear/fill loop inputs; zero/negative signed counts remain genuine no-write calls. Type/range/size validation uses separate wrapper checks.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Exact bytes or signed integers. All complete values, including trailing positions and no-write behavior, are observable.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-filli-prefix-and-unchanged-tail"]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-filli-prefix-and-unchanged-tail"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.filli -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.filli -> WASM adapter -> checked transactional complete-array allocations -> _tspice_filli -> shared tspice_filli -> canonical filli_c. The independent oracle invokes filli_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "moved_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/moved_c.html",
+      "semantics": "Move exactly the specified nonnegative double prefix from source into an independently initialized copy of destination. Count must fit both arrays. Zero count is an actual no-write call. Preserve the entire destination suffix, even when both public arguments reference the same array. Negative counts are rejected before the unconditional pinned MOVED macro that supplies the byte count to memmove. All public array inputs are readonly snapshots, lengths fit signed32 and WASM enforces 256 MiB per buffer. The returned full destination is independently owned.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-moved-disjoint-source-and-destination",
+          "coverage": ["success", "edge"],
+          "observes": "Copy between independently initialized arrays and compare the complete destination, including suffix and differing source entries."
+        },
+        {
+          "caseId": "coords-vectors-moved-unequal-lengths",
+          "coverage": ["success", "edge"],
+          "observes": "Use different lengths with a valid prefix that fits both arrays, retaining the destination-length result."
+        },
+        {
+          "caseId": "coords-vectors-moved-zero-with-empty-or-nonempty",
+          "coverage": ["success", "edge"],
+          "observes": "Call actual moved with zero count and non-null valid storage, including empty/nonempty source and destination; retain the complete destination."
+        },
+        {
+          "caseId": "coords-vectors-moved-distinguishing-order",
+          "coverage": ["success", "edge"],
+          "observes": "Use distinct ordered values to expose reversal, source/destination confusion and accidentally copying the wrong prefix."
+        },
+        {
+          "caseId": "coords-vectors-moved-extreme-finite-storage",
+          "coverage": ["success", "edge"],
+          "observes": "Compare maximum/minimum finite or tiny double entries and the full prefix/suffix, with separate focused IEEE checks retaining signs and classes."
+        }
+      ],
+      "edgeAssessment": "Observe zero count, differing lengths, signed tiny and huge doubles and distinguishing source/destination order. Independent bounded overlap/equal-pointer probes exercise the pinned copy primitive; public tests verify owned outputs for immutable or same-array inputs.",
+      "errorAssessment": "Negative move count and insufficient source/destination extent are wrapper preconditions checked before C. No scientific exception is invented for the defined valid copy domain.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric values and raw byte arrays with observable initial storage and suffixes. No kernels, external datasets or retained scientific resources.",
+      "cleanup": "Native and WASM snapshot complete storage, check extents and use valid sentinels for empty arrays. Shared C calls actual CSPICE and captures/resets toolkit errors. WASM transactional buffers are released after success, error and allocation failure, and returned arrays own their contents. The independent oracle compares aligned guard bytes and retained suffixes. Public clients are disposed.",
+      "tolerance": "Ordinary registered JSON cases run with the shared comparator. Focused equality checks compare full representable arrays to the independent result, and tagged IEEE probes use exact categories/signs and finite values. JavaScript NaN payloads have no public identity guarantee.",
+      "findings": [
+        {
+          "id": "locked-storage-entrypoint",
+          "status": "repaired",
+          "summary": "The pinned SpiceyPy module exposes no high-level wrapper for this routine. Preinitialized storage and untouched bytes need independent observability.",
+          "repair": "Bind the exact canonical void-return symbol from the installed SpiceyPy library using the pinned argument types. Initialize aligned guarded storage from real scenario values, validate its extent and inspect the complete destination after the actual call. Check bytes beyond the writable prefix even on a CSPICE error.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-moved-disjoint-source-and-destination"]
+        },
+        {
+          "id": "pinned-negative-move-count",
+          "status": "repaired",
+          "summary": "The public routine header describes ndim below one as no-write. The pinned implementation delegates unconditionally to a byte-copy macro, whose unsigned byte count makes a negative dimension unsafe.",
+          "repair": "Require nonnegative ndim before canonical dispatch in the typed, native, shared C and independent oracle paths. Preserve actual zero-count calls and bounded overlap semantics. Separate wrapper boundary checks from positive/zero scientific observations.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/coords_vectors.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_storage_oracle.py",
+            "packages/py-parity-checking/test/array-storage.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": [
+            "coords-vectors-moved-zero-with-empty-or-nonempty",
+            "coords-vectors-moved-disjoint-source-and-destination"
+          ]
+        },
+        {
+          "id": "single-read-ownership-assertion",
+          "status": "repaired",
+          "summary": "The native test matcher inspected the instrumented caller input after dispatch, disturbing the read-count observation.",
+          "repair": "Compare identity with Object.is before passing the resulting boolean to the matcher. This verifies owned dispatch storage while preserving the observed getter read count.",
+          "evidence": [
+            "packages/backend-node/test/array-storage-domain.test.ts",
+            "docs/step8-array-storage.md"
+          ],
+          "caseIds": ["coords-vectors-moved-disjoint-source-and-destination"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.moved -> Node adapter -> registered native addon with initialized owned memory and global SPICE mutex -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.moved -> WASM adapter -> checked transactional complete-array allocations -> _tspice_moved -> shared tspice_moved -> canonical moved_c. The independent oracle invokes moved_c from the locked SpiceyPy library using a typed ctypes binding and guarded initialized storage.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Reviewed primary N0067 semantics, count/byte preconditions, complete owned results and independent guarded canonical C bindings. Earlier Step 7 executions remain historical. Fresh source-bound required local and observed CI executions are pending."
+}
