@@ -53,6 +53,74 @@ class StepEphemerisSpkezr:
 
 
 @dataclass(frozen=True)
+class StepEphemerisSpkcpo:
+    op: Literal["ephemeris.spkcpo"]
+    target: str
+    et: float
+    outref: str
+    refloc: str
+    abcorr: str
+    obspos: list[float]
+    obsctr: str
+    obsref: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkcpt:
+    op: Literal["ephemeris.spkcpt"]
+    trgpos: list[float]
+    trgctr: str
+    trgref: str
+    et: float
+    outref: str
+    refloc: str
+    abcorr: str
+    obsrvr: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkcvo:
+    op: Literal["ephemeris.spkcvo"]
+    target: str
+    et: float
+    outref: str
+    refloc: str
+    abcorr: str
+    obssta: list[float]
+    obsepc: float
+    obsctr: str
+    obsref: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisSpkcvt:
+    op: Literal["ephemeris.spkcvt"]
+    trgsta: list[float]
+    trgepc: float
+    trgctr: str
+    trgref: str
+    et: float
+    outref: str
+    refloc: str
+    abcorr: str
+    obsrvr: str
+
+
+@dataclass(frozen=True)
+class StepEphemerisAzlcpo:
+    op: Literal["ephemeris.azlcpo"]
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    azccw: bool
+    elplsz: bool
+    obspos: list[float]
+    obsctr: str
+    obsref: str
+
+
+@dataclass(frozen=True)
 class StepEphemerisSpkacs:
     op: Literal["ephemeris.spkacs"]
     target: int

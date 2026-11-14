@@ -9,6 +9,11 @@ import type {
   StepEphemerisSpkez,
   StepEphemerisSpkezp,
   StepEphemerisSpkezr,
+  StepEphemerisSpkcpo,
+  StepEphemerisSpkcpt,
+  StepEphemerisSpkcvo,
+  StepEphemerisSpkcvt,
+  StepEphemerisAzlcpo,
   StepEphemerisSpkacs,
   StepEphemerisSpkapo,
   StepEphemerisSpkapp,
@@ -50,6 +55,11 @@ type EphemerisStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
   | StepEphemerisSpkacs
   | StepEphemerisSpkapo
   | StepEphemerisSpkapp
@@ -222,6 +232,79 @@ export function runEphemerisStep(
       };
     }
 
+    case "ephemeris.spkcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcpt(
+          step.trgpos,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.spkcvo":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvo(
+          step.target,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obssta,
+          step.obsepc,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
+    case "ephemeris.spkcvt":
+      return {
+        op: step.op,
+        value: context.spice.raw.spkcvt(
+          step.trgsta,
+          step.trgepc,
+          step.trgctr,
+          step.trgref,
+          step.et,
+          step.outref,
+          step.refloc,
+          step.abcorr,
+          step.obsrvr,
+        ),
+      };
+    case "ephemeris.azlcpo":
+      return {
+        op: step.op,
+        value: context.spice.raw.azlcpo(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.azccw,
+          step.elplsz,
+          step.obspos,
+          step.obsctr,
+          step.obsref,
+        ),
+      };
     case "ephemeris.spkacs":
       return {
         op: step.op,

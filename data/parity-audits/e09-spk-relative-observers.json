@@ -1,0 +1,1155 @@
+{
+  "schemaVersion": 1,
+  "batch": "e09-spk-relative-observers",
+  "traceFiles": [
+    "docs/step8-spk-relative.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/spk-relative-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/spk-relative-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-corrections.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk-observer.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/py-parity-checking/fixtures/kernels/relative-observers.tf",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/spk-relative.test.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "packages/tspice/src/transport/caching/withCaching.ts",
+    "packages/tspice/src/transport/caching/withCachingSync.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-aberration-cache.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e09-e83d49bc-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3f6157966355e6876911b1f547c66e4e28f8f60a59f14631a6af54e877bcbcb7",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e09-e83d49bc-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3f6157966355e6876911b1f547c66e4e28f8f60a59f14631a6af54e877bcbcb7",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "observation": "Both complete required lanes passed locally on e83d49bc7f76e18807f4ad228612cb59f645708f. JavaScript: 2,784 parity tests and one expected guard skip. Native-required: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e09-e83d49bc-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3f6157966355e6876911b1f547c66e4e28f8f60a59f14631a6af54e877bcbcb7",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e09-e83d49bc-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3f6157966355e6876911b1f547c66e4e28f8f60a59f14631a6af54e877bcbcb7",
+      "caseIds": [
+        "ephemeris-azlcpo-bad-correction",
+        "ephemeris-azlcpo-bad-method",
+        "ephemeris-azlcpo-direction-and-rates",
+        "ephemeris-azlcpo-ellipsoid-sites",
+        "ephemeris-azlcpo-frame-center",
+        "ephemeris-azlcpo-frame-rotation",
+        "ephemeris-azlcpo-invalid-radii",
+        "ephemeris-azlcpo-method-spelling",
+        "ephemeris-azlcpo-missing-target",
+        "ephemeris-azlcpo-north-and-south-poles",
+        "ephemeris-azlcpo-reception-transmission",
+        "ephemeris-azlcpo-undefined-rates",
+        "ephemeris-azlcpo-unknown-center",
+        "ephemeris-azlcpo-unknown-frame",
+        "ephemeris-spkcpo-bad-locus",
+        "ephemeris-spkcpo-bad-option",
+        "ephemeris-spkcpo-coincidence",
+        "ephemeris-spkcpo-gap",
+        "ephemeris-spkcpo-inertial-directions",
+        "ephemeris-spkcpo-missing-input-frame",
+        "ephemeris-spkcpo-priority",
+        "ephemeris-spkcpo-rotating-input",
+        "ephemeris-spkcpo-rotating-output-center",
+        "ephemeris-spkcpo-rotating-output-observer",
+        "ephemeris-spkcpo-rotating-output-target",
+        "ephemeris-spkcpo-spelling-transition",
+        "ephemeris-spkcpo-unknown-center",
+        "ephemeris-spkcpo-unknown-ephemeris-body",
+        "ephemeris-spkcpo-unknown-output",
+        "ephemeris-spkcpt-bad-locus",
+        "ephemeris-spkcpt-bad-option",
+        "ephemeris-spkcpt-checked-stellar-target",
+        "ephemeris-spkcpt-coincidence",
+        "ephemeris-spkcpt-gap",
+        "ephemeris-spkcpt-inertial-directions",
+        "ephemeris-spkcpt-missing-input-frame",
+        "ephemeris-spkcpt-priority",
+        "ephemeris-spkcpt-rotating-input",
+        "ephemeris-spkcpt-rotating-output-center",
+        "ephemeris-spkcpt-rotating-output-observer",
+        "ephemeris-spkcpt-rotating-output-target",
+        "ephemeris-spkcpt-spelling-transition",
+        "ephemeris-spkcpt-unknown-center",
+        "ephemeris-spkcpt-unknown-ephemeris-body",
+        "ephemeris-spkcpt-unknown-output",
+        "ephemeris-spkcvo-bad-locus",
+        "ephemeris-spkcvo-bad-option",
+        "ephemeris-spkcvo-coincidence",
+        "ephemeris-spkcvo-gap",
+        "ephemeris-spkcvo-inertial-directions",
+        "ephemeris-spkcvo-missing-input-frame",
+        "ephemeris-spkcvo-priority",
+        "ephemeris-spkcvo-rotating-input",
+        "ephemeris-spkcvo-rotating-output-center",
+        "ephemeris-spkcvo-rotating-output-observer",
+        "ephemeris-spkcvo-rotating-output-target",
+        "ephemeris-spkcvo-singular-stellar",
+        "ephemeris-spkcvo-spelling-transition",
+        "ephemeris-spkcvo-state-epoch",
+        "ephemeris-spkcvo-unknown-center",
+        "ephemeris-spkcvo-unknown-ephemeris-body",
+        "ephemeris-spkcvo-unknown-output",
+        "ephemeris-spkcvt-bad-locus",
+        "ephemeris-spkcvt-bad-option",
+        "ephemeris-spkcvt-checked-stellar-target",
+        "ephemeris-spkcvt-coincidence",
+        "ephemeris-spkcvt-gap",
+        "ephemeris-spkcvt-inertial-directions",
+        "ephemeris-spkcvt-missing-input-frame",
+        "ephemeris-spkcvt-priority",
+        "ephemeris-spkcvt-rotating-input",
+        "ephemeris-spkcvt-rotating-output-center",
+        "ephemeris-spkcvt-rotating-output-observer",
+        "ephemeris-spkcvt-rotating-output-target",
+        "ephemeris-spkcvt-spelling-transition",
+        "ephemeris-spkcvt-state-epoch",
+        "ephemeris-spkcvt-unknown-center",
+        "ephemeris-spkcvt-unknown-ephemeris-body",
+        "ephemeris-spkcvt-unknown-output"
+      ],
+      "commit": "e83d49bc7f76e18807f4ad228612cb59f645708f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591403319/job/132436703712",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436703712 on e83d49bc7f76e18807f4ad228612cb59f645708f: 2,546 registered Node/WASM live comparisons; 2,785 parity-package tests with no skips, including the native-required guard; 107 native wrapper, 695 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spkcpo_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpo_c.html",
+      "semantics": "Return the six-component target state as observed from the supplied position fixed in the observer frame. Correct the target event and evaluate the output frame at the requested locus.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcpo-rotating-output-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the OBSERVER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-rotating-output-target",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the TARGET epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-rotating-output-center",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the CENTER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-rotating-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Point is fixed or advances with constant velocity in a time-varying source frame, whose rate contributes to the output velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-inertial-directions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Both signal directions evaluate the moving target at distinct epochs with the full apparent velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternating spaced and unspaced correction spellings preserves the requested direction and stellar flag."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A higher-priority overlapping SPK changes each returned state and event range."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-coincidence",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A zero offset at the barycenter observed from the same body produces a zero state and light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-unknown-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown supplied center name."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-unknown-ephemeris-body",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown ephemeris participant."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-unknown-output",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped output frame."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-bad-locus",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unrecognized evaluation locus."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-missing-input-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped point frame."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for target SPK has an authored gap."
+        },
+        {
+          "caseId": "ephemeris-spkcpo-bad-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for invalid aberration flag precedes body and frame resolution."
+        }
+      ],
+      "edgeAssessment": "Compare separate observer, target and frame-center epochs in a rotating frame, equivalent zero-velocity observer states and the geometric coincidence limit.",
+      "errorAssessment": "Compare the pinned, traced primary scientific diagnostic for IDCODENOTFOUND, INVALIDOPTION, NOTSUPPORTED, SPKINSUFFDATA, UNKNOWNFRAME. Backend structural, dimension and allocation checks are separate from scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Project-authored moving observer with distinct velocities and accelerations on all axes.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored overlapping alternate target segment in the same generator.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored piecewise polynomial target with a coverage gap.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/relative-observers.tf",
+          "provenance": "Authored class 5 Euler frame rotating about three axes, centered on body 100002.",
+          "distribution": "Repo-authored MIT fixture."
+        }
+      ],
+      "fixtureRationale": "Use tractable authored orbits, frame rotations and body models to distinguish physical inputs, correction sign, timestamp and output orientation. The public suite additionally replaces kernel data and validates reused clients.",
+      "cleanup": "Node serializes execution and takes one owned tuple snapshot. WASM frees each acquired buffer on success, allocation failure or a toolkit diagnostic. Each case resets toolkit state and disposes or closes any owned file handles. Public fixtures are cleared and clients disposed in finally.",
+      "tolerance": "Retain the existing 1e-12 absolute-or-relative registered tolerance. Centered time differences use scoped derivative tolerances and the rotating-frame propagation check uses 2e-11. Compare exact shapes, structured errors, recovery, and tagged nonfinite classifications separately.",
+      "findings": [
+        {
+          "id": "spkcpo-checked-intermediates",
+          "status": "repaired",
+          "summary": "The stellar correction and certain OBSERVER-locus J2000 paths use private output immediately after a nested toolkit call. An error must stop evaluation before those results are consumed.",
+          "repair": "Initialize and check the original state callback, barycentric samples, light-time solution and stellar divisor under the active SPICELIB frames. Use the original flag for the canonical computation and the actual linked parser for preflight selection. Preserve error precedence and every field of successful named CSPICE calls.",
+          "caseIds": [
+            "ephemeris-spkcpo-gap",
+            "ephemeris-spkcpo-rotating-output-observer"
+          ],
+          "evidence": [
+            "docs/step8-spk-relative.md",
+            "packages/py-parity-checking/test/spk-relative.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcpo with one owned point/state snapshot through the Node addon mutex to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpo and spkcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkcpt_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpt_c.html",
+      "semantics": "Return the apparent state of the supplied target point fixed in its local frame relative to an ephemeris observer. Evaluate the point at the corrected target epoch.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcpt-rotating-output-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the OBSERVER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-rotating-output-target",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the TARGET epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-rotating-output-center",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the CENTER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-rotating-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Point is fixed or advances with constant velocity in a time-varying source frame, whose rate contributes to the output velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-inertial-directions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Both signal directions evaluate the moving target at distinct epochs with the full apparent velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternating spaced and unspaced correction spellings preserves the requested direction and stellar flag."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A higher-priority overlapping SPK changes each returned state and event range."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-coincidence",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A zero offset at the barycenter observed from the same body produces a zero state and light time."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-unknown-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown supplied center name."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-unknown-ephemeris-body",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown ephemeris participant."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-unknown-output",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped output frame."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-bad-locus",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unrecognized evaluation locus."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-missing-input-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped point frame."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for target SPK has an authored gap."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-bad-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for invalid aberration flag precedes body and frame resolution."
+        },
+        {
+          "caseId": "ephemeris-spkcpt-checked-stellar-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The moving ephemeris observer has a transverse velocity exactly at the singular stellar angle. Compare the checked ZZSPKFAP primary error."
+        }
+      ],
+      "edgeAssessment": "Reverse target and observer roles, compare rotating target frames and zero-velocity SPKCVT equivalence, and check the exact singular stellar diagnostic using a scratch-written moving observer.",
+      "errorAssessment": "Compare the pinned, traced primary scientific diagnostic for DIVIDEBYZERO, IDCODENOTFOUND, INVALIDOPTION, NOTSUPPORTED, SPKINSUFFDATA, UNKNOWNFRAME. Backend structural, dimension and allocation checks are separate from scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Project-authored moving observer with distinct velocities and accelerations on all axes.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored overlapping alternate target segment in the same generator.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored piecewise polynomial target with a coverage gap.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/relative-observers.tf",
+          "provenance": "Authored class 5 Euler frame rotating about three axes, centered on body 100002.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkcpt.cases.json",
+          "provenance": "The terminal stellar case creates a transient SPK with a single type 8 segment whose observer velocity is transverse to the sight line.",
+          "distribution": "Authored MIT workflow. The generated SPK is case-local scratch and is not distributed."
+        }
+      ],
+      "fixtureRationale": "Use tractable authored orbits, frame rotations and body models to distinguish physical inputs, correction sign, timestamp and output orientation. The public suite additionally replaces kernel data and validates reused clients.",
+      "cleanup": "Node serializes execution and takes one owned tuple snapshot. WASM frees each acquired buffer on success, allocation failure or a toolkit diagnostic. Each case resets toolkit state and disposes or closes any owned file handles. Public fixtures are cleared and clients disposed in finally.",
+      "tolerance": "Retain the existing 1e-12 absolute-or-relative registered tolerance. Centered time differences use scoped derivative tolerances and the rotating-frame propagation check uses 2e-11. Compare exact shapes, structured errors, recovery, and tagged nonfinite classifications separately.",
+      "findings": [
+        {
+          "id": "spkcpt-checked-intermediates",
+          "status": "repaired",
+          "summary": "The stellar correction and certain OBSERVER-locus J2000 paths use private output immediately after a nested toolkit call. An error must stop evaluation before those results are consumed.",
+          "repair": "Initialize and check the original state callback, barycentric samples, light-time solution and stellar divisor under the active SPICELIB frames. Use the original flag for the canonical computation and the actual linked parser for preflight selection. Preserve error precedence and every field of successful named CSPICE calls.",
+          "caseIds": [
+            "ephemeris-spkcpt-gap",
+            "ephemeris-spkcpt-checked-stellar-target"
+          ],
+          "evidence": [
+            "docs/step8-spk-relative.md",
+            "packages/py-parity-checking/test/spk-relative.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcpt with one owned point/state snapshot through the Node addon mutex to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcpt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcpt and spkcpt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkcvo_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvo_c.html",
+      "semantics": "Propagate the observer state from its own supplied epoch with constant velocity in the observer frame. Apply its six-dimensional frame transform, observer-center motion, aberration correction and output frame locus.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcvo-rotating-output-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the OBSERVER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-rotating-output-target",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the TARGET epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-rotating-output-center",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the CENTER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-rotating-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Point is fixed or advances with constant velocity in a time-varying source frame, whose rate contributes to the output velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-inertial-directions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Both signal directions evaluate the moving target at distinct epochs with the full apparent velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternating spaced and unspaced correction spellings preserves the requested direction and stellar flag."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A higher-priority overlapping SPK changes each returned state and event range."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-state-epoch",
+          "coverage": ["success", "edge", "state"],
+          "observes": "At fixed epoch, change only the reference epoch of the supplied three-axis velocity state."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-coincidence",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A zero offset at the barycenter observed from the same body produces a zero state and light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-unknown-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown supplied center name."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-unknown-ephemeris-body",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown ephemeris participant."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-unknown-output",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped output frame."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-bad-locus",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unrecognized evaluation locus."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-missing-input-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped point frame."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for target SPK has an authored gap."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-bad-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for invalid aberration flag precedes body and frame resolution."
+        },
+        {
+          "caseId": "ephemeris-spkcvo-singular-stellar",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A spaced, mixed-case stellar selection reaches the same checked singular-divisor diagnostic for the exactly transverse observer velocity."
+        }
+      ],
+      "edgeAssessment": "Independently propagate the moving point then apply SXFORM at ET for a geometric vector. Nonzero stellar corrections distinguish all frame loci. A transverse near-light-speed input produces the checked primary stellar error.",
+      "errorAssessment": "Compare the pinned, traced primary scientific diagnostic for DIVIDEBYZERO, IDCODENOTFOUND, INVALIDOPTION, NOTSUPPORTED, SPKINSUFFDATA, UNKNOWNFRAME. Backend structural, dimension and allocation checks are separate from scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Project-authored moving observer with distinct velocities and accelerations on all axes.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored overlapping alternate target segment in the same generator.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored piecewise polynomial target with a coverage gap.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/relative-observers.tf",
+          "provenance": "Authored class 5 Euler frame rotating about three axes, centered on body 100002.",
+          "distribution": "Repo-authored MIT fixture."
+        }
+      ],
+      "fixtureRationale": "Use tractable authored orbits, frame rotations and body models to distinguish physical inputs, correction sign, timestamp and output orientation. The public suite additionally replaces kernel data and validates reused clients.",
+      "cleanup": "Node serializes execution and takes one owned tuple snapshot. WASM frees each acquired buffer on success, allocation failure or a toolkit diagnostic. Each case resets toolkit state and disposes or closes any owned file handles. Public fixtures are cleared and clients disposed in finally.",
+      "tolerance": "Retain the existing 1e-12 absolute-or-relative registered tolerance. Centered time differences use scoped derivative tolerances and the rotating-frame propagation check uses 2e-11. Compare exact shapes, structured errors, recovery, and tagged nonfinite classifications separately.",
+      "findings": [
+        {
+          "id": "spkcvo-checked-intermediates",
+          "status": "repaired",
+          "summary": "The stellar correction and certain OBSERVER-locus J2000 paths use private output immediately after a nested toolkit call. An error must stop evaluation before those results are consumed.",
+          "repair": "Initialize and check the original state callback, barycentric samples, light-time solution and stellar divisor under the active SPICELIB frames. Use the original flag for the canonical computation and the actual linked parser for preflight selection. Preserve error precedence and every field of successful named CSPICE calls.",
+          "caseIds": [
+            "ephemeris-spkcvo-gap",
+            "ephemeris-spkcvo-singular-stellar"
+          ],
+          "evidence": [
+            "docs/step8-spk-relative.md",
+            "packages/py-parity-checking/test/spk-relative.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcvo with one owned point/state snapshot through the Node addon mutex to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcvo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvo and spkcvo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkcvt_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvt_c.html",
+      "semantics": "Propagate the local target state at its own epoch to the apparent target event. Transform both position and velocity, accounting for the source and output frames and target center.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkcvt-rotating-output-observer",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the OBSERVER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-rotating-output-target",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the TARGET epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-rotating-output-center",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Resolve the rotating output frame at the CENTER epoch; compare three positions, their three rates and one-way light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-rotating-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Point is fixed or advances with constant velocity in a time-varying source frame, whose rate contributes to the output velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-inertial-directions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Both signal directions evaluate the moving target at distinct epochs with the full apparent velocity."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-spelling-transition",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Alternating spaced and unspaced correction spellings preserves the requested direction and stellar flag."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A higher-priority overlapping SPK changes each returned state and event range."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-state-epoch",
+          "coverage": ["success", "edge", "state"],
+          "observes": "At fixed epoch, change only the reference epoch of the supplied three-axis velocity state."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-coincidence",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A zero offset at the barycenter observed from the same body produces a zero state and light time."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-unknown-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown supplied center name."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-unknown-ephemeris-body",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unknown ephemeris participant."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-unknown-output",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped output frame."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-bad-locus",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unrecognized evaluation locus."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-missing-input-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for unmapped point frame."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-gap",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for target SPK has an authored gap."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-bad-option",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Compare the actual SPICE diagnostic for invalid aberration flag precedes body and frame resolution."
+        },
+        {
+          "caseId": "ephemeris-spkcvt-checked-stellar-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The moving ephemeris observer has a transverse velocity exactly at the singular stellar angle. Compare the checked ZZSPKFAP primary error."
+        }
+      ],
+      "edgeAssessment": "Geometric states are the signed inverse of the corresponding moving-observer setup. The light-time cases distinguish target/observer/center epochs and the temporary moving observer gives the actual stellar diagnostic.",
+      "errorAssessment": "Compare the pinned, traced primary scientific diagnostic for DIVIDEBYZERO, IDCODENOTFOUND, INVALIDOPTION, NOTSUPPORTED, SPKINSUFFDATA, UNKNOWNFRAME. Backend structural, dimension and allocation checks are separate from scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-observer.bsp",
+          "provenance": "Project-authored moving observer with distinct velocities and accelerations on all axes.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris-priority.bsp",
+          "provenance": "Project-authored overlapping alternate target segment in the same generator.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Project-authored piecewise polynomial target with a coverage gap.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/relative-observers.tf",
+          "provenance": "Authored class 5 Euler frame rotating about three axes, centered on body 100002.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkcvt.cases.json",
+          "provenance": "The terminal stellar case creates a transient SPK with a single type 8 segment whose observer velocity is transverse to the sight line.",
+          "distribution": "Authored MIT workflow. The generated SPK is case-local scratch and is not distributed."
+        }
+      ],
+      "fixtureRationale": "Use tractable authored orbits, frame rotations and body models to distinguish physical inputs, correction sign, timestamp and output orientation. The public suite additionally replaces kernel data and validates reused clients.",
+      "cleanup": "Node serializes execution and takes one owned tuple snapshot. WASM frees each acquired buffer on success, allocation failure or a toolkit diagnostic. Each case resets toolkit state and disposes or closes any owned file handles. Public fixtures are cleared and clients disposed in finally.",
+      "tolerance": "Retain the existing 1e-12 absolute-or-relative registered tolerance. Centered time differences use scoped derivative tolerances and the rotating-frame propagation check uses 2e-11. Compare exact shapes, structured errors, recovery, and tagged nonfinite classifications separately.",
+      "findings": [
+        {
+          "id": "spkcvt-checked-intermediates",
+          "status": "repaired",
+          "summary": "The stellar correction and certain OBSERVER-locus J2000 paths use private output immediately after a nested toolkit call. An error must stop evaluation before those results are consumed.",
+          "repair": "Initialize and check the original state callback, barycentric samples, light-time solution and stellar divisor under the active SPICELIB frames. Use the original flag for the canonical computation and the actual linked parser for preflight selection. Preserve error precedence and every field of successful named CSPICE calls.",
+          "caseIds": [
+            "ephemeris-spkcvt-gap",
+            "ephemeris-spkcvt-checked-stellar-target"
+          ],
+          "evidence": [
+            "docs/step8-spk-relative.md",
+            "packages/py-parity-checking/test/spk-relative.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcvt with one owned point/state snapshot through the Node addon mutex to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw spkcvt with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_spkcvt and spkcvt_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "azlcpo_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlcpo_c.html",
+      "semantics": "Return topocentric range, azimuth, elevation and their three time derivatives relative to the ellipsoid-based local frame, plus one-way light time. azccw sets the azimuth direction and elplsz the elevation sign.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-azlcpo-direction-and-rates",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All four azimuth/elevation sign conventions change coordinates and signed derivatives in the actual local ellipsoid frame."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-north-and-south-poles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use the toolkit polar topocentric branch at surface and off-surface sites at both poles."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-ellipsoid-sites",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use distinct off-axis surface and interior/exterior sites of the triaxial ellipsoid."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-reception-transmission",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare seven observables under geometric, reception and transmission corrections for a moving off-axis target."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-frame-rotation",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Rotated observer-centered axes and observer ET change the local north, azimuth/elevation and all three rates."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-method-spelling",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use mixed case and padding accepted by the canonical method matcher."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-unknown-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-frame-center",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-bad-method",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-undefined-rates",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-bad-correction",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-missing-target",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Require the canonical diagnostic before using any undefined angular-rate or geometry output."
+        },
+        {
+          "caseId": "ephemeris-azlcpo-invalid-radii",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A negative ellipsoid radius fails while fetching body radii before any local topocentric transformation."
+        }
+      ],
+      "edgeAssessment": "Exercise all four orientation choices, north and south polar sites, oblique sites and a nonvertical line of sight. Differentiate all three angles/range observables and retain the undefined zenith diagnostic.",
+      "errorAssessment": "Compare the pinned, traced primary scientific diagnostic for BADAXISLENGTH, IDCODENOTFOUND, INVALIDFRAME, INVALIDMETHOD, INVALIDOPTION, POINTONZAXIS, SPKINSUFFDATA, UNKNOWNFRAME. Backend structural, dimension and allocation checks are separate from scientific errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored type 8 target tracks for surface observer geometry.",
+          "distribution": "Repo-authored MIT fixture."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Project-authored centered frames with known triaxial axes and controlled derivatives.",
+          "distribution": "Repo-authored MIT fixture."
+        }
+      ],
+      "fixtureRationale": "Use tractable authored orbits, frame rotations and body models to distinguish physical inputs, correction sign, timestamp and output orientation. The public suite additionally replaces kernel data and validates reused clients.",
+      "cleanup": "Node serializes execution and takes one owned tuple snapshot. WASM frees each acquired buffer on success, allocation failure or a toolkit diagnostic. Each case resets toolkit state and disposes or closes any owned file handles. Public fixtures are cleared and clients disposed in finally.",
+      "tolerance": "Retain the existing 1e-12 absolute-or-relative registered tolerance. Centered time differences use scoped derivative tolerances and the rotating-frame propagation check uses 2e-11. Compare exact shapes, structured errors, recovery, and tagged nonfinite classifications separately.",
+      "findings": [
+        {
+          "id": "azlcpo-checked-intermediates",
+          "status": "repaired",
+          "summary": "N0067 constructs the local frame from NEARPT, SURFNM and TWOVEC before checking intermediate errors.",
+          "repair": "Check the same three routines on the defined nonpolar branch, preserving the primary toolkit error under AZLCPO before the calculation consumes output. The named AZLCPO entry performs the full successful calculation.",
+          "caseIds": [
+            "ephemeris-azlcpo-invalid-radii",
+            "ephemeris-azlcpo-undefined-rates",
+            "ephemeris-azlcpo-ellipsoid-sites"
+          ],
+          "evidence": [
+            "docs/step8-spk-relative.md",
+            "packages/py-parity-checking/test/spk-relative.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/relative_observer_oracle.py",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw azlcpo with one owned point/state snapshot through the Node addon mutex to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-node", "ci-e09-e83d49bc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Raw azlcpo with one owned point/state snapshot through the actual WASM export and scoped heap storage to tspice_azlcpo and azlcpo_c. The independent sidecar checks potentially failing intermediate calls and uses the locked public CSPICE wrapper on success.",
+          "executions": ["local-e09-e83d49bc-wasm", "ci-e09-e83d49bc-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

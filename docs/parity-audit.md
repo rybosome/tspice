@@ -59,3 +59,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## SPK corrections
 
 The 162-routine historical Step 7 baseline is followed by eight reviewed ephemeris routines. [Scientific and boundary evidence](step8-spk-corrections.md) [Per-routine audits](../data/parity-audits/e08-spk-corrections.json)
+
+## Observer-relative SPK geometry
+
+The fixed and moving point workflows distinguish rotating-frame epochs, point motion and local topocentric derivatives. The batch also checks cache behavior across SPK and body-radius replacement. [Scientific review](step8-spk-relative.md) [Routine records](../data/parity-audits/e09-spk-relative-observers.json)

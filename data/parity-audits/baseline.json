@@ -424,6 +424,13 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/770"],
+      "nextAction": "Record current full backend-local and observed canonical source CI evidence, then inspect the final PR matrix and rebaseability."
+    },
+    {
+      "id": "e09-spk-relative-observers",
+      "routines": ["azlcpo_c", "spkcpo_c", "spkcpt_c", "spkcvo_c", "spkcvt_c"],
+      "dependsOn": ["e08-spk-corrections"],
+      "prs": ["https://github.com/rybosome/tspice/pull/774"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]

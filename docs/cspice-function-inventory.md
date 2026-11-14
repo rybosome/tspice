@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 175
+- Planned (not yet implemented): 474
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `azlcpo_c` | AZ/EL, constant position observer state |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -148,6 +149,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkaps_c` | SPK, apparent state |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
+| `spkcpo_c` | SPK, constant position observer state |
+| `spkcpt_c` | SPK, constant position target state |
+| `spkcvo_c` | SPK, constant velocity observer state |
+| `spkcvt_c` | SPK, constant velocity target state |
 | `spkez_c` | S/P Kernel, easy reader |
 | `spkezp_c` | S/P Kernel, easy position |
 | `spkezr_c` | S/P Kernel, easier reader |
@@ -199,7 +204,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `appndc_c` | Append an item to a character cell |
 | `appndd_c` | Append an item to a double precision cell |
 | `appndi_c` | Append an item to an integer cell |
-| `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
@@ -563,10 +567,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spk14a_c` | SPK, add data to a type 14 segment |
 | `spk14b_c` | SPK, begin a type 14 segment |
 | `spk14e_c` | SPK, end a type 14 segment |
-| `spkcpo_c` | SPK, constant position observer state |
-| `spkcpt_c` | SPK, constant position target state |
-| `spkcvo_c` | SPK, constant velocity observer state |
-| `spkcvt_c` | SPK, constant velocity target state |
 | `spklef_c` | S/P Kernel, Load ephemeris file |
 | `spkpvn_c` | S/P Kernel, position and velocity in native frame |
 | `spksub_c` | S/P Kernel, subset |

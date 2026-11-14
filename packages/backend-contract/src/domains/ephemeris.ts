@@ -50,6 +50,79 @@ export type SpkUnpackedDescriptor = {
 
 /** Backend contract for SPK/ephemeris computations (positions, states, segment inspection). */
 export interface EphemerisApi {
+  /** State in km and km/s of a target relative to a point fixed in obsref about obsctr. The selected output frame orientation uses OBSERVER, TARGET or CENTER evaluation locus under light-time correction; NONE evaluates at ET. Return one-way light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpo_c.html
+   */
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State in km and km/s of a point fixed in trgref about trgctr relative to an ephemeris observer at ET. Corrected reception and transmission select different target epochs. Refloc selects when the output frame is evaluated.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcpt_c.html
+   */
+  spkcpt(
+    trgpos: Readonly<SpiceVector3>,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** State of a target relative to a point with constant supplied velocity in obsref about obsctr. Propagate obssta (km, km/s) from its epoch obsepc, then apply the frame state transform including rotational velocity. Return the apparent six-component state and light time in seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvo_c.html
+   */
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: Readonly<SpiceStateVector>,
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
+  /** State of a target point extrapolated at constant velocity in trgref about trgctr from trgsta at trgepc. Reception/transmission solve for the target event; the selected output frame evaluation locus contributes to the velocity. State uses km and km/s; lt is seconds.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkcvt_c.html
+   */
+  spkcvt(
+    trgsta: Readonly<SpiceStateVector>,
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): SpkezrResult;
+
+  /** Return topocentric range (km), azimuth and elevation (rad), followed by their rates (km/s and rad/s), and one-way lt (s). ELLIPSOID uses the local outward normal in the body-centered obsref. azccw chooses counterclockwise azimuth, elplsz chooses increasing elevation toward +Z. A vertical sight line has undefined angular rates and can signal POINTONZAXIS.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlcpo_c.html
+   */
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: Readonly<SpiceVector3>,
+    obsctr: string,
+    obsref: string,
+  ): SpkezrResult;
+
   /** Return the inertial target state (km and km/s), one-way light time lt (s), and its derivative dlt (s/s) at observer ET. Target and observer are integer IDs. Stellar correction needs observer ephemeris coverage one second before and after ET.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkacs_c.html
    */

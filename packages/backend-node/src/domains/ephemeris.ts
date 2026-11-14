@@ -116,6 +116,159 @@ export function createEphemerisApi(
   const virtualOutputByHandle = new Map<SpiceHandle, VirtualOutput>();
 
   return {
+    spkcpo: (target, et, outref, refloc, abcorr, obspos, obsctr, obsref) => {
+      validateCorrectionString(target, "spkcpo(target)");
+      requireSpkNumber(et, "spkcpo(et)");
+      validateCorrectionString(outref, "spkcpo(outref)");
+      validateCorrectionString(refloc, "spkcpo(refloc)");
+      validateCorrectionString(abcorr, "spkcpo(abcorr)");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "spkcpo(obspos)");
+      validateCorrectionString(obsctr, "spkcpo(obsctr)");
+      validateCorrectionString(obsref, "spkcpo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcpo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcpt: (trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr) => {
+      const trgposCopy = copyCorrectionInput(trgpos, 3, "spkcpt(trgpos)");
+      validateCorrectionString(trgctr, "spkcpt(trgctr)");
+      validateCorrectionString(trgref, "spkcpt(trgref)");
+      requireSpkNumber(et, "spkcpt(et)");
+      validateCorrectionString(outref, "spkcpt(outref)");
+      validateCorrectionString(refloc, "spkcpt(refloc)");
+      validateCorrectionString(abcorr, "spkcpt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcpt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcpt(
+          trgposCopy,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    spkcvo: (
+      target,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obssta,
+      obsepc,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(target, "spkcvo(target)");
+      requireSpkNumber(et, "spkcvo(et)");
+      validateCorrectionString(outref, "spkcvo(outref)");
+      validateCorrectionString(refloc, "spkcvo(refloc)");
+      validateCorrectionString(abcorr, "spkcvo(abcorr)");
+      const obsstaCopy = copyCorrectionInput(obssta, 6, "spkcvo(obssta)");
+      requireSpkNumber(obsepc, "spkcvo(obsepc)");
+      validateCorrectionString(obsctr, "spkcvo(obsctr)");
+      validateCorrectionString(obsref, "spkcvo(obsref)");
+      return decodeCorrectionResult(
+        native.spkcvo(
+          target,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsstaCopy,
+          obsepc,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
+    spkcvt: (
+      trgsta,
+      trgepc,
+      trgctr,
+      trgref,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obsrvr,
+    ) => {
+      const trgstaCopy = copyCorrectionInput(trgsta, 6, "spkcvt(trgsta)");
+      requireSpkNumber(trgepc, "spkcvt(trgepc)");
+      validateCorrectionString(trgctr, "spkcvt(trgctr)");
+      validateCorrectionString(trgref, "spkcvt(trgref)");
+      requireSpkNumber(et, "spkcvt(et)");
+      validateCorrectionString(outref, "spkcvt(outref)");
+      validateCorrectionString(refloc, "spkcvt(refloc)");
+      validateCorrectionString(abcorr, "spkcvt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcvt(obsrvr)");
+      return decodeCorrectionResult(
+        native.spkcvt(
+          trgstaCopy,
+          trgepc,
+          trgctr,
+          trgref,
+          et,
+          outref,
+          refloc,
+          abcorr,
+          obsrvr,
+        ),
+        7,
+      );
+    },
+    azlcpo: (
+      method,
+      target,
+      et,
+      abcorr,
+      azccw,
+      elplsz,
+      obspos,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(method, "azlcpo(method)");
+      validateCorrectionString(target, "azlcpo(target)");
+      requireSpkNumber(et, "azlcpo(et)");
+      validateCorrectionString(abcorr, "azlcpo(abcorr)");
+      if (typeof azccw !== "boolean")
+        throw new TypeError("azlcpo(azccw) must be boolean");
+      if (typeof elplsz !== "boolean")
+        throw new TypeError("azlcpo(elplsz) must be boolean");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "azlcpo(obspos)");
+      validateCorrectionString(obsctr, "azlcpo(obsctr)");
+      validateCorrectionString(obsref, "azlcpo(obsref)");
+      return decodeCorrectionResult(
+        native.azlcpo(
+          method,
+          target,
+          et,
+          abcorr,
+          azccw,
+          elplsz,
+          obsposCopy,
+          obsctr,
+          obsref,
+        ),
+        7,
+      );
+    },
     spkacs: (target, et, ref, abcorr, observer) => {
       assertSpiceInt32(target, "spkacs(target)");
       requireSpkNumber(et, "spkacs(et)");

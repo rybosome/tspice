@@ -11,6 +11,11 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.unload",
   "raw.kclear",
   // Each correction reads the active SPK set, including its priority order.
+  "raw.spkcpo",
+  "raw.spkcpt",
+  "raw.spkcvo",
+  "raw.spkcvt",
+  "raw.azlcpo",
   "raw.spkacs",
   "raw.spkapo",
   "raw.spkapp",

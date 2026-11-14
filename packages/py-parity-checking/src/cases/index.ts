@@ -57,6 +57,11 @@ import ephemerisSpkcovCasesRaw from "./ephemeris/spkcov.cases.json" with { type:
 import ephemerisSpkezCasesRaw from "./ephemeris/spkez.cases.json" with { type: "json" };
 import ephemerisSpkezpCasesRaw from "./ephemeris/spkezp.cases.json" with { type: "json" };
 import ephemerisSpkezrCasesRaw from "./ephemeris/spkezr.cases.json" with { type: "json" };
+import ephemerisSpkcpoCasesRaw from "./ephemeris/spkcpo.cases.json" with { type: "json" };
+import ephemerisSpkcptCasesRaw from "./ephemeris/spkcpt.cases.json" with { type: "json" };
+import ephemerisSpkcvoCasesRaw from "./ephemeris/spkcvo.cases.json" with { type: "json" };
+import ephemerisSpkcvtCasesRaw from "./ephemeris/spkcvt.cases.json" with { type: "json" };
+import ephemerisAzlcpoCasesRaw from "./ephemeris/azlcpo.cases.json" with { type: "json" };
 import ephemerisSpkacsCasesRaw from "./ephemeris/spkacs.cases.json" with { type: "json" };
 import ephemerisSpkapoCasesRaw from "./ephemeris/spkapo.cases.json" with { type: "json" };
 import ephemerisSpkappCasesRaw from "./ephemeris/spkapp.cases.json" with { type: "json" };
@@ -223,6 +228,11 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkezCasesRaw as ParityCase[]),
   ...(ephemerisSpkezpCasesRaw as ParityCase[]),
   ...(ephemerisSpkezrCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcpoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcptCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcvoCasesRaw as ParityCase[]),
+  ...(ephemerisSpkcvtCasesRaw as ParityCase[]),
+  ...(ephemerisAzlcpoCasesRaw as ParityCase[]),
   ...(ephemerisSpkacsCasesRaw as ParityCase[]),
   ...(ephemerisSpkapoCasesRaw as ParityCase[]),
   ...(ephemerisSpkappCasesRaw as ParityCase[]),
