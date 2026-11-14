@@ -31,19 +31,24 @@ function assertScalarMathString(
     throw new TypeError(`${label} must be a string without embedded NUL`);
 }
 
-function assertScalarMathArray(
+function copyScalarMathArray(
   value: unknown,
   label: string,
   integers: boolean,
   maxCount: number,
-): asserts value is readonly number[] {
+): number[] {
   if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
-  if (value.length > maxCount)
+  const count = value.length;
+  if (!Number.isSafeInteger(count) || count < 0 || count > maxCount)
     throw new RangeError(`${label} must contain at most ${maxCount} values`);
-  for (let i = 0; i < value.length; i++) {
-    if (integers) assertSpiceInt32(value[i], `${label}[${i}]`);
-    else assertScalarMathDouble(value[i], `${label}[${i}]`);
+  const copy: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const entry: unknown = value[i];
+    assertScalarMathDouble(entry, `${label}[${i}]`);
+    if (integers) assertSpiceInt32(entry, `${label}[${i}]`);
+    copy.push(entry);
   }
+  return copy;
 }
 
 function assertSumaiPrefixes(values: readonly number[]): void {
@@ -98,41 +103,51 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       return out;
     },
     sumad: (values) => {
-      assertScalarMathArray(values, "sumad(values)", false, 2147483647);
-      const out: unknown = native.sumad(values);
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumad(values)",
+        false,
+        2147483647,
+      );
+      const out: unknown = native.sumad(valuesCopy);
       invariant(typeof out === "number", "Expected sumad() to return a number");
       return out;
     },
     sumai: (values) => {
-      assertScalarMathArray(values, "sumai(values)", true, 2147483647);
-      assertSumaiPrefixes(values);
-      const out: unknown = native.sumai(values);
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumai(values)",
+        true,
+        2147483647,
+      );
+      assertSumaiPrefixes(valuesCopy);
+      const out: unknown = native.sumai(valuesCopy);
       invariant(typeof out === "number", "Expected sumai() to return a number");
       assertSpiceInt32(out, "sumai result");
       return out;
     },
     maxd: (values) => {
-      assertScalarMathArray(values, "maxd(values)", false, 30);
-      const out: unknown = native.maxd(values);
+      const valuesCopy = copyScalarMathArray(values, "maxd(values)", false, 30);
+      const out: unknown = native.maxd(valuesCopy);
       invariant(typeof out === "number", "Expected maxd() to return a number");
       return out;
     },
     maxi: (values) => {
-      assertScalarMathArray(values, "maxi(values)", true, 30);
-      const out: unknown = native.maxi(values);
+      const valuesCopy = copyScalarMathArray(values, "maxi(values)", true, 30);
+      const out: unknown = native.maxi(valuesCopy);
       invariant(typeof out === "number", "Expected maxi() to return a number");
       assertSpiceInt32(out, "maxi result");
       return out;
     },
     mind: (values) => {
-      assertScalarMathArray(values, "mind(values)", false, 30);
-      const out: unknown = native.mind(values);
+      const valuesCopy = copyScalarMathArray(values, "mind(values)", false, 30);
+      const out: unknown = native.mind(valuesCopy);
       invariant(typeof out === "number", "Expected mind() to return a number");
       return out;
     },
     mini: (values) => {
-      assertScalarMathArray(values, "mini(values)", true, 30);
-      const out: unknown = native.mini(values);
+      const valuesCopy = copyScalarMathArray(values, "mini(values)", true, 30);
+      const out: unknown = native.mini(valuesCopy);
       invariant(typeof out === "number", "Expected mini() to return a number");
       assertSpiceInt32(out, "mini result");
       return out;

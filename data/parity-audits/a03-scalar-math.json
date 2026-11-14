@@ -22,7 +22,10 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
-    "docs/step8-scalar-math.md"
+    "docs/step8-scalar-math.md",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
   ],
   "executions": [
     {
@@ -82,7 +85,8 @@
         "coords-vectors-sumai-longer-than-variadic-limit",
         "coords-vectors-sumai-safe-prefix-signed32-extrema"
       ],
-      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending."
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
     },
     {
       "id": "local-a03-02544981-wasm",
@@ -141,7 +145,8 @@
         "coords-vectors-sumai-longer-than-variadic-limit",
         "coords-vectors-sumai-safe-prefix-signed32-extrema"
       ],
-      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending."
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
     },
     {
       "id": "ci-a03-02544981-node",
@@ -202,7 +207,8 @@
       ],
       "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
-      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
     },
     {
       "id": "ci-a03-02544981-wasm",
@@ -263,7 +269,8 @@
       ],
       "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
       "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
-      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately."
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -308,16 +315,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.brcktd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.brcktd -> typed WASM adapter -> exported _tspice_brcktd, checked heap buffers and post-read transactional cleanup -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -357,16 +364,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.brckti -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.brckti -> typed WASM adapter -> exported _tspice_brckti, checked heap buffers and post-read transactional cleanup -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -461,16 +468,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.convrt -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.convrt -> typed WASM adapter -> exported _tspice_convrt, checked heap buffers and post-read transactional cleanup -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -507,19 +514,44 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery. Signed32 count and existing WASM byte limits are checked before allocation/entry traversal; oversized sparse arrays exercise rejection without allocating huge buffers. Empty arrays use an allocated minimal buffer with count zero. Full multi-gigabyte/saturation success is not claimed.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-sumad-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sumad -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sumad -> typed WASM adapter -> exported _tspice_sumad, checked heap buffers and post-read transactional cleanup -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -551,19 +583,44 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery. Signed32 count and existing WASM byte limits are checked before allocation/entry traversal; oversized sparse arrays exercise rejection without allocating huge buffers. Empty arrays use an allocated minimal buffer with count zero. Full multi-gigabyte/saturation success is not claimed.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-sumai-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sumai -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.sumai -> typed WASM adapter -> exported _tspice_sumai, checked heap buffers and post-read transactional cleanup -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -600,19 +657,44 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-maxd-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.maxd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.maxd -> typed WASM adapter -> exported _tspice_maxd, checked heap buffers and post-read transactional cleanup -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -649,19 +731,44 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-maxi-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.maxi -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.maxi -> typed WASM adapter -> exported _tspice_maxi, checked heap buffers and post-read transactional cleanup -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -698,19 +805,44 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mind-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mind -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mind -> typed WASM adapter -> exported _tspice_mind, checked heap buffers and post-read transactional cleanup -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     },
@@ -747,22 +879,47 @@
       "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
       "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
       "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mini-empty-singleton-and-mixed"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mini -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-node", "ci-a03-02544981-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.mini -> typed WASM adapter -> exported _tspice_mini, checked heap buffers and post-read transactional cleanup -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": ["local-a03-02544981-wasm", "ci-a03-02544981-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

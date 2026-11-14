@@ -790,21 +790,25 @@ function assertScalarMathString(
     throw new TypeError(`${label} must be a string without embedded NUL`);
 }
 
-function assertScalarMathArray(
+function copyScalarMathArray(
   value: unknown,
   label: string,
   integers: boolean,
   maxCount: number,
-): asserts value is readonly number[] {
+): number[] {
   if (!Array.isArray(value)) throw new TypeError(`${label} must be an array`);
-  if (value.length > maxCount)
+  const count = value.length;
+  if (!Number.isSafeInteger(count) || count < 0 || count > maxCount)
     throw new RangeError(`${label} must contain at most ${maxCount} values`);
-  // Reject an oversized buffer before inspecting entries or acquiring memory.
-  scalarMathBufferBytes(value.length, integers ? 4 : 8);
-  for (let i = 0; i < value.length; i++) {
-    if (integers) assertSpiceInt32(value[i], `${label}[${i}]`);
-    else assertScalarMathDouble(value[i], `${label}[${i}]`);
+  scalarMathBufferBytes(count, integers ? 4 : 8);
+  const copy: number[] = [];
+  for (let i = 0; i < count; i++) {
+    const entry: unknown = value[i];
+    assertScalarMathDouble(entry, `${label}[${i}]`);
+    if (integers) assertSpiceInt32(entry, `${label}[${i}]`);
+    copy.push(entry);
   }
+  return copy;
 }
 
 function assertSumaiPrefixes(values: readonly number[]): void {
@@ -903,16 +907,21 @@ export function createCoordsVectorsApi(
       );
     },
     sumad: (values) => {
-      assertScalarMathArray(values, "sumad(values)", false, 2147483647);
-      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumad(values)",
+        false,
+        2147483647,
+      );
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 8);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 8],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAPF64.set(values, valuesPtr >>> 3);
+          module.HEAPF64.set(valuesCopy, valuesPtr >>> 3);
           const status = module._tspice_sumad(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
@@ -924,17 +933,22 @@ export function createCoordsVectorsApi(
       );
     },
     sumai: (values) => {
-      assertScalarMathArray(values, "sumai(values)", true, 2147483647);
-      assertSumaiPrefixes(values);
-      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      const valuesCopy = copyScalarMathArray(
+        values,
+        "sumai(values)",
+        true,
+        2147483647,
+      );
+      assertSumaiPrefixes(valuesCopy);
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 4);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 4],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAP32.set(values, valuesPtr >>> 2);
+          module.HEAP32.set(valuesCopy, valuesPtr >>> 2);
           const status = module._tspice_sumai(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
@@ -946,16 +960,16 @@ export function createCoordsVectorsApi(
       );
     },
     maxd: (values) => {
-      assertScalarMathArray(values, "maxd(values)", false, 30);
-      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      const valuesCopy = copyScalarMathArray(values, "maxd(values)", false, 30);
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 8);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 8],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAPF64.set(values, valuesPtr >>> 3);
+          module.HEAPF64.set(valuesCopy, valuesPtr >>> 3);
           const status = module._tspice_maxd(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
@@ -967,16 +981,16 @@ export function createCoordsVectorsApi(
       );
     },
     maxi: (values) => {
-      assertScalarMathArray(values, "maxi(values)", true, 30);
-      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      const valuesCopy = copyScalarMathArray(values, "maxi(values)", true, 30);
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 4);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 4],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAP32.set(values, valuesPtr >>> 2);
+          module.HEAP32.set(valuesCopy, valuesPtr >>> 2);
           const status = module._tspice_maxi(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
@@ -988,16 +1002,16 @@ export function createCoordsVectorsApi(
       );
     },
     mind: (values) => {
-      assertScalarMathArray(values, "mind(values)", false, 30);
-      const valuesBytes = scalarMathBufferBytes(values.length, 8);
+      const valuesCopy = copyScalarMathArray(values, "mind(values)", false, 30);
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 8);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 8],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAPF64.set(values, valuesPtr >>> 3);
+          module.HEAPF64.set(valuesCopy, valuesPtr >>> 3);
           const status = module._tspice_mind(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
@@ -1009,16 +1023,16 @@ export function createCoordsVectorsApi(
       );
     },
     mini: (values) => {
-      assertScalarMathArray(values, "mini(values)", true, 30);
-      const valuesBytes = scalarMathBufferBytes(values.length, 4);
+      const valuesCopy = copyScalarMathArray(values, "mini(values)", true, 30);
+      const valuesBytes = scalarMathBufferBytes(valuesCopy.length, 4);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, valuesBytes, 4],
         (errPtr, valuesPtr, outPtr) => {
-          module.HEAP32.set(values, valuesPtr >>> 2);
+          module.HEAP32.set(valuesCopy, valuesPtr >>> 2);
           const status = module._tspice_mini(
             valuesPtr,
-            values.length,
+            valuesCopy.length,
             outPtr,
             errPtr,
             ERR_MAX_BYTES,
