@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,264 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertCombinationScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyCombinationVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
+}
+
+function copyMatrixInput(value: unknown, label: string): number[] {
+  // As with the structural Mat3 contract, accept numeric TypedArrays as well
+  // as ordinary arrays. Read by index only; a caller iterator is not trusted.
+  if (
+    !(
+      Array.isArray(value) ||
+      value instanceof Float64Array ||
+      value instanceof Float32Array ||
+      value instanceof Int8Array ||
+      value instanceof Uint8Array ||
+      value instanceof Uint8ClampedArray ||
+      value instanceof Int16Array ||
+      value instanceof Uint16Array ||
+      value instanceof Int32Array ||
+      value instanceof Uint32Array
+    ) ||
+    value.length !== 9
+  ) {
+    throw new TypeError(`${label} must contain exactly nine finite numbers`);
+  }
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    copy.push(component);
+  }
+  return copy;
+}
+
+function readCombinationVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >> 3;
+  const heap = module.HEAPF64;
+  return [heap[i]!, heap[i + 1]!, heap[i + 2]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    vlcom: (a, v1, b, v2) => {
+      assertCombinationScalar(a, "vlcom(a)");
+      const v1Copy = copyCombinationVector(v1, "vlcom(v1)");
+      assertCombinationScalar(b, "vlcom(b)");
+      const v2Copy = copyCombinationVector(v2, "vlcom(v2)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, v1Ptr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
+          const status = module._tspice_vlcom(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vlcom3: (a, v1, b, v2, c, v3) => {
+      assertCombinationScalar(a, "vlcom3(a)");
+      const v1Copy = copyCombinationVector(v1, "vlcom3(v1)");
+      assertCombinationScalar(b, "vlcom3(b)");
+      const v2Copy = copyCombinationVector(v2, "vlcom3(v2)");
+      assertCombinationScalar(c, "vlcom3(c)");
+      const v3Copy = copyCombinationVector(v3, "vlcom3(v3)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24, 24],
+        (errPtr, v1Ptr, v2Ptr, v3Ptr, outPtr) => {
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
+          module.HEAPF64.set(v3Copy, v3Ptr >> 3);
+          const status = module._tspice_vlcom3(
+            a,
+            v1Ptr,
+            b,
+            v2Ptr,
+            c,
+            v3Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vperp: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vperp(a)");
+      const bCopy = copyCombinationVector(b, "vperp(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_vperp(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vproj: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vproj(a)");
+      const bCopy = copyCombinationVector(b, "vproj(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_vproj(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vrel: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vrel(a)");
+      const bCopy = copyCombinationVector(b, "vrel(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 8],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_vrel(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    vrotv: (v, axis, theta) => {
+      const vCopy = copyCombinationVector(v, "vrotv(v)");
+      const axisCopy = copyCombinationVector(axis, "vrotv(axis)");
+      assertCombinationScalar(theta, "vrotv(theta)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24, 24],
+        (errPtr, vPtr, axisPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          module.HEAPF64.set(axisCopy, axisPtr >> 3);
+          const status = module._tspice_vrotv(
+            vPtr,
+            axisPtr,
+            theta,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    rotvec: (v, angle, axis) => {
+      const vCopy = copyCombinationVector(v, "rotvec(v)");
+      assertCombinationScalar(angle, "rotvec(angle)");
+      assertSpiceInt32(axis, "rotvec(axis)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, vPtr, outPtr) => {
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          const status = module._tspice_rotvec(
+            vPtr,
+            angle,
+            axis,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readCombinationVector(module, outPtr);
+        },
+      );
+    },
+    vtmv: (v1, matrix, v2) => {
+      const v1Copy = copyCombinationVector(v1, "vtmv(v1)");
+      const matrixCopy = copyMatrixInput(matrix, "vtmv(matrix)");
+      const v2Copy = copyCombinationVector(v2, "vtmv(v2)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 72, 24, 8],
+        (errPtr, v1Ptr, matrixPtr, v2Ptr, outPtr) => {
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(matrixCopy, matrixPtr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
+          const status = module._tspice_vtmv(
+            v1Ptr,
+            matrixPtr,
+            v2Ptr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

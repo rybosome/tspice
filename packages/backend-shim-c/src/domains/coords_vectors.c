@@ -22,6 +22,147 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   }
 }
 
+static int tspice_combination_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "vector operation requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_vlcom(double a, const double *v1, double b, const double *v2, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v1 || !v2 || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vlcom_c(a, v1, b, v2, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vlcom3(double a, const double *v1, double b, const double *v2, double c, const double *v3, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v1 || !v2 || !v3 || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vlcom3_c(a, v1, b, v2, c, v3, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vperp(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vperp_c(a, b, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vproj(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vproj_c(a, b, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vrel(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = vrel_c(a, b);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
+int tspice_vrotv(const double *v, const double *axis, double theta, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !axis || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vrotv_c(v, axis, theta, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_rotvec(const double *v, double angle, int axis, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  rotvec_c(v, angle, (SpiceInt)axis, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vtmv(const double *v1, const double *matrix, const double *v2, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v1 || !matrix || !v2 || !out) return tspice_combination_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  SpiceDouble m[3][3];
+  FillMat33(m, matrix);
+  const SpiceDouble value = vtmv_c(v1, m, v2);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
 int tspice_reclat(
     const double *rect3,
     double *outRadius,

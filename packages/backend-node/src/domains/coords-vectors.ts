@@ -15,9 +15,132 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertCombinationScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyCombinationVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
+}
+
+function copyMatrixInput(value: unknown, label: string): number[] {
+  // As with the structural Mat3 contract, accept numeric TypedArrays as well
+  // as ordinary arrays. Read by index only; a caller iterator is not trusted.
+  if (
+    !(
+      Array.isArray(value) ||
+      value instanceof Float64Array ||
+      value instanceof Float32Array ||
+      value instanceof Int8Array ||
+      value instanceof Uint8Array ||
+      value instanceof Uint8ClampedArray ||
+      value instanceof Int16Array ||
+      value instanceof Uint16Array ||
+      value instanceof Int32Array ||
+      value instanceof Uint32Array
+    ) ||
+    value.length !== 9
+  ) {
+    throw new TypeError(`${label} must contain exactly nine finite numbers`);
+  }
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    copy.push(component);
+  }
+  return copy;
+}
+
+function combinationOutputNumber(value: unknown, label: string): number {
+  // Finite inputs can produce IEEE-754 nonfinite outputs in CSPICE.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function combinationOutputVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must have length three`);
+  return [
+    combinationOutputNumber(value[0], label),
+    combinationOutputNumber(value[1], label),
+    combinationOutputNumber(value[2], label),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    vlcom: (a, v1, b, v2) => {
+      assertCombinationScalar(a, "vlcom(a)");
+      const v1Copy = copyCombinationVector(v1, "vlcom(v1)");
+      assertCombinationScalar(b, "vlcom(b)");
+      const v2Copy = copyCombinationVector(v2, "vlcom(v2)");
+      const out = native.vlcom(a, v1Copy, b, v2Copy);
+      return combinationOutputVector(out, "vlcom result");
+    },
+    vlcom3: (a, v1, b, v2, c, v3) => {
+      assertCombinationScalar(a, "vlcom3(a)");
+      const v1Copy = copyCombinationVector(v1, "vlcom3(v1)");
+      assertCombinationScalar(b, "vlcom3(b)");
+      const v2Copy = copyCombinationVector(v2, "vlcom3(v2)");
+      assertCombinationScalar(c, "vlcom3(c)");
+      const v3Copy = copyCombinationVector(v3, "vlcom3(v3)");
+      const out = native.vlcom3(a, v1Copy, b, v2Copy, c, v3Copy);
+      return combinationOutputVector(out, "vlcom3 result");
+    },
+    vperp: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vperp(a)");
+      const bCopy = copyCombinationVector(b, "vperp(b)");
+      const out = native.vperp(aCopy, bCopy);
+      return combinationOutputVector(out, "vperp result");
+    },
+    vproj: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vproj(a)");
+      const bCopy = copyCombinationVector(b, "vproj(b)");
+      const out = native.vproj(aCopy, bCopy);
+      return combinationOutputVector(out, "vproj result");
+    },
+    vrel: (a, b) => {
+      const aCopy = copyCombinationVector(a, "vrel(a)");
+      const bCopy = copyCombinationVector(b, "vrel(b)");
+      const out = native.vrel(aCopy, bCopy);
+      return combinationOutputNumber(out, "vrel result");
+    },
+    vrotv: (v, axis, theta) => {
+      const vCopy = copyCombinationVector(v, "vrotv(v)");
+      const axisCopy = copyCombinationVector(axis, "vrotv(axis)");
+      assertCombinationScalar(theta, "vrotv(theta)");
+      const out = native.vrotv(vCopy, axisCopy, theta);
+      return combinationOutputVector(out, "vrotv result");
+    },
+    rotvec: (v, angle, axis) => {
+      const vCopy = copyCombinationVector(v, "rotvec(v)");
+      assertCombinationScalar(angle, "rotvec(angle)");
+      assertSpiceInt32(axis, "rotvec(axis)");
+      const out = native.rotvec(vCopy, angle, axis);
+      return combinationOutputVector(out, "rotvec result");
+    },
+    vtmv: (v1, matrix, v2) => {
+      const v1Copy = copyCombinationVector(v1, "vtmv(v1)");
+      const matrixCopy = copyMatrixInput(matrix, "vtmv(matrix)");
+      const v2Copy = copyCombinationVector(v2, "vtmv(v2)");
+      const out = native.vtmv(v1Copy, matrixCopy, v2Copy);
+      return combinationOutputNumber(out, "vtmv result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

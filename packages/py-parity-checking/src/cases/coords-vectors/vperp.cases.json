@@ -1,0 +1,112 @@
+[
+  {
+    "caseId": "coords-vectors-vperp-mixed-and-reversed",
+    "description": "vperp: mixed-and-reversed; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, -2, 4],
+        "b": [5, 7, -11]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [5, 7, -11],
+        "b": [1, -2, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vperp-zero-input-and-zero-reference",
+    "description": "vperp: zero-input-and-zero-reference; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vperp",
+        "a": [0, 0, 0],
+        "b": [1, -2, 4]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, -2, 4],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [0, 0, 0],
+        "b": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vperp-parallel-opposed-orthogonal",
+    "description": "vperp: parallel-opposed-orthogonal; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, 2, 4],
+        "b": [2, 4, 8]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, 2, 4],
+        "b": [-2, -4, -8]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [3, 4, 0],
+        "b": [-4, 3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vperp-reference-scale-and-sign",
+    "description": "vperp: reference-scale-and-sign; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, -2, 4],
+        "b": [5e200, 7e200, -1.1e201]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, -2, 4],
+        "b": [5e-200, 7e-200, -1.1e-199]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1, -2, 4],
+        "b": [-5, -7, 11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vperp-input-scaled-magnitudes",
+    "description": "vperp: input-scaled-magnitudes; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1e200, -2e200, 4e200],
+        "b": [5, 7, -11]
+      },
+      {
+        "op": "coords-vectors.vperp",
+        "a": [1e-200, -2e-200, 4e-200],
+        "b": [5, 7, -11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

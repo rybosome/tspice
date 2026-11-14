@@ -22,6 +22,14 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVlcom,
+    StepCoordsVectorsVlcom3,
+    StepCoordsVectorsVperp,
+    StepCoordsVectorsVproj,
+    StepCoordsVectorsVrel,
+    StepCoordsVectorsVrotv,
+    StepCoordsVectorsRotvec,
+    StepCoordsVectorsVtmv,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +502,71 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.vlcom":
+            return StepCoordsVectorsVlcom(
+                op=op,
+                a=_expect_number(step.get("a"), label="coords-vectors.vlcom.a"),
+                v1=_expect_vec3(step.get("v1"), label="coords-vectors.vlcom.v1"),
+                b=_expect_number(step.get("b"), label="coords-vectors.vlcom.b"),
+                v2=_expect_vec3(step.get("v2"), label="coords-vectors.vlcom.v2"),
+            )
+
+        case "coords-vectors.vlcom3":
+            return StepCoordsVectorsVlcom3(
+                op=op,
+                a=_expect_number(step.get("a"), label="coords-vectors.vlcom3.a"),
+                v1=_expect_vec3(step.get("v1"), label="coords-vectors.vlcom3.v1"),
+                b=_expect_number(step.get("b"), label="coords-vectors.vlcom3.b"),
+                v2=_expect_vec3(step.get("v2"), label="coords-vectors.vlcom3.v2"),
+                c=_expect_number(step.get("c"), label="coords-vectors.vlcom3.c"),
+                v3=_expect_vec3(step.get("v3"), label="coords-vectors.vlcom3.v3"),
+            )
+
+        case "coords-vectors.vperp":
+            return StepCoordsVectorsVperp(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vperp.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vperp.b"),
+            )
+
+        case "coords-vectors.vproj":
+            return StepCoordsVectorsVproj(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vproj.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vproj.b"),
+            )
+
+        case "coords-vectors.vrel":
+            return StepCoordsVectorsVrel(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vrel.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vrel.b"),
+            )
+
+        case "coords-vectors.vrotv":
+            return StepCoordsVectorsVrotv(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.vrotv.v"),
+                axis=_expect_vec3(step.get("axis"), label="coords-vectors.vrotv.axis"),
+                theta=_expect_number(step.get("theta"), label="coords-vectors.vrotv.theta"),
+            )
+
+        case "coords-vectors.rotvec":
+            return StepCoordsVectorsRotvec(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.rotvec.v"),
+                angle=_expect_number(step.get("angle"), label="coords-vectors.rotvec.angle"),
+                axis=_expect_int(step.get("axis"), label="coords-vectors.rotvec.axis"),
+            )
+
+        case "coords-vectors.vtmv":
+            return StepCoordsVectorsVtmv(
+                op=op,
+                v1=_expect_vec3(step.get("v1"), label="coords-vectors.vtmv.v1"),
+                matrix=_expect_3x3_matrix(step.get("matrix"), label="coords-vectors.vtmv.matrix"),
+                v2=_expect_vec3(step.get("v2"), label="coords-vectors.vtmv.v2"),
             )
 
         case "coords-vectors.reclat":

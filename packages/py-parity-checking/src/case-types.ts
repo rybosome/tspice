@@ -172,6 +172,63 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsVlcom = {
+  op: "coords-vectors.vlcom";
+  a: number;
+  v1: Vector3;
+  b: number;
+  v2: Vector3;
+};
+
+export type StepCoordsVectorsVlcom3 = {
+  op: "coords-vectors.vlcom3";
+  a: number;
+  v1: Vector3;
+  b: number;
+  v2: Vector3;
+  c: number;
+  v3: Vector3;
+};
+
+export type StepCoordsVectorsVperp = {
+  op: "coords-vectors.vperp";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVproj = {
+  op: "coords-vectors.vproj";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVrel = {
+  op: "coords-vectors.vrel";
+  a: Vector3;
+  b: Vector3;
+};
+
+export type StepCoordsVectorsVrotv = {
+  op: "coords-vectors.vrotv";
+  v: Vector3;
+  axis: Vector3;
+  theta: number;
+};
+
+export type StepCoordsVectorsRotvec = {
+  op: "coords-vectors.rotvec";
+  v: Vector3;
+  angle: number;
+  axis: number;
+};
+
+export type StepCoordsVectorsVtmv = {
+  op: "coords-vectors.vtmv";
+  v1: Vector3;
+  matrix: Matrix3x3;
+  v2: Vector3;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1370,14 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsVlcom
+  | StepCoordsVectorsVlcom3
+  | StepCoordsVectorsVperp
+  | StepCoordsVectorsVproj
+  | StepCoordsVectorsVrel
+  | StepCoordsVectorsVrotv
+  | StepCoordsVectorsRotvec
+  | StepCoordsVectorsVtmv
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1549,14 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.vlcom"; value: Vector3 }
+  | { op: "coords-vectors.vlcom3"; value: Vector3 }
+  | { op: "coords-vectors.vperp"; value: Vector3 }
+  | { op: "coords-vectors.vproj"; value: Vector3 }
+  | { op: "coords-vectors.vrel"; value: number }
+  | { op: "coords-vectors.vrotv"; value: Vector3 }
+  | { op: "coords-vectors.rotvec"; value: Vector3 }
+  | { op: "coords-vectors.vtmv"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

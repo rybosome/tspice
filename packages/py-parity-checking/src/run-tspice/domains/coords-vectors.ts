@@ -5,6 +5,14 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsVlcom,
+  StepCoordsVectorsVlcom3,
+  StepCoordsVectorsVperp,
+  StepCoordsVectorsVproj,
+  StepCoordsVectorsVrel,
+  StepCoordsVectorsVrotv,
+  StepCoordsVectorsRotvec,
+  StepCoordsVectorsVtmv,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -26,6 +34,14 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsVlcom
+  | StepCoordsVectorsVlcom3
+  | StepCoordsVectorsVperp
+  | StepCoordsVectorsVproj
+  | StepCoordsVectorsVrel
+  | StepCoordsVectorsVrotv
+  | StepCoordsVectorsRotvec
+  | StepCoordsVectorsVtmv
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -71,6 +87,57 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.vlcom": {
+      const out = context.spice.raw.vlcom(step.a, step.v1, step.b, step.v2);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vlcom3": {
+      const out = context.spice.raw.vlcom3(
+        step.a,
+        step.v1,
+        step.b,
+        step.v2,
+        step.c,
+        step.v3,
+      );
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vperp": {
+      const out = context.spice.raw.vperp(step.a, step.b);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vproj": {
+      const out = context.spice.raw.vproj(step.a, step.b);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vrel": {
+      const out = context.spice.raw.vrel(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vrotv": {
+      const out = context.spice.raw.vrotv(step.v, step.axis, step.theta);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.rotvec": {
+      const out = context.spice.raw.rotvec(step.v, step.angle, step.axis);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vtmv": {
+      const out = context.spice.raw.vtmv(
+        step.v1,
+        flattenMatrix(step.matrix),
+        step.v2,
+      );
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

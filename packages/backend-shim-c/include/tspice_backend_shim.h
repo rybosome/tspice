@@ -1079,6 +1079,23 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// vlcom_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vlcom(double a, const double *v1, double b, const double *v2, double *out, char *err, int errMaxBytes);
+// vlcom3_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vlcom3(double a, const double *v1, double b, const double *v2, double c, const double *v3, double *out, char *err, int errMaxBytes);
+// vperp_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vperp(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vproj_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vproj(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vrel_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vrel(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// vrotv_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vrotv(const double *v, const double *axis, double theta, double *out, char *err, int errMaxBytes);
+// rotvec_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_rotvec(const double *v, double angle, int axis, double *out, char *err, int errMaxBytes);
+// vtmv_c: preserved argument order; vector/matrix inputs are borrowed.
+int tspice_vtmv(const double *v1, const double *matrix, const double *v2, double *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,
