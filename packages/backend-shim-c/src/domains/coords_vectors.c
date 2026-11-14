@@ -2,6 +2,7 @@
 
 #include "SpiceUsr.h"
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -23,13 +24,160 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   }
 }
 
-static int InvalidSortedBound(char *err, int errMaxBytes) {
+static int SearchInputError(const char *message, char *err, int errMaxBytes) {
   tspice_clear_last_error_buffers();
   if (err && errMaxBytes > 0) {
-    strncpy(err, "Invalid sorted search buffer or count", (size_t)errMaxBytes - 1);
+    strncpy(err, message, (size_t)errMaxBytes - 1);
     err[errMaxBytes - 1] = '\0';
   }
   return 1;
+}
+
+static int InvalidSortedBound(char *err, int errMaxBytes) {
+  return SearchInputError("Invalid sorted search buffer or count", err, errMaxBytes);
+}
+
+// BSCHOC indexes character rows directly; BSCHOI translates these indices to
+// one-based integers and also allocates an n*sizeof(SpiceInt) private copy.
+static int CheckSearchOrder(const int *order, int n, char *err, int errMaxBytes) {
+  if (!order || n < 0 || n > INT32_MAX / (int)sizeof(SpiceInt))
+    return InvalidSortedBound(err, errMaxBytes);
+  if (n == 0) return 0;
+  unsigned char *seen = (unsigned char *)calloc((size_t)n, sizeof(*seen));
+  if (!seen)
+    return SearchInputError("Could not allocate search order validation buffer", err, errMaxBytes);
+  for (int i = 0; i < n; ++i) {
+    const int index = order[i];
+    if (index < 0 || index >= n || seen[index]) {
+      free(seen);
+      return SearchInputError("Expected a permutation of zero-based search indices", err, errMaxBytes);
+    }
+    seen[index] = 1;
+  }
+  free(seen);
+  return 0;
+}
+
+int tspice_bschoc(
+    const char *key, int n, int width, const char *rows, const int *order, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!key || !rows || !out || width < 2 || n < 0 || n > INT32_MAX / width)
+    return InvalidSortedBound(err, errMaxBytes);
+  if (CheckSearchOrder(order, n, err, errMaxBytes)) return 1;
+  const int index = bschoc_c(key, n, width, rows, order);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_bschoi(
+    int key, int n, const int *values, const int *order, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || n > INT32_MAX / (int)sizeof(SpiceInt) || (size_t)n > SIZE_MAX / sizeof(int))
+    return InvalidSortedBound(err, errMaxBytes);
+  if (CheckSearchOrder(order, n, err, errMaxBytes)) return 1;
+  const int index = bschoi_c(key, n, values, order);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_bsrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!key || !rows || !out || width < 2 || n < 0 || n > INT32_MAX / width)
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = bsrchc_c(key, n, width, rows);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_bsrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || n > INT32_MAX / 2 || (size_t)n > SIZE_MAX / sizeof(double))
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = bsrchd_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_bsrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || n > INT32_MAX / 2 || (size_t)n > SIZE_MAX / sizeof(int))
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = bsrchi_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_isrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!key || !rows || !out || width < 2 || n < 0 || n > INT32_MAX / width)
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = isrchc_c(key, n, width, rows);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_isrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || n > INT32_MAX - 1 || (size_t)n > SIZE_MAX / sizeof(double))
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = isrchd_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
+}
+
+int tspice_isrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || n > INT32_MAX - 1 || (size_t)n > SIZE_MAX / sizeof(int))
+    return InvalidSortedBound(err, errMaxBytes);
+  const int index = isrchi_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = index;
+  return 0;
 }
 
 int tspice_lstlec(

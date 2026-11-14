@@ -422,6 +422,22 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/721"],
+      "nextAction": "Revalidate the inherited A24 routines on the combined A24/A22 source. Historical PR #721 executions retain their original source fingerprints."
+    },
+    {
+      "id": "a22-array-search",
+      "routines": [
+        "bschoc_c",
+        "bschoi_c",
+        "bsrchc_c",
+        "bsrchd_c",
+        "bsrchi_c",
+        "isrchc_c",
+        "isrchd_c",
+        "isrchi_c"
+      ],
+      "dependsOn": ["a24-sorted-bounds"],
+      "prs": ["https://github.com/rybosome/tspice/pull/732"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]

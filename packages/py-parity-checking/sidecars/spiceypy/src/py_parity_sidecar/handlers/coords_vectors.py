@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import spiceypy as sp
 
-from .. import sorted_bounds_oracle
+from .. import array_search_oracle, sorted_bounds_oracle
 
 from ..models import (
     StepCoordsVectorsAxisar,
@@ -17,6 +17,14 @@ from ..models import (
     StepCoordsVectorsLstltc,
     StepCoordsVectorsLstltd,
     StepCoordsVectorsLstlti,
+    StepCoordsVectorsBschoc,
+    StepCoordsVectorsBschoi,
+    StepCoordsVectorsBsrchc,
+    StepCoordsVectorsBsrchd,
+    StepCoordsVectorsBsrchi,
+    StepCoordsVectorsIsrchc,
+    StepCoordsVectorsIsrchd,
+    StepCoordsVectorsIsrchi,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -82,6 +90,38 @@ def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext)
     if isinstance(step, StepCoordsVectorsLstlti):
         sorted_bounds_oracle.numeric(step.key, step.values, integer=True)
         return StepOutput(op=step.op, value=sp.lstlti(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsBschoc):
+        width = array_search_oracle.character_width(step.key, step.values, order=step.order, binary=True)
+        return StepOutput(op=step.op, value=sp.bschoc(step.key, len(step.values), width, step.values, step.order))
+
+    if isinstance(step, StepCoordsVectorsBschoi):
+        array_search_oracle.numeric(step.key, step.values, order=step.order, binary=True, integer=True)
+        return StepOutput(op=step.op, value=sp.bschoi(step.key, len(step.values), step.values, step.order))
+
+    if isinstance(step, StepCoordsVectorsBsrchc):
+        width = array_search_oracle.character_width(step.key, step.values, order=None, binary=True)
+        return StepOutput(op=step.op, value=sp.bsrchc(step.key, len(step.values), width, step.values))
+
+    if isinstance(step, StepCoordsVectorsBsrchd):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=True, integer=False)
+        return StepOutput(op=step.op, value=sp.bsrchd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsBsrchi):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=True, integer=True)
+        return StepOutput(op=step.op, value=sp.bsrchi(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchc):
+        width = array_search_oracle.character_width(step.key, step.values, order=None, binary=False)
+        return StepOutput(op=step.op, value=sp.isrchc(step.key, len(step.values), width, step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchd):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=False, integer=False)
+        return StepOutput(op=step.op, value=sp.isrchd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsIsrchi):
+        array_search_oracle.numeric(step.key, step.values, order=None, binary=False, integer=True)
+        return StepOutput(op=step.op, value=sp.isrchi(step.key, len(step.values), step.values))
 
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)

@@ -16,16 +16,16 @@ using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
-static bool ReadBoundNumber(Napi::Env env, const Napi::Value& value, double* out) {
+static bool ReadBoundNumber(Napi::Env env, const Napi::Value& value, double* out, bool allowNaN = false) {
   if (value.IsNumber()) {
     const double number = value.As<Napi::Number>().DoubleValue();
-    if (!std::isnan(number)) { *out = number; return true; }
+    if (allowNaN || !std::isnan(number)) { *out = number; return true; }
   }
   ThrowSpiceError(Napi::TypeError::New(env, "Expected an ordered double value"));
   return false;
 }
 
-static bool ReadBoundNumber(Napi::Env env, const Napi::Value& value, int* out) {
+static bool ReadBoundNumber(Napi::Env env, const Napi::Value& value, int* out, bool = false) {
   if (value.IsNumber()) {
     const double number = value.As<Napi::Number>().DoubleValue();
     if (number >= INT32_MIN && number <= INT32_MAX && std::trunc(number) == number) {
@@ -60,13 +60,14 @@ static std::unique_ptr<T[]> AllocateBounds(Napi::Env env, size_t count) {
 }
 
 template<typename T>
-static std::unique_ptr<T[]> CopyBoundNumbers(Napi::Env env, const Napi::Array& values, int count) {
+static std::unique_ptr<T[]> CopyBoundNumbers(Napi::Env env, const Napi::Array& values, int count,
+                                             bool allowNaN = false) {
   auto buffer = AllocateBounds<T>(env, static_cast<size_t>(count));
   if (!buffer) return nullptr;
   if (count == 0) buffer[0] = 0;
   for (int i = 0; i < count; i++) {
     const Napi::Value item = values.Get(static_cast<uint32_t>(i));
-    if (env.IsExceptionPending() || !ReadBoundNumber(env, item, &buffer[i])) return nullptr;
+    if (env.IsExceptionPending() || !ReadBoundNumber(env, item, &buffer[i], allowNaN)) return nullptr;
   }
   return buffer;
 }
@@ -123,6 +124,199 @@ static std::unique_ptr<char[]> PackBoundRows(Napi::Env env, const Napi::Array& v
     row[*width - 1] = '\0';
   }
   return table;
+}
+
+static bool CheckOrderLength(Napi::Env env, const Napi::Value& value, int count) {
+  int orderCount = 0;
+  if (!BoundCount(env, value, sizeof(int), INT32_MAX / sizeof(int), &orderCount)) return false;
+  if (orderCount == count) return true;
+  ThrowSpiceError(Napi::RangeError::New(env, "Search order and values must have the same length"));
+  return false;
+}
+
+static Napi::Value Bschoc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bschoc() expects key, values, order"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(std::string), INT32_MAX / sizeof(int), &count)) return env.Undefined();
+  if (!CheckOrderLength(env, info[2], count)) return env.Undefined();
+  std::string key;
+  if (!ReadBoundText(env, info[0], INT32_MAX - 1, &key)) return env.Undefined();
+  int width = 2;
+  auto rows = PackBoundRows(env, info[1].As<Napi::Array>(), count, &width);
+  if (!rows) return env.Undefined();
+  auto order = CopyBoundNumbers<int>(env, info[2].As<Napi::Array>(), count);
+  if (!order) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_bschoc(key.c_str(), count, width, rows.get(), order.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bschoc", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Bschoi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bschoi() expects key, values, order"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(int), INT32_MAX / sizeof(int), &count)) return env.Undefined();
+  if (!CheckOrderLength(env, info[2], count)) return env.Undefined();
+  int key = 0;
+  if (!ReadBoundNumber(env, info[0], &key)) return env.Undefined();
+  auto values = CopyBoundNumbers<int>(env, info[1].As<Napi::Array>(), count);
+  if (!values) return env.Undefined();
+  auto order = CopyBoundNumbers<int>(env, info[2].As<Napi::Array>(), count);
+  if (!order) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_bschoi(key, count, values.get(), order.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bschoi", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Bsrchc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bsrchc() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(std::string), INT32_MAX / 2, &count)) return env.Undefined();
+  std::string key;
+  if (!ReadBoundText(env, info[0], INT32_MAX - 1, &key)) return env.Undefined();
+  int width = 2;
+  auto rows = PackBoundRows(env, info[1].As<Napi::Array>(), count, &width);
+  if (!rows) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_bsrchc(key.c_str(), count, width, rows.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bsrchc", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Bsrchd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bsrchd() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(double), INT32_MAX / 2, &count)) return env.Undefined();
+  double key = 0;
+  if (!ReadBoundNumber(env, info[0], &key)) return env.Undefined();
+  auto values = CopyBoundNumbers<double>(env, info[1].As<Napi::Array>(), count);
+  if (!values) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_bsrchd(key, count, values.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bsrchd", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Bsrchi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "bsrchi() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(int), INT32_MAX / 2, &count)) return env.Undefined();
+  int key = 0;
+  if (!ReadBoundNumber(env, info[0], &key)) return env.Undefined();
+  auto values = CopyBoundNumbers<int>(env, info[1].As<Napi::Array>(), count);
+  if (!values) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_bsrchi(key, count, values.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling bsrchi", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Isrchc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrchc() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(std::string), INT32_MAX / 2, &count)) return env.Undefined();
+  std::string key;
+  if (!ReadBoundText(env, info[0], INT32_MAX - 1, &key)) return env.Undefined();
+  int width = 2;
+  auto rows = PackBoundRows(env, info[1].As<Napi::Array>(), count, &width);
+  if (!rows) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_isrchc(key.c_str(), count, width, rows.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling isrchc", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Isrchd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrchd() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(double), INT32_MAX - 1, &count)) return env.Undefined();
+  double key = 0;
+  if (!ReadBoundNumber(env, info[0], &key, true)) return env.Undefined();
+  auto values = CopyBoundNumbers<double>(env, info[1].As<Napi::Array>(), count, true);
+  if (!values) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_isrchd(key, count, values.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling isrchd", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Isrchi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrchi() expects key, values"));
+    return env.Undefined();
+  }
+  int count = 0;
+  if (!BoundCount(env, info[1], sizeof(int), INT32_MAX - 1, &count)) return env.Undefined();
+  int key = 0;
+  if (!ReadBoundNumber(env, info[0], &key)) return env.Undefined();
+  auto values = CopyBoundNumbers<int>(env, info[1].As<Napi::Array>(), count);
+  if (!values) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = -1;
+  if (tspice_isrchi(key, count, values.get(), &out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling isrchi", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
 }
 
 static Napi::Value Lstlec(const Napi::CallbackInfo& info) {
@@ -823,6 +1017,14 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "bschoc", Napi::Function::New(env, Bschoc), __func__)) return;
+  if (!SetExportChecked(env, exports, "bschoi", Napi::Function::New(env, Bschoi), __func__)) return;
+  if (!SetExportChecked(env, exports, "bsrchc", Napi::Function::New(env, Bsrchc), __func__)) return;
+  if (!SetExportChecked(env, exports, "bsrchd", Napi::Function::New(env, Bsrchd), __func__)) return;
+  if (!SetExportChecked(env, exports, "bsrchi", Napi::Function::New(env, Bsrchi), __func__)) return;
+  if (!SetExportChecked(env, exports, "isrchc", Napi::Function::New(env, Isrchc), __func__)) return;
+  if (!SetExportChecked(env, exports, "isrchd", Napi::Function::New(env, Isrchd), __func__)) return;
+  if (!SetExportChecked(env, exports, "isrchi", Napi::Function::New(env, Isrchi), __func__)) return;
   if (!SetExportChecked(env, exports, "lstlec", Napi::Function::New(env, Lstlec), __func__)) return;
   if (!SetExportChecked(env, exports, "lstled", Napi::Function::New(env, Lstled), __func__)) return;
   if (!SetExportChecked(env, exports, "lstlei", Napi::Function::New(env, Lstlei), __func__)) return;

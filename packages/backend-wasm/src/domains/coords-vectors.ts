@@ -4,6 +4,7 @@ import type {
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
+  searchOrderInput,
   sortedNumericInputs,
   sortedCharacterInputs,
   sortedBoundResult,
@@ -806,6 +807,261 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    bschoc: (key, values, order) => {
+      const input = sortedCharacterInputs(
+        key,
+        values,
+        WASM_MAX_ALLOC_BYTES,
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      const count = input.rows.length;
+      const indices = searchOrderInput(order, count);
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          input.keyBytes + 1,
+          Math.max(1, count * input.width),
+          Math.max(1, count) * 4,
+          4,
+        ],
+        (errPtr, keyPtr, rowsPtr, orderPtr, outPtr) => {
+          writeBoundText(
+            module,
+            keyPtr,
+            key,
+            input.keyBytes,
+            rowsPtr,
+            input.rows,
+            input.width,
+          );
+          module.HEAP32.set(indices, orderPtr >>> 2);
+          const status = module._tspice_bschoc(
+            keyPtr,
+            count,
+            input.width,
+            rowsPtr,
+            orderPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    bschoi: (key, values, order) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      const count = input.values.length;
+      const indices = searchOrderInput(order, count);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, count) * 4, Math.max(1, count) * 4, 4],
+        (errPtr, valuesPtr, orderPtr, outPtr) => {
+          module.HEAP32.set(input.values, valuesPtr >>> 2);
+          module.HEAP32.set(indices, orderPtr >>> 2);
+          const status = module._tspice_bschoi(
+            input.key,
+            count,
+            valuesPtr,
+            orderPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    bsrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values, WASM_MAX_ALLOC_BYTES);
+      const count = input.rows.length;
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          input.keyBytes + 1,
+          Math.max(1, count * input.width),
+          4,
+        ],
+        (errPtr, keyPtr, rowsPtr, outPtr) => {
+          writeBoundText(
+            module,
+            keyPtr,
+            key,
+            input.keyBytes,
+            rowsPtr,
+            input.rows,
+            input.width,
+          );
+          const status = module._tspice_bsrchc(
+            keyPtr,
+            count,
+            input.width,
+            rowsPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    bsrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "double",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      const count = input.values.length;
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, count) * 8, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAPF64.set(input.values, valuesPtr >>> 3);
+          const status = module._tspice_bsrchd(
+            input.key,
+            count,
+            valuesPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    bsrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      const count = input.values.length;
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, count) * 4, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAP32.set(input.values, valuesPtr >>> 2);
+          const status = module._tspice_bsrchi(
+            input.key,
+            count,
+            valuesPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    isrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values, WASM_MAX_ALLOC_BYTES);
+      const count = input.rows.length;
+      return withAllocs(
+        module,
+        [
+          ERR_MAX_BYTES,
+          input.keyBytes + 1,
+          Math.max(1, count * input.width),
+          4,
+        ],
+        (errPtr, keyPtr, rowsPtr, outPtr) => {
+          writeBoundText(
+            module,
+            keyPtr,
+            key,
+            input.keyBytes,
+            rowsPtr,
+            input.rows,
+            input.width,
+          );
+          const status = module._tspice_isrchc(
+            keyPtr,
+            count,
+            input.width,
+            rowsPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    isrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "ieee",
+        WASM_MAX_ALLOC_BYTES / 8,
+      );
+      const count = input.values.length;
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, count) * 8, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAPF64.set(input.values, valuesPtr >>> 3);
+          const status = module._tspice_isrchd(
+            input.key,
+            count,
+            valuesPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
+    isrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        WASM_MAX_ALLOC_BYTES / 4,
+      );
+      const count = input.values.length;
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, Math.max(1, count) * 4, 4],
+        (errPtr, valuesPtr, outPtr) => {
+          module.HEAP32.set(input.values, valuesPtr >>> 2);
+          const status = module._tspice_isrchi(
+            input.key,
+            count,
+            valuesPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return sortedBoundResult(module.HEAP32[outPtr >>> 2], count);
+        },
+      );
+    },
     lstlec: (key, values) => {
       const input = sortedCharacterInputs(key, values, WASM_MAX_ALLOC_BYTES);
       const count = input.rows.length;

@@ -1,0 +1,510 @@
+[
+  {
+    "caseId": "coords-vectors-isrchc-empty",
+    "description": "Return the canonical -1 sentinel for empty input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "X",
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-singleton",
+    "description": "Test below, at and above a single physical element.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "I",
+        "values": ["J"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "J",
+        "values": ["J"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "K",
+        "values": ["J"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-odd",
+    "description": "Find left, right and middle entries and a missing key in an odd-length input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "AA",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "AB",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "C",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "LMN",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "W",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Y",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Z",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "0",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "LL",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "ZZ",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-even",
+    "description": "Distinct even-length results map into the original array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "C",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "F",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Q",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "W",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Z",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "B",
+        "values": ["Z", "W", "Q", "F", "C", "A"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-duplicates",
+    "description": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A   ",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "M",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "M  ",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Z",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "L",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-character-order",
+    "description": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "\t",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": " ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": " A",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A\t",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A!",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "a",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "é",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Ω",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "🙂",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A  ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "É",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "A\n",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchc-unequal-width",
+    "description": "Variable UTF-8 byte lengths and a key longer than every stored row.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "🌙",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "abc",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "Z",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "é",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "abcdef",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "🌙x",
+        "values": ["🌙", "abc", "Z", "é"]
+      },
+      {
+        "op": "coords-vectors.isrchc",
+        "key": "",
+        "values": ["🌙", "abc", "Z", "é"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

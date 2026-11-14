@@ -163,6 +163,7 @@ export {
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
 export {
+  searchOrderInput,
   sortedNumericInputs,
   sortedCharacterInputs,
   sortedBoundResult,

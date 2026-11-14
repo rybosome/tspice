@@ -895,6 +895,76 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_bschoc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    orderPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bschoi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    orderPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchd(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchd(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_lstlec(
     keyPtr: number,
     n: number,
@@ -1894,6 +1964,76 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_bschoc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    orderPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bschoi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    orderPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchd(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bsrchi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchc(
+    keyPtr: number,
+    n: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchd(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrchi(
+    key: number,
+    n: number,
+    valuesPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_lstlec(
     keyPtr: number,
     n: number,
@@ -2364,6 +2504,14 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_bschoc",
+  "_tspice_bschoi",
+  "_tspice_bsrchc",
+  "_tspice_bsrchd",
+  "_tspice_bsrchi",
+  "_tspice_isrchc",
+  "_tspice_isrchd",
+  "_tspice_isrchi",
   "_tspice_lstlec",
   "_tspice_lstled",
   "_tspice_lstlei",

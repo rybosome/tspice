@@ -1,0 +1,273 @@
+[
+  {
+    "caseId": "coords-vectors-isrchd-empty",
+    "description": "Return the canonical -1 sentinel for empty input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 0,
+        "values": []
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -1,
+        "values": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchd-singleton",
+    "description": "Test below, at and above a single physical element.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 6,
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 7,
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 8,
+        "values": [7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchd-odd",
+    "description": "Find both endpoints, interior, and gaps among signed values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -19,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -4,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 0,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 2,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 8,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 15,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 23,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -20,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 3,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 28,
+        "values": [15, 0, 8, -19, 23, -4, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchd-even",
+    "description": "Check every match across an even-length input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -8,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -2,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 3,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 7,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 9,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -1,
+        "values": [9, 7, 3, 1, -2, -8]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 10,
+        "values": [9, 7, 3, 1, -2, -8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchd-duplicates",
+    "description": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 4,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 7,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 2,
+        "values": [7, 4, 4, 1, 1, 1, 1, -4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrchd-tiny-neighbors",
+    "description": "Exact equality distinguishes adjacent representable values and subnormals.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -1e200,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -1.5,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -5e-324,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 0,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 5e-324,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1.0000000000000002,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1e200,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1.0000000000000004,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": -1e-323,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      },
+      {
+        "op": "coords-vectors.isrchd",
+        "key": 1e-323,
+        "values": [
+          1e200, 1.0000000000000002, 1, 5e-324, 0, -5e-324, -1.5, -1e200
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
