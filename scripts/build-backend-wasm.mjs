@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import { stageAberrationCache } from "./stage-aberration-cache.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -230,6 +231,10 @@ for (const shimPath of shimSources) {
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
+stageAberrationCache(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
 
 function patchReturnInt(filePath, symbol, indentation = "") {
   if (!fs.existsSync(filePath)) {

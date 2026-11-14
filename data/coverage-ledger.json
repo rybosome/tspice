@@ -484,7 +484,9 @@
           "stlabx_c"
         ],
         "dependsOn": [],
-        "prs": [],
+        "prs": [
+          "https://github.com/rybosome/tspice/pull/770"
+        ],
         "nextAction": "Record current full backend-local and observed canonical source CI evidence, then inspect the final PR matrix and rebaseability.",
         "record": "data/parity-audits/e08-spk-corrections.json"
       }
@@ -34754,7 +34756,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 304
+            "line": 274
           }
         }
       ],
@@ -45340,7 +45342,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 183
+            "line": 163
           }
         }
       ],
@@ -45854,7 +45856,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 202
+            "line": 180
           }
         }
       ],
@@ -46340,7 +46342,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 220
+            "line": 196
           }
         }
       ],
@@ -46833,7 +46835,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 239
+            "line": 213
           }
         }
       ],
@@ -47365,7 +47367,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 925
+            "line": 895
           }
         }
       ],
@@ -47648,7 +47650,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 598
+            "line": 568
           }
         }
       ],
@@ -48046,7 +48048,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 395
+            "line": 365
           }
         }
       ],
@@ -48805,7 +48807,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 439
+            "line": 409
           }
         }
       ],
@@ -49564,7 +49566,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 320
+            "line": 290
           }
         }
       ],
@@ -50394,7 +50396,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 480
+            "line": 450
           }
         }
       ],
@@ -50889,7 +50891,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 523
+            "line": 493
           }
         }
       ],
@@ -51391,7 +51393,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 258
+            "line": 230
           }
         }
       ],
@@ -51871,7 +51873,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 630
+            "line": 600
           }
         }
       ],
@@ -52241,7 +52243,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 897
+            "line": 867
           }
         }
       ],
@@ -52574,7 +52576,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 857
+            "line": 827
           }
         }
       ],
@@ -52937,7 +52939,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 744
+            "line": 714
           }
         }
       ],
@@ -53321,7 +53323,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 359
+            "line": 329
           }
         }
       ],
@@ -54158,7 +54160,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 658
+            "line": 628
           }
         }
       ],
@@ -54599,7 +54601,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 563
+            "line": 533
           }
         }
       ],
@@ -55072,7 +55074,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 790
+            "line": 760
           }
         }
       ],
@@ -55403,7 +55405,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 983
+            "line": 953
           }
         }
       ],
@@ -56508,7 +56510,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 276
+            "line": 246
           }
         }
       ],
@@ -56795,7 +56797,7 @@
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
-            "line": 290
+            "line": 260
           }
         }
       ],

@@ -70,26 +70,6 @@ static int tspice_spice_int_to_int_checked(
   return 0;
 }
 
-// N0067 parses a five-character uppercase blank-free option, but caches the
-// first five *raw* characters. Use the recognized spelling on each actual call
-// so a previously spaced option cannot select the wrong stellar branch.
-static const char *correction_option(const char *input, char option[6]) {
-  if (!*input) return input;
-  integer zero = 0;
-  ljucrs_(&zero, (char *)input, option, (ftnlen)strlen(input), 5);
-  static const char valid[][6] = {"NONE ", "LT   ", "LT+S ", "CN   ", "CN+S ",
-                                   "XLT  ", "XLT+S", "XCN  ", "XCN+S"};
-  for (size_t i = 0; i < sizeof(valid)/sizeof(valid[0]); i++) {
-    if (!memcmp(option, valid[i], 5)) {
-      size_t size = 5;
-      while (size && option[size-1] == ' ') size--;
-      option[size] = 0;
-      return option;
-    }
-  }
-  return input; // The original string belongs in the canonical diagnostic.
-}
-
 // N0067 uses unchecked private scratch in four correction routines. Preserve
 // the first toolkit error and its trace before a consumer reads a failed
 // producer. Successful preflights run under the same serialized kernel state.
@@ -187,8 +167,6 @@ int tspice_spkacs(int target, double et, const char *ref, const char *abcorr, in
   double result[8] = {0};
   if (strlen(ref) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "ref length exceeds signed CSPICE width");
   if (strlen(abcorr) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "abcorr length exceeds signed CSPICE width");
-  char option[6] = {0};
-  abcorr = correction_option(abcorr, option);
   check_modern_correction("spkacs_c", "SPKACS", target, et, ref, abcorr, observer, NULL, NULL);
   if (!failed_c()) spkacs_c(target, et, ref, abcorr, observer, result, result + 6, result + 7);
   if (failed_c()) {
@@ -206,8 +184,6 @@ int tspice_spkapo(int target, double et, const char *ref, const double *observer
   double result[4] = {0};
   if (strlen(ref) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "ref length exceeds signed CSPICE width");
   if (strlen(abcorr) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "abcorr length exceeds signed CSPICE width");
-  char option[6] = {0};
-  abcorr = correction_option(abcorr, option);
   spkapo_c(target, et, ref, observerState, abcorr, result, result + 3);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -224,8 +200,6 @@ int tspice_spkapp(int target, double et, const char *ref, const double *observer
   double result[7] = {0};
   if (strlen(ref) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "ref length exceeds signed CSPICE width");
   if (strlen(abcorr) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "abcorr length exceeds signed CSPICE width");
-  char option[6] = {0};
-  abcorr = correction_option(abcorr, option);
   check_legacy_state(target, et, ref, abcorr, observerState);
   if (!failed_c()) spkapp_c(target, et, ref, observerState, abcorr, result, result + 6);
   if (failed_c()) {
@@ -243,8 +217,6 @@ int tspice_spkaps(int target, double et, const char *ref, const char *abcorr, co
   double result[8] = {0};
   if (strlen(ref) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "ref length exceeds signed CSPICE width");
   if (strlen(abcorr) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "abcorr length exceeds signed CSPICE width");
-  char option[6] = {0};
-  abcorr = correction_option(abcorr, option);
   check_modern_correction("spkaps_c", "SPKAPS", target, et, ref, abcorr, 0, observerState, observerAcceleration);
   if (!failed_c()) spkaps_c(target, et, ref, abcorr, observerState, observerAcceleration, result, result + 6, result + 7);
   if (failed_c()) {
@@ -262,8 +234,6 @@ int tspice_spkltc(int target, double et, const char *ref, const char *abcorr, co
   double result[8] = {0};
   if (strlen(ref) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "ref length exceeds signed CSPICE width");
   if (strlen(abcorr) > INT_MAX) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "abcorr length exceeds signed CSPICE width");
-  char option[6] = {0};
-  abcorr = correction_option(abcorr, option);
   spkltc_c(target, et, ref, abcorr, observerState, result, result + 6, result + 7);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);

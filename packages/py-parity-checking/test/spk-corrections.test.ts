@@ -108,6 +108,89 @@ for (const backend of ["node", "wasm"] as const) {
   );
   run(
     backend +
+      " applies each correction across an inherited SPKEZR call and a later SPKACS call",
+    async () => {
+      const project = fileURLToPath(
+        new URL("../sidecars/spiceypy/", import.meta.url),
+      );
+      const fixtures = fileURLToPath(
+        new URL("../fixtures/kernels/", import.meta.url),
+      );
+      const expected = JSON.parse(
+        execFileSync(
+          "uv",
+          [
+            "run",
+            "--locked",
+            "--project",
+            project,
+            "python",
+            "-c",
+            `
+from pathlib import Path
+import json, sys, spiceypy as sp
+for name in ("audit-ephemeris.bsp","audit-ephemeris-observer.bsp"):
+    sp.furnsh(str(Path(sys.argv[1]) / name))
+out=[]
+for option in ("LT","LT+S"):
+    state,lt,dlt=sp.spkacs(100001,125.25,"J2000",option,100002)
+    out.append([*state,lt,dlt])
+try:
+    sp.spkezr("100001",125.25,"J2000","     ","100002")
+except sp.utils.exceptions.SpiceyError as error:
+    out.extend([error.short,error.traceback])
+else:
+    raise AssertionError("expected a blank correction diagnostic")
+print(json.dumps(out,allow_nan=False))
+`,
+            fixtures,
+          ],
+          { encoding: "utf8", timeout: 30000 },
+        ),
+      ) as [number[], number[], string, string];
+      const setup = await spiceClients.toSync({ backend });
+      const raw = setup.spice.raw;
+      try {
+        raw.furnsh(kernel("audit-ephemeris.bsp"));
+        raw.furnsh(kernel("audit-ephemeris-observer.bsp"));
+        const query = (flag: string) =>
+          raw.spkacs(100001, t, "J2000", flag, 100002);
+        const inherited = (flag: string) =>
+          raw.spkezr("100001", t, "J2000", flag, "100002");
+        const plain = query("LT");
+        const stellar = query("LT+S");
+        for (const [actual, values] of [
+          [plain, expected[0]],
+          [stellar, expected[1]],
+        ] as const) {
+          vector([...actual.state, actual.lt, actual.dlt], values, 1e-10);
+        }
+        expect(Math.abs(plain.state[0] - stellar.state[0])).toBeGreaterThan(
+          1e-5,
+        );
+
+        const expectedStellar = inherited("LT+S");
+        expect(inherited("LT   +S")).toEqual(expectedStellar);
+        expect(query("LT")).toEqual(plain);
+        expect(inherited("      LT+S")).toEqual(expectedStellar);
+        expect(() => inherited("     ")).toThrowError(
+          expect.objectContaining({
+            spiceShort: expected[2],
+            spiceTrace: expected[3],
+          }),
+        );
+        expect(raw.failed()).toBe(false);
+        expect(query("LT")).toEqual(plain);
+        expect(inherited("LT       ").state).toEqual(plain.state);
+        expect(query("LT+S")).toEqual(stellar);
+      } finally {
+        raw.kclear();
+        await setup.dispose();
+      }
+    },
+  );
+  run(
+    backend +
       " preserves primary missing-data traces, balanced caller scope and new calls after recovery",
     async () => {
       const setup = await spiceClients.toSync({ backend }),

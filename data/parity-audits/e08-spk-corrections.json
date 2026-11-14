@@ -6,6 +6,8 @@
     "fixtures/consumer-nodom/src/index.ts",
     "packages/backend-contract/src/domains/ephemeris.ts",
     "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
     "packages/backend-node/native/src/addon_common.cc",
     "packages/backend-node/native/src/domains/ephemeris.cc",
     "packages/backend-node/src/domains/ephemeris.ts",
@@ -39,7 +41,9 @@
     "packages/tspice/src/transport/caching/policy.ts",
     "packages/tspice/src/transport/caching/withCaching.ts",
     "packages/tspice/src/transport/caching/withCachingSync.ts",
-    "scripts/build-backend-wasm.mjs"
+    "scripts/build-backend-wasm.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-aberration-cache.mjs"
   ],
   "executions": [],
   "routines": [
@@ -159,15 +163,20 @@
           ]
         },
         {
-          "id": "spkacs-normalized-correction-cache-key",
+          "id": "spkacs-complete-correction-cache-key",
           "status": "repaired",
           "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
-          "repair": "Pass the recognized canonical spelling obtained from LJUCRS on success paths. Original invalid options reach the named CSPICE error. Alternate stellar and plain flags using fully covered data.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
           "evidence": [
             "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
             "packages/py-parity-checking/test/spk-corrections.test.ts",
-            "packages/backend-shim-c/src/domains/ephemeris.c"
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
           ],
           "caseIds": ["ephemeris-spkacs-correction-spelling-transition"]
         }
@@ -278,15 +287,20 @@
       "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
       "findings": [
         {
-          "id": "spkapo-normalized-correction-cache-key",
+          "id": "spkapo-complete-correction-cache-key",
           "status": "repaired",
           "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
-          "repair": "Pass the recognized canonical spelling obtained from LJUCRS on success paths. Original invalid options reach the named CSPICE error. Alternate stellar and plain flags using fully covered data.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
           "evidence": [
             "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
             "packages/py-parity-checking/test/spk-corrections.test.ts",
-            "packages/backend-shim-c/src/domains/ephemeris.c"
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
           ],
           "caseIds": ["ephemeris-spkapo-correction-spelling-transition"]
         }
@@ -416,15 +430,20 @@
           ]
         },
         {
-          "id": "spkapp-normalized-correction-cache-key",
+          "id": "spkapp-complete-correction-cache-key",
           "status": "repaired",
           "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
-          "repair": "Pass the recognized canonical spelling obtained from LJUCRS on success paths. Original invalid options reach the named CSPICE error. Alternate stellar and plain flags using fully covered data.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
           "evidence": [
             "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
             "packages/py-parity-checking/test/spk-corrections.test.ts",
-            "packages/backend-shim-c/src/domains/ephemeris.c"
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
           ],
           "caseIds": ["ephemeris-spkapp-correction-spelling-transition"]
         }
@@ -564,15 +583,20 @@
           ]
         },
         {
-          "id": "spkaps-normalized-correction-cache-key",
+          "id": "spkaps-complete-correction-cache-key",
           "status": "repaired",
           "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
-          "repair": "Pass the recognized canonical spelling obtained from LJUCRS on success paths. Original invalid options reach the named CSPICE error. Alternate stellar and plain flags using fully covered data.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
           "evidence": [
             "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
             "packages/py-parity-checking/test/spk-corrections.test.ts",
-            "packages/backend-shim-c/src/domains/ephemeris.c"
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
           ],
           "caseIds": ["ephemeris-spkaps-correction-spelling-transition"]
         }
@@ -683,15 +707,20 @@
       "tolerance": "Unchanged registered 1e-12 absolute-or-relative numeric comparator applies to every result field. Supplemental finite difference, geometry and light-time tests use quantity-specific scoped tolerances. Error codes, array widths, cached replacement recovery and tagged nonfinite classifications use exact assertions.",
       "findings": [
         {
-          "id": "spkltc-normalized-correction-cache-key",
+          "id": "spkltc-complete-correction-cache-key",
           "status": "repaired",
           "summary": "N0067 stores only five raw characters for previous correction flags, although its input parser strips spaces before selecting a mode.",
-          "repair": "Pass the recognized canonical spelling obtained from LJUCRS on success paths. Original invalid options reach the named CSPICE error. Alternate stellar and plain flags using fully covered data.",
+          "repair": "Build all 35 pinned PRVCOR owners with an explicit cache-validity bit. After copying the five-character key, compare it to the original option using the linked S_CMP blank-padding semantics. Reparse after an incomplete save, preserving the original accepted spellings, diagnostic text and first-call initialization. Interleave inherited SPKEZR with SPKACS and compare full states, rates, blank-option trace and recovery against the independent library.",
           "evidence": [
             "docs/step8-spk-corrections.md",
+            "packages/backend-node/native/binding.gyp",
+            "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+            "packages/backend-shim-c/src/domains/ephemeris.c",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/correction_oracle.py",
             "packages/py-parity-checking/test/spk-corrections.test.ts",
-            "packages/backend-shim-c/src/domains/ephemeris.c"
+            "scripts/build-backend-wasm.mjs",
+            "scripts/cspice.manifest.json",
+            "scripts/stage-aberration-cache.mjs"
           ],
           "caseIds": ["ephemeris-spkltc-correction-spelling-transition"]
         }

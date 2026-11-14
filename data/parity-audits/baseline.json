@@ -423,7 +423,7 @@
         "stlabx_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/770"],
       "nextAction": "Record current full backend-local and observed canonical source CI evidence, then inspect the final PR matrix and rebaseability."
     }
   ]
