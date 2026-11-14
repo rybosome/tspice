@@ -2,6 +2,9 @@
 #include "tspice_error.h"
 
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
+#include "SpiceZst.h"
+#include "SpiceZmc.h"
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
@@ -186,6 +189,288 @@ static int finish_das_call(char *err, int errMaxBytes) {
   return 1;
 }
 
+// DAS file headers record reserved records, allocated comment records, and the
+// exact used byte count. Unlike DAF, all 1024 bytes of each record are payload.
+typedef struct {
+  int handle, links, offset, first, end;
+} DasCommentReader;
+static DasCommentReader das_readers[5000];
+
+static DasCommentReader *das_reader(int handle) {
+  for (size_t i = 0; i < 5000; ++i)
+    if (das_readers[i].links && das_readers[i].handle == handle)
+      return &das_readers[i];
+  return NULL;
+}
+static int das_link(int handle, char *err, int room) {
+  DasCommentReader *r = das_reader(handle);
+  if (r && r->links < INT_MAX) {
+    ++r->links;
+    return 0;
+  }
+  if (!r)
+    for (size_t i = 0; i < 5000; ++i)
+      if (!das_readers[i].links) {
+        das_readers[i] = (DasCommentReader){handle, 1, 0, 0, 0};
+        return 0;
+      }
+  dasllc_c(handle);
+  return tspice_return_error(err, room, "Cannot track an additional DAS link");
+}
+static int das_layout(int h, int *first, int *end, int *records, int *headerError, char *err, int room) {
+  *headerError = 0;
+  char id[9] = {0}, name[61] = {0};
+  int reserved = 0, used = 0;
+  dasrfr_c(h, sizeof(id), sizeof(name), id, name, &reserved, &used, records, end);
+  if (failed_c()) {
+    // Allow the requested routine to produce its original call tree. The DAS
+    // file-record reader returns before any comment records on this error.
+    reset_c();
+    *headerError = 1;
+    return 0;
+  }
+  if (reserved < 0 || reserved > INT_MAX - 2 || *records < 0 || *end < 0 || *end > (int64_t)*records * 1024 ||
+      (int64_t)reserved + 2 + (*end / 1024) > INT_MAX ||
+      (int64_t)reserved + 2 + (*end / 1024) > LONG_MAX / 1024)
+    return tspice_return_error(err, room, "Unsupported DAS comment record extent");
+  *first = reserved + 2;
+  return 0;
+}
+static int das_mutation(int handle, int64_t added, int append, char *err, int room) {
+  DasCommentReader *r = das_reader(handle);
+  // N0067's DDH uses positive handles for read links and negative for writers.
+  // Let the actual scientific routine report read-only and unowned handles.
+  if (!r || handle >= 0)
+    return 0;
+  if (r->offset)
+    return tspice_return_error(err, room, "Finish the active DAS comment extraction before mutation");
+  int first = 0, end = 0, records = 0, headerError = 0;
+  if (das_layout(handle, &first, &end, &records, &headerError, err, room))
+    return 1;
+  if (headerError)
+    return 0;
+  if (append && ((int64_t)records * 1024 > INT_MAX || end + added > INT_MAX))
+    return tspice_return_error(err, room, "DAS comment counters exceed signed storage");
+  int64_t after = (end + added + 1023) / 1024;
+  int64_t growth = append && after > records ? after - records : 0;
+  if ((int64_t)first + records + growth > INT_MAX || (int64_t)first + records + growth > LONG_MAX / 1024)
+    return tspice_return_error(err, room, "DAS comment directory exceeds the file seek limit");
+  if (growth || (!append && records)) {
+    int reserved = 0, used = 0, comr = 0, comc = 0, freeRecord = 0, last[3], locations[3], words[3];
+    dashfs_c(handle, &reserved, &used, &comr, &comc, &freeRecord, last, locations, words);
+    if (finish_das_call(err, room))
+      return 1;
+    if (freeRecord < 1 || freeRecord + growth > INT_MAX || freeRecord + growth - 1 > LONG_MAX / 1024)
+      return tspice_return_error(err, room, "DAS data relocation exceeds the file seek limit");
+  }
+  return 0;
+}
+int tspice_dasac(int handle, int n, int width, const unsigned char *rows, int room, char *err,
+                 int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (finish_das_call(err, errMaxBytes))
+    return 1;
+  if (!rows || n < 0 || width < 2 || (int64_t)n * width > room || room > TSPICE_DAS_COMMENT_BYTES)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAS comment input storage");
+  int64_t added = n;
+  int valid = n > 0;
+  for (int i = 0; i < n; i++) {
+    const unsigned char *row = rows + (size_t)i * width;
+    const unsigned char *stop = memchr(row, 0, width);
+    if (!stop)
+      return tspice_return_error(err, errMaxBytes, "Missing DAS row terminator");
+    int payload = stop - row;
+    while (payload && row[payload - 1] == ' ')
+      --payload;
+    for (int j = 0; j < payload; j++)
+      if (row[j] < 32 || row[j] > 126)
+        valid = 0;
+    added += payload;
+  }
+  if (valid && das_mutation(handle, added, 1, err, errMaxBytes))
+    return 1;
+  dasac_c(handle, n, width, rows);
+  return finish_das_call(err, errMaxBytes);
+}
+int tspice_dasdc(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (finish_das_call(err, errMaxBytes) || das_mutation(handle, 0, 0, err, errMaxBytes))
+    return 1;
+  dasdc_c(handle);
+  return finish_das_call(err, errMaxBytes);
+}
+static void das_width_check(char *buffer, int width) {
+  chkin_c("dasec_c");
+  CHKOSTR(CHK_STANDARD, "dasec_c", buffer, width);
+  chkout_c("dasec_c");
+}
+static int das_line_error(int width, int row, char *err, int room) {
+  chkin_c("dasec_c");
+  chkin_c("DASEC");
+  // The original message calls the page-relative row number a line length.
+  setmsg_c("The output buffer line length (#) was not long enough to contain a comment line with length #.");
+  errint_c("#", width - 1);
+  errint_c("#", row);
+  sigerr_c("SPICE(COMMENTTOOLONG)");
+  chkout_c("DASEC");
+  chkout_c("dasec_c");
+  return finish_das_call(err, room);
+}
+
+// Width validation uses independent, actual DASIOC record reads. The only
+// caller asking for their payload is the exceptional library handle -1:
+// DASEC reserves that same value as its no-cached-record sentinel.
+static int das_scan(int h, int first, int begin, int end, int rows, int width, int *next, int *longest,
+                    int *count, char *payload, char *err, int room) {
+  integer unit = 0;
+  logical lock = SPICEFALSE;
+  zzddhhlu_(&h, "DAS", &lock, &unit, 3);
+  if (finish_das_call(err, room))
+    return 1;
+  int offset = begin, line = 0, length = 0;
+  *longest = 0;
+  while (offset < end && line < rows) {
+    int rec = first + offset / 1024, j = offset % 1024;
+    char record[1024];
+    dasioc_("READ", &unit, &rec, record, 4, 1024);
+    if (finish_das_call(err, room))
+      return 1;
+    while (offset < end && line < rows && j < 1024) {
+      const unsigned char ch = (unsigned char)record[j++];
+      ++offset;
+      if (ch) {
+        if (++length >= width)
+          return das_line_error(width, line + 1, err, room);
+        if (payload)
+          payload[(size_t)line * (width - 1) + length - 1] = (char)ch;
+      } else {
+        if (payload)
+          memset(payload + (size_t)line * (width - 1) + length, ' ', width - 1 - length);
+        if (length > *longest)
+          *longest = length;
+        length = 0;
+        ++line;
+      }
+    }
+  }
+  if (length) {
+    if (end == INT_MAX)
+      return tspice_return_error(err, room, "DAS comment count exceeds signed storage");
+    chkin_c("dasec_c");
+    chkin_c("DASEC");
+    setmsg_c("Count of comment characters (#) exceeds the number of comment characters (#) in the DAS file #.");
+    errint_c("#", end + 1);
+    errint_c("#", end);
+    errfnm_("#", &unit, 1);
+    sigerr_c("SPICE(BADDASCOMMENTAREA)");
+    chkout_c("DASEC");
+    chkout_c("dasec_c");
+    return finish_das_call(err, room);
+  }
+  *next = offset;
+  *count = line;
+  return 0;
+}
+
+static int das_extract(int h, int rows, int width, char *out, int *count, int *done, char *err, int room) {
+  logical completed = SPICEFALSE;
+  *count = 0;
+  chkin_c("dasec_c");
+  dasec_(&h, &rows, count, out, &completed, width - 1);
+  chkout_c("dasec_c");
+  if (finish_das_call(err, room))
+    return 1;
+  if (*count < 0 || *count > rows)
+    return tspice_return_error(err, room, "Invalid DASEC output count");
+  if (*count)
+    F2C_ConvertTrStrArr(*count, width, out);
+  *done = completed != SPICEFALSE;
+  return 0;
+}
+int tspice_dasec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err,
+                 int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (finish_das_call(err, errMaxBytes))
+    return 1;
+  if (!out || !n || !done || room < 1 || room > TSPICE_DAS_COMMENT_BYTES ||
+      (rows > 0 && width >= 2 && (int64_t)rows * width > room))
+    return tspice_return_error(err, errMaxBytes, "Invalid DAS comment output storage");
+  if (width < 2) {
+    das_width_check((char *)out, width);
+    return finish_das_call(err, errMaxBytes);
+  }
+  if (rows <= 0)
+    return das_extract(handle, rows, width, (char *)out, n, done, err, errMaxBytes);
+  DasCommentReader *r = das_reader(handle);
+  if (!r)
+    return tspice_return_error(err, errMaxBytes, "DAS comment extraction requires an owned DAS handle");
+  int first = r->first, end = r->end, records = 0, next = 0, longest = 0, count = 0;
+  int headerError = 0;
+  if (!r->offset && das_layout(handle, &first, &end, &records, &headerError, err, errMaxBytes))
+    return 1;
+  if (headerError)
+    return das_extract(handle, rows, width, (char *)out, n, done, err, errMaxBytes);
+  if (!r->offset && end >= TSPICE_DAS_COMMENT_BYTES && handle != -1) {
+    if (das_scan(handle, first, 0, end, INT_MAX, INT_MAX, &next, &longest, &count, NULL, err, errMaxBytes))
+      return 1;
+    if (longest >= TSPICE_DAS_COMMENT_BYTES)
+      return tspice_return_error(err, errMaxBytes, "DAS comment line exceeds the cleanup storage bound");
+  }
+  int sentinel = handle == -1 && end > 0;
+  if (end && das_scan(handle, first, r->offset, end, rows, width, &next, &longest, &count,
+                      sentinel ? (char *)out : NULL, err, errMaxBytes))
+    return 1;
+  if (sentinel) {
+    F2C_ConvertTrStrArr(count, width, (char *)out);
+    *n = count;
+    *done = next == end;
+  } else if (das_extract(handle, rows, width, (char *)out, n, done, err, errMaxBytes))
+    return 1;
+  r->offset = *done ? 0 : next;
+  r->first = first;
+  r->end = end;
+  return 0;
+}
+static int das_before_close(int h, char *err, int room) {
+  DasCommentReader *r = das_reader(h);
+  if (!r || r->links > 1 || !r->offset || h == -1)
+    return 0;
+  while (r->offset < r->end) {
+    int next = 0, longest = 0, count = 0, done = 0;
+    if (das_scan(h, r->first, r->offset, r->end, 64, INT_MAX, &next, &longest, &count, NULL, err, room))
+      return 1;
+    int width = longest + 1;
+    if (width < 2)
+      width = 2;
+    int rows = TSPICE_DAS_COMMENT_BYTES / width;
+    if (rows > 64)
+      rows = 64;
+    if (rows < 1)
+      return tspice_return_error(err, room, "DAS comment line exceeds the cleanup storage bound");
+    if (rows < 64 &&
+        das_scan(h, r->first, r->offset, r->end, rows, width, &next, &longest, &count, NULL, err, room))
+      return 1;
+    char *buf = malloc((size_t)rows * width);
+    if (!buf)
+      return tspice_return_error(err, room, "Cannot allocate DAS comment cleanup storage");
+    int rc = das_extract(h, rows, width, buf, &count, &done, err, room);
+    free(buf);
+    if (rc)
+      return rc;
+    if (!done && next <= r->offset)
+      return tspice_return_error(err, room, "DAS extraction made no progress");
+    r->offset = done ? 0 : next;
+    if (done)
+      break;
+  }
+  return 0;
+}
+static void das_closed(int h) {
+  DasCommentReader *r = das_reader(h);
+  if (r && !--r->links)
+    *r = (DasCommentReader){0};
+}
+
 int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
@@ -201,7 +486,7 @@ int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int n
   dasonw_c(path, ftype, ifname, ncomr, &value);
   if (failed_c()) return finish_das_call(err, errMaxBytes);
   *out = value;
-  return 0;
+  return das_link(value,err,errMaxBytes);
 }
 
 int tspice_dasops(int *out, char *err, int errMaxBytes) {
@@ -212,7 +497,7 @@ int tspice_dasops(int *out, char *err, int errMaxBytes) {
   dasops_c(&value);
   if (failed_c()) return finish_das_call(err, errMaxBytes);
   *out = value;
-  return 0;
+  return das_link(value,err,errMaxBytes);
 }
 
 int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes) {
@@ -226,7 +511,7 @@ int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes) {
   dasopw_c(path, &value);
   if (failed_c()) return finish_das_call(err, errMaxBytes);
   *out = value;
-  return 0;
+  return das_link(value,err,errMaxBytes);
 }
 
 int tspice_dashfn(int handle, int namlen, char *name, char *err, int errMaxBytes) {
@@ -265,8 +550,10 @@ int tspice_daslla(int handle, int *out, char *err, int errMaxBytes) {
 int tspice_dasllc(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
+  if(das_before_close(handle,err,errMaxBytes))return 1;
   dasllc_c(handle);
-  return finish_das_call(err, errMaxBytes);
+  if(finish_das_call(err,errMaxBytes))return 1;
+  das_closed(handle);return 0;
 }
 
 int tspice_dasrfr(int handle, int idwlen, int ifnlen, char *idword, char *ifname, int *out, char *err, int errMaxBytes) {
@@ -310,19 +597,20 @@ int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   }
 
   *outHandle = (int)handleC;
-  return 0;
+  return das_link(handleC,err,errMaxBytes);
 }
 
 int tspice_dascls(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
 
+  if(das_before_close(handle,err,errMaxBytes))return 1;
   dascls_c((SpiceInt)handle);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
-  return 0;
+  das_closed(handle);return 0;
 }
 
 int tspice_dlacls(int handle, char *err, int errMaxBytes) {
@@ -374,7 +662,7 @@ int tspice_dlaopn(
   }
 
   *outHandle = (int)handleC;
-  return 0;
+  return das_link(handleC,err,errMaxBytes);
 }
 
 int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes) {
@@ -486,7 +774,7 @@ int tspice_dskopn(
   }
 
   *outHandle = (int)handleC;
-  return 0;
+  return das_link(handleC,err,errMaxBytes);
 }
 
 int tspice_dskmi2(

@@ -92,6 +92,32 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "dasec": {
+      "node": {
+        "reason": "Original N0067 DASEC via its initialized SPICELIB logical and original defined-row converter. Actual DASIOC record reads protect pending cursors; the legitimate first write handle conflicts with the original reader-cache sentinel and uses the same physical records for extraction.",
+        "expectedEntrypoints": [
+          "dasec_",
+          "dasioc_",
+          "zzddhhlu_",
+          "F2C_ConvertTrStrArr",
+          "dasrfr_c",
+          "chkin_c",
+          "chkout_c"
+        ]
+      },
+      "wasm": {
+        "reason": "Original N0067 DASEC via its initialized SPICELIB logical and original defined-row converter. Actual DASIOC record reads protect pending cursors; the legitimate first write handle conflicts with the original reader-cache sentinel and uses the same physical records for extraction.",
+        "expectedEntrypoints": [
+          "dasec_",
+          "dasioc_",
+          "zzddhhlu_",
+          "F2C_ConvertTrStrArr",
+          "dasrfr_c",
+          "chkin_c",
+          "chkout_c"
+        ]
+      }
     }
   }
 }

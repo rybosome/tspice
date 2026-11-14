@@ -1,4 +1,7 @@
 import {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
   dasFileTarget,
   dasText,
   decodeDasSummary,
@@ -419,6 +422,63 @@ export function createFileIoApi(
       );
     },
 
+    dasac: (handle, lines) => {
+      const { n, width, table } = dasCommentTable(lines);
+      const h = dasHandle(handle, "dasac");
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, table.byteLength],
+        (err, data) => {
+          module.HEAPU8.set(table, data >>> 0);
+          const rc = module._tspice_dasac(
+            h,
+            n,
+            width,
+            data,
+            table.byteLength,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+        },
+      );
+    },
+    dasdc: (handle) =>
+      callVoidHandle(module, module._tspice_dasdc, dasHandle(handle, "dasdc")),
+    dasec: (handle, bufsiz, buffln = 1024) => {
+      const h = dasHandle(handle, "dasec");
+      const size = dasCommentPageBytes(bufsiz, buffln);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4, 4],
+        (err, data, nPtr, donePtr) => {
+          const rc = module._tspice_dasec(
+            h,
+            bufsiz,
+            buffln,
+            data,
+            size,
+            nPtr,
+            donePtr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+          const n = readHeapI32(module, nPtr >>> 2, "dasec(n)"),
+            done = readHeapI32(module, donePtr >>> 2, "dasec(done)");
+          if (n < 0 || n > bufsiz || (done !== 0 && done !== 1))
+            throw new TypeError("Invalid DAS comment page");
+          const start = data >>> 0;
+          return dasCommentPage(
+            n,
+            done === 1,
+            module.HEAPU8.subarray(start, start + n * buffln),
+            bufsiz,
+            buffln,
+          );
+        },
+      );
+    },
     dasonw: (
       file: string | VirtualOutput,
       ftype: string,

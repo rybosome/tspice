@@ -5,6 +5,8 @@ from typing import Any
 
 import numpy as np
 import spiceypy as sp
+
+from .. import das_comment_oracle
 from spiceypy.utils.exceptions import NotFoundError
 
 from ..das_file_oracle import file_record, file_name
@@ -13,6 +15,9 @@ from ..models import (
     StepFileIoDafcls,
     StepFileIoDaffna,
     StepFileIoDafopr,
+    StepFileIoDasac,
+    StepFileIoDasdc,
+    StepFileIoDasec,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -59,6 +64,8 @@ def _register_handle(
     if existing is not None and existing.isOpen:
         raise ValueError(f"File-io handle already exists and is open: {handle_id}")
 
+    if kind in ("DAS","DLA"):
+        das_comment_oracle.opened(int(handle))
     state.handles[handle_id] = FileIoHandleState(
         handle=int(handle),
         kind=kind,
@@ -196,6 +203,18 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         found = bool(sp.daffna())
         return StepOutput(op=step.op, value=found)
 
+    if isinstance(step,StepFileIoDasac):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.append(h,step.lines))
+
+    if isinstance(step,StepFileIoDasdc):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.delete(h))
+
+    if isinstance(step,StepFileIoDasec):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.extract(h,step.bufsiz,step.buffln))
+
     if isinstance(step, (StepFileIoDasonw, StepFileIoDasopw, StepFileIoDasops)):
         existing = state.handles.get(step.handleId)
         if existing is not None and existing.isOpen:
@@ -247,7 +266,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         if isinstance(step,StepFileIoDaswbr):
             sp.daswbr(h)
         else:
-            sp.dasllc(h)
+            das_comment_oracle.close(h,low=True)
             entry.isOpen=False
         return StepOutput(op=step.op,value=None)
 
@@ -263,7 +282,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind=("DAS", "DLA"),
             require_open=True,
         )
-        sp.dascls(handle_state.handle)
+        das_comment_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 
@@ -328,7 +347,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             require_open=True,
         )
         # tspice exposes dlacls as a DAS-close alias; CSPICE has no separate dlacls_c entrypoint.
-        sp.dascls(handle_state.handle)
+        das_comment_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 

@@ -1,0 +1,577 @@
+[
+  {
+    "caseId": "file-io-dasdc-empty",
+    "description": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-reserved-only",
+    "description": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-populated",
+    "description": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["hi", "ok"]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-multiple-records",
+    "description": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 2
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+          "tail"
+        ]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-repeated",
+    "description": "Repeated deletion and a fresh append leave only new comments.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["old"]
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["new", "  next"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-isolated-files",
+    "description": "Delete on one of two simultaneously open writers while preserving the other file’s header and text.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasonw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-b.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS b",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["A"]
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "b",
+        "lines": ["B"]
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "b",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-dla-addresses",
+    "description": "Delete allocated records in a DLA, then reopen to observe preserved logical addresses and reclaimed records.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "DSK",
+        "ifname": "DLA CONTROL",
+        "ncomch": 2000
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [" words"]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasdc-read-only",
+    "description": "Deleting via a live read claim reports the actual write-access diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["old"]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasdc",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  }
+]

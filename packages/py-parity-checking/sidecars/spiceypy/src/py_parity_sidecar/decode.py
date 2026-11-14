@@ -82,6 +82,9 @@ from .models import (
     StepFileIoDafcls,
     StepFileIoDaffna,
     StepFileIoDafopr,
+    StepFileIoDasac,
+    StepFileIoDasdc,
+    StepFileIoDasec,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -1078,6 +1081,27 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="file-io.dasopr.path"),
                 handleId=_expect_string(step.get("handleId"), label="file-io.dasopr.handleId"),
+            )
+
+        case "file-io.dasac":
+            return StepFileIoDasac(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                lines=_expect_string_list(step.get("lines"), label=op+".lines"),
+            )
+
+        case "file-io.dasdc":
+            return StepFileIoDasdc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+            )
+
+        case "file-io.dasec":
+            return StepFileIoDasec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                bufsiz=_expect_int(step.get("bufsiz"), label=op+".bufsiz"),
+                buffln=_expect_int(step.get("buffln", 1024), label=op+".buffln"),
             )
 
         case "file-io.dasonw":

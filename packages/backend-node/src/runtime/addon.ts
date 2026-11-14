@@ -101,6 +101,13 @@ export type NativeAddon = {
   dafbfs(handle: number): void;
   daffna(handle: number): boolean;
 
+  dasac(handle: number, n: number, width: number, rows: Uint8Array): void;
+  dasdc(handle: number): void;
+  dasec(
+    handle: number,
+    bufsiz: number,
+    buffln: number,
+  ): { n: number; done: boolean; bytes: Uint8Array };
   dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
   dasops(): number;
   dasopw(path: string): number;

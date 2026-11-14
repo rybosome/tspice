@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 171
-- Planned (not yet implemented): 478
+- Implemented now (SpiceRawBackend): 174
+- Planned (not yet implemented): 475
 - Excluded: 3
 
 ## Implemented now
@@ -46,7 +46,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafcls_c` | DAF, close |
 | `daffna_c` | DAF, find next array |
 | `dafopr_c` | DAF, open for read |
+| `dasac_c` | DAS add comments |
 | `dascls_c` | DAS, close file |
+| `dasdc_c` | DAS, delete comments |
+| `dasec_c` | DAS extract comments |
 | `dashfn_c` | DAS, handle to file name |
 | `dashfs_c` | DAS, handle to file summary |
 | `daslla_c` | DAS, last logical addresses |
@@ -265,12 +268,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafrfr_c` | DAF, read file record |
 | `dafrs_c` | DAF, replace summary |
 | `dafus_c` | DAF, unpack summary |
-| `dasac_c` | DAS add comments |
 | `dasadc_c` | DAS, add data, character |
 | `dasadd_c` | DAS, add data, double precision |
 | `dasadi_c` | DAS, add data, integer |
-| `dasdc_c` | DAS, delete comments |
-| `dasec_c` | DAS extract comments |
 | `dasrdc_c` | DAS, read data, character |
 | `dasrdd_c` | DAS, read data, double precision |
 | `dasrdi_c` | DAS, read data, integer |

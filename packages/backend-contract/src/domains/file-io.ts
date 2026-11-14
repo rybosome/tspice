@@ -77,6 +77,26 @@ export type DasFileSummary = {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
+  /** Append printable ASCII comment lines to a writable DAS. Leading/internal spaces
+   * and empty rows are retained. Trailing ASCII spaces are dropped. Finish an active
+   * extraction first. Input row storage must fit 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasac_c.html */
+  dasac(handle: SpiceHandle, lines: readonly string[]): void;
+  /** Delete all DAS comment records. Data logical addresses survive relocation.
+   * Requires write access and a finished comment extraction.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasdc_c.html */
+  dasdc(handle: SpiceHandle): void;
+  /** Read at most bufsiz lines from a live DAS-backed file, with buffln bytes per
+   * row including NUL (default 1024). A rectangular page may occupy up to 256 MiB.
+   * Returns only the n defined rows. Read aliases share position; EOF resets the
+   * cursor. Explicitly close each link after use, including partially read files.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasec_c.html */
+  dasec(
+    handle: SpiceHandle,
+    bufsiz: number,
+    buffln?: number,
+  ): { n: number; lines: string[]; done: boolean };
+
   /**
    * Return whether a nonempty backend filesystem path exists.
    * A missing file returns false; this does not load or open a kernel.

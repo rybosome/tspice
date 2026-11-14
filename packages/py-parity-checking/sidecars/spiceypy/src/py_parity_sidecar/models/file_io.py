@@ -51,6 +51,27 @@ class StepFileIoDasopr:
 
 
 @dataclass(frozen=True)
+class StepFileIoDasac:
+    op: Literal["file-io.dasac"]
+    handleId: str
+    lines: list[str]
+
+
+@dataclass(frozen=True)
+class StepFileIoDasdc:
+    op: Literal["file-io.dasdc"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDasec:
+    op: Literal["file-io.dasec"]
+    handleId: str
+    bufsiz: int
+    buffln: int
+
+
+@dataclass(frozen=True)
 class StepFileIoDasonw:
     op: Literal["file-io.dasonw"]
     handleId: str
