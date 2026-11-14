@@ -1,0 +1,166 @@
+[
+  {
+    "caseId": "geometry-edpnt-axis-radial",
+    "description": "Scale exterior, interior and on-surface axis vectors to the boundary.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [6, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [0, -0.5, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [0, 0, 1],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-mixed-octants",
+    "description": "All coordinates follow the input ray, including sign, under the triaxial radial map.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [1, -2, 3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [-1, 2, -3],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [3, 2, 1],
+        "a": 5,
+        "b": 3,
+        "c": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-radial-scale",
+    "description": "The same ray at different positive distances returns the same boundary point.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [1, 2, 2],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [10, 20, 20],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [1e-100, 2e-100, 2e-100],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-sphere",
+    "description": "A spherical radial map has a directly distinguishable analytic boundary.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [1, 2, 2],
+        "a": 6,
+        "b": 6,
+        "c": 6
+      },
+      {
+        "op": "geometry.edpnt",
+        "point": [-1, -2, -2],
+        "a": 6,
+        "b": 6,
+        "c": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-bad-radii-precede-zero",
+    "description": "Observe actual INVALIDRADII before the zero point test.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [0, 0, 0],
+        "a": 3,
+        "b": -2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDRADII"]
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-zero-point",
+    "description": "A zero direction cannot define a radial projection.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [0, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-edpnt-level-underflow",
+    "description": "A nonzero vector whose squared level is zero gives POINTTOOSMALL.",
+    "workflow": [
+      {
+        "op": "geometry.edpnt",
+        "point": [1e-200, 0, 0],
+        "a": 3,
+        "b": 2,
+        "c": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTTOOSMALL"]
+    }
+  }
+]

@@ -424,7 +424,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/729"],
-      "nextAction": "Revalidate the inherited E10 routines on the combined E10/E11 source. The former source-bound executions are retained on PR #729 and in this audit history."
+      "nextAction": "Revalidate this inherited geometric surface on the E12 source, retaining historical source-bound observations and PRs."
     },
     {
       "id": "e11-ellipse-geometry",
@@ -439,6 +439,21 @@
       ],
       "dependsOn": ["e10-plane-geometry"],
       "prs": ["https://github.com/rybosome/tspice/pull/733"],
+      "nextAction": "Revalidate this inherited geometric surface on the E12 source, retaining historical source-bound observations and PRs."
+    },
+    {
+      "id": "e12-ellipsoid-geometry",
+      "routines": [
+        "nearpt_c",
+        "npedln_c",
+        "edlimb_c",
+        "ednmpt_c",
+        "edpnt_c",
+        "surfnm_c",
+        "surfpt_c"
+      ],
+      "dependsOn": ["e11-ellipse-geometry"],
+      "prs": ["https://github.com/rybosome/tspice/pull/748"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]

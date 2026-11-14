@@ -212,6 +212,85 @@ export interface GeometryApi {
   ): { pnear: SpiceVector3; dist: number };
 
   /**
+   * Find a nearest surface point on the origin-centered ellipsoid and signed altitude. Altitude is negative inside and zero on the surface. A nonunique interior solution follows CSPICE. Nonpositive or disproportionately scaled radii can signal BADAXISLENGTH, and excessive scaled coordinates can signal INPUTSTOOLARGE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nearpt_c.html
+   */
+  nearpt(
+    position: Readonly<SpiceVector3>,
+    a: number,
+    b: number,
+    c: number,
+  ): { npoint: SpiceVector3; alt: number };
+
+  /**
+   * Find a nearest ellipsoid point to an infinite line and its nonnegative distance. An intersection gives zero distance. CSPICE tries the forward ray first, then the reverse ray. A zero direction takes precedence over nonpositive axes. Numerical degeneracy can prevent a projection or inverse projection. The projected nearest-point workspace must have a representable translation and scale.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/npedln_c.html
+   */
+  npedln(
+    a: number,
+    b: number,
+    c: number,
+    linept: Readonly<SpiceVector3>,
+    linedr: Readonly<SpiceVector3>,
+  ): { pnear: SpiceVector3; dist: number };
+
+  /**
+   * Compute the apparent limb seen from an external point as an owned center and two semi-axis vectors. On-surface views can produce a point ellipse. N0067 reports DEGENERATECASE for nonpositive radii, an interior viewpoint, or unrepresentable scaled axes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edlimb_c.html
+   */
+  edlimb(
+    a: number,
+    b: number,
+    c: number,
+    viewpt: Readonly<SpiceVector3>,
+  ): SpiceEllipse;
+
+  /**
+   * Return the surface point with the specified outward normal direction. A zero normal, invalid axes or a lost scaled axis signals a toolkit error. The normal need not have unit length.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ednmpt_c.html
+   */
+  ednmpt(
+    a: number,
+    b: number,
+    c: number,
+    normal: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /**
+   * Scale a nonzero vector radially onto the ellipsoid. N0067 reports INVALIDRADII for nonpositive axes, ZEROVECTOR for the origin and POINTTOOSMALL when the squared level underflows.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edpnt_c.html
+   */
+  edpnt(
+    point: Readonly<SpiceVector3>,
+    a: number,
+    b: number,
+    c: number,
+  ): SpiceVector3;
+
+  /**
+   * Compute the outward unit normal at a surface point using the axis-scaled direction. Supply a point on the ellipsoid for a geometric surface normal. The pinned calculation at the origin returns the zero vector. Nonpositive axes signal BADAXISLENGTH.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfnm_c.html
+   */
+  surfnm(
+    a: number,
+    b: number,
+    c: number,
+    point: Readonly<SpiceVector3>,
+  ): SpiceVector3;
+
+  /**
+   * Return the first intersection of a forward ray and an origin-centered ellipsoid. A miss returns found=false without a point. The surface vertex, when exactly recognized, is its own first intersection. A zero direction or nonpositive axis signals a toolkit error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/surfpt_c.html
+   */
+  surfpt(
+    position: Readonly<SpiceVector3>,
+    direction: Readonly<SpiceVector3>,
+    a: number,
+    b: number,
+    c: number,
+  ): Found<{ point: SpiceVector3 }>;
+
+  /**
    * Construct a plane through point from a finite nonzero normal. CSPICE unitizes the normal and reverses its direction when needed for a nonnegative distance constant. A zero normal signals ZEROVECTOR.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nvp2pl_c.html
    */

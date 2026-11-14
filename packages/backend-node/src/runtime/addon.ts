@@ -402,6 +402,30 @@ export type NativeAddon = {
     plane: number[],
   ): { nxpts: unknown; xpt1?: unknown; xpt2?: unknown };
   npelpt(point: number[], ellipse: number[]): { pnear: unknown; dist: unknown };
+  nearpt(
+    position: number[],
+    a: number,
+    b: number,
+    c: number,
+  ): { npoint: unknown; alt: unknown };
+  npedln(
+    a: number,
+    b: number,
+    c: number,
+    linept: number[],
+    linedr: number[],
+  ): { pnear: unknown; dist: unknown };
+  edlimb(a: number, b: number, c: number, viewpt: number[]): unknown;
+  ednmpt(a: number, b: number, c: number, normal: number[]): unknown;
+  edpnt(point: number[], a: number, b: number, c: number): unknown;
+  surfnm(a: number, b: number, c: number, point: number[]): unknown;
+  surfpt(
+    position: number[],
+    direction: number[],
+    a: number,
+    b: number,
+    c: number,
+  ): { point?: unknown; found: unknown };
   nvp2pl(normal: number[], point: number[]): unknown;
   pl2nvp(plane: number[]): { normal: unknown; point: unknown };
   pl2psv(plane: number[]): { point: unknown; span1: unknown; span2: unknown };

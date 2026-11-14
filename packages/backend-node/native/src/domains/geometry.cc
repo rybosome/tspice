@@ -550,6 +550,191 @@ static Napi::Value Npelpt(const Napi::CallbackInfo& info) {
   return out;
 }
 
+static Napi::Value Nearpt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "nearpt: incorrect argument count"));
+    return env.Undefined();
+  }
+  double position[3];
+  if (!ReadPlaneArgument(env, info[0], position, "nearpt(position)")) return env.Undefined();
+  double a;
+  if (!ReadEllipseScalar(env, info[1], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[2], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[3], &c)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double npoint[3] = {};
+  double alt = 0;
+  if (tspice_nearpt(position, a, b, c, npoint, &alt, err, sizeof(err))) {
+    ThrowSpiceError(env, "nearpt", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("npoint", MakeNumberArray(env, npoint, 3));
+  out.Set("alt", Napi::Number::New(env, alt));
+  return out;
+}
+
+static Napi::Value Npedln(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "npedln: incorrect argument count"));
+    return env.Undefined();
+  }
+  double a;
+  if (!ReadEllipseScalar(env, info[0], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[1], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[2], &c)) return env.Undefined();
+  double linept[3];
+  if (!ReadPlaneArgument(env, info[3], linept, "npedln(linept)")) return env.Undefined();
+  double linedr[3];
+  if (!ReadPlaneArgument(env, info[4], linedr, "npedln(linedr)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double pnear[3] = {};
+  double dist = 0;
+  if (tspice_npedln(a, b, c, linept, linedr, pnear, &dist, err, sizeof(err))) {
+    ThrowSpiceError(env, "npedln", err);
+    return env.Undefined();
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("pnear", MakeNumberArray(env, pnear, 3));
+  out.Set("dist", Napi::Number::New(env, dist));
+  return out;
+}
+
+static Napi::Value Edlimb(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "edlimb: incorrect argument count"));
+    return env.Undefined();
+  }
+  double a;
+  if (!ReadEllipseScalar(env, info[0], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[1], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[2], &c)) return env.Undefined();
+  double viewpt[3];
+  if (!ReadPlaneArgument(env, info[3], viewpt, "edlimb(viewpt)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double limb[9] = {};
+  if (tspice_edlimb(a, b, c, viewpt, limb, err, sizeof(err))) {
+    ThrowSpiceError(env, "edlimb", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, limb, 9);
+}
+
+static Napi::Value Ednmpt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ednmpt: incorrect argument count"));
+    return env.Undefined();
+  }
+  double a;
+  if (!ReadEllipseScalar(env, info[0], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[1], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[2], &c)) return env.Undefined();
+  double normal[3];
+  if (!ReadPlaneArgument(env, info[3], normal, "ednmpt(normal)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double point[3] = {};
+  if (tspice_ednmpt(a, b, c, normal, point, err, sizeof(err))) {
+    ThrowSpiceError(env, "ednmpt", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, point, 3);
+}
+
+static Napi::Value Edpnt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "edpnt: incorrect argument count"));
+    return env.Undefined();
+  }
+  double point[3];
+  if (!ReadPlaneArgument(env, info[0], point, "edpnt(point)")) return env.Undefined();
+  double a;
+  if (!ReadEllipseScalar(env, info[1], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[2], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[3], &c)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double surface[3] = {};
+  if (tspice_edpnt(point, a, b, c, surface, err, sizeof(err))) {
+    ThrowSpiceError(env, "edpnt", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, surface, 3);
+}
+
+static Napi::Value Surfnm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "surfnm: incorrect argument count"));
+    return env.Undefined();
+  }
+  double a;
+  if (!ReadEllipseScalar(env, info[0], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[1], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[2], &c)) return env.Undefined();
+  double point[3];
+  if (!ReadPlaneArgument(env, info[3], point, "surfnm(point)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double normal[3] = {};
+  if (tspice_surfnm(a, b, c, point, normal, err, sizeof(err))) {
+    ThrowSpiceError(env, "surfnm", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, normal, 3);
+}
+
+static Napi::Value Surfpt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "surfpt: incorrect argument count"));
+    return env.Undefined();
+  }
+  double position[3];
+  if (!ReadPlaneArgument(env, info[0], position, "surfpt(position)")) return env.Undefined();
+  double direction[3];
+  if (!ReadPlaneArgument(env, info[1], direction, "surfpt(direction)")) return env.Undefined();
+  double a;
+  if (!ReadEllipseScalar(env, info[2], &a)) return env.Undefined();
+  double b;
+  if (!ReadEllipseScalar(env, info[3], &b)) return env.Undefined();
+  double c;
+  if (!ReadEllipseScalar(env, info[4], &c)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double point[3] = {};
+  int found = 0;
+  if (tspice_surfpt(position, direction, a, b, c, point, &found, err, sizeof(err))) {
+    ThrowSpiceError(env, "surfpt", err);
+    return env.Undefined();
+  }
+  if (!found) return MakeNotFound(env);
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("point", MakeNumberArray(env, point, 3));
+  out.Set("found", Napi::Boolean::New(env, true));
+  return out;
+}
+
 static Napi::Value Nvp2pl(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (info.Length() != 2) {
@@ -855,6 +1040,13 @@ void RegisterGeometry(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "inedpl", Napi::Function::New(env, Inedpl), __func__)) return;
   if (!SetExportChecked(env, exports, "inelpl", Napi::Function::New(env, Inelpl), __func__)) return;
   if (!SetExportChecked(env, exports, "npelpt", Napi::Function::New(env, Npelpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "nearpt", Napi::Function::New(env, Nearpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "npedln", Napi::Function::New(env, Npedln), __func__)) return;
+  if (!SetExportChecked(env, exports, "edlimb", Napi::Function::New(env, Edlimb), __func__)) return;
+  if (!SetExportChecked(env, exports, "ednmpt", Napi::Function::New(env, Ednmpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "edpnt", Napi::Function::New(env, Edpnt), __func__)) return;
+  if (!SetExportChecked(env, exports, "surfnm", Napi::Function::New(env, Surfnm), __func__)) return;
+  if (!SetExportChecked(env, exports, "surfpt", Napi::Function::New(env, Surfpt), __func__)) return;
   if (!SetExportChecked(env, exports, "nvp2pl", Napi::Function::New(env, Nvp2pl), __func__)) return;
   if (!SetExportChecked(env, exports, "pl2nvp", Napi::Function::New(env, Pl2nvp), __func__)) return;
   if (!SetExportChecked(env, exports, "pl2psv", Napi::Function::New(env, Pl2psv), __func__)) return;

@@ -42,3 +42,25 @@ async function ellipseGeometry(spice: SpiceSync, asyncSpice: SpiceAsync) {
   return hits.nxpts;
 }
 void ellipseGeometry;
+
+async function ellipsoidGeometry(sync: SpiceSync, asyncSpice: SpiceAsync) {
+  const p = [3, 2, 1] as const,
+    u = [-1, 0, 0] as const;
+  const { npoint, alt } = sync.raw.nearpt(p, 3, 2, 1);
+  const { pnear, dist } = sync.raw.npedln(3, 2, 1, p, u);
+  const limb: SpiceEllipse = sync.raw.edlimb(3, 2, 1, p);
+  const normal = sync.raw.surfnm(3, 2, 1, npoint);
+  const foot = sync.raw.edpnt(p, 3, 2, 1);
+  const onSurface = sync.raw.ednmpt(3, 2, 1, normal);
+  const hit = await asyncSpice.raw.surfpt(p, u, 3, 2, 1);
+  return [
+    alt,
+    dist,
+    pnear,
+    limb,
+    foot,
+    onSurface,
+    hit.found ? hit.point : null,
+  ];
+}
+void ellipsoidGeometry;

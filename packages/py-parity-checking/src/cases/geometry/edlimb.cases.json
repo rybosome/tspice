@@ -1,0 +1,159 @@
+[
+  {
+    "caseId": "geometry-edlimb-triaxial-axis-views",
+    "description": "Observe nine ellipse components from outside each coordinate axis.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [6, 0, 0]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [0, -6, 0]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [0, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-oblique-view",
+    "description": "Preserve named center and signed semi-axes for multi-component exterior views.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [6, -3, 4]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 5,
+        "b": 3,
+        "c": 2,
+        "viewpt": [-7, 4, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-surface-point-limb",
+    "description": "An exact surface observer yields a point limb in the pinned C implementation.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [3, 0, 0]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [0, 0, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-sphere-and-scale",
+    "description": "Compare limb orientation, center and length for a sphere and scaled triaxial figures.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 2,
+        "b": 2,
+        "c": 2,
+        "viewpt": [0, 0, 4]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 30,
+        "b": 20,
+        "c": 10,
+        "viewpt": [60, 0, 0]
+      },
+      {
+        "op": "geometry.edlimb",
+        "a": 3e-6,
+        "b": 2e-6,
+        "c": 1e-6,
+        "viewpt": [6e-6, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-inside",
+    "description": "The actual C limb routine signals its geometric degeneracy inside the body.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "viewpt": [0.25, 0.5, 0.25]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-nonpositive-radius",
+    "description": "Observe the actual N0067 zero-radius diagnostic.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 3,
+        "b": 0,
+        "c": 1,
+        "viewpt": [6, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-edlimb-axis-underflow",
+    "description": "Disproportionate axes whose scaled square rounds to zero fail before plane construction.",
+    "workflow": [
+      {
+        "op": "geometry.edlimb",
+        "a": 1e-200,
+        "b": 2,
+        "c": 3,
+        "viewpt": [6, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

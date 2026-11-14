@@ -1047,6 +1047,214 @@ export function createGeometryApi(module: EmscriptenModule): GeometryApi {
         },
       );
     },
+    nearpt: (position, a, b, c) => {
+      const positionCopy = copyPlaneVector(position, "nearpt(position)", true);
+      const aCopy = planeComponent(a, "nearpt(a)", true);
+      const bCopy = planeComponent(b, "nearpt(b)", true);
+      const cCopy = planeComponent(c, "nearpt(c)", true);
+      return withAllocs(
+        module,
+        [24, 24, 8, WASM_ERR_MAX_BYTES],
+        (positionPtr, npointPtr, altPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr / 8);
+          const status = module._tspice_nearpt(
+            positionPtr,
+            aCopy,
+            bCopy,
+            cCopy,
+            npointPtr,
+            altPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            npoint: readPlaneResultVector(module, npointPtr),
+            alt: planeComponent(
+              module.HEAPF64[altPtr / 8],
+              "nearpt(alt)",
+              false,
+            ),
+          };
+        },
+      );
+    },
+    npedln: (a, b, c, linept, linedr) => {
+      const aCopy = planeComponent(a, "npedln(a)", true);
+      const bCopy = planeComponent(b, "npedln(b)", true);
+      const cCopy = planeComponent(c, "npedln(c)", true);
+      const lineptCopy = copyPlaneVector(linept, "npedln(linept)", true);
+      const linedrCopy = copyPlaneVector(linedr, "npedln(linedr)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 8, WASM_ERR_MAX_BYTES],
+        (lineptPtr, linedrPtr, pnearPtr, distPtr, errPtr) => {
+          module.HEAPF64.set(lineptCopy, lineptPtr / 8);
+          module.HEAPF64.set(linedrCopy, linedrPtr / 8);
+          const status = module._tspice_npedln(
+            aCopy,
+            bCopy,
+            cCopy,
+            lineptPtr,
+            linedrPtr,
+            pnearPtr,
+            distPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return {
+            pnear: readPlaneResultVector(module, pnearPtr),
+            dist: planeComponent(
+              module.HEAPF64[distPtr / 8],
+              "npedln(dist)",
+              false,
+            ),
+          };
+        },
+      );
+    },
+    edlimb: (a, b, c, viewpt) => {
+      const aCopy = planeComponent(a, "edlimb(a)", true);
+      const bCopy = planeComponent(b, "edlimb(b)", true);
+      const cCopy = planeComponent(c, "edlimb(c)", true);
+      const viewptCopy = copyPlaneVector(viewpt, "edlimb(viewpt)", true);
+      return withAllocs(
+        module,
+        [24, 72, WASM_ERR_MAX_BYTES],
+        (viewptPtr, limbPtr, errPtr) => {
+          module.HEAPF64.set(viewptCopy, viewptPtr / 8);
+          const status = module._tspice_edlimb(
+            aCopy,
+            bCopy,
+            cCopy,
+            viewptPtr,
+            limbPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readEllipseResult(module, limbPtr);
+        },
+      );
+    },
+    ednmpt: (a, b, c, normal) => {
+      const aCopy = planeComponent(a, "ednmpt(a)", true);
+      const bCopy = planeComponent(b, "ednmpt(b)", true);
+      const cCopy = planeComponent(c, "ednmpt(c)", true);
+      const normalCopy = copyPlaneVector(normal, "ednmpt(normal)", true);
+      return withAllocs(
+        module,
+        [24, 24, WASM_ERR_MAX_BYTES],
+        (normalPtr, pointPtr, errPtr) => {
+          module.HEAPF64.set(normalCopy, normalPtr / 8);
+          const status = module._tspice_ednmpt(
+            aCopy,
+            bCopy,
+            cCopy,
+            normalPtr,
+            pointPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readPlaneResultVector(module, pointPtr);
+        },
+      );
+    },
+    edpnt: (point, a, b, c) => {
+      const pointCopy = copyPlaneVector(point, "edpnt(point)", true);
+      const aCopy = planeComponent(a, "edpnt(a)", true);
+      const bCopy = planeComponent(b, "edpnt(b)", true);
+      const cCopy = planeComponent(c, "edpnt(c)", true);
+      return withAllocs(
+        module,
+        [24, 24, WASM_ERR_MAX_BYTES],
+        (pointPtr, surfacePtr, errPtr) => {
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          const status = module._tspice_edpnt(
+            pointPtr,
+            aCopy,
+            bCopy,
+            cCopy,
+            surfacePtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readPlaneResultVector(module, surfacePtr);
+        },
+      );
+    },
+    surfnm: (a, b, c, point) => {
+      const aCopy = planeComponent(a, "surfnm(a)", true);
+      const bCopy = planeComponent(b, "surfnm(b)", true);
+      const cCopy = planeComponent(c, "surfnm(c)", true);
+      const pointCopy = copyPlaneVector(point, "surfnm(point)", true);
+      return withAllocs(
+        module,
+        [24, 24, WASM_ERR_MAX_BYTES],
+        (pointPtr, normalPtr, errPtr) => {
+          module.HEAPF64.set(pointCopy, pointPtr / 8);
+          const status = module._tspice_surfnm(
+            aCopy,
+            bCopy,
+            cCopy,
+            pointPtr,
+            normalPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          return readPlaneResultVector(module, normalPtr);
+        },
+      );
+    },
+    surfpt: (position, direction, a, b, c) => {
+      const positionCopy = copyPlaneVector(position, "surfpt(position)", true);
+      const directionCopy = copyPlaneVector(
+        direction,
+        "surfpt(direction)",
+        true,
+      );
+      const aCopy = planeComponent(a, "surfpt(a)", true);
+      const bCopy = planeComponent(b, "surfpt(b)", true);
+      const cCopy = planeComponent(c, "surfpt(c)", true);
+      return withAllocs(
+        module,
+        [24, 24, 24, 4, WASM_ERR_MAX_BYTES],
+        (positionPtr, directionPtr, pointPtr, foundPtr, errPtr) => {
+          module.HEAPF64.set(positionCopy, positionPtr / 8);
+          module.HEAPF64.set(directionCopy, directionPtr / 8);
+          const status = module._tspice_surfpt(
+            positionPtr,
+            directionPtr,
+            aCopy,
+            bCopy,
+            cCopy,
+            pointPtr,
+            foundPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const found = module.HEAP32[foundPtr / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid SURFPT found flag");
+          return {
+            point: readPlaneResultVector(module, pointPtr),
+            found: true,
+          };
+        },
+      );
+    },
     nvp2pl: (normal, point) => {
       const normalCopy = copyPlaneVector(normal, "nvp2pl(normal)", true);
       const pointCopy = copyPlaneVector(point, "nvp2pl(point)", true);

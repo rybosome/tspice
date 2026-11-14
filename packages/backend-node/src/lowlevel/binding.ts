@@ -638,6 +638,31 @@ export function getNodeBinding(): NativeAddon {
     "Native addon missing npelpt()",
   );
   invariant(
+    typeof native.nearpt === "function",
+    "Native addon missing nearpt()",
+  );
+  invariant(
+    typeof native.npedln === "function",
+    "Native addon missing npedln()",
+  );
+  invariant(
+    typeof native.edlimb === "function",
+    "Native addon missing edlimb()",
+  );
+  invariant(
+    typeof native.ednmpt === "function",
+    "Native addon missing ednmpt()",
+  );
+  invariant(typeof native.edpnt === "function", "Native addon missing edpnt()");
+  invariant(
+    typeof native.surfnm === "function",
+    "Native addon missing surfnm()",
+  );
+  invariant(
+    typeof native.surfpt === "function",
+    "Native addon missing surfpt()",
+  );
+  invariant(
     typeof native.nvp2pl === "function",
     "Expected native addon to export nvp2pl",
   );

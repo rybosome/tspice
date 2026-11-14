@@ -436,6 +436,83 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
         dist: planeComponent(out.dist, "npelpt(dist)", false),
       };
     },
+    nearpt: (position, a, b, c) => {
+      const out = native.nearpt(
+        copyPlaneVector(position, "nearpt(position)", true),
+        planeComponent(a, "nearpt(a)", true),
+        planeComponent(b, "nearpt(b)", true),
+        planeComponent(c, "nearpt(c)", true),
+      );
+      return {
+        npoint: copyPlaneVector(out.npoint, "nearpt(npoint)", false),
+        alt: planeComponent(out.alt, "nearpt(alt)", false),
+      };
+    },
+    npedln: (a, b, c, linept, linedr) => {
+      const out = native.npedln(
+        planeComponent(a, "npedln(a)", true),
+        planeComponent(b, "npedln(b)", true),
+        planeComponent(c, "npedln(c)", true),
+        copyPlaneVector(linept, "npedln(linept)", true),
+        copyPlaneVector(linedr, "npedln(linedr)", true),
+      );
+      return {
+        pnear: copyPlaneVector(out.pnear, "npedln(pnear)", false),
+        dist: planeComponent(out.dist, "npedln(dist)", false),
+      };
+    },
+    edlimb: (a, b, c, viewpt) => {
+      const out = native.edlimb(
+        planeComponent(a, "edlimb(a)", true),
+        planeComponent(b, "edlimb(b)", true),
+        planeComponent(c, "edlimb(c)", true),
+        copyPlaneVector(viewpt, "edlimb(viewpt)", true),
+      );
+      return unpackEllipse(out, "edlimb result");
+    },
+    ednmpt: (a, b, c, normal) => {
+      const out = native.ednmpt(
+        planeComponent(a, "ednmpt(a)", true),
+        planeComponent(b, "ednmpt(b)", true),
+        planeComponent(c, "ednmpt(c)", true),
+        copyPlaneVector(normal, "ednmpt(normal)", true),
+      );
+      return copyPlaneVector(out, "ednmpt(point)", false);
+    },
+    edpnt: (point, a, b, c) => {
+      const out = native.edpnt(
+        copyPlaneVector(point, "edpnt(point)", true),
+        planeComponent(a, "edpnt(a)", true),
+        planeComponent(b, "edpnt(b)", true),
+        planeComponent(c, "edpnt(c)", true),
+      );
+      return copyPlaneVector(out, "edpnt(surface)", false);
+    },
+    surfnm: (a, b, c, point) => {
+      const out = native.surfnm(
+        planeComponent(a, "surfnm(a)", true),
+        planeComponent(b, "surfnm(b)", true),
+        planeComponent(c, "surfnm(c)", true),
+        copyPlaneVector(point, "surfnm(point)", true),
+      );
+      return copyPlaneVector(out, "surfnm(normal)", false);
+    },
+    surfpt: (position, direction, a, b, c) => {
+      const out = native.surfpt(
+        copyPlaneVector(position, "surfpt(position)", true),
+        copyPlaneVector(direction, "surfpt(direction)", true),
+        planeComponent(a, "surfpt(a)", true),
+        planeComponent(b, "surfpt(b)", true),
+        planeComponent(c, "surfpt(c)", true),
+      );
+      const found = out.found;
+      if (found === false) return { found: false };
+      if (found !== true) throw new TypeError("Invalid SURFPT found flag");
+      return {
+        point: copyPlaneVector(out.point, "surfpt(point)", false),
+        found: true,
+      };
+    },
     nvp2pl: (normal, point) => {
       const out = native.nvp2pl(
         copyPlaneVector(normal, "nvp2pl(normal)", true),

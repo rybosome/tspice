@@ -1,0 +1,183 @@
+[
+  {
+    "caseId": "geometry-ednmpt-axis-normals",
+    "description": "Signed and nonunit axis normals select the corresponding signed semiaxis endpoint.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [2, 0, 0]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [0, -5, 0]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [0, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-oblique-normals",
+    "description": "Unequal and permuted radii distinguish surface-normal inversion from radial intersection.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [1, -2, 3]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [-1, 2, -3]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 5,
+        "b": 3,
+        "c": 2,
+        "normal": [2, 3, -4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-normal-magnitude",
+    "description": "Compare the inverse normal map across moderate and very small scaling of one direction.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [1, -2, 3]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [5, -10, 15]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [1e-100, -2e-100, 3e-100]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-sphere",
+    "description": "Compute the surface points of a sphere with mixed-direction normals.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 5,
+        "b": 5,
+        "c": 5,
+        "normal": [1, 2, 2]
+      },
+      {
+        "op": "geometry.ednmpt",
+        "a": 5,
+        "b": 5,
+        "c": 5,
+        "normal": [-1, -2, -2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-bad-axis",
+    "description": "Nonpositive radii are diagnosed before a zero normal.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 0,
+        "b": 2,
+        "c": 1,
+        "normal": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISLENGTH"]
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-axis-underflow",
+    "description": "A positive axis lost in normalization gives the pinned AXISUNDERFLOW.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 1e-300,
+        "b": 1e100,
+        "c": 1,
+        "normal": [1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["AXISUNDERFLOW"]
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-zero-normal",
+    "description": "An actual zero normal is distinct from a nonzero underflowing normal.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-ednmpt-normal-underflow",
+    "description": "Squaring a tiny nonzero normal leads to an unrepresentable positive scale.",
+    "workflow": [
+      {
+        "op": "geometry.ednmpt",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "normal": [1e-200, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

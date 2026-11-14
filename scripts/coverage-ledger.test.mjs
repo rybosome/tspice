@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 177,
-    planned: 472,
+    implemented: 184,
+    planned: 465,
     excluded: 3,
-    caseFiles: 177,
-    scenarios: 1187,
+    caseFiles: 184,
+    scenarios: 1236,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -314,6 +314,20 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
+test("the ray mapping requires the real SURFPT symbol and scoped public trace", (t) => {
+  const f = fixture(t);
+  const file = "packages/backend-shim-c/src/domains/geometry.c";
+  for (const [before, after] of [
+    ["surfpt_((doublereal *)position", "unrelated_((doublereal *)position"],
+    ['chkin_c("surfpt_c");', 'unused_entry("surfpt_c");'],
+    ['chkout_c("surfpt_c");', 'unused_exit("surfpt_c");'],
+  ]) {
+    f.edit(file, before, after);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.surfpt/);
+    f.edit(file, after, before);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -446,7 +460,28 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 15);
+  assert.equal(ledger.audit.expansionRoutines, 22);
+  for (const name of [
+    "nearpt",
+    "npedln",
+    "edlimb",
+    "ednmpt",
+    "edpnt",
+    "surfnm",
+    "surfpt",
+  ]) {
+    const routine = ledger.routines.find((row) => row.routine === name + "_c");
+    for (const backend of ["node", "wasm"]) {
+      const mapping = routine.mapping[backend];
+      assert.ok(
+        mapping.cspiceEntrypoints.includes(
+          name === "surfpt" ? "surfpt_" : name + "_c",
+        ),
+      );
+      if (name === "surfpt")
+        assert.equal(mapping.classification, "alias-or-composed");
+    }
+  }
   // Each ellipse route must retain its actual same-named canonical entrypoint,
   // including INEDPL's guarded distorted-plane preflight.
   for (const name of [

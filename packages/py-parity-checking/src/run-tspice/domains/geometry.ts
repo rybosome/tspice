@@ -18,6 +18,13 @@ import type {
   StepGeometryInelpl,
   StepGeometryInedpl,
   StepGeometryNpelpt,
+  StepGeometryNearpt,
+  StepGeometryNpedln,
+  StepGeometryEdlimb,
+  StepGeometryEdnmpt,
+  StepGeometryEdpnt,
+  StepGeometrySurfnm,
+  StepGeometrySurfpt,
   StepGeometryNvc2pl,
   StepGeometryOccult,
   StepGeometryPl2nvc,
@@ -52,6 +59,13 @@ type GeometryStep =
   | StepGeometryInelpl
   | StepGeometryInedpl
   | StepGeometryNpelpt
+  | StepGeometryNearpt
+  | StepGeometryNpedln
+  | StepGeometryEdlimb
+  | StepGeometryEdnmpt
+  | StepGeometryEdpnt
+  | StepGeometrySurfnm
+  | StepGeometrySurfpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc;
 
@@ -288,6 +302,53 @@ export function runGeometryStep(
       return {
         op: step.op,
         value: context.spice.raw.npelpt(step.point, step.ellipse),
+      };
+    case "geometry.nearpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.nearpt(step.position, step.a, step.b, step.c),
+      };
+    case "geometry.npedln":
+      return {
+        op: step.op,
+        value: context.spice.raw.npedln(
+          step.a,
+          step.b,
+          step.c,
+          step.linept,
+          step.linedr,
+        ),
+      };
+    case "geometry.edlimb":
+      return {
+        op: step.op,
+        value: context.spice.raw.edlimb(step.a, step.b, step.c, step.viewpt),
+      };
+    case "geometry.ednmpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.ednmpt(step.a, step.b, step.c, step.normal),
+      };
+    case "geometry.edpnt":
+      return {
+        op: step.op,
+        value: context.spice.raw.edpnt(step.point, step.a, step.b, step.c),
+      };
+    case "geometry.surfnm":
+      return {
+        op: step.op,
+        value: context.spice.raw.surfnm(step.a, step.b, step.c, step.point),
+      };
+    case "geometry.surfpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.surfpt(
+          step.position,
+          step.direction,
+          step.a,
+          step.b,
+          step.c,
+        ),
       };
     case "geometry.nvc2pl": {
       const out = context.spice.raw.nvc2pl(step.normal, step.konst);

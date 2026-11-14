@@ -134,6 +134,13 @@ from .models import (
     StepGeometryInelpl,
     StepGeometryInedpl,
     StepGeometryNpelpt,
+    StepGeometryNearpt,
+    StepGeometryNpedln,
+    StepGeometryEdlimb,
+    StepGeometryEdnmpt,
+    StepGeometryEdpnt,
+    StepGeometrySurfnm,
+    StepGeometrySurfpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -1742,6 +1749,71 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 point=_expect_vec3(step.get("point"), label="geometry.npelpt.point"),
                 ellipse=_expect_ellipse(step.get("ellipse"), label="geometry.npelpt.ellipse"),
+            )
+
+        case "geometry.nearpt":
+            return StepGeometryNearpt(
+                op=op,
+                position=_expect_vec3(step.get("position"), label="geometry.nearpt.position"),
+                a=_expect_number(step.get("a"), label="geometry.nearpt.a"),
+                b=_expect_number(step.get("b"), label="geometry.nearpt.b"),
+                c=_expect_number(step.get("c"), label="geometry.nearpt.c"),
+            )
+
+        case "geometry.npedln":
+            return StepGeometryNpedln(
+                op=op,
+                a=_expect_number(step.get("a"), label="geometry.npedln.a"),
+                b=_expect_number(step.get("b"), label="geometry.npedln.b"),
+                c=_expect_number(step.get("c"), label="geometry.npedln.c"),
+                linept=_expect_vec3(step.get("linept"), label="geometry.npedln.linept"),
+                linedr=_expect_vec3(step.get("linedr"), label="geometry.npedln.linedr"),
+            )
+
+        case "geometry.edlimb":
+            return StepGeometryEdlimb(
+                op=op,
+                a=_expect_number(step.get("a"), label="geometry.edlimb.a"),
+                b=_expect_number(step.get("b"), label="geometry.edlimb.b"),
+                c=_expect_number(step.get("c"), label="geometry.edlimb.c"),
+                viewpt=_expect_vec3(step.get("viewpt"), label="geometry.edlimb.viewpt"),
+            )
+
+        case "geometry.ednmpt":
+            return StepGeometryEdnmpt(
+                op=op,
+                a=_expect_number(step.get("a"), label="geometry.ednmpt.a"),
+                b=_expect_number(step.get("b"), label="geometry.ednmpt.b"),
+                c=_expect_number(step.get("c"), label="geometry.ednmpt.c"),
+                normal=_expect_vec3(step.get("normal"), label="geometry.ednmpt.normal"),
+            )
+
+        case "geometry.edpnt":
+            return StepGeometryEdpnt(
+                op=op,
+                point=_expect_vec3(step.get("point"), label="geometry.edpnt.point"),
+                a=_expect_number(step.get("a"), label="geometry.edpnt.a"),
+                b=_expect_number(step.get("b"), label="geometry.edpnt.b"),
+                c=_expect_number(step.get("c"), label="geometry.edpnt.c"),
+            )
+
+        case "geometry.surfnm":
+            return StepGeometrySurfnm(
+                op=op,
+                a=_expect_number(step.get("a"), label="geometry.surfnm.a"),
+                b=_expect_number(step.get("b"), label="geometry.surfnm.b"),
+                c=_expect_number(step.get("c"), label="geometry.surfnm.c"),
+                point=_expect_vec3(step.get("point"), label="geometry.surfnm.point"),
+            )
+
+        case "geometry.surfpt":
+            return StepGeometrySurfpt(
+                op=op,
+                position=_expect_vec3(step.get("position"), label="geometry.surfpt.position"),
+                direction=_expect_vec3(step.get("direction"), label="geometry.surfpt.direction"),
+                a=_expect_number(step.get("a"), label="geometry.surfpt.a"),
+                b=_expect_number(step.get("b"), label="geometry.surfpt.b"),
+                c=_expect_number(step.get("c"), label="geometry.surfpt.c"),
             )
 
         case "geometry.nvc2pl":

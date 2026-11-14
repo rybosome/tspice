@@ -218,6 +218,13 @@ export function dispatchStep(
     case "geometry.inelpl":
     case "geometry.inedpl":
     case "geometry.npelpt":
+    case "geometry.nearpt":
+    case "geometry.npedln":
+    case "geometry.edlimb":
+    case "geometry.ednmpt":
+    case "geometry.edpnt":
+    case "geometry.surfnm":
+    case "geometry.surfpt":
     case "geometry.nvc2pl":
     case "geometry.pl2nvc":
       return runGeometryStep(context, step);

@@ -5,6 +5,7 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from .. import ellipsoid_oracle
 from ..models.geometry import StoredEllipse
 
 from ..models import (
@@ -26,6 +27,13 @@ from ..models import (
     StepGeometryInelpl,
     StepGeometryInedpl,
     StepGeometryNpelpt,
+    StepGeometryNearpt,
+    StepGeometryNpedln,
+    StepGeometryEdlimb,
+    StepGeometryEdnmpt,
+    StepGeometryEdpnt,
+    StepGeometrySurfnm,
+    StepGeometrySurfpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -276,6 +284,37 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
     if isinstance(step, StepGeometryNpelpt):
         pnear, dist = sp.npelpt(step.point, _stored_ellipse(step.ellipse))
         value = {"pnear": _vec3_to_json(pnear), "dist": float(dist)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryNearpt):
+        npoint, alt = sp.nearpt(step.position, step.a, step.b, step.c)
+        value = {"npoint": _vec3_to_json(npoint), "alt": float(alt)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryNpedln):
+        pnear, dist = ellipsoid_oracle.npedln(step.a, step.b, step.c, step.linept, step.linedr)
+        value = {"pnear": _vec3_to_json(pnear), "dist": float(dist)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryEdlimb):
+        value = _ellipse_to_json(ellipsoid_oracle.edlimb(step.a,step.b,step.c,step.viewpt))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryEdnmpt):
+        value = _vec3_to_json(sp.ednmpt(step.a, step.b, step.c, step.normal))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryEdpnt):
+        value = _vec3_to_json(sp.edpnt(step.point, step.a, step.b, step.c))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometrySurfnm):
+        value = _vec3_to_json(sp.surfnm(step.a, step.b, step.c, step.point))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometrySurfpt):
+        point, found = ellipsoid_oracle.surfpt(step.position,step.direction,step.a,step.b,step.c)
+        value = {"found": True, "point": _vec3_to_json(point)} if found else {"found": False}
         return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepGeometryNvc2pl):

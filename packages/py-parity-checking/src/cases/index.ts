@@ -111,6 +111,13 @@ import geometryPjelplCasesRaw from "./geometry/pjelpl.cases.json" with { type: "
 import geometryInelplCasesRaw from "./geometry/inelpl.cases.json" with { type: "json" };
 import geometryInedplCasesRaw from "./geometry/inedpl.cases.json" with { type: "json" };
 import geometryNpelptCasesRaw from "./geometry/npelpt.cases.json" with { type: "json" };
+import geometryNearptCasesRaw from "./geometry/nearpt.cases.json" with { type: "json" };
+import geometryNpedlnCasesRaw from "./geometry/npedln.cases.json" with { type: "json" };
+import geometryEdlimbCasesRaw from "./geometry/edlimb.cases.json" with { type: "json" };
+import geometryEdnmptCasesRaw from "./geometry/ednmpt.cases.json" with { type: "json" };
+import geometryEdpntCasesRaw from "./geometry/edpnt.cases.json" with { type: "json" };
+import geometrySurfnmCasesRaw from "./geometry/surfnm.cases.json" with { type: "json" };
+import geometrySurfptCasesRaw from "./geometry/surfpt.cases.json" with { type: "json" };
 import geometryNvc2plCasesRaw from "./geometry/nvc2pl.cases.json" with { type: "json" };
 import geometryOccultCasesRaw from "./geometry/occult.cases.json" with { type: "json" };
 import geometryPl2nvcCasesRaw from "./geometry/pl2nvc.cases.json" with { type: "json" };
@@ -291,6 +298,13 @@ export const geometryCases: ParityCase[] = [
   ...(geometryInelplCasesRaw as ParityCase[]),
   ...(geometryInedplCasesRaw as ParityCase[]),
   ...(geometryNpelptCasesRaw as ParityCase[]),
+  ...(geometryNearptCasesRaw as ParityCase[]),
+  ...(geometryNpedlnCasesRaw as ParityCase[]),
+  ...(geometryEdlimbCasesRaw as ParityCase[]),
+  ...(geometryEdnmptCasesRaw as ParityCase[]),
+  ...(geometryEdpntCasesRaw as ParityCase[]),
+  ...(geometrySurfnmCasesRaw as ParityCase[]),
+  ...(geometrySurfptCasesRaw as ParityCase[]),
   ...(geometryNvc2plCasesRaw as ParityCase[]),
   ...(geometryPl2nvcCasesRaw as ParityCase[]),
 ];

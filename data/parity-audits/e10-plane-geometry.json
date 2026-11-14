@@ -303,7 +303,8 @@
         "geometry-vprjpi-parallel",
         "geometry-vprjpi-perpendicular"
       ],
-      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e11-c42a2170-wasm",
@@ -354,7 +355,8 @@
         "geometry-vprjpi-parallel",
         "geometry-vprjpi-perpendicular"
       ],
-      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e11-c42a2170-node",
@@ -407,7 +409,8 @@
       ],
       "commit": "c42a217026abe7273b69195023f7808bf90f2279",
       "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
-      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e11-c42a2170-wasm",
@@ -460,7 +463,216 @@
       ],
       "commit": "c42a217026abe7273b69195023f7808bf90f2279",
       "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
-      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e12-337203c8-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3cf32152f6dc7e2bbe1efeb3b6eabde83ace6db37d61c8a6779d21ef8b6186d5",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e12-337203c8-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3cf32152f6dc7e2bbe1efeb3b6eabde83ace6db37d61c8a6779d21ef8b6186d5",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3cf32152f6dc7e2bbe1efeb3b6eabde83ace6db37d61c8a6779d21ef8b6186d5",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3cf32152f6dc7e2bbe1efeb3b6eabde83ace6db37d61c8a6779d21ef8b6186d5",
+      "caseIds": [
+        "geometry-inrypl-excessive-plane",
+        "geometry-inrypl-excessive-vertex",
+        "geometry-inrypl-infinite",
+        "geometry-inrypl-oblique",
+        "geometry-inrypl-one",
+        "geometry-inrypl-zero",
+        "geometry-inrypl-zero-direction",
+        "geometry-nplnpt-axes",
+        "geometry-nplnpt-direction-scales",
+        "geometry-nplnpt-oblique",
+        "geometry-nplnpt-origin",
+        "geometry-nplnpt-zero-direction",
+        "geometry-nvp2pl-axis-sign",
+        "geometry-nvp2pl-scale",
+        "geometry-nvp2pl-through-origin",
+        "geometry-nvp2pl-varied-point",
+        "geometry-nvp2pl-zero-normal",
+        "geometry-pl2nvp-coordinate-planes",
+        "geometry-pl2nvp-distance-scales",
+        "geometry-pl2nvp-oblique",
+        "geometry-pl2nvp-origin",
+        "geometry-pl2psv-coordinate-planes",
+        "geometry-pl2psv-distance-scales",
+        "geometry-pl2psv-oblique",
+        "geometry-pl2psv-origin",
+        "geometry-psv2pl-coordinate-spans",
+        "geometry-psv2pl-oblique",
+        "geometry-psv2pl-parallel",
+        "geometry-psv2pl-scaled-spans",
+        "geometry-psv2pl-zero-first",
+        "geometry-psv2pl-zero-second",
+        "geometry-vprjp-already-in-plane",
+        "geometry-vprjp-axes",
+        "geometry-vprjp-oblique",
+        "geometry-vprjp-scales",
+        "geometry-vprjpi-conditioned",
+        "geometry-vprjpi-oblique",
+        "geometry-vprjpi-parallel",
+        "geometry-vprjpi-perpendicular"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -510,11 +722,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.nvp2pl -> geometry adapter -> process-serialized native addon -> tspice_nvp2pl -> nvp2pl_c. The locked oracle calls sp.nvp2pl.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -522,11 +736,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.nvp2pl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_nvp2pl -> nvp2pl_c. The locked oracle calls sp.nvp2pl.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -571,11 +787,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pl2nvp -> geometry adapter -> process-serialized native addon -> tspice_pl2nvp -> pl2nvp_c. The locked oracle calls sp.pl2nvp.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -583,11 +801,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pl2nvp -> geometry adapter -> module-owned scoped WASM buffers -> tspice_pl2nvp -> pl2nvp_c. The locked oracle calls sp.pl2nvp.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -632,11 +852,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pl2psv -> geometry adapter -> process-serialized native addon -> tspice_pl2psv -> pl2psv_c. The locked oracle calls sp.pl2psv.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -644,11 +866,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.pl2psv -> geometry adapter -> module-owned scoped WASM buffers -> tspice_pl2psv -> pl2psv_c. The locked oracle calls sp.pl2psv.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -703,11 +927,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.psv2pl -> geometry adapter -> process-serialized native addon -> tspice_psv2pl -> psv2pl_c. The locked oracle calls sp.psv2pl.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -715,11 +941,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.psv2pl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_psv2pl -> psv2pl_c. The locked oracle calls sp.psv2pl.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -779,11 +1007,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.inrypl -> geometry adapter -> process-serialized native addon -> tspice_inrypl -> inrypl_c. The locked oracle calls sp.inrypl.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -791,11 +1021,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.inrypl -> geometry adapter -> module-owned scoped WASM buffers -> tspice_inrypl -> inrypl_c. The locked oracle calls sp.inrypl.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -840,11 +1072,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprjp -> geometry adapter -> process-serialized native addon -> tspice_vprjp -> vprjp_c. The locked oracle calls sp.vprjp.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -852,11 +1086,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprjp -> geometry adapter -> module-owned scoped WASM buffers -> tspice_vprjp -> vprjp_c. The locked oracle calls sp.vprjp.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -901,11 +1137,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprjpi -> geometry adapter -> process-serialized native addon -> tspice_vprjpi -> vprjpi_c. The locked oracle calls sp.vprjpi.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -913,11 +1151,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.vprjpi -> geometry adapter -> module-owned scoped WASM buffers -> tspice_vprjpi -> vprjpi_c. The locked oracle calls sp.vprjpi.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -967,11 +1207,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.nplnpt -> geometry adapter -> process-serialized native addon -> tspice_nplnpt -> nplnpt_c. The locked oracle calls sp.nplnpt.",
-          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -979,11 +1221,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.nplnpt -> geometry adapter -> module-owned scoped WASM buffers -> tspice_nplnpt -> nplnpt_c. The locked oracle calls sp.nplnpt.",
-          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     }
