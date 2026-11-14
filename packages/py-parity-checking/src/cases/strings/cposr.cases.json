@@ -1,0 +1,428 @@
+[
+  {
+    "caseId": "strings-cposr-inclusive-positions",
+    "description": "Visit both endpoints, each interior start and the first start past the end.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": -1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 3
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 4
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 5
+      },
+      {
+        "op": "strings.cposr",
+        "text": "ababa",
+        "chars": "a",
+        "start": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-signed-starts",
+    "description": "Exercise both signed domain boundaries available to the independent Fortran-index wrapper.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": -2147483648
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": -700
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 3
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 6
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 7
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 700
+      },
+      {
+        "op": "strings.cposr",
+        "text": "aba!aba",
+        "chars": "ab",
+        "start": 2147483646
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-empty-operands",
+    "description": "Empty text and an empty search operand each return the integer miss sentinel.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "",
+        "chars": "",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "",
+        "chars": "a",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "abc",
+        "chars": "",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "abc",
+        "chars": "",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "",
+        "chars": "a",
+        "start": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-utf8-byte-starts",
+    "description": "Search inside a four-byte scalar and through repeated multibyte text using byte positions.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 3
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 4
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 5
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 6
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 7
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 8
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é🚀éZ",
+        "chars": "ê",
+        "start": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-literal-whitespace",
+    "description": "Tab, spaces and newline are searchable bytes in leading, internal and trailing positions.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": " ",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": " ",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": " ",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": "\t",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": "\n",
+        "start": 6
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": "  ",
+        "start": 7
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": "   ",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "  a\tb\n  ",
+        "chars": " ",
+        "start": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-bom-composed-and-decomposed",
+    "description": "Keep an initial UTF-8 BOM and distinguish composed and decomposed code-point byte sequences.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "﻿",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "﻿",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "é",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "é",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "é",
+        "start": 6
+      },
+      {
+        "op": "strings.cposr",
+        "text": "﻿é é",
+        "chars": "x",
+        "start": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-set-membership",
+    "description": "Independent character membership permits unordered and duplicate set bytes and respects ASCII case.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "bA",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "AAb",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "Aa",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "abc",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "ABC",
+        "start": 6
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "Z",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "Abc-aAb",
+        "chars": "Abc-a",
+        "start": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-cposr-shared-utf8-byte",
+    "description": "Different scalars can share a lead byte or a continuation byte in the byte set.",
+    "workflow": [
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "ê",
+        "start": 0
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "ê",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "©",
+        "start": 1
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "è",
+        "start": 4
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "👩",
+        "start": 2
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "👩",
+        "start": 5
+      },
+      {
+        "op": "strings.cposr",
+        "text": "é👨Z",
+        "chars": "Z",
+        "start": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 177
+- Planned (not yet implemented): 472
 - Excluded: 3
 
 ## Implemented now
@@ -42,6 +42,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `ckupf_c` | CK, Unload pointing file |
 | `cmprss_c` | Compress a character string |
 | `cnmfrm_c` | Center name to associated frame |
+| `cpos_c` | Character position |
+| `cposr_c` | Character position, reverse |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
@@ -79,6 +81,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
 | `eqstr_c` | Equivalent strings |
+| `esrchc_c` | Equivalence search, character |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -123,12 +126,16 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `ncpos_c` | NOT Character position |
+| `ncposr_c` | Character position, reverse |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
+| `pos_c` | Position of substring |
+| `posr_c` | Position of substring, reverse search |
 | `pxform_c` | Position Transformation Matrix |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
@@ -240,8 +247,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
 | `copy_c` | Copy a SPICE cell |
-| `cpos_c` | Character position |
-| `cposr_c` | Character position, reverse |
 | `cyllat_c` | Cylindrical to latitudinal |
 | `cylrec_c` | Cylindrical to rectangular |
 | `cylsph_c` | Cylindrical to spherical |
@@ -364,7 +369,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `errdp_c` | Insert D.P. Number into Error Message Text |
 | `errint_c` | Insert Integer into Error Message Text |
 | `errprt_c` | Get/Set Error Output Items |
-| `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
 | `eul2m_c` | Euler angles to matrix |
@@ -466,8 +470,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `mxmt_c` | Matrix times matrix transpose, 3x3 |
 | `mxmtg_c` | Matrix times matrix transpose, general dimension |
 | `mxvg_c` | Matrix times vector, general dimension |
-| `ncpos_c` | NOT Character position |
-| `ncposr_c` | Character position, reverse |
 | `nearpt_c` | Nearest point on an ellipsoid |
 | `nextwd_c` | Next word in a character string |
 | `npedln_c` | Nearest point on ellipsoid to line |
@@ -502,8 +504,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `pltnrm_c` | DSK, compute outward normal of plate |
 | `pltvol_c` | Compute volume of plate model |
 | `polyds_c` | Compute a Polynomial and its Derivatives |
-| `pos_c` | Position of substring |
-| `posr_c` | Position of substring, reverse search |
 | `prop2b_c` | Propagate a two-body solution |
 | `prsdp_c` | Parse d.p. number with error checking |
 | `prsint_c` | Parse integer with error checking |

@@ -1,0 +1,440 @@
+[
+  {
+    "caseId": "strings-pos-inclusive-positions",
+    "description": "Visit both endpoints, each interior start and the first start past the end.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": -1
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 2
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 3
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 4
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 5
+      },
+      {
+        "op": "strings.pos",
+        "text": "ababa",
+        "substr": "aba",
+        "start": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-signed-starts",
+    "description": "Exercise both signed domain boundaries available to the independent Fortran-index wrapper.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": -2147483648
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": -700
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 3
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 6
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 7
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 700
+      },
+      {
+        "op": "strings.pos",
+        "text": "aba!aba",
+        "substr": "aba",
+        "start": 2147483646
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-empty-operands",
+    "description": "Empty text and an empty search operand each return the integer miss sentinel.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "",
+        "substr": "",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "",
+        "substr": "a",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "abc",
+        "substr": "",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "abc",
+        "substr": "",
+        "start": 2
+      },
+      {
+        "op": "strings.pos",
+        "text": "",
+        "substr": "a",
+        "start": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-utf8-byte-starts",
+    "description": "Search inside a four-byte scalar and through repeated multibyte text using byte positions.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 2
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 3
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 4
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 5
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 6
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 7
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 8
+      },
+      {
+        "op": "strings.pos",
+        "text": "é🚀éZ",
+        "substr": "é",
+        "start": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-literal-whitespace",
+    "description": "Tab, spaces and newline are searchable bytes in leading, internal and trailing positions.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": " ",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": " ",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": " ",
+        "start": 2
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": "\t",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": "\n",
+        "start": 6
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": "  ",
+        "start": 7
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": "   ",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "  a\tb\n  ",
+        "substr": " ",
+        "start": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-bom-composed-and-decomposed",
+    "description": "Keep an initial UTF-8 BOM and distinguish composed and decomposed code-point byte sequences.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "﻿",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "﻿",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "é",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "é",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "é",
+        "start": 6
+      },
+      {
+        "op": "strings.pos",
+        "text": "﻿é é",
+        "substr": "x",
+        "start": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-overlap-and-last-start",
+    "description": "Overlapping occurrences and the last possible substring start retain the direction-specific inclusive bound.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": -1
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 2
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 3
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 4
+      },
+      {
+        "op": "strings.pos",
+        "text": "aaaa",
+        "substr": "aa",
+        "start": 5
+      },
+      {
+        "op": "strings.pos",
+        "text": "abc",
+        "substr": "abcd",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "abc",
+        "substr": "abc",
+        "start": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-pos-literal-case-and-spaces",
+    "description": "Substring matching preserves ASCII case and internal or trailing blanks.",
+    "workflow": [
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "AB",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "ab",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "AB ",
+        "start": 1
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "AB  ",
+        "start": 8
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "ab ",
+        "start": 3
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "a b",
+        "start": 0
+      },
+      {
+        "op": "strings.pos",
+        "text": "ABab AB  ",
+        "substr": "BA",
+        "start": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

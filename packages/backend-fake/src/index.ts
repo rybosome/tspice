@@ -2393,6 +2393,27 @@ export function createFakeBackend(
     },
 
     // This fake does not model CSPICE string and wildcard semantics.
+    cpos: () => {
+      throw new Error("Fake backend does not model cpos()");
+    },
+    cposr: () => {
+      throw new Error("Fake backend does not model cposr()");
+    },
+    ncpos: () => {
+      throw new Error("Fake backend does not model ncpos()");
+    },
+    ncposr: () => {
+      throw new Error("Fake backend does not model ncposr()");
+    },
+    pos: () => {
+      throw new Error("Fake backend does not model pos()");
+    },
+    posr: () => {
+      throw new Error("Fake backend does not model posr()");
+    },
+    esrchc: () => {
+      throw new Error("Fake backend does not model esrchc()");
+    },
     cmprss: () => {
       throw new Error("Fake backend does not model cmprss()");
     },

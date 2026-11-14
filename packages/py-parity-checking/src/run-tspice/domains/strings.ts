@@ -10,6 +10,38 @@ export function runStringsStep(
 ): StepOutput {
   const raw = context.spice.raw;
   switch (step.op) {
+    case "strings.cpos":
+      return {
+        op: step.op,
+        value: raw.cpos(step.text, step.chars, step.start),
+      };
+    case "strings.cposr":
+      return {
+        op: step.op,
+        value: raw.cposr(step.text, step.chars, step.start),
+      };
+    case "strings.ncpos":
+      return {
+        op: step.op,
+        value: raw.ncpos(step.text, step.chars, step.start),
+      };
+    case "strings.ncposr":
+      return {
+        op: step.op,
+        value: raw.ncposr(step.text, step.chars, step.start),
+      };
+    case "strings.pos":
+      return {
+        op: step.op,
+        value: raw.pos(step.text, step.substr, step.start),
+      };
+    case "strings.posr":
+      return {
+        op: step.op,
+        value: raw.posr(step.text, step.substr, step.start),
+      };
+    case "strings.esrchc":
+      return { op: step.op, value: raw.esrchc(step.value, step.values) };
     case "strings.cmprss":
       return {
         op: step.op,

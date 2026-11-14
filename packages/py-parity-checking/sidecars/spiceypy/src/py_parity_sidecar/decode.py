@@ -168,6 +168,13 @@ from .models import (
     StepTimeSce2s,
     StepTimeScs2e,
     StepTimeSct2e,
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -362,6 +369,61 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
     op = _expect_string(step.get("op"), label="workflow step.op")
 
     match op:
+        case "strings.cpos":
+            return StepStringsCpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.cpos.start"),
+            )
+
+        case "strings.cposr":
+            return StepStringsCposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.cposr.start"),
+            )
+
+        case "strings.ncpos":
+            return StepStringsNcpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncpos.start"),
+            )
+
+        case "strings.ncposr":
+            return StepStringsNcposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncposr.start"),
+            )
+
+        case "strings.pos":
+            return StepStringsPos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.pos.text"),
+                substr=_expect_string(step.get("substr"), label="strings.pos.substr"),
+                start=_expect_int(step.get("start"), label="strings.pos.start"),
+            )
+
+        case "strings.posr":
+            return StepStringsPosr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.posr.text"),
+                substr=_expect_string(step.get("substr"), label="strings.posr.substr"),
+                start=_expect_int(step.get("start"), label="strings.posr.start"),
+            )
+
+        case "strings.esrchc":
+            return StepStringsEsrchc(
+                op=op,
+                value=_expect_string(step.get("value"), label="strings.esrchc.value"),
+                values=_expect_string_list(step.get("values"), label="strings.esrchc.values"),
+            )
+
         case "strings.cmprss":
             return StepStringsCmprss(
                 op=op,

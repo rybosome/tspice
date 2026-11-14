@@ -529,6 +529,13 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  cpos(text: string, chars: string, start: number): number;
+  cposr(text: string, chars: string, start: number): number;
+  ncpos(text: string, chars: string, start: number): number;
+  ncposr(text: string, chars: string, start: number): number;
+  pos(text: string, substr: string, start: number): number;
+  posr(text: string, substr: string, start: number): number;
+  esrchc(value: string, values: readonly string[]): number;
   cmprss(delim: string, n: number, input: string, lenout: number): string;
   eqstr(a: string, b: string): boolean;
   iswhsp(input: string): boolean;

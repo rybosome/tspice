@@ -5,6 +5,61 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StepStringsCpos:
+    op: Literal["strings.cpos"]
+    text: str
+    chars: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsCposr:
+    op: Literal["strings.cposr"]
+    text: str
+    chars: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsNcpos:
+    op: Literal["strings.ncpos"]
+    text: str
+    chars: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsNcposr:
+    op: Literal["strings.ncposr"]
+    text: str
+    chars: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsPos:
+    op: Literal["strings.pos"]
+    text: str
+    substr: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsPosr:
+    op: Literal["strings.posr"]
+    text: str
+    substr: str
+    start: int
+
+
+@dataclass(frozen=True)
+class StepStringsEsrchc:
+    op: Literal["strings.esrchc"]
+    value: str
+    values: list[str]
+
+
+@dataclass(frozen=True)
 class StepStringsCmprss:
     op: Literal["strings.cmprss"]
     delim: str

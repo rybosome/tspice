@@ -152,6 +152,7 @@ export {
 } from "./spice-runtime/domains/error.js";
 
 export {
+  snapshotSearchRows,
   spiceStringByteLength,
   spiceAsciiChar,
   spiceStringOutputCapacity,

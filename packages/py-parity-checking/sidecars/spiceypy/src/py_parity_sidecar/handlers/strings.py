@@ -6,6 +6,13 @@ from .. import string_oracle
 from ..models import (
     StepOutput,
     WorkflowStep,
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
     StepStringsCmprss,
     StepStringsEqstr,
     StepStringsIswhsp,
@@ -18,6 +25,27 @@ from ..models import (
 
 
 def run_strings_step(step: WorkflowStep) -> StepOutput | None:
+    if isinstance(step, StepStringsCpos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.cpos, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsCposr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.cposr, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsNcpos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.ncpos, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsNcposr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.ncposr, step.text, step.chars, step.start))
+
+    if isinstance(step, StepStringsPos):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.pos, step.text, step.substr, step.start))
+
+    if isinstance(step, StepStringsPosr):
+        return StepOutput(op=step.op, value=string_oracle.search(sp.posr, step.text, step.substr, step.start))
+
+    if isinstance(step, StepStringsEsrchc):
+        return StepOutput(op=step.op, value=string_oracle.esrchc(step.value, step.values))
+
     if isinstance(step, StepStringsCmprss):
         return StepOutput(op=step.op, value=string_oracle.cmprss(step.delim, step.n, step.input, step.lenout))
 

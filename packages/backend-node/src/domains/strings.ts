@@ -2,6 +2,7 @@ import type { StringsApi } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
   spiceAsciiChar,
+  snapshotSearchRows,
   spiceStringByteLength,
   spiceStringOutputCapacity,
 } from "@rybosome/tspice-core";
@@ -20,9 +21,61 @@ function booleanResult(value: unknown): boolean {
   return value;
 }
 
+function searchIndex(value: unknown, limit: number): number {
+  if (
+    typeof value !== "number" ||
+    !Number.isInteger(value) ||
+    value < -1 ||
+    value >= limit
+  )
+    throw new TypeError("Invalid native search index");
+  return value;
+}
+
 /** Create the raw string API backed by the native CSPICE addon. */
 export function createStringsApi(native: NativeAddon): StringsApi {
   return {
+    cpos: (text, chars, start) => {
+      const bytes = spiceStringByteLength(text, "cpos(text)");
+      spiceStringByteLength(chars, "cpos(chars)");
+      assertSpiceInt32(start, "cpos(start)");
+      return searchIndex(native.cpos(text, chars, start), bytes);
+    },
+    cposr: (text, chars, start) => {
+      const bytes = spiceStringByteLength(text, "cposr(text)");
+      spiceStringByteLength(chars, "cposr(chars)");
+      assertSpiceInt32(start, "cposr(start)");
+      return searchIndex(native.cposr(text, chars, start), bytes);
+    },
+    ncpos: (text, chars, start) => {
+      const bytes = spiceStringByteLength(text, "ncpos(text)");
+      spiceStringByteLength(chars, "ncpos(chars)");
+      assertSpiceInt32(start, "ncpos(start)");
+      return searchIndex(native.ncpos(text, chars, start), bytes);
+    },
+    ncposr: (text, chars, start) => {
+      const bytes = spiceStringByteLength(text, "ncposr(text)");
+      spiceStringByteLength(chars, "ncposr(chars)");
+      assertSpiceInt32(start, "ncposr(start)");
+      return searchIndex(native.ncposr(text, chars, start), bytes);
+    },
+    pos: (text, substr, start) => {
+      const bytes = spiceStringByteLength(text, "pos(text)");
+      spiceStringByteLength(substr, "pos(substr)");
+      assertSpiceInt32(start, "pos(start)");
+      return searchIndex(native.pos(text, substr, start), bytes);
+    },
+    posr: (text, substr, start) => {
+      const bytes = spiceStringByteLength(text, "posr(text)");
+      spiceStringByteLength(substr, "posr(substr)");
+      assertSpiceInt32(start, "posr(start)");
+      return searchIndex(native.posr(text, substr, start), bytes);
+    },
+    esrchc: (value, values) => {
+      spiceStringByteLength(value, "esrchc(value)");
+      const { rows } = snapshotSearchRows(values);
+      return searchIndex(native.esrchc(value, rows), rows.length);
+    },
     cmprss: (delim, n, input, lenout) => {
       spiceAsciiChar(delim, "cmprss(delim)");
       assertSpiceInt32(n, "cmprss(n)");
