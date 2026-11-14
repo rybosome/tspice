@@ -431,7 +431,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/715"],
-      "nextAction": "All177 current routine audits have successful complete local and inspected canonical source CI at591c6f49. Final metadata matrix and explicit GitHub rebaseability remain required for PR-ready delivery; no merge authorized."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

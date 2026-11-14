@@ -480,13 +480,20 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/715"],
-      "validationEvidence": [],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "78297004a553e6a0c756fc65b78d8c4cd09bcc01",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550267694/job/132310887727",
+          "result": "Both complete required lanes passed locally on 78297004a553e6a0c756fc65b78d8c4cd09bcc01. JavaScript: 2,609 parity tests and one expected guard skip. Native-required: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132310887727 on 78297004a553e6a0c756fc65b78d8c4cd09bcc01: 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-general-vectors",
       "branch": "codex/expand-general-vectors",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "All fifteen general-vector methods now use stable validated dimensions and owned vector inputs. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending.",
-      "priorCheckpoint": "Draft PR #715: both required locals and inspected Linux22 source CI132299443961 passed2382 live/2610 parity without native-required skips; fresh source-bound verification recorded. Final metadata dcbb65af31f3077405561dd3b06930a683ed872e pushed; final CI43548212298 pending. No PR-ready transition."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 78297004. 2,382 registered Node/WASM live comparisons; 2,610 parity-package tests with no skips, including the native-required guard; 184 native wrapper, 675 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "All fifteen general-vector methods now use stable validated dimensions and owned vector inputs. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending."
     },
     {
       "id": "A11-state-derivatives",
