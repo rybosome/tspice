@@ -10,7 +10,8 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 import {
   copySpkChebyshevData,
-  validateSpkChebyshevFields,
+  snapshotSpkInterpolation,
+  validateSpkWriterFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -359,7 +360,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw02",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -404,7 +405,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw03",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -452,7 +453,7 @@ export function createEphemerisApi(
         ["SPK"],
         "spkw20",
       ).nativeHandle;
-      validateSpkChebyshevFields(
+      validateSpkWriterFields(
         body,
         center,
         frame,
@@ -482,6 +483,141 @@ export function createEphemerisApi(
         tscale,
         initjd,
         initfr,
+      );
+    },
+    spkw09: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw09").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(9, 1, degree, states, epochs);
+      native.spkw09(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
+      );
+    },
+    spkw12: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epoch0,
+      step,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw12").nativeHandle;
+      validateSpkWriterFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        epoch0,
+        step,
+      );
+      const input = snapshotSpkInterpolation(12, 1, degree, states);
+      native.spkw12(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        epoch0,
+        step,
+      );
+    },
+    spkw13: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      states,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw13").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(13, 1, degree, states, epochs);
+      native.spkw13(
+        actual,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
+      );
+    },
+    spkw18: (
+      handle,
+      subtype,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      degree,
+      packets,
+      epochs,
+    ) => {
+      const actual = handles.lookup(handle, ["SPK"], "spkw18").nativeHandle;
+      validateSpkWriterFields(body, center, frame, segid, first, last);
+      const input = snapshotSpkInterpolation(
+        18,
+        subtype,
+        degree,
+        packets,
+        epochs,
+      );
+      native.spkw18(
+        actual,
+        subtype,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        degree,
+        input.n,
+        input.samples,
+        input.epochs,
       );
     },
     spkw08: (

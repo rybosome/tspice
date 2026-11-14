@@ -711,6 +711,64 @@ export type StepEphemerisSpkw20 = {
   initfr: number;
 };
 
+export type StepEphemerisSpkw09 = {
+  op: "ephemeris.spkw09";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw12 = {
+  op: "ephemeris.spkw12";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epoch0: number;
+  step: number;
+};
+
+export type StepEphemerisSpkw13 = {
+  op: "ephemeris.spkw13";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  states: number[];
+  epochs: number[];
+};
+
+export type StepEphemerisSpkw18 = {
+  op: "ephemeris.spkw18";
+  handleId: string;
+  subtype: number;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  degree: number;
+  packets: number[];
+  epochs: number[];
+};
+
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
   handleId: string;
@@ -1433,6 +1491,10 @@ export type WorkflowStep =
   | StepEphemerisSpkw02
   | StepEphemerisSpkw03
   | StepEphemerisSpkw20
+  | StepEphemerisSpkw09
+  | StepEphemerisSpkw12
+  | StepEphemerisSpkw13
+  | StepEphemerisSpkw18
   | StepEphemerisSpkw08
   | StepFileIoExists
   | StepFileIoGetfat
@@ -1732,6 +1794,10 @@ export type StepOutput =
   | { op: "ephemeris.spkw02"; value: null }
   | { op: "ephemeris.spkw03"; value: null }
   | { op: "ephemeris.spkw20"; value: null }
+  | { op: "ephemeris.spkw09"; value: null }
+  | { op: "ephemeris.spkw12"; value: null }
+  | { op: "ephemeris.spkw13"; value: null }
+  | { op: "ephemeris.spkw18"; value: null }
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }

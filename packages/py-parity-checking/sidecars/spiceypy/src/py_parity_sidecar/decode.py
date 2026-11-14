@@ -54,6 +54,10 @@ from .models import (
     StepEphemerisSpkw02,
     StepEphemerisSpkw03,
     StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
     StepEphemerisSpkw08,
     StepDskDascls,
     StepDskDasopr,
@@ -1063,6 +1067,64 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 tscale=_expect_number(step.get("tscale"),label="ephemeris.spkw20.tscale"),
                 initjd=_expect_number(step.get("initjd"),label="ephemeris.spkw20.initjd"),
                 initfr=_expect_number(step.get("initfr"),label="ephemeris.spkw20.initfr"),
+            )
+        case "ephemeris.spkw09":
+            return StepEphemerisSpkw09(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spkw09.handleId"),
+                body=_expect_int(step.get("body"),label="ephemeris.spkw09.body"),
+                center=_expect_int(step.get("center"),label="ephemeris.spkw09.center"),
+                frame=_expect_string(step.get("frame"),label="ephemeris.spkw09.frame"),
+                first=_expect_number(step.get("first"),label="ephemeris.spkw09.first"),
+                last=_expect_number(step.get("last"),label="ephemeris.spkw09.last"),
+                segid=_expect_string(step.get("segid"),label="ephemeris.spkw09.segid"),
+                degree=_expect_int(step.get("degree"),label="ephemeris.spkw09.degree"),
+                states=_expect_number_list(step.get("states"),label="ephemeris.spkw09.states"),
+                epochs=_expect_number_list(step.get("epochs"),label="ephemeris.spkw09.epochs"),
+            )
+        case "ephemeris.spkw12":
+            return StepEphemerisSpkw12(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spkw12.handleId"),
+                body=_expect_int(step.get("body"),label="ephemeris.spkw12.body"),
+                center=_expect_int(step.get("center"),label="ephemeris.spkw12.center"),
+                frame=_expect_string(step.get("frame"),label="ephemeris.spkw12.frame"),
+                first=_expect_number(step.get("first"),label="ephemeris.spkw12.first"),
+                last=_expect_number(step.get("last"),label="ephemeris.spkw12.last"),
+                segid=_expect_string(step.get("segid"),label="ephemeris.spkw12.segid"),
+                degree=_expect_int(step.get("degree"),label="ephemeris.spkw12.degree"),
+                states=_expect_number_list(step.get("states"),label="ephemeris.spkw12.states"),
+                epoch0=_expect_number(step.get("epoch0"),label="ephemeris.spkw12.epoch0"),
+                step=_expect_number(step.get("step"),label="ephemeris.spkw12.step"),
+            )
+        case "ephemeris.spkw13":
+            return StepEphemerisSpkw13(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spkw13.handleId"),
+                body=_expect_int(step.get("body"),label="ephemeris.spkw13.body"),
+                center=_expect_int(step.get("center"),label="ephemeris.spkw13.center"),
+                frame=_expect_string(step.get("frame"),label="ephemeris.spkw13.frame"),
+                first=_expect_number(step.get("first"),label="ephemeris.spkw13.first"),
+                last=_expect_number(step.get("last"),label="ephemeris.spkw13.last"),
+                segid=_expect_string(step.get("segid"),label="ephemeris.spkw13.segid"),
+                degree=_expect_int(step.get("degree"),label="ephemeris.spkw13.degree"),
+                states=_expect_number_list(step.get("states"),label="ephemeris.spkw13.states"),
+                epochs=_expect_number_list(step.get("epochs"),label="ephemeris.spkw13.epochs"),
+            )
+        case "ephemeris.spkw18":
+            return StepEphemerisSpkw18(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="ephemeris.spkw18.handleId"),
+                subtype=_expect_int(step.get("subtype"),label="ephemeris.spkw18.subtype"),
+                body=_expect_int(step.get("body"),label="ephemeris.spkw18.body"),
+                center=_expect_int(step.get("center"),label="ephemeris.spkw18.center"),
+                frame=_expect_string(step.get("frame"),label="ephemeris.spkw18.frame"),
+                first=_expect_number(step.get("first"),label="ephemeris.spkw18.first"),
+                last=_expect_number(step.get("last"),label="ephemeris.spkw18.last"),
+                segid=_expect_string(step.get("segid"),label="ephemeris.spkw18.segid"),
+                degree=_expect_int(step.get("degree"),label="ephemeris.spkw18.degree"),
+                packets=_expect_number_list(step.get("packets"),label="ephemeris.spkw18.packets"),
+                epochs=_expect_number_list(step.get("epochs"),label="ephemeris.spkw18.epochs"),
             )
         case "ephemeris.spkw08":
             return StepEphemerisSpkw08(

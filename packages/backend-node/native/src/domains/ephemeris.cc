@@ -888,6 +888,84 @@ static void SpkChebyshevWriter(const Napi::CallbackInfo& info) {
   if (code) ThrowSpiceError(env, "CSPICE failed writing Chebyshev SPK segment", err);
 }
 
+static bool SpkInputWords(Napi::Env env, const Napi::Value& v, const double* sentinel,
+                          const double** ptr, int* count) {
+  if (!v.IsTypedArray() || v.As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected owned Float64Array"));
+    return false;
+  }
+  auto arr = v.As<Napi::Float64Array>();
+  if (arr.ElementLength() > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Interpolation buffer exceeds 256 MiB"));
+    return false;
+  }
+  *count = static_cast<int>(arr.ElementLength());
+  *ptr = *count ? arr.Data() : sentinel;
+  return true;
+}
+
+template <int Type>
+static void SpkInterpolationWriter(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  const size_t base = Type == 18 ? 2 : 1;
+  if (info.Length() != base + (Type == 12 ? 11 : 10)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Invalid SPK interpolation writer arity"));
+    return;
+  }
+  int32_t h, body, center, degree, subtype = 1;
+  if (!ReadInt32Checked(env, info[0], "handle", &h) ||
+      !ReadInt32Checked(env, info[base], "body", &body) ||
+      !ReadInt32Checked(env, info[base + 1], "center", &center) ||
+      !ReadInt32Checked(env, info[base + 6], "degree", &degree))
+    return;
+  if constexpr (Type == 18)
+    if (!ReadInt32Checked(env, info[1], "subtype", &subtype)) return;
+  if (!info[base + 2].IsString() || !info[base + 5].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected frame and segment identifier strings"));
+    return;
+  }
+  const auto frame = info[base + 2].As<Napi::String>().Utf8Value(),
+             id = info[base + 5].As<Napi::String>().Utf8Value();
+  if (frame.find('\0') != std::string::npos || id.find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Embedded NUL in SPK string"));
+    return;
+  }
+  auto scalar = [&](size_t i, double& out) {
+    if (!info[i].IsNumber() || !std::isfinite(out = info[i].As<Napi::Number>().DoubleValue())) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected finite SPK epoch or step"));
+      return false;
+    }
+    return true;
+  };
+  double first, last, epoch0 = 0, step = 0;
+  int32_t n;
+  if (!scalar(base + 3, first) || !scalar(base + 4, last) ||
+      !ReadInt32Checked(env, info[base + 7], "n", &n))
+    return;
+  const double sentinel = 0, *samples = &sentinel, *epochs = &sentinel;
+  int words = 0, epochCount = 0;
+  if (!SpkInputWords(env, info[base + 8], &sentinel, &samples, &words)) return;
+  if constexpr (Type == 12) {
+    if (!scalar(base + 9, epoch0) || !scalar(base + 10, step)) return;
+  } else if (!SpkInputWords(env, info[base + 9], &sentinel, &epochs, &epochCount))
+    return;
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int code;
+  if constexpr (Type == 9)
+    code = tspice_spkw09(h, body, center, frame.c_str(), first, last, id.c_str(), degree, n,
+                         samples, words, epochs, epochCount, err, sizeof(err));
+  else if constexpr (Type == 12)
+    code = tspice_spkw12(h, body, center, frame.c_str(), first, last, id.c_str(), degree, n,
+                         samples, words, epoch0, step, err, sizeof(err));
+  else if constexpr (Type == 13)
+    code = tspice_spkw13(h, body, center, frame.c_str(), first, last, id.c_str(), degree, n,
+                         samples, words, epochs, epochCount, err, sizeof(err));
+  else code = tspice_spkw18(h, subtype, body, center, frame.c_str(), first, last, id.c_str(), degree,
+                           n, samples, words, epochs, epochCount, err, sizeof(err));
+  if (code) ThrowSpiceError(env, "CSPICE failed writing interpolated SPK segment", err);
+}
+
 namespace tspice_backend_node {
 
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
@@ -905,6 +983,18 @@ void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
     return;
   if (!SetExportChecked(env, exports, "spkw20", Napi::Function::New(env, SpkChebyshevWriter<20>),
                         __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw09", Napi::Function::New(env, SpkInterpolationWriter<9>),
+                        __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw12",
+                        Napi::Function::New(env, SpkInterpolationWriter<12>), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw13",
+                        Napi::Function::New(env, SpkInterpolationWriter<13>), __func__))
+    return;
+  if (!SetExportChecked(env, exports, "spkw18",
+                        Napi::Function::New(env, SpkInterpolationWriter<18>), __func__))
     return;
   if (!SetExportChecked(env, exports, "spkw08", Napi::Function::New(env, Spkw08), __func__)) return;
   if (!SetExportChecked(env, exports, "spkcls", Napi::Function::New(env, Spkcls), __func__)) return;

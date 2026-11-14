@@ -22,3 +22,22 @@ async function writeChebyshevSpk(): Promise<void> {
   }
 }
 void writeChebyshevSpk;
+
+async function writeInterpolatedStates(): Promise<void> {
+  const c = await spiceClients.toSync({ backend: "wasm" });
+  try {
+    const r = c.spice.raw,
+      h = r.spkopn({ kind: "virtual-output", path: "nodom-e05.bsp" }, "T", 0);
+    const fields = [198001, 0, "J2000", 0, 1, "T", 1] as const,
+      states = new Float64Array(12),
+      epochs = [0, 1] as const;
+    r.spkw09(h, ...fields, states, epochs);
+    r.spkw12(h, ...fields, states, 0, 1);
+    r.spkw13(h, ...fields, states, epochs);
+    r.spkw18(h, 1, ...fields, states, epochs);
+    r.spkcls(h);
+  } finally {
+    await c.dispose();
+  }
+}
+void writeInterpolatedStates;

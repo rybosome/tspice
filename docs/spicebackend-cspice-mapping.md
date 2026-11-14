@@ -340,6 +340,17 @@ use 1e-9 km position and 1e-12 km/s velocity bounds.
 
 Each method returns void and uses an owned open SPK token. [Units, full record layouts and two-way independent file checks](step8-spk-chebyshev.md)
 
+### Interpolated SPK segment writers
+
+| Public raw signature                                                                        | Canonical writer | Scientific record                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spkw09(handle, body, center, frame, first, last, segid, degree, states, epochs)`           | `spkw09_c`       | Type 9 appends six separate Lagrange state components at irregular epochs with degree 1..27 and at least degree+1 rows.                                                                                                                                      |
+| `spkw12(handle, body, center, frame, first, last, segid, degree, states, epoch0, step)`     | `spkw12_c`       | Type 12 writes fixed-grid Hermite position/time-derivative states using epoch0 and positive step in TDB seconds with odd degree 1..27.                                                                                                                       |
+| `spkw13(handle, body, center, frame, first, last, segid, degree, states, epochs)`           | `spkw13_c`       | Type 13 writes position plus its derivative in km and km/s on increasing irregular epochs with odd Hermite degree 1..27.                                                                                                                                     |
+| `spkw18(handle, subtype, body, center, frame, first, last, segid, degree, packets, epochs)` | `spkw18_c`       | Type 18 supports subtype-0 independent position/derivative and velocity/acceleration Hermite interpolation and subtype-1 independent six-component Lagrange interpolation. The per-axis position derivative and separately interpolated velocity may differ. |
+
+All four return void and require a live writer owned by the client. [Layouts, epoch storage and independent reciprocal readback](step8-spk-interpolation.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,

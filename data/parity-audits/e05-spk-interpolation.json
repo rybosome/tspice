@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "batch": "e05-spk-interpolation",
+  "traceFiles": [
+    "docs/step8-spk-interpolation.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/spk-interpolation-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/spk-interpolation-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-chebyshev.ts",
+    "packages/core/src/spice-runtime/domains/spk-interpolation.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/interpolated_spk_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/kernels.ts",
+    "packages/py-parity-checking/src/workflow-normalization/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/types.ts",
+    "packages/py-parity-checking/test/_helpers/spk_interpolation_oracle.py",
+    "packages/py-parity-checking/test/spk-interpolation-files.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "spkw09_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw09_c.html",
+      "semantics": "Type 9 appends six separate Lagrange state components at irregular epochs with degree 1..27 and at least degree+1 rows.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw09-knots-and-off-grid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check all six state components and light time on outer epochs, exact interior knots and off-grid epochs; compare full descriptor, segment ID and coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw09-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use the maximum allowed interpolation degree on a complete grid. Compare interpolated states near both endpoints and a central off-grid epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw09-trimmed-append",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A later segment appended to a closed file wins within a shortened descriptor; the earlier segment still supplies epochs outside the overlap."
+        },
+        {
+          "caseId": "ephemeris-spkw09-minimum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Degree one covers the smallest viable two-state grid; exercise endpoint and interior semantics."
+        },
+        {
+          "caseId": "ephemeris-spkw09-epoch-directory",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A 102-packet SPK has an actual hundredth-epoch directory entry. Resolve states on each side of the directory separator and at the final epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw09-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDREFFRAME error for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw09-long-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real SEGIDTOOLONG error for long id."
+        },
+        {
+          "caseId": "ephemeris-spkw09-nonprinting-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real NONPRINTABLECHARS error for nonprinting id."
+        },
+        {
+          "caseId": "ephemeris-spkw09-degree-above-maximum",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree above maximum."
+        },
+        {
+          "caseId": "ephemeris-spkw09-degree-zero",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree zero."
+        },
+        {
+          "caseId": "ephemeris-spkw09-zero-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TOOFEWSTATES error for zero records."
+        },
+        {
+          "caseId": "ephemeris-spkw09-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw09-coverage-before",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage before."
+        },
+        {
+          "caseId": "ephemeris-spkw09-coverage-after",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage after."
+        },
+        {
+          "caseId": "ephemeris-spkw09-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real EMPTYSTRING error for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw09-equal-bound-times",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for equal bound times."
+        },
+        {
+          "caseId": "ephemeris-spkw09-duplicate-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for duplicate epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw09-decreasing-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for decreasing epoch."
+        }
+      ],
+      "edgeAssessment": "Verify degree one and 27, irregular spacing and all six independent outputs, 102-state epoch directory with its hundredth epoch, later segment priority, endpoint and off-grid state, and complete DAF payload.",
+      "errorAssessment": "Compare exact INVALIDREFFRAME, SEGIDTOOLONG, NONPRINTABLECHARS, INVALIDDEGREE, TOOFEWSTATES and BADDESCRTIMES. Duplicate or decreasing epochs give TIMESOUTOFORDER. A descriptor outside the sample span gives BADDESCRTIMES. Incomplete storage, invalid tokens and signed arithmetic limits are wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw09.cases.json",
+          "provenance": "Project-authored analytic state and epoch data used to write temporary SPKs in the registered workflows.",
+          "distribution": "Repository MIT source. All output SPK files are generated in scratch and discarded."
+        }
+      ],
+      "fixtureRationale": "Independent writers create matching five-segment files for cross-reading, including both type 18 subtypes. No downloaded kernels are required.",
+      "cleanup": "Terminal scientific cases first create a valid segment so the lifecycle can close the writer. Public clients unload and dispose; temporary files are removed. Each WASM allocation failure is followed by a same-writer successful retry and closure. C validates the physical row lengths before canonical calls and holds no output buffers after return.",
+      "tolerance": "Compare all physical double words, directory metadata, identifier, integer fields, counts and error categories exactly. Scientific registered states use existing global tolerances. Independent states compare each component at ten decimal places and the analytic check at nine.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw09 -> owned SPK lookup and stable finite snapshots -> native registered addon with global SPICE lock -> tspice_spkw09 -> spkw09_c. Independent locked sp.spkw09 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw09 -> owned SPK lookup and stable finite snapshots -> WASM export with checked allocations and reverse cleanup -> tspice_spkw09 -> spkw09_c. Independent locked sp.spkw09 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw12_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw12_c.html",
+      "semantics": "Type 12 writes fixed-grid Hermite position/time-derivative states using epoch0 and positive step in TDB seconds with odd degree 1..27.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw12-knots-and-off-grid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check all six state components and light time on outer epochs, exact interior knots and off-grid epochs; compare full descriptor, segment ID and coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw12-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use the maximum allowed interpolation degree on a complete grid. Compare interpolated states near both endpoints and a central off-grid epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw12-trimmed-append",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A later segment appended to a closed file wins within a shortened descriptor; the earlier segment still supplies epochs outside the overlap."
+        },
+        {
+          "caseId": "ephemeris-spkw12-minimum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Degree one covers the smallest viable two-state grid; exercise endpoint and interior semantics."
+        },
+        {
+          "caseId": "ephemeris-spkw12-fractional-spacing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Unequal polynomial coefficients and a small fractional fixed step make incorrect physical derivative units visible in all six components."
+        },
+        {
+          "caseId": "ephemeris-spkw12-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDREFFRAME error for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw12-long-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real SEGIDTOOLONG error for long id."
+        },
+        {
+          "caseId": "ephemeris-spkw12-nonprinting-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real NONPRINTABLECHARS error for nonprinting id."
+        },
+        {
+          "caseId": "ephemeris-spkw12-degree-above-maximum",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree above maximum."
+        },
+        {
+          "caseId": "ephemeris-spkw12-degree-zero",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree zero."
+        },
+        {
+          "caseId": "ephemeris-spkw12-zero-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TOOFEWSTATES error for zero records."
+        },
+        {
+          "caseId": "ephemeris-spkw12-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw12-coverage-before",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real COVERAGEGAP error for coverage before."
+        },
+        {
+          "caseId": "ephemeris-spkw12-coverage-after",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real COVERAGEGAP error for coverage after."
+        },
+        {
+          "caseId": "ephemeris-spkw12-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real EMPTYSTRING error for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw12-degree-incompatible",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree incompatible."
+        },
+        {
+          "caseId": "ephemeris-spkw12-equal-bound-times",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for equal bound times."
+        },
+        {
+          "caseId": "ephemeris-spkw12-zero-step",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDSTEPSIZE error for zero step."
+        },
+        {
+          "caseId": "ephemeris-spkw12-negative-step",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDSTEPSIZE error for negative step."
+        }
+      ],
+      "edgeAssessment": "Compare uniform fractional spacing and kilometre-per-second derivatives against analytic quadratic motion. Read exact starting epoch, spacing, window-minus-one and state count from the segment trailer.",
+      "errorAssessment": "Compare exact INVALIDREFFRAME, SEGIDTOOLONG, NONPRINTABLECHARS, INVALIDDEGREE, TOOFEWSTATES and BADDESCRTIMES. Zero/negative fixed step gives INVALIDSTEPSIZE; outlying descriptor epochs give COVERAGEGAP. Incomplete storage, invalid tokens and signed arithmetic limits are wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw12.cases.json",
+          "provenance": "Project-authored analytic state and epoch data used to write temporary SPKs in the registered workflows.",
+          "distribution": "Repository MIT source. All output SPK files are generated in scratch and discarded."
+        }
+      ],
+      "fixtureRationale": "Independent writers create matching five-segment files for cross-reading, including both type 18 subtypes. No downloaded kernels are required.",
+      "cleanup": "Terminal scientific cases first create a valid segment so the lifecycle can close the writer. Public clients unload and dispose; temporary files are removed. Each WASM allocation failure is followed by a same-writer successful retry and closure. C validates the physical row lengths before canonical calls and holds no output buffers after return.",
+      "tolerance": "Compare all physical double words, directory metadata, identifier, integer fields, counts and error categories exactly. Scientific registered states use existing global tolerances. Independent states compare each component at ten decimal places and the analytic check at nine.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw12 -> owned SPK lookup and stable finite snapshots -> native registered addon with global SPICE lock -> tspice_spkw12 -> spkw12_c. Independent locked sp.spkw12 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw12 -> owned SPK lookup and stable finite snapshots -> WASM export with checked allocations and reverse cleanup -> tspice_spkw12 -> spkw12_c. Independent locked sp.spkw12 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw13_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw13_c.html",
+      "semantics": "Type 13 writes position plus its derivative in km and km/s on increasing irregular epochs with odd Hermite degree 1..27.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw13-knots-and-off-grid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check all six state components and light time on outer epochs, exact interior knots and off-grid epochs; compare full descriptor, segment ID and coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw13-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use the maximum allowed interpolation degree on a complete grid. Compare interpolated states near both endpoints and a central off-grid epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw13-trimmed-append",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A later segment appended to a closed file wins within a shortened descriptor; the earlier segment still supplies epochs outside the overlap."
+        },
+        {
+          "caseId": "ephemeris-spkw13-minimum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Degree one covers the smallest viable two-state grid; exercise endpoint and interior semantics."
+        },
+        {
+          "caseId": "ephemeris-spkw13-epoch-directory",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A 102-packet SPK has an actual hundredth-epoch directory entry. Resolve states on each side of the directory separator and at the final epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw13-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDREFFRAME error for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw13-long-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real SEGIDTOOLONG error for long id."
+        },
+        {
+          "caseId": "ephemeris-spkw13-nonprinting-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real NONPRINTABLECHARS error for nonprinting id."
+        },
+        {
+          "caseId": "ephemeris-spkw13-degree-above-maximum",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree above maximum."
+        },
+        {
+          "caseId": "ephemeris-spkw13-degree-zero",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree zero."
+        },
+        {
+          "caseId": "ephemeris-spkw13-zero-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TOOFEWSTATES error for zero records."
+        },
+        {
+          "caseId": "ephemeris-spkw13-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw13-coverage-before",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage before."
+        },
+        {
+          "caseId": "ephemeris-spkw13-coverage-after",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage after."
+        },
+        {
+          "caseId": "ephemeris-spkw13-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real EMPTYSTRING error for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw13-degree-incompatible",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree incompatible."
+        },
+        {
+          "caseId": "ephemeris-spkw13-equal-bound-times",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for equal bound times."
+        },
+        {
+          "caseId": "ephemeris-spkw13-duplicate-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for duplicate epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw13-decreasing-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for decreasing epoch."
+        }
+      ],
+      "edgeAssessment": "Check all values and propagated derivatives on a nonuniform grid, maximum degree 27 and minimum degree one; directory selection around the hundredth epoch is observable through both directions of file readback.",
+      "errorAssessment": "Compare exact INVALIDREFFRAME, SEGIDTOOLONG, NONPRINTABLECHARS, INVALIDDEGREE, TOOFEWSTATES and BADDESCRTIMES. Duplicate or decreasing epochs give TIMESOUTOFORDER. A descriptor outside the sample span gives BADDESCRTIMES. Incomplete storage, invalid tokens and signed arithmetic limits are wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw13.cases.json",
+          "provenance": "Project-authored analytic state and epoch data used to write temporary SPKs in the registered workflows.",
+          "distribution": "Repository MIT source. All output SPK files are generated in scratch and discarded."
+        }
+      ],
+      "fixtureRationale": "Independent writers create matching five-segment files for cross-reading, including both type 18 subtypes. No downloaded kernels are required.",
+      "cleanup": "Terminal scientific cases first create a valid segment so the lifecycle can close the writer. Public clients unload and dispose; temporary files are removed. Each WASM allocation failure is followed by a same-writer successful retry and closure. C validates the physical row lengths before canonical calls and holds no output buffers after return.",
+      "tolerance": "Compare all physical double words, directory metadata, identifier, integer fields, counts and error categories exactly. Scientific registered states use existing global tolerances. Independent states compare each component at ten decimal places and the analytic check at nine.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw13 -> owned SPK lookup and stable finite snapshots -> native registered addon with global SPICE lock -> tspice_spkw13 -> spkw13_c. Independent locked sp.spkw13 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw13 -> owned SPK lookup and stable finite snapshots -> WASM export with checked allocations and reverse cleanup -> tspice_spkw13 -> spkw13_c. Independent locked sp.spkw13 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "spkw18_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw18_c.html",
+      "semantics": "Type 18 supports subtype-0 independent position/derivative and velocity/acceleration Hermite interpolation and subtype-1 independent six-component Lagrange interpolation. The per-axis position derivative and separately interpolated velocity may differ.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw18-knots-and-off-grid",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check all six state components and light time on outer epochs, exact interior knots and off-grid epochs; compare full descriptor, segment ID and coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw18-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use the maximum allowed interpolation degree on a complete grid. Compare interpolated states near both endpoints and a central off-grid epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw18-trimmed-append",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A later segment appended to a closed file wins within a shortened descriptor; the earlier segment still supplies epochs outside the overlap."
+        },
+        {
+          "caseId": "ephemeris-spkw18-epoch-directory",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A 102-packet SPK has an actual hundredth-epoch directory entry. Resolve states on each side of the directory separator and at the final epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw18-independent-lagrange-states",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Subtype 1 interpolates position and independent velocity observations with Lagrange polynomials at irregular epochs."
+        },
+        {
+          "caseId": "ephemeris-spkw18-reduced-hermite-window",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The requested degree 15 with only two packets uses a reduced Hermite window, retaining position, its derivative, independent velocity and acceleration."
+        },
+        {
+          "caseId": "ephemeris-spkw18-reduced-lagrange-window",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The requested subtype 1 degree 15 with only two packets reduces its window to the available data."
+        },
+        {
+          "caseId": "ephemeris-spkw18-hermite-stored-window-4",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pinned type 18 accepts this even subtype-0 input degree and stores the truncated even window. Check evaluated state against the independent library."
+        },
+        {
+          "caseId": "ephemeris-spkw18-hermite-stored-window-8",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pinned type 18 accepts this even subtype-0 input degree and stores the truncated even window. Check evaluated state against the independent library."
+        },
+        {
+          "caseId": "ephemeris-spkw18-hermite-stored-window-12",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pinned type 18 accepts this even subtype-0 input degree and stores the truncated even window. Check evaluated state against the independent library."
+        },
+        {
+          "caseId": "ephemeris-spkw18-single-instant",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Type 18 allows a single descriptor instant inside an actual two-packet grid."
+        },
+        {
+          "caseId": "ephemeris-spkw18-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDREFFRAME error for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw18-long-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real SEGIDTOOLONG error for long id."
+        },
+        {
+          "caseId": "ephemeris-spkw18-nonprinting-id",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real NONPRINTABLECHARS error for nonprinting id."
+        },
+        {
+          "caseId": "ephemeris-spkw18-degree-above-maximum",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree above maximum."
+        },
+        {
+          "caseId": "ephemeris-spkw18-degree-zero",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree zero."
+        },
+        {
+          "caseId": "ephemeris-spkw18-zero-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TOOFEWSTATES error for zero records."
+        },
+        {
+          "caseId": "ephemeris-spkw18-reversed-coverage",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for reversed coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw18-coverage-before",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage before."
+        },
+        {
+          "caseId": "ephemeris-spkw18-coverage-after",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real BADDESCRTIMES error for coverage after."
+        },
+        {
+          "caseId": "ephemeris-spkw18-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real EMPTYSTRING error for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw18-degree-incompatible",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for degree incompatible."
+        },
+        {
+          "caseId": "ephemeris-spkw18-duplicate-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for duplicate epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw18-decreasing-epoch",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real TIMESOUTOFORDER error for decreasing epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw18-unsupported-subtype",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDVALUE error for unsupported subtype."
+        },
+        {
+          "caseId": "ephemeris-spkw18-lagrange-even-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed a valid segment then compare the real INVALIDDEGREE error for lagrange even degree."
+        }
+      ],
+      "edgeAssessment": "Exercise independent position/velocity functions, both subtypes, optional reduced windows near the two ends, reduced grids with fewer packets than the full window, a zero-span descriptor, and actual implementation acceptance of degrees 4/8/12 for subtype zero. Inspect every packet word, epoch, subtype and degree-derived window.",
+      "errorAssessment": "Compare exact INVALIDREFFRAME, SEGIDTOOLONG, NONPRINTABLECHARS, INVALIDDEGREE, TOOFEWSTATES and BADDESCRTIMES. Duplicate or decreasing epochs give TIMESOUTOFORDER. A descriptor outside the sample span gives BADDESCRTIMES. Unknown type 18 subtype gives INVALIDVALUE before accessing packet records. Incomplete storage, invalid tokens and signed arithmetic limits are wrapper-domain tests.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw18.cases.json",
+          "provenance": "Project-authored analytic state and epoch data used to write temporary SPKs in the registered workflows.",
+          "distribution": "Repository MIT source. All output SPK files are generated in scratch and discarded."
+        }
+      ],
+      "fixtureRationale": "Independent writers create matching five-segment files for cross-reading, including both type 18 subtypes. No downloaded kernels are required.",
+      "cleanup": "Terminal scientific cases first create a valid segment so the lifecycle can close the writer. Public clients unload and dispose; temporary files are removed. Each WASM allocation failure is followed by a same-writer successful retry and closure. C validates the physical row lengths before canonical calls and holds no output buffers after return.",
+      "tolerance": "Compare all physical double words, directory metadata, identifier, integer fields, counts and error categories exactly. Scientific registered states use existing global tolerances. Independent states compare each component at ten decimal places and the analytic check at nine.",
+      "findings": [
+        {
+          "id": "near-end-lagrange-window",
+          "status": "repaired",
+          "summary": "The original supplementary analytic expectation assumed a degree-three Lagrange request reduced to two packets in the first interval.",
+          "repair": "SPKR18 selects one packet on the left and two on the right for the tested grid. The analytic quadratic is reproduced. Correct the expected analytic value while retaining the paired independent states, complete packet words, and existing tolerances.",
+          "caseIds": ["ephemeris-spkw18-independent-lagrange-states"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-interpolation-files.test.ts",
+            "docs/step8-spk-interpolation.md",
+            "packages/py-parity-checking/test/_helpers/spk_interpolation_oracle.py"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw18 -> owned SPK lookup and stable finite snapshots -> native registered addon with global SPICE lock -> tspice_spkw18 -> spkw18_c. Independent locked sp.spkw18 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.spkw18 -> owned SPK lookup and stable finite snapshots -> WASM export with checked allocations and reverse cleanup -> tspice_spkw18 -> spkw18_c. Independent locked sp.spkw18 writes real scratch files; separate process reads state and packed records of tspice output.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused actual Node/WASM, two-way physical file validation and real Chrome passed. Combined full required local and observed canonical CI executions are pending."
+}

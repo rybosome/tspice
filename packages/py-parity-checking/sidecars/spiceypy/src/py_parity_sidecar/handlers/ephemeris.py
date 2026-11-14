@@ -9,6 +9,7 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
+from ..interpolated_spk_oracle import write_interpolated_spk
 from ..models import (
     StepEphemerisSpkcls,
     StepEphemerisSpkcov,
@@ -28,6 +29,10 @@ from ..models import (
     StepEphemerisSpkw02,
     StepEphemerisSpkw03,
     StepEphemerisSpkw20,
+    StepEphemerisSpkw09,
+    StepEphemerisSpkw12,
+    StepEphemerisSpkw13,
+    StepEphemerisSpkw18,
     StepEphemerisSpkw08,
     StepOutput,
     WorkflowStep,
@@ -360,6 +365,10 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             sp.spkw03(*common, step.btime)
         else:
             sp.spkw02(*common, step.btime)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, (StepEphemerisSpkw09, StepEphemerisSpkw12, StepEphemerisSpkw13, StepEphemerisSpkw18)):
+        write_interpolated_spk(_require_spk_handle(context, step.handleId), step)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEphemerisSpkw08):
