@@ -690,6 +690,12 @@ int tspice_sxform(
     int errMaxBytes);
 
 // spkezr_c: compute state (6 doubles) and light time.
+int tspice_spkcpo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+int tspice_spkcpt(const double *trgpos, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes);
+int tspice_spkcvo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obssta, double obsepc, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+int tspice_spkcvt(const double *trgsta, double trgepc, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes);
+int tspice_azlcpo(const char *method, const char *target, double et, const char *abcorr, int azccw, int elplsz, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes);
+
 int tspice_spkacs(int target, double et, const char *ref, const char *abcorr, int observer, double *out, char *err, int errMaxBytes);
 int tspice_spkapo(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);
 int tspice_spkapp(int target, double et, const char *ref, const double *observerState, const char *abcorr, double *out, char *err, int errMaxBytes);

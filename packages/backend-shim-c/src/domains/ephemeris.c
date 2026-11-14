@@ -160,6 +160,227 @@ static void check_light_time_geometry(double et, int observer, const char *dir, 
   chkout_c("ltime_c");
 }
 
+// E09 routines eventually call SPKAPS or ZZSPKFAP. Both use the stellar
+// correction's output without checking its failure flag first. Set up the
+// original constant-velocity state callback and check the same SPICELIB
+// components before dispatch. The native mutex (or one WASM instance)
+// serializes this private stored-state use with the final CSPICE call.
+static void preflight_relative_stellar(int observerPoint, int other, int center, double et,
+                                       const char *ref, const char *option, logical transmit) {
+  const ftnlen width = (ftnlen)strlen(ref);
+  double obs[6] = {0}, acc[3] = {0}, samples[3][6] = {{0}}, lt = 0, dlt = 0;
+  chkin_c(observerPoint ? "ZZSPKFAO" : "ZZSPKFAT");
+  for (int i = 0; i < 3 && !failed_c(); ++i) {
+    double t = et + (i == 0 ? 0.0 : i == 1 ? -1.0 : 1.0);
+    if (observerPoint) {
+      double offset[6] = {0}, origin[6] = {0};
+      zzcvxsta_(&t, (char *)ref, &center, offset, width);
+      if (!failed_c()) spkssb_(&center, &t, (char *)ref, origin, width);
+      if (!failed_c()) vaddg_c(offset, origin, 6, samples[i]);
+    } else {
+      correction_geometry(other, t, ref, samples[i]);
+    }
+  }
+  if (!failed_c()) {
+    memcpy(obs, samples[0], sizeof(obs));
+    qderiv_c(3, samples[1] + 3, samples[2] + 3, 1.0, acc);
+    if (observerPoint) {
+      chkin_c("SPKAPS");
+      check_stellar_state(other, et, ref, option, obs, acc, transmit);
+      chkout_c("SPKAPS");
+    } else {
+      double apparent[6] = {0}, corr[3] = {0}, rate[3] = {0};
+      chkin_c("ZZSPKFAP");
+      zzspkflt_((S_fp)zzcvxsta_, &et, (char *)ref, (char *)option, obs,
+                apparent, &lt, &dlt, width, (ftnlen)strlen(option));
+      if (!failed_c()) zzstelab_(&transmit, acc, obs + 3, apparent, corr, rate);
+      chkout_c("ZZSPKFAP");
+    }
+  }
+  chkout_c(observerPoint ? "ZZSPKFAO" : "ZZSPKFAT");
+}
+
+static void preflight_relative(int observerPoint, int fixed, const char *otherName,
+                               double et, const char *outref, const char *refloc,
+                               const char *option, const double *point, double pointEpoch,
+                               const char *centerName, const char *pointFrame) {
+  const char *positionRoutine=observerPoint ? "SPKCPO" : "SPKCPT";
+  const char *velocityRoutine=observerPoint ? "SPKCVO" : "SPKCVT";
+  // These routine frames are where SPKCVO/T validate the actual option.
+  // Use their parser before choosing a checked branch, including for leading,
+  // embedded or trailing blanks. The scientific call retains the original input.
+  logical attributes[15] = {0};
+  if (fixed) chkin_c(positionRoutine);
+  chkin_c(velocityRoutine);
+  zzvalcor_((char *)option, attributes, (ftnlen)strlen(option));
+  chkout_c(velocityRoutine);
+  if (fixed) chkout_c(positionRoutine);
+  if (failed_c()) return;
+  const logical stellar = attributes[2];
+  const int observerLocus = eqstr_c(refloc, "OBSERVER");
+  if (!stellar && !(observerLocus && attributes[1])) return;
+  int center=0, other=0, frame=0, frameCenter=0, frameClass=0, classId=0;
+  SpiceBoolean found=SPICEFALSE;
+  bods2c_c(centerName,&center,&found);
+  if (!found || failed_c()) return;
+  bods2c_c(otherName,&other,&found);
+  if (!found || failed_c()) return;
+  namfrm_c(outref,&frame);
+  if (!frame || failed_c()) return;
+  const int centerLocus=eqstr_c(refloc,"CENTER");
+  if (!observerLocus && !centerLocus && !eqstr_c(refloc,"TARGET")) return;
+  const char *zeroRoutine=observerPoint ? "ZZSPKFZO" : "ZZSPKFZT";
+  if (fixed) chkin_c(positionRoutine);
+  chkin_c(velocityRoutine);
+  double state[6] = {0};
+  memcpy(state,point,(fixed ? 3 : 6)*sizeof(double));
+  zzcvssta_(state,&center,&pointEpoch,(char *)pointFrame,(ftnlen)strlen(pointFrame));
+  if (observerLocus || centerLocus) chkin_c(zeroRoutine);
+  const char *ref="J2000";
+  if (centerLocus) {
+    frinfo_c(frame,&frameCenter,&frameClass,&classId,&found);
+    if (found && frameClass == 1) ref=outref;
+  }
+  if (!failed_c() && stellar) preflight_relative_stellar(observerPoint,other,center,et,ref,option,attributes[4]);
+  if (observerLocus || centerLocus) chkout_c(zeroRoutine);
+  if (!failed_c() && observerLocus && frame == 1) {
+    // SPKCVO/T copy private J2000 state immediately on return from ZZSPKFZ*.
+    double checked[6] = {0}, lt = 0;
+    if (observerPoint)
+      zzspkfzo_(&other,&et,"J2000",(char *)option,(S_fp)zzcvxsta_,checked,&lt,5,(ftnlen)strlen(option));
+    else
+      zzspkfzt_((S_fp)zzcvxsta_,&et,"J2000",(char *)option,&other,checked,&lt,5,(ftnlen)strlen(option));
+  }
+  chkout_c(velocityRoutine);
+  if (fixed) chkout_c(positionRoutine);
+}
+
+// AZLCPO validates its center, centered frame and method before requesting
+// the ellipsoid normal. Match that order and the exact intermediate routines
+// before checking the nested observer-position query.
+static void preflight_azimuth(const char *method, const char *target, double et, const char *option,
+                              const double pos[3], const char *centerName, const char *frameName) {
+  int center=0, frame=0, frameCenter=0, frameClass=0, classId=0;
+  SpiceBoolean found=SPICEFALSE;
+  bods2c_c(centerName,&center,&found);
+  if (!found || failed_c()) return;
+  namfrm_c(frameName,&frame);
+  frinfo_c(frame,&frameCenter,&frameClass,&classId,&found);
+  if (!found || failed_c() || center!=frameCenter || !eqstr_c(method,"ELLIPSOID")) return;
+  chkin_c("AZLCPO");
+  if (pos[0] != 0.0 || pos[1] != 0.0) {
+    double axes[3] = {0}, nearest[3] = {0}, alt=0, normal[3]={0}, rotation[9]={0};
+    double north[3]={0,0,1};
+    integer z=3,x=1;
+    zzgftreb_(&center,axes);
+    if (!failed_c()) nearpt_((double *)pos,axes,axes+1,axes+2,nearest,&alt);
+    if (!failed_c()) surfnm_(axes,axes+1,axes+2,nearest,normal);
+    if (!failed_c()) twovec_(normal,&z,north,&x,rotation);
+  }
+  if (!failed_c()) preflight_relative(1,1,target,et,frameName,"OBSERVER",option,pos,0.0,centerName,frameName);
+  chkout_c("AZLCPO");
+}
+
+int tspice_spkcpo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!target || !outref || !refloc || !abcorr || !obspos || !obsctr || !obsref || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing spkcpo storage");
+  if (strlen(target) > INT_MAX || strlen(outref) > INT_MAX || strlen(refloc) > INT_MAX || strlen(abcorr) > INT_MAX || strlen(obsctr) > INT_MAX || strlen(obsref) > INT_MAX) return tspice_ephemeris_invalid_arg(err,errMaxBytes,"String exceeds CSPICE width");
+  double result[7]={0};
+  if (!failed_c() && *target && *outref && *refloc && *abcorr && *obsctr && *obsref) {
+    chkin_c("spkcpo_c");
+    preflight_relative(1,1,target,et,outref,refloc,abcorr,obspos,0.0,obsctr,obsref);
+    chkout_c("spkcpo_c");
+  }
+  if (!failed_c()) spkcpo_c(target, et, outref, refloc, abcorr, obspos, obsctr, obsref,result,result+6);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+    return 1;
+  }
+  memcpy(out,result,sizeof(result));
+  return 0;
+}
+
+int tspice_spkcpt(const double *trgpos, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!trgpos || !trgctr || !trgref || !outref || !refloc || !abcorr || !obsrvr || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing spkcpt storage");
+  if (strlen(trgctr) > INT_MAX || strlen(trgref) > INT_MAX || strlen(outref) > INT_MAX || strlen(refloc) > INT_MAX || strlen(abcorr) > INT_MAX || strlen(obsrvr) > INT_MAX) return tspice_ephemeris_invalid_arg(err,errMaxBytes,"String exceeds CSPICE width");
+  double result[7]={0};
+  if (!failed_c() && *trgctr && *trgref && *outref && *refloc && *abcorr && *obsrvr) {
+    chkin_c("spkcpt_c");
+    preflight_relative(0,1,obsrvr,et,outref,refloc,abcorr,trgpos,0.0,trgctr,trgref);
+    chkout_c("spkcpt_c");
+  }
+  if (!failed_c()) spkcpt_c(trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr,result,result+6);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+    return 1;
+  }
+  memcpy(out,result,sizeof(result));
+  return 0;
+}
+
+int tspice_spkcvo(const char *target, double et, const char *outref, const char *refloc, const char *abcorr, const double *obssta, double obsepc, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!target || !outref || !refloc || !abcorr || !obssta || !obsctr || !obsref || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing spkcvo storage");
+  if (strlen(target) > INT_MAX || strlen(outref) > INT_MAX || strlen(refloc) > INT_MAX || strlen(abcorr) > INT_MAX || strlen(obsctr) > INT_MAX || strlen(obsref) > INT_MAX) return tspice_ephemeris_invalid_arg(err,errMaxBytes,"String exceeds CSPICE width");
+  double result[7]={0};
+  if (!failed_c() && *target && *outref && *refloc && *abcorr && *obsctr && *obsref) {
+    chkin_c("spkcvo_c");
+    preflight_relative(1,0,target,et,outref,refloc,abcorr,obssta,obsepc,obsctr,obsref);
+    chkout_c("spkcvo_c");
+  }
+  if (!failed_c()) spkcvo_c(target, et, outref, refloc, abcorr, obssta, obsepc, obsctr, obsref,result,result+6);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+    return 1;
+  }
+  memcpy(out,result,sizeof(result));
+  return 0;
+}
+
+int tspice_spkcvt(const double *trgsta, double trgepc, const char *trgctr, const char *trgref, double et, const char *outref, const char *refloc, const char *abcorr, const char *obsrvr, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!trgsta || !trgctr || !trgref || !outref || !refloc || !abcorr || !obsrvr || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing spkcvt storage");
+  if (strlen(trgctr) > INT_MAX || strlen(trgref) > INT_MAX || strlen(outref) > INT_MAX || strlen(refloc) > INT_MAX || strlen(abcorr) > INT_MAX || strlen(obsrvr) > INT_MAX) return tspice_ephemeris_invalid_arg(err,errMaxBytes,"String exceeds CSPICE width");
+  double result[7]={0};
+  if (!failed_c() && *trgctr && *trgref && *outref && *refloc && *abcorr && *obsrvr) {
+    chkin_c("spkcvt_c");
+    preflight_relative(0,0,obsrvr,et,outref,refloc,abcorr,trgsta,trgepc,trgctr,trgref);
+    chkout_c("spkcvt_c");
+  }
+  if (!failed_c()) spkcvt_c(trgsta, trgepc, trgctr, trgref, et, outref, refloc, abcorr, obsrvr,result,result+6);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+    return 1;
+  }
+  memcpy(out,result,sizeof(result));
+  return 0;
+}
+
+int tspice_azlcpo(const char *method, const char *target, double et, const char *abcorr, int azccw, int elplsz, const double *obspos, const char *obsctr, const char *obsref, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!method || !target || !abcorr || !obspos || !obsctr || !obsref || !out) return tspice_ephemeris_invalid_arg(err, errMaxBytes, "Missing azlcpo storage");
+  if (strlen(method) > INT_MAX || strlen(target) > INT_MAX || strlen(abcorr) > INT_MAX || strlen(obsctr) > INT_MAX || strlen(obsref) > INT_MAX) return tspice_ephemeris_invalid_arg(err,errMaxBytes,"String exceeds CSPICE width");
+  double result[7]={0};
+  if (!failed_c() && *method && *target && *abcorr && *obsctr && *obsref) {
+    chkin_c("azlcpo_c");
+    preflight_azimuth(method,target,et,abcorr,obspos,obsctr,obsref);
+    chkout_c("azlcpo_c");
+  }
+  if (!failed_c()) azlcpo_c(method, target, et, abcorr, azccw, elplsz, obspos, obsctr, obsref,result,result+6);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err,errMaxBytes);
+    return 1;
+  }
+  memcpy(out,result,sizeof(result));
+  return 0;
+}
+
 int tspice_spkacs(int target, double et, const char *ref, const char *abcorr, int observer, double *out, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';

@@ -296,6 +296,59 @@ export type NativeAddon = {
     coverWindowHandle: number,
   ): void;
 
+  spkcpo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcpt(
+    trgpos: readonly number[],
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  spkcvo(
+    target: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obssta: readonly number[],
+    obsepc: number,
+    obsctr: string,
+    obsref: string,
+  ): number[];
+  spkcvt(
+    trgsta: readonly number[],
+    trgepc: number,
+    trgctr: string,
+    trgref: string,
+    et: number,
+    outref: string,
+    refloc: string,
+    abcorr: string,
+    obsrvr: string,
+  ): number[];
+  azlcpo(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    azccw: boolean,
+    elplsz: boolean,
+    obspos: readonly number[],
+    obsctr: string,
+    obsref: string,
+  ): number[];
   spkacs(
     target: number,
     et: number,

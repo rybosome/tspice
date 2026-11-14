@@ -44,6 +44,11 @@ from .ephemeris import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
     StepEphemerisSpkacs,
     StepEphemerisSpkapo,
     StepEphemerisSpkapp,
@@ -288,6 +293,11 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkez
     | StepEphemerisSpkezp
     | StepEphemerisSpkezr
+    | StepEphemerisSpkcpo
+    | StepEphemerisSpkcpt
+    | StepEphemerisSpkcvo
+    | StepEphemerisSpkcvt
+    | StepEphemerisAzlcpo
     | StepEphemerisSpkacs
     | StepEphemerisSpkapo
     | StepEphemerisSpkapp

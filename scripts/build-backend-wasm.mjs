@@ -482,6 +482,11 @@ const exportedFunctions = [
   "_tspice_nvc2pl",
   "_tspice_pl2nvc",
   // --- ephemeris ---
+  "_tspice_spkcpo",
+  "_tspice_spkcpt",
+  "_tspice_spkcvo",
+  "_tspice_spkcvt",
+  "_tspice_azlcpo",
   "_tspice_spkacs",
   "_tspice_spkapo",
   "_tspice_spkapp",

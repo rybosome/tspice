@@ -859,6 +859,414 @@ export function createEphemerisApi(
   const virtualOutputPathByHandle = new Map<SpiceHandle, string>();
 
   return {
+    spkcpo: (target, et, outref, refloc, abcorr, obspos, obsctr, obsref) => {
+      validateCorrectionString(target, "spkcpo(target)");
+      requireSpkNumber(et, "spkcpo(et)");
+      validateCorrectionString(outref, "spkcpo(outref)");
+      validateCorrectionString(refloc, "spkcpo(refloc)");
+      validateCorrectionString(abcorr, "spkcpo(abcorr)");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "spkcpo(obspos)");
+      validateCorrectionString(obsctr, "spkcpo(obsctr)");
+      validateCorrectionString(obsref, "spkcpo(obsref)");
+      const targetBytes = correctionEncoder.encode(target);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          targetBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          24,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          targetPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsposPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsposCopy, obsposPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_spkcpo(
+            targetPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsposPtr,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcpt: (trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr) => {
+      const trgposCopy = copyCorrectionInput(trgpos, 3, "spkcpt(trgpos)");
+      validateCorrectionString(trgctr, "spkcpt(trgctr)");
+      validateCorrectionString(trgref, "spkcpt(trgref)");
+      requireSpkNumber(et, "spkcpt(et)");
+      validateCorrectionString(outref, "spkcpt(outref)");
+      validateCorrectionString(refloc, "spkcpt(refloc)");
+      validateCorrectionString(abcorr, "spkcpt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcpt(obsrvr)");
+      const trgctrBytes = correctionEncoder.encode(trgctr);
+      const trgrefBytes = correctionEncoder.encode(trgref);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsrvrBytes = correctionEncoder.encode(obsrvr);
+      return withAllocs(
+        module,
+        [
+          24,
+          trgctrBytes.length + 1,
+          trgrefBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          obsrvrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          trgposPtr,
+          trgctrPtr,
+          trgrefPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPF64.set(trgposCopy, trgposPtr >>> 3);
+          module.HEAPU8.set(trgctrBytes, trgctrPtr);
+          module.HEAPU8[trgctrPtr + trgctrBytes.length] = 0;
+          module.HEAPU8.set(trgrefBytes, trgrefPtr);
+          module.HEAPU8[trgrefPtr + trgrefBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPU8.set(obsrvrBytes, obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + obsrvrBytes.length] = 0;
+          const status = module._tspice_spkcpt(
+            trgposPtr,
+            trgctrPtr,
+            trgrefPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcvo: (
+      target,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obssta,
+      obsepc,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(target, "spkcvo(target)");
+      requireSpkNumber(et, "spkcvo(et)");
+      validateCorrectionString(outref, "spkcvo(outref)");
+      validateCorrectionString(refloc, "spkcvo(refloc)");
+      validateCorrectionString(abcorr, "spkcvo(abcorr)");
+      const obsstaCopy = copyCorrectionInput(obssta, 6, "spkcvo(obssta)");
+      requireSpkNumber(obsepc, "spkcvo(obsepc)");
+      validateCorrectionString(obsctr, "spkcvo(obsctr)");
+      validateCorrectionString(obsref, "spkcvo(obsref)");
+      const targetBytes = correctionEncoder.encode(target);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          targetBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          48,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          targetPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsstaPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsstaCopy, obsstaPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_spkcvo(
+            targetPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsstaPtr,
+            obsepc,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    spkcvt: (
+      trgsta,
+      trgepc,
+      trgctr,
+      trgref,
+      et,
+      outref,
+      refloc,
+      abcorr,
+      obsrvr,
+    ) => {
+      const trgstaCopy = copyCorrectionInput(trgsta, 6, "spkcvt(trgsta)");
+      requireSpkNumber(trgepc, "spkcvt(trgepc)");
+      validateCorrectionString(trgctr, "spkcvt(trgctr)");
+      validateCorrectionString(trgref, "spkcvt(trgref)");
+      requireSpkNumber(et, "spkcvt(et)");
+      validateCorrectionString(outref, "spkcvt(outref)");
+      validateCorrectionString(refloc, "spkcvt(refloc)");
+      validateCorrectionString(abcorr, "spkcvt(abcorr)");
+      validateCorrectionString(obsrvr, "spkcvt(obsrvr)");
+      const trgctrBytes = correctionEncoder.encode(trgctr);
+      const trgrefBytes = correctionEncoder.encode(trgref);
+      const outrefBytes = correctionEncoder.encode(outref);
+      const reflocBytes = correctionEncoder.encode(refloc);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsrvrBytes = correctionEncoder.encode(obsrvr);
+      return withAllocs(
+        module,
+        [
+          48,
+          trgctrBytes.length + 1,
+          trgrefBytes.length + 1,
+          outrefBytes.length + 1,
+          reflocBytes.length + 1,
+          abcorrBytes.length + 1,
+          obsrvrBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          trgstaPtr,
+          trgctrPtr,
+          trgrefPtr,
+          outrefPtr,
+          reflocPtr,
+          abcorrPtr,
+          obsrvrPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPF64.set(trgstaCopy, trgstaPtr >>> 3);
+          module.HEAPU8.set(trgctrBytes, trgctrPtr);
+          module.HEAPU8[trgctrPtr + trgctrBytes.length] = 0;
+          module.HEAPU8.set(trgrefBytes, trgrefPtr);
+          module.HEAPU8[trgrefPtr + trgrefBytes.length] = 0;
+          module.HEAPU8.set(outrefBytes, outrefPtr);
+          module.HEAPU8[outrefPtr + outrefBytes.length] = 0;
+          module.HEAPU8.set(reflocBytes, reflocPtr);
+          module.HEAPU8[reflocPtr + reflocBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPU8.set(obsrvrBytes, obsrvrPtr);
+          module.HEAPU8[obsrvrPtr + obsrvrBytes.length] = 0;
+          const status = module._tspice_spkcvt(
+            trgstaPtr,
+            trgepc,
+            trgctrPtr,
+            trgrefPtr,
+            et,
+            outrefPtr,
+            reflocPtr,
+            abcorrPtr,
+            obsrvrPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
+    azlcpo: (
+      method,
+      target,
+      et,
+      abcorr,
+      azccw,
+      elplsz,
+      obspos,
+      obsctr,
+      obsref,
+    ) => {
+      validateCorrectionString(method, "azlcpo(method)");
+      validateCorrectionString(target, "azlcpo(target)");
+      requireSpkNumber(et, "azlcpo(et)");
+      validateCorrectionString(abcorr, "azlcpo(abcorr)");
+      if (typeof azccw !== "boolean")
+        throw new TypeError("azlcpo(azccw) must be boolean");
+      if (typeof elplsz !== "boolean")
+        throw new TypeError("azlcpo(elplsz) must be boolean");
+      const obsposCopy = copyCorrectionInput(obspos, 3, "azlcpo(obspos)");
+      validateCorrectionString(obsctr, "azlcpo(obsctr)");
+      validateCorrectionString(obsref, "azlcpo(obsref)");
+      const methodBytes = correctionEncoder.encode(method);
+      const targetBytes = correctionEncoder.encode(target);
+      const abcorrBytes = correctionEncoder.encode(abcorr);
+      const obsctrBytes = correctionEncoder.encode(obsctr);
+      const obsrefBytes = correctionEncoder.encode(obsref);
+      return withAllocs(
+        module,
+        [
+          methodBytes.length + 1,
+          targetBytes.length + 1,
+          abcorrBytes.length + 1,
+          24,
+          obsctrBytes.length + 1,
+          obsrefBytes.length + 1,
+          56,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (
+          methodPtr,
+          targetPtr,
+          abcorrPtr,
+          obsposPtr,
+          obsctrPtr,
+          obsrefPtr,
+          outPtr,
+          errPtr,
+        ) => {
+          module.HEAPU8.set(methodBytes, methodPtr);
+          module.HEAPU8[methodPtr + methodBytes.length] = 0;
+          module.HEAPU8.set(targetBytes, targetPtr);
+          module.HEAPU8[targetPtr + targetBytes.length] = 0;
+          module.HEAPU8.set(abcorrBytes, abcorrPtr);
+          module.HEAPU8[abcorrPtr + abcorrBytes.length] = 0;
+          module.HEAPF64.set(obsposCopy, obsposPtr >>> 3);
+          module.HEAPU8.set(obsctrBytes, obsctrPtr);
+          module.HEAPU8[obsctrPtr + obsctrBytes.length] = 0;
+          module.HEAPU8.set(obsrefBytes, obsrefPtr);
+          module.HEAPU8[obsrefPtr + obsrefBytes.length] = 0;
+          const status = module._tspice_azlcpo(
+            methodPtr,
+            targetPtr,
+            et,
+            abcorrPtr,
+            Number(azccw),
+            Number(elplsz),
+            obsposPtr,
+            obsctrPtr,
+            obsrefPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          return decodeCorrectionResult(
+            module.HEAPF64.subarray(start, start + 7),
+            7,
+          );
+        },
+      );
+    },
     spkacs: (target, et, ref, abcorr, observer) => {
       assertSpiceInt32(target, "spkacs(target)");
       requireSpkNumber(et, "spkacs(et)");

@@ -585,6 +585,69 @@ export type StepEphemerisSpkezr = {
   observer: string;
 };
 
+export type StepEphemerisSpkcpo = {
+  op: "ephemeris.spkcpo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcpt = {
+  op: "ephemeris.spkcpt";
+  trgpos: SpiceVector3;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisSpkcvo = {
+  op: "ephemeris.spkcvo";
+  target: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obssta: SpiceStateVector;
+  obsepc: number;
+  obsctr: string;
+  obsref: string;
+};
+
+export type StepEphemerisSpkcvt = {
+  op: "ephemeris.spkcvt";
+  trgsta: SpiceStateVector;
+  trgepc: number;
+  trgctr: string;
+  trgref: string;
+  et: number;
+  outref: string;
+  refloc: string;
+  abcorr: string;
+  obsrvr: string;
+};
+
+export type StepEphemerisAzlcpo = {
+  op: "ephemeris.azlcpo";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  azccw: boolean;
+  elplsz: boolean;
+  obspos: SpiceVector3;
+  obsctr: string;
+  obsref: string;
+};
+
 export type StepEphemerisSpkacs = {
   op: "ephemeris.spkacs";
   target: number;
@@ -1439,6 +1502,11 @@ export type WorkflowStep =
   | StepEphemerisSpkez
   | StepEphemerisSpkezp
   | StepEphemerisSpkezr
+  | StepEphemerisSpkcpo
+  | StepEphemerisSpkcpt
+  | StepEphemerisSpkcvo
+  | StepEphemerisSpkcvt
+  | StepEphemerisAzlcpo
   | StepEphemerisSpkacs
   | StepEphemerisSpkapo
   | StepEphemerisSpkapp
@@ -1704,6 +1772,11 @@ export type StepOutput =
         lt: number;
       };
     }
+  | { op: "ephemeris.spkcpo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcpt"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvo"; value: SpkezrResult }
+  | { op: "ephemeris.spkcvt"; value: SpkezrResult }
+  | { op: "ephemeris.azlcpo"; value: SpkezrResult }
   | { op: "ephemeris.spkacs"; value: SpkezrResult & { dlt: number } }
   | { op: "ephemeris.spkapo"; value: SpkposResult }
   | { op: "ephemeris.spkapp"; value: SpkezrResult }

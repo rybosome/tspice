@@ -1597,6 +1597,21 @@ export function createFakeBackend(
       return sxformRowMajor(f, t, et);
     },
 
+    spkcpo: () => {
+      throw new Error("Fake backend does not model spkcpo()");
+    },
+    spkcpt: () => {
+      throw new Error("Fake backend does not model spkcpt()");
+    },
+    spkcvo: () => {
+      throw new Error("Fake backend does not model spkcvo()");
+    },
+    spkcvt: () => {
+      throw new Error("Fake backend does not model spkcvt()");
+    },
+    azlcpo: () => {
+      throw new Error("Fake backend does not model azlcpo()");
+    },
     spkacs: () => {
       throw new Error("Fake backend does not model spkacs()");
     },

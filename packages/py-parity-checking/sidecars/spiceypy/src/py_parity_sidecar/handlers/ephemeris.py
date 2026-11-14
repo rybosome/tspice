@@ -8,6 +8,7 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
+from .. import relative_observer_oracle
 from .. import correction_oracle
 from ..models import (
     StepEphemerisSpkcls,
@@ -15,6 +16,11 @@ from ..models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
     StepEphemerisSpkacs,
     StepEphemerisSpkapo,
     StepEphemerisSpkapp,
@@ -230,6 +236,79 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             label="spkezr",
         )
         return StepOutput(op=step.op, value={"state": state, "lt": lt})
+
+    if isinstance(step, StepEphemerisSpkcpo):
+        result = relative_observer_oracle.evaluate("spkcpo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcpt):
+        result = relative_observer_oracle.evaluate("spkcpt", {
+            "trgpos": step.trgpos,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvo):
+        result = relative_observer_oracle.evaluate("spkcvo", {
+            "target": step.target,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obssta": step.obssta,
+            "obsepc": step.obsepc,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisSpkcvt):
+        result = relative_observer_oracle.evaluate("spkcvt", {
+            "trgsta": step.trgsta,
+            "trgepc": step.trgepc,
+            "trgctr": step.trgctr,
+            "trgref": step.trgref,
+            "et": step.et,
+            "outref": step.outref,
+            "refloc": step.refloc,
+            "abcorr": step.abcorr,
+            "obsrvr": step.obsrvr,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
+
+    if isinstance(step, StepEphemerisAzlcpo):
+        result = relative_observer_oracle.evaluate("azlcpo", {
+            "method": step.method,
+            "target": step.target,
+            "et": step.et,
+            "abcorr": step.abcorr,
+            "azccw": step.azccw,
+            "elplsz": step.elplsz,
+            "obspos": step.obspos,
+            "obsctr": step.obsctr,
+            "obsref": step.obsref,
+        })
+        state, lt = _normalize_state_lt(result,label=step.op)
+        return StepOutput(op=step.op,value={"state": state, "lt":lt})
 
     if isinstance(step, StepEphemerisSpkacs):
         result = correction_oracle.spkacs(step.target, step.et, step.ref, step.abcorr, step.observer)

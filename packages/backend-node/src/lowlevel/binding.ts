@@ -514,6 +514,26 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export wnvald(size, n, window)",
   );
   invariant(
+    typeof native.spkcpo === "function",
+    "Native addon missing spkcpo()",
+  );
+  invariant(
+    typeof native.spkcpt === "function",
+    "Native addon missing spkcpt()",
+  );
+  invariant(
+    typeof native.spkcvo === "function",
+    "Native addon missing spkcvo()",
+  );
+  invariant(
+    typeof native.spkcvt === "function",
+    "Native addon missing spkcvt()",
+  );
+  invariant(
+    typeof native.azlcpo === "function",
+    "Native addon missing azlcpo()",
+  );
+  invariant(
     typeof native.spkacs === "function",
     "Native addon missing spkacs()",
   );

@@ -42,6 +42,11 @@ from .models import (
     StepEphemerisSpkez,
     StepEphemerisSpkezp,
     StepEphemerisSpkezr,
+    StepEphemerisSpkcpo,
+    StepEphemerisSpkcpt,
+    StepEphemerisSpkcvo,
+    StepEphemerisSpkcvt,
+    StepEphemerisAzlcpo,
     StepEphemerisSpkacs,
     StepEphemerisSpkapo,
     StepEphemerisSpkapp,
@@ -947,6 +952,74 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ref=_expect_string(step.get("ref"), label="ephemeris.spkezr.ref"),
                 abcorr=_expect_string(step.get("abcorr"), label="ephemeris.spkezr.abcorr"),
                 observer=_expect_string(step.get("observer"), label="ephemeris.spkezr.observer"),
+            )
+
+        case "ephemeris.spkcpo":
+            return StepEphemerisSpkcpo(
+                op=op,
+                target=_correction_string(step.get("target"), label="ephemeris.spkcpo.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkcpo.et"),
+                outref=_correction_string(step.get("outref"), label="ephemeris.spkcpo.outref"),
+                refloc=_correction_string(step.get("refloc"), label="ephemeris.spkcpo.refloc"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkcpo.abcorr"),
+                obspos=_correction_vector(step.get("obspos"), width=3, label="ephemeris.spkcpo.obspos"),
+                obsctr=_correction_string(step.get("obsctr"), label="ephemeris.spkcpo.obsctr"),
+                obsref=_correction_string(step.get("obsref"), label="ephemeris.spkcpo.obsref"),
+            )
+
+        case "ephemeris.spkcpt":
+            return StepEphemerisSpkcpt(
+                op=op,
+                trgpos=_correction_vector(step.get("trgpos"), width=3, label="ephemeris.spkcpt.trgpos"),
+                trgctr=_correction_string(step.get("trgctr"), label="ephemeris.spkcpt.trgctr"),
+                trgref=_correction_string(step.get("trgref"), label="ephemeris.spkcpt.trgref"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkcpt.et"),
+                outref=_correction_string(step.get("outref"), label="ephemeris.spkcpt.outref"),
+                refloc=_correction_string(step.get("refloc"), label="ephemeris.spkcpt.refloc"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkcpt.abcorr"),
+                obsrvr=_correction_string(step.get("obsrvr"), label="ephemeris.spkcpt.obsrvr"),
+            )
+
+        case "ephemeris.spkcvo":
+            return StepEphemerisSpkcvo(
+                op=op,
+                target=_correction_string(step.get("target"), label="ephemeris.spkcvo.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkcvo.et"),
+                outref=_correction_string(step.get("outref"), label="ephemeris.spkcvo.outref"),
+                refloc=_correction_string(step.get("refloc"), label="ephemeris.spkcvo.refloc"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkcvo.abcorr"),
+                obssta=_correction_vector(step.get("obssta"), width=6, label="ephemeris.spkcvo.obssta"),
+                obsepc=_correction_number(step.get("obsepc"), label="ephemeris.spkcvo.obsepc"),
+                obsctr=_correction_string(step.get("obsctr"), label="ephemeris.spkcvo.obsctr"),
+                obsref=_correction_string(step.get("obsref"), label="ephemeris.spkcvo.obsref"),
+            )
+
+        case "ephemeris.spkcvt":
+            return StepEphemerisSpkcvt(
+                op=op,
+                trgsta=_correction_vector(step.get("trgsta"), width=6, label="ephemeris.spkcvt.trgsta"),
+                trgepc=_correction_number(step.get("trgepc"), label="ephemeris.spkcvt.trgepc"),
+                trgctr=_correction_string(step.get("trgctr"), label="ephemeris.spkcvt.trgctr"),
+                trgref=_correction_string(step.get("trgref"), label="ephemeris.spkcvt.trgref"),
+                et=_correction_number(step.get("et"), label="ephemeris.spkcvt.et"),
+                outref=_correction_string(step.get("outref"), label="ephemeris.spkcvt.outref"),
+                refloc=_correction_string(step.get("refloc"), label="ephemeris.spkcvt.refloc"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.spkcvt.abcorr"),
+                obsrvr=_correction_string(step.get("obsrvr"), label="ephemeris.spkcvt.obsrvr"),
+            )
+
+        case "ephemeris.azlcpo":
+            return StepEphemerisAzlcpo(
+                op=op,
+                method=_correction_string(step.get("method"), label="ephemeris.azlcpo.method"),
+                target=_correction_string(step.get("target"), label="ephemeris.azlcpo.target"),
+                et=_correction_number(step.get("et"), label="ephemeris.azlcpo.et"),
+                abcorr=_correction_string(step.get("abcorr"), label="ephemeris.azlcpo.abcorr"),
+                azccw=_expect_bool(step.get("azccw"), label="ephemeris.azlcpo.azccw"),
+                elplsz=_expect_bool(step.get("elplsz"), label="ephemeris.azlcpo.elplsz"),
+                obspos=_correction_vector(step.get("obspos"), width=3, label="ephemeris.azlcpo.obspos"),
+                obsctr=_correction_string(step.get("obsctr"), label="ephemeris.azlcpo.obsctr"),
+                obsref=_correction_string(step.get("obsref"), label="ephemeris.azlcpo.obsref"),
             )
 
         case "ephemeris.spkacs":

@@ -141,7 +141,8 @@
         "ephemeris-stlabx-small-and-near-limit",
         "ephemeris-stlabx-transverse"
       ],
-      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e08-2d32c8bf-wasm",
@@ -238,7 +239,8 @@
         "ephemeris-stlabx-small-and-near-limit",
         "ephemeris-stlabx-transverse"
       ],
-      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3. JavaScript: 2,614 parity tests and one expected guard skip. Native-required: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e08-2d32c8bf-node",
@@ -337,7 +339,8 @@
       ],
       "commit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
-      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e08-2d32c8bf-wasm",
@@ -436,7 +439,8 @@
       ],
       "commit": "2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43589578886/job/132431245235",
-      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132431245235 on 2d32c8bfd34738cc0f0e91ab7de3216e69ee84f3: 2,388 registered Node/WASM live comparisons; 2,615 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -576,16 +580,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkacs to the named spkacs_c canonical entry point. Check both real SPKGEO stencil calls and the nested stellar-state components with initialized buffers before the public canonical call.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -700,16 +716,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapo to the named spkapo_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -843,16 +871,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkapp to the named spkapp_c canonical entry point. Use the canonical five-character option normalization, checked original nonstellar SPKAPP path and checked STELAB/STLABX before replaying the actual public entry point.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -996,16 +1036,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkaps to the named spkaps_c canonical entry point. Use a private exact three-word oracle binding, compare safely with the padded high-level wrapper and check actual SPKLTC and ZZSTELAB before public canonical execution.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -1120,16 +1172,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_spkltc to the named spkltc_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -1184,16 +1248,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_stelab to the named stelab_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -1248,16 +1312,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_stlabx to the named stlabx_c canonical entry point. Independent locked public wrapper calls the original CSPICE function.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     },
@@ -1347,19 +1411,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through serialized native addon and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
-          "executions": ["local-e08-2d32c8bf-node", "ci-e08-2d32c8bf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EphemerisApi through owned WASM buffers and shared tspice_ltime to the named ltime_c canonical entry point. Check both original barycentric SPKGEO calls in observer-first order with initialized output before calling canonical LTIME; preserve nested trace and original delta/error semantics.",
-          "executions": ["local-e08-2d32c8bf-wasm", "ci-e08-2d32c8bf-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Prior full local and canonical observations retain their tested source revisions. Current E09 combined source requires fresh full local and canonical CI observations."
 }

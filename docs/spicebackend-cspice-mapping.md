@@ -330,6 +330,18 @@ documented in the parity fixture README. The unchanged numeric comparator uses
 1e-12 absolute-or-relative tolerance; independent polynomial interpolation checks
 use 1e-9 km position and 1e-12 km/s velocity bounds.
 
+### Observer-relative SPK geometry
+
+| Public operation                                                             | Linked N0067 entry | Observation                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spkcpo(target, et, outref, refloc, abcorr, obspos, obsctr, obsref)`         | `spkcpo_c`         | Return the six-component target state as observed from the supplied position fixed in the observer frame. Correct the target event and evaluate the output frame at the requested locus.                                |
+| `spkcpt(trgpos, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)`         | `spkcpt_c`         | Return the apparent state of the supplied target point fixed in its local frame relative to an ephemeris observer. Evaluate the point at the corrected target epoch.                                                    |
+| `spkcvo(target, et, outref, refloc, abcorr, obssta, obsepc, obsctr, obsref)` | `spkcvo_c`         | Propagate the observer state from its own supplied epoch with constant velocity in the observer frame. Apply its six-dimensional frame transform, observer-center motion, aberration correction and output frame locus. |
+| `spkcvt(trgsta, trgepc, trgctr, trgref, et, outref, refloc, abcorr, obsrvr)` | `spkcvt_c`         | Propagate the local target state at its own epoch to the apparent target event. Transform both position and velocity, accounting for the source and output frames and target center.                                    |
+| `azlcpo(method, target, et, abcorr, azccw, elplsz, obspos, obsctr, obsref)`  | `azlcpo_c`         | Return topocentric range, azimuth, elevation and their three time derivatives relative to the ellipsoid-based local frame, plus one-way light time. azccw sets the azimuth direction and elplsz the elevation sign.     |
+
+The five methods each return an owned six-component `state` and scalar one-way `lt` in seconds. [Epochs, axes, units, error behavior and validation](step8-spk-relative.md)
+
 ### SPK corrections and signal time
 
 | Method                                                                 | Direct canonical call | Output                                      |

@@ -25,3 +25,66 @@ export async function correctionsConsumer(
   const h = await worker.raw.ltime(0, 2, "->", 1);
   return [a.dlt, b.lt, c.state, d.state, e.dlt, f, g, h.ettarg, h.elapsd];
 }
+
+/** Exercise five fixed-position and constant-velocity state APIs on typed sync and async clients. */
+export async function relativeSpkConsumer(
+  spice: Spice,
+  worker: SpiceAsync,
+  position: Readonly<SpiceVector3>,
+  state: Readonly<SpiceStateVector>,
+) {
+  const a = spice.raw.spkcpo(
+    "10",
+    0,
+    "J2000",
+    "OBSERVER",
+    "LT",
+    position,
+    "399",
+    "IAU_EARTH",
+  );
+  const b = spice.raw.spkcpt(
+    position,
+    "399",
+    "IAU_EARTH",
+    0,
+    "J2000",
+    "TARGET",
+    "XLT",
+    "10",
+  );
+  const c = await worker.raw.spkcvo(
+    "10",
+    0,
+    "J2000",
+    "CENTER",
+    "CN+S",
+    state,
+    -5,
+    "399",
+    "IAU_EARTH",
+  );
+  const d = await worker.raw.spkcvt(
+    state,
+    -5,
+    "399",
+    "IAU_EARTH",
+    0,
+    "J2000",
+    "CENTER",
+    "XCN+S",
+    "10",
+  );
+  const e = await worker.raw.azlcpo(
+    "ELLIPSOID",
+    "10",
+    0,
+    "LT+S",
+    true,
+    false,
+    position,
+    "399",
+    "IAU_EARTH",
+  );
+  return [a.state, b.lt, c.state, d.lt, e.state[5]];
+}
