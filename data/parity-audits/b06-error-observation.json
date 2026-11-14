@@ -42,7 +42,192 @@
     "packages/py-parity-checking/test/error-observation-public.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-b06-f1e18c25-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68796278df61b859d1ef95826b4dd191c9a17f07413a0cca0e75b3b7a72a3976",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-b06-f1e18c25-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68796278df61b859d1ef95826b4dd191c9a17f07413a0cca0e75b3b7a72a3976",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "observation": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b06-f1e18c25-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68796278df61b859d1ef95826b4dd191c9a17f07413a0cca0e75b3b7a72a3976",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "commit": "f1e18c255839f3064e80b583259c62853a01b1af",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574593043/job/132385968930",
+      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b06-f1e18c25-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "68796278df61b859d1ef95826b4dd191c9a17f07413a0cca0e75b3b7a72a3976",
+      "caseIds": [
+        "error-errch-blank-and-utf8",
+        "error-errch-capacity",
+        "error-errch-empty-marker",
+        "error-errch-empty-value",
+        "error-errch-positions",
+        "error-errch-repeat",
+        "error-errdp-capacity",
+        "error-errdp-empty-marker",
+        "error-errdp-format",
+        "error-errdp-positions",
+        "error-errdp-repeat",
+        "error-errint-capacity",
+        "error-errint-empty-marker",
+        "error-errint-limits",
+        "error-errint-positions",
+        "error-errint-repeat",
+        "error-qcktrc-byte-capacity",
+        "error-qcktrc-empty",
+        "error-qcktrc-length--3",
+        "error-qcktrc-length-1",
+        "error-qcktrc-nested",
+        "error-qcktrc-overflow",
+        "error-return-nested",
+        "error-return-recovery",
+        "error-trcdep-depth-overflow",
+        "error-trcdep-nested",
+        "error-trcnam-byte-capacity",
+        "error-trcnam-length--3",
+        "error-trcnam-length-1",
+        "error-trcnam-nested",
+        "error-trcnam-overflow",
+        "error-trcnam-range--1",
+        "error-trcnam-range-1"
+      ],
+      "commit": "f1e18c255839f3064e80b583259c62853a01b1af",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574593043/job/132385968930",
+      "observation": "Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "errch_c",
@@ -90,16 +275,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errch -> serialized native addon -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errch -> scoped WASM adapter -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -144,16 +329,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errdp -> serialized native addon -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errdp -> scoped WASM adapter -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -198,16 +383,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errint -> serialized native addon -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.errint -> scoped WASM adapter -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -270,16 +455,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.qcktrc -> serialized native addon -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.qcktrc -> scoped WASM adapter -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -322,16 +507,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.return -> serialized native addon -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.return -> scoped WASM adapter -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -361,16 +546,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcdep -> serialized native addon -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcdep -> scoped WASM adapter -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     },
@@ -438,19 +623,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcnam -> serialized native addon -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-node", "ci-b06-f1e18c25-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "ErrorApi.trcnam -> scoped WASM adapter -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
-          "executions": []
+          "executions": ["local-b06-f1e18c25-wasm", "ci-b06-f1e18c25-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Full local and source-bound canonical native-required verification pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

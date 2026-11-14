@@ -1709,18 +1709,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/749"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "66 live registered comparisons, four public, one private native, 22 WASM allocation/recovery tests and a real Chrome worker. Standalone production shim also tested on an actual pending failure."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "f1e18c255839f3064e80b583259c62853a01b1af",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43574593043/job/132385968930",
+          "result": "Both complete required lanes passed locally on f1e18c255839f3064e80b583259c62853a01b1af. JavaScript: 2,500 parity tests and one expected guard skip. Native-required: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132385968930 on f1e18c255839f3064e80b583259c62853a01b1af: 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both full required local lanes and observe source-specific canonical CI; verify final matrix and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-error-observation",
       "branch": "codex/expand-error-observation",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "All seven canonical symbols implemented and compared through the public facade; exact trace names and output capacities have an independent typed oracle."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source f1e18c25. 2,284 registered Node/WASM live comparisons; 2,501 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 622 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All seven canonical symbols implemented and compared through the public facade; exact trace names and output capacities have an independent typed oracle."
     },
     {
       "id": "B07-error-policy",
