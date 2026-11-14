@@ -1,0 +1,275 @@
+[
+  {
+    "caseId": "geometry-inelpl-two-points",
+    "description": "Secant cuts through and away from the center, with signed orientation.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [1, 0, 0, 0]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [1, 0, 0, 1]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, -1, 0, 1]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [1, 0, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-tangent",
+    "description": "Tangency supplies both toolkit point outputs for the single intersection.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [1, 0, 0, 3]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, -1, 0, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-empty-or-contained",
+    "description": "Check zero versus infinitely many intersections without reading undefined points.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [1, 0, 0, 3.5]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0, 1, 5]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0, 1, 0]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0, 1, 5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-point-ellipse",
+    "description": "A point in a plane has one intersection. A displaced point has none.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [0, 0, 1, 5]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-segment",
+    "description": "Interior cut, endpoint, missed and contained segment remain distinct.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [1, 0, 0, 0]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [1, 0, 0, 3]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [1, 0, 0, 4]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        },
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-oblique",
+    "description": "Oblique planes and rotated stored axes produce distinct ordered crossing points.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -1, 3],
+          "semiMajor": [3, 4, 0],
+          "semiMinor": [-0.8, 0.6, 0]
+        },
+        "plane": [0.6, 0.8, 0, 1]
+      },
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0.6, 0.8, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-invalid-stored-axes",
+    "description": "Nonorthogonal stored axes trigger the actual explicit input check.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [2, 0, 0],
+          "semiMinor": [1, 1, 0]
+        },
+        "plane": [1, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDELLIPSE"]
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-zero-normal",
+    "description": "INELPL directly diagnoses a zero stored plane normal.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDPLANE"]
+    }
+  },
+  {
+    "caseId": "geometry-inelpl-negative-constant",
+    "description": "INELPL directly diagnoses a negative plane distance.",
+    "workflow": [
+      {
+        "op": "geometry.inelpl",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        },
+        "plane": [0, 0, 1, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDPLANE"]
+    }
+  }
+]

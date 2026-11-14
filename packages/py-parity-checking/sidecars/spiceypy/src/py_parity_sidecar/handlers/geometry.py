@@ -5,6 +5,8 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from ..models.geometry import StoredEllipse
+
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
@@ -17,6 +19,13 @@ from ..models import (
     StepGeometryVprjp,
     StepGeometryVprjpi,
     StepGeometryNplnpt,
+    StepGeometryCgv2el,
+    StepGeometryEl2cgv,
+    StepGeometrySaelgv,
+    StepGeometryPjelpl,
+    StepGeometryInelpl,
+    StepGeometryInedpl,
+    StepGeometryNpelpt,
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
@@ -30,6 +39,21 @@ from ..models import (
 
 def _vec3_to_json(value: tuple[float, float, float] | list[float]) -> list[float]:
     return [float(value[0]), float(value[1]), float(value[2])]
+
+
+def _stored_ellipse(value: StoredEllipse) -> stypes.Ellipse:
+    # EL2CGV, INELPL and NPELPT observe the caller's stored axes directly.
+    # Constructing them again with CGV2EL would alter the input.
+    row = c_double * 3
+    return stypes.Ellipse(_center=row(*value.center),
+                          _semi_major=row(*value.semiMajor),
+                          _semi_minor=row(*value.semiMinor))
+
+
+def _ellipse_to_json(value: stypes.Ellipse) -> dict[str, list[float]]:
+    return {"center": _vec3_to_json(value.center),
+            "semiMajor": _vec3_to_json(value.semi_major),
+            "semiMinor": _vec3_to_json(value.semi_minor)}
 
 
 def _stored_plane(values: tuple[float, float, float, float]) -> stypes.Plane:
@@ -217,6 +241,42 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
     if isinstance(step, StepGeometryNplnpt):
         out = sp.nplnpt(step.linpt, step.lindir, step.point)
         return StepOutput(op=step.op, value={"pnear": _vec3_to_json(out[0]), "dist": float(out[1])})
+
+    if isinstance(step, StepGeometryCgv2el):
+        value = _ellipse_to_json(sp.cgv2el(step.center, step.vec1, step.vec2))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryEl2cgv):
+        center, smajor, sminor = sp.el2cgv(_stored_ellipse(step.ellipse))
+        value = {"center": _vec3_to_json(center), "smajor": _vec3_to_json(smajor), "sminor": _vec3_to_json(sminor)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometrySaelgv):
+        smajor, sminor = sp.saelgv(step.vec1, step.vec2)
+        value = {"smajor": _vec3_to_json(smajor), "sminor": _vec3_to_json(sminor)}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryPjelpl):
+        value = _ellipse_to_json(sp.pjelpl(_stored_ellipse(step.ellipse), _stored_plane(step.plane)))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryInelpl):
+        count, first, second = sp.inelpl(_stored_ellipse(step.ellipse), _stored_plane(step.plane))
+        value = {"nxpts": int(count)}
+        if count in (1, 2):
+            value.update(xpt1=_vec3_to_json(first), xpt2=_vec3_to_json(second))
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryInedpl):
+        with sp.no_found_check():
+            ellipse, found = sp.inedpl(step.a, step.b, step.c, _stored_plane(step.plane))
+        value = {"found": True, "ellipse": _ellipse_to_json(ellipse)} if found else {"found": False}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepGeometryNpelpt):
+        pnear, dist = sp.npelpt(step.point, _stored_ellipse(step.ellipse))
+        value = {"pnear": _vec3_to_json(pnear), "dist": float(dist)}
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepGeometryNvc2pl):
         plane = sp.nvc2pl(step.normal, step.konst)

@@ -811,6 +811,22 @@ int tspice_spkssb(
 
 // --- plane helpers ---
 
+// Ellipse parameters use center, semi-major, then semi-minor in nine doubles.
+int tspice_cgv2el(
+    const double *center, const double *vec1, const double *vec2, double *outEllipse, char *err, int errMaxBytes);
+int tspice_el2cgv(
+    const double *ellipse, double *outCenter, double *outSmajor, double *outSminor, char *err, int errMaxBytes);
+int tspice_saelgv(
+    const double *vec1, const double *vec2, double *outSmajor, double *outSminor, char *err, int errMaxBytes);
+int tspice_pjelpl(
+    const double *ellipse, const double *plane, double *outProjected, char *err, int errMaxBytes);
+int tspice_inedpl(
+    double a, double b, double c, const double *plane, double *outEllipse, int *outFound, char *err, int errMaxBytes);
+int tspice_inelpl(
+    const double *ellipse, const double *plane, int *outNxpts, double *outXpt1, double *outXpt2, char *err, int errMaxBytes);
+int tspice_npelpt(
+    const double *point, const double *ellipse, double *outPnear, double *outDist, char *err, int errMaxBytes);
+
 int tspice_nvp2pl(
     const double *normal,
     const double *point,

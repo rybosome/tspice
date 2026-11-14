@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 177
+- Planned (not yet implemented): 472
 - Excluded: 3
 
 ## Implemented now
@@ -31,6 +31,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodvar_c` | Return values from the kernel pool |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
+| `cgv2el_c` | Center and generating vectors to ellipse |
 | `chkin_c` | module Check In |
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
@@ -77,6 +78,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `el2cgv_c` | Ellipse to center and generating vectors |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -102,6 +104,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
+| `inedpl_c` | Intersection of ellipsoid and plane |
+| `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
@@ -117,6 +121,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
+| `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `nvp2pl_c` | Normal vector and point to plane |
@@ -124,6 +129,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
+| `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pl2nvp_c` | Plane to normal vector and point |
 | `pl2psv_c` | Plane to point and spanning vectors |
@@ -135,6 +141,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
+| `saelgv_c` | Semi-axes of ellipse from generating vectors |
 | `scard_c` | Set the cardinality of a cell |
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
@@ -214,7 +221,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bsrchc_c` | Binary search for a character string |
 | `bsrchd_c` | Binary search for a double precision value |
 | `bsrchi_c` | Binary search for an integer value |
-| `cgv2el_c` | Center and generating vectors to ellipse |
 | `chbder_c` | Derivatives of a Chebyshev expansion |
 | `chbigr_c` | Chebyshev expansion integral |
 | `chbint_c` | Interpolate a Chebyshev expansion |
@@ -354,7 +360,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekuced_c` | EK, update d.p. column entry |
 | `ekucei_c` | EK, update integer column entry |
 | `ekuef_c` | EK, unload event file |
-| `el2cgv_c` | Ellipse to center and generating vectors |
 | `elemc_c` | Element of a character set |
 | `elemd_c` | Element of a double precision set |
 | `elemi_c` | Element of an integer set |
@@ -406,8 +411,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
-| `inedpl_c` | Intersection of ellipsoid and plane |
-| `inelpl_c` | Intersection of ellipse and plane |
 | `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
@@ -477,7 +480,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `nearpt_c` | Nearest point on an ellipsoid |
 | `nextwd_c` | Next word in a character string |
 | `npedln_c` | Nearest point on ellipsoid to line |
-| `npelpt_c` | Nearest point on ellipse to point |
 | `nthwd_c` | n'th word in a character string |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |
@@ -497,7 +499,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pgrrec_c` | Planetographic to rectangular |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
-| `pjelpl_c` | Project ellipse onto plane |
 | `pltar_c` | Compute area of plate set |
 | `pltexp_c` | Plate expander |
 | `pltnp_c` | Nearest point on triangular plate |
@@ -542,7 +543,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
-| `saelgv_c` | Semi-axes of ellipse from generating vectors |
 | `sce2t_c` | ET to SCLK ticks |
 | `scfmt_c` | Convert SCLK "ticks" to character clock format |
 | `scpart_c` | Spacecraft Clock Partition Information |

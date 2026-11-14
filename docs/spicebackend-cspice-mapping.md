@@ -215,6 +215,18 @@ Notes:
 
 ## Domain: `geometry` (`GeometryApi`)
 
+Seven direct raw routines accept an owned three-vector ellipse representation. Inputs also accept readonly tuples. No kernels are required. [Ellipse fields and conditional outputs](step8-ellipse-geometry.md)
+
+| Method                     | Native entrypoint | Return shape                                         |
+| -------------------------- | ----------------- | ---------------------------------------------------- |
+| `cgv2el(center,vec1,vec2)` | `cgv2el_c`        | `SpiceEllipse`                                       |
+| `el2cgv(ellipse)`          | `el2cgv_c`        | `{center,smajor,sminor}`                             |
+| `saelgv(vec1,vec2)`        | `saelgv_c`        | `{smajor,sminor}`                                    |
+| `pjelpl(ellipse,plane)`    | `pjelpl_c`        | `SpiceEllipse`                                       |
+| `inedpl(a,b,c,plane)`      | `inedpl_c`        | `Found<{ellipse}>`                                   |
+| `inelpl(ellipse,plane)`    | `inelpl_c`        | `{nxpts}` with `xpt1` and `xpt2` for positive counts |
+| `npelpt(point,ellipse)`    | `npelpt_c`        | `{pnear,dist}`                                       |
+
 E10 adds eight direct canonical mappings on Node and WASM. All use the existing four-word plane representation and kernel-independent vectors. [Plane and line geometry semantics, component comparisons and primary references](step8-plane-geometry.md)
 
 | Raw method | CSPICE     | Result                                                |

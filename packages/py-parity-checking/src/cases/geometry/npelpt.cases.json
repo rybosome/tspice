@@ -1,0 +1,148 @@
+[
+  {
+    "caseId": "geometry-npelpt-principal-nearest",
+    "description": "External points, points on the boundary and points below the orbital plane.",
+    "workflow": [
+      {
+        "op": "geometry.npelpt",
+        "point": [5, 0, 0],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [0, 2, 0],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [0, -2, -4],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [3, 0, 3],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npelpt-interior",
+    "description": "Interior and central points exercise the nearest boundary convention.",
+    "workflow": [
+      {
+        "op": "geometry.npelpt",
+        "point": [1, 0.25, 0],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [0, 0, 0],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [0.125, 0.25, 2],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [2, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npelpt-translated-and-rotated",
+    "description": "Oblique in-plane offset and signed perpendicular distance.",
+    "workflow": [
+      {
+        "op": "geometry.npelpt",
+        "point": [5, 2, -1],
+        "ellipse": {
+          "center": [2, -1, 3],
+          "semiMajor": [3, 4, 0],
+          "semiMinor": [-0.8, 0.6, 0]
+        }
+      },
+      {
+        "op": "geometry.npelpt",
+        "point": [-2, 0, 1],
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-npelpt-degenerate-major-and-minor",
+    "description": "Point ellipse has no usable semi-axis.",
+    "workflow": [
+      {
+        "op": "geometry.npelpt",
+        "point": [3, 1, 2],
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 0, 0],
+          "semiMinor": [0, 0, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-npelpt-zero-minor",
+    "description": "Segment ellipse is rejected by NPELPT.",
+    "workflow": [
+      {
+        "op": "geometry.npelpt",
+        "point": [3, 1, 2],
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

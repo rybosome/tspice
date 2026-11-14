@@ -5,6 +5,13 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StoredEllipse:
+    center: tuple[float, float, float]
+    semiMajor: tuple[float, float, float]
+    semiMinor: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
 class StepGeometrySubpnt:
     op: Literal["geometry.subpnt"]
     method: str
@@ -147,6 +154,57 @@ class StepGeometryNplnpt:
     linpt: tuple[float, float, float]
     lindir: tuple[float, float, float]
     point: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryCgv2el:
+    op: Literal["geometry.cgv2el"]
+    center: tuple[float, float, float]
+    vec1: tuple[float, float, float]
+    vec2: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryEl2cgv:
+    op: Literal["geometry.el2cgv"]
+    ellipse: StoredEllipse
+
+
+@dataclass(frozen=True)
+class StepGeometrySaelgv:
+    op: Literal["geometry.saelgv"]
+    vec1: tuple[float, float, float]
+    vec2: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryPjelpl:
+    op: Literal["geometry.pjelpl"]
+    ellipse: StoredEllipse
+    plane: tuple[float, float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryInelpl:
+    op: Literal["geometry.inelpl"]
+    ellipse: StoredEllipse
+    plane: tuple[float, float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryInedpl:
+    op: Literal["geometry.inedpl"]
+    a: float
+    b: float
+    c: float
+    plane: tuple[float, float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometryNpelpt:
+    op: Literal["geometry.npelpt"]
+    point: tuple[float, float, float]
+    ellipse: StoredEllipse
 
 
 @dataclass(frozen=True)

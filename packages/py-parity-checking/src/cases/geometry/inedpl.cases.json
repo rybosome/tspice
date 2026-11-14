@@ -1,0 +1,189 @@
+[
+  {
+    "caseId": "geometry-inedpl-central-sections",
+    "description": "Three principal planes through a distinct triaxial body.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [1, 0, 0, 0]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 1, 0, 0]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-parallel-sections",
+    "description": "Off-center cuts and tangencies with both normal signs.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, 1, 0.5]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, -1, 0.75]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, 1, 1]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [1, 0, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-miss",
+    "description": "Misses beyond the largest radius and along the shortest axis with smaller distance.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 1, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-oblique",
+    "description": "Oblique section of a triaxial body with distinguishable ellipse axes.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 4,
+        "b": 2,
+        "c": 1,
+        "plane": [0.6, 0, 0.8, 0.25]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 5,
+        "b": 3,
+        "c": 2,
+        "plane": [0, -0.8, 0.6, 1.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-spherical-section",
+    "description": "Spherical section with analytic radius and known center.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 2,
+        "b": 2,
+        "c": 2,
+        "plane": [0, 0, 1, 1]
+      },
+      {
+        "op": "geometry.inedpl",
+        "a": 2,
+        "b": 2,
+        "c": 2,
+        "plane": [1, 0, 0, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-bad-axis-0",
+    "description": "A nonpositive ellipsoid radius is rejected before section computation.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 0,
+        "b": 2,
+        "c": 1,
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-bad-axis-1",
+    "description": "A nonpositive ellipsoid radius is rejected before section computation.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": -1,
+        "c": 1,
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-inedpl-bad-axis-2",
+    "description": "A nonpositive ellipsoid radius is rejected before section computation.",
+    "workflow": [
+      {
+        "op": "geometry.inedpl",
+        "a": 3,
+        "b": 2,
+        "c": 0,
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

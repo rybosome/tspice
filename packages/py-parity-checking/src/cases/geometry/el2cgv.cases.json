@@ -1,0 +1,93 @@
+[
+  {
+    "caseId": "geometry-el2cgv-stored-components",
+    "description": "Read every center and axis component including signs and orientation.",
+    "workflow": [
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 2, 0]
+        }
+      },
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [2, -1, 3],
+          "semiMajor": [3, 4, 0],
+          "semiMinor": [-0.8, 0.6, 0]
+        }
+      },
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [1, 2, 3],
+          "semiMajor": [1, -2, 2],
+          "semiMinor": [-2, -1, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-el2cgv-degenerate",
+    "description": "Preserve the stored axes of point and line ellipses.",
+    "workflow": [
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [3, 0, 0],
+          "semiMinor": [0, 0, 0]
+        }
+      },
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 0, 0],
+          "semiMinor": [0, 0, 0]
+        }
+      },
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 0, 0],
+          "semiMinor": [0, 0, -7]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-el2cgv-stored-signed-scale",
+    "description": "Direct extraction retains the stored order and small nonzero components.",
+    "workflow": [
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [2, -3, 5],
+          "semiMajor": [0, 3e-80, 0],
+          "semiMinor": [1e-80, 0, 0]
+        }
+      },
+      {
+        "op": "geometry.el2cgv",
+        "ellipse": {
+          "center": [0, 0, 0],
+          "semiMajor": [0, 0, -5e65],
+          "semiMinor": [0, 2e65, 0]
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
