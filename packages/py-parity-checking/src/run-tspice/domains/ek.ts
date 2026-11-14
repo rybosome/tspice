@@ -13,6 +13,11 @@ import type {
   StepEkEkifld,
   StepEkEknseg,
   StepEkEkntab,
+  StepEkEkops,
+  StepEkEkbseg,
+  StepEkEkappr,
+  StepEkEkinsr,
+  StepEkEkdelr,
   StepEkEkopn,
   StepEkEkopr,
   StepEkEkopw,
@@ -32,6 +37,11 @@ import {
 import { normalizePathRefRelativePath } from "../../runtime/path-ref.js";
 
 type EkStep =
+  | StepEkEkops
+  | StepEkEkbseg
+  | StepEkEkappr
+  | StepEkEkinsr
+  | StepEkEkdelr
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -66,6 +76,46 @@ function resolveEkPath(rawPath: PathRefLike): string {
 /** Execute one `ek.*` workflow step in tspice. */
 export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
+    case "ek.ekops": {
+      registerEkHandle(context, step.handleId, context.spice.raw.ekops());
+      return { op: step.op, value: { handleId: step.handleId } };
+    }
+    case "ek.ekbseg": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekbseg(
+          requireEkHandle(context, step.handleId),
+          step.tabnam,
+          step.cnames,
+          step.decls,
+        ),
+      };
+    }
+    case "ek.ekappr": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekappr(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+        ),
+      };
+    }
+    case "ek.ekinsr": {
+      context.spice.raw.ekinsr(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekdelr": {
+      context.spice.raw.ekdelr(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+      );
+      return { op: step.op, value: null };
+    }
     case "ek.ekopn": {
       const handle = context.spice.raw.ekopn(
         resolveEkPath(step.path),

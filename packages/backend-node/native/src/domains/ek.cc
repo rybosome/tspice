@@ -692,6 +692,141 @@ static Napi::Object Ekgi(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Value Ekops(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekops: invalid argument count"));
+    return env.Undefined();
+  }
+  int result = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ekops(&result, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ekops", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, result);
+}
+
+static Napi::Value Ekbseg(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 7) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekbseg: invalid argument count"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  if (!info[1].IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected EK table name"));
+    return env.Undefined();
+  }
+  std::string table = info[1].As<Napi::String>().Utf8Value();
+  if (table.size() >= kMaxEkBufferBytes || table.find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid EK table name bytes"));
+    return env.Undefined();
+  }
+  int32_t count = 0;
+  if (!ReadInt32Checked(env, info[2], "count", &count)) return env.Undefined();
+  int32_t nameWidth = 0;
+  if (!ReadInt32Checked(env, info[3], "nameWidth", &nameWidth)) return env.Undefined();
+  if (!info[4].IsTypedArray() || info[4].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected fixed-width EK schema bytes"));
+    return env.Undefined();
+  }
+  auto names = info[4].As<Napi::Uint8Array>();
+  if (count < 1 || count > static_cast<int>(kMaxEkColumns) || nameWidth < 2 ||
+      static_cast<size_t>(nameWidth) > kMaxEkBufferBytes/static_cast<size_t>(count) ||
+      names.ElementLength() != static_cast<size_t>(count)*static_cast<size_t>(nameWidth)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid EK schema buffer dimensions"));
+    return env.Undefined();
+  }
+  int32_t declWidth = 0;
+  if (!ReadInt32Checked(env, info[5], "declWidth", &declWidth)) return env.Undefined();
+  if (!info[6].IsTypedArray() || info[6].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected fixed-width EK schema bytes"));
+    return env.Undefined();
+  }
+  auto decls = info[6].As<Napi::Uint8Array>();
+  if (count < 1 || count > static_cast<int>(kMaxEkColumns) || declWidth < 2 ||
+      static_cast<size_t>(declWidth) > kMaxEkBufferBytes/static_cast<size_t>(count) ||
+      decls.ElementLength() != static_cast<size_t>(count)*static_cast<size_t>(declWidth)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid EK schema buffer dimensions"));
+    return env.Undefined();
+  }
+  const std::vector<char> nameRows(names.Data(), names.Data() + names.ElementLength());
+  const std::vector<char> declRows(decls.Data(), decls.Data() + decls.ElementLength());
+  int result = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ekbseg(handle, table.c_str(), count, nameWidth, nameRows.data(), declWidth, declRows.data(), &result, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ekbseg", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, result);
+}
+
+static Napi::Value Ekappr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekappr: invalid argument count"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t segment = 0;
+  if (!ReadInt32Checked(env, info[1], "segment", &segment)) return env.Undefined();
+  int result = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ekappr(handle, segment, &result, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ekappr", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, result);
+}
+
+static Napi::Value Ekinsr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekinsr: invalid argument count"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t segment = 0;
+  if (!ReadInt32Checked(env, info[1], "segment", &segment)) return env.Undefined();
+  int32_t row = 0;
+  if (!ReadInt32Checked(env, info[2], "row", &row)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ekinsr(handle, segment, row, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ekinsr", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ekdelr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ekdelr: invalid argument count"));
+    return env.Undefined();
+  }
+  int32_t handle = 0;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t segment = 0;
+  if (!ReadInt32Checked(env, info[1], "segment", &segment)) return env.Undefined();
+  int32_t row = 0;
+  if (!ReadInt32Checked(env, info[2], "row", &row)) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_ekdelr(handle, segment, row, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ekdelr", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 static Napi::Object Ekifld(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -1124,6 +1259,11 @@ void RegisterEk(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "ekgd", Napi::Function::New(env, Ekgd), __func__)) return;
   if (!SetExportChecked(env, exports, "ekgi", Napi::Function::New(env, Ekgi), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "ekops", Napi::Function::New(env, Ekops), __func__)) return;
+  if (!SetExportChecked(env, exports, "ekbseg", Napi::Function::New(env, Ekbseg), __func__)) return;
+  if (!SetExportChecked(env, exports, "ekappr", Napi::Function::New(env, Ekappr), __func__)) return;
+  if (!SetExportChecked(env, exports, "ekinsr", Napi::Function::New(env, Ekinsr), __func__)) return;
+  if (!SetExportChecked(env, exports, "ekdelr", Napi::Function::New(env, Ekdelr), __func__)) return;
   if (!SetExportChecked(env, exports, "ekifld", Napi::Function::New(env, Ekifld), __func__)) return;
   if (!SetExportChecked(env, exports, "ekacli", Napi::Function::New(env, Ekacli), __func__)) return;
   if (!SetExportChecked(env, exports, "ekacld", Napi::Function::New(env, Ekacld), __func__)) return;

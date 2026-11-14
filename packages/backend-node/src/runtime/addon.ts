@@ -150,6 +150,19 @@ export type NativeAddon = {
     | { found: false }
     | { found: true; isNull: true }
     | { found: true; isNull: false; value: number };
+  ekops(): number;
+  ekbseg(
+    handle: number,
+    table: string,
+    count: number,
+    nameWidth: number,
+    names: Uint8Array,
+    declWidth: number,
+    decls: Uint8Array,
+  ): number;
+  ekappr(handle: number, segno: number): number;
+  ekinsr(handle: number, segno: number, recno: number): void;
+  ekdelr(handle: number, segno: number, recno: number): void;
   ekifld(
     handle: number,
     tabnam: string,

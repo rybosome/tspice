@@ -2212,6 +2212,21 @@ export function createFakeBackend(
       throw new Error("Fake backend: ekgi() is not implemented");
     },
 
+    ekops: () => {
+      throw new Error("Fake backend does not model ekops");
+    },
+    ekbseg: () => {
+      throw new Error("Fake backend does not model ekbseg");
+    },
+    ekappr: () => {
+      throw new Error("Fake backend does not model ekappr");
+    },
+    ekinsr: () => {
+      throw new Error("Fake backend does not model ekinsr");
+    },
+    ekdelr: () => {
+      throw new Error("Fake backend does not model ekdelr");
+    },
     ekifld: (
       _handle: SpiceHandle,
       _tabnam: string,

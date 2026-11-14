@@ -6,6 +6,44 @@ from .paths import PathRefInput
 
 
 @dataclass(frozen=True)
+class StepEkEkops:
+    op: Literal["ek.ekops"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepEkEkbseg:
+    op: Literal["ek.ekbseg"]
+    handleId: str
+    tabnam: str
+    cnames: list[str]
+    decls: list[str]
+
+
+@dataclass(frozen=True)
+class StepEkEkappr:
+    op: Literal["ek.ekappr"]
+    handleId: str
+    segno: int
+
+
+@dataclass(frozen=True)
+class StepEkEkinsr:
+    op: Literal["ek.ekinsr"]
+    handleId: str
+    segno: int
+    recno: int
+
+
+@dataclass(frozen=True)
+class StepEkEkdelr:
+    op: Literal["ek.ekdelr"]
+    handleId: str
+    segno: int
+    recno: int
+
+
+@dataclass(frozen=True)
 class StepEkEkopn:
     op: Literal["ek.ekopn"]
     path: PathRefInput
