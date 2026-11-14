@@ -56,6 +56,7 @@
       "conditions": [
         ["OS=='linux'", { "libraries": ["-lm"] }]
       ],
+      "cflags_c": ["-std=gnu11"],
       "cflags": ["-fno-exceptions"],
       "cflags_cc": ["-std=c++17", "-fno-exceptions"]
     },
