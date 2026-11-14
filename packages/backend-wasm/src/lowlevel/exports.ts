@@ -895,6 +895,116 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dcyldr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dgeodr(
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dlatdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dpgrdr(
+    bodyPtr: number,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdcyl(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdlat(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdpgr(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdsph(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dsphdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_det(
     mPtr: number,
     outPtr: number,
@@ -1910,6 +2020,116 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dcyldr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dgeodr(
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dlatdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dpgrdr(
+    bodyPtr: number,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: number,
+    elplsz: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdcyl(
+    radius: number,
+    lon: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdlat(
+    radius: number,
+    lon: number,
+    lat: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdpgr(
+    bodyPtr: number,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_drdsph(
+    radius: number,
+    colat: number,
+    lon: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dsphdr(
+    x: number,
+    y: number,
+    z: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_det(
     mPtr: number,
     outPtr: number,
@@ -2396,6 +2616,18 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_dazldr",
+  "_tspice_dcyldr",
+  "_tspice_dgeodr",
+  "_tspice_dlatdr",
+  "_tspice_dpgrdr",
+  "_tspice_drdazl",
+  "_tspice_drdcyl",
+  "_tspice_drdgeo",
+  "_tspice_drdlat",
+  "_tspice_drdpgr",
+  "_tspice_drdsph",
+  "_tspice_dsphdr",
   "_tspice_det",
   "_tspice_diags2",
   "_tspice_ident",

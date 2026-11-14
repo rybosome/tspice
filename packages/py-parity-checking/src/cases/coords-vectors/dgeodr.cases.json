@@ -1,0 +1,191 @@
+[
+  {
+    "caseId": "coords-vectors-dgeodr-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": -7,
+        "y": 9,
+        "z": 2,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 1,
+        "y": 0,
+        "z": 0,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 0,
+        "y": -4,
+        "z": 3,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-origin",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-z-axis",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 0,
+        "y": 0,
+        "z": -5,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-near-axis",
+    "description": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 0.02,
+        "y": -0.03,
+        "z": 7.0,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": -0.03,
+        "y": -0.01,
+        "z": -4.0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-reference-shapes",
+    "description": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.0
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-zero-equator",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 0,
+        "f": 0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADRADIUS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-unit-flattening",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dgeodr-nearest-point-bound",
+    "description": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dgeodr",
+        "x": 1e308,
+        "y": 1,
+        "z": 0,
+        "re": 1.0,
+        "f": 0.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INPUTSTOOLARGE"]
+    }
+  }
+]

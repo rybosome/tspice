@@ -1,0 +1,109 @@
+[
+  {
+    "caseId": "coords-vectors-dlatdr-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 3,
+        "y": 4,
+        "z": -12
+      },
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": -7,
+        "y": 9,
+        "z": 2
+      },
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 0,
+        "y": -4,
+        "z": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dlatdr-origin",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dlatdr-z-axis",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 0,
+        "y": 0,
+        "z": -5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dlatdr-near-axis",
+    "description": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 0.02,
+        "y": -0.03,
+        "z": 7.0
+      },
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": -0.03,
+        "y": -0.01,
+        "z": -4.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dlatdr-distance-scales",
+    "description": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 0.15,
+        "y": -0.2,
+        "z": 0.3
+      },
+      {
+        "op": "coords-vectors.dlatdr",
+        "x": 15000.0,
+        "y": -20000.0,
+        "z": 30000.0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -232,6 +232,104 @@ export type StepCoordsVectorsXpose = {
   m: Matrix3x3;
 };
 
+export type StepCoordsVectorsDazldr = {
+  op: "coords-vectors.dazldr";
+  x: number;
+  y: number;
+  z: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsDcyldr = {
+  op: "coords-vectors.dcyldr";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDgeodr = {
+  op: "coords-vectors.dgeodr";
+  x: number;
+  y: number;
+  z: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDlatdr = {
+  op: "coords-vectors.dlatdr";
+  x: number;
+  y: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDpgrdr = {
+  op: "coords-vectors.dpgrdr";
+  body: string;
+  x: number;
+  y: number;
+  z: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdazl = {
+  op: "coords-vectors.drdazl";
+  range: number;
+  az: number;
+  el: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsDrdcyl = {
+  op: "coords-vectors.drdcyl";
+  radius: number;
+  lon: number;
+  z: number;
+};
+
+export type StepCoordsVectorsDrdgeo = {
+  op: "coords-vectors.drdgeo";
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdlat = {
+  op: "coords-vectors.drdlat";
+  radius: number;
+  lon: number;
+  lat: number;
+};
+
+export type StepCoordsVectorsDrdpgr = {
+  op: "coords-vectors.drdpgr";
+  body: string;
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsDrdsph = {
+  op: "coords-vectors.drdsph";
+  radius: number;
+  colat: number;
+  lon: number;
+};
+
+export type StepCoordsVectorsDsphdr = {
+  op: "coords-vectors.dsphdr";
+  x: number;
+  y: number;
+  z: number;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1384,6 +1482,18 @@ export type WorkflowStep =
   | StepCoordsVectorsMxmt
   | StepCoordsVectorsTrace
   | StepCoordsVectorsXpose
+  | StepCoordsVectorsDazldr
+  | StepCoordsVectorsDcyldr
+  | StepCoordsVectorsDgeodr
+  | StepCoordsVectorsDlatdr
+  | StepCoordsVectorsDpgrdr
+  | StepCoordsVectorsDrdazl
+  | StepCoordsVectorsDrdcyl
+  | StepCoordsVectorsDrdgeo
+  | StepCoordsVectorsDrdlat
+  | StepCoordsVectorsDrdpgr
+  | StepCoordsVectorsDrdsph
+  | StepCoordsVectorsDsphdr
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1555,6 +1665,18 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.dazldr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dcyldr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dgeodr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dlatdr"; value: Matrix3x3 }
+  | { op: "coords-vectors.dpgrdr"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdazl"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdcyl"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdgeo"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdlat"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdpgr"; value: Matrix3x3 }
+  | { op: "coords-vectors.drdsph"; value: Matrix3x3 }
+  | { op: "coords-vectors.dsphdr"; value: Matrix3x3 }
   | { op: "coords-vectors.det"; value: number }
   | {
       op: "coords-vectors.diags2";

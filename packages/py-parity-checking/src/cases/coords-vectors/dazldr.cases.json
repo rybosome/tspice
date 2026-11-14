@@ -1,0 +1,170 @@
+[
+  {
+    "caseId": "coords-vectors-dazldr-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": -7,
+        "y": 9,
+        "z": 2,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 1,
+        "y": 0,
+        "z": 0,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 0,
+        "y": -4,
+        "z": 3,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dazldr-origin",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dazldr-z-axis",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 0,
+        "y": 0,
+        "z": -5,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dazldr-near-axis",
+    "description": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 0.02,
+        "y": -0.03,
+        "z": 7.0,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": -0.03,
+        "y": -0.01,
+        "z": -4.0,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dazldr-directions",
+    "description": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dazldr-distance-scales",
+    "description": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 0.15,
+        "y": -0.2,
+        "z": 0.3,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.dazldr",
+        "x": 15000.0,
+        "y": -20000.0,
+        "z": 30000.0,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

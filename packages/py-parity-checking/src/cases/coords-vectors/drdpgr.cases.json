@@ -1,0 +1,378 @@
+[
+  {
+    "caseId": "coords-vectors-drdpgr-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": -1.2,
+        "lat": 0.4,
+        "alt": -0.25,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.2,
+        "lat": 0.25,
+        "alt": 0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-poles-below-surface",
+    "description": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.31,
+        "lat": 1.5707963267948966,
+        "alt": -0.2,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": -0.9,
+        "lat": -1.5707963267948966,
+        "alt": 0.5,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 1.2,
+        "lat": 0.2,
+        "alt": -0.8,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-reference-shapes",
+    "description": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.0
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-zero-equator",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 0,
+        "f": 0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-unit-flattening",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-spin-and-overrides",
+    "description": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["TSPICE JACOBIAN"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [9901001]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, 2, 0]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, -2, 0]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, 0, 0]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["east"]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-earth-moon-sun",
+    "description": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY10_PM",
+        "values": [0, 2]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY301_PM",
+        "values": [0, 2]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "earth",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "10",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "MOON",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY399_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-blank-body",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-unknown-body",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "TSPICE UNMAPPED JACOBIAN",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-no-orientation",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "9901998",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdpgr-invalid-override",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["NORTH"]
+      },
+      {
+        "op": "coords-vectors.drdpgr",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  }
+]

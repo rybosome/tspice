@@ -77,6 +77,116 @@ class StepCoordsVectorsXpose:
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsDazldr:
+    op: Literal["coords-vectors.dazldr"]
+    x: float
+    y: float
+    z: float
+    azccw: bool
+    elplsz: bool
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDcyldr:
+    op: Literal["coords-vectors.dcyldr"]
+    x: float
+    y: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDgeodr:
+    op: Literal["coords-vectors.dgeodr"]
+    x: float
+    y: float
+    z: float
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDlatdr:
+    op: Literal["coords-vectors.dlatdr"]
+    x: float
+    y: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDpgrdr:
+    op: Literal["coords-vectors.dpgrdr"]
+    body: str
+    x: float
+    y: float
+    z: float
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdazl:
+    op: Literal["coords-vectors.drdazl"]
+    range: float
+    az: float
+    el: float
+    azccw: bool
+    elplsz: bool
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdcyl:
+    op: Literal["coords-vectors.drdcyl"]
+    radius: float
+    lon: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdgeo:
+    op: Literal["coords-vectors.drdgeo"]
+    lon: float
+    lat: float
+    alt: float
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdlat:
+    op: Literal["coords-vectors.drdlat"]
+    radius: float
+    lon: float
+    lat: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdpgr:
+    op: Literal["coords-vectors.drdpgr"]
+    body: str
+    lon: float
+    lat: float
+    alt: float
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDrdsph:
+    op: Literal["coords-vectors.drdsph"]
+    radius: float
+    colat: float
+    lon: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDsphdr:
+    op: Literal["coords-vectors.dsphdr"]
+    x: float
+    y: float
+    z: float
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

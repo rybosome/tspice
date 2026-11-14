@@ -2416,6 +2416,42 @@ export function createFakeBackend(
     },
 
     // Toy fixed matrices for facade tests, not a CSPICE numerical oracle.
+    dazldr: () => {
+      throw new Error("Fake backend: dazldr() is not implemented");
+    },
+    dcyldr: () => {
+      throw new Error("Fake backend: dcyldr() is not implemented");
+    },
+    dgeodr: () => {
+      throw new Error("Fake backend: dgeodr() is not implemented");
+    },
+    dlatdr: () => {
+      throw new Error("Fake backend: dlatdr() is not implemented");
+    },
+    dpgrdr: () => {
+      throw new Error("Fake backend: dpgrdr() is not implemented");
+    },
+    drdazl: () => {
+      throw new Error("Fake backend: drdazl() is not implemented");
+    },
+    drdcyl: () => {
+      throw new Error("Fake backend: drdcyl() is not implemented");
+    },
+    drdgeo: () => {
+      throw new Error("Fake backend: drdgeo() is not implemented");
+    },
+    drdlat: () => {
+      throw new Error("Fake backend: drdlat() is not implemented");
+    },
+    drdpgr: () => {
+      throw new Error("Fake backend: drdpgr() is not implemented");
+    },
+    drdsph: () => {
+      throw new Error("Fake backend: drdsph() is not implemented");
+    },
+    dsphdr: () => {
+      throw new Error("Fake backend: dsphdr() is not implemented");
+    },
     det: (m) => fakeMatrixDet(m),
     diags2: (symmat) => {
       const a = symmat[0],

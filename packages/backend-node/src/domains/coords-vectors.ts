@@ -16,6 +16,22 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function jacobianBody(value: unknown): string {
+  if (
+    typeof value !== "string" ||
+    value.includes("\0") ||
+    /[\uD800-\uDFFF]/u.test(value)
+  )
+    throw new TypeError("Expected a UTF-8 representable NUL-free body name");
+  return value;
+}
+
+function jacobianFlag(value: unknown): boolean {
+  if (typeof value !== "boolean")
+    throw new TypeError("Expected a boolean direction flag");
+  return value;
+}
+
 function assertFixedMatrixScalar(
   value: unknown,
   label: string,
@@ -89,6 +105,114 @@ function fixedMatrix2Output(
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    dazldr: (x, y, z, azccw, elplsz) => {
+      assertFixedMatrixScalar(x, "dazldr(x)");
+      assertFixedMatrixScalar(y, "dazldr(y)");
+      assertFixedMatrixScalar(z, "dazldr(z)");
+      return brandMat3RowMajorResult(
+        native.dazldr(x, y, z, jacobianFlag(azccw), jacobianFlag(elplsz)),
+        { label: "dazldr result" },
+      );
+    },
+    dcyldr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dcyldr(x)");
+      assertFixedMatrixScalar(y, "dcyldr(y)");
+      assertFixedMatrixScalar(z, "dcyldr(z)");
+      return brandMat3RowMajorResult(native.dcyldr(x, y, z), {
+        label: "dcyldr result",
+      });
+    },
+    dgeodr: (x, y, z, re, f) => {
+      assertFixedMatrixScalar(x, "dgeodr(x)");
+      assertFixedMatrixScalar(y, "dgeodr(y)");
+      assertFixedMatrixScalar(z, "dgeodr(z)");
+      assertFixedMatrixScalar(re, "dgeodr(re)");
+      assertFixedMatrixScalar(f, "dgeodr(f)");
+      return brandMat3RowMajorResult(native.dgeodr(x, y, z, re, f), {
+        label: "dgeodr result",
+      });
+    },
+    dlatdr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dlatdr(x)");
+      assertFixedMatrixScalar(y, "dlatdr(y)");
+      assertFixedMatrixScalar(z, "dlatdr(z)");
+      return brandMat3RowMajorResult(native.dlatdr(x, y, z), {
+        label: "dlatdr result",
+      });
+    },
+    dpgrdr: (body, x, y, z, re, f) => {
+      assertFixedMatrixScalar(x, "dpgrdr(x)");
+      assertFixedMatrixScalar(y, "dpgrdr(y)");
+      assertFixedMatrixScalar(z, "dpgrdr(z)");
+      assertFixedMatrixScalar(re, "dpgrdr(re)");
+      assertFixedMatrixScalar(f, "dpgrdr(f)");
+      return brandMat3RowMajorResult(
+        native.dpgrdr(jacobianBody(body), x, y, z, re, f),
+        { label: "dpgrdr result" },
+      );
+    },
+    drdazl: (range, az, el, azccw, elplsz) => {
+      assertFixedMatrixScalar(range, "drdazl(range)");
+      assertFixedMatrixScalar(az, "drdazl(az)");
+      assertFixedMatrixScalar(el, "drdazl(el)");
+      return brandMat3RowMajorResult(
+        native.drdazl(range, az, el, jacobianFlag(azccw), jacobianFlag(elplsz)),
+        { label: "drdazl result" },
+      );
+    },
+    drdcyl: (radius, lon, z) => {
+      assertFixedMatrixScalar(radius, "drdcyl(radius)");
+      assertFixedMatrixScalar(lon, "drdcyl(lon)");
+      assertFixedMatrixScalar(z, "drdcyl(z)");
+      return brandMat3RowMajorResult(native.drdcyl(radius, lon, z), {
+        label: "drdcyl result",
+      });
+    },
+    drdgeo: (lon, lat, alt, re, f) => {
+      assertFixedMatrixScalar(lon, "drdgeo(lon)");
+      assertFixedMatrixScalar(lat, "drdgeo(lat)");
+      assertFixedMatrixScalar(alt, "drdgeo(alt)");
+      assertFixedMatrixScalar(re, "drdgeo(re)");
+      assertFixedMatrixScalar(f, "drdgeo(f)");
+      return brandMat3RowMajorResult(native.drdgeo(lon, lat, alt, re, f), {
+        label: "drdgeo result",
+      });
+    },
+    drdlat: (radius, lon, lat) => {
+      assertFixedMatrixScalar(radius, "drdlat(radius)");
+      assertFixedMatrixScalar(lon, "drdlat(lon)");
+      assertFixedMatrixScalar(lat, "drdlat(lat)");
+      return brandMat3RowMajorResult(native.drdlat(radius, lon, lat), {
+        label: "drdlat result",
+      });
+    },
+    drdpgr: (body, lon, lat, alt, re, f) => {
+      assertFixedMatrixScalar(lon, "drdpgr(lon)");
+      assertFixedMatrixScalar(lat, "drdpgr(lat)");
+      assertFixedMatrixScalar(alt, "drdpgr(alt)");
+      assertFixedMatrixScalar(re, "drdpgr(re)");
+      assertFixedMatrixScalar(f, "drdpgr(f)");
+      return brandMat3RowMajorResult(
+        native.drdpgr(jacobianBody(body), lon, lat, alt, re, f),
+        { label: "drdpgr result" },
+      );
+    },
+    drdsph: (radius, colat, lon) => {
+      assertFixedMatrixScalar(radius, "drdsph(radius)");
+      assertFixedMatrixScalar(colat, "drdsph(colat)");
+      assertFixedMatrixScalar(lon, "drdsph(lon)");
+      return brandMat3RowMajorResult(native.drdsph(radius, colat, lon), {
+        label: "drdsph result",
+      });
+    },
+    dsphdr: (x, y, z) => {
+      assertFixedMatrixScalar(x, "dsphdr(x)");
+      assertFixedMatrixScalar(y, "dsphdr(y)");
+      assertFixedMatrixScalar(z, "dsphdr(z)");
+      return brandMat3RowMajorResult(native.dsphdr(x, y, z), {
+        label: "dsphdr result",
+      });
+    },
     det: (m) => {
       const mCopy = copyMatrixInput(m, "det(m)");
       const out = native.det(mCopy);

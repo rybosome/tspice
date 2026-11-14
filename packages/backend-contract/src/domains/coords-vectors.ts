@@ -9,6 +9,122 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
   /**
+   * Differentiate (range, azimuth, elevation) with respect to (x, y, z). Positive azimuth is counterclockwise when azccw is true and clockwise otherwise. Positive elevation points toward +Z when elplsz is true and toward −Z otherwise. On the Z-axis CSPICE signals POINTONZAXIS.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dazldr_c.html
+   */
+  dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): Mat3RowMajor;
+
+  /**
+   * Differentiate cylindrical (radius, longitude, z) with respect to (x, y, z). Longitude is in radians. On the Z-axis CSPICE signals POINTONZAXIS.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dcyldr_c.html
+   */
+  dcyldr(x: number, y: number, z: number): Mat3RowMajor;
+
+  /**
+   * Differentiate geodetic (longitude, latitude, altitude) with respect to (x, y, z). Supply the equatorial radius re in the coordinate distance unit and flattening f = (re − rp)/re. CSPICE requires re > 0 and f < 1, and the Z-axis is singular. The reference axes must admit finite N0067 nearest-point scaling.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dgeodr_c.html
+   */
+  dgeodr(x: number, y: number, z: number, re: number, f: number): Mat3RowMajor;
+
+  /**
+   * Differentiate latitudinal (radius, longitude, latitude) with respect to (x, y, z). Angles are in radians. On the Z-axis CSPICE signals POINTONZAXIS.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlatdr_c.html
+   */
+  dlatdr(x: number, y: number, z: number): Mat3RowMajor;
+
+  /**
+   * Differentiate planetographic (longitude, latitude, altitude) with respect to (x, y, z). Supply re > 0 and f < 1. The Z-axis is singular. The reference axes must admit finite N0067 nearest-point scaling. `BODY<id>_PGR_POSITIVE_LON` can override the body spin convention. Without an override, Earth is east-positive; other bodies need a prime meridian rate, and the Sun and Moon use east-positive longitude after lookup. The paired body-name table must have hashable codes in N0067.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpgrdr_c.html
+   */
+  dpgrdr(
+    body: string,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+  ): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to (range, azimuth, elevation). True azccw chooses counterclockwise azimuth; true elplsz chooses elevation toward +Z. Angles are radians. Negative range signals VALUEOUTOFRANGE; zero range gives zero angular-derivative columns.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdazl_c.html
+   */
+  drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to cylindrical (radius, longitude, z). Longitude is in radians. Signed radii are evaluated directly; zero radius gives a zero longitude column.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdcyl_c.html
+   */
+  drdcyl(radius: number, lon: number, z: number): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to geodetic (longitude, latitude, altitude). Angles are radians. Supply equatorial radius re > 0 in altitude units and flattening f = (re − rp)/re < 1, including negative flattening for a prolate body.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdgeo_c.html
+   */
+  drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to latitudinal (radius, longitude, latitude), with angles in radians. Signed radii are evaluated directly; angular-derivative columns vanish at zero radius.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdlat_c.html
+   */
+  drdlat(radius: number, lon: number, lat: number): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to planetographic (longitude, latitude, altitude). Angles are radians. Equatorial radius re and altitude use the same unit, with re > 0 and f < 1. `BODY<id>_PGR_POSITIVE_LON` can override the body spin convention. Without an override, Earth is east-positive; other bodies need a prime meridian rate, and the Sun and Moon use east-positive longitude after lookup. The paired body-name table must have hashable codes in N0067.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdpgr_c.html
+   */
+  drdpgr(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): Mat3RowMajor;
+
+  /**
+   * Differentiate (x, y, z) with respect to spherical (radius, colatitude, longitude). Colatitude is measured from +Z in radians. Signed radii are evaluated directly; angular-derivative columns vanish at zero radius.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdsph_c.html
+   */
+  drdsph(radius: number, colat: number, lon: number): Mat3RowMajor;
+
+  /**
+   * Differentiate spherical (radius, colatitude, longitude) with respect to (x, y, z). Colatitude is measured from +Z in radians. On the Z-axis CSPICE signals POINTONZAXIS.
+   * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dsphdr_c.html
+   */
+  dsphdr(x: number, y: number, z: number): Mat3RowMajor;
+
+  /**
    * Return the determinant of a finite 3x3 matrix in row-major order.
    *
    * CSPICE evaluates the determinant directly. Overflow, underflow and

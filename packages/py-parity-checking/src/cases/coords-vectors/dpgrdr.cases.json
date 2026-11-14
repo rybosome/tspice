@@ -1,0 +1,435 @@
+[
+  {
+    "caseId": "coords-vectors-dpgrdr-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": -7,
+        "y": 9,
+        "z": 2,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 1,
+        "y": 0,
+        "z": 0,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 0,
+        "y": -4,
+        "z": 3,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-origin",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-z-axis",
+    "description": "The inverse coordinate chart has undefined angular derivatives on the exact Z-axis.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 0,
+        "y": 0,
+        "z": -5,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTONZAXIS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-near-axis",
+    "description": "Compare a defined nearby direction with distinct small nonzero X and Y and verify every angular derivative and sign.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 0.02,
+        "y": -0.03,
+        "z": 7.0,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": -0.03,
+        "y": -0.01,
+        "z": -4.0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-reference-shapes",
+    "description": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.0
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-zero-equator",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 0,
+        "f": 0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-unit-flattening",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-spin-and-overrides",
+    "description": "Change the loaded prime-meridian rate from positive to negative and zero, then override it with explicit east and west settings. Observe all nine entries after each pool mutation.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_BODY_NAME",
+        "values": ["TSPICE JACOBIAN"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_BODY_CODE",
+        "values": [9901001]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, 2, 0]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, -2, 0]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY9901001_PM",
+        "values": [5, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["east"]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-earth-moon-sun",
+    "description": "Test east-positive Earth, Sun and Moon, including prograde values for the latter two, and an explicit west override for Earth.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY10_PM",
+        "values": [0, 2]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY301_PM",
+        "values": [0, 2]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "earth",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "10",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "MOON",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY399_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-blank-body",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-unknown-body",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "TSPICE UNMAPPED JACOBIAN",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-no-orientation",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "9901998",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-invalid-override",
+    "description": "Observe the body resolution or longitude-policy diagnostic before any matrix is published.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["NORTH"]
+      },
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "9901001",
+        "x": 3,
+        "y": 4,
+        "z": -12,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpgrdr-nearest-point-bound",
+    "description": "The scaled position is too large for the nearest-point operation. Observe its genuine error before the parent transformation consumes an unavailable normal.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpgrdr",
+        "body": "EARTH",
+        "x": 1e308,
+        "y": 1,
+        "z": 0,
+        "re": 1.0,
+        "f": 0.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INPUTSTOOLARGE"]
+    }
+  }
+]

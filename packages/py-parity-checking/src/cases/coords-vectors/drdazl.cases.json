@@ -1,0 +1,177 @@
+[
+  {
+    "caseId": "coords-vectors-drdazl-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 7,
+        "az": 0.45,
+        "el": -0.6,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 2,
+        "az": 1.1,
+        "el": 0.3,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 5,
+        "az": -0.7,
+        "el": 0.2,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdazl-zero-radius",
+    "description": "Observe rank-deficient derivatives at zero radius while retaining each derivative with respect to radius.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 0,
+        "az": 0.8,
+        "el": -0.5,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 0,
+        "az": -0.4,
+        "el": 1.2,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdazl-angular-periods",
+    "description": "Evaluate actual derivatives with unwrapped angles, quadrant changes and pole conventions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 3,
+        "az": 6.983185307179586,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 3,
+        "az": 1.5707963267948966,
+        "el": 1.5707963267948966,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 3,
+        "az": -1.1,
+        "el": -0.3,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdazl-negative-radius",
+    "description": "Distinguish the routine-specific signed-radius domain and the signs of its angular derivative columns.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": -2,
+        "az": 0.3,
+        "el": -0.5,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdazl-directions",
+    "description": "Independently reverse azimuth and elevation, then both, holding the physical coordinates fixed.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 7,
+        "az": 0.45,
+        "el": -0.6,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 7,
+        "az": 0.45,
+        "el": -0.6,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 7,
+        "az": 0.45,
+        "el": -0.6,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 7,
+        "az": 0.45,
+        "el": -0.6,
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdazl-distance-scales",
+    "description": "Separate distance-independent direction cosines from derivatives that scale with distance or reciprocal distance.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 0.001,
+        "az": 0.3,
+        "el": -0.2,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.drdazl",
+        "range": 100000.0,
+        "az": -0.4,
+        "el": 0.7,
+        "azccw": true,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

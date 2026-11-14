@@ -2,6 +2,10 @@
 
 #include "SpiceUsr.h"
 
+#include "SpiceZfc.h"
+#include "tspice_error.h"
+#include <limits.h>
+#include <math.h>
 #include <string.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
@@ -29,6 +33,262 @@ static int tspice_fixed_matrix_invalid_arg(char *err, int errMaxBytes) {
     err[errMaxBytes - 1] = '\0';
   }
   return 1;
+}
+
+static int jacobian_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+static int jacobian_invalid(char *err, int errMaxBytes, const char *message) {
+  tspice_clear_last_error_buffers();
+  return tspice_return_error(err, errMaxBytes, message);
+}
+
+// ZZBODKER builds the ID hash from paired name/code mappings. N0067
+// ZZHASHI takes signed abs(code), which has no representation for INT_MIN.
+static int check_body_mapping_codes(char *err, int errMaxBytes) {
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt names = 0, codes = 0;
+  SpiceChar type[2] = {0};
+  dtpool_c("NAIF_BODY_NAME", &found, &names, type);
+  if (failed_c()) return jacobian_status(err, errMaxBytes);
+  if (!found || type[0] != 'C' || names > 14983) return 0;
+  dtpool_c("NAIF_BODY_CODE", &found, &codes, type);
+  if (failed_c()) return jacobian_status(err, errMaxBytes);
+  if (!found || type[0] != 'N' || names != codes) return 0;
+  int unsafe = 0;
+  for (SpiceInt start = 0; start < codes; start += 64) {
+    SpiceDouble values[64];
+    SpiceInt used = 0;
+    gdpool_c("NAIF_BODY_CODE", start, 64, &used, values, &found);
+    if (failed_c()) return jacobian_status(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      // GIPOOL validates and rounds all codes before any hashes are built.
+      // Let it report its own conversion error, including in a mixed table.
+      if (!(values[i] >= (double)INT_MIN && values[i] <= (double)INT_MAX)) return 0;
+      if (values[i] <= (double)INT_MIN + 0.5) unsafe = 1;
+    }
+  }
+  if (!unsafe) return 0;
+  // ZZBODKER also diagnoses blank names (in a 36-byte record) before
+  // entering ZZBODINI. Preserve that ordinary error and its traceback.
+  for (SpiceInt start = 0; start < names; start += 64) {
+    SpiceChar rows[64][37];
+    SpiceInt used = 0;
+    gcpool_c("NAIF_BODY_NAME", start, 64, 37, &used, rows, &found);
+    if (failed_c()) return jacobian_status(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      if (!rows[i][0]) return 0;
+    }
+  }
+  return jacobian_invalid(err, errMaxBytes, "NAIF_BODY_CODE outside the safe N0067 body hash range");
+}
+
+// ZZBODS2C caches the caller's integer even when BODS2C did not find a code.
+// Both planetographic routines supply an uninitialized local there. Resolve
+// into initialized storage first, under the original trace, and preserve the
+// routine's original IDCODENOTFOUND diagnostic for an unrecognized name.
+static int check_jacobian_body(const char *body, const char *outer, const char *inner,
+                               char *err, int errMaxBytes) {
+  if (body[0] == '\0') return 0;  // CHKFSTR diagnoses an empty name before lookup.
+  size_t length = strlen(body);
+  if (length > INT_MAX) return jacobian_invalid(err, errMaxBytes, "Body name exceeds the N0067 string length");
+  if (check_body_mapping_codes(err, errMaxBytes)) return 1;
+  integer code = 0, saved = 0, counter[2];
+  logical found = 0, savedFound = 0;
+  char savedName[36] = {0};
+  chkin_c(outer);
+  chkin_c(inner);
+  zzctruin_(counter);
+  zzbods2c_(counter, savedName, &saved, &savedFound, (char *)body, &code, &found, 36, (ftnlen)length);
+  if (!failed_c() && !found) {
+    setmsg_c("The value of the input argument BODY is #, this is not a recognized name of an ephemeris object. The cause of this problem may be that you need an updated version of the SPICE Toolkit. ");
+    errch_c("#", body);
+    sigerr_c("SPICE(IDCODENOTFOUND)");
+  }
+  chkout_c(inner);
+  chkout_c(outer);
+  return jacobian_status(err, errMaxBytes);
+}
+
+// RECGEO's unchecked NEARPT error path feeds an unwritten local normal to
+// error-free RECLAT. Run the same NEARPT with owned output before dispatch.
+// Its only downstream SURFNM error is a non-positive axis, already tested by NEARPT.
+static int check_geodetic_surface(double x, double y, double z, double re, double f,
+                                  int planetographic, char *err, int errMaxBytes) {
+  if (re <= 0 || f >= 1 || (x == 0 && y == 0)) return 0;
+  double polar = re - f * re;
+  if (!isfinite(polar) || (polar > 0 && !isfinite(1.0 / fmin(re, polar))))
+    return jacobian_invalid(err, errMaxBytes, "Reference axes exceed the N0067 nearest-point scaling range");
+  double point[3] = {x, y, z}, surface[3] = {0}, altitude = 0;
+  const char *outer = planetographic ? "dpgrdr_c" : "dgeodr_c";
+  chkin_c(outer);
+  if (planetographic) chkin_c("DPGRDR");
+  chkin_c("DGEODR");
+  chkin_c("RECGEO");
+  nearpt_(point, &re, &re, &polar, surface, &altitude);
+  chkout_c("RECGEO");
+  chkout_c("DGEODR");
+  if (planetographic) chkout_c("DPGRDR");
+  chkout_c(outer);
+  return jacobian_status(err, errMaxBytes);
+}
+
+int tspice_dazldr(double x, double y, double z, int azccw, int elplsz, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  dazldr_c(x, y, z, azccw, elplsz, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_dcyldr(double x, double y, double z, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  dcyldr_c(x, y, z, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_dgeodr(double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  if (check_geodetic_surface(x, y, z, re, f, 0, err, errMaxBytes)) return 1;
+  dgeodr_c(x, y, z, re, f, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_dlatdr(double x, double y, double z, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  dlatdr_c(x, y, z, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_dpgrdr(const char *body, double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out || !body) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  if (check_jacobian_body(body, "dpgrdr_c", "DPGRDR", err, errMaxBytes)) return 1;
+  if (*body && re > 0 && f < 1 && (x != 0 || y != 0)) {
+    // Resolve this same body's longitude policy first so its error takes
+    // precedence over errors from the subsequent geometric calculation.
+    SpiceDouble checked[3][3] = {{0}};
+    dpgrdr_c(body, 1.0, 0.0, 0.0, 1.0, 0.0, checked);
+    if (jacobian_status(err, errMaxBytes)) return 1;
+    if (check_geodetic_surface(x, y, z, re, f, 1, err, errMaxBytes)) return 1;
+  }
+  dpgrdr_c(body, x, y, z, re, f, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdazl(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  drdazl_c(range, az, el, azccw, elplsz, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdcyl(double radius, double lon, double z, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  drdcyl_c(radius, lon, z, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdgeo(double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  drdgeo_c(lon, lat, alt, re, f, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdlat(double radius, double lon, double lat, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  drdlat_c(radius, lon, lat, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdpgr(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out || !body) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  if (check_jacobian_body(body, "drdpgr_c", "DRDPGR", err, errMaxBytes)) return 1;
+  drdpgr_c(body, lon, lat, alt, re, f, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_drdsph(double radius, double colat, double lon, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  drdsph_c(radius, colat, lon, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
+}
+
+int tspice_dsphdr(double x, double y, double z, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  if (!out) return jacobian_invalid(err, errMaxBytes, "Missing Jacobian storage");
+  SpiceDouble matrix[3][3] = {{0}};
+  dsphdr_c(x, y, z, matrix);
+  if (jacobian_status(err, errMaxBytes)) return 1;
+  memcpy(out, matrix, sizeof(matrix));
+  return 0;
 }
 
 int tspice_det(const double *m, double *out, char *err, int errMaxBytes) {

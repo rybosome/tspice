@@ -1,0 +1,137 @@
+[
+  {
+    "caseId": "coords-vectors-drdgeo-mixed-positions",
+    "description": "Compare all nine derivative entries at three asymmetric locations, including both signs and unequal angular and distance derivatives.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": -1.2,
+        "lat": 0.4,
+        "alt": -0.25,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.2,
+        "lat": 0.25,
+        "alt": 0,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdgeo-poles-below-surface",
+    "description": "Compare positive and negative polar latitudes at distinct longitudes and negative altitude, retaining the finite precision of trigonometric evaluation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.31,
+        "lat": 1.5707963267948966,
+        "alt": -0.2,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": -0.9,
+        "lat": -1.5707963267948966,
+        "alt": 0.5,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 1.2,
+        "lat": 0.2,
+        "alt": -0.8,
+        "re": 3.0,
+        "f": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdgeo-reference-shapes",
+    "description": "Differentiate the same point on spherical, oblate and prolate reference figures using caller-supplied radii and flattening.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.0
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": 0.125
+      },
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3.0,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdgeo-zero-equator",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 0,
+        "f": 0.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADRADIUS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-drdgeo-unit-flattening",
+    "description": "Use the original toolkit diagnostic for an invalid reference figure.",
+    "workflow": [
+      {
+        "op": "coords-vectors.drdgeo",
+        "lon": 0.7,
+        "lat": -0.45,
+        "alt": 1.6,
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

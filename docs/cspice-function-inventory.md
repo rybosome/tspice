@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 173
-- Planned (not yet implemented): 476
+- Implemented now (SpiceRawBackend): 185
+- Planned (not yet implemented): 464
 - Excluded: 3
 
 ## Implemented now
@@ -48,13 +48,24 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafopr_c` | DAF, open for read |
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
+| `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
+| `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
 | `deltet_c` | Delta ET, ET - UTC |
 | `det_c` | Determinant of a double precision 3x3 matrix |
+| `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
+| `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
+| `drdazl_c` | Derivative of rectangular w.r.t. AZ/EL |
+| `drdcyl_c` | Derivative of rectangular w.r.t. cylindrical |
+| `drdgeo_c` | Derivative of rectangular w.r.t. geodetic |
+| `drdlat_c` | Derivative of rectangular w.r.t. latitudinal |
+| `drdpgr_c` | Derivative of rectangular w.r.t. planetographic |
+| `drdsph_c` | Derivative of rectangular w.r.t. spherical |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
@@ -62,6 +73,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskopn_c` | DSK, open new file |
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
+| `dsphdr_c` | Derivative of spherical w.r.t. rectangular |
 | `dtpool_c` | Data for a kernel pool variable |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
@@ -288,27 +300,16 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dasudd_c` | DAS, update data, double precision |
 | `dasudi_c` | DAS, update data, integer |
 | `daswbr_c` | DAS, write buffered records |
-| `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
-| `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
-| `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diff_c` | Difference of two sets |
 | `dlabbs_c` | DLA, begin backward search |
 | `dlabns_c` | DLA, begin new segment |
 | `dlaens_c` | DLA, end new segment |
 | `dlafps_c` | DLA, find previous segment |
-| `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
 | `dnearp_c` | Derivative of near point |
 | `dp2hx_c` | D.p. number to hexadecimal string |
-| `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
 | `dpmax_c` | Largest DP number |
 | `dpmin_c` | Smallest DP number |
 | `dpr_c` | Degrees per radian |
-| `drdazl_c` | Derivative of rectangular w.r.t. AZ/EL |
-| `drdcyl_c` | Derivative of rectangular w.r.t. cylindrical |
-| `drdgeo_c` | Derivative of rectangular w.r.t. geodetic |
-| `drdlat_c` | Derivative of rectangular w.r.t. latitudinal |
-| `drdpgr_c` | Derivative of rectangular w.r.t. planetographic |
-| `drdsph_c` | Derivative of rectangular w.r.t. spherical |
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
 | `dskgtl_c` | DSK, get tolerance |
@@ -322,7 +323,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskxsi_c` | DSK, ray-surface intercept with source information |
 | `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dskz02_c` | DSK, fetch type 2 model size parameters |
-| `dsphdr_c` | Derivative of spherical w.r.t. rectangular |
 | `ducrss_c` | Unit Normalized Cross Product and Derivative |
 | `dvcrss_c` | Derivative of Vector cross product |
 | `dvdot_c` | Derivative of Vector Dot Product, 3-D |

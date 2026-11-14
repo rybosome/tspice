@@ -713,3 +713,22 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+## Coordinate Jacobians in `CoordsVectorsApi`
+
+Each public method uses the canonical spelling without `_c` and returns the owned row-major result described in [the scientific and error-path review](step8-coordinate-jacobians.md).
+
+| Routine                                                                              | Output coordinates differentiated with respect to input coordinates     |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| [`dazldr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dazldr_c.html) | (range, azimuth, elevation) from Cartesian (x, y, z)                    |
+| [`dcyldr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dcyldr_c.html) | (cylindrical radius, longitude, z) from Cartesian (x, y, z)             |
+| [`dgeodr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dgeodr_c.html) | (geodetic longitude, latitude, altitude) from Cartesian (x, y, z)       |
+| [`dlatdr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlatdr_c.html) | (radius, longitude, latitude) from Cartesian (x, y, z)                  |
+| [`dpgrdr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpgrdr_c.html) | (planetographic longitude, latitude, altitude) from Cartesian (x, y, z) |
+| [`drdazl_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdazl_c.html) | Cartesian (x, y, z) from azimuth/elevation (range, azimuth, elevation)  |
+| [`drdcyl_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdcyl_c.html) | Cartesian (x, y, z) from cylindrical (radius, longitude, z)             |
+| [`drdgeo_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdgeo_c.html) | Cartesian (x, y, z) from (geodetic longitude, latitude, altitude)       |
+| [`drdlat_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdlat_c.html) | Cartesian (x, y, z) from latitudinal (radius, longitude, latitude)      |
+| [`drdpgr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdpgr_c.html) | Cartesian (x, y, z) from (planetographic longitude, latitude, altitude) |
+| [`drdsph_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/drdsph_c.html) | Cartesian (x, y, z) from spherical (radius, colatitude, longitude)      |
+| [`dsphdr_c`](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dsphdr_c.html) | (radius, colatitude, longitude) from Cartesian (x, y, z)                |
