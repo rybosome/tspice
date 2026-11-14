@@ -3,6 +3,8 @@
 
 #include "SpiceUsr.h"
 #include "SpiceZfc.h"
+#include "SpiceZst.h"
+#include "SpiceZmc.h"
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
 
@@ -360,6 +362,313 @@ int tspice_dafhsf(int handle, int *nd, int *ni, char *err, int errMaxBytes) {
   return 0;
 }
 
+// The pinned DAFEC cursor is shared by every open link to a file. The original
+// routine releases its private slot only at EOF. Keep the number of local DAF
+// links and the next byte offset under the same process mutex as the DAF call.
+typedef struct {
+  int handle, links, writable, offset, end;
+} DafCommentReader;
+static DafCommentReader daf_readers[5000];
+
+static DafCommentReader *comment_reader(int handle) {
+  for (size_t i = 0; i < 5000; ++i)
+    if (daf_readers[i].links && daf_readers[i].handle == handle)
+      return &daf_readers[i];
+  return NULL;
+}
+
+static int remember_daf_link(int handle, int writable, char *err, int room) {
+  DafCommentReader *r = comment_reader(handle);
+  if (r && r->links < INT_MAX) {
+    ++r->links;
+    return 0;
+  }
+  if (!r)
+    for (size_t i = 0; i < 5000; ++i) {
+      if (!daf_readers[i].links) {
+        daf_readers[i] = (DafCommentReader){handle, 1, writable, 0, 0};
+        return 0;
+      }
+    }
+  dafcls_c(handle);
+  return tspice_return_error(err, room, "Cannot register an additional DAF open link");
+}
+
+// DAFAC/DAFDC can move every summary/data record. Their pinned arithmetic
+// assumes the ordinary, supported DAF layout and representable record seeks.
+static int comment_header(int handle, int *first, int *freeWord, char *err, int room) {
+  SpiceInt nd = 0, ni = 0, bward = 0;
+  SpiceChar name[61] = {0};
+  dafrfr_c(handle, sizeof(name), &nd, &ni, name, first, &bward, freeWord);
+  if (DafStatus(err, room))
+    return 1;
+  if (nd < 0 || nd > 124 || ni < 2 || ni > 250 || nd + (ni + 1) / 2 > 125 || *first < 2 ||
+      *first > INT_MAX / 1000 + 2 || bward < *first || *freeWord < 1)
+    return tspice_return_error(err, room, "Unsupported DAF comment record layout");
+  return 0;
+}
+
+static int seekable_record(int64_t record) { return record >= 1 && record - 1 <= LONG_MAX / 1024; }
+
+// N0067 counts 1000 bytes per reserved DAF comment record. Unused trailing
+// records contain zeros. Inspect only the tail needed to find the EOC marker.
+static int comment_end(int handle, int first, int *end, char *err, int room) {
+  char record[1000];
+  *end = 0;
+  for (int nr = first - 1; nr >= 2; --nr) {
+    if (!seekable_record(nr))
+      return tspice_return_error(err, room, "DAF comment seek exceeds platform range");
+    dafrcr_(&handle, &nr, record, 1000);
+    if (DafStatus(err, room))
+      return 1;
+    const char *marker = memchr(record, 4, sizeof(record));
+    if (marker) {
+      int64_t size = (int64_t)(nr - 2) * 1000 + (marker - record);
+      if (size >= INT_MAX)
+        return tspice_return_error(err, room, "DAF comment area exceeds signed counter range");
+      *end = (int)size;
+      return 0;
+    }
+    for (size_t i = 0; i < sizeof(record); i++)
+      if (record[i]) {
+        // The original routine diagnoses the missing EOC before reading output.
+        *end = -1;
+        return 0;
+      }
+  }
+  return 0;
+}
+
+static int active_mutation(int handle, char *err, int room) {
+  DafCommentReader *r = comment_reader(handle);
+  if (r && r->writable && r->offset)
+    return tspice_return_error(err, room,
+                               "Finish the active DAF comment extraction before changing its comment area");
+  return 0;
+}
+
+int tspice_dafac(int handle, int n, int width, const unsigned char *rows, int room, char *err,
+                 int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (n < 0 || width < 2 || !rows || (int64_t)n * width > room || room > TSPICE_DAF_PAGE_BYTES)
+    return tspice_return_error(err, errMaxBytes, "Invalid DAF comment input storage");
+  int64_t added = 1 + n;
+  int ordinary = n > 0;
+  for (int i = 0; i < n; i++) {
+    const unsigned char *row = rows + (size_t)i * width;
+    const unsigned char *z = memchr(row, 0, (size_t)width);
+    if (!z)
+      return tspice_return_error(err, errMaxBytes, "Missing DAF comment string terminator");
+    int length = (int)(z - row);
+    while (length && row[length - 1] == ' ')
+      --length;
+    added += length;
+    for (int j = 0; j < length; j++)
+      if (row[j] < 32 || row[j] > 126)
+        ordinary = 0;
+  }
+  if (ordinary) {
+    // Read-only access and illegal characters have their own upstream errors.
+    // A partial extraction cannot be mutated, including through another alias.
+    if (active_mutation(handle, err, errMaxBytes))
+      return 1;
+    int first = 0, freeWord = 0;
+    if (comment_header(handle, &first, &freeWord, err, errMaxBytes))
+      return 1;
+    int64_t maxGrowth = (added + 999) / 1000;
+    if ((int64_t)(first - 2) * 1000 + added >= INT_MAX || freeWord + 128 * maxGrowth > INT_MAX ||
+        !seekable_record((freeWord - 1) / 128 + 1 + maxGrowth)) {
+      int end = 0;
+      if (comment_end(handle, first, &end, err, errMaxBytes))
+        return 1;
+      if (end >= 0) {
+        int64_t used = end + added, required = (used + 999) / 1000, growth = required - (first - 2);
+        if (growth < 0)
+          growth = 0;
+        if (used >= INT_MAX || (int64_t)freeWord + 128 * growth > INT_MAX ||
+            !seekable_record((freeWord - 1) / 128 + 1 + growth))
+          return tspice_return_error(err, errMaxBytes,
+                                     "DAF comment growth exceeds the address or seek limit");
+      }
+    }
+  }
+  dafac_c(handle, n, width, rows);
+  return DafStatus(err, errMaxBytes);
+}
+
+int tspice_dafdc(int handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes) || active_mutation(handle, err, errMaxBytes))
+    return 1;
+  int first = 0, freeWord = 0;
+  if (comment_header(handle, &first, &freeWord, err, errMaxBytes))
+    return 1;
+  if (first > 2 && !seekable_record((freeWord - 1) / 128 + 1))
+    return tspice_return_error(err, errMaxBytes, "DAF comment deletion exceeds platform seek range");
+  dafdc_c(handle);
+  return DafStatus(err, errMaxBytes);
+}
+
+static void comment_width_check(char *buffer, int width) {
+  // Reuse the public C adapter's exact early output-width diagnostic.
+  chkin_c("dafec_c");
+  CHKOSTR(CHK_STANDARD, "dafec_c", buffer, width);
+  chkout_c("dafec_c");
+}
+
+static int comment_line_error(int width, int row, char *err, int room) {
+  chkin_c("dafec_c");
+  chkin_c("DAFEC");
+  setmsg_c("The output buffer line length (#) was not long enough to contain comment line #.");
+  errint_c("#", width - 1);
+  errint_c("#", row);
+  sigerr_c("SPICE(COMMENTTOOLONG)");
+  chkout_c("DAFEC");
+  chkout_c("dafec_c");
+  return DafStatus(err, room);
+}
+
+// A failed cross-record extraction can overwrite DAFEC's private record cache
+// without advancing its saved position. Check widths on the original records
+// without touching that cache. Return only the lines produced by real DAFEC.
+static int scan_page(int h, int begin, int end, int rows, int width, int *next, int *longest, char *err,
+                     int room) {
+  int offset = begin, line = 0, length = 0;
+  char record[1000];
+  *longest = 0;
+  while (offset < end && line < rows) {
+    int nr = 2 + offset / 1000, j = offset % 1000;
+    dafrcr_(&h, &nr, record, 1000);
+    if (DafStatus(err, room))
+      return 1;
+    while (j < 1000 && offset < end && line < rows) {
+      ++offset;
+      if (record[j++]) {
+        if (++length >= width)
+          return comment_line_error(width, line + 1, err, room);
+      } else {
+        if (length > *longest)
+          *longest = length;
+        length = 0;
+        ++line;
+      }
+    }
+  }
+  *next = offset;
+  return 0;
+}
+
+static int extract_rows(int handle, int rows, int width, char *out, int *n, int *done, char *err, int room) {
+  logical finished = SPICEFALSE;
+  *n = 0;
+  *done = 0;
+  chkin_c("dafec_c");
+  dafec_(&handle, &rows, n, out, &finished, width - 1);
+  chkout_c("dafec_c");
+  if (DafStatus(err, room))
+    return 1;
+  if (*n < 0 || *n > rows)
+    return tspice_return_error(err, room, "Invalid DAFEC row count");
+  if (*n)
+    F2C_ConvertTrStrArr(*n, width, out);
+  *done = finished != SPICEFALSE;
+  return 0;
+}
+
+int tspice_dafec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err,
+                 int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!out || !n || !done || room < 1 || room > TSPICE_DAF_PAGE_BYTES ||
+      (rows > 0 && width >= 2 && (int64_t)rows * width > room))
+    return tspice_return_error(err, errMaxBytes, "Invalid DAFEC output storage");
+  if (width < 2) {
+    comment_width_check((char *)out, width);
+    return DafStatus(err, errMaxBytes);
+  }
+  DafCommentReader *r = comment_reader(handle);
+  if (!r)
+    return tspice_return_error(err, errMaxBytes, "DAF comment extraction requires an owned DAF handle");
+  int end = r->end, next = 0, longest = 0;
+  if (rows > 0 && r->offset == 0) {
+    int first = 0, freeWord = 0;
+    if (comment_header(handle, &first, &freeWord, err, errMaxBytes) ||
+        comment_end(handle, first, &end, err, errMaxBytes))
+      return 1;
+  }
+  // Every partial read must be drainable on last close, including when an
+  // existing file has more reserved comment space than one public buffer.
+  if (rows > 0 && !r->offset && end > TSPICE_DAF_PAGE_BYTES - 1) {
+    int finalOffset = 0;
+    if (scan_page(handle, 0, end, INT_MAX, INT_MAX, &finalOffset, &longest, err, errMaxBytes))
+      return 1;
+    if (longest >= TSPICE_DAF_PAGE_BYTES)
+      return tspice_return_error(err, errMaxBytes, "DAF contains a comment exceeding supported line storage");
+  }
+  if (rows > 0 && end >= 0 &&
+      scan_page(handle, r->offset, end, rows, width, &next, &longest, err, errMaxBytes))
+    return 1;
+  if (extract_rows(handle, rows, width, (char *)out, n, done, err, errMaxBytes))
+    return 1;
+  r->offset = *done ? 0 : next;
+  r->end = *done ? 0 : end;
+  return 0;
+}
+
+static int finish_comment_reader(DafCommentReader *r, char *err, int room) {
+  // Ordinary pages use small scratch. A longer line needs only its actual
+  // measured width. The same explicit bound applies to public extraction.
+  while (r->offset) {
+    int next = 0, longest = 0;
+    if (scan_page(r->handle, r->offset, r->end, 64, INT_MAX, &next, &longest, err, room))
+      return 1;
+    int width = longest < 1 ? 2 : longest + 1;
+    if (width > TSPICE_DAF_PAGE_BYTES)
+      return tspice_return_error(err, room, "DAF comment line exceeds supported cleanup storage");
+    int rows = TSPICE_DAF_PAGE_BYTES / width;
+    if (rows > 64)
+      rows = 64;
+    if (rows < 64 && scan_page(r->handle, r->offset, r->end, rows, width, &next, &longest, err, room))
+      return 1;
+    char *buffer = malloc((size_t)width * rows);
+    if (!buffer)
+      return tspice_return_error(err, room, "Cannot allocate DAF comment cleanup storage");
+    int n = 0, done = 0;
+    int rc = extract_rows(r->handle, rows, width, buffer, &n, &done, err, room);
+    free(buffer);
+    if (rc)
+      return rc;
+    if (!done && next <= r->offset)
+      return tspice_return_error(err, room, "DAF comment cleanup made no progress");
+    r->offset = done ? 0 : next;
+  }
+  return 0;
+}
+
+int tspice_dafrs(int handle, const unsigned char *summary, int bytes, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (!summary || bytes < 8 || bytes > TSPICE_DAF_SUMMARY_BYTES || bytes % 8)
+    return tspice_return_error(err, errMaxBytes, "Invalid packed DAF summary length");
+  dafcs_c(handle);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  SpiceInt nd = 0, ni = 0;
+  dafhsf_c(handle, &nd, &ni);
+  if (DafStatus(err, errMaxBytes))
+    return 1;
+  if (nd < 0 || nd > 124 || ni < 2 || ni > 250 || nd + (ni + 1) / 2 > 125 || bytes != 8 * (nd + (ni + 1) / 2))
+    return tspice_return_error(err, errMaxBytes, "Packed DAF summary must match the selected file format");
+  SpiceDouble aligned[125] = {0};
+  memcpy(aligned, summary, (size_t)bytes);
+  dafrs_c(aligned);
+  return DafStatus(err, errMaxBytes);
+}
+
 int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = 0;
@@ -368,7 +677,7 @@ int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes) 
   dafopw_c(path, &handle);
   if (DafStatus(err, errMaxBytes)) return 1;
   *outHandle = handle;
-  return 0;
+  return remember_daf_link(handle, 1, err, errMaxBytes);
 }
 
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
@@ -393,18 +702,23 @@ int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) 
   }
 
   if (outHandle) *outHandle = (int)handleC;
-  return 0;
+  return remember_daf_link(handleC, 0, err, errMaxBytes);
 }
 
 int tspice_dafcls(int handle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) err[0] = '\0';
 
+  DafCommentReader *reader = comment_reader(handle);
+  if (reader && reader->links == 1 && reader->offset && finish_comment_reader(reader, err, errMaxBytes))
+    return 1;
   dafcls_c((SpiceInt)handle);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  if (reader && !--reader->links)
+    *reader = (DafCommentReader){0};
   return 0;
 }
 

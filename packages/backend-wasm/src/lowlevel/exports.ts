@@ -96,6 +96,34 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dafac(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafdc(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafec(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrs(
+    handle: number,
+    data: number,
+    bytes: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dafps(
     nd: number,
     ni: number,
@@ -2267,6 +2295,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   // File I/O
   "_tspice_exists",
   "_tspice_getfat",
+  "_tspice_dafac",
+  "_tspice_dafdc",
+  "_tspice_dafec",
+  "_tspice_dafrs",
   "_tspice_dafps",
   "_tspice_dafus",
   "_tspice_dafgsr",

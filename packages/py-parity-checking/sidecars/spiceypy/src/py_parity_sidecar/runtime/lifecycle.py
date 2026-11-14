@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import daf_mutation_oracle
+
 from .context import SidecarRuntimeContext, register_default_finalizers
 
 
@@ -49,7 +51,7 @@ def _close_file_io_handles_best_effort(context: SidecarRuntimeContext) -> None:
             continue
         try:
             if entry.closeWith == "dafcls":
-                sp.dafcls(entry.handle)
+                daf_mutation_oracle.close(entry.handle)
             else:
                 sp.dascls(entry.handle)
             entry.isOpen = False

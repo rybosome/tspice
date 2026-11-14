@@ -31,7 +31,15 @@ function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
     const name: string = spice.raw.dafgn(current);
     const { nd, ni } = spice.raw.dafhsf(current);
     void [name, nd, ni];
-    return spice.raw.dafgs(current);
+    const summaryBytes = spice.raw.dafgs(current);
+    spice.raw.dafrs(current, summaryBytes);
+    spice.raw.dafac(handle, ["  first", ""] as const);
+    const page: { n: number; lines: string[]; done: boolean } = spice.raw.dafec(
+      handle,
+      2,
+    );
+    if (page.done) spice.raw.dafdc(handle);
+    return summaryBytes;
   } finally {
     spice.raw.dafcls(handle);
   }

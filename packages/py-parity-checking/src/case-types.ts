@@ -730,6 +730,23 @@ export type StepFileIoDafopw = {
   alias?: string;
 };
 
+export type StepFileIoDafac = {
+  op: "file-io.dafac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDafdc = { op: "file-io.dafdc"; handleId: string };
+export type StepFileIoDafec = {
+  op: "file-io.dafec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
+export type StepFileIoDafrs = {
+  op: "file-io.dafrs";
+  handleId: string;
+  summary: number[];
+};
 export type StepFileIoDafps = {
   op: "file-io.dafps";
   nd: number;
@@ -1470,6 +1487,10 @@ export type WorkflowStep =
   | StepFileIoDafgs
   | StepFileIoDafhsf
   | StepFileIoDafopw
+  | StepFileIoDafac
+  | StepFileIoDafdc
+  | StepFileIoDafec
+  | StepFileIoDafrs
   | StepFileIoDafps
   | StepFileIoDafus
   | StepFileIoDafgsr
@@ -1780,6 +1801,11 @@ export type StepOutput =
   | { op: "file-io.dafgs"; value: number[] }
   | { op: "file-io.dafhsf"; value: { nd: number; ni: number } }
   | { op: "file-io.dafopw"; value: null }
+  | { op: "file-io.dafac" | "file-io.dafdc" | "file-io.dafrs"; value: null }
+  | {
+      op: "file-io.dafec";
+      value: { n: number; lines: string[]; done: boolean };
+    }
   | { op: "file-io.dafps"; value: number[] }
   | { op: "file-io.dafus"; value: { dc: number[]; ic: number[] } }
   | {

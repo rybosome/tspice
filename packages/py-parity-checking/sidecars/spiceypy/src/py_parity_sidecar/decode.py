@@ -89,6 +89,10 @@ from .models import (
     StepFileIoDafgs,
     StepFileIoDafhsf,
     StepFileIoDafopw,
+    StepFileIoDafac,
+    StepFileIoDafdc,
+    StepFileIoDafec,
+    StepFileIoDafrs,
     StepFileIoDafps,
     StepFileIoDafus,
     StepFileIoDafgsr,
@@ -1108,6 +1112,34 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="file-io.dafopw.path"),
                 handleId=_expect_string(step.get("handleId"), label="file-io.dafopw.handleId"),
+            )
+
+        case "file-io.dafac":
+            return StepFileIoDafac(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafac.handleId"),
+                lines=_expect_string_list(step.get("lines"), label="file-io.dafac.lines"),
+            )
+
+        case "file-io.dafdc":
+            return StepFileIoDafdc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafdc.handleId"),
+            )
+
+        case "file-io.dafec":
+            return StepFileIoDafec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafec.handleId"),
+                bufsiz=_expect_int(step.get("bufsiz"), label="file-io.dafec.bufsiz"),
+                buffln=_expect_int(step.get("buffln", 1024), label="file-io.dafec.buffln"),
+            )
+
+        case "file-io.dafrs":
+            return StepFileIoDafrs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafrs.handleId"),
+                summary=_expect_daf_bytes(step.get("summary"), label="file-io.dafrs.summary"),
             )
 
         case "file-io.dafps":

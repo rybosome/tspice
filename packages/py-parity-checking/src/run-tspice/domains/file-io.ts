@@ -16,6 +16,10 @@ import type {
   StepFileIoDafgs,
   StepFileIoDafhsf,
   StepFileIoDafopw,
+  StepFileIoDafac,
+  StepFileIoDafdc,
+  StepFileIoDafec,
+  StepFileIoDafrs,
   StepFileIoDafps,
   StepFileIoDafus,
   StepFileIoDafgsr,
@@ -54,6 +58,10 @@ type FileIoStep =
   | StepFileIoDafgs
   | StepFileIoDafhsf
   | StepFileIoDafopw
+  | StepFileIoDafac
+  | StepFileIoDafdc
+  | StepFileIoDafec
+  | StepFileIoDafrs
   | StepFileIoDafps
   | StepFileIoDafus
   | StepFileIoDafgsr
@@ -220,6 +228,32 @@ export function runFileIoStep(
         throw new Error("DAFGN did not raise the expected toolkit error");
       return { op: step.op, value };
     }
+    case "file-io.dafac":
+      context.spice.raw.dafac(
+        requireHandleState(context, step.handleId).handle,
+        step.lines,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dafdc":
+      context.spice.raw.dafdc(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dafec":
+      return {
+        op: step.op,
+        value: context.spice.raw.dafec(
+          requireHandleState(context, step.handleId).handle,
+          step.bufsiz,
+          step.buffln,
+        ),
+      };
+    case "file-io.dafrs":
+      context.spice.raw.dafrs(
+        requireHandleState(context, step.handleId).handle,
+        Uint8Array.from(step.summary),
+      );
+      return { op: step.op, value: null };
     case "file-io.dafps": {
       const out = context.spice.raw.dafps(step.nd, step.ni, step.dc, step.ic);
       return { op: step.op, value: Array.from(out) };

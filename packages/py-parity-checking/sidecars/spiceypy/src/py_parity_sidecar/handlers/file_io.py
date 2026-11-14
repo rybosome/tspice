@@ -7,6 +7,7 @@ import numpy as np
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError, SpiceyError
 
+from .. import daf_mutation_oracle
 from .. import daf_oracle
 from .. import daf_record_oracle
 from ..models import (
@@ -22,6 +23,10 @@ from ..models import (
     StepFileIoDafgs,
     StepFileIoDafhsf,
     StepFileIoDafopw,
+    StepFileIoDafac,
+    StepFileIoDafdc,
+    StepFileIoDafec,
+    StepFileIoDafrs,
     StepFileIoDafps,
     StepFileIoDafus,
     StepFileIoDafgsr,
@@ -177,11 +182,34 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             path = to_path_ref(step.path)
             if path.kind != "scratch":
                 raise ValueError("DAF write access requires a case scratch path")
-            handle = int(sp.dafopw(resolve_path_ref(context.paths, path)))
+            resolved = resolve_path_ref(context.paths, path)
+            handle = int(sp.dafopw(resolved))
         else:
-            handle = int(sp.dafopr(_resolve_file_io_path(context, step.path)))
+            resolved = _resolve_file_io_path(context, step.path)
+            handle = int(sp.dafopr(resolved))
+        daf_mutation_oracle.opened(handle, resolved, isinstance(step, StepFileIoDafopw))
         _register_handle(state, step.handleId, handle, kind="DAF", close_with="dafcls")
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepFileIoDafac):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.append(handle, step.lines)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafdc):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.delete(handle)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafec):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.extract(handle, step.bufsiz, step.buffln)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrs):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.replace(handle, step.summary)
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepFileIoDafps):
         value = daf_record_oracle.pack(step.nd, step.ni, step.dc, step.ic)
@@ -251,7 +279,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind="DAF",
             require_open=True,
         )
-        sp.dafcls(handle_state.handle)
+        daf_mutation_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 
