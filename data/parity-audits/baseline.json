@@ -443,8 +443,8 @@
         "pckw02_c"
       ],
       "dependsOn": ["b03-window-algebra"],
-      "prs": [],
-      "nextAction": "Run complete uncached local and canonical CI validation on the combined source and confirm final-head checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/759"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

@@ -64,3 +64,7 @@ This checkpoint has 73 routines ready for review, 309 in progress and 105 planne
 | E18-dsk-data                 | `dskd02_c`, `dski02_c`, `dskn02_c`, `dskp02_c`, `dskv02_c`, `dskz02_c`, `dskcls_c`                                                                                         | Main baseline                       | in-progress [#754](https://github.com/rybosome/tspice/pull/754) |
 
 After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
+
+## C11 source validation checkpoint
+
+[PR #759](https://github.com/rybosome/tspice/pull/759) remains in progress. Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

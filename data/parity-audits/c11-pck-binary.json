@@ -49,7 +49,232 @@
     "packages/py-parity-checking/test/pck-binary.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c11-ace63baf-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c11-ace63baf-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c11-ace63baf-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c11-ace63baf-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d37417c5a1dbfe2ae1b61ef15c58672ef4f64094509a0fc00554f30ad3ba4f9e",
+      "caseIds": [
+        "frames-pckcls-empty",
+        "frames-pckcls-empty-then-write",
+        "frames-pckcls-two-classes",
+        "frames-pckcov-accumulate",
+        "frames-pckcov-body-not-class",
+        "frames-pckcov-capacity",
+        "frames-pckcov-frame-not-class",
+        "frames-pckcov-gapped",
+        "frames-pckcov-lunar",
+        "frames-pckcov-missing",
+        "frames-pckcov-text",
+        "frames-pckfrm-accumulate",
+        "frames-pckfrm-capacity",
+        "frames-pckfrm-fixture-classes",
+        "frames-pckfrm-missing",
+        "frames-pckfrm-text",
+        "frames-pckfrm-tight",
+        "frames-pcklof-endpoints",
+        "frames-pcklof-gap",
+        "frames-pcklof-inverse",
+        "frames-pcklof-missing",
+        "frames-pckopn-empty-internal-name",
+        "frames-pckopn-existing",
+        "frames-pckopn-negative",
+        "frames-pckopn-reserved",
+        "frames-pckopn-roundtrip",
+        "frames-pckuof-keeper",
+        "frames-pckuof-last-unload",
+        "frames-pckuof-priority",
+        "frames-pckuof-reload",
+        "frames-pckw02-bad-frame",
+        "frames-pckw02-count",
+        "frames-pckw02-degree-41",
+        "frames-pckw02-early",
+        "frames-pckw02-interval",
+        "frames-pckw02-late",
+        "frames-pckw02-long-segid",
+        "frames-pckw02-nonprinting",
+        "frames-pckw02-reversed",
+        "frames-pckw02-segment-priority",
+        "frames-pckw02-singleton",
+        "frames-pckw02-trim",
+        "frames-pckw02-two-records"
+      ],
+      "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "pckcls_c",
@@ -88,16 +313,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and serialized Node addon -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and required WASM export -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -177,16 +402,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckcov -> owner-local adapter and serialized Node addon -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckcov -> owner-local adapter and required WASM export -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -256,16 +481,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckfrm -> owner-local adapter and serialized Node addon -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckfrm -> owner-local adapter and required WASM export -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -325,16 +550,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pcklof -> owner-local adapter and serialized Node addon -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pcklof -> owner-local adapter and required WASM export -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -385,16 +610,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and serialized Node addon -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and required WASM export -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -454,16 +679,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckuof -> owner-local adapter and serialized Node addon -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckuof -> owner-local adapter and required WASM export -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     },
@@ -568,19 +793,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckw02 -> owner-local adapter and serialized Node addon -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.pckw02 -> owner-local adapter and required WASM export -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
-          "executions": []
+          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused actual checks passed. Source-bound full local and canonical head validation remain pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

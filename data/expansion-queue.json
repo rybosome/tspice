@@ -2255,18 +2255,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/759"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "43 independent workflows, 173 steps, 135 target calls and 20 terminal diagnostics. All 86 registered backend comparisons, 4 physical/public, 3 native and 17 WASM allocation tests passed. Final real Chrome exercised all seven and compared every rotation and state component at two epochs."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "ace63baf937aeefac1825b62975d43964a1202a3",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
+          "result": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run complete uncached local and canonical CI validation on the combined source and confirm final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-pck-binary",
       "worktree": "/private/tmp/tspice-step8-pck-binary",
       "baseCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
-      "progressNote": "Seven actual binary PCK methods; owned writer and direct-load generations, class set and coverage union, persisted orientation from both runtimes."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source ace63baf. 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Seven actual binary PCK methods; owned writer and direct-load generations, class set and coverage union, persisted orientation from both runtimes."
     },
     {
       "id": "C12-ck-writers",
