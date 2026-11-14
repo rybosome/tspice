@@ -126,7 +126,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "TimeApi: b1900/j1950/j2100/jyear/tyear; CoordsVectorsApi: clight/dpmax/dpmin/intmax/intmin.",
       "owner": "Codex Step 8 (/root)",
-      "status": "in-progress",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Use existing time domain for epoch/year constants and coords-vectors for scalar constants. Verify signed SpiceInt bounds and exact platform N0067 floating limits. Does not require A01 wrappers.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -139,12 +139,20 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/708"],
-      "validationEvidence": [],
-      "nextAction": "Inspect completion of required final-head checks and rebaseability, then record source-bound evidence before changing queue readiness. No merge authorized.",
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "2b59cee8d4f321bb6636f4c6085b27b62a84942a",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43540047006",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #708 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await maintainer review and merge authorization. Recheck final-head CI/rebaseability after any source/base change.",
       "worktree": "/private/tmp/tspice-step8-scalar-constants",
       "branch": "codex/expand-scalar-constants",
-      "deliveryNote": "Draft PR open; final-head readiness pending. Remains in-progress, not PR-ready or landed.",
-      "progressNote": "Integration owner reports source CI run 43536405345 passed all 15 jobs and local native validation passed 2258 live comparisons / 2475 parity-package tests with no skips. Final metadata head 2b59cee8d4f321bb6636f4c6085b27b62a84942a is awaiting CI run 43540047006 and final rebaseability/readiness review. Remains in-progress."
+      "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed.",
+      "progressNote": "Integration owner reports final head 2b59cee8d4f321bb6636f4c6085b27b62a84942a passed all 15 jobs in CI run 43540047006 and after-CI REST explicitly reported rebaseable:true against main 73f3. Draft status removed and body updated; no merge."
     },
     {
       "id": "A03-scalar-math",
@@ -163,22 +171,28 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
-      "prerequisiteReview": "Resolve variadic max/min C ABI and independently supported oracle route before that subset; validate lengths/overflow and integer reductions. Split missing-wrapper subset if it blocks supported scalar routines.",
+      "prerequisiteReview": "Integrate and validate the independent variadic C oracle route investigated in PR #707; retain explicit portable argument limits. Review input lengths/checked allocation sizes and reject undefined signed-prefix integer overflow before actual sumai arithmetic. No completed batch or verified semantics claim.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "coords-vectors",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "independent-route-investigation-required",
-        "missingTopLevelWrappers": ["maxd_c", "maxi_c", "mind_c", "mini_c"]
+        "status": "independent-route-source-investigated",
+        "missingTopLevelWrappers": ["maxd_c", "maxi_c", "mind_c", "mini_c"],
+        "evidence": "https://github.com/rybosome/tspice/pull/707",
+        "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+      "nextAction": "Finish bounded source and live oracle cases. Reject undefined signed-prefix sumai overflow before actual C arithmetic in JS/shared C, while calling actual sumai for safe arrays. Complete primary review, both required local lanes and canonical CI.",
+      "worktree": "/private/tmp/tspice-step8-scalar-math",
+      "branch": "codex/expand-scalar-math",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Production and independent oracle routes implemented; primary-semantic review active. Four explicit shared-C switches cover every actual canonical variadic call for arities 0..30, preserving ledger call visibility. JS/shared C and oracle guards reject undefined sumai prefixes while safe inputs call real sumai. Final cases, focused compiled validation, full required local/CI execution pending."
     },
     {
       "id": "A04-array-storage",
@@ -235,7 +249,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
-      "status": "in-progress",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Reuse existing scalar/Vec3 conventions; verify longitude/colatitude units and signed/zero radius behavior with asymmetric cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -248,12 +262,21 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/709"],
-      "validationEvidence": [],
-      "nextAction": "Inspect completion of required final-head checks and rebaseability, then record source-bound evidence before changing queue readiness. No merge authorized.",
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "3c1b767be9f4a7661795e0fe0412a3828dda6a19",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43540344076",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #709 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await maintainer review and merge authorization. Recheck final-head CI/rebaseability after any source/base change.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Integration owner reports all 15 source CI jobs and full local validation green, with fresh source-bound audits. Final metadata head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 awaits CI run 43540344076 and readiness review. Remains in-progress."
+      "progressNote": "Integration owner reports final head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 passed all 15 jobs in CI run 43540344076; after-CI REST explicitly reported rebaseable:true against main 73f3. Draft removed and body updated; no merge.",
+      "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed."
     },
     {
       "id": "A06-coordinate-conventions",
@@ -289,7 +312,7 @@
       "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
       "branch": "codex/expand-coordinate-conventions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Production and parity source work assigned. Primary-semantic/body-constant fixture review active; no verified or landed claim."
+      "progressNote": "Source compiled and semantic review complete; integration owner reports 114 focused live comparisons, 12 public tests and two ten-observation extreme tests passed. Allocation-test cleanup repaired to existing kclear path. Initial full typecheck/docs failed on bare BODY<ID> JSDoc placeholders; root backticked three variable names and regenerated without production logic/binary changes. Required-lane rerun and canonical CI pending; no readiness claim."
     },
     {
       "id": "A07-coordinate-jacobians",
@@ -400,7 +423,7 @@
       "worktree": "/private/tmp/tspice-step8-vector-combinations",
       "branch": "codex/expand-vector-combinations",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR #711 is open at source head 69fd2108259457989adf223241a72411d8714f5a. Integration owner reports both required local lanes passed, including 2294 live comparisons / 2517 parity-package tests without skips, 102 native / 641 WASM / 28 core / 150 facade tests. Local audit records and PR references are prepared; source CI has 8 of 15 jobs green and Linux Node 22 job 132280923832 is pending. Final readiness remains pending."
+      "progressNote": "Integration owner reports both required locals and inspected Linux Node 22 source CI job 132280923832 passed 2294 live / 2517 parity-package tests without skips, and all 170 source-bound routine audits have fresh verification. Final metadata head 0f13f395e86ada615031221fc87fc01ef1587f8c awaits CI run 43542362965 and readiness review. Draft PR #711 remains in-progress."
     },
     {
       "id": "A10-general-vectors",
@@ -425,8 +448,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Immediate consumer for bounded readonly number-array input and copied variable-length outputs. Establish matching dimensions, zero dimension, finite inputs and checked byte sizes. Family size 15 keeps one shared dimension policy review.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -440,7 +463,8 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete the 15-routine source implementation and semantic/live-oracle review in /private/tmp/tspice-step8-general-vectors before root integration and required validation.",
+      "progressNote": "Independent main73f3 branch codex/expand-general-vectors assigned to bounded backend/parity workers; no verification or delivery claim."
     },
     {
       "id": "A11-state-derivatives",
@@ -505,13 +529,29 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Complete eleven typed raw paths, direct live oracle cases and matrix-result helper tests, then regenerate artifacts and run required full local/CI lanes.",
+      "prs": ["https://github.com/rybosome/tspice/pull/712"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "72bd136594136641758355de3ca2c3011b7b7174",
+          "observation": "Both complete local lanes passed. Native-required executed 2318 live comparisons and2543 parity-package tests with zero skips and production guard. 120 native,646 WASM,34 core,152 facade tests passed; actual RPC result checks included."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "72bd136594136641758355de3ca2c3011b7b7174",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43542559918/job/132286223439",
+          "observation": "Inspected uncached Linux Node22 native-required success:2318 live comparisons and2543 parity-package tests, zero skips, production guard executed. Final metadata commit must pass every required job before readiness."
+        }
+      ],
+      "nextAction": "Complete final evidence-only head CI and explicit GitHub rebaseability, then mark PR #712 ready.",
       "worktree": "/private/tmp/tspice-step8-fixed-matrices",
       "branch": "codex/expand-fixed-matrices",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Source compiled and frozen. Integration owner reports all 100 focused Node/WASM case comparisons, 10 public tests, 2 complete 14-observation extreme tests, 46 WASM allocation checks, 54 native wrapper tests, 6 core result-helper tests and 2 actual-backend RPC transport regressions passed. Signed-zero recovery assertion repaired without output normalization. Full required lanes and canonical CI remain pending; no current-source verification claim."
+      "progressNote": "Integration owner reports both required local lanes and inspected source Linux Node 22 job 132286223439 passed 2318 live comparisons / 2543 parity tests without skips, plus 120 native / 646 WASM / 34 core / 152 facade tests. All 173 source-bound routine audits have fresh verification. Draft PR #712 source 72bd136594136641758355de3ca2c3011b7b7174; final metadata preparation and final-head CI remain pending.",
+      "deliveryNote": "Both complete local lanes and inspected source native CI passed. All173 current Node/WASM source fingerprints verified; final-head matrix pending, not ready or landed."
     },
     {
       "id": "A13-general-matrices",

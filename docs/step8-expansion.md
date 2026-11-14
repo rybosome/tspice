@@ -12,8 +12,8 @@ scenarios** at that base. Absence was derived from the ledger's `implementation`
 field and actual contract, not the inventory's `planned` decision. The exclusions
 remain `ftncls_c`, `getcml_c`, and `prompt_c`.
 
-The maintained queue has **75 batches**: **52 routines in six in-progress
-batches, 9 routines in one PR-ready batch, and 426 routines in planned batches**.
+The maintained queue has **75 batches**: **58 routines in six in-progress
+batches, 27 routines in three PR-ready batches, and 402 routines in planned batches**.
 Zero Step 8 routines are landed or blocked. PR-ready means reviewed delivery
 with successful required final-head checks; it is not merged coverage. The
 base's 162 routines and Step 7 repairs are not Step 8 progress. Working-branch
@@ -21,7 +21,7 @@ implementation counts can increase before anything lands on main.
 
 ## Active ownership and next deliveries
 
-`Codex Step 8 (/root)` owns all seven claimed batches and their integration. The first
+`Codex Step 8 (/root)` owns all eight claimed batches and their integration. The first
 batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.
 The second uses `/private/tmp/tspice-step8-scalar-constants`, branch
 `codex/expand-scalar-constants`. The third uses `/private/tmp/tspice-step8-cylindrical`,
@@ -33,19 +33,21 @@ The fourth uses `/private/tmp/tspice-step8-vector-basics`, branch
 uses `/private/tmp/tspice-step8-fixed-matrices`, branch
 `codex/expand-fixed-matrices`, also independently based on `73f3fec8`. The seventh
 uses `/private/tmp/tspice-step8-coordinate-conventions`, branch
-`codex/expand-coordinate-conventions`, independently based on the same commit. The agent
-coordinating Step 7 was notified of the first exact routine list after its merged
+`codex/expand-coordinate-conventions`, independently based on the same commit. The eighth uses
+`/private/tmp/tspice-step8-scalar-math`, branch `codex/expand-scalar-math`,
+independently based on `73f3fec8`. The agent coordinating Step 7 was notified of the first exact routine list after its merged
 completion was inspected. No open Step 7 PR was found when this work began.
 
-| Batch                       | Exact canonical routines                                                                                              | Public placement                                                                                                                          | Next action                                                                                                                                                                            |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                             | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods.                                 | [PR-ready #707](https://github.com/rybosome/tspice/pull/707): final head `1eee2cff` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                |
-| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c`       | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                                                   | [Draft PR #708](https://github.com/rybosome/tspice/pull/708): source CI 15/15 green; metadata head `2b59cee8` awaits final-head CI/rebaseability.                                      |
-| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                        | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                                                  | [Draft PR #709](https://github.com/rybosome/tspice/pull/709): source CI 15/15 green and fresh source-bound audits; metadata head `3c1b767b` awaits CI run `43540344076` and readiness. |
-| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                                 | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed.                                 | [Draft PR #710](https://github.com/rybosome/tspice/pull/710): source native CI passed; fresh audit evidence recorded; metadata head `f3d2cb4f` awaits final-head CI `43541137087`.     |
-| A09-vector-combinations     | `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c`                                | Existing `CoordsVectorsApi` Vec3/Mat3 conventions; distinguish active and passive rotation.                                               | [Draft PR #711](https://github.com/rybosome/tspice/pull/711), source `69fd2108`: both required local lanes passed; source CI 8/15 green and final readiness pending.                   |
-| A12-fixed-matrices          | `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c` | Existing `CoordsVectorsApi`, Mat3RowMajor and an immediately consumed 2x2 shape; numeric result ownership helper preserves CSPICE output. | Compiled source and semantic review complete; focused live/public/overflow/wrapper/core/allocation tests passed. RPC regression passed; full required local/CI validation pending.     |
-| A06-coordinate-conventions  | `azlrec_c`, `recazl_c`, `pgrrec_c`, `recpgr_c`, `radrec_c`, `recrad_c`, `srfrec_c`                                    | Existing `CoordsVectorsApi`; authored body constants support planetographic/surface conventions.                                          | Source work and fixture/semantic review active; required local/CI validation pending.                                                                                                  |
+| Batch                       | Exact canonical routines                                                                                              | Public placement                                                                                                                          | Next action                                                                                                                                                                                                                                        |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A01-constants               | `pi_c`, `twopi_c`, `halfpi_c`, `dpr_c`, `rpd_c`, `spd_c`, `j2000_c`, `j1900_c`, `b1950_c`                             | Angular constants in `CoordsVectorsApi`; day/epoch constants in `TimeApi`. All remain flat `raw` methods.                                 | [PR-ready #707](https://github.com/rybosome/tspice/pull/707): final head `1eee2cff` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                                            |
+| A02-remaining-constants     | `b1900_c`, `j1950_c`, `j2100_c`, `jyear_c`, `tyear_c`, `clight_c`, `dpmax_c`, `dpmin_c`, `intmax_c`, `intmin_c`       | Epoch/year constants in `TimeApi`; scalar limits and light speed in `CoordsVectorsApi`.                                                   | [PR-ready #708](https://github.com/rybosome/tspice/pull/708): final head `2b59cee8` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                                            |
+| A05-cylindrical-coordinates | `cyllat_c`, `cylrec_c`, `cylsph_c`, `latcyl_c`, `latsph_c`, `reccyl_c`, `sphcyl_c`, `sphlat_c`                        | Existing `CoordsVectorsApi` scalar and Vec3 conventions.                                                                                  | [PR-ready #709](https://github.com/rybosome/tspice/pull/709): final head `3c1b767b` passed all 15 CI jobs and explicit rebaseability review; draft removed, not merged.                                                                            |
+| A08-vector-basics           | `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c`                                 | Existing `CoordsVectorsApi` scalar and Vec3 conventions, with explicit multi-output results where needed.                                 | [Draft PR #710](https://github.com/rybosome/tspice/pull/710): source native CI passed; fresh audit evidence recorded; metadata head `f3d2cb4f` awaits final-head CI `43541137087`.                                                                 |
+| A09-vector-combinations     | `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c`                                | Existing `CoordsVectorsApi` Vec3/Mat3 conventions; distinguish active and passive rotation.                                               | [Draft PR #711](https://github.com/rybosome/tspice/pull/711), source `69fd2108`: both required local lanes passed; inspected Linux Node 22 source CI passed; fresh audit verification recorded; metadata `0f13f395` awaits final CI `43542362965`. |
+| A12-fixed-matrices          | `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c` | Existing `CoordsVectorsApi`, Mat3RowMajor and an immediately consumed 2x2 shape; numeric result ownership helper preserves CSPICE output. | [Draft PR #712](https://github.com/rybosome/tspice/pull/712), source `72bd1365`: both required locals and inspected source native CI passed; fresh verification recorded; final metadata/CI pending.                                               |
+| A06-coordinate-conventions  | `azlrec_c`, `recazl_c`, `pgrrec_c`, `recpgr_c`, `radrec_c`, `recrad_c`, `srfrec_c`                                    | Existing `CoordsVectorsApi`; authored body constants support planetographic/surface conventions.                                          | Compiled source and semantic review complete; 114 live comparisons / 12 public / 2 extreme tests passed; allocation cleanup repaired, rerun and required local/CI lanes pending.                                                                   |
+| A03-scalar-math             | `brcktd_c`, `brckti_c`, `convrt_c`, `sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c`                      | Existing `CoordsVectorsApi`; bounded reductions and independently investigated C variadic oracle route.                                   | Source agents assigned; safe signed-prefix integer reduction policy and live cases under implementation; no verification claim.                                                                                                                    |
 
 The two constant batches are kernel-free and have source wrappers in locked SpiceyPy 6.0.3. The epoch
 constants return Julian dates, not seconds past J2000. Zero-argument constants
@@ -60,9 +62,15 @@ routines are PR-ready and remain unmerged.
 
 A02 source CI passed all 15 jobs and local native validation passed 2,258 live
 comparisons / 2,475 parity-package tests without skips. Its metadata head
-`2b59cee8` awaits final CI `43540047006` and readiness review. A05 source CI and
+`2b59cee8d4f321bb6636f4c6085b27b62a84942a` passed all 15 jobs in final CI
+`43540047006`; after-CI REST explicitly reported `rebaseable:true` against
+`73f3fec8`. Its draft flag was removed and body updated. Those ten routines are
+PR-ready and unmerged. A05 source CI and
 local validation passed, including 2,298 live comparisons / 2,519 parity-package
-tests without skips; final metadata head `3c1b767b` awaits CI `43540344076`.
+tests without skips. Final metadata head `3c1b767be9f4a7661795e0fe0412a3828dda6a19`
+passed all 15 jobs in CI `43540344076`, and after-CI REST reported
+`rebaseable:true` against `73f3fec8`. Draft removed/body updated: eight more
+routines are PR-ready, still unmerged.
 A08's full local lanes and inspected source native CI job `132277308410` passed
 2,282 live comparisons / 2,505 parity-package tests without skips. Its fresh
 source-bound audits are verified, while final metadata head `f3d2cb4f` awaits
@@ -71,15 +79,27 @@ CI run `43541137087` and readiness review.
 A09 draft PR #711 is open at `69fd2108259457989adf223241a72411d8714f5a`.
 Both required local lanes passed, including 2,294 live comparisons / 2,517
 parity-package tests without skips, 102 native / 641 WASM / 28 core / 150 facade
-tests. Source CI has eight of fifteen jobs green; Linux Node 22 job
-`132280923832` remains pending. A12 passed
+tests. Inspected Linux Node 22 source job `132280923832` also passed, and all
+170 source-bound routine audits have fresh verification. The final metadata head `0f13f395e86ada615031221fc87fc01ef1587f8c` awaits CI
+`43542362965` and readiness review. A12 passed
 100 focused Node/WASM case comparisons, 10 public tests, both 14-observation
 extreme tests, 54 native wrapper tests, 6 core result-helper tests and 46 WASM
 allocation checks. Its signed-zero recovery assertion was repaired without
 normalizing outputs. Both actual-backend RPC regressions also passed; full required local lanes/CI
-remain pending.
+completed locally. Draft PR #712 source `72bd136594136641758355de3ca2c3011b7b7174`
+passed both required locals and inspected source Linux Node 22 job `132286223439`:
+2,318 live comparisons / 2,543 parity tests without skips, plus 120 native /
+646 WASM / 34 core / 152 facade tests. All 173 source-bound routine audits
+have fresh verification; final metadata preparation and final-head CI remain
+pending. A06 passed 114 focused live comparisons, 12 public
+tests and both ten-observation extreme tests; a narrow allocation-test fixture
+cleanup repair uses the existing kernel-clear path. A06 initially failed full
+typecheck/docs on bare `BODY<ID>` JSDoc placeholders; three names were backticked
+and artifacts regenerated without production logic/binary changes. Its required
+lane rerun remains pending. A03 source and semantic review are active; its
+independent variadic oracle investigation is in PR #707.
 
-The other six claimed batches remain in progress. Queue progress notes do not
+The other five claimed batches remain in progress. Queue progress notes do not
 replace per-routine source-bound evidence, final-head readiness review, or an
 actual merge. A14's precreated worktree remains unused and its batch is planned.
 
@@ -151,10 +171,12 @@ inspected module:
 - Legacy plate geometry: `illum_pl02`, `illum_plid_pl02`, `limb_pl02`,
   `llgrid_pl02`, `subpt_pl02`, `subsol_pl02`, `term_pl02`.
 
-Their batches require investigation of the actual locked library and pinned
-N0067 ABI for a minimal independent live-oracle route. No such route is claimed
-as established by this queue. If it cannot be established, request a concrete
-maintainer decision while delivering independent routines. Do not compare tspice
+These initial wrapper-availability gaps require an actual locked-library and
+pinned N0067 ABI route. A03 now references the independent max/min variadic
+investigation in PR #707; its source and live batch validation remain in progress.
+The other listed gaps retain their investigation prerequisites. If a route cannot
+be established, request a concrete maintainer decision while delivering independent
+routines. Do not compare tspice
 against its own shim, silently omit parity, or add exclusions. Supported routines
 in a mixed batch can be split out rather than waiting on unrelated wrapper gaps.
 
@@ -168,3 +190,7 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
+
+## A12 source validation checkpoint
+
+Both complete required local lanes passed on source `72bd136594136641758355de3ca2c3011b7b7174`: 2,318 live Node/WASM comparisons and 2,543 parity-package tests in the native-required lane, with zero skips and the production-addon guard executed. The [inspected Linux Node 22 native CI job](https://github.com/rybosome/tspice/actions/runs/43542559918/job/132286223439) passed with the same uncached counts, plus 120 native, 646 WASM, 34 core and 152 facade tests. All 173 current routine fingerprints have fresh local and observed CI evidence. This evidence-only commit supersedes the incomplete source matrix; every required final-head job and explicit rebaseability must pass before PR #712 is ready. The maintained queue records A01/A02/A05 as 27 PR-ready routines, 58 routines in progress (including the newly assigned 15-routine A10 family), 402 planned and none landed.

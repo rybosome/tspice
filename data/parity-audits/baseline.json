@@ -426,7 +426,7 @@
         "xpose_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/712"],
       "nextAction": "Complete primary-semantic review, source and registered live cases; run focused result-helper/wrapper/allocation tests, both full required lanes and canonical CI before current-source verified status. Independent Step 8 batch; no merge authorized."
     }
   ]
