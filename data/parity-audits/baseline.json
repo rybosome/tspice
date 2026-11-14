@@ -442,8 +442,8 @@
         "gfilum_c"
       ],
       "dependsOn": ["e23-gf-visibility"],
-      "prs": [],
-      "nextAction": "Capture complete source-bound local and canonical CI observations."
+      "prs": ["https://github.com/rybosome/tspice/pull/775"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

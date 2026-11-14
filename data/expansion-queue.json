@@ -3607,13 +3607,21 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Record complete local required lanes, canonical source CI, final-head matrix and explicit rebaseability.",
+      "prs": ["https://github.com/rybosome/tspice/pull/775"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "26fc22007aaedd69cc3a9ef73fb0fea6894ed611",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43588989390/job/132429481563",
+          "result": "Both complete required lanes passed locally on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611. JavaScript: 3,012 parity tests and one expected guard skip. Native-required: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132429481563 on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-gf-scalar",
       "branch": "codex/expand-gf-scalar",
       "baseCommit": "90d63f49c9e8fa1dd15cb8154864c1f894752d70",
-      "progressNote": "95 independent scenarios, eight public numerical and ownership checks, direct native tests, all WASM allocation positions and real Chrome worker comparisons passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 26fc2200. 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "95 independent scenarios, eight public numerical and ownership checks, direct native tests, all WASM allocation positions and real Chrome worker comparisons passed."
     },
     {
       "id": "E23-gf-visibility",
