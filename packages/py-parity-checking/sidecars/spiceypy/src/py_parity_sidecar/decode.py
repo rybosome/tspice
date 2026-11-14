@@ -22,6 +22,13 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsAzlrec,
+    StepCoordsVectorsRecazl,
+    StepCoordsVectorsPgrrec,
+    StepCoordsVectorsRecpgr,
+    StepCoordsVectorsRadrec,
+    StepCoordsVectorsRecrad,
+    StepCoordsVectorsSrfrec,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +501,66 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.azlrec":
+            return StepCoordsVectorsAzlrec(
+                op=op,
+                range=_expect_number(step.get("range"), label="coords-vectors.azlrec.range"),
+                az=_expect_number(step.get("az"), label="coords-vectors.azlrec.az"),
+                el=_expect_number(step.get("el"), label="coords-vectors.azlrec.el"),
+                azccw=_expect_bool(step.get("azccw"), label="coords-vectors.azlrec.azccw"),
+                elplsz=_expect_bool(step.get("elplsz"), label="coords-vectors.azlrec.elplsz"),
+            )
+
+        case "coords-vectors.recazl":
+            return StepCoordsVectorsRecazl(
+                op=op,
+                rect=_expect_vec3(step.get("rect"), label="coords-vectors.recazl.rect"),
+                azccw=_expect_bool(step.get("azccw"), label="coords-vectors.recazl.azccw"),
+                elplsz=_expect_bool(step.get("elplsz"), label="coords-vectors.recazl.elplsz"),
+            )
+
+        case "coords-vectors.pgrrec":
+            return StepCoordsVectorsPgrrec(
+                op=op,
+                body=_expect_string(step.get("body"), label="coords-vectors.pgrrec.body"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.pgrrec.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.pgrrec.lat"),
+                alt=_expect_number(step.get("alt"), label="coords-vectors.pgrrec.alt"),
+                re=_expect_number(step.get("re"), label="coords-vectors.pgrrec.re"),
+                f=_expect_number(step.get("f"), label="coords-vectors.pgrrec.f"),
+            )
+
+        case "coords-vectors.recpgr":
+            return StepCoordsVectorsRecpgr(
+                op=op,
+                body=_expect_string(step.get("body"), label="coords-vectors.recpgr.body"),
+                rect=_expect_vec3(step.get("rect"), label="coords-vectors.recpgr.rect"),
+                re=_expect_number(step.get("re"), label="coords-vectors.recpgr.re"),
+                f=_expect_number(step.get("f"), label="coords-vectors.recpgr.f"),
+            )
+
+        case "coords-vectors.radrec":
+            return StepCoordsVectorsRadrec(
+                op=op,
+                range=_expect_number(step.get("range"), label="coords-vectors.radrec.range"),
+                ra=_expect_number(step.get("ra"), label="coords-vectors.radrec.ra"),
+                dec=_expect_number(step.get("dec"), label="coords-vectors.radrec.dec"),
+            )
+
+        case "coords-vectors.recrad":
+            return StepCoordsVectorsRecrad(
+                op=op,
+                rect=_expect_vec3(step.get("rect"), label="coords-vectors.recrad.rect"),
+            )
+
+        case "coords-vectors.srfrec":
+            return StepCoordsVectorsSrfrec(
+                op=op,
+                body=_expect_int(step.get("body"), label="coords-vectors.srfrec.body"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.srfrec.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.srfrec.lat"),
             )
 
         case "coords-vectors.reclat":

@@ -172,6 +172,59 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsAzlrec = {
+  op: "coords-vectors.azlrec";
+  range: number;
+  az: number;
+  el: number;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsRecazl = {
+  op: "coords-vectors.recazl";
+  rect: Vector3;
+  azccw: boolean;
+  elplsz: boolean;
+};
+
+export type StepCoordsVectorsPgrrec = {
+  op: "coords-vectors.pgrrec";
+  body: string;
+  lon: number;
+  lat: number;
+  alt: number;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsRecpgr = {
+  op: "coords-vectors.recpgr";
+  body: string;
+  rect: Vector3;
+  re: number;
+  f: number;
+};
+
+export type StepCoordsVectorsRadrec = {
+  op: "coords-vectors.radrec";
+  range: number;
+  ra: number;
+  dec: number;
+};
+
+export type StepCoordsVectorsRecrad = {
+  op: "coords-vectors.recrad";
+  rect: Vector3;
+};
+
+export type StepCoordsVectorsSrfrec = {
+  op: "coords-vectors.srfrec";
+  body: number;
+  lon: number;
+  lat: number;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1366,13 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsAzlrec
+  | StepCoordsVectorsRecazl
+  | StepCoordsVectorsPgrrec
+  | StepCoordsVectorsRecpgr
+  | StepCoordsVectorsRadrec
+  | StepCoordsVectorsRecrad
+  | StepCoordsVectorsSrfrec
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1544,22 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.azlrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recazl";
+      value: { range: number; az: number; el: number };
+    }
+  | { op: "coords-vectors.pgrrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recpgr";
+      value: { lon: number; lat: number; alt: number };
+    }
+  | { op: "coords-vectors.radrec"; value: Vector3 }
+  | {
+      op: "coords-vectors.recrad";
+      value: { range: number; ra: number; dec: number };
+    }
+  | { op: "coords-vectors.srfrec"; value: Vector3 }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

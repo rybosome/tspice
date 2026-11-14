@@ -1,0 +1,561 @@
+{
+  "schemaVersion": 1,
+  "batch": "a06-coordinate-conventions",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/coordinate-conventions.test.ts",
+    "packages/py-parity-checking/test/coordinate-conventions-overflow.test.ts",
+    "packages/backend-wasm/test/coordinate-conventions-allocations.test.ts",
+    "packages/backend-node/test/coordinate-conventions-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernels.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernel-pool.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernels.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernel_pool.py",
+    "packages/py-parity-checking/fixtures/README.md",
+    "docs/step8-coordinate-conventions.md",
+    "packages/backend-wasm/src/codec/calls.ts",
+    "packages/backend-wasm/src/domains/kernels.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "azlrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlrec_c.html",
+      "semantics": "raw.azlrec(range,az,el,azccw,elplsz) returns an owned rectangular Vec3. azccw=true measures azimuth from +X toward +Y; false reverses its direction. elplsz=true measures elevation toward +Z; false toward -Z. Angles are radians; range and result share distance units. Finite negative range and unwrapped angles pass unchanged to CSPICE. No kernels or scientific-error conditions are required for ordinary finite inputs.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-azlrec-all-direction-flags",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three components for all four flag combinations using nonzero azimuth and elevation, distinguishing independent sign choices."
+        },
+        {
+          "caseId": "coords-vectors-azlrec-negative-range-unwrapped-angles",
+          "coverage": ["success", "edge"],
+          "observes": "Compare negative range, positive/negative angles beyond one turn, and elevation outside the customary interval without imposing normalization."
+        },
+        {
+          "caseId": "coords-vectors-azlrec-zero-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "Compare zero range, both elevation poles and the positive X axis; retain actual trigonometric residuals."
+        },
+        {
+          "caseId": "coords-vectors-azlrec-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every component at ranges 1e200 and 1e-200; focused live rescaling makes tiny nonzero outputs observable."
+        }
+      ],
+      "edgeAssessment": "All four direction flags, negative/zero range, poles, unwrapped angles and wide distance scales are registered. Literal direction checks, inverse consistency, input validation and independent-output storage are supplemental tests; inverse consistency does not replace live independent output comparison.",
+      "errorAssessment": "NAIF documents the conversion as error-free for ordinary finite inputs; no fabricated scientific error scenario is claimed. Public/native tests reject nonfinite or malformed input and nonboolean flags.",
+      "fixtures": [],
+      "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
+      "cleanup": "The shared shim uses fixed local storage, calls azlrec_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.azlrec -> typed Node coords-vectors adapter -> native binding azlrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_azlrec shared shim -> azlrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.azlrec -> typed WASM coords-vectors adapter -> exported _tspice_azlrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> azlrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy azlrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "recazl_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recazl_c.html",
+      "semantics": "raw.recazl(rect,azccw,elplsz) accepts a readonly finite Vec3 and returns a fresh {range,az,el} object. Flags independently select azimuth direction and elevation sign. Azimuth is in [0,2*pi], elevation in [-pi/2,pi/2], in radians. Both angles are zero at the origin; azimuth is zero on the Z axis. Range retains input units and can overflow for finite input. No input mutation, angle post-normalization or finite-result rejection is introduced.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-recazl-all-direction-flags",
+          "coverage": ["success", "edge"],
+          "observes": "Compare range, azimuth and elevation for [3,4,-12] with all four flag combinations."
+        },
+        {
+          "caseId": "coords-vectors-recazl-mixed-quadrants",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all outputs in four XY quadrants with both Z signs under clockwise/negative-Z conventions."
+        },
+        {
+          "caseId": "coords-vectors-recazl-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the origin and all six signed axes, including zero azimuth on the Z axis and both zero angles at the origin."
+        },
+        {
+          "caseId": "coords-vectors-recazl-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare range and both angles for huge/tiny scaled copies of the same direction; focused tests rescale only range."
+        }
+      ],
+      "edgeAssessment": "All flag combinations, all quadrants, six signed axes/origin and wide scales are registered. Scoped live extremes compare every range/angle for all four flags, retaining infinite range and finite angles; a finite control prevents wholesale nonfinite acceptance.",
+      "errorAssessment": "NAIF documents the conversion as error-free for ordinary finite inputs; no fabricated scientific error scenario is claimed. Public/native tests reject nonfinite or malformed input and nonboolean flags.",
+      "fixtures": [],
+      "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
+      "cleanup": "The shared shim uses fixed local storage, calls recazl_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance. The scoped ten-observation extreme test uses independently classified finite/NaN/signed-infinity values and the existing comparator; it retains all components and finite controls. Ordinary JSON cases cannot encode nonfinite output. See docs/step8-coordinate-conventions.md.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recazl -> typed Node coords-vectors adapter -> native binding recazl in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recazl shared shim -> recazl_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recazl -> typed WASM coords-vectors adapter -> exported _tspice_recazl (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recazl_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recazl and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "pgrrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pgrrec_c.html",
+      "semantics": "raw.pgrrec(body,lon,lat,alt,re,f) returns an owned Vec3 for planetographic coordinates on the specified spheroid. Body names/numeric ID strings pass unchanged to CSPICE; JS/native boundaries reject embedded NUL. re>0 and f<1 are required; negative f and altitude are permitted. Angles are radians and remain unwrapped; alt,re and result use the same units. Current character BODY<ID>_PGR_POSITIVE_LON EAST/WEST overrides select longitude sense; otherwise nonnegative PM rate gives west-positive and negative rate east-positive. Earth defaults east without PM. Moon/Sun default east only after successful PM lookup in pinned N0067. Finite-input nonfinite results remain observable.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-pgrrec-earth-name-and-numeric-id",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual outputs for EARTH, numeric ID 399, and a mixed-case/space-padded body name without client-side rewriting or a PM fixture."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-spin-sense-and-body-alias",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Load authored positive/negative PM rates, compare both synthetic names and their numeric IDs, and observe the third body with an EAST override but no PM."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-sun-moon-east-exceptions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Load explicit positive PM coefficients for Sun and Moon, then observe their east-positive exception instead of the ordinary west-positive nonnegative-rate rule."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-sphere-oblate-prolate",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all outputs for f=0, f=0.2 and negative f=-0.25, distinguishing a permitted prolate spheroid from an invalid flattening."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete results at 1e100 and 1e-100 physical scale. Focused live assertions rescale distance quantities while retaining unscaled angular comparisons."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-override-and-clear-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe the same body through default west-positive, a space/case-tolerant EAST override, WEST override, and clear/reload restoration on the same workflow."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-earth-override-cleared",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe Earth default east, WEST override and restored east after kclear, without a PM dependency."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-unknown-body-error",
+          "coverage": ["error"],
+          "observes": "Pass an unrecognized body name and observe IDCODENOTFOUND from CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-missing-prime-meridian-error",
+          "coverage": ["error"],
+          "observes": "Use an unconfigured numeric body ID and observe MISSINGDATA."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+          "coverage": ["error"],
+          "observes": "Use Moon without PM/override and observe MISSINGDATA, distinguishing the pinned lookup prerequisite from an unconditional east-positive shortcut."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-invalid-longitude-override-error",
+          "coverage": ["error", "state"],
+          "observes": "Install character NORTH as longitude sense and observe INVALIDOPTION."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+          "coverage": ["error"],
+          "observes": "Pass re=0 and observe VALUEOUTOFRANGE from the actual scientific routine."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-invalid-flattening-error",
+          "coverage": ["error"],
+          "observes": "Pass f=1 and observe VALUEOUTOFRANGE instead of a zero polar radius calculation."
+        },
+        {
+          "caseId": "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+          "coverage": ["success", "edge"],
+          "observes": "Compare below-surface altitude, negative/unwrapped longitude, latitude beyond pi/2 and a pole without invented angle/altitude rejection."
+        }
+      ],
+      "edgeAssessment": "Aliases/numeric strings, opposite PM rates, Sun/Moon data prerequisites, explicit overrides and clear/reload restoration, sphere/oblate/prolate shapes, negative altitude, poles, unwrapped angles and scaled distance are registered. Scoped live finite-input extremes retain [Inf,0,0] and mixed nonfinite/finite components rather than clamping or rejecting successful results.",
+      "errorAssessment": "Registered CSPICE errors are IDCODENOTFOUND, MISSINGDATA (generic body and Moon), INVALIDOPTION, and VALUEOUTOFRANGE for radius/flattening. Supplemental same-client tests cover Sun missing PM, empty body (EMPTYSTRING), negative radius and f>1; JS/native tests reject nonstrings/embedded NUL and nonfinite/malformed numeric inputs. Numeric override fallthrough and zero-rate PM behavior are source-reviewed, not claimed as separately registered cases.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/coordinate-conventions.tpc",
+          "provenance": "Project-authored synthetic PCK: names/codes 9901001/2, arbitrary positive/negative PM rates, triaxial/oblate/spherical radii for 9901001/2/3, EAST override for 9901003, and explicit arbitrary Sun/Moon PM coefficients. These are test constants, not measured physical data.",
+          "distribution": "Authored in this repository under its MIT license; no mission observations or externally acquired kernel. Fixture README and docs/step8-coordinate-conventions.md explain contents and isolation."
+        }
+      ],
+      "fixtureRationale": "Authored body names, PM coefficients and ellipsoid radii exercise current kernel-pool semantics; workflow pool edits are synthetic and isolated. No LSK, SPK, frame kernel or measured planetary parameters are needed.",
+      "cleanup": "The shared shim uses fixed local storage, calls pgrrec_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned. Both workflow runtimes clear kernel/error state around cases through their existing lifecycle; explicit workflows also observe pool overwrite and clear/reload effects. Focused state/error tests reset and kclear in finally before disposing. This is shared SPICE-state testing, not independent-client isolation.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance. The scoped ten-observation extreme test uses independently classified finite/NaN/signed-infinity values and the existing comparator; it retains all components and finite controls. Ordinary JSON cases cannot encode nonfinite output. See docs/step8-coordinate-conventions.md.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pgrrec -> typed Node coords-vectors adapter -> native binding pgrrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_pgrrec shared shim -> pgrrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.pgrrec -> typed WASM coords-vectors adapter -> exported _tspice_pgrrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> pgrrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy pgrrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "recpgr_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recpgr_c.html",
+      "semantics": "raw.recpgr(body,rect,re,f) accepts a readonly finite Vec3 and returns a fresh {lon,lat,alt}. Longitude follows the same current override/PM rules as pgrrec, in [0,2*pi]; latitude is in [-pi/2,pi/2]. re>0 and f<1 are required, with negative flattening allowed. For interior points with nonunique nearest surface points, the actual CSPICE choice is retained. Body strings are unchanged except embedded NUL is rejected at the language boundary. Altitude uses input distance units. Numerical errors, including INPUTSTOOLARGE for the registered finite extreme, are preserved.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-recpgr-earth-name-and-numeric-id",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual outputs for EARTH, numeric ID 399, and a mixed-case/space-padded body name without client-side rewriting or a PM fixture."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-spin-sense-and-body-alias",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Load authored positive/negative PM rates, compare both synthetic names and their numeric IDs, and observe the third body with an EAST override but no PM."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-sun-moon-east-exceptions",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Load explicit positive PM coefficients for Sun and Moon, then observe their east-positive exception instead of the ordinary west-positive nonnegative-rate rule."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-sphere-oblate-prolate",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all outputs for f=0, f=0.2 and negative f=-0.25, distinguishing a permitted prolate spheroid from an invalid flattening."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete results at 1e100 and 1e-100 physical scale. Focused live assertions rescale distance quantities while retaining unscaled angular comparisons."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-override-and-clear-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe the same body through default west-positive, a space/case-tolerant EAST override, WEST override, and clear/reload restoration on the same workflow."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-earth-override-cleared",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe Earth default east, WEST override and restored east after kclear, without a PM dependency."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-unknown-body-error",
+          "coverage": ["error"],
+          "observes": "Pass an unrecognized body name and observe IDCODENOTFOUND from CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-missing-prime-meridian-error",
+          "coverage": ["error"],
+          "observes": "Use an unconfigured numeric body ID and observe MISSINGDATA."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+          "coverage": ["error"],
+          "observes": "Use Moon without PM/override and observe MISSINGDATA, distinguishing the pinned lookup prerequisite from an unconditional east-positive shortcut."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-invalid-longitude-override-error",
+          "coverage": ["error", "state"],
+          "observes": "Install character NORTH as longitude sense and observe INVALIDOPTION."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-invalid-equatorial-radius-error",
+          "coverage": ["error"],
+          "observes": "Pass re=0 and observe VALUEOUTOFRANGE from the actual scientific routine."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-invalid-flattening-error",
+          "coverage": ["error"],
+          "observes": "Pass f=1 and observe VALUEOUTOFRANGE instead of a zero polar radius calculation."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-origin-poles-and-quadrants",
+          "coverage": ["success", "edge"],
+          "observes": "Compare longitude, latitude and altitude for the origin, both poles and remaining quadrants, retaining CSPICE interior-point choice."
+        },
+        {
+          "caseId": "coords-vectors-recpgr-finite-input-too-large-error",
+          "coverage": ["error"],
+          "observes": "Pass three maximum finite doubles to recpgr and observe INPUTSTOOLARGE; this is an actual error rather than an ordinary nonfinite result."
+        }
+      ],
+      "edgeAssessment": "Body/sense/state and signed-flattening variants are registered, along with origin/poles/quadrants, scaled physical units and a genuine too-large finite input error. Nearest-surface ambiguity at interior points follows CSPICE. Every returned field is observed; distance rescaling avoids accepting tiny nonzero altitude as zero.",
+      "errorAssessment": "Registered CSPICE errors are IDCODENOTFOUND, MISSINGDATA (generic body and Moon), INVALIDOPTION, and VALUEOUTOFRANGE for radius/flattening, plus INPUTSTOOLARGE for a finite extreme. Supplemental same-client tests cover Sun missing PM, negative radius and f>1; JS/native tests reject nonstrings/embedded NUL and nonfinite/malformed numeric inputs. Numeric override fallthrough and zero-rate PM behavior are source-reviewed, not claimed as separately registered cases.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/coordinate-conventions.tpc",
+          "provenance": "Project-authored synthetic PCK: names/codes 9901001/2, arbitrary positive/negative PM rates, triaxial/oblate/spherical radii for 9901001/2/3, EAST override for 9901003, and explicit arbitrary Sun/Moon PM coefficients. These are test constants, not measured physical data.",
+          "distribution": "Authored in this repository under its MIT license; no mission observations or externally acquired kernel. Fixture README and docs/step8-coordinate-conventions.md explain contents and isolation."
+        }
+      ],
+      "fixtureRationale": "Authored body names, PM coefficients and ellipsoid radii exercise current kernel-pool semantics; workflow pool edits are synthetic and isolated. No LSK, SPK, frame kernel or measured planetary parameters are needed.",
+      "cleanup": "The shared shim uses fixed local storage, calls recpgr_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned. Both workflow runtimes clear kernel/error state around cases through their existing lifecycle; explicit workflows also observe pool overwrite and clear/reload effects. Focused state/error tests reset and kclear in finally before disposing. This is shared SPICE-state testing, not independent-client isolation.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recpgr -> typed Node coords-vectors adapter -> native binding recpgr in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recpgr shared shim -> recpgr_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recpgr -> typed WASM coords-vectors adapter -> exported _tspice_recpgr (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recpgr_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recpgr and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "radrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/radrec_c.html",
+      "semantics": "raw.radrec(range,ra,dec) returns an owned Vec3. Right ascension increases from +X toward +Y and declination from the XY plane toward +Z, in radians. Finite negative range and angles outside normal RA/declination ranges are accepted unchanged. Output distance units match range. This is a kernel-free direct CSPICE conversion, without frame/epoch interpretation or normalization.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-radrec-quadrants",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every rectangular component for four distinct right-ascension quadrants."
+        },
+        {
+          "caseId": "coords-vectors-radrec-zero-negative-range-and-poles",
+          "coverage": ["success", "edge"],
+          "observes": "Compare zero range, negative range, north and south declination poles without normalizing away the signed-range behavior."
+        },
+        {
+          "caseId": "coords-vectors-radrec-unrestricted-angles",
+          "coverage": ["success", "edge"],
+          "observes": "Compare positive/negative RA beyond one turn and declination beyond pi/2 through the actual routine."
+        },
+        {
+          "caseId": "coords-vectors-radrec-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all components at 1e200 and 1e-200 range, supplemented by focused live rescaling."
+        }
+      ],
+      "edgeAssessment": "RA quadrants, zero/negative range, poles, unwrapped angles and huge/tiny finite scales are registered. Focused literal conventions and round trips supplement all-component live output checks; there is no claim that an inverse pair alone proves correct signs.",
+      "errorAssessment": "NAIF documents the conversion as error-free for ordinary finite inputs; no fabricated scientific error scenario is claimed. Public/native tests reject nonfinite or malformed input.",
+      "fixtures": [],
+      "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
+      "cleanup": "The shared shim uses fixed local storage, calls radrec_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.radrec -> typed Node coords-vectors adapter -> native binding radrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_radrec shared shim -> radrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.radrec -> typed WASM coords-vectors adapter -> exported _tspice_radrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> radrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy radrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "recrad_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recrad_c.html",
+      "semantics": "raw.recrad(rect) accepts a readonly finite Vec3 and returns a fresh {range,ra,dec}. RA increases from +X toward +Y in [0,2*pi]; declination is in [-pi/2,pi/2]. RA is zero on either Z-axis pole; both angles are zero at the origin. Range retains input units and actual overflow behavior. The source result is not converted to a signed longitude or normalized by the adapter.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-recrad-mixed-quadrants",
+          "coverage": ["success", "edge"],
+          "observes": "Compare range, RA and declination in all four XY quadrants with both Z signs."
+        },
+        {
+          "caseId": "coords-vectors-recrad-zero-and-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the origin and six signed axes, observing the explicit zero-RA pole convention and zero origin angles."
+        },
+        {
+          "caseId": "coords-vectors-recrad-near-axis",
+          "coverage": ["success", "edge"],
+          "observes": "Compare directions just above/below +X: tiny positive RA versus a value near 2*pi. A separate actual-oracle comparison multiplies the positive RA by 1e15 to distinguish it from zero."
+        },
+        {
+          "caseId": "coords-vectors-recrad-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare range and angles for 1e200/1e-200 scaled directions; focused live checks rescale only range."
+        }
+      ],
+      "edgeAssessment": "Quadrants, six signed axes/origin, branch behavior near +X and huge/tiny scales are registered. Tiny positive RA is separately scaled against the live oracle. Scoped extreme and finite-control observations retain overflowed range and every finite angular field.",
+      "errorAssessment": "NAIF documents the conversion as error-free for ordinary finite inputs; no fabricated scientific error scenario is claimed. Public/native tests reject nonfinite or malformed input.",
+      "fixtures": [],
+      "fixtureRationale": "Authored finite geometric numbers only; kernel-free routine with no external data, file or handle fixture.",
+      "cleanup": "The shared shim uses fixed local storage, calls recrad_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance. The positive near-axis RA is multiplied by 1e15 and compared to actual oracle output. The scoped ten-observation extreme test uses independently classified finite/NaN/signed-infinity values and the existing comparator; it retains all components and finite controls. Ordinary JSON cases cannot encode nonfinite output. See docs/step8-coordinate-conventions.md.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recrad -> typed Node coords-vectors adapter -> native binding recrad in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_recrad shared shim -> recrad_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.recrad -> typed WASM coords-vectors adapter -> exported _tspice_recrad (boolean flags encoded 0/1; current buffers copied) -> shared shim -> recrad_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy recrad and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "srfrec_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfrec_c.html",
+      "semantics": "raw.srfrec(body,lon,lat) returns an owned point on the triaxial ellipsoid from the current numeric BODY<ID>_RADII pool variable. body is a signed 32-bit integer; exactly three positive radii are required. Longitude always increases from +X toward +Y and latitude is planetocentric, measured from the XY plane along the ray from the origin. Angles are radians and unrestricted. The result uses radii units. No PM/planetographic convention is applied; actual missing/malformed pool-data errors propagate.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-srfrec-triaxial-mixed-and-axes",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Load the authored [3,2,1] ellipsoid and compare every component for a mixed direction and signed axis/pole points."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-oblate-planetocentric-latitude",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use [4,4,2] radii to compare positive/negative and pi/4 planetocentric latitudes; focused literal ray intersection distinguishes this from geodetic latitude."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-spherical-and-unrestricted-angles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare the radius-2 sphere for positive/negative/unwrapped longitude and latitude beyond pi/2."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare the point before and after doubling current pool radii, then clear and reload the fixture and observe restoration."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-missing-radii-error",
+          "coverage": ["error"],
+          "observes": "Call srfrec without radii and observe KERNELVARNOTFOUND."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-too-few-radii-error",
+          "coverage": ["error", "state"],
+          "observes": "Install two radii and observe INVALIDCOUNT."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-too-many-radii-error",
+          "coverage": ["error", "state"],
+          "observes": "Install four radii and observe ARRAYTOOSMALL."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-zero-axis-radii-error",
+          "coverage": ["error", "state"],
+          "observes": "Install a zero middle radius and observe BADAXISLENGTH."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-negative-axis-radii-error",
+          "coverage": ["error", "state"],
+          "observes": "Install a negative middle radius and observe BADAXISLENGTH."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-nonnumeric-radii-error",
+          "coverage": ["error", "state"],
+          "observes": "Install three character radii and observe TYPEMISMATCH."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-scaled-radii",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Install radii at 1e100 and 1e-100 scales, compare every coordinate, and separately rescale live outputs to distinguish tiny values."
+        },
+        {
+          "caseId": "coords-vectors-srfrec-signed32-body-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Populate separate radius variables for -2147483648 and 2147483647 and compare actual outputs for both exact signed32 IDs."
+        }
+      ],
+      "edgeAssessment": "Triaxial/oblate/spherical radii, axes/poles, unrestricted angles, live radii replacement and restoration, tiny/huge radii, and both signed32 ID boundaries are registered. Focused ellipsoid/ray literals distinguish planetocentric latitude from geodetic latitude, and invalid radii exercise each axis in supplemental tests.",
+      "errorAssessment": "Registered missing, short, overlong, zero, negative and character radius variables distinguish KERNELVARNOTFOUND, INVALIDCOUNT, ARRAYTOOSMALL, BADAXISLENGTH and TYPEMISMATCH. Supplemental same-client tests check zero/negative values in each axis, then restore valid radii and verify a usable backend. Invalid/nonintegral/out-of-range body IDs are language-boundary errors rather than scientific error cases.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/coordinate-conventions.tpc",
+          "provenance": "Project-authored synthetic PCK: names/codes 9901001/2, arbitrary positive/negative PM rates, triaxial/oblate/spherical radii for 9901001/2/3, EAST override for 9901003, and explicit arbitrary Sun/Moon PM coefficients. These are test constants, not measured physical data.",
+          "distribution": "Authored in this repository under its MIT license; no mission observations or externally acquired kernel. Fixture README and docs/step8-coordinate-conventions.md explain contents and isolation."
+        }
+      ],
+      "fixtureRationale": "Authored body names, PM coefficients and ellipsoid radii exercise current kernel-pool semantics; workflow pool edits are synthetic and isolated. No LSK, SPK, frame kernel or measured planetary parameters are needed.",
+      "cleanup": "The shared shim uses fixed local storage, calls srfrec_c, checks SPICE status and publishes successful outputs after that check; failures collect diagnostics and reset SPICE before throwing. Native wrappers own their arrays/objects under the existing SPICE mutex. WASM uses transactional withAllocs and copies output numbers before freeing buffers, including string allocation for planetographic bodies. Allocation tests cover each new failure point and success cleanup; no file/cell/handle resource is returned. Both workflow runtimes clear kernel/error state around cases through their existing lifecycle; explicit workflows also observe pool overwrite and clear/reload effects. Focused state/error tests reset and kclear in finally before disposing. This is shared SPICE-state testing, not independent-client isolation.",
+      "tolerance": "Normal registered outputs use the unchanged atol=1e-12/rtol=1e-12 component comparator; every vector component or named scalar field reaches it. Focused live scale-normalized distance checks distinguish tiny nonzero results without changing global tolerance.",
+      "findings": [
+        {
+          "id": "wasm-fixture-cleanup-api",
+          "status": "repaired",
+          "summary": "The first actual allocation-test run failed during shared fixture cleanup because the test called an unavailable kernel-pool method; an intermediate replacement was also absent from this baseline. This was a test cleanup defect, not a scientific output or allocator repair.",
+          "repair": "Use the existing tspiceCall0 helper with actual module._tspice_kclear, matching the real KernelsApi path, and assert expool(BODY9901001_RADII) is false afterward. Existing allocation failure/recovery and numerical assertions are unchanged; the integration owner owns the focused rerun and required lane evidence.",
+          "evidence": [
+            "packages/backend-wasm/test/coordinate-conventions-allocations.test.ts",
+            "packages/backend-wasm/src/codec/calls.ts",
+            "packages/backend-wasm/src/domains/kernels.ts",
+            "docs/step8-coordinate-conventions.md"
+          ],
+          "caseIds": ["coords-vectors-srfrec-pool-radii-overwrite-lifecycle"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfrec -> typed Node coords-vectors adapter -> native binding srfrec in native/src/domains/coords_vectors.cc (validated inputs, global SPICE mutex) -> tspice_srfrec shared shim -> srfrec_c. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfrec -> typed WASM coords-vectors adapter -> exported _tspice_srfrec (boolean flags encoded 0/1; current buffers copied) -> shared shim -> srfrec_c. Outputs copied before transactional cleanup. Workflow dispatch invokes this actual raw method; Python decode/model/handler invokes locked SpiceyPy srfrec and preserves matching output field order. No test substitute or harness science implementation is used.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Reviewed against primary NAIF documentation, pinned N0067 source and actual authored case/test/adapter paths. Independent locked-oracle observations are documented; compiled backend/full required local and observed canonical CI executions remain integration-owner work. No current-source verified claim."
+}

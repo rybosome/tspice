@@ -22,6 +22,135 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   }
 }
 
+static int tspice_convention_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "coordinate conversion requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_azlrec(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  azlrec_c(range, az, el, (SpiceBoolean)azccw, (SpiceBoolean)elplsz, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_recazl(const double *rect, int azccw, int elplsz, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!rect || !out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  recazl_c(rect, (SpiceBoolean)azccw, (SpiceBoolean)elplsz, &value[0], &value[1], &value[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_pgrrec(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!body || !out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  pgrrec_c(body, lon, lat, alt, re, f, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_recpgr(const char *body, const double *rect, double re, double f, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!body || !rect || !out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  SpiceDouble rectCopy[3] = {rect[0], rect[1], rect[2]};
+  recpgr_c(body, rectCopy, re, f, &value[0], &value[1], &value[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_radrec(double range, double ra, double dec, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  radrec_c(range, ra, dec, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_recrad(const double *rect, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!rect || !out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  recrad_c(rect, &value[0], &value[1], &value[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_srfrec(int body, double lon, double lat, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_convention_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  srfrec_c((SpiceInt)body, lon, lat, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
 int tspice_reclat(
     const double *rect3,
     double *outRadius,

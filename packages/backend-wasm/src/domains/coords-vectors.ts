@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,216 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertConventionScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertConventionVector(
+  value: unknown,
+  label: string,
+): asserts value is Readonly<SpiceVector3> {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  for (let i = 0; i < 3; i++)
+    assertConventionScalar(value[i], `${label}[${i}]`);
+}
+
+function assertConventionBoolean(
+  value: unknown,
+  label: string,
+): asserts value is boolean {
+  if (typeof value !== "boolean")
+    throw new TypeError(`${label} must be a boolean`);
+}
+
+function assertConventionBody(
+  value: unknown,
+  label: string,
+): asserts value is string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(`${label} must be a string without embedded NUL`);
+}
+
+function readConventionVector(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >> 3;
+  const heap = module.HEAPF64;
+  return [heap[i]!, heap[i + 1]!, heap[i + 2]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    azlrec: (range, az, el, azccw, elplsz) => {
+      assertConventionScalar(range, "azlrec(range)");
+      assertConventionScalar(az, "azlrec(az)");
+      assertConventionScalar(el, "azlrec(el)");
+      assertConventionBoolean(azccw, "azlrec(azccw)");
+      assertConventionBoolean(elplsz, "azlrec(elplsz)");
+      return withAllocs(module, [ERR_MAX_BYTES, 24], (errPtr, outPtr) => {
+        const status = module._tspice_azlrec(
+          range,
+          az,
+          el,
+          azccw ? 1 : 0,
+          elplsz ? 1 : 0,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readConventionVector(module, outPtr);
+      });
+    },
+    recazl: (rect, azccw, elplsz) => {
+      assertConventionVector(rect, "recazl(rect)");
+      assertConventionBoolean(azccw, "recazl(azccw)");
+      assertConventionBoolean(elplsz, "recazl(elplsz)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, rectPtr, outPtr) => {
+          module.HEAPF64.set(rect, rectPtr >> 3);
+          const status = module._tspice_recazl(
+            rectPtr,
+            azccw ? 1 : 0,
+            elplsz ? 1 : 0,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const values = readConventionVector(module, outPtr);
+          return { range: values[0], az: values[1], el: values[2] };
+        },
+      );
+    },
+    pgrrec: (body, lon, lat, alt, re, f) => {
+      assertConventionBody(body, "pgrrec(body)");
+      assertConventionScalar(lon, "pgrrec(lon)");
+      assertConventionScalar(lat, "pgrrec(lat)");
+      assertConventionScalar(alt, "pgrrec(alt)");
+      assertConventionScalar(re, "pgrrec(re)");
+      assertConventionScalar(f, "pgrrec(f)");
+      const bodyBytes = new TextEncoder().encode(body);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bodyBytes.length + 1, 24],
+        (errPtr, bodyPtr, outPtr) => {
+          module.HEAPU8.set(bodyBytes, bodyPtr);
+          module.HEAPU8[bodyPtr + bodyBytes.length] = 0;
+          const status = module._tspice_pgrrec(
+            bodyPtr,
+            lon,
+            lat,
+            alt,
+            re,
+            f,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readConventionVector(module, outPtr);
+        },
+      );
+    },
+    recpgr: (body, rect, re, f) => {
+      assertConventionBody(body, "recpgr(body)");
+      assertConventionVector(rect, "recpgr(rect)");
+      assertConventionScalar(re, "recpgr(re)");
+      assertConventionScalar(f, "recpgr(f)");
+      const bodyBytes = new TextEncoder().encode(body);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, bodyBytes.length + 1, 24, 24],
+        (errPtr, bodyPtr, rectPtr, outPtr) => {
+          module.HEAPU8.set(bodyBytes, bodyPtr);
+          module.HEAPU8[bodyPtr + bodyBytes.length] = 0;
+          module.HEAPF64.set(rect, rectPtr >> 3);
+          const status = module._tspice_recpgr(
+            bodyPtr,
+            rectPtr,
+            re,
+            f,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const values = readConventionVector(module, outPtr);
+          return { lon: values[0], lat: values[1], alt: values[2] };
+        },
+      );
+    },
+    radrec: (range, ra, dec) => {
+      assertConventionScalar(range, "radrec(range)");
+      assertConventionScalar(ra, "radrec(ra)");
+      assertConventionScalar(dec, "radrec(dec)");
+      return withAllocs(module, [ERR_MAX_BYTES, 24], (errPtr, outPtr) => {
+        const status = module._tspice_radrec(
+          range,
+          ra,
+          dec,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readConventionVector(module, outPtr);
+      });
+    },
+    recrad: (rect) => {
+      assertConventionVector(rect, "recrad(rect)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, rectPtr, outPtr) => {
+          module.HEAPF64.set(rect, rectPtr >> 3);
+          const status = module._tspice_recrad(
+            rectPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const values = readConventionVector(module, outPtr);
+          return { range: values[0], ra: values[1], dec: values[2] };
+        },
+      );
+    },
+    srfrec: (body, lon, lat) => {
+      assertSpiceInt32(body, "srfrec(body)");
+      assertConventionScalar(lon, "srfrec(lon)");
+      assertConventionScalar(lat, "srfrec(lat)");
+      return withAllocs(module, [ERR_MAX_BYTES, 24], (errPtr, outPtr) => {
+        const status = module._tspice_srfrec(
+          body,
+          lon,
+          lat,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        );
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readConventionVector(module, outPtr);
+      });
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

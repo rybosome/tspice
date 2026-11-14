@@ -1,5 +1,7 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +9,251 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadConventionScalar(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!value.IsNumber() || !std::isfinite(value.As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+    return false;
+  }
+  *out = value.As<Napi::Number>().DoubleValue();
+  return true;
+}
+
+static bool ReadConventionVector(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!tspice_backend_node::ReadVec3(env, value, out, label)) return false;
+  for (size_t i = 0; i < 3; i++) {
+    if (!std::isfinite(out[i])) {
+      ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must contain finite numbers"));
+      return false;
+    }
+  }
+  return true;
+}
+
+static bool ReadConventionBoolean(Napi::Env env, const Napi::Value& value, int* out, const char* label) {
+  if (!value.IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a boolean"));
+    return false;
+  }
+  *out = value.As<Napi::Boolean>().Value() ? 1 : 0;
+  return true;
+}
+
+static bool ReadConventionBody(Napi::Env env, const Napi::Value& value, std::string* out, const char* label) {
+  if (!value.IsString()) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a string"));
+    return false;
+  }
+  *out = value.As<Napi::String>().Utf8Value();
+  if (out->find('\0') != std::string::npos) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must not contain embedded NUL"));
+    return false;
+  }
+  return true;
+}
+
+static bool ReadConventionBodyId(Napi::Env env, const Napi::Value& value, int* out) {
+  double body = 0.0;
+  if (!ReadConventionScalar(env, value, &body, "srfrec(body)")) return false;
+  if (std::trunc(body) != body) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfrec(body) must be an integer"));
+    return false;
+  }
+  if (body < -2147483648.0 || body > 2147483647.0) {
+    ThrowSpiceError(Napi::RangeError::New(env, "srfrec(body) must be a 32-bit signed integer"));
+    return false;
+  }
+  *out = static_cast<int>(body);
+  return true;
+}
+
+static Napi::Array Azlrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "azlrec() expects 5 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double range = 0.0;
+  if (!ReadConventionScalar(env, info[0], &range, "azlrec(range)")) return Napi::Array::New(env);
+  double az = 0.0;
+  if (!ReadConventionScalar(env, info[1], &az, "azlrec(az)")) return Napi::Array::New(env);
+  double el = 0.0;
+  if (!ReadConventionScalar(env, info[2], &el, "azlrec(el)")) return Napi::Array::New(env);
+  int azccw = 0;
+  if (!ReadConventionBoolean(env, info[3], &azccw, "azlrec(azccw)")) return Napi::Array::New(env);
+  int elplsz = 0;
+  if (!ReadConventionBoolean(env, info[4], &elplsz, "azlrec(elplsz)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_azlrec(range, az, el, azccw, elplsz, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling azlrec", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, values, 3);
+}
+
+static Napi::Object Recazl(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "recazl() expects 3 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  double rect[3] = {0.0};
+  if (!ReadConventionVector(env, info[0], rect, "recazl(rect)")) return Napi::Object::New(env);
+  int azccw = 0;
+  if (!ReadConventionBoolean(env, info[1], &azccw, "recazl(azccw)")) return Napi::Object::New(env);
+  int elplsz = 0;
+  if (!ReadConventionBoolean(env, info[2], &elplsz, "recazl(elplsz)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_recazl(rect, azccw, elplsz, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling recazl", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("range", Napi::Number::New(env, values[0]));
+  out.Set("az", Napi::Number::New(env, values[1]));
+  out.Set("el", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Array Pgrrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pgrrec() expects 6 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  std::string body;
+  if (!ReadConventionBody(env, info[0], &body, "pgrrec(body)")) return Napi::Array::New(env);
+  double lon = 0.0;
+  if (!ReadConventionScalar(env, info[1], &lon, "pgrrec(lon)")) return Napi::Array::New(env);
+  double lat = 0.0;
+  if (!ReadConventionScalar(env, info[2], &lat, "pgrrec(lat)")) return Napi::Array::New(env);
+  double alt = 0.0;
+  if (!ReadConventionScalar(env, info[3], &alt, "pgrrec(alt)")) return Napi::Array::New(env);
+  double re = 0.0;
+  if (!ReadConventionScalar(env, info[4], &re, "pgrrec(re)")) return Napi::Array::New(env);
+  double f = 0.0;
+  if (!ReadConventionScalar(env, info[5], &f, "pgrrec(f)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_pgrrec(body.c_str(), lon, lat, alt, re, f, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling pgrrec", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, values, 3);
+}
+
+static Napi::Object Recpgr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "recpgr() expects 4 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  std::string body;
+  if (!ReadConventionBody(env, info[0], &body, "recpgr(body)")) return Napi::Object::New(env);
+  double rect[3] = {0.0};
+  if (!ReadConventionVector(env, info[1], rect, "recpgr(rect)")) return Napi::Object::New(env);
+  double re = 0.0;
+  if (!ReadConventionScalar(env, info[2], &re, "recpgr(re)")) return Napi::Object::New(env);
+  double f = 0.0;
+  if (!ReadConventionScalar(env, info[3], &f, "recpgr(f)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_recpgr(body.c_str(), rect, re, f, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling recpgr", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("lon", Napi::Number::New(env, values[0]));
+  out.Set("lat", Napi::Number::New(env, values[1]));
+  out.Set("alt", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Array Radrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "radrec() expects 3 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double range = 0.0;
+  if (!ReadConventionScalar(env, info[0], &range, "radrec(range)")) return Napi::Array::New(env);
+  double ra = 0.0;
+  if (!ReadConventionScalar(env, info[1], &ra, "radrec(ra)")) return Napi::Array::New(env);
+  double dec = 0.0;
+  if (!ReadConventionScalar(env, info[2], &dec, "radrec(dec)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_radrec(range, ra, dec, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling radrec", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, values, 3);
+}
+
+static Napi::Object Recrad(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "recrad() expects 1 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  double rect[3] = {0.0};
+  if (!ReadConventionVector(env, info[0], rect, "recrad(rect)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_recrad(rect, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling recrad", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object out = Napi::Object::New(env);
+  out.Set("range", Napi::Number::New(env, values[0]));
+  out.Set("ra", Napi::Number::New(env, values[1]));
+  out.Set("dec", Napi::Number::New(env, values[2]));
+  return out;
+}
+
+static Napi::Array Srfrec(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfrec() expects 3 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  int body = 0;
+  if (!ReadConventionBodyId(env, info[0], &body)) return Napi::Array::New(env);
+  double lon = 0.0;
+  if (!ReadConventionScalar(env, info[1], &lon, "srfrec(lon)")) return Napi::Array::New(env);
+  double lat = 0.0;
+  if (!ReadConventionScalar(env, info[2], &lat, "srfrec(lat)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double values[3] = {0.0};
+  const int status = tspice_srfrec(body, lon, lat, values, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling srfrec", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, values, 3);
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +819,13 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "azlrec", Napi::Function::New(env, Azlrec), __func__)) return;
+  if (!SetExportChecked(env, exports, "recazl", Napi::Function::New(env, Recazl), __func__)) return;
+  if (!SetExportChecked(env, exports, "pgrrec", Napi::Function::New(env, Pgrrec), __func__)) return;
+  if (!SetExportChecked(env, exports, "recpgr", Napi::Function::New(env, Recpgr), __func__)) return;
+  if (!SetExportChecked(env, exports, "radrec", Napi::Function::New(env, Radrec), __func__)) return;
+  if (!SetExportChecked(env, exports, "recrad", Napi::Function::New(env, Recrad), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfrec", Napi::Function::New(env, Srfrec), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

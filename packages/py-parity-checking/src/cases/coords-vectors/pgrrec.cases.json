@@ -1,0 +1,464 @@
+[
+  {
+    "caseId": "coords-vectors-pgrrec-earth-name-and-numeric-id",
+    "description": "pgrrec: earth-name-and-numeric-id; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "399",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": " eArTh ",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-spin-sense-and-body-alias",
+    "description": "pgrrec: spin-sense-and-body-alias; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "TSPICE_COORD_PROGRADE",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "TSPICE_COORD_RETROGRADE",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901002",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901003",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-sun-moon-east-exceptions",
+    "description": "pgrrec: sun-moon-east-exceptions; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "SUN",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "MOON",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-sphere-oblate-prolate",
+    "description": "pgrrec: sphere-oblate-prolate; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-scaled-magnitudes",
+    "description": "pgrrec: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1e100,
+        "re": 3.0000000000000002e100,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1e-100,
+        "re": 3e-100,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-override-and-clear-lifecycle",
+    "description": "pgrrec: override-and-clear-lifecycle; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": [" east "]
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-earth-override-cleared",
+    "description": "pgrrec: earth-override-cleared; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY399_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-unknown-body-error",
+    "description": "pgrrec: unknown-body-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "TSPICE_UNKNOWN_COORD_BODY",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-missing-prime-meridian-error",
+    "description": "pgrrec: missing-prime-meridian-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
+    "description": "pgrrec: moon-missing-prime-meridian-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "MOON",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-invalid-longitude-override-error",
+    "description": "pgrrec: invalid-longitude-override-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["NORTH"]
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "9901001",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-invalid-equatorial-radius-error",
+    "description": "pgrrec: invalid-equatorial-radius-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 0,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-invalid-flattening-error",
+    "description": "pgrrec: invalid-flattening-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": -0.4,
+        "alt": 1,
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
+    "description": "pgrrec: negative-altitude-unrestricted-angles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": -0.7,
+        "lat": -0.4,
+        "alt": -0.25,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 6.983185307179586,
+        "lat": 0.4,
+        "alt": 0.5,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0.7,
+        "lat": 2.1,
+        "alt": 1,
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.pgrrec",
+        "body": "EARTH",
+        "lon": 0,
+        "lat": 1.5707963267948966,
+        "alt": 0,
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

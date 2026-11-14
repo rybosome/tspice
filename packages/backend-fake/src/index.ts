@@ -986,6 +986,33 @@ export function createFakeBackend(
     return [r, r, r];
   };
 
+  // Toy longitude conventions for facade tests; this is not a CSPICE oracle.
+  const fakePlanetographicSense = (body: string): number => {
+    const name = body.trim();
+    const id =
+      customNameToBodyCode.get(name) ??
+      customNameToBodyCode.get(name.toLowerCase()) ??
+      parseBodyRef(body);
+    const override = kernelPool.get(`BODY${id}_PGR_POSITIVE_LON`);
+    if (override) {
+      const value =
+        override.type === "C"
+          ? override.values[0]?.trim().toUpperCase()
+          : undefined;
+      if (value === "EAST") return 1;
+      if (value === "WEST") return -1;
+      throw new Error(
+        "Fake backend: invalid planetographic longitude override",
+      );
+    }
+    if (id === 399) return 1;
+    const pm = kernelPool.get(`BODY${id}_PM`);
+    const rate = pm?.type === "N" ? pm.values[1] : undefined;
+    if (rate === undefined)
+      throw new Error("Fake backend: missing prime meridian rate");
+    return id === 301 || id === 10 || rate < 0 ? 1 : -1;
+  };
+
   const timeKitApi = {
     spiceVersion: () => FAKE_SPICE_VERSION,
   } satisfies TimeKitApi;
@@ -2390,6 +2417,78 @@ export function createFakeBackend(
     },
     wnvald: (_size, _n, _window) => {
       throw new Error(spiceCellUnsupported);
+    },
+
+    // Toy coordinate conversions for facade tests, not a numerical oracle.
+    azlrec: (range, az, el, azccw, elplsz) => [
+      range * Math.cos(el) * Math.cos(az),
+      (azccw ? 1 : -1) * range * Math.cos(el) * Math.sin(az),
+      (elplsz ? 1 : -1) * range * Math.sin(el),
+    ],
+    recazl: (rect, azccw, elplsz) => {
+      const range = Math.hypot(...rect);
+      const az =
+        rect[0] === 0 && rect[1] === 0
+          ? 0
+          : Math.atan2((azccw ? 1 : -1) * rect[1], rect[0]);
+      return {
+        range,
+        az: az < 0 ? az + TWO_PI : az,
+        el:
+          range === 0
+            ? 0
+            : Math.atan2(
+                (elplsz ? 1 : -1) * rect[2],
+                Math.hypot(rect[0], rect[1]),
+              ),
+      };
+    },
+    pgrrec: (body, lon, lat, alt, re, f) =>
+      georec(fakePlanetographicSense(body) * lon, lat, alt, re, f),
+    recpgr: (body, rect, re, f) => {
+      const sense = fakePlanetographicSense(body);
+      const result = recgeo([...rect], re, f);
+      const lon = sense * result.lon;
+      return {
+        lon: lon < 0 ? lon + TWO_PI : lon,
+        lat: result.lat,
+        alt: result.alt,
+      };
+    },
+    radrec: (range, ra, dec) => [
+      range * Math.cos(dec) * Math.cos(ra),
+      range * Math.cos(dec) * Math.sin(ra),
+      range * Math.sin(dec),
+    ],
+    recrad: (rect) => {
+      const range = Math.hypot(...rect);
+      const ra =
+        rect[0] === 0 && rect[1] === 0 ? 0 : Math.atan2(rect[1], rect[0]);
+      return {
+        range,
+        ra: ra < 0 ? ra + TWO_PI : ra,
+        dec:
+          range === 0 ? 0 : Math.atan2(rect[2], Math.hypot(rect[0], rect[1])),
+      };
+    },
+    srfrec: (body, lon, lat) => {
+      assertSpiceInt32(body, "srfrec(body)");
+      const entry = kernelPool.get(`BODY${body}_RADII`);
+      if (entry?.type !== "N" || entry.values.length !== 3)
+        throw new Error("Fake backend: srfrec requires three radii");
+      const [a, b, c] = entry.values;
+      if (
+        a === undefined ||
+        b === undefined ||
+        c === undefined ||
+        !(a > 0 && b > 0 && c > 0)
+      )
+        throw new Error("Fake backend: srfrec requires positive radii");
+      const x = Math.cos(lon) * Math.cos(lat);
+      const y = Math.sin(lon) * Math.cos(lat);
+      const z = Math.sin(lat);
+      const scale = 1 / Math.hypot(x / a, y / b, z / c);
+      return [scale * x, scale * y, scale * z];
     },
 
     reclat: (rect) => {

@@ -1,0 +1,150 @@
+[
+  {
+    "caseId": "coords-vectors-azlrec-all-direction-flags",
+    "description": "azlrec: all-direction-flags; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-azlrec-negative-range-unwrapped-angles",
+    "description": "azlrec: negative-range-unwrapped-angles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.azlrec",
+        "range": -5,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 6.983185307179586,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": -6.983185307179586,
+        "el": 0.4,
+        "azccw": true,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": 2.1,
+        "azccw": true,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-azlrec-zero-and-poles",
+    "description": "azlrec: zero-and-poles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 0,
+        "az": 0.7,
+        "el": 0.4,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0,
+        "el": 1.5707963267948966,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0.7,
+        "el": -1.5707963267948966,
+        "azccw": false,
+        "elplsz": true
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 5,
+        "az": 0,
+        "el": 0,
+        "azccw": false,
+        "elplsz": true
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-azlrec-scaled-magnitudes",
+    "description": "azlrec: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 1e200,
+        "az": 0.7,
+        "el": -0.4,
+        "azccw": false,
+        "elplsz": false
+      },
+      {
+        "op": "coords-vectors.azlrec",
+        "range": 1e-200,
+        "az": 0.7,
+        "el": -0.4,
+        "azccw": false,
+        "elplsz": false
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

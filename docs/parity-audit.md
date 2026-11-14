@@ -10,6 +10,34 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Coordinate conventions expansion
+
+A06 adds seven routines without changing the immutable 162-routine Step 7
+baseline. Its 57 registered scenarios contain 152 new-routine calls and 36
+existing state-control steps. Independent angle flags, RA branches, body aliases,
+PM/longitude overrides, signed flattening, planetocentric radii and genuine SPICE
+errors receive routine-specific observations. All prior executions are historical
+until source-bound required local and canonical CI evidence is recorded.
+
+The [coordinate review](step8-coordinate-conventions.md) records the pinned
+Moon/Sun PM lookup prerequisite, authored fixture provenance and cleanup, and
+ten scoped finite-input extreme observations. Tiny distance/RA comparisons are
+rescaled in focused live tests; global tolerance remains unchanged. The
+[batch audit](../data/parity-audits/a06-coordinate-conventions.json) traces both
+actual raw backends, independent oracle decode/dispatch, native wrapper and WASM
+allocation tests, and state lifecycle code. Reviews alone do not claim verification.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.

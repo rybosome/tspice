@@ -529,6 +529,36 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  recazl(
+    rect: readonly number[],
+    azccw: boolean,
+    elplsz: boolean,
+  ): { range: number; az: number; el: number };
+  pgrrec(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  recpgr(
+    body: string,
+    rect: readonly number[],
+    re: number,
+    f: number,
+  ): { lon: number; lat: number; alt: number };
+  radrec(range: number, ra: number, dec: number): number[];
+  recrad(rect: readonly number[]): { range: number; ra: number; dec: number };
+  srfrec(body: number, lon: number, lat: number): number[];
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

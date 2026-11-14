@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 169
+- Planned (not yet implemented): 480
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `azlrec_c` | AZ/EL to rectangular coordinates |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -120,11 +121,16 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
+| `pgrrec_c` | Planetographic to rectangular |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `radrec_c` | Range, RA and DEC to rectangular coordinates |
+| `recazl_c` | Rectangular coordinates to AZ/EL |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
+| `recpgr_c` | Rectangular to planetographic |
+| `recrad_c` | Rectangular coordinates to RA and DEC |
 | `recsph_c` | Rectangular to spherical coordinates |
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
@@ -157,6 +163,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `srfrec_c` | Surface to rectangular coordinates |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
@@ -192,7 +199,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `appndd_c` | Append an item to a double precision cell |
 | `appndi_c` | Append an item to an integer cell |
 | `azlcpo_c` | AZ/EL, constant position observer state |
-| `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
@@ -489,7 +495,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pckopn_c` | PCK, open new file |
 | `pckuof_c` | PCK, unload binary file |
 | `pckw02_c` | PCK, write type 2 segment |
-| `pgrrec_c` | Planetographic to rectangular |
 | `phaseq_c` | Phase angle quantity between bodies centers |
 | `pi_c` | Value of pi |
 | `pjelpl_c` | Project ellipse onto plane |
@@ -514,14 +519,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `qderiv_c` | Quadratic derivative |
 | `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
 | `qxq_c` | Quaternion times quaternion |
-| `radrec_c` | Range, RA and DEC to rectangular coordinates |
 | `rav2xf_c` | Rotation and angular velocity to transform |
 | `raxisa_c` | Rotation axis of a matrix |
 | `rdtext_c` | Read a line from a text file |
-| `recazl_c` | Rectangular coordinates to AZ/EL |
 | `reccyl_c` | Rectangular to cylindrical coordinates |
-| `recpgr_c` | Rectangular to planetographic |
-| `recrad_c` | Rectangular coordinates to RA and DEC |
 | `removc_c` | Remove an item from a character set |
 | `removd_c` | Remove an item from a double precision set |
 | `removi_c` | Remove an item from an integer set |
@@ -583,7 +584,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `srfc2s_c` | Surface and body ID codes to surface string |
 | `srfcss_c` | Surface ID and body string to surface string |
 | `srfnrm_c` | Map surface points to outward normal vectors |
-| `srfrec_c` | Surface to rectangular coordinates |
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
 | `srfxpt_c` | Surface intercept point |
