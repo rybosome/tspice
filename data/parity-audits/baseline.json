@@ -425,7 +425,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/714"],
-      "nextAction": "Both full required local lanes and inspected Linux Node22 source CI passed at02544981; all171routine audits have current source-bound verification. Final metadata PR matrix and explicit rebaseability remain required; no merge authorized."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
