@@ -421,8 +421,8 @@
         "moved_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run focused real-backend and independent memory/ownership checks, then record fresh full local and canonical CI evidence for the complete source. Confirm final CI and rebaseability before delivery."
+      "prs": ["https://github.com/rybosome/tspice/pull/720"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

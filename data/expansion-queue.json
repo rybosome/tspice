@@ -234,13 +234,21 @@
           "moved_c"
         ]
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Run focused compiled ownership, IEEE and guarded-memory checks, then both required local lanes and canonical CI against this source.",
+      "prs": ["https://github.com/rybosome/tspice/pull/720"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "dd9e6ebab37e8cfa06acced90e23d9ea3057fc67",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552572404/job/132318104654",
+          "result": "Both complete required lanes passed locally on dd9e6ebab37e8cfa06acced90e23d9ea3057fc67. JavaScript: 2,511 parity tests and one expected guard skip. Native-required: 2,288 registered Node/WASM live comparisons; 2,512 parity-package tests with no skips, including the native-required guard; 100 native wrapper, 624 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132318104654 on dd9e6ebab37e8cfa06acced90e23d9ea3057fc67: 2,288 registered Node/WASM live comparisons; 2,512 parity-package tests with no skips, including the native-required guard; 100 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-array-storage",
       "branch": "codex/expand-array-storage",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Six direct CSPICE routines and independently typed locked-library bindings. Registered 35 workflows / 92 canonical calls, including three genuine errors. Source, ABI and memory review recorded. Fresh required local and observed CI validation pending. Focused runs passed 70 live Node/WASM comparisons, 11 public/oracle tests, 34 native and 24 WASM tests. Native test identity assertion now avoids re-reading instrumented inputs."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source dd9e6eba. 2,288 registered Node/WASM live comparisons; 2,512 parity-package tests with no skips, including the native-required guard; 100 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Six direct CSPICE routines and independently typed locked-library bindings. Registered 35 workflows / 92 canonical calls, including three genuine errors. Source, ABI and memory review recorded. Fresh required local and observed CI validation pending. Focused runs passed 70 live Node/WASM comparisons, 11 public/oracle tests, 34 native and 24 WASM tests. Native test identity assertion now avoids re-reading instrumented inputs."
     },
     {
       "id": "A05-cylindrical-coordinates",
