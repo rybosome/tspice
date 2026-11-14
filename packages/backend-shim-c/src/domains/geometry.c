@@ -753,3 +753,80 @@ done:
   chkout_c("LSPCN"); chkout_c("lspcn_c");
   return status ? status : geometry_status(err, errMaxBytes);
 }
+
+// A text ID can resolve to INT_MIN before a body/frame lookup reaches the signed hash.
+// Leave ordinary unknown names to the canonical routine in its own input order.
+static int legacy_body_domain(const char *const *bodies, size_t count, char *err, int cap) {
+  if (check_body_mapping_codes(err, cap)) return 1;
+  for (size_t i = 0; i < count; ++i) {
+    SpiceInt code = 0;
+    SpiceBoolean found = SPICEFALSE;
+    bods2c_c(bodies[i], &code, &found);
+    if (failed_c()) return geometry_status(err, cap);
+    if (!found) return 0;
+    if (code == INT_MIN) return geometry_input_error(err, cap, "Body outside the N0067 signed hash domain");
+  }
+  return 0;
+}
+
+int tspice_illum(const char *target, double et, const char *abcorr, const char *observer, const double *spoint, double *out, char *err, int errMaxBytes) {
+  const char *strings[] = {target, abcorr, observer};
+  if (check_geometry_arguments(et, strings, 3, out, err, errMaxBytes)) return 1;
+  if (!spoint || !isfinite(spoint[0]) || !isfinite(spoint[1]) || !isfinite(spoint[2]))
+    return geometry_input_error(err, errMaxBytes, "Expected a finite three-vector");
+  if (*target && *abcorr && *observer) {
+    const char *bodies[] = {target, observer};
+    if (legacy_body_domain(bodies, 2, err, errMaxBytes)) return 1;
+  }
+  illum_c(target, et, abcorr, observer, spoint, out, out+1, out+2);
+  return geometry_status(err, errMaxBytes);
+}
+
+int tspice_srfxpt(const char *method, const char *target, double et, const char *abcorr, const char *observer, const char *dref, const double *dvec, double *out, char *err, int errMaxBytes) {
+  const char *strings[] = {method, target, abcorr, observer, dref};
+  if (check_geometry_arguments(et, strings, 5, out, err, errMaxBytes)) return 1;
+  if (!dvec || !isfinite(dvec[0]) || !isfinite(dvec[1]) || !isfinite(dvec[2]))
+    return geometry_input_error(err, errMaxBytes, "Expected a finite three-vector");
+  if (*method && *target && *abcorr && *observer && *dref) {
+    const char *bodies[] = {target, observer};
+    if (legacy_body_domain(bodies, 2, err, errMaxBytes)) return 1;
+  }
+  SpiceBoolean found = SPICEFALSE;
+  srfxpt_c(method, target, et, abcorr, observer, dref, dvec, out+1, out+4, out+5, out+6, &found);
+  if (!failed_c()) out[0] = found == SPICETRUE ? 1.0 : 0.0;
+  return geometry_status(err, errMaxBytes);
+}
+
+int tspice_subpt(const char *method, const char *target, double et, const char *abcorr, const char *observer, double *out, char *err, int errMaxBytes) {
+  const char *strings[] = {method, target, abcorr, observer};
+  if (check_geometry_arguments(et, strings, 4, out, err, errMaxBytes)) return 1;
+  if (*method && *target && *abcorr && *observer) {
+    const char *bodies[] = {target, observer};
+    if (legacy_body_domain(bodies, 2, err, errMaxBytes)) return 1;
+  }
+  subpt_c(method, target, et, abcorr, observer, out, out+3);
+  return geometry_status(err, errMaxBytes);
+}
+
+int tspice_subsol(const char *method, const char *target, double et, const char *abcorr, const char *observer, double *out, char *err, int errMaxBytes) {
+  const char *strings[] = {method, target, abcorr, observer};
+  if (check_geometry_arguments(et, strings, 4, out, err, errMaxBytes)) return 1;
+  if (*method && *target && *abcorr && *observer) {
+    const char *bodies[] = {target, observer};
+    if (legacy_body_domain(bodies, 2, err, errMaxBytes)) return 1;
+  }
+  subsol_c(method, target, et, abcorr, observer, out);
+  return geometry_status(err, errMaxBytes);
+}
+
+int tspice_edterm(const char *trmtyp, const char *source, const char *target, double et, const char *fixref, const char *abcorr, const char *observer, int npts, double *out, char *err, int errMaxBytes) {
+  const char *strings[] = {trmtyp, source, target, fixref, abcorr, observer};
+  if (check_geometry_arguments(et, strings, 6, out, err, errMaxBytes)) return 1;
+  if (npts > 11184809) return geometry_input_error(err, errMaxBytes, "EDTERM points exceed the 256 MiB array bound");
+  if (*trmtyp && *source && *target && *fixref && *abcorr && *observer) {
+    const char *bodies[] = {target, source, observer};
+    if (legacy_body_domain(bodies, 3, err, errMaxBytes)) return 1;
+  }
+  edterm_c(trmtyp, source, target, et, fixref, abcorr, observer, npts, out, out+1, (SpiceDouble (*)[3])(out+4));
+  return geometry_status(err, errMaxBytes);
+}

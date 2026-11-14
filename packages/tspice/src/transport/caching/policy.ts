@@ -7,6 +7,12 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "kit.loadKernel",
   "kit.unloadKernel",
   "kit.kclear",
+  // Legacy geometry depends on live frame associations, radii and ephemerides.
+  "raw.illum",
+  "raw.srfxpt",
+  "raw.subpt",
+  "raw.subsol",
+  "raw.edterm",
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",

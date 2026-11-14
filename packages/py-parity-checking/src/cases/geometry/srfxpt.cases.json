@@ -1,0 +1,616 @@
+[
+  {
+    "caseId": "geometry-srfxpt-geometric-epochs",
+    "description": "Compare every returned field at two observation epochs with moving synthetic bodies.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 327.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration results with a moving observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-transmission",
+    "description": "Compare light transmission with and without converged stellar-aberration correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "XLT",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "XCN+S",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-unknown-body",
+    "description": "A nonnumeric, unregistered target should return its original lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "UNKNOWN_LEGACY_BODY",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-missing-spk",
+    "description": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-invalid-correction",
+    "description": "Reject an unsupported aberration option on otherwise valid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "INVALID",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-empty-text",
+    "description": "The original outer C entry signals on a zero-length target string.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-outside-coverage",
+    "description": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 12000.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-no-associated-frame",
+    "description": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOFRAME"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-same-body",
+    "description": "The target and observer resolve to the same body code.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100101",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BODIESNOTDISTINCT"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-axis-hit",
+    "description": "A non-unit ray from x=20 km hits the x=3 km semiaxis, with distance 17 km and observer position relative to target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-17, 0, 0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-miss-hit",
+    "description": "The outward and off-target rays return only absence, then the reversed ray hits.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [1, 0, 0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [0, 1, 0]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-rotated-direction",
+    "description": "The ray expressed in the rotated target-centered frame hits the same target, while the returned coordinates remain in the default frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "ELLIPSOID",
+        "dref": "AUDIT_GEOMETRY_ROT",
+        "dvec": [-0.8660254037844387, -0.5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-bad-ray-frame",
+    "description": "An unknown direction frame is distinguished from a genuine geometrical miss.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "UNKNOWN_FRAME_E14",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-zero-ray",
+    "description": "An actual zero ray yields the original ellipsoid diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-bad-method",
+    "description": "The legacy intercept accepts ELLIPSOID only.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "DSK/UNPRIORITIZED",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDMETHOD"]
+    }
+  },
+  {
+    "caseId": "geometry-srfxpt-rotated-default",
+    "description": "Reassign the default frame to the same target\u2019s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_ROT"]
+      },
+      {
+        "op": "geometry.srfxpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "ELLIPSOID",
+        "dref": "J2000",
+        "dvec": [-10.0, -4.0, -3.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

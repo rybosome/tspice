@@ -1,0 +1,490 @@
+[
+  {
+    "caseId": "geometry-subpt-geometric-epochs",
+    "description": "Compare every returned field at two observation epochs with moving synthetic bodies.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 327.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpt-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration results with a moving observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpt-unknown-body",
+    "description": "A nonnumeric, unregistered target should return its original lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "UNKNOWN_LEGACY_BODY",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-missing-spk",
+    "description": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-invalid-correction",
+    "description": "Reject an unsupported aberration option on otherwise valid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "INVALID",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-empty-text",
+    "description": "The original outer C entry signals on a zero-length target string.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-outside-coverage",
+    "description": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 12000.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-no-associated-frame",
+    "description": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOFRAME"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-same-body",
+    "description": "The target and observer resolve to the same body code.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100101",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BODIESNOTDISTINCT"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-near-and-intercept",
+    "description": "Compare the nearest and radial intercept definitions on a triaxial ellipsoid; check every coordinate and any returned altitude.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Intercept"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "near POINT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpt-axis-and-off-axis",
+    "description": "A different observer and different epoch distinguish the default target frame and moving body geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100104",
+        "method": "Intercept"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": -153.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Intercept"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpt-bad-method",
+    "description": "A modern method spelling does not belong to this legacy interface.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "NEAR POINT/ELLIPSOID"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DUBIOUSMETHOD"]
+    }
+  },
+  {
+    "caseId": "geometry-subpt-rotated-default",
+    "description": "Reassign the default frame to the same target\u2019s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_ROT"]
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-subpt-interior-observer",
+    "description": "A larger authored target envelope encloses the observer. Near point returns negative signed altitude and Intercept returns the positive radial distance.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "BODY100101_RADII",
+        "values": [30, 20, 10]
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Near point"
+      },
+      {
+        "op": "geometry.subpt",
+        "target": "100101",
+        "et": 0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "method": "Intercept"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

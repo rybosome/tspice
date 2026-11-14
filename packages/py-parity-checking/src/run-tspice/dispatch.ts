@@ -205,6 +205,11 @@ export function dispatchStep(
     case "geometry.phaseq":
     case "geometry.lspcn":
     case "geometry.trgsep":
+    case "geometry.illum":
+    case "geometry.srfxpt":
+    case "geometry.subpt":
+    case "geometry.subsol":
+    case "geometry.edterm":
     case "geometry.occult":
     case "geometry.nvc2pl":
     case "geometry.pl2nvc":

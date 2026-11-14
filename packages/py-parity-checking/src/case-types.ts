@@ -1204,6 +1204,56 @@ export type StepGeometryTrgsep = {
   abcorr: string;
 };
 
+export type StepGeometryIllum = {
+  op: "geometry.illum";
+  target: string;
+  et: number;
+  abcorr: string;
+  observer: string;
+  spoint: Vec3;
+};
+
+export type StepGeometrySrfxpt = {
+  op: "geometry.srfxpt";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  observer: string;
+  dref: string;
+  dvec: Vec3;
+};
+
+export type StepGeometrySubpt = {
+  op: "geometry.subpt";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  observer: string;
+};
+
+export type StepGeometrySubsol = {
+  op: "geometry.subsol";
+  method: string;
+  target: string;
+  et: number;
+  abcorr: string;
+  observer: string;
+};
+
+export type StepGeometryEdterm = {
+  op: "geometry.edterm";
+  trmtyp: string;
+  source: string;
+  target: string;
+  et: number;
+  fixref: string;
+  abcorr: string;
+  observer: string;
+  npts: number;
+};
+
 export type StepGeometryOccult = {
   op: "geometry.occult";
   targ1: string;
@@ -1470,6 +1520,11 @@ export type WorkflowStep =
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
+  | StepGeometryIllum
+  | StepGeometrySrfxpt
+  | StepGeometrySubpt
+  | StepGeometrySubsol
+  | StepGeometryEdterm
   | StepGeometryOccult
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc
@@ -1912,6 +1967,28 @@ export type StepOutput =
   | { op: "geometry.phaseq"; value: number }
   | { op: "geometry.lspcn"; value: number }
   | { op: "geometry.trgsep"; value: number }
+  | {
+      op: "geometry.illum";
+      value: { phase: number; solar: number; emissn: number };
+    }
+  | {
+      op: "geometry.srfxpt";
+      value:
+        | { found: false }
+        | {
+            found: true;
+            spoint: Vec3;
+            dist: number;
+            trgepc: number;
+            obspos: Vec3;
+          };
+    }
+  | { op: "geometry.subpt"; value: { spoint: Vec3; alt: number } }
+  | { op: "geometry.subsol"; value: Vec3 }
+  | {
+      op: "geometry.edterm";
+      value: { trgepc: number; obspos: Vec3; trmpts: Vec3[] };
+    }
   | { op: "geometry.occult"; value: number }
   | { op: "geometry.nvc2pl"; value: SpicePlane }
   | {

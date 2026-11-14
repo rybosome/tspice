@@ -537,6 +537,20 @@ export function getNodeBinding(): NativeAddon {
     typeof native.spkcls === "function",
     "Expected native addon to export spkcls(handle)",
   );
+  invariant(typeof native.illum === "function", "Native addon missing illum()");
+  invariant(
+    typeof native.srfxpt === "function",
+    "Native addon missing srfxpt()",
+  );
+  invariant(typeof native.subpt === "function", "Native addon missing subpt()");
+  invariant(
+    typeof native.subsol === "function",
+    "Native addon missing subsol()",
+  );
+  invariant(
+    typeof native.edterm === "function",
+    "Native addon missing edterm()",
+  );
   invariant(
     typeof native.phaseq === "function",
     "Native addon missing phaseq()",

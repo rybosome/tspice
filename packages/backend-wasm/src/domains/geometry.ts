@@ -1,3 +1,8 @@
+import {
+  legacySurfaceInput,
+  legacySurfaceVector,
+  edtermStorage,
+} from "@rybosome/tspice-core";
 import { spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   AbCorr,
@@ -718,6 +723,343 @@ function assertFiniteNumberArrayFixed(
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
+    illum: (target, et, abcorr, observer, spoint) => {
+      geometryNumber(et, "et");
+      const targetBytes = spiceStringByteLength(
+        target,
+        "target",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "abcorr",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "observer",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const input = legacySurfaceInput(spoint);
+      const count = 3;
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          targetBytes + 1,
+          abcorrBytes + 1,
+          observerBytes + 1,
+          24,
+          8 * count,
+        ],
+        (errPtr, targetPtr, abcorrPtr, observerPtr, inputPtr, outPtr) => {
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          module.HEAPF64.set(input, inputPtr >>> 3);
+          const status = module._tspice_illum(
+            targetPtr,
+            et,
+            abcorrPtr,
+            observerPtr,
+            inputPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          const out = module.HEAPF64.subarray(start, start + count);
+          return { phase: out[0]!, solar: out[1]!, emissn: out[2]! };
+        },
+      );
+    },
+    srfxpt: (method, target, et, abcorr, observer, dref, dvec) => {
+      geometryNumber(et, "et");
+      const methodBytes = spiceStringByteLength(
+        method,
+        "method",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const targetBytes = spiceStringByteLength(
+        target,
+        "target",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "abcorr",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "observer",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const drefBytes = spiceStringByteLength(
+        dref,
+        "dref",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const input = legacySurfaceInput(dvec);
+      const count = 9;
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          methodBytes + 1,
+          targetBytes + 1,
+          abcorrBytes + 1,
+          observerBytes + 1,
+          drefBytes + 1,
+          24,
+          8 * count,
+        ],
+        (
+          errPtr,
+          methodPtr,
+          targetPtr,
+          abcorrPtr,
+          observerPtr,
+          drefPtr,
+          inputPtr,
+          outPtr,
+        ) => {
+          writeGeometryText(module, methodPtr, methodBytes, method);
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          writeGeometryText(module, drefPtr, drefBytes, dref);
+          module.HEAPF64.set(input, inputPtr >>> 3);
+          const status = module._tspice_srfxpt(
+            methodPtr,
+            targetPtr,
+            et,
+            abcorrPtr,
+            observerPtr,
+            drefPtr,
+            inputPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          const out = module.HEAPF64.subarray(start, start + count);
+          if (out[0] === 0) return { found: false };
+          if (out[0] !== 1) throw new TypeError("Invalid SRFXPT found flag");
+          return {
+            found: true,
+            spoint: legacySurfaceVector(out, 1),
+            dist: out[4]!,
+            trgepc: out[5]!,
+            obspos: legacySurfaceVector(out, 6),
+          };
+        },
+      );
+    },
+    subpt: (method, target, et, abcorr, observer) => {
+      geometryNumber(et, "et");
+      const methodBytes = spiceStringByteLength(
+        method,
+        "method",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const targetBytes = spiceStringByteLength(
+        target,
+        "target",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "abcorr",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "observer",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const count = 4;
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          methodBytes + 1,
+          targetBytes + 1,
+          abcorrBytes + 1,
+          observerBytes + 1,
+          8 * count,
+        ],
+        (errPtr, methodPtr, targetPtr, abcorrPtr, observerPtr, outPtr) => {
+          writeGeometryText(module, methodPtr, methodBytes, method);
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          const status = module._tspice_subpt(
+            methodPtr,
+            targetPtr,
+            et,
+            abcorrPtr,
+            observerPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          const out = module.HEAPF64.subarray(start, start + count);
+          return { spoint: legacySurfaceVector(out, 0), alt: out[3]! };
+        },
+      );
+    },
+    subsol: (method, target, et, abcorr, observer) => {
+      geometryNumber(et, "et");
+      const methodBytes = spiceStringByteLength(
+        method,
+        "method",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const targetBytes = spiceStringByteLength(
+        target,
+        "target",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "abcorr",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "observer",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const count = 3;
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          methodBytes + 1,
+          targetBytes + 1,
+          abcorrBytes + 1,
+          observerBytes + 1,
+          8 * count,
+        ],
+        (errPtr, methodPtr, targetPtr, abcorrPtr, observerPtr, outPtr) => {
+          writeGeometryText(module, methodPtr, methodBytes, method);
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          const status = module._tspice_subsol(
+            methodPtr,
+            targetPtr,
+            et,
+            abcorrPtr,
+            observerPtr,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          const out = module.HEAPF64.subarray(start, start + count);
+          return legacySurfaceVector(out, 0);
+        },
+      );
+    },
+    edterm: (trmtyp, source, target, et, fixref, abcorr, observer, npts) => {
+      geometryNumber(et, "et");
+      const trmtypBytes = spiceStringByteLength(
+        trmtyp,
+        "trmtyp",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const sourceBytes = spiceStringByteLength(
+        source,
+        "source",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const targetBytes = spiceStringByteLength(
+        target,
+        "target",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const fixrefBytes = spiceStringByteLength(
+        fixref,
+        "fixref",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const abcorrBytes = spiceStringByteLength(
+        abcorr,
+        "abcorr",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const observerBytes = spiceStringByteLength(
+        observer,
+        "observer",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const count = edtermStorage(npts);
+      return withAllocs(
+        module,
+        [
+          WASM_ERR_MAX_BYTES,
+          trmtypBytes + 1,
+          sourceBytes + 1,
+          targetBytes + 1,
+          fixrefBytes + 1,
+          abcorrBytes + 1,
+          observerBytes + 1,
+          8 * count,
+        ],
+        (
+          errPtr,
+          trmtypPtr,
+          sourcePtr,
+          targetPtr,
+          fixrefPtr,
+          abcorrPtr,
+          observerPtr,
+          outPtr,
+        ) => {
+          writeGeometryText(module, trmtypPtr, trmtypBytes, trmtyp);
+          writeGeometryText(module, sourcePtr, sourceBytes, source);
+          writeGeometryText(module, targetPtr, targetBytes, target);
+          writeGeometryText(module, fixrefPtr, fixrefBytes, fixref);
+          writeGeometryText(module, abcorrPtr, abcorrBytes, abcorr);
+          writeGeometryText(module, observerPtr, observerBytes, observer);
+          const status = module._tspice_edterm(
+            trmtypPtr,
+            sourcePtr,
+            targetPtr,
+            et,
+            fixrefPtr,
+            abcorrPtr,
+            observerPtr,
+            npts,
+            outPtr,
+            errPtr,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, status);
+          const start = outPtr >>> 3;
+          const out = module.HEAPF64.subarray(start, start + count);
+          return {
+            trgepc: out[0]!,
+            obspos: legacySurfaceVector(out, 1),
+            trmpts: Array.from({ length: npts }, (_, i) =>
+              legacySurfaceVector(out, 4 + 3 * i),
+            ),
+          };
+        },
+      );
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       const targetBytes = spiceStringByteLength(

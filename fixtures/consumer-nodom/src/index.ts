@@ -60,3 +60,52 @@ export async function geometryQuantitiesConsumer(
     asyncSpicetrgsep,
   ];
 }
+
+/** Exercise owned legacy geometry results through the public synchronous and asynchronous surfaces. */
+export async function legacySurfaceConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const p = [1, 0, 0] as const;
+  const angles = spice.raw.illum("499", 0, "NONE", "EARTH", p);
+  const hit = spice.raw.srfxpt(
+    "ELLIPSOID",
+    "499",
+    0,
+    "NONE",
+    "EARTH",
+    "J2000",
+    p,
+  );
+  const sub = await asyncSpice.raw.subpt(
+    "Near point",
+    "499",
+    0,
+    "NONE",
+    "EARTH",
+  );
+  const sun = await asyncSpice.raw.subsol(
+    "Intercept",
+    "499",
+    0,
+    "NONE",
+    "EARTH",
+  );
+  const terminator = await asyncSpice.raw.edterm(
+    "UMBRAL",
+    "SUN",
+    "499",
+    0,
+    "IAU_MARS",
+    "NONE",
+    "EARTH",
+    4,
+  );
+  void [
+    angles.phase,
+    hit.found ? hit.obspos : undefined,
+    sub.alt,
+    sun[2],
+    terminator.trmpts,
+  ];
+}

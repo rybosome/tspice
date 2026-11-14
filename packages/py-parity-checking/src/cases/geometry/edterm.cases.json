@@ -1,0 +1,561 @@
+[
+  {
+    "caseId": "geometry-edterm-geometric-epochs",
+    "description": "Compare every returned field at two observation epochs with moving synthetic bodies.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 327.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration results with a moving observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-transmission",
+    "description": "Compare light transmission with and without converged stellar-aberration correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "XLT",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "XCN+S",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-unknown-body",
+    "description": "A nonnumeric, unregistered target should return its original lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "UNKNOWN_LEGACY_BODY",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTRANSLATION"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-missing-spk",
+    "description": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-invalid-correction",
+    "description": "Reject an unsupported aberration option on otherwise valid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "INVALID",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-empty-text",
+    "description": "The original outer C entry signals on a zero-length target string.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-outside-coverage",
+    "description": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 12000.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-penumbral-ring",
+    "description": "Return every ordered row of the finite-source penumbral ring and compare the umbral ring in the same frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "PENUMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 9
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-one-and-two",
+    "description": "One and two requested terminator points yield exactly one and two full triples.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 1
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-rotated-output",
+    "description": "Return all components in the explicit rotated target-centered frame without a default association.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-larger-source",
+    "description": "Use the wider synthetic source at the same center to distinguish the finite angular source size.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100105",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "PENUMBRAL",
+        "source": "100105",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-edterm-bad-frame",
+    "description": "A frame centered on another body yields the specific frame-center error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "J2000",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFIXREF"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-bad-type",
+    "description": "The scientific terminator type parser rejects an unknown spelling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "OTHER",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-zero-count",
+    "description": "A zero requested row count reports the toolkit size diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-negative-count",
+    "description": "A negative requested row count reaches the scientific diagnostic with non-null bounded storage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100103",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": -2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  },
+  {
+    "caseId": "geometry-edterm-coincident-source",
+    "description": "Coincident source and target fail the finite-source separation requirement.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.edterm",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "trmtyp": "UMBRAL",
+        "source": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "npts": 6
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["OBJECTSTOOCLOSE"]
+    }
+  }
+]

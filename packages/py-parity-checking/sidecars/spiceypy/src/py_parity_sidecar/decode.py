@@ -121,6 +121,11 @@ from .models import (
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
+    StepGeometryIllum,
+    StepGeometrySrfxpt,
+    StepGeometrySubpt,
+    StepGeometrySubsol,
+    StepGeometryEdterm,
     StepGeometryOccult,
     StepGeometryPl2nvc,
     StepGeometrySincpt,
@@ -1628,6 +1633,61 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 frame2=_expect_string(step.get("frame2"), label="geometry.trgsep.frame2"),
                 observer=_expect_string(step.get("observer"), label="geometry.trgsep.observer"),
                 abcorr=_expect_string(step.get("abcorr"), label="geometry.trgsep.abcorr"),
+            )
+
+        case "geometry.illum":
+            return StepGeometryIllum(
+                op=op,
+                target=_expect_string(step.get("target"), label="geometry.illum.target"),
+                et=_expect_number(step.get("et"), label="geometry.illum.et"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.illum.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.illum.observer"),
+                spoint=_expect_vec3(step.get("spoint"), label="geometry.illum.spoint"),
+            )
+
+        case "geometry.srfxpt":
+            return StepGeometrySrfxpt(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.srfxpt.method"),
+                target=_expect_string(step.get("target"), label="geometry.srfxpt.target"),
+                et=_expect_number(step.get("et"), label="geometry.srfxpt.et"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.srfxpt.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.srfxpt.observer"),
+                dref=_expect_string(step.get("dref"), label="geometry.srfxpt.dref"),
+                dvec=_expect_vec3(step.get("dvec"), label="geometry.srfxpt.dvec"),
+            )
+
+        case "geometry.subpt":
+            return StepGeometrySubpt(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.subpt.method"),
+                target=_expect_string(step.get("target"), label="geometry.subpt.target"),
+                et=_expect_number(step.get("et"), label="geometry.subpt.et"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.subpt.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.subpt.observer"),
+            )
+
+        case "geometry.subsol":
+            return StepGeometrySubsol(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.subsol.method"),
+                target=_expect_string(step.get("target"), label="geometry.subsol.target"),
+                et=_expect_number(step.get("et"), label="geometry.subsol.et"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.subsol.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.subsol.observer"),
+            )
+
+        case "geometry.edterm":
+            return StepGeometryEdterm(
+                op=op,
+                trmtyp=_expect_string(step.get("trmtyp"), label="geometry.edterm.trmtyp"),
+                source=_expect_string(step.get("source"), label="geometry.edterm.source"),
+                target=_expect_string(step.get("target"), label="geometry.edterm.target"),
+                et=_expect_number(step.get("et"), label="geometry.edterm.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.edterm.fixref"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.edterm.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.edterm.observer"),
+                npts=_expect_int(step.get("npts"), label="geometry.edterm.npts"),
             )
 
         case "geometry.occult":

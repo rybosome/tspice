@@ -7,6 +7,11 @@ import type {
   StepGeometryPhaseq,
   StepGeometryLspcn,
   StepGeometryTrgsep,
+  StepGeometryIllum,
+  StepGeometrySrfxpt,
+  StepGeometrySubpt,
+  StepGeometrySubsol,
+  StepGeometryEdterm,
   StepGeometryOccult,
   StepGeometryPl2nvc,
   StepGeometrySincpt,
@@ -27,6 +32,11 @@ type GeometryStep =
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
+  | StepGeometryIllum
+  | StepGeometrySrfxpt
+  | StepGeometrySubpt
+  | StepGeometrySubsol
+  | StepGeometryEdterm
   | StepGeometryOccult
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc;
@@ -213,6 +223,66 @@ export function runGeometryStep(
           step.frame2,
           step.observer,
           step.abcorr,
+        ),
+      };
+    case "geometry.illum":
+      return {
+        op: step.op,
+        value: context.spice.raw.illum(
+          step.target,
+          step.et,
+          step.abcorr,
+          step.observer,
+          step.spoint,
+        ),
+      };
+    case "geometry.srfxpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfxpt(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.observer,
+          step.dref,
+          step.dvec,
+        ),
+      };
+    case "geometry.subpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.subpt(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.observer,
+        ),
+      };
+    case "geometry.subsol":
+      return {
+        op: step.op,
+        value: context.spice.raw.subsol(
+          step.method,
+          step.target,
+          step.et,
+          step.abcorr,
+          step.observer,
+        ),
+      };
+    case "geometry.edterm":
+      return {
+        op: step.op,
+        value: context.spice.raw.edterm(
+          step.trmtyp,
+          step.source,
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.observer,
+          step.npts,
         ),
       };
     case "geometry.occult": {

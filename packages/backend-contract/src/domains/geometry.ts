@@ -18,6 +18,71 @@ import type {
 
 /** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
+  /** Legacy solar illumination at a target-fixed surface point (km). Return phase, solar incidence and emission angles in radians. The target uses its default body-fixed frame and the solar ephemeris. Light-time corrections use the target-center epoch.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_c.html
+   */
+  illum(
+    target: string,
+    et: number,
+    abcorr: AbCorr | string,
+    observer: string,
+    spoint: Readonly<SpiceVector3>,
+  ): { phase: number; solar: number; emissn: number };
+
+  /** Intersect an observer ray (dvec in dref) with the target ellipsoid in its default body-fixed frame. A hit returns surface point and target-to-observer position in km, observer distance in km, and intercept epoch in TDB seconds past J2000. A miss exposes only found=false.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfxpt_c.html
+   */
+  srfxpt(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: AbCorr | string,
+    observer: string,
+    dref: string,
+    dvec: Readonly<SpiceVector3>,
+  ): Found<{
+    spoint: SpiceVector3;
+    dist: number;
+    trgepc: number;
+    obspos: SpiceVector3;
+  }>;
+
+  /** Return the sub-observer point in km in the default target-fixed frame and its altitude in km. Near point uses the closest point (signed altitude inside); Intercept uses the center-to-observer ray. Aberration corrections refer to the target center.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subpt_c.html
+   */
+  subpt(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): { spoint: SpiceVector3; alt: number };
+
+  /** Return the sub-solar point in km in the default target-fixed frame. Near point yields the closest surface point to the Sun; Intercept follows the center-to-Sun ray. A corrected target epoch uses the observer reception light time.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subsol_c.html
+   */
+  subsol(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: AbCorr | string,
+    observer: string,
+  ): SpiceVector3;
+
+  /** Compute an ordered set of ellipsoid umbral or penumbral terminator points in the named target-fixed frame. The source sphere uses its largest radius. Return the target-center epoch in TDB seconds past J2000, target-to-observer position and all npts target-fixed points in km. At most 11,184,809 points fit one bounded vector buffer.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edterm_c.html
+   */
+  edterm(
+    trmtyp: string,
+    source: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    observer: string,
+    npts: number,
+  ): { trgepc: number; obspos: SpiceVector3; trmpts: SpiceVector3[] };
+
   /**
    * Compute the angle at the target center between illuminator and observer, in radians
    * from 0 to π. Use three distinct body names or numeric strings, finite ET in TDB

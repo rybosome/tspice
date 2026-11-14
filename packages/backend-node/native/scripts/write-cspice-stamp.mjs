@@ -1,3 +1,5 @@
+import { stageLegacyGeometry } from "../../../../scripts/stage-legacy-geometry.mjs";
+import { execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -244,6 +246,30 @@ async function main() {
   ].join("\n");
 
   writeIfChanged(headerPath, header);
+
+  // TSPICE_CSPICE_DIR may hold headers and libraries only. In that case use
+  // the same pinned source as the WASM build through its verified cache.
+  let sourceDir = path.join(cspiceDir, "src", "cspice");
+  if (!fs.existsSync(path.join(sourceDir, "srfxpt.c"))) {
+    const root = getRepoRoot();
+    sourceDir = path.join(
+      root,
+      ".cache",
+      "cspice",
+      manifest.toolkitVersion,
+      "source",
+      "cspice",
+      "src",
+      "cspice",
+    );
+    if (!fs.existsSync(path.join(sourceDir, "srfxpt.c")))
+      execFileSync(
+        process.execPath,
+        [path.join(root, "scripts", "fetch-cspice.mjs"), "--source"],
+        { stdio: ["ignore", "ignore", "inherit"] },
+      );
+  }
+  stageLegacyGeometry(sourceDir, generatedDir);
 
   // Print the absolute generated directory path for consumption by binding.gyp via
   // the tspice_native_generated_dir variable.

@@ -120,6 +120,11 @@ from .geometry import (
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
+    StepGeometryIllum,
+    StepGeometrySrfxpt,
+    StepGeometrySubpt,
+    StepGeometrySubsol,
+    StepGeometryEdterm,
     StepGeometryOccult,
     StepGeometryPl2nvc,
     StepGeometrySincpt,
@@ -365,6 +370,11 @@ WorkflowStep: TypeAlias = (
     | StepGeometryPhaseq
     | StepGeometryLspcn
     | StepGeometryTrgsep
+    | StepGeometryIllum
+    | StepGeometrySrfxpt
+    | StepGeometrySubpt
+    | StepGeometrySubsol
+    | StepGeometryEdterm
     | StepGeometryOccult
     | StepGeometryNvc2pl
     | StepGeometryPl2nvc

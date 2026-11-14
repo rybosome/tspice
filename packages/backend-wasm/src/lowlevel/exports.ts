@@ -760,6 +760,61 @@ export type EmscriptenModule = {
   ): number;
 
   // Derived geometry primitives
+  _tspice_illum(
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    spointPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfxpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    drefPtr: number,
+    dvecPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_subpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_subsol(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edterm(
+    trmtypPtr: number,
+    sourcePtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    npts: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_phaseq(
     et: number,
     targetPtr: number,
@@ -1801,6 +1856,61 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_illum(
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    spointPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfxpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    drefPtr: number,
+    dvecPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_subpt(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_subsol(
+    methodPtr: number,
+    targetPtr: number,
+    et: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_edterm(
+    trmtypPtr: number,
+    sourcePtr: number,
+    targetPtr: number,
+    et: number,
+    fixrefPtr: number,
+    abcorrPtr: number,
+    observerPtr: number,
+    npts: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_phaseq(
     et: number,
     targetPtr: number,
@@ -2313,6 +2423,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",
+  "_tspice_illum",
+  "_tspice_srfxpt",
+  "_tspice_subpt",
+  "_tspice_subsol",
+  "_tspice_edterm",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",

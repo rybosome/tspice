@@ -1,0 +1,1093 @@
+{
+  "schemaVersion": 1,
+  "batch": "e14-legacy-surface-geometry",
+  "traceFiles": [
+    "docs/step8-legacy-surface-geometry.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/legacy-surface-boundary.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/legacy-surface-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/legacy-surface.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+    "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+    "packages/py-parity-checking/fixtures/kernels/audit-legacy-frame.tf",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/geometry/edterm.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/illum.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/srfxpt.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/subpt.cases.json",
+    "packages/py-parity-checking/src/cases/geometry/subsol.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/test/legacy-surface.test.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/stage-legacy-geometry.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e14-e1931437-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "09c713b4efb75d1dc7d6c40f1040cf83c54488c590f077a58285101a8a20fbe1",
+      "caseIds": [
+        "geometry-edterm-bad-frame",
+        "geometry-edterm-bad-type",
+        "geometry-edterm-coincident-source",
+        "geometry-edterm-empty-text",
+        "geometry-edterm-geometric-epochs",
+        "geometry-edterm-invalid-correction",
+        "geometry-edterm-larger-source",
+        "geometry-edterm-missing-spk",
+        "geometry-edterm-negative-count",
+        "geometry-edterm-one-and-two",
+        "geometry-edterm-outside-coverage",
+        "geometry-edterm-penumbral-ring",
+        "geometry-edterm-reception",
+        "geometry-edterm-rotated-output",
+        "geometry-edterm-transmission",
+        "geometry-edterm-unknown-body",
+        "geometry-edterm-zero-count",
+        "geometry-illum-empty-text",
+        "geometry-illum-geometric-epochs",
+        "geometry-illum-invalid-correction",
+        "geometry-illum-missing-spk",
+        "geometry-illum-no-associated-frame",
+        "geometry-illum-non-radial-gradient",
+        "geometry-illum-outside-coverage",
+        "geometry-illum-reception",
+        "geometry-illum-rotated-default",
+        "geometry-illum-same-body",
+        "geometry-illum-surface-axes",
+        "geometry-illum-unknown-body",
+        "geometry-illum-zero-normal",
+        "geometry-srfxpt-axis-hit",
+        "geometry-srfxpt-bad-method",
+        "geometry-srfxpt-bad-ray-frame",
+        "geometry-srfxpt-empty-text",
+        "geometry-srfxpt-geometric-epochs",
+        "geometry-srfxpt-invalid-correction",
+        "geometry-srfxpt-miss-hit",
+        "geometry-srfxpt-missing-spk",
+        "geometry-srfxpt-no-associated-frame",
+        "geometry-srfxpt-outside-coverage",
+        "geometry-srfxpt-reception",
+        "geometry-srfxpt-rotated-default",
+        "geometry-srfxpt-rotated-direction",
+        "geometry-srfxpt-same-body",
+        "geometry-srfxpt-transmission",
+        "geometry-srfxpt-unknown-body",
+        "geometry-srfxpt-zero-ray",
+        "geometry-subpt-axis-and-off-axis",
+        "geometry-subpt-bad-method",
+        "geometry-subpt-empty-text",
+        "geometry-subpt-geometric-epochs",
+        "geometry-subpt-interior-observer",
+        "geometry-subpt-invalid-correction",
+        "geometry-subpt-missing-spk",
+        "geometry-subpt-near-and-intercept",
+        "geometry-subpt-no-associated-frame",
+        "geometry-subpt-outside-coverage",
+        "geometry-subpt-reception",
+        "geometry-subpt-rotated-default",
+        "geometry-subpt-same-body",
+        "geometry-subpt-unknown-body",
+        "geometry-subsol-axis-and-off-axis",
+        "geometry-subsol-bad-method",
+        "geometry-subsol-empty-text",
+        "geometry-subsol-geometric-epochs",
+        "geometry-subsol-invalid-correction",
+        "geometry-subsol-missing-spk",
+        "geometry-subsol-near-and-intercept",
+        "geometry-subsol-no-associated-frame",
+        "geometry-subsol-outside-coverage",
+        "geometry-subsol-reception",
+        "geometry-subsol-rotated-default",
+        "geometry-subsol-same-body",
+        "geometry-subsol-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on e1931437c65bc247f8a90694ce8e609df7452439. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,474 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 660 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e14-e1931437-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "09c713b4efb75d1dc7d6c40f1040cf83c54488c590f077a58285101a8a20fbe1",
+      "caseIds": [
+        "geometry-edterm-bad-frame",
+        "geometry-edterm-bad-type",
+        "geometry-edterm-coincident-source",
+        "geometry-edterm-empty-text",
+        "geometry-edterm-geometric-epochs",
+        "geometry-edterm-invalid-correction",
+        "geometry-edterm-larger-source",
+        "geometry-edterm-missing-spk",
+        "geometry-edterm-negative-count",
+        "geometry-edterm-one-and-two",
+        "geometry-edterm-outside-coverage",
+        "geometry-edterm-penumbral-ring",
+        "geometry-edterm-reception",
+        "geometry-edterm-rotated-output",
+        "geometry-edterm-transmission",
+        "geometry-edterm-unknown-body",
+        "geometry-edterm-zero-count",
+        "geometry-illum-empty-text",
+        "geometry-illum-geometric-epochs",
+        "geometry-illum-invalid-correction",
+        "geometry-illum-missing-spk",
+        "geometry-illum-no-associated-frame",
+        "geometry-illum-non-radial-gradient",
+        "geometry-illum-outside-coverage",
+        "geometry-illum-reception",
+        "geometry-illum-rotated-default",
+        "geometry-illum-same-body",
+        "geometry-illum-surface-axes",
+        "geometry-illum-unknown-body",
+        "geometry-illum-zero-normal",
+        "geometry-srfxpt-axis-hit",
+        "geometry-srfxpt-bad-method",
+        "geometry-srfxpt-bad-ray-frame",
+        "geometry-srfxpt-empty-text",
+        "geometry-srfxpt-geometric-epochs",
+        "geometry-srfxpt-invalid-correction",
+        "geometry-srfxpt-miss-hit",
+        "geometry-srfxpt-missing-spk",
+        "geometry-srfxpt-no-associated-frame",
+        "geometry-srfxpt-outside-coverage",
+        "geometry-srfxpt-reception",
+        "geometry-srfxpt-rotated-default",
+        "geometry-srfxpt-rotated-direction",
+        "geometry-srfxpt-same-body",
+        "geometry-srfxpt-transmission",
+        "geometry-srfxpt-unknown-body",
+        "geometry-srfxpt-zero-ray",
+        "geometry-subpt-axis-and-off-axis",
+        "geometry-subpt-bad-method",
+        "geometry-subpt-empty-text",
+        "geometry-subpt-geometric-epochs",
+        "geometry-subpt-interior-observer",
+        "geometry-subpt-invalid-correction",
+        "geometry-subpt-missing-spk",
+        "geometry-subpt-near-and-intercept",
+        "geometry-subpt-no-associated-frame",
+        "geometry-subpt-outside-coverage",
+        "geometry-subpt-reception",
+        "geometry-subpt-rotated-default",
+        "geometry-subpt-same-body",
+        "geometry-subpt-unknown-body",
+        "geometry-subsol-axis-and-off-axis",
+        "geometry-subsol-bad-method",
+        "geometry-subsol-empty-text",
+        "geometry-subsol-geometric-epochs",
+        "geometry-subsol-invalid-correction",
+        "geometry-subsol-missing-spk",
+        "geometry-subsol-near-and-intercept",
+        "geometry-subsol-no-associated-frame",
+        "geometry-subsol-outside-coverage",
+        "geometry-subsol-reception",
+        "geometry-subsol-rotated-default",
+        "geometry-subsol-same-body",
+        "geometry-subsol-unknown-body"
+      ],
+      "observation": "Both complete required lanes passed locally on e1931437c65bc247f8a90694ce8e609df7452439. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,474 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 660 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e14-e1931437-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "09c713b4efb75d1dc7d6c40f1040cf83c54488c590f077a58285101a8a20fbe1",
+      "caseIds": [
+        "geometry-edterm-bad-frame",
+        "geometry-edterm-bad-type",
+        "geometry-edterm-coincident-source",
+        "geometry-edterm-empty-text",
+        "geometry-edterm-geometric-epochs",
+        "geometry-edterm-invalid-correction",
+        "geometry-edterm-larger-source",
+        "geometry-edterm-missing-spk",
+        "geometry-edterm-negative-count",
+        "geometry-edterm-one-and-two",
+        "geometry-edterm-outside-coverage",
+        "geometry-edterm-penumbral-ring",
+        "geometry-edterm-reception",
+        "geometry-edterm-rotated-output",
+        "geometry-edterm-transmission",
+        "geometry-edterm-unknown-body",
+        "geometry-edterm-zero-count",
+        "geometry-illum-empty-text",
+        "geometry-illum-geometric-epochs",
+        "geometry-illum-invalid-correction",
+        "geometry-illum-missing-spk",
+        "geometry-illum-no-associated-frame",
+        "geometry-illum-non-radial-gradient",
+        "geometry-illum-outside-coverage",
+        "geometry-illum-reception",
+        "geometry-illum-rotated-default",
+        "geometry-illum-same-body",
+        "geometry-illum-surface-axes",
+        "geometry-illum-unknown-body",
+        "geometry-illum-zero-normal",
+        "geometry-srfxpt-axis-hit",
+        "geometry-srfxpt-bad-method",
+        "geometry-srfxpt-bad-ray-frame",
+        "geometry-srfxpt-empty-text",
+        "geometry-srfxpt-geometric-epochs",
+        "geometry-srfxpt-invalid-correction",
+        "geometry-srfxpt-miss-hit",
+        "geometry-srfxpt-missing-spk",
+        "geometry-srfxpt-no-associated-frame",
+        "geometry-srfxpt-outside-coverage",
+        "geometry-srfxpt-reception",
+        "geometry-srfxpt-rotated-default",
+        "geometry-srfxpt-rotated-direction",
+        "geometry-srfxpt-same-body",
+        "geometry-srfxpt-transmission",
+        "geometry-srfxpt-unknown-body",
+        "geometry-srfxpt-zero-ray",
+        "geometry-subpt-axis-and-off-axis",
+        "geometry-subpt-bad-method",
+        "geometry-subpt-empty-text",
+        "geometry-subpt-geometric-epochs",
+        "geometry-subpt-interior-observer",
+        "geometry-subpt-invalid-correction",
+        "geometry-subpt-missing-spk",
+        "geometry-subpt-near-and-intercept",
+        "geometry-subpt-no-associated-frame",
+        "geometry-subpt-outside-coverage",
+        "geometry-subpt-reception",
+        "geometry-subpt-rotated-default",
+        "geometry-subpt-same-body",
+        "geometry-subpt-unknown-body",
+        "geometry-subsol-axis-and-off-axis",
+        "geometry-subsol-bad-method",
+        "geometry-subsol-empty-text",
+        "geometry-subsol-geometric-epochs",
+        "geometry-subsol-invalid-correction",
+        "geometry-subsol-missing-spk",
+        "geometry-subsol-near-and-intercept",
+        "geometry-subsol-no-associated-frame",
+        "geometry-subsol-outside-coverage",
+        "geometry-subsol-reception",
+        "geometry-subsol-rotated-default",
+        "geometry-subsol-same-body",
+        "geometry-subsol-unknown-body"
+      ],
+      "commit": "e1931437c65bc247f8a90694ce8e609df7452439",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43589431229/job/132430818511",
+      "observation": "Inspected successful Linux Node 22 native-required job 132430818511 on e1931437c65bc247f8a90694ce8e609df7452439: 2,474 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 660 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e14-e1931437-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "09c713b4efb75d1dc7d6c40f1040cf83c54488c590f077a58285101a8a20fbe1",
+      "caseIds": [
+        "geometry-edterm-bad-frame",
+        "geometry-edterm-bad-type",
+        "geometry-edterm-coincident-source",
+        "geometry-edterm-empty-text",
+        "geometry-edterm-geometric-epochs",
+        "geometry-edterm-invalid-correction",
+        "geometry-edterm-larger-source",
+        "geometry-edterm-missing-spk",
+        "geometry-edterm-negative-count",
+        "geometry-edterm-one-and-two",
+        "geometry-edterm-outside-coverage",
+        "geometry-edterm-penumbral-ring",
+        "geometry-edterm-reception",
+        "geometry-edterm-rotated-output",
+        "geometry-edterm-transmission",
+        "geometry-edterm-unknown-body",
+        "geometry-edterm-zero-count",
+        "geometry-illum-empty-text",
+        "geometry-illum-geometric-epochs",
+        "geometry-illum-invalid-correction",
+        "geometry-illum-missing-spk",
+        "geometry-illum-no-associated-frame",
+        "geometry-illum-non-radial-gradient",
+        "geometry-illum-outside-coverage",
+        "geometry-illum-reception",
+        "geometry-illum-rotated-default",
+        "geometry-illum-same-body",
+        "geometry-illum-surface-axes",
+        "geometry-illum-unknown-body",
+        "geometry-illum-zero-normal",
+        "geometry-srfxpt-axis-hit",
+        "geometry-srfxpt-bad-method",
+        "geometry-srfxpt-bad-ray-frame",
+        "geometry-srfxpt-empty-text",
+        "geometry-srfxpt-geometric-epochs",
+        "geometry-srfxpt-invalid-correction",
+        "geometry-srfxpt-miss-hit",
+        "geometry-srfxpt-missing-spk",
+        "geometry-srfxpt-no-associated-frame",
+        "geometry-srfxpt-outside-coverage",
+        "geometry-srfxpt-reception",
+        "geometry-srfxpt-rotated-default",
+        "geometry-srfxpt-rotated-direction",
+        "geometry-srfxpt-same-body",
+        "geometry-srfxpt-transmission",
+        "geometry-srfxpt-unknown-body",
+        "geometry-srfxpt-zero-ray",
+        "geometry-subpt-axis-and-off-axis",
+        "geometry-subpt-bad-method",
+        "geometry-subpt-empty-text",
+        "geometry-subpt-geometric-epochs",
+        "geometry-subpt-interior-observer",
+        "geometry-subpt-invalid-correction",
+        "geometry-subpt-missing-spk",
+        "geometry-subpt-near-and-intercept",
+        "geometry-subpt-no-associated-frame",
+        "geometry-subpt-outside-coverage",
+        "geometry-subpt-reception",
+        "geometry-subpt-rotated-default",
+        "geometry-subpt-same-body",
+        "geometry-subpt-unknown-body",
+        "geometry-subsol-axis-and-off-axis",
+        "geometry-subsol-bad-method",
+        "geometry-subsol-empty-text",
+        "geometry-subsol-geometric-epochs",
+        "geometry-subsol-invalid-correction",
+        "geometry-subsol-missing-spk",
+        "geometry-subsol-near-and-intercept",
+        "geometry-subsol-no-associated-frame",
+        "geometry-subsol-outside-coverage",
+        "geometry-subsol-reception",
+        "geometry-subsol-rotated-default",
+        "geometry-subsol-same-body",
+        "geometry-subsol-unknown-body"
+      ],
+      "commit": "e1931437c65bc247f8a90694ce8e609df7452439",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43589431229/job/132430818511",
+      "observation": "Inspected successful Linux Node 22 native-required job 132430818511 on e1931437c65bc247f8a90694ce8e609df7452439: 2,474 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 660 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "illum_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/illum_c.html",
+      "semantics": "Compute solar phase, incidence and emission at a point on the target ellipsoid in its default body-fixed frame.",
+      "scenarios": [
+        {
+          "caseId": "geometry-illum-geometric-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-illum-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-illum-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "A nonnumeric, unregistered target should return its original lookup diagnostic. Both backends and the independent reference require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-illum-missing-spk",
+          "coverage": ["error", "edge"],
+          "observes": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs. Both backends and the independent reference require NOLOADEDFILES."
+        },
+        {
+          "caseId": "geometry-illum-invalid-correction",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unsupported aberration option on otherwise valid geometry. Both backends and the independent reference require INVALIDOPTION."
+        },
+        {
+          "caseId": "geometry-illum-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "The original outer C entry signals on a zero-length target string. Both backends and the independent reference require EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-illum-outside-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval. Both backends and the independent reference require SPKINSUFFDATA."
+        },
+        {
+          "caseId": "geometry-illum-no-associated-frame",
+          "coverage": ["error", "edge"],
+          "observes": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default. Both backends and the independent reference require NOFRAME."
+        },
+        {
+          "caseId": "geometry-illum-same-body",
+          "coverage": ["error", "edge"],
+          "observes": "The target and observer resolve to the same body code. Both backends and the independent reference require BODIESNOTDISTINCT."
+        },
+        {
+          "caseId": "geometry-illum-surface-axes",
+          "coverage": ["success", "edge"],
+          "observes": "Compare sun and observer angles on opposing cardinal surface axes. Preserve lit and dark-side incidence quadrants. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-illum-non-radial-gradient",
+          "coverage": ["success", "edge"],
+          "observes": "A mixed point on the triaxial ellipsoid distinguishes the outward gradient from the radial direction. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-illum-zero-normal",
+          "coverage": ["success", "edge"],
+          "observes": "On the origin the N0067 normal has zero length. Compare all three actual VSEP results with the independent toolkit. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-illum-rotated-default",
+          "coverage": ["success", "edge"],
+          "observes": "Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference. Compare all defined result fields with locked independent CSPICE."
+        }
+      ],
+      "edgeAssessment": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare sun and observer angles on opposing cardinal surface axes. Preserve lit and dark-side incidence quadrants. A mixed point on the triaxial ellipsoid distinguishes the outward gradient from the radial direction. On the origin the N0067 normal has zero length. Compare all three actual VSEP results with the independent toolkit. Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+      "errorAssessment": "Scientific failure coverage includes BODIESNOTDISTINCT, EMPTYSTRING, IDCODENOTFOUND, INVALIDOPTION, NOFRAME, NOLOADEDFILES, SPKINSUFFDATA. The public checks also exercise error consumption and successful reuse after reloading ephemerides.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original triaxial body and target/illuminator frame definitions.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored linear Sun, observer, target and illuminator state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-frame.tf",
+          "provenance": "A project-authored default frame association required by the four legacy interfaces.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 295812aa84f2f363497d57eae9c9968cfa7de1d38b45d19518bd3b6af76b17f5"
+        }
+      ],
+      "fixtureRationale": "Triaxial target, moving Sun, different source size and explicit frame association enable controlled angle, epoch and complete point checks.",
+      "cleanup": "Unload or clear kernels and dispose public clients. Each workflow resets toolkit error state and refreshes the kernel pool.",
+      "tolerance": "The shared registered comparator is unchanged. Public analytic angles, normalized gradients, tangent-plane signs and ranges compare at 12–13 decimal places. Short axis light times compare at 15 decimal places. Flags, keys and array lengths compare exactly.",
+      "findings": [
+        {
+          "id": "unchecked-intermediate-geometry",
+          "status": "repaired",
+          "summary": "The original N0067 translation can continue using automatic state, geometric outputs or flags after a lower-level operation signals an error.",
+          "repair": "Stage only verified N0067 sources. Check failed state at the audited calls before reading any unwritten intermediate output, and return through the existing trace frame. Independent reference verifies fallible prerequisites before consuming successful original results.",
+          "caseIds": [
+            "geometry-illum-missing-spk",
+            "geometry-illum-outside-coverage",
+            "geometry-illum-reception"
+          ],
+          "evidence": [
+            "docs/step8-legacy-surface-geometry.md",
+            "scripts/stage-legacy-geometry.mjs",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/legacy-surface.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+            "scripts/build-backend-wasm.mjs",
+            "packages/backend-node/native/binding.gyp"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.illum -> validated native adapter and mutex-protected N-API handler -> tspice_illum -> illum_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-node", "ci-e14-e1931437-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.illum -> typed heap adapter and mandatory WASM export -> tspice_illum -> illum_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-wasm", "ci-e14-e1931437-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "srfxpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfxpt_c.html",
+      "semantics": "Find the nearest forward ellipsoid intercept in the default target frame, with distance, intercept epoch, target-to-observer position and actual found flag.",
+      "scenarios": [
+        {
+          "caseId": "geometry-srfxpt-geometric-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-transmission",
+          "coverage": ["success", "edge"],
+          "observes": "Compare light transmission with and without converged stellar-aberration correction. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "A nonnumeric, unregistered target should return its original lookup diagnostic. Both backends and the independent reference require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-srfxpt-missing-spk",
+          "coverage": ["error", "edge"],
+          "observes": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs. Both backends and the independent reference require NOLOADEDFILES."
+        },
+        {
+          "caseId": "geometry-srfxpt-invalid-correction",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unsupported aberration option on otherwise valid geometry. Both backends and the independent reference require INVALIDOPTION."
+        },
+        {
+          "caseId": "geometry-srfxpt-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "The original outer C entry signals on a zero-length target string. Both backends and the independent reference require EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-srfxpt-outside-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval. Both backends and the independent reference require SPKINSUFFDATA."
+        },
+        {
+          "caseId": "geometry-srfxpt-no-associated-frame",
+          "coverage": ["error", "edge"],
+          "observes": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default. Both backends and the independent reference require NOFRAME."
+        },
+        {
+          "caseId": "geometry-srfxpt-same-body",
+          "coverage": ["error", "edge"],
+          "observes": "The target and observer resolve to the same body code. Both backends and the independent reference require BODIESNOTDISTINCT."
+        },
+        {
+          "caseId": "geometry-srfxpt-axis-hit",
+          "coverage": ["success", "edge"],
+          "observes": "A non-unit ray from x=20 km hits the x=3 km semiaxis, with distance 17 km and observer position relative to target. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-miss-hit",
+          "coverage": ["success", "edge"],
+          "observes": "The outward and off-target rays return only absence, then the reversed ray hits. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-rotated-direction",
+          "coverage": ["success", "edge"],
+          "observes": "The ray expressed in the rotated target-centered frame hits the same target, while the returned coordinates remain in the default frame. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-srfxpt-bad-ray-frame",
+          "coverage": ["error", "edge"],
+          "observes": "An unknown direction frame is distinguished from a genuine geometrical miss. Both backends and the independent reference require NOTSUPPORTED."
+        },
+        {
+          "caseId": "geometry-srfxpt-zero-ray",
+          "coverage": ["error", "edge"],
+          "observes": "An actual zero ray yields the original ellipsoid diagnostic. Both backends and the independent reference require ZEROVECTOR."
+        },
+        {
+          "caseId": "geometry-srfxpt-bad-method",
+          "coverage": ["error", "edge"],
+          "observes": "The legacy intercept accepts ELLIPSOID only. Both backends and the independent reference require INVALIDMETHOD."
+        },
+        {
+          "caseId": "geometry-srfxpt-rotated-default",
+          "coverage": ["success", "edge"],
+          "observes": "Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference. Compare all defined result fields with locked independent CSPICE."
+        }
+      ],
+      "edgeAssessment": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare light transmission with and without converged stellar-aberration correction. A non-unit ray from x=20 km hits the x=3 km semiaxis, with distance 17 km and observer position relative to target. The outward and off-target rays return only absence, then the reversed ray hits. The ray expressed in the rotated target-centered frame hits the same target, while the returned coordinates remain in the default frame. Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+      "errorAssessment": "Scientific failure coverage includes BODIESNOTDISTINCT, EMPTYSTRING, IDCODENOTFOUND, INVALIDMETHOD, INVALIDOPTION, NOFRAME, NOLOADEDFILES, NOTSUPPORTED, SPKINSUFFDATA, ZEROVECTOR. The public checks also exercise error consumption and successful reuse after reloading ephemerides.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original triaxial body and target/illuminator frame definitions.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored linear Sun, observer, target and illuminator state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-frame.tf",
+          "provenance": "A project-authored default frame association required by the four legacy interfaces.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 295812aa84f2f363497d57eae9c9968cfa7de1d38b45d19518bd3b6af76b17f5"
+        }
+      ],
+      "fixtureRationale": "Triaxial target, moving Sun, different source size and explicit frame association enable controlled angle, epoch and complete point checks.",
+      "cleanup": "Unload or clear kernels and dispose public clients. Each workflow resets toolkit error state and refreshes the kernel pool.",
+      "tolerance": "The shared registered comparator is unchanged. Public analytic angles, normalized gradients, tangent-plane signs and ranges compare at 12–13 decimal places. Short axis light times compare at 15 decimal places. Flags, keys and array lengths compare exactly.",
+      "findings": [
+        {
+          "id": "unchecked-intermediate-geometry",
+          "status": "repaired",
+          "summary": "The original N0067 translation can continue using automatic state, geometric outputs or flags after a lower-level operation signals an error.",
+          "repair": "Stage only verified N0067 sources. Check failed state at the audited calls before reading any unwritten intermediate output, and return through the existing trace frame. Independent reference verifies fallible prerequisites before consuming successful original results.",
+          "caseIds": [
+            "geometry-srfxpt-missing-spk",
+            "geometry-srfxpt-outside-coverage",
+            "geometry-srfxpt-reception"
+          ],
+          "evidence": [
+            "docs/step8-legacy-surface-geometry.md",
+            "scripts/stage-legacy-geometry.mjs",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/legacy-surface.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+            "scripts/build-backend-wasm.mjs",
+            "packages/backend-node/native/binding.gyp"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.srfxpt -> validated native adapter and mutex-protected N-API handler -> tspice_srfxpt -> srfxpt_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-node", "ci-e14-e1931437-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.srfxpt -> typed heap adapter and mandatory WASM export -> tspice_srfxpt -> srfxpt_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-wasm", "ci-e14-e1931437-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "subpt_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subpt_c.html",
+      "semantics": "Find the nearest or radial sub-observer point and the corresponding signed or radial altitude in km.",
+      "scenarios": [
+        {
+          "caseId": "geometry-subpt-geometric-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subpt-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subpt-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "A nonnumeric, unregistered target should return its original lookup diagnostic. Both backends and the independent reference require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-subpt-missing-spk",
+          "coverage": ["error", "edge"],
+          "observes": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs. Both backends and the independent reference require NOLOADEDFILES."
+        },
+        {
+          "caseId": "geometry-subpt-invalid-correction",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unsupported aberration option on otherwise valid geometry. Both backends and the independent reference require INVALIDOPTION."
+        },
+        {
+          "caseId": "geometry-subpt-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "The original outer C entry signals on a zero-length target string. Both backends and the independent reference require EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-subpt-outside-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval. Both backends and the independent reference require SPKINSUFFDATA."
+        },
+        {
+          "caseId": "geometry-subpt-no-associated-frame",
+          "coverage": ["error", "edge"],
+          "observes": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default. Both backends and the independent reference require NOFRAME."
+        },
+        {
+          "caseId": "geometry-subpt-same-body",
+          "coverage": ["error", "edge"],
+          "observes": "The target and observer resolve to the same body code. Both backends and the independent reference require BODIESNOTDISTINCT."
+        },
+        {
+          "caseId": "geometry-subpt-near-and-intercept",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the nearest and radial intercept definitions on a triaxial ellipsoid; check every coordinate and any returned altitude. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subpt-axis-and-off-axis",
+          "coverage": ["success", "edge"],
+          "observes": "A different observer and different epoch distinguish the default target frame and moving body geometry. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subpt-bad-method",
+          "coverage": ["error", "edge"],
+          "observes": "A modern method spelling does not belong to this legacy interface. Both backends and the independent reference require DUBIOUSMETHOD."
+        },
+        {
+          "caseId": "geometry-subpt-rotated-default",
+          "coverage": ["success", "edge"],
+          "observes": "Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subpt-interior-observer",
+          "coverage": ["success", "edge"],
+          "observes": "A larger authored target envelope encloses the observer. Near point returns negative signed altitude and Intercept returns the positive radial distance. Compare all defined result fields with locked independent CSPICE."
+        }
+      ],
+      "edgeAssessment": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare the nearest and radial intercept definitions on a triaxial ellipsoid; check every coordinate and any returned altitude. A different observer and different epoch distinguish the default target frame and moving body geometry. Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference. A larger authored target envelope encloses the observer. Near point returns negative signed altitude and Intercept returns the positive radial distance.",
+      "errorAssessment": "Scientific failure coverage includes BODIESNOTDISTINCT, DUBIOUSMETHOD, EMPTYSTRING, IDCODENOTFOUND, INVALIDOPTION, NOFRAME, NOLOADEDFILES, SPKINSUFFDATA. The public checks also exercise error consumption and successful reuse after reloading ephemerides.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original triaxial body and target/illuminator frame definitions.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored linear Sun, observer, target and illuminator state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-frame.tf",
+          "provenance": "A project-authored default frame association required by the four legacy interfaces.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 295812aa84f2f363497d57eae9c9968cfa7de1d38b45d19518bd3b6af76b17f5"
+        }
+      ],
+      "fixtureRationale": "Triaxial target, moving Sun, different source size and explicit frame association enable controlled angle, epoch and complete point checks.",
+      "cleanup": "Unload or clear kernels and dispose public clients. Each workflow resets toolkit error state and refreshes the kernel pool.",
+      "tolerance": "The shared registered comparator is unchanged. Public analytic angles, normalized gradients, tangent-plane signs and ranges compare at 12–13 decimal places. Short axis light times compare at 15 decimal places. Flags, keys and array lengths compare exactly.",
+      "findings": [
+        {
+          "id": "unchecked-intermediate-geometry",
+          "status": "repaired",
+          "summary": "The original N0067 translation can continue using automatic state, geometric outputs or flags after a lower-level operation signals an error.",
+          "repair": "Stage only verified N0067 sources. Check failed state at the audited calls before reading any unwritten intermediate output, and return through the existing trace frame. Independent reference verifies fallible prerequisites before consuming successful original results.",
+          "caseIds": [
+            "geometry-subpt-missing-spk",
+            "geometry-subpt-outside-coverage",
+            "geometry-subpt-reception"
+          ],
+          "evidence": [
+            "docs/step8-legacy-surface-geometry.md",
+            "scripts/stage-legacy-geometry.mjs",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/legacy-surface.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+            "scripts/build-backend-wasm.mjs",
+            "packages/backend-node/native/binding.gyp"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.subpt -> validated native adapter and mutex-protected N-API handler -> tspice_subpt -> subpt_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-node", "ci-e14-e1931437-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.subpt -> typed heap adapter and mandatory WASM export -> tspice_subpt -> subpt_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-wasm", "ci-e14-e1931437-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "subsol_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/subsol_c.html",
+      "semantics": "Find the nearest or radial sub-solar point in the default target frame at the legacy observer-corrected epoch.",
+      "scenarios": [
+        {
+          "caseId": "geometry-subsol-geometric-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subsol-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subsol-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "A nonnumeric, unregistered target should return its original lookup diagnostic. Both backends and the independent reference require IDCODENOTFOUND."
+        },
+        {
+          "caseId": "geometry-subsol-missing-spk",
+          "coverage": ["error", "edge"],
+          "observes": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs. Both backends and the independent reference require NOLOADEDFILES."
+        },
+        {
+          "caseId": "geometry-subsol-invalid-correction",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unsupported aberration option on otherwise valid geometry. Both backends and the independent reference require INVALIDOPTION."
+        },
+        {
+          "caseId": "geometry-subsol-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "The original outer C entry signals on a zero-length target string. Both backends and the independent reference require EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-subsol-outside-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval. Both backends and the independent reference require SPKINSUFFDATA."
+        },
+        {
+          "caseId": "geometry-subsol-no-associated-frame",
+          "coverage": ["error", "edge"],
+          "observes": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default. Both backends and the independent reference require NOFRAME."
+        },
+        {
+          "caseId": "geometry-subsol-same-body",
+          "coverage": ["error", "edge"],
+          "observes": "The target and observer resolve to the same body code. Both backends and the independent reference require BODIESNOTDISTINCT."
+        },
+        {
+          "caseId": "geometry-subsol-near-and-intercept",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the nearest and radial intercept definitions on a triaxial ellipsoid; check every coordinate and any returned altitude. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subsol-axis-and-off-axis",
+          "coverage": ["success", "edge"],
+          "observes": "A different observer and different epoch distinguish the default target frame and moving body geometry. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-subsol-bad-method",
+          "coverage": ["error", "edge"],
+          "observes": "A modern method spelling does not belong to this legacy interface. Both backends and the independent reference require DUBIOUSMETHOD."
+        },
+        {
+          "caseId": "geometry-subsol-rotated-default",
+          "coverage": ["success", "edge"],
+          "observes": "Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference. Compare all defined result fields with locked independent CSPICE."
+        }
+      ],
+      "edgeAssessment": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare the nearest and radial intercept definitions on a triaxial ellipsoid; check every coordinate and any returned altitude. A different observer and different epoch distinguish the default target frame and moving body geometry. Reassign the default frame to the same target’s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+      "errorAssessment": "Scientific failure coverage includes BODIESNOTDISTINCT, DUBIOUSMETHOD, EMPTYSTRING, IDCODENOTFOUND, INVALIDOPTION, NOFRAME, NOLOADEDFILES, SPKINSUFFDATA. The public checks also exercise error consumption and successful reuse after reloading ephemerides.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original triaxial body and target/illuminator frame definitions.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored linear Sun, observer, target and illuminator state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-legacy-frame.tf",
+          "provenance": "A project-authored default frame association required by the four legacy interfaces.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 295812aa84f2f363497d57eae9c9968cfa7de1d38b45d19518bd3b6af76b17f5"
+        }
+      ],
+      "fixtureRationale": "Triaxial target, moving Sun, different source size and explicit frame association enable controlled angle, epoch and complete point checks.",
+      "cleanup": "Unload or clear kernels and dispose public clients. Each workflow resets toolkit error state and refreshes the kernel pool.",
+      "tolerance": "The shared registered comparator is unchanged. Public analytic angles, normalized gradients, tangent-plane signs and ranges compare at 12–13 decimal places. Short axis light times compare at 15 decimal places. Flags, keys and array lengths compare exactly.",
+      "findings": [
+        {
+          "id": "unchecked-intermediate-geometry",
+          "status": "repaired",
+          "summary": "The original N0067 translation can continue using automatic state, geometric outputs or flags after a lower-level operation signals an error.",
+          "repair": "Stage only verified N0067 sources. Check failed state at the audited calls before reading any unwritten intermediate output, and return through the existing trace frame. Independent reference verifies fallible prerequisites before consuming successful original results.",
+          "caseIds": [
+            "geometry-subsol-missing-spk",
+            "geometry-subsol-outside-coverage",
+            "geometry-subsol-reception"
+          ],
+          "evidence": [
+            "docs/step8-legacy-surface-geometry.md",
+            "scripts/stage-legacy-geometry.mjs",
+            "packages/backend-shim-c/src/domains/geometry.c",
+            "packages/py-parity-checking/test/legacy-surface.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+            "scripts/build-backend-wasm.mjs",
+            "packages/backend-node/native/binding.gyp"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.subsol -> validated native adapter and mutex-protected N-API handler -> tspice_subsol -> subsol_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-node", "ci-e14-e1931437-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.subsol -> typed heap adapter and mandatory WASM export -> tspice_subsol -> subsol_c; original public C routine linked with the staged N0067 error checks in its internal translation.",
+          "executions": ["local-e14-e1931437-wasm", "ci-e14-e1931437-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "edterm_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/edterm_c.html",
+      "semantics": "Compute an ordered finite-source umbral or penumbral ring, target-center epoch and target-to-observer position in the supplied frame.",
+      "scenarios": [
+        {
+          "caseId": "geometry-edterm-geometric-epochs",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-reception",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-transmission",
+          "coverage": ["success", "edge"],
+          "observes": "Compare light transmission with and without converged stellar-aberration correction. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "A nonnumeric, unregistered target should return its original lookup diagnostic. Both backends and the independent reference require NOTRANSLATION."
+        },
+        {
+          "caseId": "geometry-edterm-missing-spk",
+          "coverage": ["error", "edge"],
+          "observes": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs. Both backends and the independent reference require NOLOADEDFILES."
+        },
+        {
+          "caseId": "geometry-edterm-invalid-correction",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unsupported aberration option on otherwise valid geometry. Both backends and the independent reference require INVALIDOPTION."
+        },
+        {
+          "caseId": "geometry-edterm-empty-text",
+          "coverage": ["error", "edge"],
+          "observes": "The original outer C entry signals on a zero-length target string. Both backends and the independent reference require EMPTYSTRING."
+        },
+        {
+          "caseId": "geometry-edterm-outside-coverage",
+          "coverage": ["error", "edge"],
+          "observes": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval. Both backends and the independent reference require SPKINSUFFDATA."
+        },
+        {
+          "caseId": "geometry-edterm-penumbral-ring",
+          "coverage": ["success", "edge"],
+          "observes": "Return every ordered row of the finite-source penumbral ring and compare the umbral ring in the same frame. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-one-and-two",
+          "coverage": ["success", "edge"],
+          "observes": "One and two requested terminator points yield exactly one and two full triples. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-rotated-output",
+          "coverage": ["success", "edge"],
+          "observes": "Return all components in the explicit rotated target-centered frame without a default association. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-larger-source",
+          "coverage": ["success", "edge"],
+          "observes": "Use the wider synthetic source at the same center to distinguish the finite angular source size. Compare all defined result fields with locked independent CSPICE."
+        },
+        {
+          "caseId": "geometry-edterm-bad-frame",
+          "coverage": ["error", "edge"],
+          "observes": "A frame centered on another body yields the specific frame-center error. Both backends and the independent reference require INVALIDFIXREF."
+        },
+        {
+          "caseId": "geometry-edterm-bad-type",
+          "coverage": ["error", "edge"],
+          "observes": "The scientific terminator type parser rejects an unknown spelling. Both backends and the independent reference require NOTSUPPORTED."
+        },
+        {
+          "caseId": "geometry-edterm-zero-count",
+          "coverage": ["error", "edge"],
+          "observes": "A zero requested row count reports the toolkit size diagnostic. Both backends and the independent reference require INVALIDSIZE."
+        },
+        {
+          "caseId": "geometry-edterm-negative-count",
+          "coverage": ["error", "edge"],
+          "observes": "A negative requested row count reaches the scientific diagnostic with non-null bounded storage. Both backends and the independent reference require INVALIDSIZE."
+        },
+        {
+          "caseId": "geometry-edterm-coincident-source",
+          "coverage": ["error", "edge"],
+          "observes": "Coincident source and target fail the finite-source separation requirement. Both backends and the independent reference require OBJECTSTOOCLOSE."
+        }
+      ],
+      "edgeAssessment": "Compare every returned field at two observation epochs with moving synthetic bodies. Compare geometric, light-time and converged stellar-aberration results with a moving observer. Compare light transmission with and without converged stellar-aberration correction. Return every ordered row of the finite-source penumbral ring and compare the umbral ring in the same frame. One and two requested terminator points yield exactly one and two full triples. Return all components in the explicit rotated target-centered frame without a default association. Use the wider synthetic source at the same center to distinguish the finite angular source size.",
+      "errorAssessment": "Scientific failure coverage includes EMPTYSTRING, INVALIDFIXREF, INVALIDOPTION, INVALIDSIZE, NOLOADEDFILES, NOTRANSLATION, NOTSUPPORTED, OBJECTSTOOCLOSE, SPKINSUFFDATA. The public checks also exercise error consumption and successful reuse after reloading ephemerides.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Original triaxial body and target/illuminator frame definitions.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 8992adcda22c74c5c9e4ea70656c302b70b7229550a0d872731c31c14d827c6f"
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Project-authored linear Sun, observer, target and illuminator state histories.",
+          "distribution": "Checked-in MIT-authored fixture, SHA-256 14d0aa88f537cdef7a0432322a5c465c7284ccfdd7a3cda7a328afbac4a320a4"
+        }
+      ],
+      "fixtureRationale": "Triaxial target, moving Sun, different source size and explicit frame association enable controlled angle, epoch and complete point checks.",
+      "cleanup": "Unload or clear kernels and dispose public clients. Each workflow resets toolkit error state and refreshes the kernel pool.",
+      "tolerance": "The shared registered comparator is unchanged. Public analytic angles, normalized gradients, tangent-plane signs and ranges compare at 12–13 decimal places. Short axis light times compare at 15 decimal places. Flags, keys and array lengths compare exactly.",
+      "findings": [
+        {
+          "id": "negative-count-oracle-storage",
+          "status": "repaired",
+          "summary": "The high-level Python output allocator cannot represent a negative count even though the scientific routine explicitly diagnoses it.",
+          "repair": "Use a non-null one-row sentinel with the independently typed actual EDTERM C entry for nonpositive counts; positive success paths use the original high-level wrapper.",
+          "caseIds": [
+            "geometry-edterm-negative-count",
+            "geometry-edterm-zero-count"
+          ],
+          "evidence": [
+            "docs/step8-legacy-surface-geometry.md",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_surface_oracle.py",
+            "packages/py-parity-checking/test/legacy-surface.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.edterm -> validated native adapter and mutex-protected N-API handler -> tspice_edterm -> edterm_c; original unmodified toolkit with full output points.",
+          "executions": ["local-e14-e1931437-node", "ci-e14-e1931437-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "GeometryApi.edterm -> typed heap adapter and mandatory WASM export -> tspice_edterm -> edterm_c; original unmodified toolkit with full output points.",
+          "executions": ["local-e14-e1931437-wasm", "ci-e14-e1931437-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
