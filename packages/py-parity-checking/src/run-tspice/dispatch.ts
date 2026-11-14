@@ -137,6 +137,11 @@ export function dispatchStep(
     case "ephemeris.spkez":
     case "ephemeris.spkezp":
     case "ephemeris.spkezr":
+    case "ephemeris.conics":
+    case "ephemeris.eqncpv":
+    case "ephemeris.oscelt":
+    case "ephemeris.oscltx":
+    case "ephemeris.prop2b":
     case "ephemeris.spkgeo":
     case "ephemeris.spkgps":
     case "ephemeris.spkobj":

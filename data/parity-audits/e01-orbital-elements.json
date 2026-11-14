@@ -1,0 +1,726 @@
+{
+  "schemaVersion": 1,
+  "batch": "e01-orbital-elements",
+  "traceFiles": [
+    "docs/step8-orbital-elements.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/orbital-elements-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/orbital-elements-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/orbital-elements.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/orbital-elements.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e01-b72ef2e9-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2dc3bdf34060e02dc8e90b941b93dd3aa60734f7323972cd312fc573df72d22d",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e01-b72ef2e9-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2dc3bdf34060e02dc8e90b941b93dd3aa60734f7323972cd312fc573df72d22d",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "observation": "Both complete required lanes passed locally on b72ef2e9b9015fb011159ceb1dcf2ef695a09981. JavaScript: 2,536 parity tests and one expected guard skip. Native-required: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e01-b72ef2e9-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2dc3bdf34060e02dc8e90b941b93dd3aa60734f7323972cd312fc573df72d22d",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e01-b72ef2e9-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2dc3bdf34060e02dc8e90b941b93dd3aa60734f7323972cd312fc573df72d22d",
+      "caseIds": [
+        "ephemeris-conics-circular-equatorial",
+        "ephemeris-conics-hyperbola",
+        "ephemeris-conics-inclined-ellipse",
+        "ephemeris-conics-negative-eccentricity",
+        "ephemeris-conics-negative-periapse",
+        "ephemeris-conics-parabola",
+        "ephemeris-conics-retrograde",
+        "ephemeris-conics-unit-scale",
+        "ephemeris-conics-zero-gm",
+        "ephemeris-conics-zero-periapse",
+        "ephemeris-eqncpv-above-limit",
+        "ephemeris-eqncpv-combined-eccentricity",
+        "ephemeris-eqncpv-distinct-pole",
+        "ephemeris-eqncpv-eccentric-inclined",
+        "ephemeris-eqncpv-eccentricity-limit",
+        "ephemeris-eqncpv-negative-semiaxis",
+        "ephemeris-eqncpv-retrograde-rates",
+        "ephemeris-eqncpv-simple-circular",
+        "ephemeris-eqncpv-zero-semiaxis",
+        "ephemeris-oscelt-circle-equatorial",
+        "ephemeris-oscelt-hyperbolic",
+        "ephemeris-oscelt-inclined",
+        "ephemeris-oscelt-negative-gm",
+        "ephemeris-oscelt-parabolic-equatorial",
+        "ephemeris-oscelt-physical-units",
+        "ephemeris-oscelt-polar",
+        "ephemeris-oscelt-radial",
+        "ephemeris-oscelt-zero-gm",
+        "ephemeris-oscelt-zero-position",
+        "ephemeris-oscelt-zero-velocity",
+        "ephemeris-oscltx-circle-equatorial",
+        "ephemeris-oscltx-hyperbolic",
+        "ephemeris-oscltx-inclined",
+        "ephemeris-oscltx-negative-gm",
+        "ephemeris-oscltx-parabolic-equatorial",
+        "ephemeris-oscltx-physical-units",
+        "ephemeris-oscltx-polar",
+        "ephemeris-oscltx-radial",
+        "ephemeris-oscltx-zero-gm",
+        "ephemeris-oscltx-zero-position",
+        "ephemeris-oscltx-zero-velocity",
+        "ephemeris-prop2b-circular",
+        "ephemeris-prop2b-hyperbola",
+        "ephemeris-prop2b-inclined-ellipse",
+        "ephemeris-prop2b-parabola",
+        "ephemeris-prop2b-physical-units",
+        "ephemeris-prop2b-radial-motion",
+        "ephemeris-prop2b-retrograde",
+        "ephemeris-prop2b-zero-gm",
+        "ephemeris-prop2b-zero-position",
+        "ephemeris-prop2b-zero-velocity"
+      ],
+      "commit": "b72ef2e9b9015fb011159ceb1dcf2ef695a09981",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43562566636/job/132349271728",
+      "observation": "Inspected successful Linux Node 22 native-required job 132349271728 on b72ef2e9b9015fb011159ceb1dcf2ef695a09981: 2,320 registered Node/WASM live comparisons; 2,537 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 622 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "conics_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/conics_c.html",
+      "semantics": "Propagate eight classical elements to the given ET, returning all six inertial state values in km and km/s.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-conics-circular-equatorial",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three inertial positions and velocities at the element epoch and on either side. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-inclined-ellipse",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three inertial positions and velocities at the element epoch and on either side. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-parabola",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three inertial positions and velocities at the element epoch and on either side. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-hyperbola",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three inertial positions and velocities at the element epoch and on either side. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-retrograde",
+          "coverage": ["success", "edge"],
+          "observes": "Compare all three inertial positions and velocities at the element epoch and on either side. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-unit-scale",
+          "coverage": ["success", "edge"],
+          "observes": "Use dimensional km, seconds and km³/s² with a nonzero orientation and fractional epoch. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-conics-negative-eccentricity",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the canonical condition for an invalid conic element. Require SPICE(BADECCENTRICITY)."
+        },
+        {
+          "caseId": "ephemeris-conics-zero-periapse",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the canonical condition for an invalid conic element. Require SPICE(BADPERIAPSEVALUE)."
+        },
+        {
+          "caseId": "ephemeris-conics-negative-periapse",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the canonical condition for an invalid conic element. Require SPICE(BADPERIAPSEVALUE)."
+        },
+        {
+          "caseId": "ephemeris-conics-zero-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the canonical condition for an invalid conic element. Require SPICE(BADGM)."
+        }
+      ],
+      "edgeAssessment": "Compare circular, inclined, parabolic, hyperbolic, retrograde and physical-unit orbits. Each workflow uses the full eight input elements and all six state components.",
+      "errorAssessment": "Negative eccentricity, nonpositive periapse and nonpositive central GM produce BADECCENTRICITY, BADPERIAPSEVALUE and BADGM. Extreme propagation or singular conditions can also fail in the underlying propagator.",
+      "fixtures": [],
+      "fixtureRationale": "Authored states, element tuples, epochs, pole angles, elapsed times and gravitational parameters. Explicit analytic examples need no kernels or external ephemerides.",
+      "cleanup": "The shared shim captures and resets toolkit errors before returning owned results. WASM releases its input, output and diagnostic buffers on success and failure. Native access is process-serialized; public tests dispose their clients. The locked sidecar checks errors for each call.",
+      "tolerance": "Registered cases use the unchanged 1e-12 absolute-or-relative numeric comparator on every component. Error short codes and array lengths are exact. Supplemental orbital invariants and tagged zero-rate velocity classifications have their own scoped assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.conics -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
+          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.conics -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_conics -> conics_c. Independent oracle uses actual sp.conics.",
+          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "eqncpv_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eqncpv_c.html",
+      "semantics": "Evaluate nine equinoctial elements including three angular rates at requested ET relative to element epoch; the supplied pole angles orient the output frame.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-eqncpv-simple-circular",
+          "coverage": ["success", "edge"],
+          "observes": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-eccentric-inclined",
+          "coverage": ["success", "edge"],
+          "observes": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-distinct-pole",
+          "coverage": ["success", "edge"],
+          "observes": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-retrograde-rates",
+          "coverage": ["success", "edge"],
+          "observes": "Vary propagation time relative to element epoch and observe position plus velocity in the pole-defined inertial frame. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-eccentricity-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Use eccentricity immediately below and exactly at 0.9 on the major equinoctial axis. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-above-limit",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the toolkit diagnostic for unsupported equinoctial elements. Require SPICE(ECCOUTOFRANGE)."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-combined-eccentricity",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the toolkit diagnostic for unsupported equinoctial elements. Require SPICE(ECCOUTOFRANGE)."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-zero-semiaxis",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the toolkit diagnostic for unsupported equinoctial elements. Require SPICE(BADSEMIAXIS)."
+        },
+        {
+          "caseId": "ephemeris-eqncpv-negative-semiaxis",
+          "coverage": ["error", "edge"],
+          "observes": "Preserve the toolkit diagnostic for unsupported equinoctial elements. Require SPICE(BADSEMIAXIS)."
+        }
+      ],
+      "edgeAssessment": "Check each rate, changed pole orientation, nonzero element epoch, exact eccentricity 0.9 and both H/K contributions. Three scoped live probes compare each of six components with two zero mean-longitude-rate inputs and a finite nonzero-rate control.",
+      "errorAssessment": "BADSEMIAXIS for nonpositive semimajor axis and ECCOUTOFRANGE for computed eccentricity above 0.9. Zero mean-longitude rate in the two tested cases gives three NaN velocities within successful results.",
+      "fixtures": [],
+      "fixtureRationale": "Authored states, element tuples, epochs, pole angles, elapsed times and gravitational parameters. Explicit analytic examples need no kernels or external ephemerides.",
+      "cleanup": "The shared shim captures and resets toolkit errors before returning owned results. WASM releases its input, output and diagnostic buffers on success and failure. Native access is process-serialized; public tests dispose their clients. The locked sidecar checks errors for each call.",
+      "tolerance": "Registered cases use the unchanged 1e-12 absolute-or-relative numeric comparator on every component. Error short codes and array lengths are exact. Supplemental orbital invariants and tagged zero-rate velocity classifications have their own scoped assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.eqncpv -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
+          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.eqncpv -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_eqncpv -> eqncpv_c. Independent oracle uses actual sp.eqncpv.",
+          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "oscelt_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscelt_c.html",
+      "semantics": "Convert all six inertial state values at ET and positive central GM to the eight classical elements, preserving CSPICE conventions and units.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-oscelt-circle-equatorial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-inclined",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-parabolic-equatorial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-hyperbolic",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-polar",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-physical-units",
+          "coverage": ["success", "edge"],
+          "observes": "Geocentric length, velocity and GM with signed epoch. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscelt-zero-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(NONPOSITIVEMASS)."
+        },
+        {
+          "caseId": "ephemeris-oscelt-negative-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(NONPOSITIVEMASS)."
+        },
+        {
+          "caseId": "ephemeris-oscelt-radial",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "ephemeris-oscelt-zero-position",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "ephemeris-oscelt-zero-velocity",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        }
+      ],
+      "edgeAssessment": "Full classical components across circular, inclined, parabolic, hyperbolic, polar and physical-unit states. Near-circular, near-equatorial and near-parabolic inversions are ill-conditioned; registered exact-limit fixtures use simple coordinate axes.",
+      "errorAssessment": "NONPOSITIVEMASS for nonpositive mu. A zero position, zero velocity or zero angular momentum signals DEGENERATECASE.",
+      "fixtures": [],
+      "fixtureRationale": "Authored states, element tuples, epochs, pole angles, elapsed times and gravitational parameters. Explicit analytic examples need no kernels or external ephemerides.",
+      "cleanup": "The shared shim captures and resets toolkit errors before returning owned results. WASM releases its input, output and diagnostic buffers on success and failure. Native access is process-serialized; public tests dispose their clients. The locked sidecar checks errors for each call.",
+      "tolerance": "Registered cases use the unchanged 1e-12 absolute-or-relative numeric comparator on every component. Error short codes and array lengths are exact. Supplemental orbital invariants and tagged zero-rate velocity classifications have their own scoped assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.oscelt -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
+          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.oscelt -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscelt -> oscelt_c. Independent oracle uses actual sp.oscelt.",
+          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "oscltx_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/oscltx_c.html",
+      "semantics": "Return the eleven defined extended quantities, including true anomaly, semimajor axis and period, after calling N0067 with full 20-double output storage.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-oscltx-circle-equatorial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-inclined",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-parabolic-equatorial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-hyperbolic",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-polar",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-physical-units",
+          "coverage": ["success", "edge"],
+          "observes": "Geocentric length, velocity and GM with signed epoch. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-oscltx-zero-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(NONPOSITIVEMASS)."
+        },
+        {
+          "caseId": "ephemeris-oscltx-negative-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(NONPOSITIVEMASS)."
+        },
+        {
+          "caseId": "ephemeris-oscltx-radial",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "ephemeris-oscltx-zero-position",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        },
+        {
+          "caseId": "ephemeris-oscltx-zero-velocity",
+          "coverage": ["error", "edge"],
+          "observes": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM. Require SPICE(DEGENERATECASE)."
+        }
+      ],
+      "edgeAssessment": "Compare every classical and extended field for six success classes, and retain the zero-semimajor-axis or zero-period conventions for parabolic and unbound motion.",
+      "errorAssessment": "Five explicit error workflows capture NONPOSITIVEMASS and DEGENERATECASE. The independent handler checks the actual CSPICE status omitted by the pinned wrapper decorator before consuming its apparent result.",
+      "fixtures": [],
+      "fixtureRationale": "Authored states, element tuples, epochs, pole angles, elapsed times and gravitational parameters. Explicit analytic examples need no kernels or external ephemerides.",
+      "cleanup": "The shared shim captures and resets toolkit errors before returning owned results. WASM releases its input, output and diagnostic buffers on success and failure. Native access is process-serialized; public tests dispose their clients. The locked sidecar checks errors for each call.",
+      "tolerance": "Registered cases use the unchanged 1e-12 absolute-or-relative numeric comparator on every component. Error short codes and array lengths are exact. Supplemental orbital invariants and tagged zero-rate velocity classifications have their own scoped assertions.",
+      "findings": [
+        {
+          "id": "oscltx-locked-wrapper-error-status",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 omits its usual error-check decorator for OSCLTX. Treating the apparent output as success would miss a sticky CSPICE diagnostic and contaminate the next call.",
+          "repair": "Keep the actual sp.oscltx invocation and call sp.check_for_spice_error(sp.oscltx) immediately afterward, before examining any returned fields. The native and WASM shim independently uses the 20-word ABI allocation and its normal error capture/reset.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+            "docs/step8-orbital-elements.md",
+            "packages/backend-shim-c/src/domains/ephemeris.c"
+          ],
+          "caseIds": [
+            "ephemeris-oscltx-zero-gm",
+            "ephemeris-oscltx-negative-gm",
+            "ephemeris-oscltx-radial",
+            "ephemeris-oscltx-zero-position",
+            "ephemeris-oscltx-zero-velocity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.oscltx -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
+          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.oscltx -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_oscltx -> oscltx_c. Independent oracle uses actual sp.oscltx followed immediately by its CSPICE error check.",
+          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "prop2b_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/prop2b_c.html",
+      "semantics": "Propagate the initial state under the two-body model for signed elapsed seconds and positive central GM. Return the new inertial position and velocity.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-prop2b-circular",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six propagated components at zero time, forward and backward. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-inclined-ellipse",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six propagated components at zero time, forward and backward. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-parabola",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six propagated components at zero time, forward and backward. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-hyperbola",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six propagated components at zero time, forward and backward. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-retrograde",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all six propagated components at zero time, forward and backward. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-physical-units",
+          "coverage": ["success", "edge"],
+          "observes": "Propagate a three-dimensional geocentric state over seconds, preserving km and km/s. Compare all returned fields against the actual locked toolkit."
+        },
+        {
+          "caseId": "ephemeris-prop2b-zero-gm",
+          "coverage": ["error", "edge"],
+          "observes": "Check the exact toolkit diagnostic for an invalid two-body initial condition. Require SPICE(NONPOSITIVEMASS)."
+        },
+        {
+          "caseId": "ephemeris-prop2b-zero-position",
+          "coverage": ["error", "edge"],
+          "observes": "Check the exact toolkit diagnostic for an invalid two-body initial condition. Require SPICE(ZEROPOSITION)."
+        },
+        {
+          "caseId": "ephemeris-prop2b-zero-velocity",
+          "coverage": ["error", "edge"],
+          "observes": "Check the exact toolkit diagnostic for an invalid two-body initial condition. Require SPICE(ZEROVELOCITY)."
+        },
+        {
+          "caseId": "ephemeris-prop2b-radial-motion",
+          "coverage": ["error", "edge"],
+          "observes": "Check the exact toolkit diagnostic for an invalid two-body initial condition. Require SPICE(NONCONICMOTION)."
+        }
+      ],
+      "edgeAssessment": "Compare positive, zero and negative elapsed times, bound and unbound trajectories, retrograde geometry and physical units. Independent circular orbit quarter-period, reverse propagation, energy and angular-momentum checks constrain full state behavior.",
+      "errorAssessment": "Registered NONPOSITIVEMASS, ZEROPOSITION, ZEROVELOCITY and NONCONICMOTION failures exercise named physical bounds. CSPICE can also diagnose excessive elapsed time (DTOUTOFRANGE); these cases do not claim that diagnostic.",
+      "fixtures": [],
+      "fixtureRationale": "Authored states, element tuples, epochs, pole angles, elapsed times and gravitational parameters. Explicit analytic examples need no kernels or external ephemerides.",
+      "cleanup": "The shared shim captures and resets toolkit errors before returning owned results. WASM releases its input, output and diagnostic buffers on success and failure. Native access is process-serialized; public tests dispose their clients. The locked sidecar checks errors for each call.",
+      "tolerance": "Registered cases use the unchanged 1e-12 absolute-or-relative numeric comparator on every component. Error short codes and array lengths are exact. Supplemental orbital invariants and tagged zero-rate velocity classifications have their own scoped assertions.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.prop2b -> EphemerisApi adapter -> serialized Node native addon -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
+          "executions": ["local-e01-b72ef2e9-node", "ci-e01-b72ef2e9-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.prop2b -> EphemerisApi adapter -> WASM owned input/output buffers -> shared tspice_prop2b -> prop2b_c. Independent oracle uses actual sp.prop2b.",
+          "executions": ["local-e01-b72ef2e9-wasm", "ci-e01-b72ef2e9-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

@@ -206,6 +206,16 @@ Notes:
 
 ## Domain: `ephemeris` (`EphemerisApi`)
 
+E01 uses five direct orbit calculations on both backends. All are kernel-independent. [Detailed shapes, units and source-backed numerical conventions](step8-orbital-elements.md)
+
+| Raw method | CSPICE     | Return                                                                       |
+| ---------- | ---------- | ---------------------------------------------------------------------------- |
+| `conics`   | `conics_c` | Six-component inertial state from conic elements and ET                      |
+| `eqncpv`   | `eqncpv_c` | Six-component inertial state for equinoctial elements and the specified pole |
+| `oscelt`   | `oscelt_c` | Eight classical osculating elements at the supplied epoch                    |
+| `oscltx`   | `oscltx_c` | Eleven defined N0067 fields from a 20-word ABI buffer                        |
+| `prop2b`   | `prop2b_c` | Six-component inertial state propagated over signed elapsed seconds          |
+
 | domain.method                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                       | Returns (TS shape)                        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                               |
 | ----------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ephemeris.spkezr(target, et, ref, abcorr, observer)` | `spkezr_c`           | `(target: string, et: number, ref: string, abcorr: AbCorr \| string, observer: string): SpkezrResult` | `{ state: [x,y,z,vx,vy,vz], lt: number }` | float tolerance on each component + `lt`   | **stateful**: requires SPK (`*.bsp`); may also require FK/PCK/CK depending on `ref`; aberration correction must match CSPICE `abcorr` parsing |

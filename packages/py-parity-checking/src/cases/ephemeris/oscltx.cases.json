@@ -1,0 +1,220 @@
+[
+  {
+    "caseId": "ephemeris-oscltx-circle-equatorial",
+    "description": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 0, 0, 0, 1, 0],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [0, 1, 0, -1, 0, 0],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 0, 0, 0, -1, 0],
+        "et": 15.875,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-inclined",
+    "description": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 2, 0.2, -0.2, 0.3, 0.7],
+        "et": 15.875,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-parabolic-equatorial",
+    "description": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [2, 0, 0, 0, 1, 0],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [0, -2, 0, 1, 0, 0],
+        "et": 15.875,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-hyperbolic",
+    "description": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1.5, -0.25, 0.375, 0.125, 1.625, 0.25],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [2, 0, 0, 0.25, 1.65, 0],
+        "et": 15.875,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-polar",
+    "description": "Observe the full element tuple including canonical singular-angle conventions and branch-dependent elements.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [0, 2, 0, 0, 0, 0.6],
+        "et": 15.875,
+        "mu": 1
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 0, 0, 0, 0, -0.7],
+        "et": 15.875,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-physical-units",
+    "description": "Geocentric length, velocity and GM with signed epoch.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "et": -12345.125,
+        "mu": 398600.435
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "et": 0,
+        "mu": 398600.435
+      },
+      {
+        "op": "ephemeris.oscltx",
+        "state": [7000, -420, 800, 0.3, 7.2, -1.1],
+        "et": 3487.75,
+        "mu": 398600.435
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-zero-gm",
+    "description": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "et": 7,
+        "mu": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPOSITIVEMASS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-negative-gm",
+    "description": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1.5, -0.25, 0.375, 0.125, 0.625, 0.25],
+        "et": 7,
+        "mu": -2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NONPOSITIVEMASS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-radial",
+    "description": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 2, 3, 2, 4, 6],
+        "et": 7,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-zero-position",
+    "description": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [0, 0, 0, 1, 2, 3],
+        "et": 7,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-oscltx-zero-velocity",
+    "description": "Compare the toolkit error for undefined angular momentum, degenerate state or invalid GM.",
+    "workflow": [
+      {
+        "op": "ephemeris.oscltx",
+        "state": [1, 2, 3, 0, 0, 0],
+        "et": 7,
+        "mu": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

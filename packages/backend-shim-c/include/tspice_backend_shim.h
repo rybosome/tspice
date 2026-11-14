@@ -690,6 +690,12 @@ int tspice_sxform(
     int errMaxBytes);
 
 // spkezr_c: compute state (6 doubles) and light time.
+int tspice_conics(const double *elts, double et, double *out, char *err, int errMaxBytes);
+int tspice_eqncpv(double et, double epoch, const double *eqel, double rapol, double decpol, double *out, char *err, int errMaxBytes);
+int tspice_oscelt(const double *state, double et, double mu, double *out, char *err, int errMaxBytes);
+int tspice_oscltx(const double *state, double et, double mu, double *out, char *err, int errMaxBytes);
+int tspice_prop2b(double gm, const double *pvinit, double dt, double *out, char *err, int errMaxBytes);
+
 int tspice_spkezr(
     const char *target,
     double et,

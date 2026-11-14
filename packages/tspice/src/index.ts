@@ -2,6 +2,9 @@ export type {
   KernelSource,
   Mat3ColMajor,
   Mat3RowMajor,
+  SpiceConicElements,
+  SpiceEquinoctialElements,
+  SpiceExtendedConicElements,
   SpiceBackend,
 } from "@rybosome/tspice-backend-contract";
 

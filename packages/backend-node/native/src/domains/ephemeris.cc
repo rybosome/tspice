@@ -139,6 +139,141 @@ static Napi::Object Ckgpav(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static bool ReadOrbitalScalar(Napi::Env env, const Napi::Value& value, const char* label, double* out) {
+  if (value.IsNumber()) {
+    *out = value.As<Napi::Number>().DoubleValue();
+    if (std::isfinite(*out)) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be a finite number"));
+  return false;
+}
+
+template <size_t N>
+static bool ReadOrbitalTuple(Napi::Env env, const Napi::Value& value, const char* label, double (&out)[N]) {
+  if (!value.IsArray() || value.As<Napi::Array>().Length() != N) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must be an array of length " + std::to_string(N)));
+    return false;
+  }
+  const Napi::Array array = value.As<Napi::Array>();
+  for (uint32_t i = 0; i < N; ++i) {
+    const auto entry = array.Get(i);
+    if (env.IsExceptionPending() || !ReadOrbitalScalar(env, entry, label, &out[i])) return false;
+  }
+  return true;
+}
+
+static Napi::Value Conics(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "conics() expects 2 arguments"));
+    return env.Undefined();
+  }
+  double elts[8];
+  if (!ReadOrbitalTuple(env, info[0], "conics(elts)", elts)) return env.Undefined();
+  double et;
+  if (!ReadOrbitalScalar(env, info[1], "conics(et)", &et)) return env.Undefined();
+  double out[6] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_conics(elts, et, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling conics", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
+static Napi::Value Eqncpv(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 5) {
+    ThrowSpiceError(Napi::TypeError::New(env, "eqncpv() expects 5 arguments"));
+    return env.Undefined();
+  }
+  double et;
+  if (!ReadOrbitalScalar(env, info[0], "eqncpv(et)", &et)) return env.Undefined();
+  double epoch;
+  if (!ReadOrbitalScalar(env, info[1], "eqncpv(epoch)", &epoch)) return env.Undefined();
+  double eqel[9];
+  if (!ReadOrbitalTuple(env, info[2], "eqncpv(eqel)", eqel)) return env.Undefined();
+  double rapol;
+  if (!ReadOrbitalScalar(env, info[3], "eqncpv(rapol)", &rapol)) return env.Undefined();
+  double decpol;
+  if (!ReadOrbitalScalar(env, info[4], "eqncpv(decpol)", &decpol)) return env.Undefined();
+  double out[6] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_eqncpv(et, epoch, eqel, rapol, decpol, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling eqncpv", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
+static Napi::Value Oscelt(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "oscelt() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double state[6];
+  if (!ReadOrbitalTuple(env, info[0], "oscelt(state)", state)) return env.Undefined();
+  double et;
+  if (!ReadOrbitalScalar(env, info[1], "oscelt(et)", &et)) return env.Undefined();
+  double mu;
+  if (!ReadOrbitalScalar(env, info[2], "oscelt(mu)", &mu)) return env.Undefined();
+  double out[8] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_oscelt(state, et, mu, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling oscelt", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 8);
+}
+
+static Napi::Value Oscltx(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "oscltx() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double state[6];
+  if (!ReadOrbitalTuple(env, info[0], "oscltx(state)", state)) return env.Undefined();
+  double et;
+  if (!ReadOrbitalScalar(env, info[1], "oscltx(et)", &et)) return env.Undefined();
+  double mu;
+  if (!ReadOrbitalScalar(env, info[2], "oscltx(mu)", &mu)) return env.Undefined();
+  double out[11] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_oscltx(state, et, mu, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling oscltx", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 11);
+}
+
+static Napi::Value Prop2b(const Napi::CallbackInfo& info) {
+  const Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "prop2b() expects 3 arguments"));
+    return env.Undefined();
+  }
+  double gm;
+  if (!ReadOrbitalScalar(env, info[0], "prop2b(gm)", &gm)) return env.Undefined();
+  double pvinit[6];
+  if (!ReadOrbitalTuple(env, info[1], "prop2b(pvinit)", pvinit)) return env.Undefined();
+  double dt;
+  if (!ReadOrbitalScalar(env, info[2], "prop2b(dt)", &dt)) return env.Undefined();
+  double out[6] = {0};
+  char err[tspice_backend_node::kErrMaxBytes];
+  tspice_backend_node::CspiceLock lock;
+  if (tspice_prop2b(gm, pvinit, dt, out, err, static_cast<int>(sizeof(err))) != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling prop2b", err);
+    return env.Undefined();
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
 static Napi::Object Spkezr(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -834,6 +969,11 @@ namespace tspice_backend_node {
 void RegisterEphemeris(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "ckgp", Napi::Function::New(env, Ckgp), __func__)) return;
   if (!SetExportChecked(env, exports, "ckgpav", Napi::Function::New(env, Ckgpav), __func__)) return;
+  if (!SetExportChecked(env, exports, "conics", Napi::Function::New(env, Conics), __func__)) return;
+  if (!SetExportChecked(env, exports, "eqncpv", Napi::Function::New(env, Eqncpv), __func__)) return;
+  if (!SetExportChecked(env, exports, "oscelt", Napi::Function::New(env, Oscelt), __func__)) return;
+  if (!SetExportChecked(env, exports, "oscltx", Napi::Function::New(env, Oscltx), __func__)) return;
+  if (!SetExportChecked(env, exports, "prop2b", Napi::Function::New(env, Prop2b), __func__)) return;
   if (!SetExportChecked(env, exports, "spkezr", Napi::Function::New(env, Spkezr), __func__)) return;
   if (!SetExportChecked(env, exports, "spkpos", Napi::Function::New(env, Spkpos), __func__)) return;
   if (!SetExportChecked(env, exports, "spkopn", Napi::Function::New(env, Spkopn), __func__)) return;

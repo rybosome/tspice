@@ -1597,6 +1597,21 @@ export function createFakeBackend(
       return sxformRowMajor(f, t, et);
     },
 
+    conics: () => {
+      throw new Error("Fake backend does not model conics()");
+    },
+    eqncpv: () => {
+      throw new Error("Fake backend does not model eqncpv()");
+    },
+    oscelt: () => {
+      throw new Error("Fake backend does not model oscelt()");
+    },
+    oscltx: () => {
+      throw new Error("Fake backend does not model oscltx()");
+    },
+    prop2b: () => {
+      throw new Error("Fake backend does not model prop2b()");
+    },
     spkezr: (
       target: string,
       et: number,
