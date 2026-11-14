@@ -1,0 +1,21 @@
+# DAF records and packed summaries
+
+C02 extends C01's owner-bound DAF handles with six raw operations. All six invoke the corresponding pinned N0067 C entrypoints. [Contract](../packages/backend-contract/src/domains/file-io.ts) [C01 navigation](step8-daf-navigation.md)
+
+## Descriptor representation
+
+For `dafps` and `dafus`, the effective double count is `n=min(125,max(0,nd))` and the effective integer count is `m=min(250−2n,max(0,ni))`. The owned public descriptor occupies `8*(n+ceil(m/2))` bytes in native order. Arrays need only contain the effective prefix, and callers may supply a byte view at an unaligned offset. Double components retain their IEEE values, including signed zero and infinities. Exact packed integers and bit payloads travel in `Uint8Array`. The supported little-endian targets were tested with byte literals and actual file contents. [DAFPS](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafps_c.html) [DAFUS](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafus_c.html)
+
+The N0067 translation in `dafps.c` computes its scratch move count as `(m−1)/2+1`, which is one when `m=0`. Both operations have 126 initialized private words so that even 125 doubles and no integers can be processed safely. DAFPS clears the unused four bytes of an odd final integer word before publication: the linked toolkit’s equivalenced scratch persists between calls. DAFUS ignores padding. [Shared shim](../packages/backend-shim-c/src/domains/file_io.c) [Independent locked-library calls](../packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_record_oracle.py)
+
+## Reading a DAF
+
+`dafrfr` returns the file summary layout, internal name, forward and backward summary pointers, and first free word address. The stored name has 60 bytes. The default capacity is 61 including termination, and a capacity of one yields an empty name. The toolkit trims trailing ASCII blanks after truncation. The JS adapter decodes the result as strict UTF-8.
+
+`dafgsr` intersects the inclusive input interval with words 1 through 128. A present record with an empty slice returns `{found:true,data:new Uint8Array(0)}`. A missing record returns `{found:false}`. Use a genuine summary record when reading a non-native format. Its linked translator uses the third control word, NSUM, as a loop bound. The shim checks the format and count against the record capacity using an uncached read before entering that translator. This check preserves cached summary-versus-data conversion and search position. The guarded tests use private copies of the existing foreign-endian CK. [DAFGSR](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgsr_c.html) [Fixture provenance](../packages/py-parity-checking/fixtures/README.md)
+
+`dafrda` exposes native-format physical words as bytes, including packed summary content. `dafgda` reads numeric data and translates supported non-native files. Supply numeric data addresses from the segment descriptor. Addresses start at one, and missing physical records within an address range supply zeros. Both operations cap each requested result at 256 MiB. The linked f2c direct-access seek multiplies the record offset by 1,024 in a signed C long. WASM can read through record 2,097,152 or address 268,435,456. Supported LP64 Node builds accept the full signed 32-bit record and address range. [DAFRDA](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrda_c.html) [DAFGDA](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgda_c.html)
+
+## Observed results
+
+The 42 registered workflows contain 198 steps and 103 target calls. Eighty-four registered Node/WASM comparisons, four public tests, 11 native tests and 27 WASM tests passed. The public tests checked descriptor padding, raw signed-zero bits, a packed summary against actual file bytes, numeric segment values and cursor consistency. The real Chrome inline worker exercised all six calls, including numeric `[1,2,-3]` and its 24 on-disk bytes, an absent record and recovery after an invalid address. Combined-source full local and canonical CI evidence is pending. [Public tests](../packages/py-parity-checking/test/daf-records-public.test.ts) [Native boundaries](../packages/backend-node/test/daf-records-domain.test.ts) [WASM boundaries](../packages/backend-wasm/test/daf-records-allocations.test.ts)

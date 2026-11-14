@@ -9,6 +9,12 @@ import type {
 import {
   invariant,
   assertSpiceInt32,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
   DAF_MAX_SUMMARY_BYTES,
   dafPathByteLength,
   dafSummaryFormat,
@@ -130,6 +136,68 @@ export function createFileIoApi(
       return { arch: obj.arch, type: obj.type };
     },
 
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafps(
+        nd,
+        ni,
+        dafComponents(dc, n, false),
+        dafComponents(ic, m, true),
+      );
+      return dafBytes(result, bytes, true);
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafus(dafBytes(summary, bytes), nd, ni);
+      if (result.dc.length !== n || result.ic.length !== m)
+        throw new TypeError("Invalid DAFUS component count");
+      return {
+        dc: dafComponents(result.dc, n, false),
+        ic: dafComponents(result.ic, m, true),
+      };
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2147483647);
+      const result = native.dafgsr(h, recno, begin, end);
+      if (result.found === false) return { found: false };
+      if (result.found !== true)
+        throw new TypeError("Invalid DAFGSR found flag");
+      return { found: true, data: dafBytes(result.data, bytes, true) };
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      const { nd, ni, ifname, fward, bward, free } = native.dafrfr(h, cap);
+      for (const v of [nd, ni, fward, bward, free])
+        assertSpiceInt32(v, "DAFRFR file record integer");
+      if (!(ifname instanceof Uint8Array) || ifname.byteLength >= cap)
+        throw new TypeError("Invalid DAFRFR name bytes");
+      return {
+        nd,
+        ni,
+        ifname: new TextDecoder("utf-8", {
+          fatal: true,
+          ignoreBOM: true,
+        }).decode(ifname),
+        fward,
+        bward,
+        free,
+      };
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      return dafBytes(native.dafrda(h, begin, end), words * 8, true);
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      const values = native.dafgda(h, begin, end);
+      if (!Array.isArray(values) || values.length !== words)
+        throw new TypeError("Invalid DAFGDA output count");
+      return dafComponents(values, words, false);
+    },
     dafbbs: (handle: SpiceHandle) =>
       native.dafbbs(handles.lookup(handle, ["DAF"], "dafbbs").nativeHandle),
     dafcs: (handle: SpiceHandle) =>

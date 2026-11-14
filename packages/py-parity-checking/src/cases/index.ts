@@ -89,6 +89,12 @@ import fileIoDafgnCasesRaw from "./file-io/dafgn.cases.json" with { type: "json"
 import fileIoDafgsCasesRaw from "./file-io/dafgs.cases.json" with { type: "json" };
 import fileIoDafhsfCasesRaw from "./file-io/dafhsf.cases.json" with { type: "json" };
 import fileIoDafopwCasesRaw from "./file-io/dafopw.cases.json" with { type: "json" };
+import fileIoDafpsCasesRaw from "./file-io/dafps.cases.json" with { type: "json" };
+import fileIoDafusCasesRaw from "./file-io/dafus.cases.json" with { type: "json" };
+import fileIoDafgsrCasesRaw from "./file-io/dafgsr.cases.json" with { type: "json" };
+import fileIoDafrfrCasesRaw from "./file-io/dafrfr.cases.json" with { type: "json" };
+import fileIoDafrdaCasesRaw from "./file-io/dafrda.cases.json" with { type: "json" };
+import fileIoDafgdaCasesRaw from "./file-io/dafgda.cases.json" with { type: "json" };
 import fileIoDafoprCasesRaw from "./file-io/dafopr.cases.json" with { type: "json" };
 import fileIoDasclsCasesRaw from "./file-io/dascls.cases.json" with { type: "json" };
 import fileIoDasoprCasesRaw from "./file-io/dasopr.cases.json" with { type: "json" };
@@ -211,6 +217,12 @@ export const fileIoCases: ParityCase[] = [
   ...(fileIoDafgsCasesRaw as ParityCase[]),
   ...(fileIoDafhsfCasesRaw as ParityCase[]),
   ...(fileIoDafopwCasesRaw as ParityCase[]),
+  ...(fileIoDafpsCasesRaw as ParityCase[]),
+  ...(fileIoDafusCasesRaw as ParityCase[]),
+  ...(fileIoDafgsrCasesRaw as ParityCase[]),
+  ...(fileIoDafrfrCasesRaw as ParityCase[]),
+  ...(fileIoDafrdaCasesRaw as ParityCase[]),
+  ...(fileIoDafgdaCasesRaw as ParityCase[]),
   ...(fileIoDafoprCasesRaw as ParityCase[]),
   ...(fileIoDasclsCasesRaw as ParityCase[]),
   ...(fileIoDasoprCasesRaw as ParityCase[]),

@@ -55,6 +55,48 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
+  /** Pack the effective prefixes of double and signed 32-bit integer components into owned native-order bytes. Double components may include signed zero and IEEE nonfinite values. Negative counts consume zero components; at most 125 words are packed, doubles first. Extra input entries are ignored. An unused odd integer half-word is zeroed before publication.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafps_c.html */
+  dafps(
+    nd: number,
+    ni: number,
+    dc: readonly number[],
+    ic: readonly number[],
+  ): Uint8Array;
+  /** Unpack a native-order DAF summary using the same clipped counts as dafps. The input must contain the requested prefix. Returned arrays own every effective component. Integer words remain exact. JS number outputs preserve NaN classification; byte-oriented APIs retain packed payload bits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafus_c.html */
+  dafus(
+    summary: Uint8Array,
+    nd: number,
+    ni: number,
+  ): { dc: number[]; ic: number[] };
+  /** Read a summary record from a live DAF claim. Record and word numbers are one-based. Intersect the inclusive word interval with 1 through 128. Found records may yield zero bytes, and missing records omit data. Returns owned host-order bytes including packed integers. Non-native input must identify a genuine summary record or a missing record; malformed converted summary counts are rejected. The WASM direct-access seek limit is record 2,097,152.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgsr_c.html */
+  dafgsr(
+    handle: SpiceHandle,
+    recno: number,
+    begin: number,
+    end: number,
+  ): { found: false } | { found: true; data: Uint8Array };
+  /** Read file summary sizes, internal name, first/last summary records and first free address. The default 61-byte capacity includes a terminator. Positive smaller capacities truncate before trailing ASCII blanks are removed. Capacity one yields an empty name. Incomplete or invalid returned UTF-8 is rejected.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrfr_c.html */
+  dafrfr(
+    handle: SpiceHandle,
+    ifnlen?: number,
+  ): {
+    nd: number;
+    ni: number;
+    ifname: string;
+    fward: number;
+    bward: number;
+    free: number;
+  };
+  /** Read an inclusive one-based range of native-format physical words as owned bytes, including packed integer or NaN payloads. Unavailable records contribute zero words. This deprecated CSPICE operation requires a live native-format DAF handle. Each call accepts up to 256 MiB of output. WASM supports addresses through 268,435,456.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrda_c.html */
+  dafrda(handle: SpiceHandle, begin: number, end: number): Uint8Array;
+  /** Read an inclusive one-based range containing only double-precision array data through a live DAF handle, including supported non-native file formats. Missing records are zero-filled. The caller supplies a valid numeric data range and may use the segment summary addresses. Each call accepts up to 256 MiB of output. WASM supports addresses through 268,435,456.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgda_c.html */
+  dafgda(handle: SpiceHandle, begin: number, end: number): number[];
   /**
    * Return whether a nonempty backend filesystem path exists.
    * A missing file returns false; this does not load or open a kernel.

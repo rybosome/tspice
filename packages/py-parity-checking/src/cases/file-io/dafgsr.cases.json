@@ -1,0 +1,320 @@
+[
+  {
+    "caseId": "file-io-dafgsr-native-summary-words",
+    "description": "Read control words, signed packed halves and the complete summary record.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 1,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 4,
+        "end": 8
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 9,
+        "end": 13
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 1,
+        "end": 128
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-clipped-slices",
+    "description": "Clip both bounds; empty slices still expose successful record lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": -2147483648,
+        "end": 2
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 127,
+        "end": 2147483647
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 7,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 129,
+        "end": 300
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 1,
+        "end": -2147483648
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-absent",
+    "description": "An unreadable record yields a miss even when the slice is empty.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 12,
+        "begin": 1,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 12,
+        "begin": 6,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 0,
+        "begin": 1,
+        "end": 1
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": -1,
+        "begin": 1,
+        "end": 1
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-empty-file",
+    "description": "Read the physical summary control words of a DAF with zero arrays.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-empty-daf.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 1,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 4,
+        "end": 8
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-foreign-summary",
+    "description": "The existing BIG-IEEE CK requires native-order translation of each packed summary field.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/mgs_hga_hinge_v2.bc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 10,
+        "begin": 1,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 10,
+        "begin": 4,
+        "end": 8
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 10,
+        "begin": 1,
+        "end": 128
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 20,
+        "begin": 1,
+        "end": 3
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-active-cursor",
+    "description": "Reading a record leaves the current array name and search position observable.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 4,
+        "end": 8
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgsr-closed",
+    "description": "Resolving an already-closed backend token fails before it can address another file.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "path": "kernels/audit-two-segment.bsp",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgsr",
+        "handleId": "a",
+        "recno": 2,
+        "begin": 1,
+        "end": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["closed"]
+    }
+  }
+]

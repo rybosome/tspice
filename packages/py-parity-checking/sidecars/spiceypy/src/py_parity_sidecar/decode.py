@@ -89,6 +89,12 @@ from .models import (
     StepFileIoDafgs,
     StepFileIoDafhsf,
     StepFileIoDafopw,
+    StepFileIoDafps,
+    StepFileIoDafus,
+    StepFileIoDafgsr,
+    StepFileIoDafrfr,
+    StepFileIoDafrda,
+    StepFileIoDafgda,
     StepFileIoDafopr,
     StepFileIoDascls,
     StepFileIoDasopr,
@@ -225,6 +231,13 @@ def _expect_string_list(value: Any, *, label: str) -> list[str]:
     for idx, item in enumerate(value):
         out.append(_expect_string(item, label=f"{label}[{idx}]"))
     return out
+
+
+def _expect_daf_bytes(value: Any, *, label: str) -> list[int]:
+    data = _expect_int_list(value, label=label)
+    if any(byte < 0 or byte > 255 for byte in data):
+        raise ValueError(f"{label} must contain unsigned bytes")
+    return data
 
 
 def _expect_int_list(value: Any, *, label: str) -> list[int]:
@@ -1095,6 +1108,55 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="file-io.dafopw.path"),
                 handleId=_expect_string(step.get("handleId"), label="file-io.dafopw.handleId"),
+            )
+
+        case "file-io.dafps":
+            return StepFileIoDafps(
+                op=op,
+                nd=_expect_int(step.get("nd"), label="file-io.dafps.nd"),
+                ni=_expect_int(step.get("ni"), label="file-io.dafps.ni"),
+                dc=_expect_number_list(step.get("dc"), label="file-io.dafps.dc"),
+                ic=_expect_int_list(step.get("ic"), label="file-io.dafps.ic"),
+            )
+
+        case "file-io.dafus":
+            return StepFileIoDafus(
+                op=op,
+                summary=_expect_daf_bytes(step.get("summary"), label="file-io.dafus.summary"),
+                nd=_expect_int(step.get("nd"), label="file-io.dafus.nd"),
+                ni=_expect_int(step.get("ni"), label="file-io.dafus.ni"),
+            )
+
+        case "file-io.dafgsr":
+            return StepFileIoDafgsr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafgsr.handleId"),
+                recno=_expect_int(step.get("recno"), label="file-io.dafgsr.recno"),
+                begin=_expect_int(step.get("begin"), label="file-io.dafgsr.begin"),
+                end=_expect_int(step.get("end"), label="file-io.dafgsr.end"),
+            )
+
+        case "file-io.dafrfr":
+            return StepFileIoDafrfr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafrfr.handleId"),
+                ifnlen=_expect_int(step.get("ifnlen", 61), label="file-io.dafrfr.ifnlen"),
+            )
+
+        case "file-io.dafrda":
+            return StepFileIoDafrda(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafrda.handleId"),
+                begin=_expect_int(step.get("begin"), label="file-io.dafrda.begin"),
+                end=_expect_int(step.get("end"), label="file-io.dafrda.end"),
+            )
+
+        case "file-io.dafgda":
+            return StepFileIoDafgda(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dafgda.handleId"),
+                begin=_expect_int(step.get("begin"), label="file-io.dafgda.begin"),
+                end=_expect_int(step.get("end"), label="file-io.dafgda.end"),
             )
 
         case "file-io.dafopr":

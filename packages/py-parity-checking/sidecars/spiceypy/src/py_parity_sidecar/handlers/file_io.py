@@ -8,6 +8,7 @@ import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError, SpiceyError
 
 from .. import daf_oracle
+from .. import daf_record_oracle
 from ..models import (
     PathRefInput,
     StepFileIoDafbfs,
@@ -21,6 +22,12 @@ from ..models import (
     StepFileIoDafgs,
     StepFileIoDafhsf,
     StepFileIoDafopw,
+    StepFileIoDafps,
+    StepFileIoDafus,
+    StepFileIoDafgsr,
+    StepFileIoDafrfr,
+    StepFileIoDafrda,
+    StepFileIoDafgda,
     StepFileIoDafopr,
     StepFileIoDascls,
     StepFileIoDasopr,
@@ -175,6 +182,34 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             handle = int(sp.dafopr(_resolve_file_io_path(context, step.path)))
         _register_handle(state, step.handleId, handle, kind="DAF", close_with="dafcls")
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepFileIoDafps):
+        value = daf_record_oracle.pack(step.nd, step.ni, step.dc, step.ic)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafus):
+        value = daf_record_oracle.unpack(step.summary, step.nd, step.ni)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafgsr):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.summary_record(handle, step.recno, step.begin, step.end)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrfr):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.header(handle, step.ifnlen)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrda):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.read_addresses(handle, step.begin, step.end, physical=True)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafgda):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.read_addresses(handle, step.begin, step.end, physical=False)
+        return StepOutput(op=step.op, value=value)
 
     if isinstance(step, StepFileIoDafgh):
         current = int(sp.dafgh())

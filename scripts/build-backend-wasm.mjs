@@ -375,6 +375,12 @@ const exportedFunctions = [
   "_tspice_getfat",
 
   // --- DAF ---
+  "_tspice_dafps",
+  "_tspice_dafus",
+  "_tspice_dafgsr",
+  "_tspice_dafrfr",
+  "_tspice_dafrda",
+  "_tspice_dafgda",
   "_tspice_dafbbs",
   "_tspice_dafcs",
   "_tspice_daffpa",

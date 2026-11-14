@@ -1,0 +1,797 @@
+{
+  "schemaVersion": 1,
+  "batch": "c02-daf-records",
+  "traceFiles": [
+    "docs/step8-daf-records.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/daf-records-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/test/daf-records-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/daf.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck.py",
+    "packages/py-parity-checking/fixtures/generate-audit-daf.py",
+    "packages/py-parity-checking/fixtures/generate-audit-spk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_record_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/fixtures.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/test/daf-records-public.test.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "packages/tspice/test/fixtures/kernels/mgs-minimal/README.md",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "routines": [
+    {
+      "routine": "dafps_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafps_c.html",
+      "semantics": "Pack doubles followed by signed 32-bit integers into host-order bytes. Preserve the requested signed counts during the canonical call and expose the effective prefix. The unused final half-word for an odd integer count is zero in the public representation.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafps-packed-bits",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the entire packed output, including negative halves resembling NaN when viewed as doubles."
+        },
+        {
+          "caseId": "file-io-dafps-odd-padding",
+          "coverage": ["success", "edge"],
+          "observes": "Observe canonicalized unused half words after differently sized preceding calls."
+        },
+        {
+          "caseId": "file-io-dafps-trailing-input",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve requested prefix and ignore unused entries."
+        },
+        {
+          "caseId": "file-io-dafps-empty-components",
+          "coverage": ["success", "edge"],
+          "observes": "Nonpositive expected counts produce empty component lists or unpaired doubles."
+        },
+        {
+          "caseId": "file-io-dafps-max-layout",
+          "coverage": ["success", "edge"],
+          "observes": "The 125-word ceiling clips the integer count after doubles and ignores further requested doubles."
+        },
+        {
+          "caseId": "file-io-dafps-small-and-large-values",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve the signed and scaled IEEE bytes of each declared double."
+        }
+      ],
+      "edgeAssessment": "Negative dimensions, empty integer or double portions, oversized signed counts and a full 125-double summary exercise clipping. Odd padding is tested after another call supplied distinct integers.",
+      "errorAssessment": "Error-free CSPICE operation. Insufficient effective input, nonnumeric double slots and out-of-range integer slots fail before canonical dispatch.",
+      "fixtures": [],
+      "fixtureRationale": "The numerical component or byte inputs are project-authored literals.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [
+        {
+          "id": "packed-storage-padding",
+          "status": "repaired",
+          "summary": "DAFPS visits one private scratch word even when there are no integer components, and publishes an undefined half-word from persistent scratch on odd integer counts.",
+          "repair": "Allocate 126 aligned private words, publish only logical bytes and clear exactly the unused four bytes after a successful actual DAFPS_C call.",
+          "caseIds": ["file-io-dafps-odd-padding", "file-io-dafps-max-layout"],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/backend-node/test/daf-records-domain.test.ts",
+            "packages/backend-wasm/test/daf-records-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_record_oracle.py",
+            "packages/py-parity-checking/test/daf-records-public.test.ts",
+            "docs/step8-daf-records.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafps uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafps and actual dafps_c. The independent sidecar binds dafps_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafps uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafps and actual dafps_c. The independent sidecar binds dafps_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafus_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafus_c.html",
+      "semantics": "Unpack host-order summary bytes into distinct owned dc and ic arrays. Counts clip as in DAFPS. Padding and extra input bytes do not contribute to the result.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafus-packed-bits",
+          "coverage": ["success", "edge"],
+          "observes": "Recover every double and both signed integer halves from project-authored packed bytes."
+        },
+        {
+          "caseId": "file-io-dafus-unobserved-padding",
+          "coverage": ["success", "edge"],
+          "observes": "Ignore the arbitrary final four padding bytes and all bytes after the requested summary."
+        },
+        {
+          "caseId": "file-io-dafus-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Test no-double and no-integer component results, including empty physical summary."
+        },
+        {
+          "caseId": "file-io-dafus-max-layout",
+          "coverage": ["success", "edge"],
+          "observes": "Independent packed words stress clipping at every edge of the 125-word scratch area."
+        },
+        {
+          "caseId": "file-io-dafus-nonzero-offset-content",
+          "coverage": ["success", "edge"],
+          "observes": "Change each field independently, including very different magnitudes."
+        }
+      ],
+      "edgeAssessment": "Unaligned input views, sign-bearing packed integers, 125-double output, zero dimensions, unused padding and maximum effective integer count are retained. Public tests preserve signed zero and infinity.",
+      "errorAssessment": "Error-free CSPICE operation. A short packed input or unsupported count representation is a wrapper error.",
+      "fixtures": [],
+      "fixtureRationale": "The numerical component or byte inputs are project-authored literals.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [
+        {
+          "id": "private-extra-word",
+          "status": "repaired",
+          "summary": "The translated DAFUS reads a whole scratch word when m=0, including the one after the logical end at n=125.",
+          "repair": "Copy the exact user-supplied byte prefix to 126 aligned initialized private words before the canonical DAFUS_C call.",
+          "caseIds": ["file-io-dafus-empty", "file-io-dafus-max-layout"],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/backend-node/test/daf-records-domain.test.ts",
+            "packages/backend-wasm/test/daf-records-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_record_oracle.py",
+            "packages/py-parity-checking/test/daf-records-public.test.ts",
+            "docs/step8-daf-records.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafus uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafus and actual dafus_c. The independent sidecar binds dafus_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafus uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafus and actual dafus_c. The independent sidecar binds dafus_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafgsr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgsr_c.html",
+      "semantics": "Return a discriminated found result for an owner-scoped DAF handle and one-based physical record. Intersect word bounds with 1..128; found=true may return zero bytes. Preserve every defined native-order payload byte.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafgsr-native-summary-words",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read control words, signed packed halves and the complete summary record."
+        },
+        {
+          "caseId": "file-io-dafgsr-clipped-slices",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Clip both bounds; empty slices still expose successful record lookup."
+        },
+        {
+          "caseId": "file-io-dafgsr-absent",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An unreadable record yields a miss even when the slice is empty."
+        },
+        {
+          "caseId": "file-io-dafgsr-empty-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read the physical summary control words of a DAF with zero arrays."
+        },
+        {
+          "caseId": "file-io-dafgsr-foreign-summary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The existing BIG-IEEE CK requires native-order translation of each packed summary field."
+        },
+        {
+          "caseId": "file-io-dafgsr-active-cursor",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Reading a record leaves the current array name and search position observable."
+        },
+        {
+          "caseId": "file-io-dafgsr-closed",
+          "coverage": ["error", "state"],
+          "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
+        }
+      ],
+      "edgeAssessment": "Full and selected native summary words, empty clipped slices, missing records, empty DAF, true foreign-endian conversion and cursor continuity exercise storage semantics. Native LP64 and WASM seek bounds are tested separately.",
+      "errorAssessment": "The registered closed-handle case fails before dispatch. Missing records are ordinary found=false values. Wrong foreign-format summary counts that exceed the decoder workspace are checked before canonical translation; scratch-only guarded actual-backend tests confirm rejection and recovery.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing NAIF/PDS MGS HGA hinge CK, archived source and SHA-256 c105b6e1058e2718280a411544d0546880741446b3da5dd7a431b3013bfdd2cd in packages/tspice/test/fixtures/kernels/mgs-minimal/README.md.",
+          "distribution": "Already distributed in the repository. Reuse the existing read-only mission fixture under its original provenance; no new external download or redistribution is introduced."
+        }
+      ],
+      "fixtureRationale": "Registered workflows reuse read-only kernel fixtures. The two guarded foreign-record tests alter only scratch copies of the existing MGS CK.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [
+        {
+          "id": "bounded-foreign-summary-decoder",
+          "status": "repaired",
+          "summary": "N0067 foreign summary-record translation uses NSUM as an integer loop bound. DAFRWD also constructs a source pointer at the first word even when a clipped slice is empty.",
+          "repair": "Preflight untrusted foreign record counts through uncached ZZDAFGDR, validate the advertised descriptor layout and count, then call DAFGSR_C. Empty clipped intervals use the in-range equivalent [1,0] and still observe found.",
+          "caseIds": [
+            "file-io-dafgsr-foreign-summary",
+            "file-io-dafgsr-clipped-slices"
+          ],
+          "evidence": [
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/backend-node/test/daf-records-domain.test.ts",
+            "packages/backend-wasm/test/daf-records-allocations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_record_oracle.py",
+            "packages/py-parity-checking/test/daf-records-public.test.ts",
+            "docs/step8-daf-records.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgsr uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafgsr and actual dafgsr_c. The independent sidecar binds dafgsr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgsr uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafgsr and actual dafgsr_c. The independent sidecar binds dafgsr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafrfr_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrfr_c.html",
+      "semantics": "Read the header of the owner-bound DAF, including nd, ni, internal filename, first and last summary-record numbers and the first free address. Decode the canonical name bytes as strict UTF-8.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafrfr-file-audit-two-segment",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare summary layout, internal name, both list pointers and first free address."
+        },
+        {
+          "caseId": "file-io-dafrfr-file-audit-empty-daf",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare summary layout, internal name, both list pointers and first free address."
+        },
+        {
+          "caseId": "file-io-dafrfr-file-mgs_hga_hinge_v2",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare summary layout, internal name, both list pointers and first free address."
+        },
+        {
+          "caseId": "file-io-dafrfr-file-audit-pointing",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare summary layout, internal name, both list pointers and first free address."
+        },
+        {
+          "caseId": "file-io-dafrfr-ifname-capacities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Name truncation in bytes leaves all integer fields intact."
+        },
+        {
+          "caseId": "file-io-dafrfr-two-live-handles",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Explicit DAF handles select distinct headers independently of the active array search."
+        },
+        {
+          "caseId": "file-io-dafrfr-closed",
+          "coverage": ["error", "state"],
+          "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
+        }
+      ],
+      "edgeAssessment": "Names truncate with positive capacities, default 61, full capacity, capacity one, and larger capacities bounded by the defined 60-byte stored name. Both native and foreign headers are exercised.",
+      "errorAssessment": "A closed-handle case tests the ownership boundary; nonpositive ifnlen is rejected before the unchecked Fortran string length expression. Invalid returned UTF-8 fails before publication. Scientific DAF read failures propagate.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-empty-daf.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing NAIF/PDS MGS HGA hinge CK, archived source and SHA-256 c105b6e1058e2718280a411544d0546880741446b3da5dd7a431b3013bfdd2cd in packages/tspice/test/fixtures/kernels/mgs-minimal/README.md.",
+          "distribution": "Already distributed in the repository. Reuse the existing read-only mission fixture under its original provenance; no new external download or redistribution is introduced."
+        }
+      ],
+      "fixtureRationale": "Registered workflows reuse read-only kernel fixtures. The two guarded foreign-record tests alter only scratch copies of the existing MGS CK.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafrfr uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafrfr and actual dafrfr_c. The independent sidecar binds dafrfr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafrfr uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafrfr and actual dafrfr_c. The independent sidecar binds dafrfr_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafrda_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrda_c.html",
+      "semantics": "Read a native-format physical word range by inclusive one-based addresses using the deprecated DAFRDA entry. Return bytes, including packed integer halves and noncanonical NaN payloads found in physical summary records.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafrda-data-words",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read successively narrowed ranges from known type-8 segment storage."
+        },
+        {
+          "caseId": "file-io-dafrda-cross-record",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Cross the 128-double physical record boundary entirely within numeric segment storage."
+        },
+        {
+          "caseId": "file-io-dafrda-outside-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Physically absent DAF data words read as zeros."
+        },
+        {
+          "caseId": "file-io-dafrda-ck-data",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read signed CK double components through a separately opened file."
+        },
+        {
+          "caseId": "file-io-dafrda-negative-address",
+          "coverage": ["error", "state"],
+          "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFNEGADDR."
+        },
+        {
+          "caseId": "file-io-dafrda-reversed",
+          "coverage": ["error", "state"],
+          "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFBEGGTEND."
+        },
+        {
+          "caseId": "file-io-dafrda-physical-summary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The legacy native-only reader preserves raw packed integer word payloads."
+        },
+        {
+          "caseId": "file-io-dafrda-foreign-unsupported",
+          "coverage": ["error", "state"],
+          "observes": "Legacy DAFRDA rejects the foreign binary format even when a data interval is valid. Expected diagnostic: UNSUPPORTEDBFF."
+        },
+        {
+          "caseId": "file-io-dafrda-closed",
+          "coverage": ["error", "state"],
+          "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
+        }
+      ],
+      "edgeAssessment": "Known segment words, record boundaries, file-exterior zeros, CK data and physical summary words are compared exactly. Native LP64 accepts high signed32 addresses that exceed the representable WASM seek range.",
+      "errorAssessment": "DAFNEGADDR and DAFBEGGTEND are genuine toolkit errors. A nonnative-format CK gives UNSUPPORTEDBFF. Closed handles and unrepresentably large output buffers are separate wrapper errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing NAIF/PDS MGS HGA hinge CK, archived source and SHA-256 c105b6e1058e2718280a411544d0546880741446b3da5dd7a431b3013bfdd2cd in packages/tspice/test/fixtures/kernels/mgs-minimal/README.md.",
+          "distribution": "Already distributed in the repository. Reuse the existing read-only mission fixture under its original provenance; no new external download or redistribution is introduced."
+        }
+      ],
+      "fixtureRationale": "Registered workflows reuse read-only kernel fixtures. The two guarded foreign-record tests alter only scratch copies of the existing MGS CK.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafrda uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafrda and actual dafrda_c. The independent sidecar binds dafrda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafrda uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafrda and actual dafrda_c. The independent sidecar binds dafrda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dafgda_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgda_c.html",
+      "semantics": "Read numeric double data between inclusive one-based addresses and return an owned number array. The caller supplies a numeric-data range. N0067 converts supported non-native formats to host numeric values.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafgda-data-words",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read successively narrowed ranges from known type-8 segment storage."
+        },
+        {
+          "caseId": "file-io-dafgda-cross-record",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Cross the 128-double physical record boundary entirely within numeric segment storage."
+        },
+        {
+          "caseId": "file-io-dafgda-outside-file",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Physically absent DAF data words read as zeros."
+        },
+        {
+          "caseId": "file-io-dafgda-ck-data",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read signed CK double components through a separately opened file."
+        },
+        {
+          "caseId": "file-io-dafgda-negative-address",
+          "coverage": ["error", "state"],
+          "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFNEGADDR."
+        },
+        {
+          "caseId": "file-io-dafgda-reversed",
+          "coverage": ["error", "state"],
+          "observes": "Observe the actual toolkit range error with a live handle. Expected diagnostic: DAFBEGGTEND."
+        },
+        {
+          "caseId": "file-io-dafgda-foreign-data",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Translate the signed numeric values from an existing BIG-IEEE CK segment."
+        },
+        {
+          "caseId": "file-io-dafgda-closed",
+          "coverage": ["error", "state"],
+          "observes": "Resolving an already-closed backend token fails before it can address another file. Expected diagnostic: closed."
+        }
+      ],
+      "edgeAssessment": "Segment boundaries, cross-record data, exterior zeros, locally authored CK/SPK and the foreign MGS CK distinguish this numerical route from the native-only physical route.",
+      "errorAssessment": "DAFNEGADDR and DAFBEGGTEND come from the toolkit. Closed handles and the finite output memory or platform seek bounds are wrapper validation. Mixed descriptor/data regions have no defined numerical interpretation.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ephemeris.bsp",
+          "provenance": "Exclusively project-authored synthetic type8 segments, signed object/center IDs, polynomial states, explicit ET-second bounds/gaps and competing priority segment; generate-audit-spk.py uses locked SpiceyPy independently and asserts complete IDs/coverage/state/metadata/priority. No mission observations or external scientific data.",
+          "distribution": "Repository-authored synthetic binary inputs under MIT; generator and distribution rationale documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pointing.bc",
+          "provenance": "Project-authored arbitrary Type3 pointing/AV segments and synthetic single-field spacecraft clock; generator fixtures/generate-audit-ck.py independently writes CKs through locked SpiceyPy and asserts literal coverage, pointing, clock and physical derivative. No mission observations or external dataset.",
+          "distribution": "Repository-authored synthetic binary/text fixture under MIT; provenance documented in fixtures/README.md for maintainer review."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "Generated by the checked-in fixture generator using locked SpiceyPy 6.0.3/CSPICE N0067; invented linear state samples, IDs 9100001/2 and ET 0..2/10..12, no external observations.",
+          "distribution": "Project-authored synthetic data under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/mgs_hga_hinge_v2.bc",
+          "provenance": "Existing NAIF/PDS MGS HGA hinge CK, archived source and SHA-256 c105b6e1058e2718280a411544d0546880741446b3da5dd7a431b3013bfdd2cd in packages/tspice/test/fixtures/kernels/mgs-minimal/README.md.",
+          "distribution": "Already distributed in the repository. Reuse the existing read-only mission fixture under its original provenance; no new external download or redistribution is introduced."
+        }
+      ],
+      "fixtureRationale": "Registered workflows reuse read-only kernel fixtures. The two guarded foreign-record tests alter only scratch copies of the existing MGS CK.",
+      "cleanup": "The adapters retain owned outputs. Native access is serialized and WASM allocations are released on success and failure. File reads validate the live client-owned DAF claim and preserve the open handle for explicit close. Public clients clean up in finally.",
+      "tolerance": "Packed descriptor and physical bytes, header fields, integer components, found states and names compare exactly. Numeric data are also compared against independently decoded fixture doubles. Signed zero and odd half-word bytes have explicit supplementary assertions; no global tolerance was altered.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgda uses the native adapter, exact addon registration and serialized CSPICE access, shared tspice_dafgda and actual dafgda_c. The independent sidecar binds dafgda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dafgda uses the WASM adapter, checked temporary storage and regenerated module export, shared tspice_dafgda and actual dafgda_c. The independent sidecar binds dafgda_c in the locked SpiceyPy 6.0.3 shared library with typed, initialized buffers.",
+          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+        }
+      }
+    }
+  ],
+  "executions": [
+    {
+      "id": "local-c02-0138a1b3-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b62da04ca16955aa5f602e2d605df6bcf7e1c8009cd517bffe6c4348163f205",
+      "caseIds": [
+        "file-io-dafgda-ck-data",
+        "file-io-dafgda-closed",
+        "file-io-dafgda-cross-record",
+        "file-io-dafgda-data-words",
+        "file-io-dafgda-foreign-data",
+        "file-io-dafgda-negative-address",
+        "file-io-dafgda-outside-file",
+        "file-io-dafgda-reversed",
+        "file-io-dafgsr-absent",
+        "file-io-dafgsr-active-cursor",
+        "file-io-dafgsr-clipped-slices",
+        "file-io-dafgsr-closed",
+        "file-io-dafgsr-empty-file",
+        "file-io-dafgsr-foreign-summary",
+        "file-io-dafgsr-native-summary-words",
+        "file-io-dafps-empty-components",
+        "file-io-dafps-max-layout",
+        "file-io-dafps-odd-padding",
+        "file-io-dafps-packed-bits",
+        "file-io-dafps-small-and-large-values",
+        "file-io-dafps-trailing-input",
+        "file-io-dafrda-ck-data",
+        "file-io-dafrda-closed",
+        "file-io-dafrda-cross-record",
+        "file-io-dafrda-data-words",
+        "file-io-dafrda-foreign-unsupported",
+        "file-io-dafrda-negative-address",
+        "file-io-dafrda-outside-file",
+        "file-io-dafrda-physical-summary",
+        "file-io-dafrda-reversed",
+        "file-io-dafrfr-closed",
+        "file-io-dafrfr-file-audit-empty-daf",
+        "file-io-dafrfr-file-audit-pointing",
+        "file-io-dafrfr-file-audit-two-segment",
+        "file-io-dafrfr-file-mgs_hga_hinge_v2",
+        "file-io-dafrfr-ifname-capacities",
+        "file-io-dafrfr-two-live-handles",
+        "file-io-dafus-empty",
+        "file-io-dafus-max-layout",
+        "file-io-dafus-nonzero-offset-content",
+        "file-io-dafus-packed-bits",
+        "file-io-dafus-unobserved-padding"
+      ],
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c02-0138a1b3-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b62da04ca16955aa5f602e2d605df6bcf7e1c8009cd517bffe6c4348163f205",
+      "caseIds": [
+        "file-io-dafgda-ck-data",
+        "file-io-dafgda-closed",
+        "file-io-dafgda-cross-record",
+        "file-io-dafgda-data-words",
+        "file-io-dafgda-foreign-data",
+        "file-io-dafgda-negative-address",
+        "file-io-dafgda-outside-file",
+        "file-io-dafgda-reversed",
+        "file-io-dafgsr-absent",
+        "file-io-dafgsr-active-cursor",
+        "file-io-dafgsr-clipped-slices",
+        "file-io-dafgsr-closed",
+        "file-io-dafgsr-empty-file",
+        "file-io-dafgsr-foreign-summary",
+        "file-io-dafgsr-native-summary-words",
+        "file-io-dafps-empty-components",
+        "file-io-dafps-max-layout",
+        "file-io-dafps-odd-padding",
+        "file-io-dafps-packed-bits",
+        "file-io-dafps-small-and-large-values",
+        "file-io-dafps-trailing-input",
+        "file-io-dafrda-ck-data",
+        "file-io-dafrda-closed",
+        "file-io-dafrda-cross-record",
+        "file-io-dafrda-data-words",
+        "file-io-dafrda-foreign-unsupported",
+        "file-io-dafrda-negative-address",
+        "file-io-dafrda-outside-file",
+        "file-io-dafrda-physical-summary",
+        "file-io-dafrda-reversed",
+        "file-io-dafrfr-closed",
+        "file-io-dafrfr-file-audit-empty-daf",
+        "file-io-dafrfr-file-audit-pointing",
+        "file-io-dafrfr-file-audit-two-segment",
+        "file-io-dafrfr-file-mgs_hga_hinge_v2",
+        "file-io-dafrfr-ifname-capacities",
+        "file-io-dafrfr-two-live-handles",
+        "file-io-dafus-empty",
+        "file-io-dafus-max-layout",
+        "file-io-dafus-nonzero-offset-content",
+        "file-io-dafus-packed-bits",
+        "file-io-dafus-unobserved-padding"
+      ],
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c02-0138a1b3-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b62da04ca16955aa5f602e2d605df6bcf7e1c8009cd517bffe6c4348163f205",
+      "caseIds": [
+        "file-io-dafgda-ck-data",
+        "file-io-dafgda-closed",
+        "file-io-dafgda-cross-record",
+        "file-io-dafgda-data-words",
+        "file-io-dafgda-foreign-data",
+        "file-io-dafgda-negative-address",
+        "file-io-dafgda-outside-file",
+        "file-io-dafgda-reversed",
+        "file-io-dafgsr-absent",
+        "file-io-dafgsr-active-cursor",
+        "file-io-dafgsr-clipped-slices",
+        "file-io-dafgsr-closed",
+        "file-io-dafgsr-empty-file",
+        "file-io-dafgsr-foreign-summary",
+        "file-io-dafgsr-native-summary-words",
+        "file-io-dafps-empty-components",
+        "file-io-dafps-max-layout",
+        "file-io-dafps-odd-padding",
+        "file-io-dafps-packed-bits",
+        "file-io-dafps-small-and-large-values",
+        "file-io-dafps-trailing-input",
+        "file-io-dafrda-ck-data",
+        "file-io-dafrda-closed",
+        "file-io-dafrda-cross-record",
+        "file-io-dafrda-data-words",
+        "file-io-dafrda-foreign-unsupported",
+        "file-io-dafrda-negative-address",
+        "file-io-dafrda-outside-file",
+        "file-io-dafrda-physical-summary",
+        "file-io-dafrda-reversed",
+        "file-io-dafrfr-closed",
+        "file-io-dafrfr-file-audit-empty-daf",
+        "file-io-dafrfr-file-audit-pointing",
+        "file-io-dafrfr-file-audit-two-segment",
+        "file-io-dafrfr-file-mgs_hga_hinge_v2",
+        "file-io-dafrfr-ifname-capacities",
+        "file-io-dafrfr-two-live-handles",
+        "file-io-dafus-empty",
+        "file-io-dafus-max-layout",
+        "file-io-dafus-nonzero-offset-content",
+        "file-io-dafus-packed-bits",
+        "file-io-dafus-unobserved-padding"
+      ],
+      "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c02-0138a1b3-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2b62da04ca16955aa5f602e2d605df6bcf7e1c8009cd517bffe6c4348163f205",
+      "caseIds": [
+        "file-io-dafgda-ck-data",
+        "file-io-dafgda-closed",
+        "file-io-dafgda-cross-record",
+        "file-io-dafgda-data-words",
+        "file-io-dafgda-foreign-data",
+        "file-io-dafgda-negative-address",
+        "file-io-dafgda-outside-file",
+        "file-io-dafgda-reversed",
+        "file-io-dafgsr-absent",
+        "file-io-dafgsr-active-cursor",
+        "file-io-dafgsr-clipped-slices",
+        "file-io-dafgsr-closed",
+        "file-io-dafgsr-empty-file",
+        "file-io-dafgsr-foreign-summary",
+        "file-io-dafgsr-native-summary-words",
+        "file-io-dafps-empty-components",
+        "file-io-dafps-max-layout",
+        "file-io-dafps-odd-padding",
+        "file-io-dafps-packed-bits",
+        "file-io-dafps-small-and-large-values",
+        "file-io-dafps-trailing-input",
+        "file-io-dafrda-ck-data",
+        "file-io-dafrda-closed",
+        "file-io-dafrda-cross-record",
+        "file-io-dafrda-data-words",
+        "file-io-dafrda-foreign-unsupported",
+        "file-io-dafrda-negative-address",
+        "file-io-dafrda-outside-file",
+        "file-io-dafrda-physical-summary",
+        "file-io-dafrda-reversed",
+        "file-io-dafrfr-closed",
+        "file-io-dafrfr-file-audit-empty-daf",
+        "file-io-dafrfr-file-audit-pointing",
+        "file-io-dafrfr-file-audit-two-segment",
+        "file-io-dafrfr-file-mgs_hga_hinge_v2",
+        "file-io-dafrfr-ifname-capacities",
+        "file-io-dafrfr-two-live-handles",
+        "file-io-dafus-empty",
+        "file-io-dafus-max-layout",
+        "file-io-dafus-nonzero-offset-content",
+        "file-io-dafus-packed-bits",
+        "file-io-dafus-unobserved-padding"
+      ],
+      "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

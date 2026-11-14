@@ -730,6 +730,43 @@ export type StepFileIoDafopw = {
   alias?: string;
 };
 
+export type StepFileIoDafps = {
+  op: "file-io.dafps";
+  nd: number;
+  ni: number;
+  dc: number[];
+  ic: number[];
+};
+export type StepFileIoDafus = {
+  op: "file-io.dafus";
+  summary: number[];
+  nd: number;
+  ni: number;
+};
+export type StepFileIoDafgsr = {
+  op: "file-io.dafgsr";
+  handleId: string;
+  recno: number;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafrfr = {
+  op: "file-io.dafrfr";
+  handleId: string;
+  ifnlen?: number;
+};
+export type StepFileIoDafrda = {
+  op: "file-io.dafrda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafgda = {
+  op: "file-io.dafgda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
 export type StepFileIoDafopr = {
   op: "file-io.dafopr";
   path: PathRefLike;
@@ -1433,6 +1470,12 @@ export type WorkflowStep =
   | StepFileIoDafgs
   | StepFileIoDafhsf
   | StepFileIoDafopw
+  | StepFileIoDafps
+  | StepFileIoDafus
+  | StepFileIoDafgsr
+  | StepFileIoDafrfr
+  | StepFileIoDafrda
+  | StepFileIoDafgda
   | StepFileIoDafopr
   | StepFileIoDafcls
   | StepFileIoDafbfs
@@ -1737,6 +1780,25 @@ export type StepOutput =
   | { op: "file-io.dafgs"; value: number[] }
   | { op: "file-io.dafhsf"; value: { nd: number; ni: number } }
   | { op: "file-io.dafopw"; value: null }
+  | { op: "file-io.dafps"; value: number[] }
+  | { op: "file-io.dafus"; value: { dc: number[]; ic: number[] } }
+  | {
+      op: "file-io.dafgsr";
+      value: { found: false } | { found: true; data: number[] };
+    }
+  | {
+      op: "file-io.dafrfr";
+      value: {
+        nd: number;
+        ni: number;
+        ifname: string;
+        fward: number;
+        bward: number;
+        free: number;
+      };
+    }
+  | { op: "file-io.dafrda"; value: number[] }
+  | { op: "file-io.dafgda"; value: number[] }
   | { op: "file-io.dafopr"; value: null }
   | { op: "file-io.dafcls"; value: null }
   | { op: "file-io.dafbfs"; value: null }

@@ -96,6 +96,68 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dafps(
+    nd: number,
+    ni: number,
+    dc: number,
+    dcCount: number,
+    ic: number,
+    icCount: number,
+    out: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafus(
+    summary: number,
+    size: number,
+    nd: number,
+    ni: number,
+    dc: number,
+    dcRoom: number,
+    ic: number,
+    icRoom: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+    out: number,
+    room: number,
+    outFound: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrfr(
+    handle: number,
+    ifnlen: number,
+    ifname: number,
+    room: number,
+    fields: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dafbbs(handle: number, err: number, errMaxBytes: number): number;
   _tspice_dafcs(handle: number, err: number, errMaxBytes: number): number;
   _tspice_daffpa(
@@ -2205,6 +2267,12 @@ const REQUIRED_FUNCTION_EXPORTS = [
   // File I/O
   "_tspice_exists",
   "_tspice_getfat",
+  "_tspice_dafps",
+  "_tspice_dafus",
+  "_tspice_dafgsr",
+  "_tspice_dafrfr",
+  "_tspice_dafrda",
+  "_tspice_dafgda",
   "_tspice_dafbbs",
   "_tspice_dafcs",
   "_tspice_daffpa",

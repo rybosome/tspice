@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 170
-- Planned (not yet implemented): 479
+- Implemented now (SpiceRawBackend): 176
+- Planned (not yet implemented): 473
 - Excluded: 3
 
 ## Implemented now
@@ -48,12 +48,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafcs_c` | DAF, continue search |
 | `daffna_c` | DAF, find next array |
 | `daffpa_c` | DAF, find previous array |
+| `dafgda_c` | DAF, read data from address |
 | `dafgh_c` | DAF, get handle |
 | `dafgn_c` | DAF, get array name |
 | `dafgs_c` | DAF, get summary |
+| `dafgsr_c` | DAF, get summary/descriptor record |
 | `dafhsf_c` | DAF, handle to summary format |
 | `dafopr_c` | DAF, open for read |
 | `dafopw_c` | DAF, open for write |
+| `dafps_c` | DAF, pack summary |
+| `dafrda_c` | DAF, read data from address |
+| `dafrfr_c` | DAF, read file record |
+| `dafus_c` | DAF, unpack summary |
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
 | `deltet_c` | Delta ET, ET - UTC |
@@ -249,13 +255,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafac_c` | DAF add comments |
 | `dafdc_c` | DAF delete comments |
 | `dafec_c` | DAF extract comments |
-| `dafgda_c` | DAF, read data from address |
-| `dafgsr_c` | DAF, get summary/descriptor record |
-| `dafps_c` | DAF, pack summary |
-| `dafrda_c` | DAF, read data from address |
-| `dafrfr_c` | DAF, read file record |
 | `dafrs_c` | DAF, replace summary |
-| `dafus_c` | DAF, unpack summary |
 | `dasac_c` | DAS add comments |
 | `dasadc_c` | DAS, add data, character |
 | `dasadd_c` | DAS, add data, double precision |
