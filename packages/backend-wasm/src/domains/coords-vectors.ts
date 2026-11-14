@@ -782,14 +782,45 @@ function assertCombinationScalar(
     throw new TypeError(`${label} must be a finite number`);
 }
 
-function assertCombinationVector(
-  value: unknown,
-  label: string,
-): asserts value is Readonly<SpiceVector3> {
+function copyCombinationVector(value: unknown, label: string): SpiceVector3 {
   if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(`${label} must contain exactly three finite numbers`);
-  for (let i = 0; i < 3; i++)
-    assertCombinationScalar(value[i], `${label}[${i}]`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2)];
+}
+
+function copyMatrixInput(value: unknown, label: string): number[] {
+  // As with the structural Mat3 contract, accept numeric TypedArrays as well
+  // as ordinary arrays. Read by index only; a caller iterator is not trusted.
+  if (
+    !(
+      Array.isArray(value) ||
+      value instanceof Float64Array ||
+      value instanceof Float32Array ||
+      value instanceof Int8Array ||
+      value instanceof Uint8Array ||
+      value instanceof Uint8ClampedArray ||
+      value instanceof Int16Array ||
+      value instanceof Uint16Array ||
+      value instanceof Int32Array ||
+      value instanceof Uint32Array
+    ) ||
+    value.length !== 9
+  ) {
+    throw new TypeError(`${label} must contain exactly nine finite numbers`);
+  }
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component: unknown = value[i];
+    assertCombinationScalar(component, `${label}[${i}]`);
+    copy.push(component);
+  }
+  return copy;
 }
 
 function readCombinationVector(
@@ -808,15 +839,15 @@ export function createCoordsVectorsApi(
   return {
     vlcom: (a, v1, b, v2) => {
       assertCombinationScalar(a, "vlcom(a)");
-      assertCombinationVector(v1, "vlcom(v1)");
+      const v1Copy = copyCombinationVector(v1, "vlcom(v1)");
       assertCombinationScalar(b, "vlcom(b)");
-      assertCombinationVector(v2, "vlcom(v2)");
+      const v2Copy = copyCombinationVector(v2, "vlcom(v2)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24],
         (errPtr, v1Ptr, v2Ptr, outPtr) => {
-          module.HEAPF64.set(v1, v1Ptr >> 3);
-          module.HEAPF64.set(v2, v2Ptr >> 3);
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
           const status = module._tspice_vlcom(
             a,
             v1Ptr,
@@ -834,18 +865,18 @@ export function createCoordsVectorsApi(
     },
     vlcom3: (a, v1, b, v2, c, v3) => {
       assertCombinationScalar(a, "vlcom3(a)");
-      assertCombinationVector(v1, "vlcom3(v1)");
+      const v1Copy = copyCombinationVector(v1, "vlcom3(v1)");
       assertCombinationScalar(b, "vlcom3(b)");
-      assertCombinationVector(v2, "vlcom3(v2)");
+      const v2Copy = copyCombinationVector(v2, "vlcom3(v2)");
       assertCombinationScalar(c, "vlcom3(c)");
-      assertCombinationVector(v3, "vlcom3(v3)");
+      const v3Copy = copyCombinationVector(v3, "vlcom3(v3)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24, 24],
         (errPtr, v1Ptr, v2Ptr, v3Ptr, outPtr) => {
-          module.HEAPF64.set(v1, v1Ptr >> 3);
-          module.HEAPF64.set(v2, v2Ptr >> 3);
-          module.HEAPF64.set(v3, v3Ptr >> 3);
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
+          module.HEAPF64.set(v3Copy, v3Ptr >> 3);
           const status = module._tspice_vlcom3(
             a,
             v1Ptr,
@@ -864,14 +895,14 @@ export function createCoordsVectorsApi(
       );
     },
     vperp: (a, b) => {
-      assertCombinationVector(a, "vperp(a)");
-      assertCombinationVector(b, "vperp(b)");
+      const aCopy = copyCombinationVector(a, "vperp(a)");
+      const bCopy = copyCombinationVector(b, "vperp(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_vperp(
             aPtr,
             bPtr,
@@ -886,14 +917,14 @@ export function createCoordsVectorsApi(
       );
     },
     vproj: (a, b) => {
-      assertCombinationVector(a, "vproj(a)");
-      assertCombinationVector(b, "vproj(b)");
+      const aCopy = copyCombinationVector(a, "vproj(a)");
+      const bCopy = copyCombinationVector(b, "vproj(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_vproj(
             aPtr,
             bPtr,
@@ -908,14 +939,14 @@ export function createCoordsVectorsApi(
       );
     },
     vrel: (a, b) => {
-      assertCombinationVector(a, "vrel(a)");
-      assertCombinationVector(b, "vrel(b)");
+      const aCopy = copyCombinationVector(a, "vrel(a)");
+      const bCopy = copyCombinationVector(b, "vrel(b)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 8],
         (errPtr, aPtr, bPtr, outPtr) => {
-          module.HEAPF64.set(a, aPtr >> 3);
-          module.HEAPF64.set(b, bPtr >> 3);
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
           const status = module._tspice_vrel(
             aPtr,
             bPtr,
@@ -930,15 +961,15 @@ export function createCoordsVectorsApi(
       );
     },
     vrotv: (v, axis, theta) => {
-      assertCombinationVector(v, "vrotv(v)");
-      assertCombinationVector(axis, "vrotv(axis)");
+      const vCopy = copyCombinationVector(v, "vrotv(v)");
+      const axisCopy = copyCombinationVector(axis, "vrotv(axis)");
       assertCombinationScalar(theta, "vrotv(theta)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24, 24],
         (errPtr, vPtr, axisPtr, outPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
-          module.HEAPF64.set(axis, axisPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
+          module.HEAPF64.set(axisCopy, axisPtr >> 3);
           const status = module._tspice_vrotv(
             vPtr,
             axisPtr,
@@ -954,14 +985,14 @@ export function createCoordsVectorsApi(
       );
     },
     rotvec: (v, angle, axis) => {
-      assertCombinationVector(v, "rotvec(v)");
+      const vCopy = copyCombinationVector(v, "rotvec(v)");
       assertCombinationScalar(angle, "rotvec(angle)");
       assertSpiceInt32(axis, "rotvec(axis)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, vPtr, outPtr) => {
-          module.HEAPF64.set(v, vPtr >> 3);
+          module.HEAPF64.set(vCopy, vPtr >> 3);
           const status = module._tspice_rotvec(
             vPtr,
             angle,
@@ -977,16 +1008,16 @@ export function createCoordsVectorsApi(
       );
     },
     vtmv: (v1, matrix, v2) => {
-      assertCombinationVector(v1, "vtmv(v1)");
-      assertMat3ArrayLike9(matrix, { label: "vtmv(matrix)" });
-      assertCombinationVector(v2, "vtmv(v2)");
+      const v1Copy = copyCombinationVector(v1, "vtmv(v1)");
+      const matrixCopy = copyMatrixInput(matrix, "vtmv(matrix)");
+      const v2Copy = copyCombinationVector(v2, "vtmv(v2)");
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 72, 24, 8],
         (errPtr, v1Ptr, matrixPtr, v2Ptr, outPtr) => {
-          module.HEAPF64.set(v1, v1Ptr >> 3);
-          module.HEAPF64.set(matrix, matrixPtr >> 3);
-          module.HEAPF64.set(v2, v2Ptr >> 3);
+          module.HEAPF64.set(v1Copy, v1Ptr >> 3);
+          module.HEAPF64.set(matrixCopy, matrixPtr >> 3);
+          module.HEAPF64.set(v2Copy, v2Ptr >> 3);
           const status = module._tspice_vtmv(
             v1Ptr,
             matrixPtr,

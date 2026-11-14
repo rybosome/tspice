@@ -116,3 +116,57 @@ describe("vector combinations on the actual WASM heap", () => {
     }
   }
 });
+
+// Shape stays fixed and every value is finite. A second read throws in JS,
+// so even a regression cannot pass an invalid buffer length to C.
+function readOnceInput(values: readonly number[]) {
+  const entries = values.map(() => 0);
+  let lengths = 0;
+  const input = new Proxy([...values], {
+    get(target, key, receiver) {
+      if (key === "length") {
+        if (++lengths > 1) throw new Error("Input length reread");
+        return values.length;
+      }
+      if (key === Symbol.iterator)
+        throw new Error("Unexpected caller iterator");
+      if (typeof key === "string" && /^\d+$/.test(key)) {
+        const index = Number(key);
+        if (index >= values.length || entries[index] !== 0)
+          throw new Error("Input component reread");
+        entries[index] = 1;
+      }
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  return {
+    input,
+    check() {
+      expect(lengths).toBe(1);
+      expect(entries).toEqual(values.map(() => 1));
+    },
+  };
+}
+
+it("writes only the fixed components read during input validation to the real WASM heap", async () => {
+  const api = createCoordsVectorsApi(await actualModule());
+  for (const { fn, args } of [
+    { fn: api.vlcom3, args: [2, [1, -2, 3], -3, [4, 5, -6], 5, [-7, 8, 9]] },
+    {
+      fn: api.vtmv,
+      args: [
+        [1, -2, 3],
+        [1, 2, 3, 4, 5, 6, 7, 8, 11],
+        [4, 5, -6],
+      ],
+    },
+  ]) {
+    const expected: unknown = Reflect.apply(fn, api, args);
+    const tracked = args.map((arg) =>
+      Array.isArray(arg) ? readOnceInput(arg) : undefined,
+    );
+    const input = args.map((arg, i) => tracked[i]?.input ?? arg);
+    expect(Reflect.apply(fn, api, input)).toEqual(expected);
+    for (const item of tracked) item?.check();
+  }
+});

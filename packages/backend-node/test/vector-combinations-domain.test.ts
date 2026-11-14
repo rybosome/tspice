@@ -231,3 +231,56 @@ describe("native vector-combination boundary", () => {
     expect(api.vtmv(first, matrix, second)).toBe(123);
   });
 });
+
+// Shape stays fixed and every value is finite. A second read throws in JS,
+// so even a regression cannot pass an invalid buffer length to C.
+function readOnceInput(values: readonly number[]) {
+  const entries = values.map(() => 0);
+  let lengths = 0;
+  const input = new Proxy([...values], {
+    get(target, key, receiver) {
+      if (key === "length") {
+        if (++lengths > 1) throw new Error("Input length reread");
+        return values.length;
+      }
+      if (key === Symbol.iterator)
+        throw new Error("Unexpected caller iterator");
+      if (typeof key === "string" && /^\d+$/.test(key)) {
+        const index = Number(key);
+        if (index >= values.length || entries[index] !== 0)
+          throw new Error("Input component reread");
+        entries[index] = 1;
+      }
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  return {
+    input,
+    check() {
+      expect(lengths).toBe(1);
+      expect(entries).toEqual(values.map(() => 1));
+    },
+  };
+}
+
+it("delegates owned snapshots after reading each fixed input length and component once", () => {
+  for (const spec of calls) {
+    const call = vi.fn().mockReturnValue(expectedOutput(spec.name)),
+      api = apiFor({ [spec.name]: call });
+    const tracked = spec.args.map((arg) =>
+      Array.isArray(arg) ? readOnceInput(arg) : undefined,
+    );
+    const args = spec.args.map((arg, i) => tracked[i]?.input ?? arg);
+    Reflect.apply(api[spec.name], api, args);
+    expect(call).toHaveBeenCalledOnce();
+    for (let i = 0; i < args.length; i++) {
+      const item = tracked[i],
+        received: unknown = call.mock.calls[0]?.[i];
+      if (item) {
+        expect(Object.is(received, item.input)).toBe(false);
+        item.check();
+      }
+      expect(received).toEqual(spec.args[i]);
+    }
+  }
+});

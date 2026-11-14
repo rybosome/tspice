@@ -92,3 +92,13 @@ This reuses the #684 cell identity mechanism; no C/WASM regeneration is needed.
 Error workflows can set `capture: true` on the existing `error.sigerr` step. This calls actual `raw.sigerr`, requires a structured SPICE exception, and compares its complete short/long/trace fields plus `raw.failed()` after the backend's automatic reset. No-op signaling and unrelated exceptions fail capture. The oracle calls actual `sp.sigerr`, reads full-size CSPICE buffers, and explicitly resets in `finally` to model the documented shim policy. Other steps continue normally, so stack changes, prepared messages, reset and repeated recovery have observable effects. This internal workflow option does not change public raw semantics.
 
 Both backends reset signaled errors before throwing. A persistent true failure flag cannot be reached through these raw operations alone; the audit records that limitation instead of injecting an artificial flag or claiming a constant-false implementation is fully distinguished by live workflows. The case handlers track caller-managed traceback entries and unwind remaining names in reverse order on success/error; reset alone does not remove them. Leading diagnostic blanks are significant; only trailing CSPICE padding is removed.
+
+## Validated input snapshots
+
+`vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c` now marshal the same entries that the typed adapters validated.
+Capture each three-vector and, for vtmv, all nine row-major matrix entries into owned inputs. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-node/test/vector-combinations-domain.test.ts), [vector-combinations-allocations.test.ts](../packages/backend-wasm/test/vector-combinations-allocations.test.ts). These adapter checks do not replace
+the independent scientific workflows. Earlier executions remain historical on
+their recorded fingerprints; both required local lanes and observed canonical CI
+must run on the corrected source before current verification.
