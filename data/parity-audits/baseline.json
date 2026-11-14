@@ -424,7 +424,7 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/710"],
-      "nextAction": "Run focused live/wrapper/allocation checks, both required lanes and canonical CI; record current source-bound evidence before verified status. Independent Step 8 batch; no merge authorized."
+      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310665780 verified corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
     }
   ]
 }

@@ -395,13 +395,25 @@
           "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #710 data/parity-audits; this queue checkpoint is not a replacement.",
           "historical": true,
           "supersededReason": "Readiness reopened for adapter input snapshot correction."
+        },
+        {
+          "kind": "corrected-source-verification",
+          "testedCommit": "d82a5d992da38e301b6d09ac3a44303de802a6e7",
+          "sourceDigest": "9e49f252ee1c891d31ece76e127e07a890d4ed0fb70ae80c380501114cbfee3d",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550198267",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550198267/job/132310665780",
+          "localCommands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "observation": "Corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. JS-required passed 2,282 registered comparisons and 2,504 parity tests with 1 expected native-required guard skip. Native-required passed 2,282 live comparisons, 2,505 parity tests, 96 native, 636 WASM, 28 core and 150 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310665780 on corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Its uncached parity package ran 2,282 registered comparisons and passed 2,505 parity tests without skips. Final-head readiness remains pending."
         }
       ],
-      "nextAction": "Validate the corrected source with both required local lanes and observed canonical CI, record source-bound executions and confirm final-head checks and rebaseability before PR-ready status.",
+      "nextAction": "Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge.",
       "worktree": "/private/tmp/tspice-step8-vector-basics",
       "branch": "codex/expand-vector-basics",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Seven vector-input methods now use owned vector snapshots; scalar-input vpack is unchanged. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending.",
+      "progressNote": "Owned input correction is verified on source d82a5d992da38e301b6d09ac3a44303de802a6e7 after both required local lanes and inspected canonical CI on Linux Node 22. 2,282 live comparisons and 2,505 parity tests passed without native-required skips. All 170 current routines have source-bound verification. Final metadata head still requires its complete CI matrix and explicit rebaseability review.",
       "deliveryNote": "Final-head checks passed, explicit rebaseability observed and draft removed. Not merged.",
       "priorCheckpoint": "Exact final head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 passed all15 jobs in CI43541137087. Integration owner observed REST rebaseable:true and mergeable:true againstmain73f3, updated body and removed draft. Eight routines PR-ready, not landed."
     },
