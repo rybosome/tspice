@@ -102,6 +102,10 @@ from .models import (
     StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
+    StepFileIoDlabbs,
+    StepFileIoDlabns,
+    StepFileIoDlaens,
+    StepFileIoDlafps,
     StepFileIoDlabfs,
     StepFileIoDlacls,
     StepFileIoDlafns,
@@ -1241,6 +1245,32 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 ifname=_expect_string(step.get("ifname"), label="file-io.dlaopn.ifname"),
                 ncomch=_expect_int(step.get("ncomch"), label="file-io.dlaopn.ncomch"),
                 handleId=_expect_string(step.get("handleId"), label="file-io.dlaopn.handleId"),
+            )
+
+        case "file-io.dlabbs":
+            return StepFileIoDlabbs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                descrId=_expect_string(step.get("descrId"), label=op+".descrId"),
+            )
+
+        case "file-io.dlabns":
+            return StepFileIoDlabns(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+            )
+
+        case "file-io.dlaens":
+            return StepFileIoDlaens(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+            )
+
+        case "file-io.dlafps":
+            return StepFileIoDlafps(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                descrId=_expect_string(step.get("descrId"), label=op+".descrId"),
             )
 
         case "file-io.dlabfs":

@@ -214,6 +214,32 @@ class StepFileIoDlaopn:
 
 
 @dataclass(frozen=True)
+class StepFileIoDlabbs:
+    op: Literal["file-io.dlabbs"]
+    handleId: str
+    descrId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDlabns:
+    op: Literal["file-io.dlabns"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDlaens:
+    op: Literal["file-io.dlaens"]
+    handleId: str
+
+
+@dataclass(frozen=True)
+class StepFileIoDlafps:
+    op: Literal["file-io.dlafps"]
+    handleId: str
+    descrId: str
+
+
+@dataclass(frozen=True)
 class StepFileIoDlabfs:
     op: Literal["file-io.dlabfs"]
     handleId: str

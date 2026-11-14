@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 180,
-    planned: 469,
+    implemented: 184,
+    planned: 465,
     excluded: 3,
-    caseFiles: 180,
-    scenarios: 1209,
+    caseFiles: 184,
+    scenarios: 1243,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -446,7 +446,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 18);
+  assert.equal(ledger.audit.expansionRoutines, 22);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -729,4 +729,23 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("DLA segment routes require their actual canonical operations beyond DAS address checks", (t) => {
+  const f = fixture(t);
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const [name, args] of [
+    ["dlabbs", "handle, &descriptor, &present"],
+    ["dlabns", "handle"],
+    ["dlaens", "handle"],
+    ["dlafps", "handle, &current, &previous, &present"],
+  ]) {
+    const call = name + "_c(" + args + ")";
+    f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(
+      f.build,
+      new RegExp("Unexplained non-direct node mapping for " + name),
+    );
+    f.edit(source, "0 /* " + call + " */", call);
+  }
 });

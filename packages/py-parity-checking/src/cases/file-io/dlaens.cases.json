@@ -1,0 +1,599 @@
+[
+  {
+    "caseId": "file-io-dlaens-three-components",
+    "description": "Compare provisional and finalized sizes and bases for separately written integer/double/character payloads.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [-5, 12]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 3,
+        "data": [2, -0.75, 6.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 4,
+        "data": [255, 0, 65, 128],
+        "bpos": 0,
+        "epos": 3,
+        "datlen": 4
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 13
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-no-data",
+    "description": "Finalizing a begun segment with no component data writes three zero sizes.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 1,
+        "last": 11
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-recompute-last",
+    "description": "Finalizing an existing last descriptor again recomputes sizes; newly appended data and prior links survive.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [71, -25]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 1,
+        "data": [254],
+        "bpos": 0,
+        "epos": 0,
+        "datlen": 1
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 12,
+        "last": 15
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-reopened-pending",
+    "description": "Close and reopen an unfinished writer, then finalize its persisted component bases.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [81.5, -0.25]
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 2
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-logical-ranges",
+    "description": "Multiple batches per component and exact logical endpoint values survive a completed mixed segment.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [21, 255],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [2.25]
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [-2]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [0, 129],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [-6]
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 1,
+        "data": [12]
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dasrdc",
+        "handleId": "h",
+        "first": 1,
+        "last": 4,
+        "bpos": 0,
+        "epos": 3,
+        "datlen": 4,
+        "data": [0, 0, 0, 0]
+      },
+      {
+        "op": "file-io.dasrdd",
+        "handleId": "h",
+        "first": 1,
+        "last": 2
+      },
+      {
+        "op": "file-io.dasrdi",
+        "handleId": "h",
+        "first": 12,
+        "last": 13
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-empty-last",
+    "description": "A middle segment with no parts and a final populated segment have independent bases, sizes and links.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-read-only",
+    "description": "A read-only populated file retains the original DASUDI access failure while finalizing.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-no-segment",
+    "description": "An initialized empty list contains the null pointer, which is not a readable last descriptor.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dlaens-without-header",
+    "description": "A plain DAS lacks integer address three for finalization.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASNOSUCHADDRESS"]
+    }
+  }
+]

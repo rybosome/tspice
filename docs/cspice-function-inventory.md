@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 180
-- Planned (not yet implemented): 469
+- Implemented now (SpiceRawBackend): 184
+- Planned (not yet implemented): 465
 - Excluded: 3
 
 ## Implemented now
@@ -67,9 +67,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dasudi_c` | DAS, update data, integer |
 | `daswbr_c` | DAS, write buffered records |
 | `deltet_c` | Delta ET, ET - UTC |
+| `dlabbs_c` | DLA, begin backward search |
 | `dlabfs_c` | DLA, begin forward search |
+| `dlabns_c` | DLA, begin new segment |
 | `dlacls` | Close a DAS-backed DLA handle |
+| `dlaens_c` | DLA, end new segment |
 | `dlafns_c` | DLA, find next segment |
+| `dlafps_c` | DLA, find previous segment |
 | `dlaopn_c` | DLA, open new file |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
@@ -283,10 +287,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `diff_c` | Difference of two sets |
-| `dlabbs_c` | DLA, begin backward search |
-| `dlabns_c` | DLA, begin new segment |
-| `dlaens_c` | DLA, end new segment |
-| `dlafps_c` | DLA, find previous segment |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
 | `dnearp_c` | Derivative of near point |
 | `dp2hx_c` | D.p. number to hexadecimal string |

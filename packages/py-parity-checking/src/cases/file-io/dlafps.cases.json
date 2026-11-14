@@ -1,0 +1,728 @@
+[
+  {
+    "caseId": "file-io-dlafps-one-end",
+    "description": "The first and only descriptor has no preceding segment.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-complete-backward",
+    "description": "Walk three uneven segments to the null backward link, comparing every owned word.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-forward-to-back",
+    "description": "Start backward from a descriptor found by the forward iterator; no separate backward initialization is required.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-reverse-to-forward",
+    "description": "Reverse direction at the middle, advancing back to the same terminal descriptor.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-writer-pending",
+    "description": "Traverse backward from a provisional segment with size words of minus one to its completed predecessor.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-independent-descriptors",
+    "description": "Retain two descriptor references in one file and traverse from each independently.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 3,
+        "data": [-2147483648, 0, 2147483647]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 2,
+        "data": [-12.5, 260.75]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 2,
+        "data": [128, 9],
+        "bpos": 0,
+        "epos": 1,
+        "datlen": 2
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "tail"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "h",
+        "descrId": "head"
+      },
+      {
+        "op": "file-io.dlafns",
+        "handleId": "h",
+        "descrId": "head"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "head"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "tail"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "tail"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-synthetic-dsk",
+    "description": "Walk every descriptor of the repository-authored four-segment tetrahedron DSK and terminate at its first link.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-multi-dsk.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": "kernels/audit-multi-dsk.bds"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlafps-closed-token",
+    "description": "Use an actual valid descriptor after its token has been explicitly closed. Ownership rejects the call before native access.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c07-h.dla"
+        },
+        "ftype": "DATA",
+        "ifname": "C07 LINKED SEGMENTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasadi",
+        "handleId": "h",
+        "n": 2,
+        "data": [31, -5]
+      },
+      {
+        "op": "file-io.dasadd",
+        "handleId": "h",
+        "n": 1,
+        "data": [0.125]
+      },
+      {
+        "op": "file-io.dasadc",
+        "handleId": "h",
+        "n": 3,
+        "data": [0, 255, 65],
+        "bpos": 0,
+        "epos": 2,
+        "datlen": 3
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabns",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlaens",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlabbs",
+        "handleId": "h",
+        "descrId": "d"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dlafps",
+        "handleId": "h",
+        "descrId": "d"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  }
+]

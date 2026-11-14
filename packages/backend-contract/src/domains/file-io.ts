@@ -359,6 +359,26 @@ export interface FileIoApi {
     ncomch: number,
   ): SpiceHandle;
 
+  /** Return the last DLA segment with all eight descriptor words, or a miss on an empty file.
+   * A newly begun segment has provisional component sizes of −1 until finalized.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabbs_c.html */
+  dlabbs(handle: SpiceHandle): FoundDlaDescriptor;
+  /** Append and link a new segment to a writable DLA. Its descriptor precedes its integer data.
+   * Supply component data via DAS appends, then finalize this segment with dlaens.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlabns_c.html */
+  dlabns(handle: SpiceHandle): void;
+  /** Finalize the last segment's character, double and integer sizes from the file's
+   * current logical addresses. The file remains open. A segment must exist.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlaens_c.html */
+  dlaens(handle: SpiceHandle): void;
+  /** Follow the backward link in a descriptor from this DLA, or return a miss at the first segment.
+   * A segment's data start at each base address plus one.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dlafps_c.html */
+  dlafps(
+    handle: SpiceHandle,
+    descr: Readonly<DlaDescriptor>,
+  ): FoundDlaDescriptor;
+
   /**
    * Begin a forward search for DLA segments (see `dlabfs_c`).
    *

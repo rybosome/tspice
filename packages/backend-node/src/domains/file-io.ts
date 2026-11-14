@@ -3,6 +3,7 @@ import {
   copyDasValues,
   dasReadCount,
   dasFileTarget,
+  copyDlaDescriptor,
   dasText,
   decodeDasSummary,
   decodeDasAddresses,
@@ -25,43 +26,8 @@ import type {
   SpiceHandleRegistry,
   SpiceHandleKind,
 } from "../runtime/spice-handles.js";
-const I32_MIN = -2147483648;
-const I32_MAX = 2147483647;
 
 const DAS_BACKED = ["DAS", "DLA"] as const satisfies readonly SpiceHandleKind[];
-
-function assertDlaDescriptor(
-  value: unknown,
-  context: string,
-): asserts value is DlaDescriptor {
-  invariant(
-    typeof value === "object" && value !== null,
-    `${context}: expected an object`,
-  );
-  const obj = value as Record<string, unknown>;
-  for (const key of [
-    "bwdptr",
-    "fwdptr",
-    "ibase",
-    "isize",
-    "dbase",
-    "dsize",
-    "cbase",
-    "csize",
-  ] as const) {
-    const v = obj[key];
-    invariant(
-      typeof v === "number" &&
-        Number.isInteger(v) &&
-        v >= I32_MIN &&
-        v <= I32_MAX,
-      `${context}: expected ${key} to be a 32-bit signed integer`,
-    );
-
-    const min = key === "bwdptr" || key === "fwdptr" ? -1 : 0;
-    invariant(v >= min, `${context}: expected ${key} to be >= ${min}`);
-  }
-}
 
 function normalizeFoundDlaDescriptor(
   value: unknown,
@@ -81,8 +47,10 @@ function normalizeFoundDlaDescriptor(
     return { found: false };
   }
 
-  assertDlaDescriptor(obj.descr, `${context}.descr`);
-  return { found: true, descr: obj.descr };
+  return {
+    found: true,
+    descr: copyDlaDescriptor(obj.descr, `${context}.descr`),
+  };
 }
 
 /** Create a {@link FileIoApi} implementation backed by the native Node addon. */
@@ -384,16 +352,37 @@ export function createFileIoApi(
       ),
 
     dlafns: (handle: SpiceHandle, descr: DlaDescriptor) => {
-      assertDlaDescriptor(descr, "dlafns(descr)");
+      const owned = copyDlaDescriptor(descr, "dlafns(descr)");
       return normalizeFoundDlaDescriptor(
         native.dlafns(
           handles.lookup(handle, DAS_BACKED, "dlafns").nativeHandle,
-          descr,
+          owned,
         ),
         "dlafns()",
       );
     },
 
+    dlabbs: (handle: SpiceHandle) =>
+      normalizeFoundDlaDescriptor(
+        native.dlabbs(
+          handles.lookup(handle, DAS_BACKED, "dlabbs").nativeHandle,
+        ),
+        "dlabbs()",
+      ),
+
+    dlafps: (handle: SpiceHandle, descr: DlaDescriptor) => {
+      const owned = copyDlaDescriptor(descr, "dlafps(descr)");
+      return normalizeFoundDlaDescriptor(
+        native.dlafps(
+          handles.lookup(handle, DAS_BACKED, "dlafps").nativeHandle,
+          owned,
+        ),
+        "dlafps()",
+      );
+    },
+
+    dlabns: (handle) => native.dlabns(dasHandle(handle, "dlabns")),
+    dlaens: (handle) => native.dlaens(dasHandle(handle, "dlaens")),
     dlacls: (handle: SpiceHandle) => closeDasBacked(handle, "dlacls"),
 
     dskopn: (path: string, ifname: string, ncomch: number) =>

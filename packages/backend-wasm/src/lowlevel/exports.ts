@@ -263,6 +263,25 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dlabbs(
+    handle: number,
+    outDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlafps(
+    handle: number,
+    descr8Ptr: number,
+    outNextDescr8Ptr: number,
+    outFoundPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_dlabns(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dlaens(handle: number, errPtr: number, errMaxBytes: number): number;
   _tspice_dlabfs(
     handle: number,
     outDescr8Ptr: number,
@@ -2327,6 +2346,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dasopr",
   "_tspice_dascls",
   "_tspice_dlaopn",
+  "_tspice_dlabbs",
+  "_tspice_dlabns",
+  "_tspice_dlaens",
+  "_tspice_dlafps",
   "_tspice_dlabfs",
   "_tspice_dlafns",
   "_tspice_dlacls",

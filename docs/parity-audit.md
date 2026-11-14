@@ -63,3 +63,7 @@ C04 adds nine raw DAS operations to the original 162-routine surface. The review
 ## DAS typed data transfers
 
 C05 adds nine routines on the C04 file lifecycle. All 54 registered workflows compare actual logical data and diagnostics through the locked oracle. Public cross-reads also inspect independently authored persisted files on both backends. [Binary data, address boundaries and physical padding](step8-das-data.md) [Per-routine record](../data/parity-audits/c05-das-data.json)
+
+## DLA linked segments
+
+C07 uses the C04 lifecycle and C05 typed component writers to construct generic, independent multi-segment DLAs. Both writer and reader directions compare every descriptor word and constituent value. [Segment layout, errors and runtime evidence](step8-dla-segments.md) [Routine audit](../data/parity-audits/c07-dla-segments.json)

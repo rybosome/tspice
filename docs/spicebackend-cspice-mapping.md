@@ -386,6 +386,15 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw method              | CSPICE entry | Observable effect                                                      |
+| ----------------------- | ------------ | ---------------------------------------------------------------------- |
+| `dlabbs(handle)`        | `dlabbs_c`   | Last descriptor or a miss on an empty list.                            |
+| `dlabns(handle)`        | `dlabns_c`   | Link a new segment immediately and establish its component bases.      |
+| `dlaens(handle)`        | `dlaens_c`   | Calculate and write the three actual component sizes.                  |
+| `dlafps(handle, descr)` | `dlafps_c`   | Follow a supplied backward link or return a miss at the first segment. |
+
+[Generic DLA file creation, provisional sizes and independent persisted traversal](step8-dla-segments.md)
+
 C05 adds typed binary DAS transfers through all nine canonical C entry points. [Address ranges, file persistence and record padding](step8-das-data.md)
 
 | Raw method | CSPICE     | Result or effect                                                                                                                                                    |
