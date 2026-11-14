@@ -66,6 +66,8 @@ class EphemerisState:
     descriptors: dict[str, list[float]] = field(default_factory=dict)
     requestedTargets: set[int] = field(default_factory=set)
     intCells: dict[str, Any] = field(default_factory=dict)
+    spk14_degrees: dict[int, int] = field(default_factory=dict)
+    spk14_last: int | None = None
     spkHandles: dict[str, int] = field(default_factory=dict)
 
 

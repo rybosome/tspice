@@ -351,6 +351,16 @@ Each method returns void and uses an owned open SPK token. [Units, full record l
 
 All take a live owned SPK writer and return void. [File layouts, runtime boundaries and numerical comparisons](step8-spk-analytic.md)
 
+### Streaming SPK writers
+
+| Public operation                                                  | Linked N0067 entry | Segment action                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spk14b(handle, segid, body, center, frame, first, last, degree)` | `spk14b_c`         | Begin a streamed type 14 generic DAF segment on an owned open SPK writer. Its descriptor and single logical constant define coverage, reference frame and fixed packet width 2+6*(degree+1).                                                  |
+| `spk14a(handle, count, records, epochs)`                          | `spk14a_c`         | Append complete time-tagged Chebyshev records to the actual open stream. References have variable spacings and must be strictly increasing within and across calls; the six polynomials independently encode Cartesian position and velocity. |
+| `spk14e(handle)`                                                  | `spk14e_c`         | Finish a type 14 generic segment. The metadata and reference directory become readable after file close. The same file handle can immediately start another segment; ending an empty stream yields legitimate metadata-only coverage.         |
+
+All operations return void. [Packet shape, degree and lifecycle bounds, independent file reads](step8-spk-streaming.md)
+
 ### SPK state, position and segment-search audit
 
 `ephemeris-2` reviews `spkez`, `spkezp`, `spkezr`, `spkpos`, `spkgeo`, `spkgps`,

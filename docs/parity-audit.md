@@ -74,3 +74,7 @@ The three new writers use independent cross-file verification of full segment me
 ## Analytic SPK writers
 
 The locked library and both real backends exchange four orbital models, inspect full DAF records and evaluate the resulting states. [Physical evidence](step8-spk-analytic.md) [Routine audits](../data/parity-audits/e06-spk-analytic.json)
+
+## Streaming type 14 SPKs
+
+Both backends and an independent writer exchange complete type 14 files, with explicit physical checks of multi-batch records, generic metadata and active writer state. [Scientific evidence](step8-spk-streaming.md) [Routine audits](../data/parity-audits/e07-spk-streaming.json)

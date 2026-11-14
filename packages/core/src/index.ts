@@ -173,3 +173,5 @@ export {
   packSpk15,
   packSpk17,
 } from "./spice-runtime/domains/spk-analytic.js";
+
+export { copySpk14Packets } from "./spice-runtime/domains/spk-streaming.js";

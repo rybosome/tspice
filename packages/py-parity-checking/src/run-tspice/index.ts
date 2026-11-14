@@ -34,7 +34,7 @@ export function runCaseInTspice(
   try {
     clearKernelState(context);
 
-    // A live WASM module can run the same SPK Chebyshev writer case again. Its MEMFS
+    // A live WASM module can run the same generated SPK writer case again. Its MEMFS
     // retains created files until disposal, so scope generated SPKs to this run.
     const generatedSpkDirectory =
       spice.raw.kind === "wasm" &&
@@ -46,6 +46,9 @@ export function runCaseInTspice(
           step.op === "ephemeris.spkw10" ||
           step.op === "ephemeris.spkw15" ||
           step.op === "ephemeris.spkw17" ||
+          step.op === "ephemeris.spk14b" ||
+          step.op === "ephemeris.spk14a" ||
+          step.op === "ephemeris.spk14e" ||
           step.op === "ephemeris.spkw20",
       )
         ? path.basename(context.paths.scratchRoot)

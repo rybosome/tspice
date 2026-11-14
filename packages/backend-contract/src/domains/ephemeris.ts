@@ -488,4 +488,46 @@ export interface EphemerisApi {
     rapol: number,
     decpol: number,
   ): void;
+  /**
+   * Begin a type 14 SPK segment on an owned open writer. The time bounds are TDB seconds
+   * past J2000. Each record contains independent Chebyshev polynomials of the same degree
+   * for XYZ position (km) and velocity (km/s). Add batches with spk14a and finish with
+   * spk14e before closing or writing another segment on that handle. N0067 can evaluate
+   * degrees 0 through 31. Larger writable records produce SPKRECTOOLARGE on state
+   * evaluation.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14b_c.html
+   */
+  spk14b(
+    handle: SpiceHandle,
+    segid: string,
+    body: number,
+    center: number,
+    frame: string,
+    first: number,
+    last: number,
+    degree: number,
+  ): void;
+  /**
+   * Append count complete type 14 records and count starting epochs to the active segment.
+   * Each flat record contains midpoint TDB seconds, time radius in seconds, then six groups
+   * of degree+1 coefficients in ascending polynomial order. Reference epochs must increase
+   * within and across additions. An ordering error leaves previously accepted records
+   * available for a corrected addition. The adapter snapshots the two finite numeric
+   * buffers, limited to 256 MiB combined.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14a_c.html
+   */
+  spk14a(
+    handle: SpiceHandle,
+    count: number,
+    records: readonly number[] | Float64Array,
+    epochs: readonly number[] | Float64Array,
+  ): void;
+  /**
+   * Finish the active type 14 segment. A subsequent begin can use the same file handle.
+   * Ending before adding any packets creates a metadata-only segment. Close the SPK writer
+   * before reading a virtual output. Normal disposal finishes any outstanding stream on a
+   * native writer; explicit end and close provide deterministic output publication.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spk14e_c.html
+   */
+  spk14e(handle: SpiceHandle): void;
 }

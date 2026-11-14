@@ -3,6 +3,7 @@
   "batch": "e06-spk-analytic",
   "traceFiles": [
     "docs/step8-spk-analytic.md",
+    "docs/step8-spk-streaming.md",
     "fixtures/consumer-nodom/src/index.ts",
     "packages/backend-contract/src/domains/ephemeris.ts",
     "packages/backend-fake/src/index.ts",
@@ -13,6 +14,7 @@
     "packages/backend-node/src/runtime/addon.ts",
     "packages/backend-node/src/runtime/virtual-output-staging.ts",
     "packages/backend-node/test/spk-analytic-domain.test.ts",
+    "packages/backend-node/test/spk-streaming-domain.test.ts",
     "packages/backend-shim-c/include/tspice_backend_shim.h",
     "packages/backend-shim-c/src/domains/ephemeris.c",
     "packages/backend-shim-c/src/errors.c",
@@ -33,6 +35,7 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/streaming_spk_oracle.py",
     "packages/py-parity-checking/src/case-types.ts",
     "packages/py-parity-checking/src/cases/index.ts",
     "packages/py-parity-checking/src/run-tspice/dispatch.ts",
@@ -44,6 +47,7 @@
     "packages/py-parity-checking/src/workflow-normalization/types.ts",
     "packages/py-parity-checking/test/_helpers/spk_analytic_oracle.py",
     "packages/py-parity-checking/test/spk-analytic-files.test.ts",
+    "packages/py-parity-checking/test/spk-streaming-files.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
   "executions": [
@@ -125,7 +129,8 @@
         "ephemeris-spkw17-unknown-frame",
         "ephemeris-spkw17-zero-semiaxis"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e06-f4a21a96-wasm",
@@ -205,7 +210,8 @@
         "ephemeris-spkw17-unknown-frame",
         "ephemeris-spkw17-zero-semiaxis"
       ],
-      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on f4a21a96cd32f4e2c16d24cff8125d41a5578d64. JavaScript: 2,685 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-node",
@@ -287,7 +293,8 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e06-f4a21a96-wasm",
@@ -369,7 +376,8 @@
       ],
       "commit": "f4a21a96cd32f4e2c16d24cff8125d41a5578d64",
       "url": "https://github.com/rybosome/tspice/actions/runs/43581577789/job/132407249640",
-      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132407249640 on f4a21a96cd32f4e2c16d24cff8125d41a5578d64: 2,460 registered Node/WASM live comparisons; 2,686 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 639 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -477,16 +485,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw05 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw05 -> spkw05_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": []
         }
       }
     },
@@ -562,7 +582,7 @@
           "observes": "Seed a valid segment and compare the actual BARYCENTEREPHEM diagnostic for barycenter target."
         }
       ],
-      "edgeAssessment": "One, multiple or zero sets; different mean motions, element epochs, generic metadata, empty-shell coverage and frozen physical words. Duplicate and decreasing reference epochs receive a storage precheck to preserve a usable writer.",
+      "edgeAssessment": "One, multiple or zero sets; different mean motions, element epochs, generic metadata, empty-shell coverage and frozen physical words. Duplicate and decreasing reference epochs receive a storage precheck to preserve a usable writer. In the combined E07 source, type 10 shares generic writer capacity and the active-file preflight with type 14. A supplemental two-file test exercises failed and successful interleaving and verifies both orbital states.",
       "errorAssessment": "Observed exact toolkit error identities: SPICE(BADDESCRTIMES), SPICE(BARYCENTEREPHEM), SPICE(BODYANDCENTERSAME), SPICE(EMPTYSTRING), SPICE(INVALIDREFFRAME), SPICE(NONPRINTINGCHARS), SPICE(SEGIDTOOLONG). Buffer shapes, ownership, finite values and narrowing guards are checked outside scientific error matching.",
       "fixtures": [
         {
@@ -594,16 +614,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw10 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw10 -> spkw10_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": []
         }
       }
     },
@@ -754,16 +786,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "Public raw.spkw15 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw15 -> spkw15_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": []
         }
       }
     },
@@ -881,19 +913,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> registered Node native addon with mutex -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-node", "ci-e06-f4a21a96-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Public raw.spkw17 -> owned SPK lookup, finite complete snapshots -> WASM export and four checked allocations -> tspice_spkw17 -> spkw17_c. Independently decoded Python calls the ordinary locked SpiceyPy 6.0.3 writer; standalone reader opens backend output and returns physical DAF contents and states.",
-          "executions": ["local-e06-f4a21a96-wasm", "ci-e06-f4a21a96-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Original results remain attached to their tested revisions including E04 #757 and E06 #763. Current source review awaits combined full required local and canonical CI evidence."
 }

@@ -46,6 +46,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
+  const spk14Degrees = new Map<SpiceHandle, number>();
   const timeApi = createTimeApi(native);
   const fileIoApi = createFileIoApi(native, spiceHandles, stager);
 
@@ -57,7 +58,13 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
       ...createFramesApi(native, stager),
-      ...createEphemerisApi(native, spiceHandles, stager, outputs),
+      ...createEphemerisApi(
+        native,
+        spiceHandles,
+        stager,
+        outputs,
+        spk14Degrees,
+      ),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
       ...createCoordsVectorsApi(native),
@@ -97,6 +104,10 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           if (entry.kind === "SPK") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
+              if (spk14Degrees.has(handle)) {
+                native.spk14FinishIfActive(entry.nativeHandle);
+                spk14Degrees.delete(handle);
+              }
               backend.raw.spkcls(handle);
             } catch (error) {
               if (

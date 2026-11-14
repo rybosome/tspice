@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../handle_validation.h"
+#include "SpiceZfc.h"
 #include "SpiceUsr.h"
 #include "tspice_backend_shim.h"
 
@@ -673,7 +674,63 @@ int tspice_spkopa(const char *path, int *outHandle, char *err, int errMaxBytes) 
   return 0;
 }
 
+// SGSEQW has 20 generic writer slots per CSPICE instance. The Node addon holds
+// its CSPICE mutex across every access. WASM has a separate table per module.
+typedef struct {
+  int used, handle, width;
+  int64_t packets;
+  int start;
+} Spk14Stream;
+static Spk14Stream spk14_streams[20];
+static int spk14_last_handle;
+static Spk14Stream* spk14_slot(int handle) {
+  for (int i = 0; i < 20; i++)
+    if (spk14_streams[i].used && spk14_streams[i].handle == handle) return &spk14_streams[i];
+  return NULL;
+}
+static int spk14_count(void) {
+  int n = 0;
+  for (int i = 0; i < 20; i++)
+    if (spk14_streams[i].used) n++;
+  return n;
+}
+static int stream_problem(char* err, int cap) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, cap);
+  return 1;
+}
+static int spk14_unfinished(int handle, char* err, int cap) {
+  return spk14_slot(handle) ? tspice_ephemeris_invalid_arg(
+                                  err, cap, "Complete the active type 14 segment with spk14e first")
+                            : 0;
+}
+
+// Type 10 and 14 both use the same SGSEQW table. SGBWFS overwrites its
+// saved index during certain failed lookups. Protect live entries while
+// allowing a complete type 10 segment to be written to a different file.
+static int generic_begin_guard(int handle, const char* id, int streaming, char* err, int cap) {
+  int active = spk14_count();
+  if (!active) return 0;
+  if (spk14_slot(handle)) {
+    if (streaming && handle == spk14_last_handle) return 0;  // canonical duplicate-begin diagnostic
+    return tspice_ephemeris_invalid_arg(err, cap,
+                                        "Finish the active type 14 segment with spk14e first");
+  }
+  size_t length = strlen(id);
+  while (length && id[length - 1] == ' ') --length;
+  if (length > 40)
+    return tspice_ephemeris_invalid_arg(
+        err, cap, "Invalid generic segment ID while a type 14 writer is active");
+  for (size_t i = 0; i < length; i++)
+    if ((unsigned char)id[i] < 32 || (unsigned char)id[i] > 126)
+      return tspice_ephemeris_invalid_arg(
+          err, cap, "Invalid generic segment ID while a type 14 writer is active");
+  if (active == 20)
+    return tspice_ephemeris_invalid_arg(err, cap, "All generic writer slots are active");
+  return 0;
+}
 int tspice_spkcls(int handle, char *err, int errMaxBytes) {
+  if(spk14_unfinished(handle,err,errMaxBytes))return 1;
   tspice_init_cspice_error_handling_once();
 
   if (errMaxBytes > 0) {
@@ -747,6 +804,7 @@ int tspice_spkw08_v2(
     double step,
     char *err,
     int errMaxBytes) {
+  if(spk14_unfinished(handle,err,errMaxBytes))return 1;
   tspice_init_cspice_error_handling_once();
 
   if (errMaxBytes > 0) {
@@ -831,6 +889,7 @@ static int check_chebyshev_buffer(int type, int n, int degree, const double* dat
 int tspice_spkw02(int handle, int body, int center, const char* frame, double first, double last,
                   const char* segid, double intlen, int n, int degree, const double* cdata,
                   int words, double btime, char* err, int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (check_chebyshev_buffer(2, n, degree, cdata, words, frame, segid, err, cap)) return 1;
   spkw02_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime);
@@ -844,6 +903,7 @@ int tspice_spkw02(int handle, int body, int center, const char* frame, double fi
 int tspice_spkw03(int handle, int body, int center, const char* frame, double first, double last,
                   const char* segid, double intlen, int n, int degree, const double* cdata,
                   int words, double btime, char* err, int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (check_chebyshev_buffer(3, n, degree, cdata, words, frame, segid, err, cap)) return 1;
   spkw03_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, btime);
@@ -858,6 +918,7 @@ int tspice_spkw20(int handle, int body, int center, const char* frame, double fi
                   const char* segid, double intlen, int n, int degree, const double* cdata,
                   int words, double dscale, double tscale, double initjd, double initfr, char* err,
                   int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (check_chebyshev_buffer(20, n, degree, cdata, words, frame, segid, err, cap)) return 1;
   spkw20_c(handle, body, center, frame, first, last, segid, intlen, n, degree, cdata, dscale,
@@ -897,6 +958,7 @@ static int check_analytic_spk(int type, int n, const double* data, int words, ch
 
 int tspice_spkw05(int handle, int body, int center, const char* frame, double first, double last,
                   const char* segid, int n, const double* data, int words, char* err, int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (!frame || !segid || !isfinite(first) || !isfinite(last))
     return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
@@ -916,6 +978,10 @@ int tspice_spkw10(int handle, int body, int center, const char* frame, double fi
   if (!frame || !segid || !isfinite(first) || !isfinite(last))
     return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
   if (check_analytic_spk(10, n, data, words, err, cap)) return 1;
+  if (generic_begin_guard(handle, segid, 0, err, cap)) return 1;
+  // A descriptor error can happen before the generic writer is touched.
+  // Conservatively clear the optional same-handle shortcut in either case.
+  if (spk14_count()) spk14_last_handle = 0;
   spkw10_c(handle, body, center, frame, first, last, segid, data, n, data + 8, data + 8 + 10 * n);
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, cap);
@@ -926,6 +992,7 @@ int tspice_spkw10(int handle, int body, int center, const char* frame, double fi
 
 int tspice_spkw15(int handle, int body, int center, const char* frame, double first, double last,
                   const char* segid, int n, const double* data, int words, char* err, int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (!frame || !segid || !isfinite(first) || !isfinite(last))
     return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
@@ -941,6 +1008,7 @@ int tspice_spkw15(int handle, int body, int center, const char* frame, double fi
 
 int tspice_spkw17(int handle, int body, int center, const char* frame, double first, double last,
                   const char* segid, int n, const double* data, int words, char* err, int cap) {
+  if(spk14_unfinished(handle,err,cap))return 1;
   tspice_init_cspice_error_handling_once();
   if (!frame || !segid || !isfinite(first) || !isfinite(last))
     return tspice_ephemeris_invalid_arg(err, cap, "Invalid analytic SPK descriptor");
@@ -951,4 +1019,86 @@ int tspice_spkw17(int handle, int body, int center, const char* frame, double fi
     return 1;
   }
   return 0;
+}
+
+int tspice_spk14b(int handle, const char* segid, int body, int center, const char* frame,
+                  double first, double last, int degree, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!segid || !frame || !isfinite(first) || !isfinite(last) || degree > 357913939)
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid type 14 descriptor or record width");
+  if (generic_begin_guard(handle, segid, 1, err, cap)) return 1;
+  int start = 0;
+  if (degree >= 0 && frame[0] && segid[0]) {
+    SpiceInt nd, ni, forward, back, freeAddress;
+    char name[2];
+    dafrfr_c(handle, sizeof(name), &nd, &ni, name, &forward, &back, &freeAddress);
+    if (stream_problem(err, cap)) return 1;
+    start = freeAddress;
+  }
+  spk14b_c(handle, segid, body, center, frame, first, last, degree);
+  if (stream_problem(err, cap)) return 1;
+  spk14_last_handle = handle;
+  for (int i = 0; i < 20; i++)
+    if (!spk14_streams[i].used) {
+      spk14_streams[i] = (Spk14Stream){1, handle, 2 + 6 * (degree + 1), 0, start};
+      return 0;
+    }
+  return tspice_ephemeris_invalid_arg(err, cap, "Missing type 14 slot after begin");
+}
+
+int tspice_spk14a(int handle, int count, const double* records, int words, const double* epochs,
+                  int nEpochs, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!records || !epochs || words < 0 || nEpochs < 0 || (int64_t)words + nEpochs > 33554432)
+    return tspice_ephemeris_invalid_arg(err, cap, "Invalid type 14 packet buffers");
+  Spk14Stream* stream = spk14_slot(handle);
+  if (count > 0 && !stream && spk14_count())
+    return tspice_ephemeris_invalid_arg(err, cap, "No active type 14 segment for this writer");
+  if (stream && count > 0) {
+    if ((int64_t)stream->width * count != words || nEpochs != count)
+      return tspice_ephemeris_invalid_arg(err, cap, "Incomplete type 14 record or epoch buffer");
+    int64_t total = stream->packets + count;
+    // Include the leading constant, an explicit reference and its duplicate directory,
+    // every hundredth reference, the 17 metadata words and signed intermediate offsets.
+    if ((int64_t)stream->start + 256 + total * (stream->width + 2LL) + total / 100 + 20 > INT32_MAX)
+      return tspice_ephemeris_invalid_arg(err, cap, "Type 14 segment exceeds signed DAF indexing");
+    for (int i = 0; i < words; ++i)
+      if (!isfinite(records[i]))
+        return tspice_ephemeris_invalid_arg(err, cap, "Nonfinite type 14 packet word");
+    for (int i = 0; i < nEpochs; ++i)
+      if (!isfinite(epochs[i]))
+        return tspice_ephemeris_invalid_arg(err, cap, "Nonfinite type 14 epoch");
+    // A batch writer on another file can change the current DAF array without
+    // changing SGSEQW's cached handle. Select this active physical array again.
+    SpiceInt file = handle;
+    dafcad_(&file);
+    if (stream_problem(err, cap)) return 1;
+  }
+  if (stream && count > 0) spk14_last_handle = handle;
+  spk14a_c(handle, count, records, epochs);
+  if (stream_problem(err, cap)) return 1;
+  if (stream) stream->packets += count;
+  return 0;
+}
+
+int tspice_spk14e(int handle, char* err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  Spk14Stream* stream = spk14_slot(handle);
+  if (!stream && spk14_count())
+    return tspice_ephemeris_invalid_arg(err, cap, "No active type 14 segment for this writer");
+  if (stream) {
+    SpiceInt file = handle;
+    dafcad_(&file);
+    if (stream_problem(err, cap)) return 1;
+  }
+  if (stream) spk14_last_handle = handle;
+  spk14e_c(handle);
+  if (stream_problem(err, cap)) return 1;
+  if (stream) stream->used = 0;
+  return 0;
+}
+
+// Disposal finishes only a segment actually held by this writable DAF.
+int tspice_spk14_finish_if_active(int handle, char* err, int cap) {
+  return spk14_slot(handle) ? tspice_spk14e(handle, err, cap) : 0;
 }

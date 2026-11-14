@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 169
-- Planned (not yet implemented): 480
+- Implemented now (SpiceRawBackend): 172
+- Planned (not yet implemented): 477
 - Excluded: 3
 
 ## Implemented now
@@ -141,6 +141,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
 | `sphrec_c` | Spherical to rectangular coordinates |
+| `spk14a_c` | SPK, add data to a type 14 segment |
+| `spk14b_c` | SPK, begin a type 14 segment |
+| `spk14e_c` | SPK, end a type 14 segment |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
 | `spkez_c` | S/P Kernel, easy reader |
@@ -560,9 +563,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spd_c` | Seconds per day |
 | `sphcyl_c` | Spherical to cylindrical coordinates |
 | `sphlat_c` | Spherical to latitudinal coordinates |
-| `spk14a_c` | SPK, add data to a type 14 segment |
-| `spk14b_c` | SPK, begin a type 14 segment |
-| `spk14e_c` | SPK, end a type 14 segment |
 | `spkacs_c` | SPK, aberration corrected state |
 | `spkapo_c` | S/P Kernel, apparent position only |
 | `spkapp_c` | S/P Kernel, apparent state |
