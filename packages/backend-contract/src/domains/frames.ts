@@ -5,6 +5,8 @@
  * - Lookups that may legitimately miss return `Found<T>` (`{ found: false }`) instead of throwing.
  */
 import type {
+  SpiceHandle,
+  VirtualOutput,
   Found,
   Mat3RowMajor,
   SpiceMatrix6x6,
@@ -106,6 +108,95 @@ export interface FramesApi {
     tol: number,
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>;
+
+  /**
+   * Open a new physical CK for writing using a path or VirtualOutput. The internal name and reserved comment characters follow CSPICE. Read an owned virtual output after successful ckcls.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckopn_c.html
+   */
+  ckopn(
+    file: string | VirtualOutput,
+    ifname: string,
+    ncomch: number,
+  ): SpiceHandle;
+
+  /**
+   * Close an owned CK writer. An empty writer signals NOSEGMENTSFOUND and remains usable for adding a segment and retrying.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcls_c.html
+   */
+  ckcls(handle: SpiceHandle): void;
+
+  /**
+   * Write discrete pointing samples at encoded SCLK ticks. Supply four contiguous scalar-first SPICE quaternion components per tick, giving reference-to-instrument rotations. With av=true supply three reference-frame radians/second values per sample. With av=false the AV array may be empty or contain the ignored triples.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw01_c.html
+   */
+  ckw01(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+  ): void;
+
+  /**
+   * Write intervals of constant angular velocity with inclusive starts/stops in encoded ticks. Supply four contiguous SPICE quaternion components, three angular velocity components in the reference frame (radians/second), and one seconds-per-tick rate per interval. Each quaternion gives reference-to-instrument pointing at its start.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw02_c.html
+   */
+  ckw02(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    segid: string,
+    starts: readonly number[],
+    stops: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+    rates: readonly number[],
+  ): void;
+
+  /**
+   * Write interpolated pointing with strictly ordered encoded sample ticks and separate interpolation interval starts. Supply flat scalar-first quaternion rows of four components and, with av=true, reference-frame angular velocity triples in radians/second. No interpolation spans a gap.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw03_c.html
+   */
+  ckw03(
+    handle: SpiceHandle,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    quats: readonly number[],
+    avvs: readonly number[],
+    intervalStarts: readonly number[],
+  ): void;
+
+  /**
+   * Write a type 5 segment with flat subtype-specific packets. Widths for subtypes 0, 1, 2, 3 are 8, 4, 14, 7. Packets contain q/dq, q, q/dq/AV/dAV, or q/AV respectively. Time derivatives are per second. The encoded tick rate is seconds per tick. Each interpolation interval starts at a sample tick, including the first packet. Degrees 1–23 are checked by CSPICE; use 3 modulo 4 for Hermite or odd degrees for Lagrange. The av flag controls eligibility for AV queries.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw05_c.html
+   */
+  ckw05(
+    handle: SpiceHandle,
+    subtype: number,
+    degree: number,
+    beg: number,
+    end: number,
+    inst: number,
+    ref: string,
+    av: boolean,
+    segid: string,
+    ticks: readonly number[],
+    packets: readonly number[],
+    rate: number,
+    intervalStarts: readonly number[],
+  ): void;
 
   // --- CK file query / management (read-only) ------------------------------
 

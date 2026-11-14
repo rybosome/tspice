@@ -105,6 +105,12 @@ from .models import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesCkopn,
+    StepFramesCkcls,
+    StepFramesCkw01,
+    StepFramesCkw02,
+    StepFramesCkw03,
+    StepFramesCkw05,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -1235,6 +1241,86 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgpav.sclkdp"),
                 tol=_expect_number(step.get("tol"), label="frames.ckgpav.tol"),
                 ref=_expect_string(step.get("ref"), label="frames.ckgpav.ref"),
+            )
+
+        case "frames.ckopn":
+            return StepFramesCkopn(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckopn.handleId"),
+                path=_decode_path_ref(step.get("path"),label="frames.ckopn.path"),
+                ifname=_expect_string(step.get("ifname"),label="frames.ckopn.ifname"),
+                ncomch=_expect_int(step.get("ncomch"),label="frames.ckopn.ncomch"),
+            )
+
+        case "frames.ckcls":
+            return StepFramesCkcls(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckcls.handleId"),
+            )
+
+        case "frames.ckw01":
+            return StepFramesCkw01(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckw01.handleId"),
+                beg=_expect_number(step.get("beg"),label="frames.ckw01.beg"),
+                end=_expect_number(step.get("end"),label="frames.ckw01.end"),
+                inst=_expect_int(step.get("inst"),label="frames.ckw01.inst"),
+                ref=_expect_string(step.get("ref"),label="frames.ckw01.ref"),
+                av=_expect_bool(step.get("av"),label="frames.ckw01.av"),
+                segid=_expect_string(step.get("segid"),label="frames.ckw01.segid"),
+                ticks=_expect_number_list(step.get("ticks"),label="frames.ckw01.ticks"),
+                quats=_expect_number_list(step.get("quats"),label="frames.ckw01.quats"),
+                avvs=_expect_number_list(step.get("avvs"),label="frames.ckw01.avvs"),
+            )
+
+        case "frames.ckw02":
+            return StepFramesCkw02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckw02.handleId"),
+                beg=_expect_number(step.get("beg"),label="frames.ckw02.beg"),
+                end=_expect_number(step.get("end"),label="frames.ckw02.end"),
+                inst=_expect_int(step.get("inst"),label="frames.ckw02.inst"),
+                ref=_expect_string(step.get("ref"),label="frames.ckw02.ref"),
+                segid=_expect_string(step.get("segid"),label="frames.ckw02.segid"),
+                starts=_expect_number_list(step.get("starts"),label="frames.ckw02.starts"),
+                stops=_expect_number_list(step.get("stops"),label="frames.ckw02.stops"),
+                quats=_expect_number_list(step.get("quats"),label="frames.ckw02.quats"),
+                avvs=_expect_number_list(step.get("avvs"),label="frames.ckw02.avvs"),
+                rates=_expect_number_list(step.get("rates"),label="frames.ckw02.rates"),
+            )
+
+        case "frames.ckw03":
+            return StepFramesCkw03(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckw03.handleId"),
+                beg=_expect_number(step.get("beg"),label="frames.ckw03.beg"),
+                end=_expect_number(step.get("end"),label="frames.ckw03.end"),
+                inst=_expect_int(step.get("inst"),label="frames.ckw03.inst"),
+                ref=_expect_string(step.get("ref"),label="frames.ckw03.ref"),
+                av=_expect_bool(step.get("av"),label="frames.ckw03.av"),
+                segid=_expect_string(step.get("segid"),label="frames.ckw03.segid"),
+                ticks=_expect_number_list(step.get("ticks"),label="frames.ckw03.ticks"),
+                quats=_expect_number_list(step.get("quats"),label="frames.ckw03.quats"),
+                avvs=_expect_number_list(step.get("avvs"),label="frames.ckw03.avvs"),
+                intervalStarts=_expect_number_list(step.get("intervalStarts"),label="frames.ckw03.intervalStarts"),
+            )
+
+        case "frames.ckw05":
+            return StepFramesCkw05(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="frames.ckw05.handleId"),
+                subtype=_expect_int(step.get("subtype"),label="frames.ckw05.subtype"),
+                degree=_expect_int(step.get("degree"),label="frames.ckw05.degree"),
+                beg=_expect_number(step.get("beg"),label="frames.ckw05.beg"),
+                end=_expect_number(step.get("end"),label="frames.ckw05.end"),
+                inst=_expect_int(step.get("inst"),label="frames.ckw05.inst"),
+                ref=_expect_string(step.get("ref"),label="frames.ckw05.ref"),
+                av=_expect_bool(step.get("av"),label="frames.ckw05.av"),
+                segid=_expect_string(step.get("segid"),label="frames.ckw05.segid"),
+                ticks=_expect_number_list(step.get("ticks"),label="frames.ckw05.ticks"),
+                packets=_expect_number_list(step.get("packets"),label="frames.ckw05.packets"),
+                rate=_expect_number(step.get("rate"),label="frames.ckw05.rate"),
+                intervalStarts=_expect_number_list(step.get("intervalStarts"),label="frames.ckw05.intervalStarts"),
             )
 
         case "frames.cklpf":

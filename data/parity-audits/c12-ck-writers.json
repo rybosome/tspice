@@ -1,0 +1,843 @@
+{
+  "schemaVersion": 1,
+  "batch": "c12-ck-writers",
+  "traceFiles": [
+    "docs/step8-ck-writers.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/frames.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/frames.cc",
+    "packages/backend-node/src/domains/frames.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ck-writer-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/frames.c",
+    "packages/backend-wasm/src/domains/frames.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/test/ck-writer-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/ck-writers.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-ck-writers.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-clock.tsc",
+    "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ck_writer_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/frames/ckcls.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckopn.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckw01.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckw02.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckw03.cases.json",
+    "packages/py-parity-checking/src/cases/frames/ckw05.cases.json",
+    "packages/py-parity-checking/src/cases/frames/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/frames.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/ck-writer-content.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c12-d1f051cc-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a86baeaa64ca1388e02036a6b9ab0dadbefaab01ebdf5506cdc10c322ea1dae",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "observation": "Both complete required lanes passed locally on d1f051cc53083f87fe3da4a384562925e20dafbf. JavaScript: 2,548 parity tests and one expected guard skip. Native-required: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c12-d1f051cc-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a86baeaa64ca1388e02036a6b9ab0dadbefaab01ebdf5506cdc10c322ea1dae",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "observation": "Both complete required lanes passed locally on d1f051cc53083f87fe3da4a384562925e20dafbf. JavaScript: 2,548 parity tests and one expected guard skip. Native-required: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c12-d1f051cc-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a86baeaa64ca1388e02036a6b9ab0dadbefaab01ebdf5506cdc10c322ea1dae",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "commit": "d1f051cc53083f87fe3da4a384562925e20dafbf",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43580414369/job/132403733493",
+      "observation": "Inspected successful Linux Node 22 native-required job 132403733493 on d1f051cc53083f87fe3da4a384562925e20dafbf: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c12-d1f051cc-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a86baeaa64ca1388e02036a6b9ab0dadbefaab01ebdf5506cdc10c322ea1dae",
+      "caseIds": [
+        "frames-ckcls-empty",
+        "frames-ckcls-priority",
+        "frames-ckcls-readback",
+        "frames-ckopn-empty-name",
+        "frames-ckopn-existing",
+        "frames-ckopn-multi-format",
+        "frames-ckopn-negative-comments",
+        "frames-ckw01-av-disabled",
+        "frames-ckw01-clock-and-pointing",
+        "frames-ckw01-directory",
+        "frames-ckw01-empty",
+        "frames-ckw01-identifier",
+        "frames-ckw01-nearest",
+        "frames-ckw01-order",
+        "frames-ckw01-unknown-frame",
+        "frames-ckw01-zero-quaternion",
+        "frames-ckw02-clock-and-pointing",
+        "frames-ckw02-directory",
+        "frames-ckw02-empty",
+        "frames-ckw02-identifier",
+        "frames-ckw02-intervals",
+        "frames-ckw02-overlap",
+        "frames-ckw02-rate-sign",
+        "frames-ckw02-touch",
+        "frames-ckw02-unknown-frame",
+        "frames-ckw02-zero-quaternion",
+        "frames-ckw02-zero-span",
+        "frames-ckw03-av-disabled",
+        "frames-ckw03-clock-and-pointing",
+        "frames-ckw03-directory",
+        "frames-ckw03-identifier",
+        "frames-ckw03-interval-break",
+        "frames-ckw03-intervals-empty",
+        "frames-ckw03-nonmatching-start",
+        "frames-ckw03-unknown-frame",
+        "frames-ckw03-wrong-first-start",
+        "frames-ckw03-zero-quaternion",
+        "frames-ckw05-av-disabled",
+        "frames-ckw05-bad-degree",
+        "frames-ckw05-clock-and-pointing",
+        "frames-ckw05-directory",
+        "frames-ckw05-empty",
+        "frames-ckw05-hermite-window",
+        "frames-ckw05-identifier",
+        "frames-ckw05-interpolation-break",
+        "frames-ckw05-maximum-degree",
+        "frames-ckw05-no-window",
+        "frames-ckw05-rate",
+        "frames-ckw05-rate-sign",
+        "frames-ckw05-segment-trim",
+        "frames-ckw05-subtype-0",
+        "frames-ckw05-subtype-1",
+        "frames-ckw05-subtype-2",
+        "frames-ckw05-subtype-3",
+        "frames-ckw05-trim-no-sample",
+        "frames-ckw05-unknown-frame",
+        "frames-ckw05-zero-quaternion"
+      ],
+      "commit": "d1f051cc53083f87fe3da4a384562925e20dafbf",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43580414369/job/132403733493",
+      "observation": "Inspected successful Linux Node 22 native-required job 132403733493 on d1f051cc53083f87fe3da4a384562925e20dafbf: 2,332 registered Node/WASM live comparisons; 2,549 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 621 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ckopn_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckopn_c.html",
+      "semantics": "Create an owned binary CK writer with a caller-specified internal name and comment reservation.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckopn-multi-format",
+          "coverage": ["success", "edge"],
+          "observes": "Each independent writer appends all four segment formats with signed instrument IDs. Inspect class set, decoded times, AV and orientations. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckopn-negative-comments",
+          "coverage": ["success", "edge"],
+          "observes": "A nonpositive comment request still produces a readable CK. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckopn-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "Empty internal CK name gives a real input diagnostic. Require EMPTYSTRING."
+        },
+        {
+          "caseId": "frames-ckopn-existing",
+          "coverage": ["error", "edge"],
+          "observes": "Opening a just completed file again for new write raises the physical file-exists diagnostic. Require FILEOPENFAIL."
+        }
+      ],
+      "edgeAssessment": "Each independent writer appends all four segment formats with signed instrument IDs. Inspect class set, decoded times, AV and orientations. A nonpositive comment request still produces a readable CK.",
+      "errorAssessment": "Independent terminal diagnostics include EMPTYSTRING, FILEOPENFAIL. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckopn -> owner registry and serialized native N-API handler -> tspice_ckopn -> ckopn_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckopn -> owner registry, packed heap data and required WASM export -> tspice_ckopn -> ckopn_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckcls_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcls_c.html",
+      "semantics": "Finalize the CK writer and allow readback. A NOSEGMENTSFOUND writer stays open and can be retried.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckcls-empty",
+          "coverage": ["error", "edge"],
+          "observes": "No segments exist yet; a failed close preserves the writer for retry. Require NOSEGMENTSFOUND."
+        },
+        {
+          "caseId": "frames-ckcls-readback",
+          "coverage": ["success", "edge"],
+          "observes": "Finalizing records makes distinct time-directory pointing and instrument membership readable. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckcls-priority",
+          "coverage": ["success", "edge"],
+          "observes": "Append overlapping segments for one instrument. Only the later segment wins where eligible. Compare complete outputs of the separately executed workflow."
+        }
+      ],
+      "edgeAssessment": "Finalizing records makes distinct time-directory pointing and instrument membership readable. Append overlapping segments for one instrument. Only the later segment wins where eligible.",
+      "errorAssessment": "Independent terminal diagnostics include NOSEGMENTSFOUND. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckcls -> owner registry and serialized native N-API handler -> tspice_ckcls -> ckcls_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckcls -> owner registry, packed heap data and required WASM export -> tspice_ckcls -> ckcls_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckw01_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw01_c.html",
+      "semantics": "Append discrete scalar-first quaternion samples and optional reference-frame angular velocities at encoded SCLK ticks.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckw01-clock-and-pointing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw01-zero-quaternion",
+          "coverage": ["error", "edge"],
+          "observes": "The physical writer rejects an all-zero quaternion; a previously valid segment remains available for finalization. Require ZEROQUATERNION."
+        },
+        {
+          "caseId": "frames-ckw01-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unresolved reference frame before appending a record. Require INVALIDREFFRAME."
+        },
+        {
+          "caseId": "frames-ckw01-identifier",
+          "coverage": ["error", "edge"],
+          "observes": "An overlength nonblank segment identifier reaches the canonical error. Require SEGIDTOOLONG."
+        },
+        {
+          "caseId": "frames-ckw01-av-disabled",
+          "coverage": ["success", "edge"],
+          "observes": "Pointing remains available where a request requiring angular velocity reports an actual miss. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw01-nearest",
+          "coverage": ["success", "edge"],
+          "observes": "Discrete records have gaps. Tolerance includes the nearest eligible tick and returns the chosen time. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw01-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Zero discrete samples are rejected before data access. Require INVALIDNUMREC."
+        },
+        {
+          "caseId": "frames-ckw01-order",
+          "coverage": ["error", "edge"],
+          "observes": "Repeated encoded clocks are rejected. Require TIMESOUTOFORDER."
+        },
+        {
+          "caseId": "frames-ckw01-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the first 100-record time directory and its adjacent records, including both segment endpoints. Compare complete outputs of the separately executed workflow."
+        }
+      ],
+      "edgeAssessment": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Pointing remains available where a request requiring angular velocity reports an actual miss. Discrete records have gaps. Tolerance includes the nearest eligible tick and returns the chosen time. Exercise the first 100-record time directory and its adjacent records, including both segment endpoints.",
+      "errorAssessment": "Independent terminal diagnostics include INVALIDNUMREC, INVALIDREFFRAME, SEGIDTOOLONG, TIMESOUTOFORDER, ZEROQUATERNION. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw01 -> owner registry and serialized native N-API handler -> tspice_ckw01 -> ckw01_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw01 -> owner registry, packed heap data and required WASM export -> tspice_ckw01 -> ckw01_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckw02_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw02_c.html",
+      "semantics": "Append constant-angular-velocity intervals using individual start/stop times and seconds-per-tick rates.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckw02-clock-and-pointing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw02-zero-quaternion",
+          "coverage": ["error", "edge"],
+          "observes": "The physical writer rejects an all-zero quaternion; a previously valid segment remains available for finalization. Require ZEROQUATERNION."
+        },
+        {
+          "caseId": "frames-ckw02-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unresolved reference frame before appending a record. Require INVALIDREFFRAME."
+        },
+        {
+          "caseId": "frames-ckw02-identifier",
+          "coverage": ["error", "edge"],
+          "observes": "An overlength nonblank segment identifier reaches the canonical error. Require SEGIDTOOLONG."
+        },
+        {
+          "caseId": "frames-ckw02-intervals",
+          "coverage": ["success", "edge"],
+          "observes": "Two disjoint constant-AV intervals have independent tick rates and inclusive endpoints. Requests inside the gap test exact time and nearest tolerance. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw02-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Zero interval records signal INVALIDNUMREC. Require INVALIDNUMREC."
+        },
+        {
+          "caseId": "frames-ckw02-zero-span",
+          "coverage": ["error", "edge"],
+          "observes": "A record cannot have a zero-duration interval. Require DEGENERATEINTERVAL."
+        },
+        {
+          "caseId": "frames-ckw02-overlap",
+          "coverage": ["error", "edge"],
+          "observes": "Constant-rate records cannot overlap in encoded time. Require BADSTOPTIME."
+        },
+        {
+          "caseId": "frames-ckw02-touch",
+          "coverage": ["success", "edge"],
+          "observes": "Two type 2 intervals sharing an endpoint retain actual coverage and pointing choice at that tick. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw02-rate-sign",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned type 2 writer transfers signed and zero seconds-per-tick rates unchanged. Compare the resulting propagated pointing and returned AV within both intervals. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw02-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the first 100-record time directory and its adjacent records, including both segment endpoints. Compare complete outputs of the separately executed workflow."
+        }
+      ],
+      "edgeAssessment": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Two disjoint constant-AV intervals have independent tick rates and inclusive endpoints. Requests inside the gap test exact time and nearest tolerance. Two type 2 intervals sharing an endpoint retain actual coverage and pointing choice at that tick. The pinned type 2 writer transfers signed and zero seconds-per-tick rates unchanged. Compare the resulting propagated pointing and returned AV within both intervals. Exercise the first 100-record time directory and its adjacent records, including both segment endpoints.",
+      "errorAssessment": "Independent terminal diagnostics include BADSTOPTIME, DEGENERATEINTERVAL, INVALIDNUMREC, INVALIDREFFRAME, SEGIDTOOLONG, ZEROQUATERNION. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw02 -> owner registry and serialized native N-API handler -> tspice_ckw02 -> ckw02_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw02 -> owner registry, packed heap data and required WASM export -> tspice_ckw02 -> ckw02_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckw03_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw03_c.html",
+      "semantics": "Append interpolated quaternion samples and optional angular velocity with explicit interval breaks.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckw03-clock-and-pointing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw03-zero-quaternion",
+          "coverage": ["error", "edge"],
+          "observes": "The physical writer rejects an all-zero quaternion; a previously valid segment remains available for finalization. Require ZEROQUATERNION."
+        },
+        {
+          "caseId": "frames-ckw03-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unresolved reference frame before appending a record. Require INVALIDREFFRAME."
+        },
+        {
+          "caseId": "frames-ckw03-identifier",
+          "coverage": ["error", "edge"],
+          "observes": "An overlength nonblank segment identifier reaches the canonical error. Require SEGIDTOOLONG."
+        },
+        {
+          "caseId": "frames-ckw03-av-disabled",
+          "coverage": ["success", "edge"],
+          "observes": "Pointing remains available where a request requiring angular velocity reports an actual miss. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw03-interval-break",
+          "coverage": ["success", "edge"],
+          "observes": "Separate interpolation windows prohibit interpolation across a break, including actual endpoint selection with tolerance. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw03-intervals-empty",
+          "coverage": ["error", "edge"],
+          "observes": "No interpolation interval is a canonical writer error. Require INVALIDNUMINT."
+        },
+        {
+          "caseId": "frames-ckw03-nonmatching-start",
+          "coverage": ["error", "edge"],
+          "observes": "A missing interior start is diagnosed before writing. Require INVALIDSTARTTIME."
+        },
+        {
+          "caseId": "frames-ckw03-wrong-first-start",
+          "coverage": ["error", "edge"],
+          "observes": "The first interpolation interval must match the first sample. Require TIMESDONTMATCH."
+        },
+        {
+          "caseId": "frames-ckw03-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the first 100-record time directory and its adjacent records, including both segment endpoints. Compare complete outputs of the separately executed workflow."
+        }
+      ],
+      "edgeAssessment": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Pointing remains available where a request requiring angular velocity reports an actual miss. Separate interpolation windows prohibit interpolation across a break, including actual endpoint selection with tolerance. Exercise the first 100-record time directory and its adjacent records, including both segment endpoints.",
+      "errorAssessment": "Independent terminal diagnostics include INVALIDNUMINT, INVALIDREFFRAME, INVALIDSTARTTIME, SEGIDTOOLONG, TIMESDONTMATCH, ZEROQUATERNION. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw03 -> owner registry and serialized native N-API handler -> tspice_ckw03 -> ckw03_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw03 -> owner registry, packed heap data and required WASM export -> tspice_ckw03 -> ckw03_c. The independent counterpart is the locked SpiceyPy writer.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ckw05_c",
+      "contract": "packages/backend-contract/src/domains/frames.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckw05_c.html",
+      "semantics": "Append one of four quaternion/derivative/AV packet subtypes with rate, polynomial window degree and interval starts.",
+      "scenarios": [
+        {
+          "caseId": "frames-ckw05-clock-and-pointing",
+          "coverage": ["success", "edge"],
+          "observes": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-zero-quaternion",
+          "coverage": ["error", "edge"],
+          "observes": "The physical writer rejects an all-zero quaternion; a previously valid segment remains available for finalization. Require ZEROQUATERNION."
+        },
+        {
+          "caseId": "frames-ckw05-unknown-frame",
+          "coverage": ["error", "edge"],
+          "observes": "Reject an unresolved reference frame before appending a record. Require INVALIDREFFRAME."
+        },
+        {
+          "caseId": "frames-ckw05-identifier",
+          "coverage": ["error", "edge"],
+          "observes": "An overlength nonblank segment identifier reaches the canonical error. Require SEGIDTOOLONG."
+        },
+        {
+          "caseId": "frames-ckw05-av-disabled",
+          "coverage": ["success", "edge"],
+          "observes": "Pointing remains available where a request requiring angular velocity reports an actual miss. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-subtype-0",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 0. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-subtype-1",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 1. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-subtype-2",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 2. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-subtype-3",
+          "coverage": ["success", "edge"],
+          "observes": "Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 3. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-interpolation-break",
+          "coverage": ["success", "edge"],
+          "observes": "A gap separates two type 5 interpolation windows; inspect exact boundary and nearest-record behavior. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-hermite-window",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned writer accepts degree four for Hermite because integer division gives the same two-record even window as degree three. Only the window size is persisted. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-maximum-degree",
+          "coverage": ["success", "edge"],
+          "observes": "Degree 23 is accepted and the window shrinks to the available packets. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-empty",
+          "coverage": ["error", "edge"],
+          "observes": "Zero packets reach the actual canonical writer with zero count and non-null storage. Require TOOFEWPACKETS."
+        },
+        {
+          "caseId": "frames-ckw05-bad-degree",
+          "coverage": ["error", "edge"],
+          "observes": "Even Lagrange degree implies an unsupported odd window. Require INVALIDDEGREE."
+        },
+        {
+          "caseId": "frames-ckw05-rate",
+          "coverage": ["error", "edge"],
+          "observes": "A zero seconds-per-tick scalar for type 5 is rejected. Require INVALIDVALUE."
+        },
+        {
+          "caseId": "frames-ckw05-no-window",
+          "coverage": ["error", "edge"],
+          "observes": "No interval starts are supplied despite having four packets. Require INVALIDNUMINTS."
+        },
+        {
+          "caseId": "frames-ckw05-rate-sign",
+          "coverage": ["success", "edge"],
+          "observes": "A negative nominal rate passes the pinned nonzero check. Compare derived AV against the locked reader for a quaternion-only Lagrange segment. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-segment-trim",
+          "coverage": ["success", "edge"],
+          "observes": "Descriptor bounds may trim type 5 coverage to a range containing samples. Inspect both trimmed endpoints and interior orientation. Compare complete outputs of the separately executed workflow."
+        },
+        {
+          "caseId": "frames-ckw05-trim-no-sample",
+          "coverage": ["error", "edge"],
+          "observes": "A trimmed range strictly between samples signals EMPTYSEGMENT. Require EMPTYSEGMENT."
+        },
+        {
+          "caseId": "frames-ckw05-directory",
+          "coverage": ["success", "edge"],
+          "observes": "Exercise the first 100-record time directory and its adjacent records, including both segment endpoints. Compare complete outputs of the separately executed workflow."
+        }
+      ],
+      "edgeAssessment": "Compare complete reference-to-instrument rotation, returned ticks, reference-frame angular velocity and coverage using distinct records and nonaxial motion. Pointing remains available where a request requiring angular velocity reports an actual miss. Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 0. Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 1. Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 2. Compare actual interpolation, derivative layout, supplied versus derived angular velocities and seconds-per-tick scaling for subtype 3. A gap separates two type 5 interpolation windows; inspect exact boundary and nearest-record behavior. The pinned writer accepts degree four for Hermite because integer division gives the same two-record even window as degree three. Only the window size is persisted. Degree 23 is accepted and the window shrinks to the available packets. A negative nominal rate passes the pinned nonzero check. Compare derived AV against the locked reader for a quaternion-only Lagrange segment. Descriptor bounds may trim type 5 coverage to a range containing samples. Inspect both trimmed endpoints and interior orientation. Exercise the first 100-record time directory and its adjacent records, including both segment endpoints.",
+      "errorAssessment": "Independent terminal diagnostics include EMPTYSEGMENT, INVALIDDEGREE, INVALIDNUMINTS, INVALIDREFFRAME, INVALIDVALUE, SEGIDTOOLONG, TOOFEWPACKETS, ZEROQUATERNION. Dedicated wrapper tests also check typed owners, invalid dimensions, data and allocation cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-ck-writers.bc",
+          "provenance": "Synthetic seven-segment binary written by a pinned independent SpiceyPy generator.",
+          "distribution": "Project-authored binary in the repository. SHA-256 c768e9191a0dc05c3b6ba5b1f4ab9a30904f6ee6f2bee38c4bea45f5a33ab8f6"
+        }
+      ],
+      "fixtureRationale": "The instrument IDs and segment formats distinguish discrete, constant-rate and interpolated attitude. Type 5 subtype packets have independent nonzero derivative and AV fields.",
+      "cleanup": "Explicitly close writers and unload low-level readers. Release cells/windows, dispose backends and remove owned scratch files. Empty-writer finalization is tested separately.",
+      "tolerance": "Stored binary double words and signed descriptor components are exact across independent authors; returned ticks and found flags are exact. Public independent floating comparisons use 12 decimal places, and registered cases retain the existing comparator.",
+      "findings": [
+        {
+          "id": "type-five-first-interval",
+          "status": "repaired",
+          "summary": "CKW05 accepts start membership without requiring the first packet to begin an interval. The orientation reader assumes that precondition.",
+          "repair": "Reject a nonmatching first interval in the common shim and validate every subtype-specific record width before writing.",
+          "evidence": [
+            "docs/step8-ck-writers.md",
+            "packages/py-parity-checking/test/ck-writer-content.test.ts",
+            "packages/backend-node/test/ck-writer-domain.test.ts"
+          ],
+          "caseIds": ["frames-ckw05-interpolation-break"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw05 -> owner registry and serialized native N-API handler -> tspice_ckw05 -> ckw05_c. The independent counterpart is the locked SpiceyPy writer and typed canonical empty-packet route.",
+          "executions": ["local-c12-d1f051cc-node", "ci-c12-d1f051cc-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "FramesApi.ckw05 -> owner registry, packed heap data and required WASM export -> tspice_ckw05 -> ckw05_c. The independent counterpart is the locked SpiceyPy writer and typed canonical empty-packet route.",
+          "executions": ["local-c12-d1f051cc-wasm", "ci-c12-d1f051cc-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

@@ -1,8 +1,13 @@
 import type {
+  SpiceHandle,
+  SpiceHandleRegistry,
+  VirtualOutput,
   FramesApi,
   SpiceMatrix6x6,
 } from "@rybosome/tspice-backend-contract";
 import {
+  packCkWriterData,
+  checkCkWriter,
   assertSpiceInt32,
   brandMat6RowMajor,
   brandMat3RowMajor,
@@ -10,6 +15,7 @@ import {
   invariant,
 } from "@rybosome/tspice-core";
 
+import type { VirtualOutputStager } from "../runtime/virtual-output-staging.js";
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
 
@@ -98,14 +104,169 @@ function validateCkPointing(
     throw new TypeError("CK reference must be a string");
 }
 
+function ckText(text: string) {
+  if (typeof text !== "string" || text.includes("\0"))
+    throw new TypeError("Expected a NUL-free CK string");
+  return text;
+}
+function ckOutput(file: VirtualOutput): VirtualOutput {
+  if (!file || file.kind !== "virtual-output")
+    throw new TypeError("Expected CK path or VirtualOutput");
+  return { kind: "virtual-output", path: ckText(file.path) };
+}
+
 /** Create a {@link FramesApi} implementation backed by the native Node addon. */
 export function createFramesApi(
   native: NativeAddon,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  handles: SpiceHandleRegistry,
+  outputs: VirtualOutputStager,
 ): FramesApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
+  const writerOutputs = new Map<SpiceHandle, VirtualOutput>();
 
   return {
+    ckopn: (file, ifname, ncomch) => {
+      assertSpiceInt32(ncomch, "ckopn ncomch");
+      ckText(ifname);
+      const target = typeof file === "string" ? ckText(file) : ckOutput(file);
+      const path = outputs.resolvePathForSpice(target);
+      const value = native.ckopn(path, ifname, ncomch);
+      try {
+        const handle = handles.register("CK-WRITER", value);
+        if (typeof target !== "string") {
+          outputs.markOpen(target);
+          writerOutputs.set(handle, target);
+        }
+        return handle;
+      } catch (error) {
+        native.dafcls(value);
+        throw error;
+      }
+    },
+    ckcls: (handle) => {
+      handles.close(
+        handle,
+        ["CK-WRITER"],
+        (entry) => native.ckcls(entry.nativeHandle),
+        "ckcls",
+      );
+      const target = writerOutputs.get(handle);
+      if (target) {
+        outputs.markClosed(target);
+        writerOutputs.delete(handle);
+      }
+    },
+    ckw01: (handle, beg, end, inst, ref, av, segid, ticks, quats, avvs) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        undefined,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw01").nativeHandle;
+      native.ckw01(h, beg, end, inst, ref, av, segid, n, data);
+    },
+    ckw02: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      segid,
+      starts,
+      stops,
+      quats,
+      avvs,
+      rates,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, true);
+      const { n, data } = packCkWriterData(starts, [
+        [stops, 1],
+        [quats, 4],
+        [avvs, 3],
+        [rates, 1],
+      ]);
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw02").nativeHandle;
+      native.ckw02(h, beg, end, inst, ref, segid, n, data);
+    },
+    ckw03: (
+      handle,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      quats,
+      avvs,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        av
+          ? [
+              [quats, 4],
+              [avvs, 3],
+            ]
+          : [[quats, 4]],
+        intervalStarts,
+        av ? undefined : avvs,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw03").nativeHandle;
+      native.ckw03(h, beg, end, inst, ref, av, segid, n, nints, data);
+    },
+    ckw05: (
+      handle,
+      subtype,
+      degree,
+      beg,
+      end,
+      inst,
+      ref,
+      av,
+      segid,
+      ticks,
+      packets,
+      rate,
+      intervalStarts,
+    ) => {
+      checkCkWriter(beg, end, inst, ref, segid, av);
+      assertSpiceInt32(subtype, "CK subtype");
+      assertSpiceInt32(degree, "CK degree");
+      if (!Number.isFinite(rate))
+        throw new RangeError("CK rate must be finite");
+      const width = [8, 4, 14, 7][subtype] ?? 0;
+      const { n, nints, data } = packCkWriterData(
+        ticks,
+        [[packets, width]],
+        intervalStarts,
+      );
+      const h = handles.lookup(handle, ["CK-WRITER"], "ckw05").nativeHandle;
+      native.ckw05(
+        h,
+        subtype,
+        degree,
+        beg,
+        end,
+        inst,
+        ref,
+        av,
+        segid,
+        n,
+        nints,
+        rate,
+        data,
+      );
+    },
     namfrm: (name) => {
       const out = native.namfrm(name);
       if (!out.found) {

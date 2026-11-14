@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <vector>
 #include <string>
 
 #include "../addon_common.h"
@@ -279,6 +280,278 @@ static Napi::Array Sxform(const Napi::CallbackInfo& info) {
   return MakeNumberArray(env, m, 36);
 }
 
+static bool CkwInt(Napi::Env env, const Napi::Value& value, int* out) {
+  if (value.IsNumber()) {
+    const double d = value.As<Napi::Number>().DoubleValue();
+    if (d >= INT32_MIN && d <= INT32_MAX && std::trunc(d) == d) {
+      *out = static_cast<int>(d);
+      return true;
+    }
+  }
+  ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit CK integer"));
+  return false;
+}
+
+static bool CkwString(Napi::Env env, const Napi::Value& value, std::string* out) {
+  if (value.IsString()) {
+    *out = value.As<Napi::String>().Utf8Value();
+    if (out->size() < INT32_MAX && out->find('\0') == std::string::npos) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env, "Expected a NUL-free CK string"));
+  return false;
+}
+
+static Napi::Value Ckopn(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckopn: invalid argument count"));
+    return env.Undefined();
+  }
+  std::string path;
+  if (!CkwString(env, info[0], &path)) return env.Undefined();
+  std::string ifname;
+  if (!CkwString(env, info[1], &ifname)) return env.Undefined();
+  int ncomch = 0;
+  if (!CkwInt(env, info[2], &ncomch)) return env.Undefined();
+  int out = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckopn(path.c_str(), ifname.c_str(), ncomch, &out, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckopn", err);
+    return env.Undefined();
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Value Ckcls(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckcls: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!CkwInt(env, info[0], &handle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckcls(handle, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckcls", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ckw01(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 9) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckw01: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!CkwInt(env, info[0], &handle)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK beg Number"));
+    return env.Undefined();
+  }
+  const double beg = info[1].As<Napi::Number>().DoubleValue();
+  if (!info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK end Number"));
+    return env.Undefined();
+  }
+  const double end = info[2].As<Napi::Number>().DoubleValue();
+  int inst = 0;
+  if (!CkwInt(env, info[3], &inst)) return env.Undefined();
+  std::string ref;
+  if (!CkwString(env, info[4], &ref)) return env.Undefined();
+  if (!info[5].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK av Boolean"));
+    return env.Undefined();
+  }
+  const bool av = info[5].As<Napi::Boolean>().Value();
+  std::string segid;
+  if (!CkwString(env, info[6], &segid)) return env.Undefined();
+  int n = 0;
+  if (!CkwInt(env, info[7], &n)) return env.Undefined();
+  if (!info[8].IsTypedArray() || info[8].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected packed Float64Array CK data"));
+    return env.Undefined();
+  }
+  const auto values = info[8].As<Napi::Float64Array>();
+  const size_t count = values.ElementLength();
+  if (count > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "CK segment exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  double sentinel = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckw01(handle, beg, end, inst, ref.c_str(), av, segid.c_str(), n, count ? values.Data() : &sentinel, static_cast<int>(count), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckw01", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ckw02(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 8) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckw02: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!CkwInt(env, info[0], &handle)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK beg Number"));
+    return env.Undefined();
+  }
+  const double beg = info[1].As<Napi::Number>().DoubleValue();
+  if (!info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK end Number"));
+    return env.Undefined();
+  }
+  const double end = info[2].As<Napi::Number>().DoubleValue();
+  int inst = 0;
+  if (!CkwInt(env, info[3], &inst)) return env.Undefined();
+  std::string ref;
+  if (!CkwString(env, info[4], &ref)) return env.Undefined();
+  std::string segid;
+  if (!CkwString(env, info[5], &segid)) return env.Undefined();
+  int n = 0;
+  if (!CkwInt(env, info[6], &n)) return env.Undefined();
+  if (!info[7].IsTypedArray() || info[7].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected packed Float64Array CK data"));
+    return env.Undefined();
+  }
+  const auto values = info[7].As<Napi::Float64Array>();
+  const size_t count = values.ElementLength();
+  if (count > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "CK segment exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  double sentinel = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckw02(handle, beg, end, inst, ref.c_str(), segid.c_str(), n, count ? values.Data() : &sentinel, static_cast<int>(count), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckw02", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ckw03(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 10) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckw03: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!CkwInt(env, info[0], &handle)) return env.Undefined();
+  if (!info[1].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK beg Number"));
+    return env.Undefined();
+  }
+  const double beg = info[1].As<Napi::Number>().DoubleValue();
+  if (!info[2].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK end Number"));
+    return env.Undefined();
+  }
+  const double end = info[2].As<Napi::Number>().DoubleValue();
+  int inst = 0;
+  if (!CkwInt(env, info[3], &inst)) return env.Undefined();
+  std::string ref;
+  if (!CkwString(env, info[4], &ref)) return env.Undefined();
+  if (!info[5].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK av Boolean"));
+    return env.Undefined();
+  }
+  const bool av = info[5].As<Napi::Boolean>().Value();
+  std::string segid;
+  if (!CkwString(env, info[6], &segid)) return env.Undefined();
+  int n = 0;
+  if (!CkwInt(env, info[7], &n)) return env.Undefined();
+  int nints = 0;
+  if (!CkwInt(env, info[8], &nints)) return env.Undefined();
+  if (!info[9].IsTypedArray() || info[9].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected packed Float64Array CK data"));
+    return env.Undefined();
+  }
+  const auto values = info[9].As<Napi::Float64Array>();
+  const size_t count = values.ElementLength();
+  if (count > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "CK segment exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  double sentinel = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckw03(handle, beg, end, inst, ref.c_str(), av, segid.c_str(), n, nints, count ? values.Data() : &sentinel, static_cast<int>(count), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckw03", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Ckw05(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 13) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ckw05: invalid argument count"));
+    return env.Undefined();
+  }
+  int handle = 0;
+  if (!CkwInt(env, info[0], &handle)) return env.Undefined();
+  int subtype = 0;
+  if (!CkwInt(env, info[1], &subtype)) return env.Undefined();
+  int degree = 0;
+  if (!CkwInt(env, info[2], &degree)) return env.Undefined();
+  if (!info[3].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK beg Number"));
+    return env.Undefined();
+  }
+  const double beg = info[3].As<Napi::Number>().DoubleValue();
+  if (!info[4].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK end Number"));
+    return env.Undefined();
+  }
+  const double end = info[4].As<Napi::Number>().DoubleValue();
+  int inst = 0;
+  if (!CkwInt(env, info[5], &inst)) return env.Undefined();
+  std::string ref;
+  if (!CkwString(env, info[6], &ref)) return env.Undefined();
+  if (!info[7].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK av Boolean"));
+    return env.Undefined();
+  }
+  const bool av = info[7].As<Napi::Boolean>().Value();
+  std::string segid;
+  if (!CkwString(env, info[8], &segid)) return env.Undefined();
+  int n = 0;
+  if (!CkwInt(env, info[9], &n)) return env.Undefined();
+  int nints = 0;
+  if (!CkwInt(env, info[10], &nints)) return env.Undefined();
+  if (!info[11].IsNumber()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected CK rate Number"));
+    return env.Undefined();
+  }
+  const double rate = info[11].As<Napi::Number>().DoubleValue();
+  if (!info[12].IsTypedArray() || info[12].As<Napi::TypedArray>().TypedArrayType() != napi_float64_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected packed Float64Array CK data"));
+    return env.Undefined();
+  }
+  const auto values = info[12].As<Napi::Float64Array>();
+  const size_t count = values.ElementLength();
+  if (count > 33554432) {
+    ThrowSpiceError(Napi::RangeError::New(env, "CK segment exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  double sentinel = 0;
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  if (tspice_ckw05(handle, subtype, degree, beg, end, inst, ref.c_str(), av, segid.c_str(), n, nints, rate, count ? values.Data() : &sentinel, static_cast<int>(count), err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling ckw05", err);
+    return env.Undefined();
+  }
+  return env.Undefined();
+}
+
 // --- CK file query / management --------------------------------------------
 
 static Napi::Number Cklpf(const Napi::CallbackInfo& info) {
@@ -426,6 +699,12 @@ void RegisterFrames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "frinfo", Napi::Function::New(env, Frinfo), __func__)) return;
   if (!SetExportChecked(env, exports, "ccifrm", Napi::Function::New(env, Ccifrm), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "ckopn", Napi::Function::New(env,Ckopn), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckcls", Napi::Function::New(env,Ckcls), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckw01", Napi::Function::New(env,Ckw01), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckw02", Napi::Function::New(env,Ckw02), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckw03", Napi::Function::New(env,Ckw03), __func__)) return;
+  if (!SetExportChecked(env, exports, "ckw05", Napi::Function::New(env,Ckw05), __func__)) return;
   // CK read-only helpers.
   if (!SetExportChecked(env, exports, "cklpf", Napi::Function::New(env, Cklpf), __func__)) return;
   if (!SetExportChecked(env, exports, "ckupf", Napi::Function::New(env, Ckupf), __func__)) return;

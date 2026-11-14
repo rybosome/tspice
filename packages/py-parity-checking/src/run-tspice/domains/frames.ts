@@ -9,6 +9,12 @@ import type {
   StepFramesCkcov,
   StepFramesCkgp,
   StepFramesCkgpav,
+  StepFramesCkopn,
+  StepFramesCkcls,
+  StepFramesCkw01,
+  StepFramesCkw02,
+  StepFramesCkw03,
+  StepFramesCkw05,
   StepFramesCklpf,
   StepFramesCkobj,
   StepFramesCkupf,
@@ -42,6 +48,12 @@ type FramesStep =
   | StepFramesCcifrm
   | StepFramesCkgp
   | StepFramesCkgpav
+  | StepFramesCkopn
+  | StepFramesCkcls
+  | StepFramesCkw01
+  | StepFramesCkw02
+  | StepFramesCkw03
+  | StepFramesCkw05
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
@@ -330,6 +342,116 @@ export function runFramesStep(
       };
     }
 
+    case "frames.ckopn": {
+      const ref = toPathRef(step.path);
+      if (ref.kind !== "scratch")
+        throw new Error("CK writers require an owned scratch path");
+      const writers = context.state.frames.writers;
+      if (writers.has(step.handleId)) throw new Error("Duplicate CK writer ID");
+      const path = toVirtualKernelPath(ref),
+        physical = resolvePathRef(context.paths, ref);
+      const handle = context.spice.raw.ckopn(
+        { kind: "virtual-output", path },
+        step.ifname,
+        step.ncomch,
+      );
+      writers.set(step.handleId, { handle, path, physical });
+      registerFinalizer(context, `CK writer:${step.handleId}`, () => {
+        if (writers.has(step.handleId)) {
+          context.spice.raw.ckcls(handle);
+          writers.delete(step.handleId);
+        }
+      });
+      return { op: step.op, value: { opened: true } };
+    }
+    case "frames.ckcls": {
+      const writers = context.state.frames.writers,
+        entry = writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckcls(entry.handle);
+      writers.delete(step.handleId);
+      fs.writeFileSync(
+        entry.physical,
+        context.spice.kit.readVirtualOutput({
+          kind: "virtual-output",
+          path: entry.path,
+        }),
+      );
+      return { op: step.op, value: { closed: true } };
+    }
+    case "frames.ckw01": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw01(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.quats,
+        step.avvs,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw02": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw02(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.segid,
+        step.starts,
+        step.stops,
+        step.quats,
+        step.avvs,
+        step.rates,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw03": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw03(
+        entry.handle,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.quats,
+        step.avvs,
+        step.intervalStarts,
+      );
+      return { op: step.op, value: null };
+    }
+    case "frames.ckw05": {
+      const entry = context.state.frames.writers.get(step.handleId);
+      if (!entry) throw new Error("Unknown CK writer");
+      context.spice.raw.ckw05(
+        entry.handle,
+        step.subtype,
+        step.degree,
+        step.beg,
+        step.end,
+        step.inst,
+        step.ref,
+        step.av,
+        step.segid,
+        step.ticks,
+        step.packets,
+        step.rate,
+        step.intervalStarts,
+      );
+      return { op: step.op, value: null };
+    }
     case "frames.cklpf": {
       if (context.state.frames.ckHandles.has(step.handleId))
         throw new Error(`CK handle already exists: ${step.handleId}`);

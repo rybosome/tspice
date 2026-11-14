@@ -131,6 +131,17 @@ Notes:
 
 ## Domain: `frames` (`FramesApi`)
 
+[Binary CK writer lifecycle and record formats](step8-ck-writers.md)
+
+| Raw method | CSPICE    | Contract effect                                                                                                        |
+| ---------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `ckopn`    | `ckopn_c` | Create an owned binary CK writer with a caller-specified internal name and comment reservation.                        |
+| `ckcls`    | `ckcls_c` | Finalize the CK writer and allow readback. A NOSEGMENTSFOUND writer stays open and can be retried.                     |
+| `ckw01`    | `ckw01_c` | Append discrete scalar-first quaternion samples and optional reference-frame angular velocities at encoded SCLK ticks. |
+| `ckw02`    | `ckw02_c` | Append constant-angular-velocity intervals using individual start/stop times and seconds-per-tick rates.               |
+| `ckw03`    | `ckw03_c` | Append interpolated quaternion samples and optional angular velocity with explicit interval breaks.                    |
+| `ckw05`    | `ckw05_c` | Append one of four quaternion/derivative/AV packet subtypes with rate, polynomial window degree and interval starts.   |
+
 | domain.method                           | CSPICE entrypoint(s) | Args (TS shape)                                                                                                             | Returns (TS shape)                                                | Comparison notes (tolerance/normalization)                    | Statefulness / required kernels                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `frames.namfrm(name)`                   | `namfrm_c`           | `(name: string): Found<{ code: number }>`                                                                                   | `Found<{ code: number }>`                                         | exact integer match                                           | requires FK and/or built-in frame definitions; per NAIF docs, `namfrm_c` returns the frame code, or `0` if `name` is not recognized (there is no `found` output). In this project `J2000` is code `1` (see tests), so treating `0` as “not found” is safe. If you want to avoid depending on the `0` sentinel, validate the returned code via `frinfo_c` (it provides a `found` flag). |

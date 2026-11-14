@@ -56,7 +56,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createKernelsApi(native, stager),
       ...createKernelPoolApi(native),
       ...createIdsNamesApi(native),
-      ...createFramesApi(native, stager),
+      ...createFramesApi(native, stager, spiceHandles, outputs),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
       ...createGeometryGfApi(native),
@@ -94,10 +94,11 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
 
       for (const [handle, entry] of entries) {
         try {
-          if (entry.kind === "SPK") {
+          if (entry.kind === "SPK" || entry.kind === "CK-WRITER") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
             try {
-              backend.raw.spkcls(handle);
+              if (entry.kind === "SPK") backend.raw.spkcls(handle);
+              else backend.raw.ckcls(handle);
             } catch (error) {
               if (
                 typeof error !== "object" ||
@@ -112,7 +113,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
               // still release its underlying DAF without manufacturing data.
               spiceHandles.close(
                 handle,
-                ["SPK"],
+                [entry.kind],
                 (e) => native.dafcls(e.nativeHandle),
                 "disposeAll:dafcls-empty-spk",
               );

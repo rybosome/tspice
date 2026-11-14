@@ -1,0 +1,358 @@
+[
+  {
+    "caseId": "frames-ckopn-multi-format",
+    "description": "Each independent writer appends all four segment formats with signed instrument IDs. Inspect class set, decoded times, AV and orientations.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "frames.ckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "ifname": "SYNTHETIC CK",
+        "ncomch": 1400
+      },
+      {
+        "op": "frames.ckw01",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123000,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW01",
+        "ticks": [1000, 1010, 1020, 1030],
+        "av": true,
+        "quats": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.972514341332643, 0.062229905478645146,
+          0.12445981095729029, 0.18668971643593546, 0.9492354180824408,
+          0.08407144965438357, 0.16814289930876714, 0.2522143489631507,
+          0.9191023971657747, 0.10530594323348873, 0.21061188646697745,
+          0.31591782970046617
+        ],
+        "avvs": [
+          0.015, -0.025, 0.062, 0.020999999999999998, -0.022000000000000002,
+          0.057999999999999996, 0.027, -0.019000000000000003, 0.054, 0.033,
+          -0.016, 0.05
+        ]
+      },
+      {
+        "op": "frames.ckw02",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123001,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW02",
+        "starts": [1000, 1020],
+        "stops": [1010, 1030],
+        "quats": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.9492354180824408, 0.08407144965438357,
+          0.16814289930876714, 0.2522143489631507
+        ],
+        "avvs": [0.015, -0.025, 0.062, 0.027, -0.019000000000000003, 0.054],
+        "rates": [0.5, 1.5]
+      },
+      {
+        "op": "frames.ckw03",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123002,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW03",
+        "ticks": [1000, 1010, 1020, 1030],
+        "av": true,
+        "quats": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.972514341332643, 0.062229905478645146,
+          0.12445981095729029, 0.18668971643593546, 0.9492354180824408,
+          0.08407144965438357, 0.16814289930876714, 0.2522143489631507,
+          0.9191023971657747, 0.10530594323348873, 0.21061188646697745,
+          0.31591782970046617
+        ],
+        "avvs": [
+          0.015, -0.025, 0.062, 0.020999999999999998, -0.022000000000000002,
+          0.057999999999999996, 0.027, -0.019000000000000003, 0.054, 0.033,
+          -0.016, 0.05
+        ],
+        "intervalStarts": [1000]
+      },
+      {
+        "op": "frames.ckw05",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123003,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW05",
+        "ticks": [1000, 1010, 1020, 1030],
+        "av": true,
+        "subtype": 1,
+        "degree": 1,
+        "packets": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.972514341332643, 0.062229905478645146,
+          0.12445981095729029, 0.18668971643593546, 0.9492354180824408,
+          0.08407144965438357, 0.16814289930876714, 0.2522143489631507,
+          0.9191023971657747, 0.10530594323348873, 0.21061188646697745,
+          0.31591782970046617
+        ],
+        "rate": 0.5,
+        "intervalStarts": [1000]
+      },
+      {
+        "op": "frames.ckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.ckobj",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idsId": "ids",
+        "maxCard": 8
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idcode": -123000,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "win",
+        "maxIntervals": 12
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idcode": -123001,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "win",
+        "maxIntervals": 12
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idcode": -123002,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "win",
+        "maxIntervals": 12
+      },
+      {
+        "op": "frames.ckcov",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idcode": -123003,
+        "needav": false,
+        "level": "INTERVAL",
+        "tol": 0,
+        "timsys": "TDB",
+        "coverId": "win",
+        "maxIntervals": 12
+      },
+      {
+        "op": "frames.cklpf",
+        "handleId": "r",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        }
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1000,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123001,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123002,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123003,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckopn-negative-comments",
+    "description": "A nonpositive comment request still produces a readable CK.",
+    "workflow": [
+      {
+        "op": "frames.ckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "ifname": "SYNTHETIC CK",
+        "ncomch": -1
+      },
+      {
+        "op": "frames.ckw01",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123000,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW01",
+        "ticks": [1000, 1010, 1020, 1030],
+        "av": true,
+        "quats": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.972514341332643, 0.062229905478645146,
+          0.12445981095729029, 0.18668971643593546, 0.9492354180824408,
+          0.08407144965438357, 0.16814289930876714, 0.2522143489631507,
+          0.9191023971657747, 0.10530594323348873, 0.21061188646697745,
+          0.31591782970046617
+        ],
+        "avvs": [
+          0.015, -0.025, 0.062, 0.020999999999999998, -0.022000000000000002,
+          0.057999999999999996, 0.027, -0.019000000000000003, 0.054, 0.033,
+          -0.016, 0.05
+        ]
+      },
+      {
+        "op": "frames.ckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.ckobj",
+        "ck": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "idsId": "ids",
+        "maxCard": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckopn-empty-name",
+    "description": "Empty internal CK name gives a real input diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.ckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "ifname": "",
+        "ncomch": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "frames-ckopn-existing",
+    "description": "Opening a just completed file again for new write raises the physical file-exists diagnostic.",
+    "workflow": [
+      {
+        "op": "frames.ckopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "ifname": "SYNTHETIC CK",
+        "ncomch": 0
+      },
+      {
+        "op": "frames.ckw01",
+        "handleId": "w",
+        "beg": 1000,
+        "end": 1030,
+        "inst": -123000,
+        "ref": "J2000",
+        "segid": "AUTHOREDCKW01",
+        "ticks": [1000, 1010, 1020, 1030],
+        "av": true,
+        "quats": [
+          0.9887710779360422, 0.03993902087396752, 0.07987804174793504,
+          0.11981706262190257, 0.972514341332643, 0.062229905478645146,
+          0.12445981095729029, 0.18668971643593546, 0.9492354180824408,
+          0.08407144965438357, 0.16814289930876714, 0.2522143489631507,
+          0.9191023971657747, 0.10530594323348873, 0.21061188646697745,
+          0.31591782970046617
+        ],
+        "avvs": [
+          0.015, -0.025, 0.062, 0.020999999999999998, -0.022000000000000002,
+          0.057999999999999996, 0.027, -0.019000000000000003, 0.054, 0.033,
+          -0.016, 0.05
+        ]
+      },
+      {
+        "op": "frames.ckcls",
+        "handleId": "w"
+      },
+      {
+        "op": "frames.ckopn",
+        "handleId": "again",
+        "path": {
+          "kind": "scratch",
+          "rel": "writer.bc"
+        },
+        "ifname": "SYNTHETIC CK",
+        "ncomch": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAIL"]
+    }
+  }
+]
