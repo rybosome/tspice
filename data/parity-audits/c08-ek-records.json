@@ -58,7 +58,212 @@
     "packages/py-parity-checking/test/ek-record-content.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c08-502348fb-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a4e34ddfca2dfd7b6ec89fabf6919e93056c9b85a4041ac1609392f17487319",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c08-502348fb-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a4e34ddfca2dfd7b6ec89fabf6919e93056c9b85a4041ac1609392f17487319",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c08-502348fb-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a4e34ddfca2dfd7b6ec89fabf6919e93056c9b85a4041ac1609392f17487319",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "commit": "502348fb69045a54fe2f92df301fb55f40f7912b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576480828/job/132391716934",
+      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c08-502348fb-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "3a4e34ddfca2dfd7b6ec89fabf6919e93056c9b85a4041ac1609392f17487319",
+      "caseIds": [
+        "ek-ekappr-growth",
+        "ek-ekappr-negative-segment",
+        "ek-ekappr-past-segment",
+        "ek-ekappr-populated-file",
+        "ek-ekappr-read-only",
+        "ek-ekappr-segment-isolation",
+        "ek-ekbseg-bad-index",
+        "ek-ekbseg-bad-name",
+        "ek-ekbseg-blank-table",
+        "ek-ekbseg-fixed-schema",
+        "ek-ekbseg-hundred-columns",
+        "ek-ekbseg-long-column",
+        "ek-ekbseg-missing-type",
+        "ek-ekbseg-mixed-count",
+        "ek-ekbseg-multiple",
+        "ek-ekbseg-non-ascii-column",
+        "ek-ekbseg-reader",
+        "ek-ekbseg-schema",
+        "ek-ekdelr-empty-segment",
+        "ek-ekdelr-negative-record",
+        "ek-ekdelr-negative-segment",
+        "ek-ekdelr-newly-empty",
+        "ek-ekdelr-past-record",
+        "ek-ekdelr-past-segment",
+        "ek-ekdelr-populated-file",
+        "ek-ekdelr-read-only",
+        "ek-ekinsr-locations",
+        "ek-ekinsr-negative-record",
+        "ek-ekinsr-negative-segment",
+        "ek-ekinsr-past-record",
+        "ek-ekinsr-past-segment",
+        "ek-ekinsr-populated-file",
+        "ek-ekinsr-read-only",
+        "ek-ekinsr-second-segment",
+        "ek-ekops-cleanup-on-scientific-error",
+        "ek-ekops-empty",
+        "ek-ekops-independent",
+        "ek-ekops-scratch-vs-named"
+      ],
+      "commit": "502348fb69045a54fe2f92df301fb55f40f7912b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576480828/job/132391716934",
+      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "ekops_c",
@@ -116,16 +321,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, serialized native addon -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": []
+          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, required WASM export and scoped buffers -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": []
+          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
         }
       }
     },
@@ -238,16 +443,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, serialized native addon -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": []
+          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, required WASM export and scoped buffers -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": []
+          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
         }
       }
     },
@@ -317,16 +522,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, serialized native addon -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, required WASM export and scoped buffers -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
         }
       }
     },
@@ -406,16 +611,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, serialized native addon -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, required WASM export and scoped buffers -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
         }
       }
     },
@@ -495,19 +700,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, serialized native addon -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, required WASM export and scoped buffers -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": []
+          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Run the full combined local and canonical CI lanes on this source, verify the final PR head and rebaseability."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

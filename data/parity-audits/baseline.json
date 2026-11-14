@@ -414,8 +414,8 @@
       "id": "c08-ek-records",
       "routines": ["ekops_c", "ekbseg_c", "ekappr_c", "ekinsr_c", "ekdelr_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run the full combined local and canonical CI lanes on this source, verify the final PR head and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/753"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
