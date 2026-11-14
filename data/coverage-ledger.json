@@ -944,7 +944,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 394
+        "line": 389
       }
     },
     {
@@ -958,7 +958,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 385
+        "line": 380
       }
     },
     {
@@ -972,7 +972,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 404
+        "line": 399
       }
     },
     {
@@ -986,7 +986,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 484
+        "line": 479
       }
     },
     {
@@ -1055,7 +1055,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 326
+        "line": 321
       }
     },
     {
@@ -1091,7 +1091,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 311
+        "line": 306
       }
     },
     {
@@ -1138,7 +1138,7 @@
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
         "file": "packages/py-parity-checking/src/run-tspice/domains/dsk.ts",
-        "line": 356
+        "line": 351
       }
     },
     {

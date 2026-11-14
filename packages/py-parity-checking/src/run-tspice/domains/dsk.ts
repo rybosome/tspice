@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import path from "node:path";
 
 import type {
   SpiceHandle,
@@ -104,11 +103,7 @@ function resolveDskPathRef(
     return virtualPath;
   }
 
-  // A retained WASM worker has one filesystem across case lifecycles.
-  const scratchPath = toVirtualKernelPath({
-    kind: "scratch",
-    rel: path.posix.join(path.basename(context.paths.scratchRoot), pathRef.rel),
-  });
+  const scratchPath = toVirtualKernelPath(pathRef, context.paths);
   context.state.dsk.resolvedPathRefs.set(key, scratchPath);
   return scratchPath;
 }

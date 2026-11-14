@@ -341,7 +341,7 @@ describe("runEphemerisStep path resolution", () => {
       });
 
       expect(spkopn).toHaveBeenCalledWith(
-        "py-parity/scratch/new-output.bsp",
+        `py-parity/scratch/${path.basename(context.paths.scratchRoot)}/new-output.bsp`,
         "TEST",
         0,
       );

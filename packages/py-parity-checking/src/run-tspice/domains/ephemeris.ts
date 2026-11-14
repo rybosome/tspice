@@ -84,7 +84,7 @@ function resolveEphemerisPath(
   const pathRef = toPathRef(pathRefLike);
 
   if (context.spice.raw.kind !== "node") {
-    return toVirtualKernelPath(pathRef);
+    return toVirtualKernelPath(pathRef, context.paths);
   }
 
   const resolved = resolvePathRef(context.paths, pathRef);

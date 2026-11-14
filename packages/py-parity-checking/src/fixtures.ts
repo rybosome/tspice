@@ -25,8 +25,11 @@ export function resolveFixturePath(
 }
 
 /** Convert logical fixture/scratch refs into tspice virtual kernel ids. */
-export function toVirtualKernelPath(pathRefLike: PathRefLike): string {
-  return toVirtualKernelPathCore(pathRefLike);
+export function toVirtualKernelPath(
+  pathRefLike: PathRefLike,
+  paths?: RuntimePaths,
+): string {
+  return toVirtualKernelPathCore(pathRefLike, paths);
 }
 
 /** Normalize backend-reported kernel paths to stable basename-only parity values. */

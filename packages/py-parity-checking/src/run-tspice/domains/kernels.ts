@@ -1,3 +1,4 @@
+import path from "node:path";
 import fs from "node:fs";
 
 import type {
@@ -37,17 +38,32 @@ function metadataPath(context: RunTspiceContext, value: string): string {
     return normalized.slice(fixtureRoot.length);
   if (normalized.startsWith(scratchRoot))
     return "scratch/" + normalized.slice(scratchRoot.length);
-  return normalized.replace(/^\/?kernels\/py-parity\/|^py-parity\//, "");
+  const relative = normalized.replace(
+    /^\/?kernels\/py-parity\/|^py-parity\//,
+    "",
+  );
+  const scoped = `scratch/${path.basename(context.paths.scratchRoot)}/`;
+  return relative.startsWith(scoped)
+    ? "scratch/" + relative.slice(scoped.length)
+    : relative;
 }
 
 const KPLFRM_MAX_IDS = 1_024;
 
-function resolveKernelPathForTspice(pathValue: string): string {
+function resolveKernelPathForTspice(
+  context: RunTspiceContext,
+  pathValue: string,
+): string {
   if (pathValue.trim().length === 0) {
     return pathValue;
   }
 
-  return toVirtualKernelPath(pathValue);
+  return toVirtualKernelPath(
+    pathValue.startsWith("scratch/")
+      ? { kind: "scratch", rel: pathValue.slice(8) }
+      : pathValue,
+    context.paths,
+  );
 }
 
 function runKplfrmStep(
@@ -79,7 +95,7 @@ export function runKernelsStep(
   switch (step.op) {
     case "kernels.furnsh": {
       const pathRef = toPathRef(step.file);
-      const virtualPath = toVirtualKernelPath(pathRef);
+      const virtualPath = toVirtualKernelPath(pathRef, context.paths);
 
       if (pathRef.kind === "scratch") {
         const resolvedScratchPath = resolvePathRef(context.paths, pathRef);
@@ -123,7 +139,7 @@ export function runKernelsStep(
 
     case "kernels.kinfo": {
       const out = context.spice.raw.kinfo(
-        resolveKernelPathForTspice(step.path),
+        resolveKernelPathForTspice(context, step.path),
       );
       if (!out.found) {
         return { op: step.op, value: { found: false } };
@@ -135,7 +151,10 @@ export function runKernelsStep(
         if (
           entry.found &&
           metadataPath(context, entry.file) ===
-            metadataPath(context, resolveKernelPathForTspice(step.path)) &&
+            metadataPath(
+              context,
+              resolveKernelPathForTspice(context, step.path),
+            ) &&
           entry.handle === out.handle
         ) {
           handleMatchesEntry = true;
@@ -200,7 +219,7 @@ export function runKernelsStep(
     }
 
     case "kernels.unload":
-      context.spice.raw.unload(resolveKernelPathForTspice(step.path));
+      context.spice.raw.unload(resolveKernelPathForTspice(context, step.path));
       return { op: step.op, value: null };
 
     default: {

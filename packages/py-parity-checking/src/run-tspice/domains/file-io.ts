@@ -4,7 +4,6 @@ import type {
 } from "@rybosome/tspice-backend-contract";
 
 import type {
-  PathRefLike,
   StepFileIoDafbfs,
   StepFileIoDafcls,
   StepFileIoDaffna,
@@ -41,10 +40,6 @@ type FileIoStep =
   | StepFileIoDskopn
   | StepFileIoDskmi2
   | StepFileIoDskw02;
-
-function resolveFileIoPath(path: PathRefLike): string {
-  return toVirtualKernelPath(path);
-}
 
 function requireHandleState(context: RunTspiceContext, handleId: string) {
   const state = context.state.fileIo.handles.get(handleId);
@@ -106,17 +101,23 @@ export function runFileIoStep(
     case "file-io.exists":
       return {
         op: step.op,
-        value: context.spice.raw.exists(resolveFileIoPath(step.path)),
+        value: context.spice.raw.exists(
+          toVirtualKernelPath(step.path, context.paths),
+        ),
       };
 
     case "file-io.getfat":
       return {
         op: step.op,
-        value: context.spice.raw.getfat(resolveFileIoPath(step.path)),
+        value: context.spice.raw.getfat(
+          toVirtualKernelPath(step.path, context.paths),
+        ),
       };
 
     case "file-io.dafopr": {
-      const handle = context.spice.raw.dafopr(resolveFileIoPath(step.path));
+      const handle = context.spice.raw.dafopr(
+        toVirtualKernelPath(step.path, context.paths),
+      );
       registerHandleState(context, step.handleId, handle, "dafcls");
       return { op: step.op, value: null };
     }
@@ -143,7 +144,9 @@ export function runFileIoStep(
     }
 
     case "file-io.dasopr": {
-      const handle = context.spice.raw.dasopr(resolveFileIoPath(step.path));
+      const handle = context.spice.raw.dasopr(
+        toVirtualKernelPath(step.path, context.paths),
+      );
       registerHandleState(context, step.handleId, handle, "dascls");
       return { op: step.op, value: null };
     }
@@ -157,7 +160,7 @@ export function runFileIoStep(
 
     case "file-io.dlaopn": {
       const handle = context.spice.raw.dlaopn(
-        resolveFileIoPath(step.path),
+        toVirtualKernelPath(step.path, context.paths),
         step.ftype,
         step.ifname,
         step.ncomch,
@@ -200,7 +203,7 @@ export function runFileIoStep(
 
     case "file-io.dskopn": {
       const handle = context.spice.raw.dskopn(
-        resolveFileIoPath(step.path),
+        toVirtualKernelPath(step.path, context.paths),
         step.ifname,
         step.ncomch,
       );

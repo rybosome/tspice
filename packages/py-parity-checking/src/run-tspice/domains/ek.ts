@@ -49,18 +49,25 @@ type EkStep =
   | StepEkEkaclc
   | StepEkEkffld;
 
-function resolveEkPath(rawPath: PathRefLike): string {
+function resolveEkPath(
+  context: RunTspiceContext,
+  rawPath: PathRefLike,
+): string {
   // Existing string paths remain scratch-relative; fixture refs must be staged
   // explicitly by a kernels.furnsh workflow step before opening them.
-  if (typeof rawPath !== "string") return toVirtualKernelPath(rawPath);
+  if (typeof rawPath !== "string")
+    return toVirtualKernelPath(rawPath, context.paths);
   if (path.isAbsolute(rawPath)) {
     return rawPath;
   }
 
-  return toVirtualKernelPath({
-    kind: "scratch",
-    rel: normalizePathRefRelativePath(rawPath),
-  });
+  return toVirtualKernelPath(
+    {
+      kind: "scratch",
+      rel: normalizePathRefRelativePath(rawPath),
+    },
+    context.paths,
+  );
 }
 
 /** Execute one `ek.*` workflow step in tspice. */
@@ -68,7 +75,7 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
   switch (step.op) {
     case "ek.ekopn": {
       const handle = context.spice.raw.ekopn(
-        resolveEkPath(step.path),
+        resolveEkPath(context, step.path),
         step.ifname,
         step.ncomch,
       );
@@ -77,13 +84,13 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
     }
 
     case "ek.ekopr": {
-      const handle = context.spice.raw.ekopr(resolveEkPath(step.path));
+      const handle = context.spice.raw.ekopr(resolveEkPath(context, step.path));
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
 
     case "ek.ekopw": {
-      const handle = context.spice.raw.ekopw(resolveEkPath(step.path));
+      const handle = context.spice.raw.ekopw(resolveEkPath(context, step.path));
       registerEkHandle(context, step.handleId, handle);
       return { op: step.op, value: { handleId: step.handleId } };
     }
