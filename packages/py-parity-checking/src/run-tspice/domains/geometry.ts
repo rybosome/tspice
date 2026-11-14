@@ -6,6 +6,10 @@ import type {
   StepGeometryNvc2pl,
   StepGeometryOccult,
   StepGeometryPl2nvc,
+  StepGeometryLatsrf,
+  StepGeometrySrfnrm,
+  StepGeometryLimbpt,
+  StepGeometryTermpt,
   StepGeometrySincpt,
   StepGeometrySubpnt,
   StepGeometrySubslr,
@@ -17,6 +21,10 @@ import type { RunTspiceContext } from "../context.js";
 type GeometryStep =
   | StepGeometrySubpnt
   | StepGeometrySubslr
+  | StepGeometryLatsrf
+  | StepGeometrySrfnrm
+  | StepGeometryLimbpt
+  | StepGeometryTermpt
   | StepGeometrySincpt
   | StepGeometryIlumin
   | StepGeometryIllumg
@@ -83,6 +91,67 @@ export function runGeometryStep(
       };
     }
 
+    case "geometry.latsrf":
+      return {
+        op: step.op,
+        value: context.spice.raw.latsrf(
+          step.method,
+          step.target,
+          step.et,
+          step.fixref,
+          step.lonlat,
+        ),
+      };
+    case "geometry.srfnrm":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfnrm(
+          step.method,
+          step.target,
+          step.et,
+          step.fixref,
+          step.srfpts,
+        ),
+      };
+    case "geometry.limbpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.limbpt(
+          step.method,
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.corloc,
+          step.observer,
+          step.refvec,
+          step.rolstp,
+          step.ncuts,
+          step.schstp,
+          step.soltol,
+          step.maxn,
+        ),
+      };
+    case "geometry.termpt":
+      return {
+        op: step.op,
+        value: context.spice.raw.termpt(
+          step.method,
+          step.ilusrc,
+          step.target,
+          step.et,
+          step.fixref,
+          step.abcorr,
+          step.corloc,
+          step.observer,
+          step.refvec,
+          step.rolstp,
+          step.ncuts,
+          step.schstp,
+          step.soltol,
+          step.maxn,
+        ),
+      };
     case "geometry.sincpt": {
       const out = context.spice.raw.sincpt(
         step.method,

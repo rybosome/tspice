@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 174
-- Planned (not yet implemented): 475
+- Implemented now (SpiceRawBackend): 178
+- Planned (not yet implemented): 471
 - Excluded: 3
 
 ## Implemented now
@@ -124,6 +124,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `latsrf_c` | Latitudinal grid to surface points |
+| `limbpt_c` | Limb points on an extended object |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -169,12 +171,14 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `srfnrm_c` | Map surface points to outward normal vectors |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `termpt_c` | Terminator points on an extended object |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
@@ -421,14 +425,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lastnb_c` | Last non-blank character |
 | `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latsph_c` | Latitudinal to spherical coordinates |
-| `latsrf_c` | Latitudinal grid to surface points |
 | `lcase_c` | Convert to lowercase |
 | `ldpool_c` | Load variables from a kernel file into the pool |
 | `lgresp_c` | Lagrange interpolation on equally spaced points |
 | `lgrind_c` | Lagrange polynomial interpolation with derivative |
 | `lgrint_c` | Lagrange polynomial interpolation |
 | `limb_pl02` | Limb using DSK type 2 plate model |
-| `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `lmpool_c` | Load variables from memory into the pool |
 | `lparse_c` | Parse items from a list |
@@ -582,7 +584,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkw20_c` | Write SPK segment, type 20 |
 | `srfc2s_c` | Surface and body ID codes to surface string |
 | `srfcss_c` | Surface ID and body string to surface string |
-| `srfnrm_c` | Map surface points to outward normal vectors |
 | `srfrec_c` | Surface to rectangular coordinates |
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
@@ -602,7 +603,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
-| `termpt_c` | Terminator points on an extended object |
 | `tipbod_c` | Transformation, inertial position to bodyfixed |
 | `tisbod_c` | Transformation, inertial state to bodyfixed |
 | `tkfram_c` | TK frame, find position rotation |

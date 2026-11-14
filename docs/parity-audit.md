@@ -74,3 +74,7 @@ Seven direct operations expose geometry data and physical closure. Each page com
 ## DSK ray intersections and tolerances
 
 E19 compares type 2 plate intercepts, loaded surface search and source metadata, and global tolerance changes through separate real N0067 runtimes. [Scientific checks and source adapter](step8-dsk-intersections.md) [Per-routine judgments](../data/parity-audits/e19-dsk-intersections.json)
+
+## Extended surface geometry
+
+E20 compares surface grids, normals and complete dense limb and terminator arrays on analytic and disconnected geometry. [Source checks and independent observations](step8-extended-surfaces.md) · [Per-routine judgments](../data/parity-audits/e20-extended-surfaces.json)

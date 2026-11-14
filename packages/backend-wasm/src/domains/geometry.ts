@@ -1,3 +1,11 @@
+import {
+  dskRay,
+  surfaceGrid,
+  surfaceCutLimits,
+  surfaceCutCount,
+  surfaceVectors,
+  surfaceTextBytes,
+} from "@rybosome/tspice-core";
 import type {
   AbCorr,
   Found,
@@ -16,6 +24,13 @@ import type { EmscriptenModule } from "../lowlevel/exports.js";
 import { withAllocs } from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
+
+const surfaceEncoder = new TextEncoder();
+function writeSurfaceText(module: EmscriptenModule, text: string, ptr: number) {
+  const encoded = surfaceEncoder.encode(text);
+  module.HEAPU8.set(encoded, ptr >>> 0);
+  module.HEAPU8[(ptr >>> 0) + encoded.length] = 0;
+}
 
 function geometryInputs(
   et: unknown,
@@ -697,6 +712,305 @@ function assertFiniteNumberArrayFixed(
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
+    latsrf: (method, target, et, fixref, rows) => {
+      const { count, words } = surfaceGrid(rows, 2);
+      if (![et].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      return withAllocs(
+        module,
+        [
+          2048,
+          surfaceTextBytes(method),
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          words.byteLength,
+          Math.max(1, count) * 24,
+        ],
+        (errPtr, methodPtr, targetPtr, fixrefPtr, inputPtr, outPtr) => {
+          writeSurfaceText(module, method, methodPtr);
+          writeSurfaceText(module, target, targetPtr);
+          writeSurfaceText(module, fixref, fixrefPtr);
+          module.HEAPF64.set(words, inputPtr >>> 3);
+          const rc = module._tspice_latsrf(
+            methodPtr,
+            targetPtr,
+            et,
+            fixrefPtr,
+            count,
+            inputPtr,
+            outPtr,
+            errPtr,
+            2048,
+          );
+          if (rc !== 0) throwWasmSpiceError(module, errPtr, 2048, rc);
+          return surfaceVectors(
+            module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + count * 3),
+            count,
+          );
+        },
+      );
+    },
+    srfnrm: (method, target, et, fixref, rows) => {
+      const { count, words } = surfaceGrid(rows, 3);
+      if (![et].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      return withAllocs(
+        module,
+        [
+          2048,
+          surfaceTextBytes(method),
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          words.byteLength,
+          Math.max(1, count) * 24,
+        ],
+        (errPtr, methodPtr, targetPtr, fixrefPtr, inputPtr, outPtr) => {
+          writeSurfaceText(module, method, methodPtr);
+          writeSurfaceText(module, target, targetPtr);
+          writeSurfaceText(module, fixref, fixrefPtr);
+          module.HEAPF64.set(words, inputPtr >>> 3);
+          const rc = module._tspice_srfnrm(
+            methodPtr,
+            targetPtr,
+            et,
+            fixrefPtr,
+            count,
+            inputPtr,
+            outPtr,
+            errPtr,
+            2048,
+          );
+          if (rc !== 0) throwWasmSpiceError(module, errPtr, 2048, rc);
+          return surfaceVectors(
+            module.HEAPF64.subarray(outPtr >>> 3, (outPtr >>> 3) + count * 3),
+            count,
+          );
+        },
+      );
+    },
+    limbpt: (
+      method,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      refvec,
+      rolstp,
+      ncuts,
+      schstp,
+      soltol,
+      maxn,
+    ) => {
+      const sizes = surfaceCutLimits(ncuts, maxn);
+      const ref = dskRay(refvec);
+      if (![et, rolstp, schstp, soltol].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      return withAllocs(
+        module,
+        [
+          2048,
+          surfaceTextBytes(method),
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(corloc),
+          surfaceTextBytes(observer),
+          24,
+          sizes.counts * 4,
+          sizes.rows * 24,
+          sizes.rows * 8,
+          sizes.rows * 24,
+        ],
+        (
+          errPtr,
+          methodPtr,
+          targetPtr,
+          fixrefPtr,
+          abcorrPtr,
+          corlocPtr,
+          observerPtr,
+          refPtr,
+          nptsPtr,
+          pointsPtr,
+          epochsPtr,
+          vectorsPtr,
+        ) => {
+          writeSurfaceText(module, method, methodPtr);
+          writeSurfaceText(module, target, targetPtr);
+          writeSurfaceText(module, fixref, fixrefPtr);
+          writeSurfaceText(module, abcorr, abcorrPtr);
+          writeSurfaceText(module, corloc, corlocPtr);
+          writeSurfaceText(module, observer, observerPtr);
+          module.HEAPF64.set(ref, refPtr >>> 3);
+          const rc = module._tspice_limbpt(
+            methodPtr,
+            targetPtr,
+            et,
+            fixrefPtr,
+            abcorrPtr,
+            corlocPtr,
+            observerPtr,
+            refPtr,
+            rolstp,
+            ncuts,
+            schstp,
+            soltol,
+            maxn,
+            nptsPtr,
+            pointsPtr,
+            epochsPtr,
+            vectorsPtr,
+            errPtr,
+            2048,
+          );
+          if (rc !== 0) throwWasmSpiceError(module, errPtr, 2048, rc);
+          const counts = module.HEAP32.subarray(
+            nptsPtr >>> 2,
+            (nptsPtr >>> 2) + ncuts,
+          );
+          const total = surfaceCutCount(counts, maxn);
+          return {
+            npts: Array.from(counts),
+            points: surfaceVectors(
+              module.HEAPF64.subarray(
+                pointsPtr >>> 3,
+                (pointsPtr >>> 3) + total * 3,
+              ),
+              total,
+            ),
+            epochs: Array.from(
+              module.HEAPF64.subarray(
+                epochsPtr >>> 3,
+                (epochsPtr >>> 3) + total,
+              ),
+            ),
+            tangts: surfaceVectors(
+              module.HEAPF64.subarray(
+                vectorsPtr >>> 3,
+                (vectorsPtr >>> 3) + total * 3,
+              ),
+              total,
+            ),
+          };
+        },
+      );
+    },
+    termpt: (
+      method,
+      ilusrc,
+      target,
+      et,
+      fixref,
+      abcorr,
+      corloc,
+      observer,
+      refvec,
+      rolstp,
+      ncuts,
+      schstp,
+      soltol,
+      maxn,
+    ) => {
+      const sizes = surfaceCutLimits(ncuts, maxn);
+      const ref = dskRay(refvec);
+      if (![et, rolstp, schstp, soltol].every(Number.isFinite))
+        throw new TypeError("Expected finite geometry parameters");
+      return withAllocs(
+        module,
+        [
+          2048,
+          surfaceTextBytes(method),
+          surfaceTextBytes(ilusrc),
+          surfaceTextBytes(target),
+          surfaceTextBytes(fixref),
+          surfaceTextBytes(abcorr),
+          surfaceTextBytes(corloc),
+          surfaceTextBytes(observer),
+          24,
+          sizes.counts * 4,
+          sizes.rows * 24,
+          sizes.rows * 8,
+          sizes.rows * 24,
+        ],
+        (
+          errPtr,
+          methodPtr,
+          ilusrcPtr,
+          targetPtr,
+          fixrefPtr,
+          abcorrPtr,
+          corlocPtr,
+          observerPtr,
+          refPtr,
+          nptsPtr,
+          pointsPtr,
+          epochsPtr,
+          vectorsPtr,
+        ) => {
+          writeSurfaceText(module, method, methodPtr);
+          writeSurfaceText(module, ilusrc, ilusrcPtr);
+          writeSurfaceText(module, target, targetPtr);
+          writeSurfaceText(module, fixref, fixrefPtr);
+          writeSurfaceText(module, abcorr, abcorrPtr);
+          writeSurfaceText(module, corloc, corlocPtr);
+          writeSurfaceText(module, observer, observerPtr);
+          module.HEAPF64.set(ref, refPtr >>> 3);
+          const rc = module._tspice_termpt(
+            methodPtr,
+            ilusrcPtr,
+            targetPtr,
+            et,
+            fixrefPtr,
+            abcorrPtr,
+            corlocPtr,
+            observerPtr,
+            refPtr,
+            rolstp,
+            ncuts,
+            schstp,
+            soltol,
+            maxn,
+            nptsPtr,
+            pointsPtr,
+            epochsPtr,
+            vectorsPtr,
+            errPtr,
+            2048,
+          );
+          if (rc !== 0) throwWasmSpiceError(module, errPtr, 2048, rc);
+          const counts = module.HEAP32.subarray(
+            nptsPtr >>> 2,
+            (nptsPtr >>> 2) + ncuts,
+          );
+          const total = surfaceCutCount(counts, maxn);
+          return {
+            npts: Array.from(counts),
+            points: surfaceVectors(
+              module.HEAPF64.subarray(
+                pointsPtr >>> 3,
+                (pointsPtr >>> 3) + total * 3,
+              ),
+              total,
+            ),
+            epochs: Array.from(
+              module.HEAPF64.subarray(
+                epochsPtr >>> 3,
+                (epochsPtr >>> 3) + total,
+              ),
+            ),
+            trmvcs: surfaceVectors(
+              module.HEAPF64.subarray(
+                vectorsPtr >>> 3,
+                (vectorsPtr >>> 3) + total * 3,
+              ),
+              total,
+            ),
+          };
+        },
+      );
+    },
     subpnt: (
       method: string,
       target: string,

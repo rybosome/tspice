@@ -611,6 +611,22 @@ export function getNodeBinding(): NativeAddon {
   );
 
   invariant(
+    typeof native.latsrf === "function",
+    "Expected native addon to export latsrf",
+  );
+  invariant(
+    typeof native.srfnrm === "function",
+    "Expected native addon to export srfnrm",
+  );
+  invariant(
+    typeof native.limbpt === "function",
+    "Expected native addon to export limbpt",
+  );
+  invariant(
+    typeof native.termpt === "function",
+    "Expected native addon to export termpt",
+  );
+  invariant(
     typeof native.sincpt === "function",
     "Expected native addon to export sincpt(method, target, et, fixref, abcorr, observer, dref, dvec)",
   );

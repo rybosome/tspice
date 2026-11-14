@@ -991,6 +991,11 @@ int tspice_subslr(
     char *err,
     int errMaxBytes);
 
+int tspice_latsrf(const char *method, const char *target, double et, const char *fixref, int npts, const double *input, double *out, char *err, int cap);
+int tspice_srfnrm(const char *method, const char *target, double et, const char *fixref, int npts, const double *input, double *out, char *err, int cap);
+int tspice_limbpt(const char *method, const char *target, double et, const char *fixref, const char *abcorr, const char *corloc, const char *observer, const double *refvec, double rolstp, int ncuts, double schstp, double soltol, int maxn, int *npts, double *points, double *epochs, double *vectors, char *err, int cap);
+int tspice_termpt(const char *method, const char *ilusrc, const char *target, double et, const char *fixref, const char *abcorr, const char *corloc, const char *observer, const double *refvec, double rolstp, int ncuts, double schstp, double soltol, int maxn, int *npts, double *points, double *epochs, double *vectors, char *err, int cap);
+
 // sincpt_c: compute the surface intercept point of a ray.
 int tspice_sincpt(
     const char *method,

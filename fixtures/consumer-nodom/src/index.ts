@@ -48,3 +48,34 @@ function readRay(spice: import("@rybosome/tspice").SpiceSync, path: string) {
   }
 }
 void readRay;
+
+/** Exercise all extended surface operations with immutable caller coordinates. */
+export function extendedSurfaceTypes(raw: SpiceSync["raw"]) {
+  const grid = [[0.3, 0.2]] as const;
+  const points = raw.latsrf(
+    "ELLIPSOID",
+    "100101",
+    0,
+    "AUDIT_GEOMETRY_FIXED",
+    grid,
+  );
+  const cut = [
+    "100101",
+    0,
+    "AUDIT_GEOMETRY_FIXED",
+    "NONE",
+    "CENTER",
+    "100102",
+    [0, 0, 1],
+    1,
+    2,
+    0.1,
+    0.001,
+    4,
+  ] as const;
+  return [
+    raw.srfnrm("ELLIPSOID", "100101", 0, "AUDIT_GEOMETRY_FIXED", points),
+    raw.limbpt("TANGENT/ELLIPSOID", ...cut).tangts,
+    raw.termpt("UMBRAL/TANGENT/ELLIPSOID", "100103", ...cut).trmvcs,
+  ];
+}

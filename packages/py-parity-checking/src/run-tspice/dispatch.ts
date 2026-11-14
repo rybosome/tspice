@@ -211,6 +211,10 @@ export function dispatchStep(
 
     case "geometry.subpnt":
     case "geometry.subslr":
+    case "geometry.latsrf":
+    case "geometry.srfnrm":
+    case "geometry.limbpt":
+    case "geometry.termpt":
     case "geometry.sincpt":
     case "geometry.ilumin":
     case "geometry.illumg":

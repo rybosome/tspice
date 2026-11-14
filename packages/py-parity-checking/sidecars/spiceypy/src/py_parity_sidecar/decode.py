@@ -133,6 +133,10 @@ from .models import (
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
+    StepGeometryLatsrf,
+    StepGeometrySrfnrm,
+    StepGeometryLimbpt,
+    StepGeometryTermpt,
     StepGeometrySincpt,
     StepGeometrySubpnt,
     StepGeometrySubslr,
@@ -300,6 +304,16 @@ def _expect_vec4(value: Any, *, label: str) -> tuple[float, float, float, float]
         _expect_number(value[3], label=f"{label}[3]"),
     )
 
+
+def _expect_lonlat_rows(value: Any, *, label: str) -> list[tuple[float,float]]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be a list")
+    result = []
+    for row in value:
+        if not isinstance(row,list) or len(row) != 2:
+            raise TypeError(f"{label} rows must have two coordinates")
+        result.append((_expect_number(row[0],label=label), _expect_number(row[1],label=label)))
+    return result
 
 def _expect_vec3_rows(value: Any, *, label: str) -> list[tuple[float, float, float]]:
     if not isinstance(value, list):
@@ -1673,6 +1687,59 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 observer=_expect_string(step.get("observer"), label="geometry.subslr.observer"),
             )
 
+        case "geometry.latsrf":
+            return StepGeometryLatsrf(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.latsrf.method"),
+                target=_expect_string(step.get("target"), label="geometry.latsrf.target"),
+                et=_expect_number(step.get("et"), label="geometry.latsrf.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.latsrf.fixref"),
+                lonlat=_expect_lonlat_rows(step.get("lonlat"), label="geometry.latsrf.lonlat"),
+            )
+        case "geometry.srfnrm":
+            return StepGeometrySrfnrm(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.srfnrm.method"),
+                target=_expect_string(step.get("target"), label="geometry.srfnrm.target"),
+                et=_expect_number(step.get("et"), label="geometry.srfnrm.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.srfnrm.fixref"),
+                srfpts=_expect_vec3_rows(step.get("srfpts"), label="geometry.srfnrm.srfpts"),
+            )
+        case "geometry.limbpt":
+            return StepGeometryLimbpt(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.limbpt.method"),
+                target=_expect_string(step.get("target"), label="geometry.limbpt.target"),
+                et=_expect_number(step.get("et"), label="geometry.limbpt.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.limbpt.fixref"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.limbpt.abcorr"),
+                corloc=_expect_string(step.get("corloc"), label="geometry.limbpt.corloc"),
+                observer=_expect_string(step.get("observer"), label="geometry.limbpt.observer"),
+                refvec=_expect_vec3(step.get("refvec"), label="geometry.limbpt.refvec"),
+                rolstp=_expect_number(step.get("rolstp"), label="geometry.limbpt.rolstp"),
+                ncuts=_expect_int(step.get("ncuts"), label="geometry.limbpt.ncuts"),
+                schstp=_expect_number(step.get("schstp"), label="geometry.limbpt.schstp"),
+                soltol=_expect_number(step.get("soltol"), label="geometry.limbpt.soltol"),
+                maxn=_expect_int(step.get("maxn"), label="geometry.limbpt.maxn"),
+            )
+        case "geometry.termpt":
+            return StepGeometryTermpt(
+                op=op,
+                method=_expect_string(step.get("method"), label="geometry.termpt.method"),
+                ilusrc=_expect_string(step.get("ilusrc"), label="geometry.termpt.ilusrc"),
+                target=_expect_string(step.get("target"), label="geometry.termpt.target"),
+                et=_expect_number(step.get("et"), label="geometry.termpt.et"),
+                fixref=_expect_string(step.get("fixref"), label="geometry.termpt.fixref"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.termpt.abcorr"),
+                corloc=_expect_string(step.get("corloc"), label="geometry.termpt.corloc"),
+                observer=_expect_string(step.get("observer"), label="geometry.termpt.observer"),
+                refvec=_expect_vec3(step.get("refvec"), label="geometry.termpt.refvec"),
+                rolstp=_expect_number(step.get("rolstp"), label="geometry.termpt.rolstp"),
+                ncuts=_expect_int(step.get("ncuts"), label="geometry.termpt.ncuts"),
+                schstp=_expect_number(step.get("schstp"), label="geometry.termpt.schstp"),
+                soltol=_expect_number(step.get("soltol"), label="geometry.termpt.soltol"),
+                maxn=_expect_int(step.get("maxn"), label="geometry.termpt.maxn"),
+            )
         case "geometry.sincpt":
             return StepGeometrySincpt(
                 op=op,

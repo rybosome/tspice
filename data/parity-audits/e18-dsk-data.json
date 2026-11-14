@@ -352,7 +352,8 @@
         "dsk-dskz02-reader-aliases",
         "dsk-dskz02-second-segment"
       ],
-      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e19-48efd0ee-wasm",
@@ -411,7 +412,8 @@
         "dsk-dskz02-reader-aliases",
         "dsk-dskz02-second-segment"
       ],
-      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e19-48efd0ee-node",
@@ -472,7 +474,8 @@
       ],
       "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e19-48efd0ee-wasm",
@@ -533,7 +536,248 @@
       ],
       "commit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e20-8b8168dc-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4bef1b6e9eb29f2b0f6ebb9fc6b440871ed6fd2d08864d2082a4f9f5d2ec91d",
+      "caseIds": [
+        "dsk-dskcls-empty-optimized",
+        "dsk-dskcls-empty-unsegregated",
+        "dsk-dskcls-reader-optimized",
+        "dsk-dskcls-reader-unsegregated",
+        "dsk-dskcls-writer-optimized",
+        "dsk-dskcls-writer-unsegregated",
+        "dsk-dskd02-bounds-and-grid",
+        "dsk-dskd02-descriptor-fields",
+        "dsk-dskd02-large-room",
+        "dsk-dskd02-negative-offset",
+        "dsk-dskd02-nonpositive-room",
+        "dsk-dskd02-past-last-offset",
+        "dsk-dskd02-second-segment",
+        "dsk-dskd02-unsupported",
+        "dsk-dskd02-vertex-component-pages",
+        "dsk-dski02-grid-and-plate-components",
+        "dsk-dski02-large-room",
+        "dsk-dski02-negative-offset",
+        "dsk-dski02-nonpositive-room",
+        "dsk-dski02-past-last-offset",
+        "dsk-dski02-pointer-lists",
+        "dsk-dski02-scalar-keywords",
+        "dsk-dski02-second-segment",
+        "dsk-dski02-unsupported",
+        "dsk-dskn02-axis-normals",
+        "dsk-dskn02-inclined-face",
+        "dsk-dskn02-minimum-index",
+        "dsk-dskn02-past-last",
+        "dsk-dskn02-second-segment",
+        "dsk-dskp02-invalid-start-precedence",
+        "dsk-dskp02-largest-room",
+        "dsk-dskp02-no-room",
+        "dsk-dskp02-ordered-rows",
+        "dsk-dskp02-past-last",
+        "dsk-dskp02-second-segment",
+        "dsk-dskp02-window-and-tail",
+        "dsk-dskv02-invalid-start-precedence",
+        "dsk-dskv02-largest-room",
+        "dsk-dskv02-no-room",
+        "dsk-dskv02-ordered-rows",
+        "dsk-dskv02-past-last",
+        "dsk-dskv02-second-segment",
+        "dsk-dskv02-window-and-tail",
+        "dsk-dskz02-authored-tetrahedron",
+        "dsk-dskz02-minimal",
+        "dsk-dskz02-reader-aliases",
+        "dsk-dskz02-second-segment"
+      ],
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e20-8b8168dc-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4bef1b6e9eb29f2b0f6ebb9fc6b440871ed6fd2d08864d2082a4f9f5d2ec91d",
+      "caseIds": [
+        "dsk-dskcls-empty-optimized",
+        "dsk-dskcls-empty-unsegregated",
+        "dsk-dskcls-reader-optimized",
+        "dsk-dskcls-reader-unsegregated",
+        "dsk-dskcls-writer-optimized",
+        "dsk-dskcls-writer-unsegregated",
+        "dsk-dskd02-bounds-and-grid",
+        "dsk-dskd02-descriptor-fields",
+        "dsk-dskd02-large-room",
+        "dsk-dskd02-negative-offset",
+        "dsk-dskd02-nonpositive-room",
+        "dsk-dskd02-past-last-offset",
+        "dsk-dskd02-second-segment",
+        "dsk-dskd02-unsupported",
+        "dsk-dskd02-vertex-component-pages",
+        "dsk-dski02-grid-and-plate-components",
+        "dsk-dski02-large-room",
+        "dsk-dski02-negative-offset",
+        "dsk-dski02-nonpositive-room",
+        "dsk-dski02-past-last-offset",
+        "dsk-dski02-pointer-lists",
+        "dsk-dski02-scalar-keywords",
+        "dsk-dski02-second-segment",
+        "dsk-dski02-unsupported",
+        "dsk-dskn02-axis-normals",
+        "dsk-dskn02-inclined-face",
+        "dsk-dskn02-minimum-index",
+        "dsk-dskn02-past-last",
+        "dsk-dskn02-second-segment",
+        "dsk-dskp02-invalid-start-precedence",
+        "dsk-dskp02-largest-room",
+        "dsk-dskp02-no-room",
+        "dsk-dskp02-ordered-rows",
+        "dsk-dskp02-past-last",
+        "dsk-dskp02-second-segment",
+        "dsk-dskp02-window-and-tail",
+        "dsk-dskv02-invalid-start-precedence",
+        "dsk-dskv02-largest-room",
+        "dsk-dskv02-no-room",
+        "dsk-dskv02-ordered-rows",
+        "dsk-dskv02-past-last",
+        "dsk-dskv02-second-segment",
+        "dsk-dskv02-window-and-tail",
+        "dsk-dskz02-authored-tetrahedron",
+        "dsk-dskz02-minimal",
+        "dsk-dskz02-reader-aliases",
+        "dsk-dskz02-second-segment"
+      ],
+      "observation": "Both complete required lanes passed locally on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5. JavaScript: 2,769 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e20-8b8168dc-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4bef1b6e9eb29f2b0f6ebb9fc6b440871ed6fd2d08864d2082a4f9f5d2ec91d",
+      "caseIds": [
+        "dsk-dskcls-empty-optimized",
+        "dsk-dskcls-empty-unsegregated",
+        "dsk-dskcls-reader-optimized",
+        "dsk-dskcls-reader-unsegregated",
+        "dsk-dskcls-writer-optimized",
+        "dsk-dskcls-writer-unsegregated",
+        "dsk-dskd02-bounds-and-grid",
+        "dsk-dskd02-descriptor-fields",
+        "dsk-dskd02-large-room",
+        "dsk-dskd02-negative-offset",
+        "dsk-dskd02-nonpositive-room",
+        "dsk-dskd02-past-last-offset",
+        "dsk-dskd02-second-segment",
+        "dsk-dskd02-unsupported",
+        "dsk-dskd02-vertex-component-pages",
+        "dsk-dski02-grid-and-plate-components",
+        "dsk-dski02-large-room",
+        "dsk-dski02-negative-offset",
+        "dsk-dski02-nonpositive-room",
+        "dsk-dski02-past-last-offset",
+        "dsk-dski02-pointer-lists",
+        "dsk-dski02-scalar-keywords",
+        "dsk-dski02-second-segment",
+        "dsk-dski02-unsupported",
+        "dsk-dskn02-axis-normals",
+        "dsk-dskn02-inclined-face",
+        "dsk-dskn02-minimum-index",
+        "dsk-dskn02-past-last",
+        "dsk-dskn02-second-segment",
+        "dsk-dskp02-invalid-start-precedence",
+        "dsk-dskp02-largest-room",
+        "dsk-dskp02-no-room",
+        "dsk-dskp02-ordered-rows",
+        "dsk-dskp02-past-last",
+        "dsk-dskp02-second-segment",
+        "dsk-dskp02-window-and-tail",
+        "dsk-dskv02-invalid-start-precedence",
+        "dsk-dskv02-largest-room",
+        "dsk-dskv02-no-room",
+        "dsk-dskv02-ordered-rows",
+        "dsk-dskv02-past-last",
+        "dsk-dskv02-second-segment",
+        "dsk-dskv02-window-and-tail",
+        "dsk-dskz02-authored-tetrahedron",
+        "dsk-dskz02-minimal",
+        "dsk-dskz02-reader-aliases",
+        "dsk-dskz02-second-segment"
+      ],
+      "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e20-8b8168dc-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c4bef1b6e9eb29f2b0f6ebb9fc6b440871ed6fd2d08864d2082a4f9f5d2ec91d",
+      "caseIds": [
+        "dsk-dskcls-empty-optimized",
+        "dsk-dskcls-empty-unsegregated",
+        "dsk-dskcls-reader-optimized",
+        "dsk-dskcls-reader-unsegregated",
+        "dsk-dskcls-writer-optimized",
+        "dsk-dskcls-writer-unsegregated",
+        "dsk-dskd02-bounds-and-grid",
+        "dsk-dskd02-descriptor-fields",
+        "dsk-dskd02-large-room",
+        "dsk-dskd02-negative-offset",
+        "dsk-dskd02-nonpositive-room",
+        "dsk-dskd02-past-last-offset",
+        "dsk-dskd02-second-segment",
+        "dsk-dskd02-unsupported",
+        "dsk-dskd02-vertex-component-pages",
+        "dsk-dski02-grid-and-plate-components",
+        "dsk-dski02-large-room",
+        "dsk-dski02-negative-offset",
+        "dsk-dski02-nonpositive-room",
+        "dsk-dski02-past-last-offset",
+        "dsk-dski02-pointer-lists",
+        "dsk-dski02-scalar-keywords",
+        "dsk-dski02-second-segment",
+        "dsk-dski02-unsupported",
+        "dsk-dskn02-axis-normals",
+        "dsk-dskn02-inclined-face",
+        "dsk-dskn02-minimum-index",
+        "dsk-dskn02-past-last",
+        "dsk-dskn02-second-segment",
+        "dsk-dskp02-invalid-start-precedence",
+        "dsk-dskp02-largest-room",
+        "dsk-dskp02-no-room",
+        "dsk-dskp02-ordered-rows",
+        "dsk-dskp02-past-last",
+        "dsk-dskp02-second-segment",
+        "dsk-dskp02-window-and-tail",
+        "dsk-dskv02-invalid-start-precedence",
+        "dsk-dskv02-largest-room",
+        "dsk-dskv02-no-room",
+        "dsk-dskv02-ordered-rows",
+        "dsk-dskv02-past-last",
+        "dsk-dskv02-second-segment",
+        "dsk-dskv02-window-and-tail",
+        "dsk-dskz02-authored-tetrahedron",
+        "dsk-dskz02-minimal",
+        "dsk-dskz02-reader-aliases",
+        "dsk-dskz02-second-segment"
+      ],
+      "commit": "8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
+      "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -626,11 +870,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskd02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskd02 -> dskd02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -639,11 +885,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskd02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskd02 -> dskd02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -749,11 +997,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dski02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dski02 -> dski02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -762,11 +1012,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dski02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dski02 -> dski02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -822,11 +1074,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskn02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskn02 -> dskn02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -834,11 +1088,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskn02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskn02 -> dskn02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -918,11 +1174,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskp02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskp02 -> dskp02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -931,11 +1189,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskp02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskp02 -> dskp02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -1015,11 +1275,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskv02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskv02 -> dskv02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -1028,11 +1290,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskv02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskv02 -> dskv02_c. Independent ctypes count and page storage in the locked SpiceyPy N0067 library.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -1088,11 +1352,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskz02 -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskz02 -> dskz02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -1100,11 +1366,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskz02 -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskz02 -> dskz02_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     },
@@ -1179,11 +1447,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskcls -> owned handle registry -> registered native C++ addon in global SPICE mutex -> tspice_dskcls -> dskcls_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-node", "ci-e19-48efd0ee-node"]
+          "executions": ["local-e20-8b8168dc-node", "ci-e20-8b8168dc-node"]
         },
         "wasm": {
           "history": [
@@ -1192,11 +1462,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.dskcls -> owned handle registry -> WASM export with scoped checked allocations -> tspice_dskcls -> dskcls_c. Ordinary independent SpiceyPy 6.0.3 wrapper and real on-disk geometry.",
-          "executions": ["local-e19-48efd0ee-wasm", "ci-e19-48efd0ee-wasm"]
+          "executions": ["local-e20-8b8168dc-wasm", "ci-e20-8b8168dc-wasm"]
         }
       }
     }

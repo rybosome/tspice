@@ -5,6 +5,7 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from ..surface_oracle import surface_grid, surface_cuts
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
@@ -12,6 +13,10 @@ from ..models import (
     StepGeometryNvc2pl,
     StepGeometryOccult,
     StepGeometryPl2nvc,
+    StepGeometryLatsrf,
+    StepGeometrySrfnrm,
+    StepGeometryLimbpt,
+    StepGeometryTermpt,
     StepGeometrySincpt,
     StepGeometrySubpnt,
     StepGeometrySubslr,
@@ -25,6 +30,14 @@ def _vec3_to_json(value: tuple[float, float, float] | list[float]) -> list[float
 
 
 def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
+    if isinstance(step, StepGeometryLatsrf):
+        return StepOutput(op=step.op, value=surface_grid(step))
+    if isinstance(step, StepGeometrySrfnrm):
+        return StepOutput(op=step.op, value=surface_grid(step))
+    if isinstance(step, StepGeometryLimbpt):
+        return StepOutput(op=step.op, value=surface_cuts(step))
+    if isinstance(step, StepGeometryTermpt):
+        return StepOutput(op=step.op, value=surface_cuts(step))
     if isinstance(step, StepGeometrySubpnt):
         spoint, trgepc, srfvec = sp.subpnt(
             step.method,

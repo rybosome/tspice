@@ -111,6 +111,10 @@ import geometryIluminCasesRaw from "./geometry/ilumin.cases.json" with { type: "
 import geometryNvc2plCasesRaw from "./geometry/nvc2pl.cases.json" with { type: "json" };
 import geometryOccultCasesRaw from "./geometry/occult.cases.json" with { type: "json" };
 import geometryPl2nvcCasesRaw from "./geometry/pl2nvc.cases.json" with { type: "json" };
+import geoLatsrf from "./geometry/latsrf.cases.json" with { type: "json" };
+import geoSrfnrm from "./geometry/srfnrm.cases.json" with { type: "json" };
+import geoLimbpt from "./geometry/limbpt.cases.json" with { type: "json" };
+import geoTermpt from "./geometry/termpt.cases.json" with { type: "json" };
 import geometrySincptCasesRaw from "./geometry/sincpt.cases.json" with { type: "json" };
 import geometrySubpntCasesRaw from "./geometry/subpnt.cases.json" with { type: "json" };
 import geometrySubslrCasesRaw from "./geometry/subslr.cases.json" with { type: "json" };
@@ -280,6 +284,10 @@ export { framesCases };
 export const geometryCases: ParityCase[] = [
   ...(geometrySubpntCasesRaw as ParityCase[]),
   ...(geometrySubslrCasesRaw as ParityCase[]),
+  ...(geoLatsrf as ParityCase[]),
+  ...(geoSrfnrm as ParityCase[]),
+  ...(geoLimbpt as ParityCase[]),
+  ...(geoTermpt as ParityCase[]),
   ...(geometrySincptCasesRaw as ParityCase[]),
   ...(geometryIluminCasesRaw as ParityCase[]),
   ...(geometryIllumgCasesRaw as ParityCase[]),

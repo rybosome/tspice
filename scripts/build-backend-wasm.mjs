@@ -1,3 +1,4 @@
+import { stageLimbpt } from "./stage-limbpt.mjs";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -279,6 +280,11 @@ function patchReturnInt(filePath, symbol, indentation = "") {
   }
 }
 
+stageLimbpt(
+  path.join(cspiceSourceRoot, "src", "cspice", "limbpt.c"),
+  path.join(cspiceCspiceDir, "limbpt.c"),
+);
+
 patchReturnInt(path.join(cspiceCspiceDir, "s_copy.c"), "s_copy", "\t");
 patchReturnInt(path.join(cspiceCspiceDir, "s_cat.c"), "s_cat", "\t");
 patchReturnInt(path.join(cspiceCspiceDir, "getenv_.c"), "getenv_", "   ");
@@ -510,6 +516,10 @@ const exportedFunctions = [
   // --- derived geometry ---
   "_tspice_subpnt",
   "_tspice_subslr",
+  "_tspice_latsrf",
+  "_tspice_srfnrm",
+  "_tspice_limbpt",
+  "_tspice_termpt",
   "_tspice_sincpt",
   "_tspice_ilumin",
   "_tspice_occult",
@@ -584,6 +594,12 @@ const commonEmccArgs = [
   "EXPORT_ES6=1",
   "-s",
   "ALLOW_MEMORY_GROWTH=1",
+  // N0067's DSK ray traversal uses an 88,336-byte frame in this toolchain.
+  // Reserve space for its nested callers and check every stack adjustment.
+  "-s",
+  "STACK_SIZE=2097152",
+  "-s",
+  "STACK_OVERFLOW_CHECK=2",
   "-s",
   // Some Emscripten toolchains require initial memory to cover static data.
   // (ALLOW_MEMORY_GROWTH does not help at link time.)

@@ -169,8 +169,15 @@ export {
 } from "./spice-runtime/domains/dsk-data.js";
 
 export {
+  surfaceGrid,
+  surfaceCutLimits,
+  surfaceVectors,
+  surfaceCutCount,
+} from "./spice-runtime/domains/surface-grid.js";
+export {
   dskRay,
   dskRayBatch,
+  surfaceTextBytes,
   dskRaySelection,
   dskPoint,
   dskRaySource,

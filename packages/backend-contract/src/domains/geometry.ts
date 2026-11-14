@@ -18,6 +18,70 @@ import type {
 
 /** Backend contract for common SPICE geometry computations (subpoints, intercepts, illumination, etc). */
 export interface GeometryApi {
+  /** Map planetocentric longitude/latitude pairs in radians to target-frame surface points in km at ET (TDB). Select the reference ellipsoid or the outermost intercept on the requested DSK surfaces. Empty grids still perform the toolkit input checks.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/latsrf_c.html */
+  latsrf(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    lonlat: readonly (readonly [number, number])[],
+  ): SpiceVector3[];
+  /** Compute outward unit normals for target-frame surface points in km. Ellipsoid normals follow the triaxial gradient; DSK normals at an edge or vertex can be non-unique and use the runtime point-membership margin.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfnrm_c.html */
+  srfnrm(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    srfpts: readonly Readonly<SpiceVector3>[],
+  ): SpiceVector3[];
+  /** Find limb points on angular cuts about the target-observer line. The staged N0067 routine checks remaining cumulative capacity before writing each cut. Return each cut count, including zero, with dense target-fixed points and observer-to-point vectors in km and target epochs in TDB seconds. Roll, search step and solution tolerance are radians.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/limbpt_c.html */
+  limbpt(
+    method: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    corloc: string,
+    observer: string,
+    refvec: Readonly<SpiceVector3>,
+    rolstp: number,
+    ncuts: number,
+    schstp: number,
+    soltol: number,
+    maxn: number,
+  ): {
+    npts: number[];
+    points: SpiceVector3[];
+    epochs: number[];
+    tangts: SpiceVector3[];
+  };
+  /** Find umbral or penumbral terminator points on angular cuts about the target-source line. N0067 can signal OUTOFROOM early for multi-point cuts. Return each cut count, including zero, with dense target-fixed points and observer-to-point vectors in km and target epochs in TDB seconds. Roll, search step and solution tolerance are radians.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/termpt_c.html */
+  termpt(
+    method: string,
+    ilusrc: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: AbCorr | string,
+    corloc: string,
+    observer: string,
+    refvec: Readonly<SpiceVector3>,
+    rolstp: number,
+    ncuts: number,
+    schstp: number,
+    soltol: number,
+    maxn: number,
+  ): {
+    npts: number[];
+    points: SpiceVector3[];
+    epochs: number[];
+    trmvcs: SpiceVector3[];
+  };
+
   /**
    * Compute the sub-observer point using nearest/radial ellipsoid or nadir/radial DSK geometry.
    * Returns the complete target-fixed point and observer-to-point vector (km),

@@ -1,0 +1,800 @@
+[
+  {
+    "caseId": "geometry-termpt-ellipsoid-cuts",
+    "description": "All four cuts on the triaxial ellipsoid return points, epochs and observer-relative vectors with a compact exact-size second call.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 4,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-locus-and-aberration",
+    "description": "Compare center and per-surface light-time epochs and the full effect of stellar aberration on the same four cuts.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "corloc": "ELLIPSOID TERMINATOR",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT+S",
+        "corloc": "ELLIPSOID TERMINATOR",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-rotated-and-reversed",
+    "description": "Signed roll reverses plane ordering. Rotating the fixed frame changes the full returned vectors.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": -0.8,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0.2, 0.4, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-guided-facets",
+    "description": "Use guidance from the triaxial reference ellipsoid with two overlapping DSKs and separately selected surfaces.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/GUIDED/DSK/UNPRIORITIZED/SURFACES=101",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/GUIDED/DSK/UNPRIORITIZED/SURFACES=102",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-tangent-shape",
+    "description": "Find DSK tangencies by angular search with real geometry, complete dense rows and a distinct observer from the target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-multi-point-cut",
+    "description": "The disconnected authored geometry yields multiple tangent transitions on a half-plane. Preserve every dense row and the counts for all four cuts.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-surface-cuts.bds"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/DSK/UNPRIORITIZED/SURFACES=103",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100104",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.005,
+        "soltol": 1e-9,
+        "maxn": 40,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-one-cut",
+    "description": "A single cut permits zero roll; the ellipsoid path also ignores search step and tolerance.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 0,
+        "ncuts": 1,
+        "schstp": 0,
+        "soltol": 0,
+        "maxn": 1,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-zero-cuts",
+    "description": "The pinned routine handles zero cutting planes according to its own count check.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 0,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 1,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-capacity",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 0,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIZE"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-too-many-cuts",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 3,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCOUNT"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-negative-cuts",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": -1,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCOUNT"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-zero-roll",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 0,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDROLLSTEP"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-zero-reference",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 0],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROVECTOR"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-invalid-locus",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "INVALID",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDLOCUS"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-missing-observer",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "UNKNOWN_OBSERVER_E20",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-empty-method",
+    "description": "Require the named scientific diagnostic on otherwise valid authored inputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-termpt-umbral-versus-penumbral",
+    "description": "The illumination source has finite radius. Compare the distinct umbral and penumbral ellipsoid boundaries.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "UMBRAL/TANGENT/ELLIPSOID",
+        "target": "100101",
+        "et": 11,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100102",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.03,
+        "soltol": 1e-8,
+        "maxn": 16,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-empty-cut-rows",
+    "description": "The isolated northern component leaves several cutting half-planes uncovered. Compare every count and the dense rows independently for the tangent and guided methods.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-surface-cuts.bds"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/DSK/UNPRIORITIZED/SURFACES=104",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100104",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.005,
+        "soltol": 1e-9,
+        "maxn": 40,
+        "ilusrc": "100103"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/GUIDED/DSK/UNPRIORITIZED/SURFACES=104",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100104",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.005,
+        "soltol": 1e-9,
+        "maxn": 40,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-termpt-tangent-room",
+    "description": "The pinned terminator routine exhausts its internal room for a three-point first cut with maxn six, even though the geometric total is six.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-surface-cuts.bds"
+      },
+      {
+        "op": "geometry.termpt",
+        "method": "PENUMBRAL/TANGENT/DSK/UNPRIORITIZED/SURFACES=103",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "corloc": "CENTER",
+        "observer": "100104",
+        "refvec": [0, 0, 1],
+        "rolstp": 1.5707963267948966,
+        "ncuts": 4,
+        "schstp": 0.005,
+        "soltol": 1e-9,
+        "maxn": 6,
+        "ilusrc": "100103"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["OUTOFROOM"]
+    }
+  }
+]

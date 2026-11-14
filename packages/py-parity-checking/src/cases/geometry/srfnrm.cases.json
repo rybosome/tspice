@@ -1,0 +1,303 @@
+[
+  {
+    "caseId": "geometry-srfnrm-ellipsoid",
+    "description": "Check signed axes, hemisphere ordering and triaxial coordinates on the authored ellipsoid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [[2.313384955073964, 0.7410408309436486, 0.5177603097428078]]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-selected-shape",
+    "description": "Explicitly select the original smaller plate model with both matching body DSKs loaded.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "DSK/UNPRIORITIZED/SURFACES=101",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [1.5, 0.5, 0.25],
+          [-1.5, -0.5, 0.25]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-outermost",
+    "description": "A second larger octahedron supplies outermost radial points and normals at its facet interiors.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-dsk-ray-outer.bds"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [3, 1, 0.5],
+          [-3, -1, 0.5]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-rotated-frame",
+    "description": "Compare coordinates or gradient normals in a rotated body-centered reference frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_ROT",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-empty-grid",
+    "description": "A zero-row input preserves toolkit validation and returns no rows on valid ellipsoid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-bad-method",
+    "description": "An unknown computation method is rejected by the actual syntax parser.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "INVALID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADMETHODSYNTAX"]
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-unknown-target",
+    "description": "Distinguish a target name that cannot be resolved.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "UNKNOWN_TARGET_E20",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-wrong-center",
+    "description": "A recognized frame centered on another body has a distinct diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "ELLIPSOID",
+        "target": "100101",
+        "et": 0,
+        "fixref": "J2000",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAME"]
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-no-segment",
+    "description": "A DSK model requires selected plate data from a loaded target file.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [1.5, 0.5, 0.25],
+          [-1.5, -0.5, 0.25]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDDSKFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-empty-text",
+    "description": "Empty input strings reach the actual outer C adapter.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [3, 0, 0],
+          [0, -2, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-srfnrm-off-plate",
+    "description": "Non-membership in a selected DSK surface is reported even when a prior grid point was valid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.srfnrm",
+        "method": "DSK/UNPRIORITIZED",
+        "target": "100101",
+        "et": 0,
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "srfpts": [
+          [1.5, 0.5, 0.25],
+          [90, 90, 90]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["POINTNOTINSEGMENT"]
+    }
+  }
+]

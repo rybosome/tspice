@@ -215,6 +215,15 @@ Notes:
 
 ## Domain: `geometry` (`GeometryApi`)
 
+[Surface grid and cut semantics, corrected capacity and independent checks](step8-extended-surfaces.md)
+
+| Raw method | CSPICE entry | Result                                                                                                                         |
+| ---------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `latsrf`   | `latsrf_c`   | Convert planetocentric longitude/latitude to outermost shaped surface points in the requested target frame.                    |
+| `srfnrm`   | `srfnrm_c`   | Compute outward unit normals on the selected target surface at ordered target-frame coordinates.                               |
+| `limbpt`   | `limbpt_c`   | Return per-half-plane limb counts and dense target-frame surface points, surface epochs and observer-to-point tangent vectors. |
+| `termpt`   | `termpt_c`   | Return per-half-plane umbral or penumbral terminator counts and dense surface points, epochs and observer-to-point vectors.    |
+
 | domain.method                                                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                                                                                     | Returns (TS shape)                                                                        | Comparison notes (tolerance/normalization)       | Statefulness / required kernels                                                                                                                                            |
 | ------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `geometry.subpnt(method, target, et, fixref, abcorr, observer)`                       | `subpnt_c`           | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string): SubPointResult`                                          | `{ spoint: SpiceVector3; trgepc: number; srfvec: SpiceVector3 }`                          | float tolerance on vectors + `trgepc`            | **stateful**: requires SPK (observer/target positions) and body shape/frames (often PCK + FK); method choice may require additional kernels (e.g. DSK for high-res shapes) |

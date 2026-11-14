@@ -15,6 +15,11 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.dskx02",
   "raw.dskxsi",
   "raw.dskxv",
+  // Surface models and frames can change between identical geometry requests.
+  "raw.latsrf",
+  "raw.srfnrm",
+  "raw.limbpt",
+  "raw.termpt",
   "raw.dskgtl",
   "raw.dskstl",
 ]) satisfies readonly string[];

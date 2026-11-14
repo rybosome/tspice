@@ -2,7 +2,68 @@
 
 #include "SpiceUsr.h"
 
+#include "tspice_error.h"
+#include <math.h>
 #include <string.h>
+
+
+// A three-double row is the largest per-element buffer in this family.
+#define SURFACE_MAX_ROWS (268435456 / (3 * (int)sizeof(double)))
+static int surface_words_finite(const double *words, size_t n) {
+  if (!words) return 0;
+  for (size_t i = 0; i < n; ++i) {
+    if (!isfinite(words[i])) return 0;
+  }
+  return 1;
+}
+
+static int surface_status(char *err, int cap) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, cap);
+  return 1;
+}
+
+int tspice_latsrf(const char *method, const char *target, double et, const char *fixref, int npts, const double *input, double *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!method || !target || !fixref || !out || !isfinite(et) ||
+      npts < 0 || npts > SURFACE_MAX_ROWS || !surface_words_finite(input, (size_t)npts * 2))
+    return tspice_return_error(err, cap, "Invalid surface grid inputs");
+  latsrf_c(method, target, et, fixref, npts, (const double (*)[2])input, (double (*)[3])out);
+  return surface_status(err, cap);
+}
+
+int tspice_srfnrm(const char *method, const char *target, double et, const char *fixref, int npts, const double *input, double *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!method || !target || !fixref || !out || !isfinite(et) ||
+      npts < 0 || npts > SURFACE_MAX_ROWS || !surface_words_finite(input, (size_t)npts * 3))
+    return tspice_return_error(err, cap, "Invalid surface grid inputs");
+  srfnrm_c(method, target, et, fixref, npts, (const double (*)[3])input, (double (*)[3])out);
+  return surface_status(err, cap);
+}
+
+int tspice_limbpt(const char *method, const char *target, double et, const char *fixref, const char *abcorr, const char *corloc, const char *observer, const double *refvec, double rolstp, int ncuts, double schstp, double soltol, int maxn, int *npts, double *points, double *epochs, double *vectors, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!method || !target || !fixref || !abcorr || !corloc || !observer ||
+      !isfinite(et) || !isfinite(rolstp) || !isfinite(schstp) || !isfinite(soltol) ||
+      !surface_words_finite(refvec, 3) || maxn > SURFACE_MAX_ROWS ||
+      !npts || !points || !epochs || !vectors)
+    return tspice_return_error(err, cap, "Invalid surface cut inputs");
+  limbpt_c(method, target, et, fixref, abcorr, corloc, observer, refvec, rolstp,
+      ncuts, schstp, soltol, maxn, npts, (double (*)[3])points, epochs, (double (*)[3])vectors);
+  return surface_status(err, cap);
+}
+
+int tspice_termpt(const char *method, const char *ilusrc, const char *target, double et, const char *fixref, const char *abcorr, const char *corloc, const char *observer, const double *refvec, double rolstp, int ncuts, double schstp, double soltol, int maxn, int *npts, double *points, double *epochs, double *vectors, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (!method || !ilusrc || !target || !fixref || !abcorr || !corloc || !observer ||
+      !isfinite(et) || !isfinite(rolstp) || !isfinite(schstp) || !isfinite(soltol) ||
+      !surface_words_finite(refvec, 3) || maxn > SURFACE_MAX_ROWS ||
+      !npts || !points || !epochs || !vectors)
+    return tspice_return_error(err, cap, "Invalid surface cut inputs");
+  termpt_c(method, ilusrc, target, et, fixref, abcorr, corloc, observer, refvec, rolstp,
+      ncuts, schstp, soltol, maxn, npts, (double (*)[3])points, epochs, (double (*)[3])vectors);
+  return surface_status(err, cap);
+}
 
 int tspice_subpnt(
     const char *method,

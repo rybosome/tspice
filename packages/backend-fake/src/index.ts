@@ -2003,6 +2003,18 @@ export function createFakeBackend(
       return { spoint, trgepc: et, srfvec } satisfies SubPointResult;
     },
 
+    latsrf: () => {
+      throw new Error("Fake backend: latsrf is not implemented");
+    },
+    srfnrm: () => {
+      throw new Error("Fake backend: srfnrm is not implemented");
+    },
+    limbpt: () => {
+      throw new Error("Fake backend: limbpt is not implemented");
+    },
+    termpt: () => {
+      throw new Error("Fake backend: termpt is not implemented");
+    },
     sincpt: (
       _method,
       _target,

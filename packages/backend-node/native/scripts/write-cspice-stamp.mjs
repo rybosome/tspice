@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { stageLimbpt } from "../../../../scripts/stage-limbpt.mjs";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -244,6 +246,32 @@ async function main() {
   ].join("\n");
 
   writeIfChanged(headerPath, header);
+
+  // Prebuilt TSPICE_CSPICE_DIR overrides may contain only headers and archives.
+  // In that case, use the same pinned source download/cache as the WASM build.
+  const relativeSource = path.join("src", "cspice", "limbpt.c");
+  let source = path.join(cspiceDir, relativeSource);
+  if (!fs.existsSync(source)) {
+    const root = getRepoRoot();
+    source = path.join(
+      root,
+      ".cache",
+      "cspice",
+      manifest.toolkitVersion,
+      "source",
+      "cspice",
+      relativeSource,
+    );
+    if (!fs.existsSync(source)) {
+      // Stdout belongs to gyp's generated-directory substitution.
+      execFileSync(
+        process.execPath,
+        [path.join(root, "scripts", "fetch-cspice.mjs"), "--source"],
+        { stdio: ["ignore", "ignore", "inherit"] },
+      );
+    }
+  }
+  stageLimbpt(source, path.join(generatedDir, "limbpt.c"));
 
   // Print the absolute generated directory path for consumption by binding.gyp via
   // the tspice_native_generated_dir variable.
