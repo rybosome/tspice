@@ -125,6 +125,10 @@ from .models import (
     StepGeometrySubslr,
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
+    StepGeometryGfGfbail,
+    StepGeometryGfGfclrh,
+    StepGeometryGfGfinth,
+    StepGeometryGfGfrepu,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
     StepGeometryGfGfsep,
@@ -1657,6 +1661,22 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 endmss=_expect_string(step.get("endmss"), label="geometry-gf.gfrepi.endmss"),
             )
 
+        case "geometry-gf.gfbail":
+            return StepGeometryGfGfbail(op=op,
+            )
+        case "geometry-gf.gfclrh":
+            return StepGeometryGfGfclrh(op=op,
+            )
+        case "geometry-gf.gfinth":
+            return StepGeometryGfGfinth(op=op,
+                sigcode=_expect_int(step.get("sigcode"),label="geometry-gf.gfinth.sigcode"),
+            )
+        case "geometry-gf.gfrepu":
+            return StepGeometryGfGfrepu(op=op,
+                ivbeg=_expect_number(step.get("ivbeg"),label="geometry-gf.gfrepu.ivbeg"),
+                ivend=_expect_number(step.get("ivend"),label="geometry-gf.gfrepu.ivend"),
+                time=_expect_number(step.get("time"),label="geometry-gf.gfrepu.time"),
+            )
         case "geometry-gf.gfrepf":
             return StepGeometryGfGfrepf(op=op)
 

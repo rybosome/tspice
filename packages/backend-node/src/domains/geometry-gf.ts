@@ -53,8 +53,24 @@ function assertFiniteNumber(
 }
 
 /** Create a {@link GeometryGfApi} implementation backed by the native Node addon. */
-export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
+export function createGeometryGfApi(
+  native: NativeAddon,
+  interrupt: { claimed: boolean },
+): GeometryGfApi {
   return {
+    gfbail: () => native.gfbail(),
+    gfclrh: () => native.gfclrh(),
+    gfinth: (sigcode) => {
+      assertSpiceInt32(sigcode, "gfinth(sigcode)");
+      native.gfinth(sigcode, !interrupt.claimed);
+      interrupt.claimed = true;
+    },
+    gfrepu: (ivbeg, ivend, time) => {
+      assertFiniteNumber(ivbeg, "gfrepu(ivbeg)");
+      assertFiniteNumber(ivend, "gfrepu(ivend)");
+      assertFiniteNumber(time, "gfrepu(time)");
+      native.gfrepu(ivbeg, ivend, time);
+    },
     gfsstp: (step) => {
       assertFiniteNumber(step, "gfsstp(step)");
       native.gfsstp(step);

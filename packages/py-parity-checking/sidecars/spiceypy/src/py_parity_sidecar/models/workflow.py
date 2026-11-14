@@ -126,6 +126,10 @@ from .geometry import (
 from .geometry_gf import (
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
+    StepGeometryGfGfbail,
+    StepGeometryGfGfclrh,
+    StepGeometryGfGfinth,
+    StepGeometryGfGfrepu,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
     StepGeometryGfGfsep,
@@ -367,6 +371,10 @@ WorkflowStep: TypeAlias = (
     | StepGeometryGfGfstol
     | StepGeometryGfGfrefn
     | StepGeometryGfGfrepi
+    | StepGeometryGfGfbail
+    | StepGeometryGfGfclrh
+    | StepGeometryGfGfinth
+    | StepGeometryGfGfrepu
     | StepGeometryGfGfrepf
     | StepGeometryGfGfsep
     | StepGeometryGfGfdist

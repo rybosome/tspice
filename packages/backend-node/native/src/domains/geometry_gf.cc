@@ -1,5 +1,10 @@
 #include "geometry_gf.h"
 
+#include <cmath>
+#include <climits>
+#include <signal.h>
+#include <unordered_map>
+#include "SpiceUsr.h"
 #include <string>
 
 #include "../addon_common.h"
@@ -11,11 +16,132 @@ using tspice_napi::PreviewForError;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
-static void Gfsstp(const Napi::CallbackInfo& info) {
+// Each JS backend claims the process signal handler at most once. Track
+// ownership across worker environments under the same lock as the CSPICE call.
+static std::unordered_map<napi_env, size_t> signalOwners;
+static struct sigaction previousInterrupt;
+static bool hasPreviousInterrupt = false;
+
+static bool isGfHandler(const struct sigaction &action) {
+  return !(action.sa_flags & SA_SIGINFO) && action.sa_handler == gfinth_c;
+}
+
+static bool restoreLastHandler() {
+  if (!signalOwners.empty() || !hasPreviousInterrupt)
+    return true;
+  struct sigaction current{};
+  if (sigaction(SIGINT, nullptr, &current) != 0)
+    return false;
+  if (isGfHandler(current) &&
+      sigaction(SIGINT, &previousInterrupt, nullptr) != 0)
+    return false;
+  hasPreviousInterrupt = false;
+  return true;
+}
+
+static void CleanupGfEnvironment(void *data) {
+  tspice_backend_node::CspiceLock lock;
+  signalOwners.erase(static_cast<napi_env>(data));
+  restoreLastHandler();
+}
+
+static void ReleaseGfInterrupt(const Napi::CallbackInfo &info) {
+  const auto env = info.Env();
+  tspice_backend_node::CspiceLock lock;
+  auto owner = signalOwners.find(env);
+  if (owner != signalOwners.end() && --owner->second == 0)
+    signalOwners.erase(owner);
+  if (!restoreLastHandler())
+    ThrowSpiceError(Napi::Error::New(
+        env, "Could not restore the prior SIGINT disposition"));
+}
+
+static void Gfinth(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length() != 2 || !info[0].IsNumber() || !info[1].IsBoolean()) {
+    ThrowSpiceError(Napi::TypeError::New(
+        env, "gfinth expects a signed signal number and claim flag"));
+    return;
+  }
+  const double number = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(number) || std::trunc(number) != number ||
+      number < INT_MIN || number > INT_MAX) {
+    ThrowSpiceError(Napi::RangeError::New(
+        env, "gfinth expects a signed 32-bit signal number"));
+    return;
+  }
+  const int code = static_cast<int>(number);
+  const bool claim = info[1].As<Napi::Boolean>().Value();
+  tspice_backend_node::CspiceLock lock;
+  struct sigaction current{};
+  if (code == SIGINT && sigaction(SIGINT, nullptr, &current) != 0) {
+    ThrowSpiceError(
+        Napi::Error::New(env, "Could not inspect SIGINT disposition"));
+    return;
+  }
+  char err[tspice_backend_node::kErrMaxBytes]{};
+  if (tspice_gfinth(code, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling gfinth", err);
+    return;
+  }
+  if (!isGfHandler(current)) {
+    previousInterrupt = current;
+    hasPreviousInterrupt = true;
+  }
+  if (claim)
+    ++signalOwners[env];
+}
+
+static Napi::Value Gfbail(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "gfbail expects no arguments"));
+    return env.Undefined();
+  }
+  tspice_backend_node::CspiceLock lock;
+  int flag = 0;
+  char err[tspice_backend_node::kErrMaxBytes]{};
+  if (tspice_gfbail(&flag, err, sizeof(err))) {
+    ThrowSpiceError(env, "CSPICE failed while calling gfbail", err);
+    return env.Undefined();
+  }
+  return Napi::Boolean::New(env, flag != 0);
+}
+
+static void Gfclrh(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "gfclrh expects no arguments"));
+    return;
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]{};
+  if (tspice_gfclrh(err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfclrh", err);
+}
+
+static void Gfrepu(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  if (info.Length() != 3 || !info[0].IsNumber() || !info[1].IsNumber() ||
+      !info[2].IsNumber()) {
+    ThrowSpiceError(
+        Napi::TypeError::New(env, "gfrepu expects three numeric epochs"));
+    return;
+  }
+  tspice_backend_node::CspiceLock lock;
+  char err[tspice_backend_node::kErrMaxBytes]{};
+  if (tspice_gfrepu(info[0].As<Napi::Number>().DoubleValue(),
+                    info[1].As<Napi::Number>().DoubleValue(),
+                    info[2].As<Napi::Number>().DoubleValue(), err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling gfrepu", err);
+}
+
+static void Gfsstp(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   if (info.Length() != 1 || !info[0].IsNumber()) {
-    ThrowSpiceError(Napi::TypeError::New(env, "gfsstp(step: number) expects exactly one number argument"));
+    ThrowSpiceError(Napi::TypeError::New(
+        env, "gfsstp(step: number) expects exactly one number argument"));
     return;
   }
 
@@ -300,6 +426,15 @@ static void Gfdist(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometryGf(Napi::Env env, Napi::Object exports) {
+  if (napi_add_env_cleanup_hook(env,CleanupGfEnvironment,static_cast<napi_env>(env))!=napi_ok) {
+    ThrowSpiceError(Napi::Error::New(env,"Could not register GF signal cleanup"));return;
+  }
+  if (!SetExportChecked(env,exports,"gfbail",Napi::Function::New(env,Gfbail),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfclrh",Napi::Function::New(env,Gfclrh),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfinth",Napi::Function::New(env,Gfinth),__func__)) return;
+  if (!SetExportChecked(env,exports,"gfrepu",Napi::Function::New(env,Gfrepu),__func__)) return;
+  if (!SetExportChecked(env,exports,"releaseGfInterrupt",Napi::Function::New(env,ReleaseGfInterrupt),__func__)) return;
+
   if (!SetExportChecked(env, exports, "gfsstp", Napi::Function::New(env, Gfsstp), __func__)) return;
   if (!SetExportChecked(env, exports, "gfstep", Napi::Function::New(env, Gfstep), __func__)) return;
   if (!SetExportChecked(env, exports, "gfstol", Napi::Function::New(env, Gfstol), __func__)) return;

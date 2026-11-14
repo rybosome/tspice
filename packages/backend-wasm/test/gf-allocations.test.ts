@@ -30,6 +30,10 @@ describe("GF allocation rollback on an actual WASM heap", () => {
     ["gfstep", 2],
     ["gfstol", 1],
     ["gfrefn", 2],
+    ["gfbail", 2],
+    ["gfclrh", 1],
+    ["gfinth", 1],
+    ["gfrepu", 1],
     ["gfrepi", 3],
     ["gfrepf", 1],
     ["gfsep", 10],
@@ -65,6 +69,10 @@ describe("GF allocation rollback on an actual WASM heap", () => {
             if (method === "gfstep") return api.gfstep(0);
             if (method === "gfstol") return api.gfstol(1e-9);
             if (method === "gfrefn") return api.gfrefn(-5, 9, true, false);
+            if (method === "gfbail") return api.gfbail();
+            if (method === "gfclrh") return api.gfclrh();
+            if (method === "gfinth") return api.gfinth(2);
+            if (method === "gfrepu") return api.gfrepu(1, 3, 2);
             if (method === "gfrepi") return api.gfrepi(cnfine, "BEGIN", "END");
             if (method === "gfrepf") return api.gfrepf();
             if (method === "gfsep")

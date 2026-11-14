@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "batch": "e26-gf-signals-progress",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-gf-progress.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry-gf.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/scripts/write-cspice-stamp.mjs",
+    "packages/backend-node/native/src/domains/geometry_gf.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry-gf.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/gf-interrupt-bindings.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry-gf.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/gf-allocations.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/test/fixtures/gf-reporter-probe.mjs",
+    "packages/py-parity-checking/test/fixtures/gf-signal-probe.mjs",
+    "packages/py-parity-checking/test/gf-interrupt.test.ts",
+    "packages/py-parity-checking/test/gf-reporter-output.test.ts",
+    "packages/tspice/src/clients/spiceClients.ts",
+    "packages/tspice/src/spice.ts",
+    "packages/tspice/src/transport/caching/policy.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/cspice.manifest.json",
+    "scripts/fetch-cspice.mjs",
+    "scripts/stage-gf-signal-flag.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "gfbail_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfbail_c.html",
+      "semantics": "Return the current toolkit interrupt flag.",
+      "edgeAssessment": "Initial false, real and explicit SIGINT, repeated reads, cross-client sharing and per-module isolation.",
+      "errorAssessment": "Checked genuine INVALIDSIGNAL in registered workflows. The routine itself is error-free; the terminal failure comes from the accompanying invalid signal.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels are needed. Authored finite time intervals and a process-local signal listener provide independent observations.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfbail-initial",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the initial clear GF interrupt indicator twice."
+        },
+        {
+          "caseId": "geometry-gf-gfbail-sticky",
+          "coverage": ["success", "edge"],
+          "observes": "Setting the GF flag persists across repeated reads."
+        },
+        {
+          "caseId": "geometry-gf-gfbail-kclear",
+          "coverage": ["success", "edge"],
+          "observes": "Clearing kernel state retains the GF signal indication."
+        },
+        {
+          "caseId": "geometry-gf-gfbail-reset",
+          "coverage": ["success", "edge"],
+          "observes": "Resetting the error system leaves the GF signal set."
+        },
+        {
+          "caseId": "geometry-gf-gfbail-bad-signal",
+          "coverage": ["error"],
+          "observes": "A prior poll and a true interrupt precede a genuine invalid-signal diagnostic."
+        }
+      ],
+      "cleanup": "Independent Python processes exit after each workflow. Wrappers restore the flag and finish the reporter, and isolated child tests dispose both signal claims and exit. WASM allocations are released after success and failure.",
+      "tolerance": "Boolean flags and diagnostic names are exact. Reporter comparisons preserve the entire text and control characters except for platform-generated line separators.",
+      "findings": [
+        {
+          "id": "gfbail-interrupt-reporting",
+          "status": "repaired",
+          "summary": "Use the linked observable boolean, a lock-free signal flag and uncached polls.",
+          "repair": "Use the linked observable boolean, a lock-free signal flag and uncached polls.",
+          "evidence": [
+            "docs/step8-gf-progress.md",
+            "packages/py-parity-checking/test/gf-interrupt.test.ts",
+            "packages/py-parity-checking/test/gf-reporter-output.test.ts",
+            "packages/backend-node/test/gf-interrupt-bindings.test.ts",
+            "packages/backend-wasm/test/gf-allocations.test.ts",
+            "scripts/stage-gf-signal-flag.mjs"
+          ],
+          "caseIds": ["geometry-gf-gfbail-sticky"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfbail -> serialized native handler -> tspice_gfbail -> gfbail_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfbail -> compiled WASM export -> tspice_gfbail -> gfbail_c",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfclrh_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfclrh_c.html",
+      "semantics": "Clear the toolkit interrupt flag without uninstalling the handler.",
+      "edgeAssessment": "Idempotent clear, repeated interrupt/clear, independent error state and native handler retention.",
+      "errorAssessment": "Checked genuine INVALIDSIGNAL in registered workflows. The routine itself is error-free; the terminal failure comes from the accompanying invalid signal.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels are needed. Authored finite time intervals and a process-local signal listener provide independent observations.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfclrh-clear",
+          "coverage": ["success", "edge"],
+          "observes": "Clearing an initially clear interrupt is idempotent."
+        },
+        {
+          "caseId": "geometry-gf-gfclrh-received",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a set flag and both subsequent clear reads."
+        },
+        {
+          "caseId": "geometry-gf-gfclrh-cycles",
+          "coverage": ["success", "edge"],
+          "observes": "Rearm the same runtime after clearing twice."
+        },
+        {
+          "caseId": "geometry-gf-gfclrh-independent-error",
+          "coverage": ["success", "edge"],
+          "observes": "Clearing the interrupt does not set the SPICE error state."
+        },
+        {
+          "caseId": "geometry-gf-gfclrh-bad-after-clear",
+          "coverage": ["error"],
+          "observes": "A different signal after clearing reaches the compiled diagnostic."
+        }
+      ],
+      "cleanup": "Independent Python processes exit after each workflow. Wrappers restore the flag and finish the reporter, and isolated child tests dispose both signal claims and exit. WASM allocations are released after success and failure.",
+      "tolerance": "Boolean flags and diagnostic names are exact. Reporter comparisons preserve the entire text and control characters except for platform-generated line separators.",
+      "findings": [
+        {
+          "id": "gfclrh-interrupt-reporting",
+          "status": "repaired",
+          "summary": "Clear only the actual N0067 flag; observe every call through cached and direct clients.",
+          "repair": "Clear only the actual N0067 flag; observe every call through cached and direct clients.",
+          "evidence": [
+            "docs/step8-gf-progress.md",
+            "packages/py-parity-checking/test/gf-interrupt.test.ts",
+            "packages/py-parity-checking/test/gf-reporter-output.test.ts",
+            "packages/backend-node/test/gf-interrupt-bindings.test.ts",
+            "packages/backend-wasm/test/gf-allocations.test.ts",
+            "scripts/stage-gf-signal-flag.mjs"
+          ],
+          "caseIds": ["geometry-gf-gfclrh-cycles"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfclrh -> serialized native handler -> tspice_gfclrh -> gfclrh_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfclrh -> compiled WASM export -> tspice_gfclrh -> gfclrh_c",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfinth_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfinth_c.html",
+      "semantics": "Receive SIGINT, install the GF disposition and set the shared interrupt indicator.",
+      "edgeAssessment": "Signed signal numbers, host restoration after sync and async disposal, repeated claims, other owners and named invalid-signal diagnostics.",
+      "errorAssessment": "Checked genuine INVALIDSIGNAL in registered workflows. Subsequent valid calls succeed.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels are needed. Authored finite time intervals and a process-local signal listener provide independent observations.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfinth-rearm",
+          "coverage": ["success", "edge"],
+          "observes": "A repeated explicit SIGINT preserves the flag until cleared."
+        },
+        {
+          "caseId": "geometry-gf-gfinth-resets",
+          "coverage": ["success", "edge"],
+          "observes": "GF receipt survives both error and kernel resets."
+        },
+        {
+          "caseId": "geometry-gf-gfinth-zero",
+          "coverage": ["error"],
+          "observes": "Require the actual unsupported signal diagnostic for signed code 0."
+        },
+        {
+          "caseId": "geometry-gf-gfinth-other",
+          "coverage": ["error"],
+          "observes": "Require the actual unsupported signal diagnostic for signed code 15."
+        },
+        {
+          "caseId": "geometry-gf-gfinth-negative",
+          "coverage": ["error"],
+          "observes": "Require the actual unsupported signal diagnostic for signed code -2."
+        },
+        {
+          "caseId": "geometry-gf-gfinth-max-code",
+          "coverage": ["error"],
+          "observes": "Require the actual unsupported signal diagnostic for signed code 2147483647."
+        }
+      ],
+      "cleanup": "Independent Python processes exit after each workflow. Wrappers restore the flag and finish the reporter, and isolated child tests dispose both signal claims and exit. WASM allocations are released after success and failure.",
+      "tolerance": "Boolean flags and diagnostic names are exact. Reporter comparisons preserve the entire text and control characters except for platform-generated line separators.",
+      "findings": [
+        {
+          "id": "gfinth-interrupt-reporting",
+          "status": "repaired",
+          "summary": "Track ownership of the host disposition across multiple clients and N-API environments; restore after last release.",
+          "repair": "Track ownership of the host disposition across multiple clients and N-API environments; restore after last release.",
+          "evidence": [
+            "docs/step8-gf-progress.md",
+            "packages/py-parity-checking/test/gf-interrupt.test.ts",
+            "packages/py-parity-checking/test/gf-reporter-output.test.ts",
+            "packages/backend-node/test/gf-interrupt-bindings.test.ts",
+            "packages/backend-wasm/test/gf-allocations.test.ts",
+            "scripts/stage-gf-signal-flag.mjs"
+          ],
+          "caseIds": ["geometry-gf-gfinth-rearm"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfinth -> serialized native handler -> tspice_gfinth -> gfinth_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfinth -> compiled WASM export -> tspice_gfinth -> gfinth_c",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfrepu_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrepu_c.html",
+      "semantics": "Update elapsed work for one confinement interval, issuing a rate-limited progress report on standard output.",
+      "edgeAssessment": "Multiple disjoint intervals, zero-duration windows, true midpoint and endpoints, backward corrections, errors, reinitialization and time-gated observable output.",
+      "errorAssessment": "Checked genuine BADENDPOINTS, VALUEOUTOFRANGE in registered workflows. Subsequent valid calls succeed.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels are needed. Authored finite time intervals and a process-local signal listener provide independent observations.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfrepu-prior-no-init",
+          "coverage": ["success", "edge"],
+          "observes": "Run a valid update with no initialized work measure."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-endpoints",
+          "coverage": ["success", "edge"],
+          "observes": "Report both exact endpoints and a midpoint."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-reverse-time",
+          "coverage": ["success", "edge"],
+          "observes": "Nonmonotonic time is a signed increment within the current interval."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-disjoint",
+          "coverage": ["success", "edge"],
+          "observes": "Cross a gap and update the following confinement interval."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-singleton",
+          "coverage": ["success", "edge"],
+          "observes": "Report one exact epoch for a zero-duration work measure."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-reinitialize",
+          "coverage": ["success", "edge"],
+          "observes": "Restart the reporter and update a fresh enclosing window."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-interrupt",
+          "coverage": ["success", "edge"],
+          "observes": "Reporting a progress increment preserves a previously raised GF flag."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-reversed",
+          "coverage": ["error"],
+          "observes": "Require BADENDPOINTS with reporter state active."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-early",
+          "coverage": ["error"],
+          "observes": "Require VALUEOUTOFRANGE with reporter state active."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-late",
+          "coverage": ["error"],
+          "observes": "Require VALUEOUTOFRANGE with reporter state active."
+        },
+        {
+          "caseId": "geometry-gf-gfrepu-wrong-singleton",
+          "coverage": ["error"],
+          "observes": "Require VALUEOUTOFRANGE with reporter state active."
+        }
+      ],
+      "cleanup": "Independent Python processes exit after each workflow. Wrappers restore the flag and finish the reporter, and isolated child tests dispose both signal claims and exit. WASM allocations are released after success and failure.",
+      "tolerance": "Boolean flags and diagnostic names are exact. Reporter comparisons preserve the entire text and control characters except for platform-generated line separators.",
+      "findings": [
+        {
+          "id": "gfrepu-interrupt-reporting",
+          "status": "repaired",
+          "summary": "Forward finite epochs to the actual toolkit routine, release diagnostic storage and flush WASM progress before returning.",
+          "repair": "Forward finite epochs to the actual toolkit routine, release diagnostic storage and flush WASM progress before returning.",
+          "evidence": [
+            "docs/step8-gf-progress.md",
+            "packages/py-parity-checking/test/gf-interrupt.test.ts",
+            "packages/py-parity-checking/test/gf-reporter-output.test.ts",
+            "packages/backend-node/test/gf-interrupt-bindings.test.ts",
+            "packages/backend-wasm/test/gf-allocations.test.ts",
+            "scripts/stage-gf-signal-flag.mjs"
+          ],
+          "caseIds": ["geometry-gf-gfrepu-disjoint"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrepu -> serialized native handler -> tspice_gfrepu -> gfrepu_c",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.gfrepu -> compiled WASM export -> tspice_gfrepu -> gfrepu_c",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused native, WASM, independent output and real Chrome observations passed. Full required and canonical evidence follows."
+}

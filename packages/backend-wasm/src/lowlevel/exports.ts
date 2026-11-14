@@ -859,6 +859,16 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_gfbail(flagPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfclrh(errPtr: number, errMaxBytes: number): number;
+  _tspice_gfinth(sigcode: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_gfrepu(
+    ivbeg: number,
+    ivend: number,
+    time: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_gfrepf(errPtr: number, errMaxBytes: number): number;
   _tspice_gfsep(
     targ1Ptr: number,
@@ -2259,6 +2269,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfstol",
   "_tspice_gfrefn",
   "_tspice_gfrepi",
+  "_tspice_gfbail",
+  "_tspice_gfclrh",
+  "_tspice_gfinth",
+  "_tspice_gfrepu",
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",

@@ -1,0 +1,123 @@
+[
+  {
+    "caseId": "geometry-gf-gfclrh-clear",
+    "description": "Clearing an initially clear interrupt is idempotent.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfclrh-received",
+    "description": "Observe a set flag and both subsequent clear reads.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfclrh-cycles",
+    "description": "Rearm the same runtime after clearing twice.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfclrh-independent-error",
+    "description": "Clearing the interrupt does not set the SPICE error state.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfclrh-bad-after-clear",
+    "description": "A different signal after clearing reaches the compiled diagnostic.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  }
+]

@@ -2094,6 +2094,18 @@ export function createFakeBackend(
     gfrepi: (_window: SpiceWindow, _begmss: string, _endmss: string) => {
       throw new Error("Fake backend: gfrepi() is not implemented");
     },
+    gfbail: () => {
+      throw new Error("Fake backend: gfbail() is not implemented");
+    },
+    gfclrh: () => {
+      throw new Error("Fake backend: gfclrh() is not implemented");
+    },
+    gfinth: () => {
+      throw new Error("Fake backend: gfinth() is not implemented");
+    },
+    gfrepu: () => {
+      throw new Error("Fake backend: gfrepu() is not implemented");
+    },
     gfrepf: () => {
       throw new Error("Fake backend: gfrepf() is not implemented");
     },

@@ -1040,6 +1040,10 @@ int tspice_gfrefn(double t1, double t2, int s1, int s2, double *outT, char *err,
 int tspice_gfrepi(uintptr_t windowHandle, const char *begmss, const char *endmss, char *err, int errMaxBytes);
 
 // gfrepf_c: progress report finalize.
+int tspice_gfbail(int *flag, char *err, int errMaxBytes);
+int tspice_gfclrh(char *err, int errMaxBytes);
+int tspice_gfinth(int sigcode, char *err, int errMaxBytes);
+int tspice_gfrepu(double ivbeg, double ivend, double time, char *err, int errMaxBytes);
 int tspice_gfrepf(char *err, int errMaxBytes);
 
 // gfsep_c: angular separation search.

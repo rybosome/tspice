@@ -20,6 +20,26 @@ export type GfRelate =
 
 /** Backend contract for Geometry Finder (GF) event-finding routines. */
 export interface GeometryGfApi {
+  /** Read the interrupt flag shared by GF searches in this runtime. The initial flag is false. Explicit handler calls or a delivered native SIGINT set it. Reading preserves it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfbail_c.html
+   */
+  gfbail(): boolean;
+
+  /** Clear the shared GF interrupt flag. Subsequent reads return false until another interrupt. Clearing the flag preserves the installed signal handler.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfclrh_c.html
+   */
+  gfclrh(): void;
+
+  /** Invoke the N0067 GF interrupt handler with a signed signal number. SIGINT (2 on supported platforms) installs the handler and sets the interrupt flag. Other signal codes raise INVALIDSIGNAL. Native clients share the host disposition until the last owner disposes or the host replaces it. A browser worker has a module-local signal disposition.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfinth_c.html
+   */
+  gfinth(sigcode: number): void;
+
+  /** Report the current TDB time within a confinement interval using the reporter initialized with gfrepi. All three arguments are finite seconds, and time must lie in the closed interval. Reversed endpoints and out-of-range times raise toolkit errors. Output is rate-limited and may be empty. End the report with gfrepf.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfrepu_c.html
+   */
+  gfrepu(ivbeg: number, ivend: number, time: number): void;
+
   /**
    * Set a positive constant step in TDB seconds for {@link GeometryGfApi.gfstep}.
    * This process/module-global setting survives `kclear()`.

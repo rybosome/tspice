@@ -1,0 +1,390 @@
+[
+  {
+    "caseId": "geometry-gf-gfrepu-prior-no-init",
+    "description": "Run a valid update with no initialized work measure.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": -5,
+        "ivend": 10,
+        "time": 3
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-endpoints",
+    "description": "Report both exact endpoints and a midpoint.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": -10,
+        "ivend": 10,
+        "time": -10
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": -10,
+        "ivend": 10,
+        "time": 0
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": -10,
+        "ivend": 10,
+        "time": 10
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "error.failed"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-reverse-time",
+    "description": "Nonmonotonic time is a signed increment within the current interval.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 4,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 4,
+        "time": 3
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 4,
+        "time": 1
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 4,
+        "time": 4
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-disjoint",
+    "description": "Cross a gap and update the following confinement interval.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -8,
+        "right": -4,
+        "maxIntervals": 4
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 2,
+        "right": 8,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": -8,
+        "ivend": -4,
+        "time": -6
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 2,
+        "ivend": 8,
+        "time": 5
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-singleton",
+    "description": "Report one exact epoch for a zero-duration work measure.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 10,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 10,
+        "ivend": 10,
+        "time": 10
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-reinitialize",
+    "description": "Restart the reporter and update a fresh enclosing window.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "First",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 10,
+        "time": 2
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "Second",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 10,
+        "time": 7
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-interrupt",
+    "description": "Reporting a progress increment preserves a previously raised GF flag.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 20,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 20,
+        "time": 5
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfrepf"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-reversed",
+    "description": "Require BADENDPOINTS with reporter state active.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 2,
+        "ivend": -1,
+        "time": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADENDPOINTS"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-early",
+    "description": "Require VALUEOUTOFRANGE with reporter state active.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 10,
+        "time": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-late",
+    "description": "Require VALUEOUTOFRANGE with reporter state active.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 0,
+        "ivend": 10,
+        "time": 11
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrepu-wrong-singleton",
+    "description": "Require VALUEOUTOFRANGE with reporter state active.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 0,
+        "right": 10,
+        "maxIntervals": 4
+      },
+      {
+        "op": "geometry-gf.gfrepi",
+        "windowId": "c",
+        "begmss": "GF search",
+        "endmss": "done"
+      },
+      {
+        "op": "geometry-gf.gfrepu",
+        "ivbeg": 3,
+        "ivend": 3,
+        "time": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

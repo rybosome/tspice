@@ -1,0 +1,125 @@
+[
+  {
+    "caseId": "geometry-gf-gfbail-initial",
+    "description": "Observe the initial clear GF interrupt indicator twice.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfbail-sticky",
+    "description": "Setting the GF flag persists across repeated reads.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfbail-kclear",
+    "description": "Clearing kernel state retains the GF signal indication.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfbail-reset",
+    "description": "Resetting the error system leaves the GF signal set.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "error.failed"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfbail-bad-signal",
+    "description": "A prior poll and a true interrupt precede a genuine invalid-signal diagnostic.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  }
+]

@@ -4,6 +4,7 @@
 
 #include "../handle_validation.h"
 
+#include <math.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -214,6 +215,45 @@ int tspice_gfrepi(
   if (fflush(stdout) != 0 || fsync(STDOUT_FILENO) != 0) {
     return tspice_geometry_gf_invalid_arg(err, errMaxBytes, "gfrepi: stdout flush failed");
   }
+#endif
+  return 0;
+}
+
+int tspice_gfbail(int *flag, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!flag) return tspice_geometry_gf_invalid_arg(err, errMaxBytes, "Missing GF interrupt result");
+  *flag = gfbail_c() == SPICETRUE;
+  return 0;
+}
+
+int tspice_gfclrh(char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  gfclrh_c();
+  return 0;
+}
+
+int tspice_gfinth(int sigcode, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  gfinth_c(sigcode);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_gfrepu(double ivbeg, double ivend, double time, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!isfinite(ivbeg) || !isfinite(ivend) || !isfinite(time))
+    return tspice_geometry_gf_invalid_arg(err, errMaxBytes, "GF progress times must be finite");
+  gfrepu_c(ivbeg, ivend, time);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+#ifdef __EMSCRIPTEN__
+  if (fflush(stdout) != 0 || fsync(STDOUT_FILENO) != 0)
+    return tspice_geometry_gf_invalid_arg(err, errMaxBytes, "gfrepu: stdout flush failed");
 #endif
   return 0;
 }

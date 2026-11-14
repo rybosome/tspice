@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
+import { execFileSync } from "node:child_process";
+import { stageGfSignalFlag } from "../../../../scripts/stage-gf-signal-flag.mjs";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
@@ -244,6 +246,28 @@ async function main() {
   ].join("\n");
 
   writeIfChanged(headerPath, header);
+
+  // Standard platform archives include the matching translated sources. An
+  // override with only headers and libraries uses the pinned source cache.
+  let sourceDir = path.join(cspiceDir, "src", "cspice");
+  if (!fs.existsSync(path.join(sourceDir, "zzgfsavh_c.c"))) {
+    const root = getRepoRoot();
+    execFileSync(
+      process.execPath,
+      [path.join(root, "scripts/fetch-cspice.mjs"), "--source"],
+      {
+        cwd: root,
+        stdio: ["ignore", process.stderr, process.stderr],
+      },
+    );
+    sourceDir = path.join(
+      root,
+      ".cache/cspice",
+      manifest.toolkitVersion,
+      "source/cspice/src/cspice",
+    );
+  }
+  stageGfSignalFlag(sourceDir, generatedDir);
 
   // Print the absolute generated directory path for consumption by binding.gyp via
   // the tspice_native_generated_dir variable.

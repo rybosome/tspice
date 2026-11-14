@@ -494,6 +494,11 @@ export type NativeAddon = {
   gfstol(value: number): void;
   gfrefn(t1: number, t2: number, s1: boolean, s2: boolean): number;
   gfrepi(window: SpiceWindow, begmss: string, endmss: string): void;
+  gfbail(): boolean;
+  gfclrh(): void;
+  gfinth(sigcode: number, claim: boolean): void;
+  gfrepu(ivbeg: number, ivend: number, time: number): void;
+  releaseGfInterrupt(): void;
   gfrepf(): void;
 
   gfsep(

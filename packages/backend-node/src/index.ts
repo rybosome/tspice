@@ -46,6 +46,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
   const stager = createKernelStager();
   const spiceHandles = createSpiceHandleRegistry();
   const outputs = createVirtualOutputStager();
+  const interrupt = { claimed: false };
   const timeApi = createTimeApi(native);
   const fileIoApi = createFileIoApi(native, spiceHandles, stager);
 
@@ -59,7 +60,7 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
       ...createFramesApi(native, stager),
       ...createEphemerisApi(native, spiceHandles, stager, outputs),
       ...createGeometryApi(native),
-      ...createGeometryGfApi(native),
+      ...createGeometryGfApi(native, interrupt),
       ...createCoordsVectorsApi(native),
       ...fileIoApi,
       ...createErrorApi(native),
@@ -145,6 +146,15 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
           }
         } catch (err) {
           errors.push(err);
+        }
+      }
+
+      if (interrupt.claimed) {
+        try {
+          native.releaseGfInterrupt();
+          interrupt.claimed = false;
+        } catch (error) {
+          errors.push(error);
         }
       }
 

@@ -72,6 +72,10 @@ import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
 import geometryGfGfdistCasesRaw from "./geometry-gf/gfdist.cases.json" with { type: "json" };
 import geometryGfGfrefnCasesRaw from "./geometry-gf/gfrefn.cases.json" with { type: "json" };
+import geometryGfGfbailCasesRaw from "./geometry-gf/gfbail.cases.json" with { type: "json" };
+import geometryGfGfclrhCasesRaw from "./geometry-gf/gfclrh.cases.json" with { type: "json" };
+import geometryGfGfinthCasesRaw from "./geometry-gf/gfinth.cases.json" with { type: "json" };
+import geometryGfGfrepuCasesRaw from "./geometry-gf/gfrepu.cases.json" with { type: "json" };
 import geometryGfGfrepfCasesRaw from "./geometry-gf/gfrepf.cases.json" with { type: "json" };
 import geometryGfGfrepiCasesRaw from "./geometry-gf/gfrepi.cases.json" with { type: "json" };
 import geometryGfGfsepCasesRaw from "./geometry-gf/gfsep.cases.json" with { type: "json" };
@@ -267,6 +271,10 @@ export const geometryCases: ParityCase[] = [
 
 export const geometryGfGfdistCases = geometryGfGfdistCasesRaw as ParityCase[];
 export const geometryGfGfrefnCases = geometryGfGfrefnCasesRaw as ParityCase[];
+export const geometryGfGfbailCases = geometryGfGfbailCasesRaw as ParityCase[];
+export const geometryGfGfclrhCases = geometryGfGfclrhCasesRaw as ParityCase[];
+export const geometryGfGfinthCases = geometryGfGfinthCasesRaw as ParityCase[];
+export const geometryGfGfrepuCases = geometryGfGfrepuCasesRaw as ParityCase[];
 export const geometryGfGfrepfCases = geometryGfGfrepfCasesRaw as ParityCase[];
 export const geometryGfGfrepiCases = geometryGfGfrepiCasesRaw as ParityCase[];
 export const geometryGfGfsepCases = geometryGfGfsepCasesRaw as ParityCase[];
@@ -279,6 +287,10 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfsstpCases,
   ...geometryGfGfstolCases,
   ...geometryGfGfrefnCases,
+  ...geometryGfGfbailCases,
+  ...geometryGfGfclrhCases,
+  ...geometryGfGfinthCases,
+  ...geometryGfGfrepuCases,
   ...geometryGfGfrepfCases,
   ...geometryGfGfrepiCases,
   ...geometryGfGfsepCases,

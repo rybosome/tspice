@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 166
+- Planned (not yet implemented): 483
 - Excluded: 3
 
 ## Implemented now
@@ -89,10 +89,14 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `georec_c` | Geodetic to rectangular coordinates |
 | `getfat_c` | Get file architecture and type |
 | `getmsg_c` | Get Error Message |
+| `gfbail_c` | GF, interrupt signal indicator |
+| `gfclrh_c` | GF, clear interrupt signal handler status |
 | `gfdist_c` | GF, distance search |
+| `gfinth_c` | GF, interrupt signal handler |
 | `gfrefn_c` | GF, default refinement estimator |
 | `gfrepf_c` | GF, progress report finalization |
 | `gfrepi_c` | GF, progress report initialization |
+| `gfrepu_c` | GF, progress report update |
 | `gfsep_c` | GF, angular separation search |
 | `gfsstp_c` | Geometry finder set step size |
 | `gfstep_c` | Geometry finder step size |
@@ -372,17 +376,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `getelm_c` | Get the components from two-line elements |
 | `getfov_c` | Get instrument FOV parameters |
 | `getfvn_c` | Get instrument FOV parameters, by instrument name |
-| `gfbail_c` | GF, interrupt signal indicator |
-| `gfclrh_c` | GF, clear interrupt signal handler status |
 | `gfevnt_c` | GF, geometric event finder |
 | `gffove_c` | GF, is target in FOV? |
 | `gfilum_c` | GF, illumination angle search |
-| `gfinth_c` | GF, interrupt signal handler |
 | `gfocce_c` | GF, occultation event |
 | `gfoclt_c` | GF, find occultation |
 | `gfpa_c` | GF, phase angle search |
 | `gfposc_c` | GF, observer-target vector coordinate search |
-| `gfrepu_c` | GF, progress report update |
 | `gfrfov_c` | GF, is ray in FOV? |
 | `gfrr_c` | GF, range rate search |
 | `gfsntc_c` | GF, surface intercept vector coordinate search |

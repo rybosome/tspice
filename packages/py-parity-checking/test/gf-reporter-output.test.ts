@@ -14,6 +14,10 @@ w=SPICEDOUBLE_CELL(8)
 sp.wninsd(-10,10,w)
 sp.wninsd(20,40,w)
 if mode!='without-init':sp.gfrepi(w,'audit begin','audit end')
+if mode=='update':
+ import time
+ time.sleep(1.1)
+ for value in [-9,-8,-7,-5]:sp.gfrepu(-10,10,value)
 if mode!='init':sp.gfrepf()
 if mode=='repeat':
  sp.gfrepi(w,'second begin','second end')
@@ -31,7 +35,13 @@ function output(command: string, args: string[]): string {
   return result.stdout.replace(/[\r\n]/g, "");
 }
 for (const backend of ["node", "wasm"] as const)
-  for (const mode of ["init", "finalize", "repeat", "without-init"] as const)
+  for (const mode of [
+    "init",
+    "finalize",
+    "repeat",
+    "without-init",
+    "update",
+  ] as const)
     it.runIf(backend === "wasm" || nodeBackendAvailable)(
       `${backend}: actual GF reporter stdout ${mode} matches live SpiceyPy`,
       () => {
@@ -56,6 +66,8 @@ for (const backend of ["node", "wasm"] as const)
             expected,
           );
         }
+        if (mode === "update")
+          expect(actual).toContain("audit begin  12.50% audit end");
         if (mode === "repeat")
           expect(actual).toContain("second begin   0.00% second end");
       },
