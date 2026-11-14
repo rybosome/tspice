@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-dpr-constant-value",
+    "description": "dpr: compare degrees per radian returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpr"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dpr-constant-repeat-after-reset",
+    "description": "dpr: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dpr"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.dpr"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.dpr"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

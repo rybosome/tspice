@@ -6,6 +6,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Error-free scalar routines need no output allocation or error-state changes.
+double tspice_spd(void) {
+  return (double)spd_c();
+}
+
+double tspice_j2000(void) {
+  return (double)j2000_c();
+}
+
+double tspice_j1900(void) {
+  return (double)j1900_c();
+}
+
+double tspice_b1950(void) {
+  return (double)b1950_c();
+}
+
 #define TSPICE_TIMDEF_VALUE_MAX 1024
 
 static int tspice_time_invalid_arg(char *err, int errMaxBytes, const char *msg) {

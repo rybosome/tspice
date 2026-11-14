@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 171
+- Planned (not yet implemented): 478
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `b1950_c` | Besselian Date 1950.0 |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -53,6 +54,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
+| `dpr_c` | Degrees per radian |
 | `dskb02_c` | DSK, fetch type 2 bookkeeping data |
 | `dskgd_c` | DSK, return DSK segment descriptor |
 | `dskmi2_c` | DSK, make spatial index for type 2 segment |
@@ -99,12 +101,15 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `halfpi_c` | Half the value of pi |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
+| `j2000_c` | Julian Date of 2000 JAN 1.5 |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -120,6 +125,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `occult_c` | find occultation type at time |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
+| `pi_c` | Value of pi |
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
@@ -129,6 +135,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
+| `rpd_c` | Radians per degree |
 | `scard_c` | Set the cardinality of a cell |
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
@@ -140,6 +147,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
+| `spd_c` | Seconds per day |
 | `sphrec_c` | Spherical to rectangular coordinates |
 | `spkcls_c` | SPK, Close file |
 | `spkcov_c` | SPK coverage |
@@ -168,6 +176,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `twopi_c` | Twice the value of pi |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -194,7 +203,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `azlcpo_c` | AZ/EL, constant position observer state |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
-| `b1950_c` | Besselian Date 1950.0 |
 | `badkpv_c` | Bad Kernel Pool Variable |
 | `bltfrm_c` | Built-in frame IDs |
 | `bodvcd_c` | Return d.p. values from the kernel pool |
@@ -293,7 +301,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
 | `dpmax_c` | Largest DP number |
 | `dpmin_c` | Smallest DP number |
-| `dpr_c` | Degrees per radian |
 | `drdazl_c` | Derivative of rectangular w.r.t. AZ/EL |
 | `drdcyl_c` | Derivative of rectangular w.r.t. cylindrical |
 | `drdgeo_c` | Derivative of rectangular w.r.t. geodetic |
@@ -390,7 +397,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gftfov_c` | GF, is target in FOV? |
 | `gfudb_c` | GF, user defined boolean |
 | `gfuds_c` | GF, user defined scalar |
-| `halfpi_c` | Half the value of pi |
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
 | `hx2dp_c` | Hexadecimal string to d.p. number |
@@ -413,9 +419,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `isrchi_c` | Search in an integer array |
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `iswhsp_c` | Determine whether a string is white space |
-| `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
 | `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
-| `j2000_c` | Julian Date of 2000 JAN 1.5 |
 | `j2100_c` | Julian Date of 2100 JAN 1.5 |
 | `jyear_c` | Seconds per julian year |
 | `lastnb_c` | Last non-blank character |
@@ -491,7 +495,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pckw02_c` | PCK, write type 2 segment |
 | `pgrrec_c` | Planetographic to rectangular |
 | `phaseq_c` | Phase angle quantity between bodies centers |
-| `pi_c` | Value of pi |
 | `pjelpl_c` | Project ellipse onto plane |
 | `pl2nvp_c` | Plane to normal vector and point |
 | `pl2psv_c` | Plane to point and spanning vectors |
@@ -538,7 +541,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `repmot_c` | Replace marker with ordinal text |
 | `return_c` | Immediate Return Indicator |
 | `rotvec_c` | Transform a vector via a rotation |
-| `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
 | `sce2t_c` | ET to SCLK ticks |
@@ -550,7 +552,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `shellc_c` | Shell sort a character array |
 | `shelld_c` | Shell sort a double precision array |
 | `shelli_c` | Shell sort an integer array |
-| `spd_c` | Seconds per day |
 | `sphcyl_c` | Spherical to cylindrical coordinates |
 | `sphlat_c` | Spherical to latitudinal coordinates |
 | `spk14a_c` | SPK, add data to a type 14 segment |
@@ -613,7 +614,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |
-| `twopi_c` | Twice the value of pi |
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
 | `tyear_c` | Seconds per tropical year |

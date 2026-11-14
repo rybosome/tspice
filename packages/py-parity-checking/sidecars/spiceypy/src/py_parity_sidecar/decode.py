@@ -33,6 +33,11 @@ from .models import (
     StepCoordsVectorsVdot,
     StepCoordsVectorsVhat,
     StepCoordsVectorsVminus,
+    StepCoordsVectorsPi,
+    StepCoordsVectorsTwopi,
+    StepCoordsVectorsHalfpi,
+    StepCoordsVectorsDpr,
+    StepCoordsVectorsRpd,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -170,6 +175,10 @@ from .models import (
     StepTimeSct2e,
     StepTimeStr2Et,
     StepTimeTimout,
+    StepTimeSpd,
+    StepTimeJ2000,
+    StepTimeJ1900,
+    StepTimeB1950,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -365,6 +374,18 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 prec=_expect_int(step.get("prec"), label="time.et2utc.prec"),
             )
 
+        case "time.spd":
+            return StepTimeSpd(op=op)
+
+        case "time.j2000":
+            return StepTimeJ2000(op=op)
+
+        case "time.j1900":
+            return StepTimeJ1900(op=op)
+
+        case "time.b1950":
+            return StepTimeB1950(op=op)
+
         case "time.tkvrsn":
             item = _expect_string(step.get("item"), label="time.tkvrsn.item")
             return StepTimeTkvrsn(op=op, item=item)
@@ -523,6 +544,21 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 colat=_expect_number(step.get("colat"), label="coords-vectors.sphrec.colat"),
                 lon=_expect_number(step.get("lon"), label="coords-vectors.sphrec.lon"),
             )
+
+        case "coords-vectors.pi":
+            return StepCoordsVectorsPi(op=op)
+
+        case "coords-vectors.twopi":
+            return StepCoordsVectorsTwopi(op=op)
+
+        case "coords-vectors.halfpi":
+            return StepCoordsVectorsHalfpi(op=op)
+
+        case "coords-vectors.dpr":
+            return StepCoordsVectorsDpr(op=op)
+
+        case "coords-vectors.rpd":
+            return StepCoordsVectorsRpd(op=op)
 
         case "coords-vectors.vnorm":
             return StepCoordsVectorsVnorm(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vnorm.v"))

@@ -8,6 +8,56 @@ using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
 
+static Napi::Number Pi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "pi() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_pi());
+}
+
+static Napi::Number Twopi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "twopi() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_twopi());
+}
+
+static Napi::Number Halfpi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "halfpi() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_halfpi());
+}
+
+static Napi::Number Dpr(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dpr() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_dpr());
+}
+
+static Napi::Number Rpd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "rpd() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_rpd());
+}
+
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -572,6 +622,11 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "pi", Napi::Function::New(env, Pi), __func__)) return;
+  if (!SetExportChecked(env, exports, "twopi", Napi::Function::New(env, Twopi), __func__)) return;
+  if (!SetExportChecked(env, exports, "halfpi", Napi::Function::New(env, Halfpi), __func__)) return;
+  if (!SetExportChecked(env, exports, "dpr", Napi::Function::New(env, Dpr), __func__)) return;
+  if (!SetExportChecked(env, exports, "rpd", Napi::Function::New(env, Rpd), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

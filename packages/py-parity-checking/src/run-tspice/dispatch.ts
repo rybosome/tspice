@@ -23,6 +23,10 @@ export function dispatchStep(
   switch (step.op) {
     case "time.str2et":
     case "time.et2utc":
+    case "time.spd":
+    case "time.j2000":
+    case "time.j1900":
+    case "time.b1950":
     case "time.tkvrsn":
     case "time.timout":
     case "time.deltet":
@@ -51,6 +55,11 @@ export function dispatchStep(
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":
     case "coords-vectors.sphrec":
+    case "coords-vectors.pi":
+    case "coords-vectors.twopi":
+    case "coords-vectors.halfpi":
+    case "coords-vectors.dpr":
+    case "coords-vectors.rpd":
     case "coords-vectors.vnorm":
     case "coords-vectors.vhat":
     case "coords-vectors.vdot":

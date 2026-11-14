@@ -12,6 +12,17 @@ import type {
 export type NativeAddon = {
   spiceVersion(): string;
 
+  // Error-free CSPICE constants.
+  pi(): number;
+  twopi(): number;
+  halfpi(): number;
+  dpr(): number;
+  rpd(): number;
+  spd(): number;
+  j2000(): number;
+  j1900(): number;
+  b1950(): number;
+
   // --- error/status utilities ---
   failed(): boolean;
   reset(): void;

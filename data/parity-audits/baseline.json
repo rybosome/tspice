@@ -408,5 +408,24 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a01-constants",
+      "routines": [
+        "pi_c",
+        "twopi_c",
+        "halfpi_c",
+        "dpr_c",
+        "rpd_c",
+        "spd_c",
+        "j2000_c",
+        "j1900_c",
+        "b1950_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Step 8 implementation: run both required lanes and observe canonical CI before recording verified status. No merge authorized."
+    }
   ]
 }

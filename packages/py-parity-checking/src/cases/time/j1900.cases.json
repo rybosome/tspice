@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "time-j1900-constant-value",
+    "description": "j1900: compare Julian date of J1900 returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "time.j1900"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-j1900-constant-repeat-after-reset",
+    "description": "j1900: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "time.j1900"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "time.j1900"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "time.j1900"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
