@@ -10,6 +10,11 @@ import type {
   StepTimeSct2e,
   StepTimeStr2Et,
   StepTimeTimout,
+  StepTimeB1900,
+  StepTimeJ1950,
+  StepTimeJ2100,
+  StepTimeJyear,
+  StepTimeTyear,
   StepTimeTkvrsn,
   StepTimeTparse,
   StepTimeTpictr,
@@ -37,6 +42,11 @@ function preserveTimeDefaults(context: RunTspiceContext): void {
 type TimeStep =
   | StepTimeStr2Et
   | StepTimeEt2Utc
+  | StepTimeB1900
+  | StepTimeJ1950
+  | StepTimeJ2100
+  | StepTimeJyear
+  | StepTimeTyear
   | StepTimeTkvrsn
   | StepTimeTimout
   | StepTimeDeltet
@@ -58,6 +68,21 @@ export function runTimeStep(
   step: TimeStep,
 ): StepOutput {
   switch (step.op) {
+    case "time.b1900":
+      return { op: step.op, value: context.spice.raw.b1900() };
+
+    case "time.j1950":
+      return { op: step.op, value: context.spice.raw.j1950() };
+
+    case "time.j2100":
+      return { op: step.op, value: context.spice.raw.j2100() };
+
+    case "time.jyear":
+      return { op: step.op, value: context.spice.raw.jyear() };
+
+    case "time.tyear":
+      return { op: step.op, value: context.spice.raw.tyear() };
+
     case "time.str2et":
       return { op: step.op, value: context.spice.raw.str2et(step.time) };
 

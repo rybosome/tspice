@@ -1,0 +1,418 @@
+{
+  "schemaVersion": 1,
+  "batch": "a02-remaining-constants",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/time.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/time.py",
+    "packages/py-parity-checking/test/scalar-constants.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/tspice/test/scalar-constants-rpc.test.ts",
+    "packages/backend-node/test/scalar-constants-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "b1900_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/b1900_c.html",
+      "semantics": "SpiceDouble b1900_c(void), raw.b1900(): number. Returns 2415020.31352 Julian ephemeris days at Besselian epoch 1900.0; not ET seconds. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "time-b1900-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "time-b1900-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.b1900 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.b1900 -> WASM adapter -> typed/build-configured/binary _tspice_b1900 -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "j1950_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j1950_c.html",
+      "semantics": "SpiceDouble j1950_c(void), raw.j1950(): number. Returns 2433282.5 Julian days at Julian epoch 1950.0 (1950-01-01 midnight), not ET seconds. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "time-j1950-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "time-j1950-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.j1950 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.j1950 -> WASM adapter -> typed/build-configured/binary _tspice_j1950 -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "j2100_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j2100_c.html",
+      "semantics": "SpiceDouble j2100_c(void), raw.j2100(): number. Returns 2488070.0 Julian days at Julian epoch 2100.0 (2100-01-01 noon), not ET seconds. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "time-j2100-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "time-j2100-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.j2100 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.j2100 -> WASM adapter -> typed/build-configured/binary _tspice_j2100 -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "jyear_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/jyear_c.html",
+      "semantics": "SpiceDouble jyear_c(void), raw.jyear(): number. Returns 31557600 seconds per Julian year (365.25 days). No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "time-jyear-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "time-jyear-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.jyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.jyear -> WASM adapter -> typed/build-configured/binary _tspice_jyear -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "tyear_c",
+      "contract": "packages/backend-contract/src/domains/time.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tyear_c.html",
+      "semantics": "SpiceDouble tyear_c(void), raw.tyear(): number. Returns 31556925.9747 seconds per tropical year, as fixed by CSPICE. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "time-tyear-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "time-tyear-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.tyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.tyear -> WASM adapter -> typed/build-configured/binary _tspice_tyear -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "clight_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/clight_c.html",
+      "semantics": "SpiceDouble clight_c(void), raw.clight(): number. Returns 299792.458 kilometers per second for vacuum light speed. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-clight-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "coords-vectors-clight-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clight -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clight -> WASM adapter -> typed/build-configured/binary _tspice_clight -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dpmax_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpmax_c.html",
+      "semantics": "SpiceDouble dpmax_c(void), raw.dpmax(): number. Returns DBL_MAX: greatest finite double, 1.7976931348623157e308 for supported IEEE-754 targets. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dpmax-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "coords-vectors-dpmax-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dpmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dpmax -> WASM adapter -> typed/build-configured/binary _tspice_dpmax -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dpmin_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dpmin_c.html",
+      "semantics": "SpiceDouble dpmin_c(void), raw.dpmin(): number. Returns -DBL_MAX: most negative finite double, not the smallest positive or normal/subnormal value. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-dpmin-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "coords-vectors-dpmin-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dpmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dpmin -> WASM adapter -> typed/build-configured/binary _tspice_dpmin -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "intmax_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/intmax_c.html",
+      "semantics": "SpiceInt intmax_c(void), raw.intmax(): number. Returns maximum SpiceInt value, 2147483647 for the supported signed32 toolkit ABI. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-intmax-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "coords-vectors-intmax-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.intmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.intmax -> WASM adapter -> typed/build-configured/binary _tspice_intmax -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "intmin_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/intmin_c.html",
+      "semantics": "SpiceInt intmin_c(void), raw.intmin(): number. Returns minimum SpiceInt value, -2147483648 for the supported signed32 toolkit ABI. No inputs, capacities, indexing, kernels or handles.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-intmin-constant-value",
+          "coverage": ["success"],
+          "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        },
+        {
+          "caseId": "coords-vectors-intmin-constant-repeat-after-reset",
+          "coverage": ["success", "state"],
+          "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
+        }
+      ],
+      "edgeAssessment": "No argument-dependent boundary or legitimate absence. Exact live comparisons plus repeated clear/reset, pool/time-default independence, finite extreme values and actual RPC codec with structuredClone are tested. RPC test is transport evidence, not a real browser startup claim.",
+      "errorAssessment": "NAIF and pinned N0067 source document an error-free routine. No fabricated input/error test. Direct shared-C return does not allocate or inspect/reset CSPICE error state. Node adapter separately rejects malformed native results.",
+      "fixtures": [],
+      "fixtureRationale": "No kernels, files, scientific datasets or authored fixtures needed; all values are returned live by CSPICE through both independent bindings.",
+      "cleanup": "No output buffers or handles allocated by the scalar shim/WASM path; Node serializes CSPICE access under the existing mutex. Case/backend finalizers retain standard clear/reset/dispose behavior.",
+      "tolerance": "Registered cases retain unchanged 1e-12 absolute-or-relative comparison. Focused scalar-constants.test.ts requires exact live-oracle equality to retain fractional Julian dates and all finite extreme double/integer bits through JSON. RPC test preserves true raw scalar results; no global tolerance changes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.intmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.intmin -> WASM adapter -> typed/build-configured/binary _tspice_intmin -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Reviewed source and complete runtime paths; local and canonical CI verification pending. No verification inferred from registration."
+}

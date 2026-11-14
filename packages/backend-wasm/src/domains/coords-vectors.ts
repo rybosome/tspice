@@ -777,6 +777,11 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    clight: () => module._tspice_clight(),
+    dpmax: () => module._tspice_dpmax(),
+    dpmin: () => module._tspice_dpmin(),
+    intmax: () => module._tspice_intmax(),
+    intmin: () => module._tspice_intmin(),
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

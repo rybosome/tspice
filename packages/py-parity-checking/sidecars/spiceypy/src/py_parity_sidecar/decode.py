@@ -33,6 +33,11 @@ from .models import (
     StepCoordsVectorsVdot,
     StepCoordsVectorsVhat,
     StepCoordsVectorsVminus,
+    StepCoordsVectorsClight,
+    StepCoordsVectorsDpmax,
+    StepCoordsVectorsDpmin,
+    StepCoordsVectorsIntmax,
+    StepCoordsVectorsIntmin,
     StepCoordsVectorsVnorm,
     StepCoordsVectorsVscl,
     StepCoordsVectorsVsub,
@@ -170,6 +175,11 @@ from .models import (
     StepTimeSct2e,
     StepTimeStr2Et,
     StepTimeTimout,
+    StepTimeB1900,
+    StepTimeJ1950,
+    StepTimeJ2100,
+    StepTimeJyear,
+    StepTimeTyear,
     StepTimeTkvrsn,
     StepTimeTparse,
     StepTimeTpictr,
@@ -365,6 +375,21 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 prec=_expect_int(step.get("prec"), label="time.et2utc.prec"),
             )
 
+        case "time.b1900":
+            return StepTimeB1900(op=op)
+
+        case "time.j1950":
+            return StepTimeJ1950(op=op)
+
+        case "time.j2100":
+            return StepTimeJ2100(op=op)
+
+        case "time.jyear":
+            return StepTimeJyear(op=op)
+
+        case "time.tyear":
+            return StepTimeTyear(op=op)
+
         case "time.tkvrsn":
             item = _expect_string(step.get("item"), label="time.tkvrsn.item")
             return StepTimeTkvrsn(op=op, item=item)
@@ -523,6 +548,21 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 colat=_expect_number(step.get("colat"), label="coords-vectors.sphrec.colat"),
                 lon=_expect_number(step.get("lon"), label="coords-vectors.sphrec.lon"),
             )
+
+        case "coords-vectors.clight":
+            return StepCoordsVectorsClight(op=op)
+
+        case "coords-vectors.dpmax":
+            return StepCoordsVectorsDpmax(op=op)
+
+        case "coords-vectors.dpmin":
+            return StepCoordsVectorsDpmin(op=op)
+
+        case "coords-vectors.intmax":
+            return StepCoordsVectorsIntmax(op=op)
+
+        case "coords-vectors.intmin":
+            return StepCoordsVectorsIntmin(op=op)
 
         case "coords-vectors.vnorm":
             return StepCoordsVectorsVnorm(op=op, v=_expect_vec3(step.get("v"), label="coords-vectors.vnorm.v"))

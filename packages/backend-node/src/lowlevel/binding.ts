@@ -10,6 +10,47 @@ export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
 
   invariant(
+    typeof native.clight === "function",
+    "Expected native addon to export clight()",
+  );
+  invariant(
+    typeof native.dpmax === "function",
+    "Expected native addon to export dpmax()",
+  );
+  invariant(
+    typeof native.dpmin === "function",
+    "Expected native addon to export dpmin()",
+  );
+  invariant(
+    typeof native.intmax === "function",
+    "Expected native addon to export intmax()",
+  );
+  invariant(
+    typeof native.intmin === "function",
+    "Expected native addon to export intmin()",
+  );
+  invariant(
+    typeof native.b1900 === "function",
+    "Expected native addon to export b1900()",
+  );
+  invariant(
+    typeof native.j1950 === "function",
+    "Expected native addon to export j1950()",
+  );
+  invariant(
+    typeof native.j2100 === "function",
+    "Expected native addon to export j2100()",
+  );
+  invariant(
+    typeof native.jyear === "function",
+    "Expected native addon to export jyear()",
+  );
+  invariant(
+    typeof native.tyear === "function",
+    "Expected native addon to export tyear()",
+  );
+
+  invariant(
     typeof native.furnsh === "function",
     "Expected native addon to export furnsh(path)",
   );

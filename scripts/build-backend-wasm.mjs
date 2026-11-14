@@ -360,6 +360,16 @@ const exportedFunctions = [
   "_tspice_chkout",
 
   // --- kernels ---
+  "_tspice_clight",
+  "_tspice_dpmax",
+  "_tspice_dpmin",
+  "_tspice_intmax",
+  "_tspice_intmin",
+  "_tspice_b1900",
+  "_tspice_j1950",
+  "_tspice_j2100",
+  "_tspice_jyear",
+  "_tspice_tyear",
   "_tspice_tkvrsn_toolkit",
   "_tspice_furnsh",
   "_tspice_unload",

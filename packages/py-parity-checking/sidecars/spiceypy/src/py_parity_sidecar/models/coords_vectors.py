@@ -36,6 +36,31 @@ class StepCoordsVectorsSphrec:
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsClight:
+    op: Literal["coords-vectors.clight"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDpmax:
+    op: Literal["coords-vectors.dpmax"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsDpmin:
+    op: Literal["coords-vectors.dpmin"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsIntmax:
+    op: Literal["coords-vectors.intmax"]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsIntmin:
+    op: Literal["coords-vectors.intmin"]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsVnorm:
     op: Literal["coords-vectors.vnorm"]
     v: Vec3

@@ -11,6 +11,18 @@
 extern "C" {
 #endif
 
+// Error-free scalar constants. These allocate nothing and preserve SPICE error state.
+double tspice_clight(void);
+double tspice_dpmax(void);
+double tspice_dpmin(void);
+int tspice_intmax(void);
+int tspice_intmin(void);
+double tspice_b1900(void);
+double tspice_j1950(void);
+double tspice_j2100(void);
+double tspice_jyear(void);
+double tspice_tyear(void);
+
 // --- CSPICE error handling helpers ---
 //
 // These helpers are a stable ABI surface. Callers should treat them as part of

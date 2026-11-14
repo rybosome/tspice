@@ -12,6 +12,57 @@ export interface TimeKitApi {
 /** Time-domain backend API surface over SPICE primitives. */
 export interface TimeApi {
   /**
+   * Return Julian date 2415020.31352 for Besselian epoch 1900.0.
+   *
+   * The result is a Julian ephemeris date in days, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/b1900_c.html
+   */
+  b1900(): number;
+
+  /**
+   * Return Julian date 2433282.5 for 1950 JAN 01 00:00:00.
+   *
+   * The result is a Julian date in days at midnight, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j1950_c.html
+   */
+  j1950(): number;
+
+  /**
+   * Return Julian date 2488070.0 for 2100 JAN 01 12:00:00.
+   *
+   * The result is a Julian date in days at noon, not ET seconds past J2000.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/j2100_c.html
+   */
+  j2100(): number;
+
+  /**
+   * Return 31557600 ephemeris seconds per Julian year.
+   *
+   * A Julian year is exactly 365.25 uniform days; this is a duration, not an epoch.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/jyear_c.html
+   */
+  jyear(): number;
+
+  /**
+   * Return 31556925.9747 ephemeris seconds per tropical year.
+   *
+   * This fixed CSPICE duration comes from the 1992 Explanatory
+   * Supplement to the Astronomical Almanac; it is not an epoch or Julian year.
+   * Requires no kernels; error-free and has no caller-visible state effects.
+   * @returns The double-precision CSPICE constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tyear_c.html
+   */
+  tyear(): number;
+
+  /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
    * Only TOOLKIT is exposed; other items are rejected by this contract. The

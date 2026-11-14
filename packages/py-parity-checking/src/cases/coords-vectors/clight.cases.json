@@ -1,0 +1,38 @@
+[
+  {
+    "caseId": "coords-vectors-clight-constant-value",
+    "description": "clight: compare light speed in km/s returned by actual raw and live SpiceyPy without kernels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clight"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-clight-constant-repeat-after-reset",
+    "description": "clight: repeat the raw constant across kernel clear and error reset; all three returned values are compared.",
+    "workflow": [
+      {
+        "op": "coords-vectors.clight"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.clight"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.clight"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

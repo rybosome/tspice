@@ -10,6 +10,56 @@ using tspice_napi::SetExportChecked;
 using tspice_napi::PreviewForError;
 using tspice_napi::ThrowSpiceError;
 
+static Napi::Number B1900(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "b1900() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_b1900());
+}
+
+static Napi::Number J1950(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "j1950() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_j1950());
+}
+
+static Napi::Number J2100(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "j2100() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_j2100());
+}
+
+static Napi::Number Jyear(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "jyear() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_jyear());
+}
+
+static Napi::Number Tyear(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "tyear() expects no arguments"));
+    return Napi::Number::New(env, 0);
+  }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  return Napi::Number::New(env, tspice_tyear());
+}
+
 static Napi::Number Str2et(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -375,6 +425,11 @@ static Napi::Number Sce2c(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterTime(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "b1900", Napi::Function::New(env, B1900), __func__)) return;
+  if (!SetExportChecked(env, exports, "j1950", Napi::Function::New(env, J1950), __func__)) return;
+  if (!SetExportChecked(env, exports, "j2100", Napi::Function::New(env, J2100), __func__)) return;
+  if (!SetExportChecked(env, exports, "jyear", Napi::Function::New(env, Jyear), __func__)) return;
+  if (!SetExportChecked(env, exports, "tyear", Napi::Function::New(env, Tyear), __func__)) return;
   if (!SetExportChecked(env, exports, "str2et", Napi::Function::New(env, Str2et), __func__)) return;
   if (!SetExportChecked(env, exports, "et2utc", Napi::Function::New(env, Et2utc), __func__)) return;
   if (!SetExportChecked(env, exports, "timout", Napi::Function::New(env, Timout), __func__)) return;
