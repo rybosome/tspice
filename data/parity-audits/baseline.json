@@ -414,8 +414,8 @@
       "id": "d01-time-additions",
       "routines": ["etcal_c", "utc2et_c", "tparch_c", "tsetyr_c", "et2lst_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Validate the reviewed source in both required local lanes and the uncached canonical CI lane, then inspect final-head CI and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/741"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

@@ -100,16 +100,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the serialized native addon and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.etcal through TimeApi, the regenerated, checked WASM export and shared tspice_etcal to actual etcal_c. The locked oracle calls the exact ETCAL_C export with an initialized bounded string buffer.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
         }
       }
     },
@@ -195,16 +195,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.utc2et through TimeApi, the serialized native addon and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.utc2et through TimeApi, the regenerated, checked WASM export and shared tspice_utc2et to actual utc2et_c. The locked oracle calls sp.utc2et on defined legacy time strings.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
         }
       }
     },
@@ -260,16 +260,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the serialized native addon and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tparch through TimeApi, the regenerated, checked WASM export and shared tspice_tparch to actual tparch_c. The locked oracle calls sp.tparch with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
         }
       }
     },
@@ -346,16 +346,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tsetyr through TimeApi, the serialized native addon and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tsetyr through TimeApi, the regenerated, checked WASM export and shared tspice_tsetyr to actual tsetyr_c. The locked oracle calls sp.tsetyr with subsequent real TPARSE/UTC2ET behavior.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
         }
       }
     },
@@ -461,20 +461,225 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.et2lst through TimeApi, the serialized native addon and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-node", "ci-d01-76c549f2-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.et2lst through TimeApi, the regenerated, checked WASM export and shared tspice_et2lst to actual et2lst_c. The locked oracle calls independent bounded PGRREC/SPKEZ prerequisites and the exact ET2LST_C export.",
-          "executions": []
+          "executions": ["local-d01-76c549f2-wasm", "ci-d01-76c549f2-wasm"]
         }
       }
     }
   ],
-  "executions": [],
-  "verificationNote": "Corrected sources passed both compiled backends, four public tests and an actual Chrome worker across all five methods. The 38 workflows contain 163 steps and 95 invocations of the five new methods. Required full local and observed canonical CI evidence is tracked separately."
+  "executions": [
+    {
+      "id": "local-d01-76c549f2-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "observation": "Both complete required lanes passed locally on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-d01-76c549f2-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "observation": "Both complete required lanes passed locally on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d01-76c549f2-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "commit": "76c549f2deb557021ec0cdb6b6da3ce20ff90b37",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570044988/job/132372232193",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372232193 on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-d01-76c549f2-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e039001b2f9e93521432f784f2bc9f14659888b0d8cf0ed30206156899b45661",
+      "caseIds": [
+        "time-et2lst-east-west",
+        "time-et2lst-frame-missing",
+        "time-et2lst-missing-rotation",
+        "time-et2lst-missing-spk",
+        "time-et2lst-planetographic",
+        "time-et2lst-short-ampm",
+        "time-et2lst-short-time",
+        "time-et2lst-sun",
+        "time-et2lst-time-change",
+        "time-et2lst-time-widths",
+        "time-et2lst-unknown-coordinates",
+        "time-etcal-capacity",
+        "time-etcal-day-transitions",
+        "time-etcal-historical-dates",
+        "time-etcal-short-0",
+        "time-etcal-short-1",
+        "time-etcal-tdb-milliseconds",
+        "time-tparch-empty",
+        "time-tparch-normalize",
+        "time-tparch-other-value",
+        "time-tparch-permissive-utc",
+        "time-tparch-strict-tparse",
+        "time-tparch-strict-utc",
+        "time-tsetyr-lower-1",
+        "time-tsetyr-lower-1950",
+        "time-tsetyr-lower-1969",
+        "time-tsetyr-lower-2000",
+        "time-tsetyr-lower-2050",
+        "time-tsetyr-successive",
+        "time-tsetyr-utc-window",
+        "time-utc2et-empty",
+        "time-utc2et-epochs",
+        "time-utc2et-fractional",
+        "time-utc2et-label",
+        "time-utc2et-leap-second",
+        "time-utc2et-missing-lsk",
+        "time-utc2et-text",
+        "time-utc2et-timezone"
+      ],
+      "commit": "76c549f2deb557021ec0cdb6b6da3ce20ff90b37",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570044988/job/132372232193",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372232193 on 76c549f2deb557021ec0cdb6b6da3ce20ff90b37: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 620 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
