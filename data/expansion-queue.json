@@ -81,7 +81,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "Angular constants in CoordsVectorsApi; spd/j2000/j1900/b1950 in TimeApi. Public methods are raw.<canonical name without _c>().",
       "owner": "Codex Step 8 (/root)",
-      "status": "in-progress",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "No shared prerequisite beyond merged #706. Establish epoch outputs as Julian dates, not ET; zero-argument constants need no invented error cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -94,10 +94,18 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/707"],
-      "validationEvidence": [],
-      "nextAction": "Inspect completion of required final-head checks and rebaseability, then record source-bound evidence before changing queue readiness. No merge authorized.",
-      "deliveryNote": "Draft PR open; final-head readiness pending. Remains in-progress, not PR-ready or landed.",
-      "progressNote": "Final metadata head 1eee2cffd03e1d9ab4f063807cd2e256a09ffe77 is awaiting CI run 43538403821. Remains in-progress until final-head CI and readiness review complete."
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "1eee2cffd03e1d9ab4f063807cd2e256a09ffe77",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43538403821",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #707 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await user review/merge authorization; do not count this PR-ready batch as landed.",
+      "deliveryNote": "Ready for review; draft removed after final-head checks and explicit rebaseability observation. Not merged.",
+      "progressNote": "Final head 1eee2cffd03e1d9ab4f063807cd2e256a09ffe77 passed all 15 jobs in CI run 43538403821. Integration owner observed REST rebaseable:true against base 73f3fec8 after CI, removed draft status and updated the PR body. Nine routines are PR-ready, not landed."
     },
     {
       "id": "A02-remaining-constants",
@@ -245,7 +253,7 @@
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Integration owner reports source CI run 43537749949 passed all 15 jobs and local validation passed 2298 live comparisons / 2519 parity-package tests with no skips. Per-routine source-bound audits have fresh verified evidence. Metadata head 3c1b767b has been pushed; final-head CI/readiness remains pending. Queue status remains in-progress."
+      "progressNote": "Integration owner reports all 15 source CI jobs and full local validation green, with fresh source-bound audits. Final metadata head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 awaits CI run 43540344076 and readiness review. Remains in-progress."
     },
     {
       "id": "A06-coordinate-conventions",
@@ -262,8 +270,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Verify azimuth/elevation boolean conventions, planetographic longitude sense and radii flattening; surface routines require body constants.",
       "fixtures": "Authored radii/body constants in kernel pool for srfrec and planetographic conventions; no new mission data.",
@@ -277,7 +285,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete seven raw paths and authored body-constant fixture provenance/lifecycle, review actual conventions/errors, then run required local/CI validation.",
+      "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
+      "branch": "codex/expand-coordinate-conventions",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Production and parity source work assigned. Primary-semantic/body-constant fixture review active; no verified or landed claim."
     },
     {
       "id": "A07-coordinate-jacobians",
@@ -351,7 +363,7 @@
       "worktree": "/private/tmp/tspice-step8-vector-basics",
       "branch": "codex/expand-vector-basics",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft PR source head 6fe56303286e8ec567f3f5463a3df6cf5fb6418a. Integration owner reports the full JS lane passed 2282 live comparisons and 2504 parity-package tests plus one expected native guard skip. Full native lane is running; final CI/readiness pending. Remains in-progress."
+      "progressNote": "Integration owner inspected successful source native CI job 132277308410: 2282 live comparisons / 2505 parity-package tests with no skips. Per-routine source-bound audits are freshly verified. Final metadata head f3d2cb4fe7c69de6e3bec925f89c4938a9de0108 awaits all jobs in CI run 43541137087 and final readiness review. Draft PR #710 remains in-progress."
     },
     {
       "id": "A09-vector-combinations",
@@ -382,13 +394,29 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Complete focused public/overflow/allocation/native tests, generate coverage outputs, run both required full lanes and canonical CI, then record source-bound evidence before readiness.",
+      "prs": ["https://github.com/rybosome/tspice/pull/711"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "69fd2108259457989adf223241a72411d8714f5a",
+          "observation": "Both full local lanes passed. Native-required executed2294live/2517parity withzero skips and production guard. 102native/641WASM/28core/150facade tests passed. Scientific semantics and numerical caveats are in maintained per-routine audits."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "69fd2108259457989adf223241a72411d8714f5a",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43540881828/job/132280923832",
+          "observation": "Inspected uncached Linux Node22 native-required success:2294live/2517parity, no skips, production guard executed.9sourcejobs passed; remaining queuedmacOSjobs superseded by final evidence-only commit. All final-head required jobs must pass before readiness."
+        }
+      ],
+      "nextAction": "Complete all required final-head CI, explicitly verify rebaseability and mark PR #711 ready.",
       "worktree": "/private/tmp/tspice-step8-vector-combinations",
       "branch": "codex/expand-vector-combinations",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Production and parity source frozen and compiled. Integration owner reports all 76 focused actual Node/WASM registered-case comparisons passed (38 scenarios per backend, 99 routine calls per backend). Focused public/overflow/allocation/native tests are running; full required lanes and CI remain pending. No verified or landed claim."
+      "progressNote": "Draft PR #711 is open at source head 69fd2108259457989adf223241a72411d8714f5a. Integration owner reports both required local lanes passed, including 2294 live comparisons / 2517 parity-package tests without skips, 102 native / 641 WASM / 28 core / 150 facade tests. Local audit records and PR references are prepared; source CI has 8 of 15 jobs green and Linux Node 22 job 132280923832 is pending. Final readiness remains pending.",
+      "deliveryNote": "Both full local lanes and inspected source native CI passed. All170current Node/WASM source fingerprints verified; final matrix pending, not ready or landed."
     },
     {
       "id": "A10-general-vectors",
@@ -480,8 +508,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse Mat3RowMajor; add immediately consumed 2x2 representation for diags2. Verify singular/nonorthogonal behavior, input immutability and transpose order.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -495,7 +523,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete eleven typed raw paths, direct live oracle cases and matrix-result helper tests, then regenerate artifacts and run required full local/CI lanes.",
+      "worktree": "/private/tmp/tspice-step8-fixed-matrices",
+      "branch": "codex/expand-fixed-matrices",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Source compiled and frozen. Integration owner reports all 100 focused Node/WASM case comparisons, 10 public tests, 2 complete 14-observation extreme tests, 46 WASM allocation checks, 54 native wrapper tests, 6 core result-helper tests and 2 actual-backend RPC transport regressions passed. Signed-zero recovery assertion repaired without output normalization. Full required lanes and canonical CI remain pending; no current-source verification claim."
     },
     {
       "id": "A13-general-matrices",

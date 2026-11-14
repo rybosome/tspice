@@ -423,7 +423,7 @@
         "vtmv_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/711"],
       "nextAction": "Complete primary-semantic review and registered live scenarios, then run focused wrapper/allocation tests, both required lanes and canonical CI; record current source-bound evidence before verified status. Independent Step 8 batch; no merge authorized."
     }
   ]
