@@ -462,8 +462,8 @@
         "ordi_c"
       ],
       "dependsOn": ["b01-cell-arrays"],
-      "prs": [],
-      "nextAction": "Record source-bound local and canonical CI executions on both backends, then check the final head and stacked rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/742"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

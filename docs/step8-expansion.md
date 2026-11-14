@@ -189,3 +189,7 @@ publishing or deployment.
 ## E02 source validation checkpoint
 
 [PR #739](https://github.com/rybosome/tspice/pull/739) remains in progress. Both complete required lanes passed locally on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39. JavaScript: 2,483 parity tests and one expected guard skip. Native-required: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43568124187/job/132366361966) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.
+
+## B02 source validation checkpoint
+
+[PR #742](https://github.com/rybosome/tspice/pull/742) remains in progress. Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.
