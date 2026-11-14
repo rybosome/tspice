@@ -421,8 +421,8 @@
       "id": "e13-surface-derivatives",
       "routines": ["dnearp_c", "surfpv_c", "tangpt_c"],
       "dependsOn": ["e16-geometry-quantities"],
-      "prs": [],
-      "nextAction": "Capture complete source-bound local and canonical CI observations."
+      "prs": ["https://github.com/rybosome/tspice/pull/764"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

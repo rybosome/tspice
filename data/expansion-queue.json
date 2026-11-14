@@ -3099,13 +3099,21 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Record both required local lanes, canonical source CI, complete final-head checks and explicit rebaseability.",
+      "prs": ["https://github.com/rybosome/tspice/pull/764"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "0466c9bdef81bea12b0cceea443a8a053f5ec7d6",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43581579340/job/132407254220",
+          "result": "Both complete required lanes passed locally on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6. JavaScript: 2,638 parity tests and one expected guard skip. Native-required: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132407254220 on 0466c9bdef81bea12b0cceea443a8a053f5ec7d6: 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-surface-derivatives",
       "branch": "codex/expand-surface-derivatives",
       "baseCommit": "18775dd0774433c66715144432b2e5d432cdeba0",
-      "progressNote": "42 independent scenarios, eight public numerical/lifecycle checks, direct native argument tests, complete WASM allocation fault coverage and full-field Chrome worker comparisons passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 0466c9bd. 2,410 registered Node/WASM live comparisons; 2,639 parity-package tests with no skips, including the native-required guard; 74 native wrapper, 629 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "42 independent scenarios, eight public numerical/lifecycle checks, direct native argument tests, complete WASM allocation fault coverage and full-field Chrome worker comparisons passed."
     },
     {
       "id": "E14-legacy-surface-geometry",
