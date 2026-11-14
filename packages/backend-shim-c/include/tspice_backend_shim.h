@@ -1079,6 +1079,21 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// azlrec_c: out stores rectangular x, y, z.
+int tspice_azlrec(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+// recazl_c: out stores range, az, el.
+int tspice_recazl(const double *rect, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+// pgrrec_c: out stores rectangular x, y, z.
+int tspice_pgrrec(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+// recpgr_c: out stores lon, lat, alt.
+int tspice_recpgr(const char *body, const double *rect, double re, double f, double *out, char *err, int errMaxBytes);
+// radrec_c: out stores rectangular x, y, z.
+int tspice_radrec(double range, double ra, double dec, double *out, char *err, int errMaxBytes);
+// recrad_c: out stores range, ra, dec.
+int tspice_recrad(const double *rect, double *out, char *err, int errMaxBytes);
+// srfrec_c: out stores rectangular x, y, z.
+int tspice_srfrec(int body, double lon, double lat, double *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

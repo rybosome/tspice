@@ -163,3 +163,15 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+### Coordinate-convention fixture
+
+`coordinate-conventions.tpc` is an authored synthetic text PCK under the repository
+MIT license. It defines named bodies 9901001/9901002 with PM rates +2/-3 and
+triaxial/oblate radii [3,2,1]/[4,4,2], body 9901003 with an EAST longitude override
+and spherical [2,2,2] radii, and arbitrary Sun/Moon PM coefficients. These are test
+constants, not physical measurements or mission data. Cases also author temporary
+pool overrides/radii, observe changes and clear/reload restoration, and use the
+existing per-case kernel/error cleanup. See
+[the semantic review](../../../docs/step8-coordinate-conventions.md) for the exact
+fixture hash, pinned source rules, scientific errors and numerical observations.

@@ -15,9 +15,131 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertConventionScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyConventionVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must contain exactly three finite numbers`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
+}
+
+function assertConventionBoolean(
+  value: unknown,
+  label: string,
+): asserts value is boolean {
+  if (typeof value !== "boolean")
+    throw new TypeError(`${label} must be a boolean`);
+}
+
+function assertConventionBody(
+  value: unknown,
+  label: string,
+): asserts value is string {
+  if (typeof value !== "string" || value.includes("\0"))
+    throw new TypeError(`${label} must be a string without embedded NUL`);
+}
+
+function conventionOutputNumber(value: unknown, label: string): number {
+  // Finite CSPICE inputs can produce nonfinite results; preserve these values.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function conventionOutputVector(value: unknown, label: string): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(`${label} must have length three`);
+  return [
+    conventionOutputNumber(value[0], label),
+    conventionOutputNumber(value[1], label),
+    conventionOutputNumber(value[2], label),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    azlrec: (range, az, el, azccw, elplsz) => {
+      assertConventionScalar(range, "azlrec(range)");
+      assertConventionScalar(az, "azlrec(az)");
+      assertConventionScalar(el, "azlrec(el)");
+      assertConventionBoolean(azccw, "azlrec(azccw)");
+      assertConventionBoolean(elplsz, "azlrec(elplsz)");
+      const out: unknown = native.azlrec(range, az, el, azccw, elplsz);
+      return conventionOutputVector(out, "azlrec result");
+    },
+    recazl: (rect, azccw, elplsz) => {
+      const rectCopy = copyConventionVector(rect, "recazl(rect)");
+      assertConventionBoolean(azccw, "recazl(azccw)");
+      assertConventionBoolean(elplsz, "recazl(elplsz)");
+      const out: unknown = native.recazl(rectCopy, azccw, elplsz);
+      invariant(isPlainObject(out), "Expected recazl() to return an object");
+      return {
+        range: conventionOutputNumber(out.range, "recazl().range"),
+        az: conventionOutputNumber(out.az, "recazl().az"),
+        el: conventionOutputNumber(out.el, "recazl().el"),
+      };
+    },
+    pgrrec: (body, lon, lat, alt, re, f) => {
+      assertConventionBody(body, "pgrrec(body)");
+      assertConventionScalar(lon, "pgrrec(lon)");
+      assertConventionScalar(lat, "pgrrec(lat)");
+      assertConventionScalar(alt, "pgrrec(alt)");
+      assertConventionScalar(re, "pgrrec(re)");
+      assertConventionScalar(f, "pgrrec(f)");
+      const out: unknown = native.pgrrec(body, lon, lat, alt, re, f);
+      return conventionOutputVector(out, "pgrrec result");
+    },
+    recpgr: (body, rect, re, f) => {
+      assertConventionBody(body, "recpgr(body)");
+      const rectCopy = copyConventionVector(rect, "recpgr(rect)");
+      assertConventionScalar(re, "recpgr(re)");
+      assertConventionScalar(f, "recpgr(f)");
+      const out: unknown = native.recpgr(body, rectCopy, re, f);
+      invariant(isPlainObject(out), "Expected recpgr() to return an object");
+      return {
+        lon: conventionOutputNumber(out.lon, "recpgr().lon"),
+        lat: conventionOutputNumber(out.lat, "recpgr().lat"),
+        alt: conventionOutputNumber(out.alt, "recpgr().alt"),
+      };
+    },
+    radrec: (range, ra, dec) => {
+      assertConventionScalar(range, "radrec(range)");
+      assertConventionScalar(ra, "radrec(ra)");
+      assertConventionScalar(dec, "radrec(dec)");
+      const out: unknown = native.radrec(range, ra, dec);
+      return conventionOutputVector(out, "radrec result");
+    },
+    recrad: (rect) => {
+      const rectCopy = copyConventionVector(rect, "recrad(rect)");
+      const out: unknown = native.recrad(rectCopy);
+      invariant(isPlainObject(out), "Expected recrad() to return an object");
+      return {
+        range: conventionOutputNumber(out.range, "recrad().range"),
+        ra: conventionOutputNumber(out.ra, "recrad().ra"),
+        dec: conventionOutputNumber(out.dec, "recrad().dec"),
+      };
+    },
+    srfrec: (body, lon, lat) => {
+      assertSpiceInt32(body, "srfrec(body)");
+      assertConventionScalar(lon, "srfrec(lon)");
+      assertConventionScalar(lat, "srfrec(lat)");
+      const out: unknown = native.srfrec(body, lon, lat);
+      return conventionOutputVector(out, "srfrec result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

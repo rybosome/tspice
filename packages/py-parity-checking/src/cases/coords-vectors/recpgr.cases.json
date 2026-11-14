@@ -1,0 +1,433 @@
+[
+  {
+    "caseId": "coords-vectors-recpgr-earth-name-and-numeric-id",
+    "description": "recpgr: earth-name-and-numeric-id; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "399",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": " eArTh ",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-spin-sense-and-body-alias",
+    "description": "recpgr: spin-sense-and-body-alias; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "TSPICE_COORD_PROGRADE",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "TSPICE_COORD_RETROGRADE",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901002",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901003",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-sun-moon-east-exceptions",
+    "description": "recpgr: sun-moon-east-exceptions; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "SUN",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "MOON",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-sphere-oblate-prolate",
+    "description": "recpgr: sphere-oblate-prolate; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-scaled-magnitudes",
+    "description": "recpgr: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3.0000000000000002e100, 4e100, -2e100],
+        "re": 3.0000000000000002e100,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3e-100, 4e-100, -2e-100],
+        "re": 3e-100,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-override-and-clear-lifecycle",
+    "description": "recpgr: override-and-clear-lifecycle; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": [" east "]
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/coordinate-conventions.tpc"
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-earth-override-cleared",
+    "description": "recpgr: earth-override-cleared; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY399_PGR_POSITIVE_LON",
+        "values": ["WEST"]
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-unknown-body-error",
+    "description": "recpgr: unknown-body-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "TSPICE_UNKNOWN_COORD_BODY",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-missing-prime-meridian-error",
+    "description": "recpgr: missing-prime-meridian-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-moon-missing-prime-meridian-error",
+    "description": "recpgr: moon-missing-prime-meridian-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "MOON",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGDATA"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-invalid-longitude-override-error",
+    "description": "recpgr: invalid-longitude-override-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "BODY9901001_PGR_POSITIVE_LON",
+        "values": ["NORTH"]
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "9901001",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-invalid-equatorial-radius-error",
+    "description": "recpgr: invalid-equatorial-radius-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 0,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-invalid-flattening-error",
+    "description": "recpgr: invalid-flattening-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, 4, -2],
+        "re": 3,
+        "f": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-origin-poles-and-quadrants",
+    "description": "recpgr: origin-poles-and-quadrants; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [0, 0, 0],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [0, 0, 4],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [0, 0, -4],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [-3, 4, -2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [-3, -4, 2],
+        "re": 3,
+        "f": 0.2
+      },
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [3, -4, -2],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-recpgr-finite-input-too-large-error",
+    "description": "recpgr: finite-input-too-large-error; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.recpgr",
+        "body": "EARTH",
+        "rect": [
+          1.7976931348623157e308, 1.7976931348623157e308, 1.7976931348623157e308
+        ],
+        "re": 3,
+        "f": 0.2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INPUTSTOOLARGE"]
+    }
+  }
+]

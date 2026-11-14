@@ -1,0 +1,116 @@
+[
+  {
+    "caseId": "coords-vectors-radrec-quadrants",
+    "description": "radrec: quadrants; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 0.7,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 2.441592653589793,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 3.8415926535897933,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 5.583185307179586,
+        "dec": 0.4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-radrec-zero-negative-range-and-poles",
+    "description": "radrec: zero-negative-range-and-poles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.radrec",
+        "range": 0,
+        "ra": 0.7,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": -5,
+        "ra": 0.7,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 0,
+        "dec": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 0.7,
+        "dec": -1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-radrec-unrestricted-angles",
+    "description": "radrec: unrestricted-angles; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 6.983185307179586,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": -6.983185307179586,
+        "dec": 0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 5,
+        "ra": 0.7,
+        "dec": 2.1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-radrec-scaled-magnitudes",
+    "description": "radrec: scaled-magnitudes; observe every actual returned component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.radrec",
+        "range": 1e200,
+        "ra": 0.7,
+        "dec": -0.4
+      },
+      {
+        "op": "coords-vectors.radrec",
+        "range": 1e-200,
+        "ra": 0.7,
+        "dec": -0.4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

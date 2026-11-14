@@ -9,6 +9,13 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsAzlrec,
+    StepCoordsVectorsRecazl,
+    StepCoordsVectorsPgrrec,
+    StepCoordsVectorsRecpgr,
+    StepCoordsVectorsRadrec,
+    StepCoordsVectorsRecrad,
+    StepCoordsVectorsSrfrec,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +58,34 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsAzlrec):
+        out = sp.azlrec(step.range, step.az, step.el, step.azccw, step.elplsz)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsRecazl):
+        value0, value1, value2 = sp.recazl(step.rect, step.azccw, step.elplsz)
+        return StepOutput(op=step.op, value={"range": float(value0), "az": float(value1), "el": float(value2)})
+
+    if isinstance(step, StepCoordsVectorsPgrrec):
+        out = sp.pgrrec(step.body, step.lon, step.lat, step.alt, step.re, step.f)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsRecpgr):
+        value0, value1, value2 = sp.recpgr(step.body, step.rect, step.re, step.f)
+        return StepOutput(op=step.op, value={"lon": float(value0), "lat": float(value1), "alt": float(value2)})
+
+    if isinstance(step, StepCoordsVectorsRadrec):
+        out = sp.radrec(step.range, step.ra, step.dec)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
+    if isinstance(step, StepCoordsVectorsRecrad):
+        value0, value1, value2 = sp.recrad(step.rect)
+        return StepOutput(op=step.op, value={"range": float(value0), "ra": float(value1), "dec": float(value2)})
+
+    if isinstance(step, StepCoordsVectorsSrfrec):
+        out = sp.srfrec(step.body, step.lon, step.lat)
+        return StepOutput(op=step.op, value=_to_vec3(out))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

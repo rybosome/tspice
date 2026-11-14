@@ -8,6 +8,66 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsAzlrec:
+    op: Literal["coords-vectors.azlrec"]
+    range: float
+    az: float
+    el: float
+    azccw: bool
+    elplsz: bool
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRecazl:
+    op: Literal["coords-vectors.recazl"]
+    rect: Vec3
+    azccw: bool
+    elplsz: bool
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsPgrrec:
+    op: Literal["coords-vectors.pgrrec"]
+    body: str
+    lon: float
+    lat: float
+    alt: float
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRecpgr:
+    op: Literal["coords-vectors.recpgr"]
+    body: str
+    rect: Vec3
+    re: float
+    f: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRadrec:
+    op: Literal["coords-vectors.radrec"]
+    range: float
+    ra: float
+    dec: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsRecrad:
+    op: Literal["coords-vectors.recrad"]
+    rect: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsSrfrec:
+    op: Literal["coords-vectors.srfrec"]
+    body: int
+    lon: float
+    lat: float
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

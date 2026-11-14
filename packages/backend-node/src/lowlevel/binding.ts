@@ -349,6 +349,34 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export sxform(from, to, et)",
   );
   invariant(
+    typeof native.azlrec === "function",
+    "Expected native addon to export azlrec()",
+  );
+  invariant(
+    typeof native.recazl === "function",
+    "Expected native addon to export recazl()",
+  );
+  invariant(
+    typeof native.pgrrec === "function",
+    "Expected native addon to export pgrrec()",
+  );
+  invariant(
+    typeof native.recpgr === "function",
+    "Expected native addon to export recpgr()",
+  );
+  invariant(
+    typeof native.radrec === "function",
+    "Expected native addon to export radrec()",
+  );
+  invariant(
+    typeof native.recrad === "function",
+    "Expected native addon to export recrad()",
+  );
+  invariant(
+    typeof native.srfrec === "function",
+    "Expected native addon to export srfrec()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

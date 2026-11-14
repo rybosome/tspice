@@ -8,6 +8,140 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Convert range, azimuth and elevation to a new rectangular vector.
+   *
+   * Angles are radians. azccw=true measures azimuth from +X toward +Y;
+   * false measures clockwise. elplsz=true measures elevation toward +Z;
+   * false toward -Z. Negative range and angles outside their usual ranges
+   * are passed through without normalization. Distance units are preserved.
+   * All numeric inputs must be finite and both flags must be booleans.
+   * No kernels are needed; results retain CSPICE floating-point limits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/azlrec_c.html
+   */
+  azlrec(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): SpiceVector3;
+
+  /**
+   * Convert a rectangular vector to { range, az, el }.
+   *
+   * azccw=true measures azimuth from +X toward +Y; false measures clockwise.
+   * elplsz=true measures elevation toward +Z; false toward -Z. Azimuth is
+   * in [0, 2*pi] and elevation in [-pi/2, pi/2], in radians. On the Z axis
+   * azimuth is zero; at the origin both angles are zero. Range uses the
+   * input distance units. rect must contain exactly three finite numbers;
+   * flags must be booleans. The input is not modified. No kernels are
+   * needed; finite inputs can produce nonfinite range through overflow.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recazl_c.html
+   */
+  recazl(
+    rect: Readonly<SpiceVector3>,
+    azccw: boolean,
+    elplsz: boolean,
+  ): { range: number; az: number; el: number };
+
+  /**
+   * Convert body-specific planetographic longitude, latitude and altitude
+   * to a new rectangular vector using equatorial radius re and flattening f.
+   *
+   * Angles are radians; alt, re and the output use the same distance units.
+   * Flattening is (re - polarRadius) / re. CSPICE requires re > 0 and f < 1;
+   * negative flattening and altitude are allowed. Angles are not normalized.
+   * Longitude is normally west-positive for prograde rotation and east-positive
+   * for retrograde rotation; Earth, Moon and Sun default to east-positive.
+   * `BODY<ID>_PGR_POSITIVE_LON` can override this with EAST or WEST. Without an
+   * override, `BODY<ID>_PM` supplies the rotation rate; pinned N0067 requires
+   * this data even for Moon and Sun, but not Earth. Current kernel-pool state
+   * is used on each call. Unknown bodies, missing data, invalid overrides
+   * and invalid spheroid parameters raise CSPICE errors.
+   * body is a name or numeric ID string, passed unchanged; embedded NUL is
+   * rejected. Numeric arguments must be finite. Numerical limits, including
+   * nonfinite results from finite inputs, remain those of CSPICE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pgrrec_c.html
+   */
+  pgrrec(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): SpiceVector3;
+
+  /**
+   * Convert a rectangular vector to body-specific { lon, lat, alt }
+   * using equatorial radius re and flattening f = (re - polarRadius) / re.
+   *
+   * Longitude is in [0, 2*pi] and latitude in [-pi/2, pi/2], in radians;
+   * altitude and re use the vector's distance units. Longitude follows the
+   * same body rotation and kernel-pool override conventions as pgrrec.
+   * CSPICE requires re > 0 and f < 1; negative flattening is allowed. For
+   * interior points where the nearest surface point is not unique, CSPICE's
+   * choice is retained. Unknown bodies, missing rotation data, invalid
+   * overrides and invalid spheroid parameters raise CSPICE errors.
+   * body is an unchanged name or numeric ID string without embedded NUL.
+   * rect must contain exactly three finite numbers, and re and f must be
+   * finite. The input is not modified; a new object preserves all numerical
+   * results, including nonfinite values at CSPICE's numerical limits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recpgr_c.html
+   */
+  recpgr(
+    body: string,
+    rect: Readonly<SpiceVector3>,
+    re: number,
+    f: number,
+  ): { lon: number; lat: number; alt: number };
+
+  /**
+   * Convert range, right ascension and declination to a new rectangular vector.
+   *
+   * Angles are radians: right ascension increases from +X toward +Y, and
+   * declination from the XY plane toward +Z. Negative range and angles outside
+   * their usual ranges are passed through without normalization. Distance
+   * units are preserved. All inputs must be finite. No kernels are needed;
+   * results retain CSPICE floating-point limits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/radrec_c.html
+   */
+  radrec(range: number, ra: number, dec: number): SpiceVector3;
+
+  /**
+   * Convert a rectangular vector to { range, ra, dec }.
+   *
+   * Right ascension ra increases from +X toward +Y in [0, 2*pi]; declination
+   * dec is in [-pi/2, pi/2], in radians. On the Z axis ra is zero; at the
+   * origin both angles are zero. Range uses the input distance units. rect
+   * must contain exactly three finite numbers and is not modified. No
+   * kernels are needed; finite inputs can produce nonfinite range through
+   * overflow. The returned object is independent of the input.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/recrad_c.html
+   */
+  recrad(rect: Readonly<SpiceVector3>): {
+    range: number;
+    ra: number;
+    dec: number;
+  };
+
+  /**
+   * Return a new rectangular point on a body's triaxial reference ellipsoid
+   * at planetocentric longitude lon and latitude lat, in radians.
+   *
+   * Longitude increases from +X toward +Y independently of the body's spin;
+   * latitude is measured from the XY plane toward +Z. Angles are passed
+   * through without normalization. body must be a signed 32-bit integer ID.
+   * Current kernel-pool `BODY<ID>_RADII` must supply three positive semiaxes;
+   * missing or invalid radii raise CSPICE errors. Output units match those
+   * radii (normally km). lon and lat must be finite; numerical limits remain
+   * those of CSPICE, including possible nonfinite results. This is a
+   * planetocentric surface conversion, not planetographic coordinates.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfrec_c.html
+   */
+  srfrec(body: number, lon: number, lat: number): SpiceVector3;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

@@ -1,0 +1,25 @@
+KPL/PCK
+
+Authored synthetic coordinate-convention fixture. These small values are test
+constants, not physical measurements. The two named bodies exercise opposite
+prime-meridian rates; body 9901003 uses an explicit east-positive override.
+Radii are triaxial, oblate and spherical, respectively. Sun/Moon coefficients
+exercise their east-positive exceptions after the required data lookup.
+
+\begindata
+
+NAIF_BODY_NAME += ( 'TSPICE_COORD_PROGRADE' 'TSPICE_COORD_RETROGRADE' )
+NAIF_BODY_CODE += ( 9901001 9901002 )
+
+BODY9901001_PM = ( 10 2 0 )
+BODY9901002_PM = ( 20 -3 0 )
+BODY9901003_PGR_POSITIVE_LON = ( ' eAsT ' )
+
+BODY9901001_RADII = ( 3 2 1 )
+BODY9901002_RADII = ( 4 4 2 )
+BODY9901003_RADII = ( 2 2 2 )
+
+BODY301_PM = ( 5 2 0 )
+BODY10_PM = ( 7 3 0 )
+
+\begintext
