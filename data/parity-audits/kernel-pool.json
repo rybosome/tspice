@@ -1617,6 +1617,202 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
       "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-e12-337203c8-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84ce75240cf23a2cfbf52062889d4ae80d7a6fc0d778a2b76fda92cb8129ba64",
+      "caseIds": [
+        "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-cvpool-empty-agent-error",
+        "kernel-pool-cvpool-update-detection-lifecycle",
+        "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+        "kernel-pool-dtpool-report-type-size-and-miss",
+        "kernel-pool-expool-audit-numeric-versus-character-and-case",
+        "kernel-pool-expool-empty-name-error",
+        "kernel-pool-expool-numeric-existence-semantics",
+        "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gcpool-invalid-room-error",
+        "kernel-pool-gcpool-read-char-values-and-miss",
+        "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gdpool-invalid-room-error",
+        "kernel-pool-gdpool-read-double-values-and-miss",
+        "kernel-pool-gipool-audit-integer-conversion-overflow",
+        "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gipool-invalid-room-error",
+        "kernel-pool-gipool-read-integer-values-and-miss",
+        "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+        "kernel-pool-gnpool-invalid-room-error",
+        "kernel-pool-gnpool-template-match-and-miss",
+        "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pcpool-audit-long-variable-name",
+        "kernel-pool-pcpool-empty-name-error",
+        "kernel-pool-pcpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pdpool-audit-long-variable-name",
+        "kernel-pool-pdpool-empty-name-error",
+        "kernel-pool-pdpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pipool-audit-long-variable-name",
+        "kernel-pool-pipool-empty-name-error",
+        "kernel-pool-pipool-write-and-overwrite-lifecycle",
+        "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-swpool-empty-agent-error",
+        "kernel-pool-swpool-watcher-lifecycle-and-empty-watch"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e12-337203c8-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84ce75240cf23a2cfbf52062889d4ae80d7a6fc0d778a2b76fda92cb8129ba64",
+      "caseIds": [
+        "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-cvpool-empty-agent-error",
+        "kernel-pool-cvpool-update-detection-lifecycle",
+        "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+        "kernel-pool-dtpool-report-type-size-and-miss",
+        "kernel-pool-expool-audit-numeric-versus-character-and-case",
+        "kernel-pool-expool-empty-name-error",
+        "kernel-pool-expool-numeric-existence-semantics",
+        "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gcpool-invalid-room-error",
+        "kernel-pool-gcpool-read-char-values-and-miss",
+        "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gdpool-invalid-room-error",
+        "kernel-pool-gdpool-read-double-values-and-miss",
+        "kernel-pool-gipool-audit-integer-conversion-overflow",
+        "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gipool-invalid-room-error",
+        "kernel-pool-gipool-read-integer-values-and-miss",
+        "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+        "kernel-pool-gnpool-invalid-room-error",
+        "kernel-pool-gnpool-template-match-and-miss",
+        "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pcpool-audit-long-variable-name",
+        "kernel-pool-pcpool-empty-name-error",
+        "kernel-pool-pcpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pdpool-audit-long-variable-name",
+        "kernel-pool-pdpool-empty-name-error",
+        "kernel-pool-pdpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pipool-audit-long-variable-name",
+        "kernel-pool-pipool-empty-name-error",
+        "kernel-pool-pipool-write-and-overwrite-lifecycle",
+        "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-swpool-empty-agent-error",
+        "kernel-pool-swpool-watcher-lifecycle-and-empty-watch"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84ce75240cf23a2cfbf52062889d4ae80d7a6fc0d778a2b76fda92cb8129ba64",
+      "caseIds": [
+        "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-cvpool-empty-agent-error",
+        "kernel-pool-cvpool-update-detection-lifecycle",
+        "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+        "kernel-pool-dtpool-report-type-size-and-miss",
+        "kernel-pool-expool-audit-numeric-versus-character-and-case",
+        "kernel-pool-expool-empty-name-error",
+        "kernel-pool-expool-numeric-existence-semantics",
+        "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gcpool-invalid-room-error",
+        "kernel-pool-gcpool-read-char-values-and-miss",
+        "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gdpool-invalid-room-error",
+        "kernel-pool-gdpool-read-double-values-and-miss",
+        "kernel-pool-gipool-audit-integer-conversion-overflow",
+        "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gipool-invalid-room-error",
+        "kernel-pool-gipool-read-integer-values-and-miss",
+        "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+        "kernel-pool-gnpool-invalid-room-error",
+        "kernel-pool-gnpool-template-match-and-miss",
+        "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pcpool-audit-long-variable-name",
+        "kernel-pool-pcpool-empty-name-error",
+        "kernel-pool-pcpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pdpool-audit-long-variable-name",
+        "kernel-pool-pdpool-empty-name-error",
+        "kernel-pool-pdpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pipool-audit-long-variable-name",
+        "kernel-pool-pipool-empty-name-error",
+        "kernel-pool-pipool-write-and-overwrite-lifecycle",
+        "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-swpool-empty-agent-error",
+        "kernel-pool-swpool-watcher-lifecycle-and-empty-watch"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84ce75240cf23a2cfbf52062889d4ae80d7a6fc0d778a2b76fda92cb8129ba64",
+      "caseIds": [
+        "kernel-pool-cvpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-cvpool-empty-agent-error",
+        "kernel-pool-cvpool-update-detection-lifecycle",
+        "kernel-pool-dtpool-audit-type-replacement-size-and-case",
+        "kernel-pool-dtpool-report-type-size-and-miss",
+        "kernel-pool-expool-audit-numeric-versus-character-and-case",
+        "kernel-pool-expool-empty-name-error",
+        "kernel-pool-expool-numeric-existence-semantics",
+        "kernel-pool-gcpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gcpool-invalid-room-error",
+        "kernel-pool-gcpool-read-char-values-and-miss",
+        "kernel-pool-gdpool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gdpool-invalid-room-error",
+        "kernel-pool-gdpool-read-double-values-and-miss",
+        "kernel-pool-gipool-audit-integer-conversion-overflow",
+        "kernel-pool-gipool-audit-paging-rounding-and-wrong-type",
+        "kernel-pool-gipool-invalid-room-error",
+        "kernel-pool-gipool-read-integer-values-and-miss",
+        "kernel-pool-gnpool-audit-percent-wildcard-paging-case-and-miss",
+        "kernel-pool-gnpool-invalid-room-error",
+        "kernel-pool-gnpool-template-match-and-miss",
+        "kernel-pool-pcpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pcpool-audit-long-variable-name",
+        "kernel-pool-pcpool-empty-name-error",
+        "kernel-pool-pcpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pdpool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pdpool-audit-long-variable-name",
+        "kernel-pool-pdpool-empty-name-error",
+        "kernel-pool-pdpool-write-and-overwrite-lifecycle",
+        "kernel-pool-pipool-audit-empty-is-noop-and-type-replacement",
+        "kernel-pool-pipool-audit-long-variable-name",
+        "kernel-pool-pipool-empty-name-error",
+        "kernel-pool-pipool-write-and-overwrite-lifecycle",
+        "kernel-pool-swpool-audit-independent-agents-unrelated-writes-and-reregistration",
+        "kernel-pool-swpool-empty-agent-error",
+        "kernel-pool-swpool-watcher-lifecycle-and-empty-watch"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1682,11 +1878,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -1705,11 +1902,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.cvpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_cvpool -> cvpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -1755,11 +1953,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -1778,11 +1977,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.dtpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_dtpool -> dtpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -1833,11 +2033,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -1856,11 +2057,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.expool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_expool -> expool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -1928,11 +2130,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -1952,11 +2155,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gcpool -> gcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2024,11 +2228,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2048,11 +2253,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gdpool -> gdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2125,11 +2331,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2149,11 +2356,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gipool -> gipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2221,11 +2429,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2245,11 +2454,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.gnpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_gnpool -> gnpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2363,11 +2573,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2387,11 +2598,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pcpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pcpool -> pcpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2462,11 +2674,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2486,11 +2699,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pdpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pdpool -> pdpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2561,11 +2775,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2585,11 +2800,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.pipool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_pipool -> pipool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -2668,11 +2884,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> Node typed adapter -> native registered handler under process CSPICE mutex -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -2691,14 +2908,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> kernel-pool dispatcher -> raw.swpool -> WASM typed adapter and owned temporary buffers -> required compiled _tspice export -> shared tspice_swpool -> swpool_c. Oracle directly calls matching SpiceyPy operation; only zero-count pcpool uses its underlying same-named libspice entrypoint because the Python wrapper cannot construct an empty row array.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Historical observations and their recorded source digests are preserved. New full source-bound local and canonical CI results are required for the combined E10/E11/E12 source."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

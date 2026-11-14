@@ -55,3 +55,7 @@ This checkpoint has 27 routines ready for review, 313 in progress and 147 planne
 | E16-geometry-quantities      | `phaseq_c`, `lspcn_c`, `trgsep_c`                                                                                                                                          | Main baseline                       | in-progress [#745](https://github.com/rybosome/tspice/pull/745) |
 
 After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
+
+## E12 source validation checkpoint
+
+[PR #748](https://github.com/rybosome/tspice/pull/748) remains in progress. Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

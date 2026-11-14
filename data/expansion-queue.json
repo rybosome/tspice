@@ -2812,18 +2812,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/748"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "49 workflows/100 calls; all 98 registered comparisons, eight public/oracle, 16 native and 35 WASM tests passed. Real Chrome exercised all seven and recovered after INVALIDRADII."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "337203c82401736275757e244afe315f86d9cca5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+          "result": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run source-bound full local lanes and canonical CI before any readiness claim.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-ellipsoid-geometry",
       "branch": "codex/expand-ellipsoid-geometry",
       "baseCommit": "a2689f5830c8730560e204493cb23e2115e83344",
-      "progressNote": "49 workflows/100 calls; all 98 registered comparisons, eight public/oracle, 16 native and 35 WASM tests passed. Real Chrome exercised all seven and recovered after INVALIDRADII."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 337203c8. 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "49 workflows/100 calls; all 98 registered comparisons, eight public/oracle, 16 native and 35 WASM tests passed. Real Chrome exercised all seven and recovered after INVALIDRADII."
     },
     {
       "id": "E13-surface-derivatives",

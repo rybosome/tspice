@@ -55,7 +55,256 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e12-337203c8-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "292ed373db0497ee3c4f5729f002a83453f5879a5959606caeaf2b72c36d66cf",
+      "caseIds": [
+        "geometry-edlimb-axis-underflow",
+        "geometry-edlimb-inside",
+        "geometry-edlimb-nonpositive-radius",
+        "geometry-edlimb-oblique-view",
+        "geometry-edlimb-sphere-and-scale",
+        "geometry-edlimb-surface-point-limb",
+        "geometry-edlimb-triaxial-axis-views",
+        "geometry-ednmpt-axis-normals",
+        "geometry-ednmpt-axis-underflow",
+        "geometry-ednmpt-bad-axis",
+        "geometry-ednmpt-normal-magnitude",
+        "geometry-ednmpt-normal-underflow",
+        "geometry-ednmpt-oblique-normals",
+        "geometry-ednmpt-sphere",
+        "geometry-ednmpt-zero-normal",
+        "geometry-edpnt-axis-radial",
+        "geometry-edpnt-bad-radii-precede-zero",
+        "geometry-edpnt-level-underflow",
+        "geometry-edpnt-mixed-octants",
+        "geometry-edpnt-radial-scale",
+        "geometry-edpnt-sphere",
+        "geometry-edpnt-zero-point",
+        "geometry-nearpt-axis-heights",
+        "geometry-nearpt-excessive-point",
+        "geometry-nearpt-extreme-ratio",
+        "geometry-nearpt-metric-scale",
+        "geometry-nearpt-nonpositive-radius",
+        "geometry-nearpt-origin-and-interior",
+        "geometry-nearpt-triaxial-oblique",
+        "geometry-npedln-axis-square-underflow",
+        "geometry-npedln-direction-and-origin",
+        "geometry-npedln-line-intersections",
+        "geometry-npedln-nonpositive-axis",
+        "geometry-npedln-oblique-separated",
+        "geometry-npedln-tangent-and-separated",
+        "geometry-npedln-unrepresentable-unit-direction",
+        "geometry-npedln-zero-direction-precedence",
+        "geometry-surfnm-axis-and-origin",
+        "geometry-surfnm-level-set-direction",
+        "geometry-surfnm-nonpositive-axes",
+        "geometry-surfnm-sphere",
+        "geometry-surfnm-triaxial-surface",
+        "geometry-surfpt-bad-axes",
+        "geometry-surfpt-forward-ray-and-miss",
+        "geometry-surfpt-inside-and-surface",
+        "geometry-surfpt-oblique-and-scale",
+        "geometry-surfpt-tangent-and-offset",
+        "geometry-surfpt-zero-direction",
+        "geometry-surfpt-zero-precedence"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e12-337203c8-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "292ed373db0497ee3c4f5729f002a83453f5879a5959606caeaf2b72c36d66cf",
+      "caseIds": [
+        "geometry-edlimb-axis-underflow",
+        "geometry-edlimb-inside",
+        "geometry-edlimb-nonpositive-radius",
+        "geometry-edlimb-oblique-view",
+        "geometry-edlimb-sphere-and-scale",
+        "geometry-edlimb-surface-point-limb",
+        "geometry-edlimb-triaxial-axis-views",
+        "geometry-ednmpt-axis-normals",
+        "geometry-ednmpt-axis-underflow",
+        "geometry-ednmpt-bad-axis",
+        "geometry-ednmpt-normal-magnitude",
+        "geometry-ednmpt-normal-underflow",
+        "geometry-ednmpt-oblique-normals",
+        "geometry-ednmpt-sphere",
+        "geometry-ednmpt-zero-normal",
+        "geometry-edpnt-axis-radial",
+        "geometry-edpnt-bad-radii-precede-zero",
+        "geometry-edpnt-level-underflow",
+        "geometry-edpnt-mixed-octants",
+        "geometry-edpnt-radial-scale",
+        "geometry-edpnt-sphere",
+        "geometry-edpnt-zero-point",
+        "geometry-nearpt-axis-heights",
+        "geometry-nearpt-excessive-point",
+        "geometry-nearpt-extreme-ratio",
+        "geometry-nearpt-metric-scale",
+        "geometry-nearpt-nonpositive-radius",
+        "geometry-nearpt-origin-and-interior",
+        "geometry-nearpt-triaxial-oblique",
+        "geometry-npedln-axis-square-underflow",
+        "geometry-npedln-direction-and-origin",
+        "geometry-npedln-line-intersections",
+        "geometry-npedln-nonpositive-axis",
+        "geometry-npedln-oblique-separated",
+        "geometry-npedln-tangent-and-separated",
+        "geometry-npedln-unrepresentable-unit-direction",
+        "geometry-npedln-zero-direction-precedence",
+        "geometry-surfnm-axis-and-origin",
+        "geometry-surfnm-level-set-direction",
+        "geometry-surfnm-nonpositive-axes",
+        "geometry-surfnm-sphere",
+        "geometry-surfnm-triaxial-surface",
+        "geometry-surfpt-bad-axes",
+        "geometry-surfpt-forward-ray-and-miss",
+        "geometry-surfpt-inside-and-surface",
+        "geometry-surfpt-oblique-and-scale",
+        "geometry-surfpt-tangent-and-offset",
+        "geometry-surfpt-zero-direction",
+        "geometry-surfpt-zero-precedence"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "292ed373db0497ee3c4f5729f002a83453f5879a5959606caeaf2b72c36d66cf",
+      "caseIds": [
+        "geometry-edlimb-axis-underflow",
+        "geometry-edlimb-inside",
+        "geometry-edlimb-nonpositive-radius",
+        "geometry-edlimb-oblique-view",
+        "geometry-edlimb-sphere-and-scale",
+        "geometry-edlimb-surface-point-limb",
+        "geometry-edlimb-triaxial-axis-views",
+        "geometry-ednmpt-axis-normals",
+        "geometry-ednmpt-axis-underflow",
+        "geometry-ednmpt-bad-axis",
+        "geometry-ednmpt-normal-magnitude",
+        "geometry-ednmpt-normal-underflow",
+        "geometry-ednmpt-oblique-normals",
+        "geometry-ednmpt-sphere",
+        "geometry-ednmpt-zero-normal",
+        "geometry-edpnt-axis-radial",
+        "geometry-edpnt-bad-radii-precede-zero",
+        "geometry-edpnt-level-underflow",
+        "geometry-edpnt-mixed-octants",
+        "geometry-edpnt-radial-scale",
+        "geometry-edpnt-sphere",
+        "geometry-edpnt-zero-point",
+        "geometry-nearpt-axis-heights",
+        "geometry-nearpt-excessive-point",
+        "geometry-nearpt-extreme-ratio",
+        "geometry-nearpt-metric-scale",
+        "geometry-nearpt-nonpositive-radius",
+        "geometry-nearpt-origin-and-interior",
+        "geometry-nearpt-triaxial-oblique",
+        "geometry-npedln-axis-square-underflow",
+        "geometry-npedln-direction-and-origin",
+        "geometry-npedln-line-intersections",
+        "geometry-npedln-nonpositive-axis",
+        "geometry-npedln-oblique-separated",
+        "geometry-npedln-tangent-and-separated",
+        "geometry-npedln-unrepresentable-unit-direction",
+        "geometry-npedln-zero-direction-precedence",
+        "geometry-surfnm-axis-and-origin",
+        "geometry-surfnm-level-set-direction",
+        "geometry-surfnm-nonpositive-axes",
+        "geometry-surfnm-sphere",
+        "geometry-surfnm-triaxial-surface",
+        "geometry-surfpt-bad-axes",
+        "geometry-surfpt-forward-ray-and-miss",
+        "geometry-surfpt-inside-and-surface",
+        "geometry-surfpt-oblique-and-scale",
+        "geometry-surfpt-tangent-and-offset",
+        "geometry-surfpt-zero-direction",
+        "geometry-surfpt-zero-precedence"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "292ed373db0497ee3c4f5729f002a83453f5879a5959606caeaf2b72c36d66cf",
+      "caseIds": [
+        "geometry-edlimb-axis-underflow",
+        "geometry-edlimb-inside",
+        "geometry-edlimb-nonpositive-radius",
+        "geometry-edlimb-oblique-view",
+        "geometry-edlimb-sphere-and-scale",
+        "geometry-edlimb-surface-point-limb",
+        "geometry-edlimb-triaxial-axis-views",
+        "geometry-ednmpt-axis-normals",
+        "geometry-ednmpt-axis-underflow",
+        "geometry-ednmpt-bad-axis",
+        "geometry-ednmpt-normal-magnitude",
+        "geometry-ednmpt-normal-underflow",
+        "geometry-ednmpt-oblique-normals",
+        "geometry-ednmpt-sphere",
+        "geometry-ednmpt-zero-normal",
+        "geometry-edpnt-axis-radial",
+        "geometry-edpnt-bad-radii-precede-zero",
+        "geometry-edpnt-level-underflow",
+        "geometry-edpnt-mixed-octants",
+        "geometry-edpnt-radial-scale",
+        "geometry-edpnt-sphere",
+        "geometry-edpnt-zero-point",
+        "geometry-nearpt-axis-heights",
+        "geometry-nearpt-excessive-point",
+        "geometry-nearpt-extreme-ratio",
+        "geometry-nearpt-metric-scale",
+        "geometry-nearpt-nonpositive-radius",
+        "geometry-nearpt-origin-and-interior",
+        "geometry-nearpt-triaxial-oblique",
+        "geometry-npedln-axis-square-underflow",
+        "geometry-npedln-direction-and-origin",
+        "geometry-npedln-line-intersections",
+        "geometry-npedln-nonpositive-axis",
+        "geometry-npedln-oblique-separated",
+        "geometry-npedln-tangent-and-separated",
+        "geometry-npedln-unrepresentable-unit-direction",
+        "geometry-npedln-zero-direction-precedence",
+        "geometry-surfnm-axis-and-origin",
+        "geometry-surfnm-level-set-direction",
+        "geometry-surfnm-nonpositive-axes",
+        "geometry-surfnm-sphere",
+        "geometry-surfnm-triaxial-surface",
+        "geometry-surfpt-bad-axes",
+        "geometry-surfpt-forward-ray-and-miss",
+        "geometry-surfpt-inside-and-surface",
+        "geometry-surfpt-oblique-and-scale",
+        "geometry-surfpt-tangent-and-offset",
+        "geometry-surfpt-zero-direction",
+        "geometry-surfpt-zero-precedence"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "nearpt_c",
@@ -108,16 +357,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.nearpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_nearpt -> nearpt_c. Independent locked SpiceyPy 6.0.3 sp.nearpt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.nearpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_nearpt -> nearpt_c. Independent locked SpiceyPy 6.0.3 sp.nearpt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -191,16 +440,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.npedln -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_npedln -> npedln_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.npedln -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_npedln -> npedln_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -272,16 +521,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.edlimb -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_edlimb -> edlimb_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.edlimb -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_edlimb -> edlimb_c. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -341,16 +590,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ednmpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_ednmpt -> ednmpt_c. Independent locked SpiceyPy 6.0.3 sp.ednmpt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ednmpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_ednmpt -> ednmpt_c. Independent locked SpiceyPy 6.0.3 sp.ednmpt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -405,16 +654,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.edpnt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_edpnt -> edpnt_c. Independent locked SpiceyPy 6.0.3 sp.edpnt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.edpnt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_edpnt -> edpnt_c. Independent locked SpiceyPy 6.0.3 sp.edpnt invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -459,16 +708,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.surfnm -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_surfnm -> surfnm_c. Independent locked SpiceyPy 6.0.3 sp.surfnm invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.surfnm -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_surfnm -> surfnm_c. Independent locked SpiceyPy 6.0.3 sp.surfnm invokes its own library and returns all scientific components.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     },
@@ -541,19 +790,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "composed",
           "trace": "raw.surfpt -> typed native wrapper and registered C++ handler under the shared SPICE mutex -> tspice_surfpt -> external surfpt_ under chkin_c/chkout_c; reading the hit point is conditional. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "composed",
           "trace": "raw.surfpt -> typed WASM wrapper with bounded fixed buffers and the compiled Emscripten export -> tspice_surfpt -> external surfpt_ under chkin_c/chkout_c; reading the hit point is conditional. The locked oracle independently checks initialized component operations and uses the public SpiceyPy wrapper on defined inputs.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "49 registered workflows, 98 live comparisons, eight public/oracle, 16 native, 35 WASM and real Chrome observed. Both backend reviews await fresh full required local and source CI executions."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

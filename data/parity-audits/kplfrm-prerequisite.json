@@ -1390,6 +1390,78 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
       "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-e12-337203c8-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "459856772d8b5f601e058c7e93372da8b425f9a336e1f0912de1b6043577030c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e12-337203c8-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "459856772d8b5f601e058c7e93372da8b425f9a336e1f0912de1b6043577030c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 337203c82401736275757e244afe315f86d9cca5. JavaScript: 2,704 parity tests and one expected guard skip. Native-required: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "459856772d8b5f601e058c7e93372da8b425f9a336e1f0912de1b6043577030c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e12-337203c8-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "459856772d8b5f601e058c7e93372da8b425f9a336e1f0912de1b6043577030c",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "337203c82401736275757e244afe315f86d9cca5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43573364855/job/132382270722",
+      "observation": "Inspected successful Linux Node 22 native-required job 132382270722 on 337203c82401736275757e244afe315f86d9cca5: 2,472 registered Node/WASM live comparisons; 2,705 parity-package tests with no skips, including the native-required guard; 121 native wrapper, 727 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1537,11 +1609,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": []
+          "executions": ["local-e12-337203c8-node", "ci-e12-337203c8-node"]
         },
         "wasm": {
           "history": [
@@ -1563,14 +1636,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": []
+          "executions": ["local-e12-337203c8-wasm", "ci-e12-337203c8-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Historical observations and their recorded source digests are preserved. New full source-bound local and canonical CI results are required for the combined E10/E11/E12 source."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
