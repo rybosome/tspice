@@ -186,13 +186,13 @@
         "evidence": "https://github.com/rybosome/tspice/pull/707",
         "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/714"],
       "validationEvidence": [],
       "nextAction": "Finish bounded source and live oracle cases. Reject undefined signed-prefix sumai overflow before actual C arithmetic in JS/shared C, while calling actual sumai for safe arrays. Complete primary review, both required local lanes and canonical CI.",
       "worktree": "/private/tmp/tspice-step8-scalar-math",
       "branch": "codex/expand-scalar-math",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Source agents assigned nine routines on an independent main-based worktree. Independent ctypes variadic oracle route was investigated in PR #707. Actual batch signatures, numeric/length behavior and tests are being implemented; no batch verification claim."
+      "progressNote": "Draft PR #714 source head 02544981; CI run 43544898708 pending. Integration owner reports compiled focused checks passed and full JS lane passed 2312 live comparisons; native-required lane running. Full source-bound verification and final-head readiness remain pending."
     },
     {
       "id": "A04-array-storage",
@@ -249,7 +249,7 @@
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
       "owner": "Codex Step 8 (/root)",
-      "status": "in-progress",
+      "status": "PR-ready",
       "dependsOn": [],
       "prerequisiteReview": "Reuse existing scalar/Vec3 conventions; verify longitude/colatitude units and signed/zero radius behavior with asymmetric cases.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -262,12 +262,21 @@
         "missingTopLevelWrappers": []
       },
       "prs": ["https://github.com/rybosome/tspice/pull/709"],
-      "validationEvidence": [],
-      "nextAction": "Inspect completion of required final-head checks and rebaseability, then record source-bound evidence before changing queue readiness. No merge authorized.",
+      "validationEvidence": [
+        {
+          "kind": "final-head-readiness",
+          "testedCommit": "3c1b767be9f4a7661795e0fe0412a3828dda6a19",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43540344076",
+          "result": "All 15 jobs passed; integration owner observed explicit rebaseable:true against 73f3fec8 after CI.",
+          "semanticEvidence": "Source-bound local and observed CI execution records remain in PR #709 data/parity-audits; this queue checkpoint is not a replacement."
+        }
+      ],
+      "nextAction": "Await maintainer review and merge authorization. Recheck final-head CI/rebaseability after any source/base change.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Integration owner reports all 15 source CI jobs and full local validation green, with fresh source-bound audits. Final metadata head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 awaits CI run 43540344076 and readiness review. Remains in-progress."
+      "progressNote": "Integration owner reports final head 3c1b767be9f4a7661795e0fe0412a3828dda6a19 passed all 15 jobs in CI run 43540344076; after-CI REST explicitly reported rebaseable:true against main 73f3. Draft removed and body updated; no merge.",
+      "deliveryNote": "Final-head checks and explicit rebaseability passed; draft removed and body updated. PR-ready, not landed."
     },
     {
       "id": "A06-coordinate-conventions",
@@ -297,13 +306,13 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/713"],
       "validationEvidence": [],
       "nextAction": "Complete seven raw paths and authored body-constant fixture provenance/lifecycle, review actual conventions/errors, then run required local/CI validation.",
       "worktree": "/private/tmp/tspice-step8-coordinate-conventions",
       "branch": "codex/expand-coordinate-conventions",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Source compiled and semantic review complete. Integration owner reports 114 live Node/WASM case comparisons, 12 public tests and both ten-observation extreme tests passed. WASM allocation-test fixture cleanup was repaired to use existing tspiceCall0/_tspice_kclear and observe the fixture pool entry absent; focused rerun/native tests pending. Full required local/CI lanes remain pending; no current-source verification claim."
+      "progressNote": "Integration owner reports both full required local lanes passed 2332 live comparisons / 2559 parity tests without skips in the native-required lane, and inspected source Linux Node 22 CI job 132291465391 passed. Draft PR #713 at source 18576cc465e7d9da8f084c03a009654ffe429d8e; fresh source-bound audit metadata being recorded, with final-head CI/readiness pending."
     },
     {
       "id": "A07-coordinate-jacobians",
@@ -439,8 +448,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Immediate consumer for bounded readonly number-array input and copied variable-length outputs. Establish matching dimensions, zero dimension, finite inputs and checked byte sizes. Family size 15 keeps one shared dimension policy review.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -454,7 +463,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete immediately consumed general-vector contracts and direct Node/WASM/shim paths, review dimensions/numeric behavior and independent live cases, then required local/CI evidence.",
+      "worktree": "/private/tmp/tspice-step8-general-vectors",
+      "branch": "codex/expand-general-vectors",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Production source and final native/WASM build frozen; primary/representation review complete, parity tests still being finalized. Current registry has 82 scenarios / 205 new calls. Nine SpiceyPy empty-vector converter defects are repaired by an independent empty-only typed locked-library C route, with nonempty wrappers unchanged. No current-source verification claim."
     },
     {
       "id": "A11-state-derivatives",
@@ -470,8 +483,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse Vec6/SpiceStateVector; verify position/velocity ordering and singular angular derivatives. No dependency on public general-vector wrappers.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -485,7 +498,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Implement immediately consumed readonly state-array contracts and direct Node/WASM/shim paths; review derivative ordering, singular/zero behavior, numerical limits and independent live cases before required evidence.",
+      "worktree": "/private/tmp/tspice-step8-state-derivatives",
+      "branch": "codex/expand-state-derivatives",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Backend source implementation assigned for six state-derivative routines on an independent main-based worktree. Parity/semantic review, focused actual-backend and required full local/CI validation remain pending; no completion claim."
     },
     {
       "id": "A12-fixed-matrices",
@@ -525,7 +542,7 @@
       "worktree": "/private/tmp/tspice-step8-fixed-matrices",
       "branch": "codex/expand-fixed-matrices",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Source compiled and frozen. Integration owner reports all 100 focused Node/WASM case comparisons, 10 public tests, 2 complete 14-observation extreme tests, 46 WASM allocation checks, 54 native wrapper tests, 6 core result-helper tests and 2 actual-backend RPC transport regressions passed. Signed-zero recovery assertion repaired without output normalization. Full required lanes and canonical CI remain pending; no current-source verification claim. Draft PR #712 source head 72bd136594136641758355de3ca2c3011b7b7174 awaits CI 43542559918; full JS lane is running."
+      "progressNote": "Integration owner reports both required locals and inspected source Linux Node 22 CI job 132286223439 passed 2318 live / 2543 parity tests without skips; all 173 source-bound routine audits have fresh verification. Final metadata f3289ac90d299bc0ef782ba576e9efd2173a8e25 pushed to draft PR #712; final-head CI/readiness pending."
     },
     {
       "id": "A13-general-matrices",

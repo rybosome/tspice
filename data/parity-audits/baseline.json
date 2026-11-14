@@ -422,7 +422,7 @@
         "srfrec_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/713"],
       "nextAction": "Complete primary-semantic and authored-fixture review, registered live cases and focused tests, then both required local lanes and observed canonical CI before current-source verification. Independent Step 8 batch; no merge authorized."
     }
   ]
