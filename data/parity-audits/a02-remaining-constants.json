@@ -21,7 +21,140 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/time.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a02-d5ba2aee-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8ad77c16cf17d2af2e6d03e9468140a39213c3758efeb92eae999e2f9d5adfaf",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened."
+    },
+    {
+      "id": "local-a02-d5ba2aee-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8ad77c16cf17d2af2e6d03e9468140a39213c3758efeb92eae999e2f9d5adfaf",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened."
+    },
+    {
+      "id": "ci-a02-d5ba2aee-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8ad77c16cf17d2af2e6d03e9468140a39213c3758efeb92eae999e2f9d5adfaf",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately."
+    },
+    {
+      "id": "ci-a02-d5ba2aee-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8ad77c16cf17d2af2e6d03e9468140a39213c3758efeb92eae999e2f9d5adfaf",
+      "caseIds": [
+        "coords-vectors-clight-constant-repeat-after-reset",
+        "coords-vectors-clight-constant-value",
+        "coords-vectors-dpmax-constant-repeat-after-reset",
+        "coords-vectors-dpmax-constant-value",
+        "coords-vectors-dpmin-constant-repeat-after-reset",
+        "coords-vectors-dpmin-constant-value",
+        "coords-vectors-intmax-constant-repeat-after-reset",
+        "coords-vectors-intmax-constant-value",
+        "coords-vectors-intmin-constant-repeat-after-reset",
+        "coords-vectors-intmin-constant-value",
+        "time-b1900-constant-repeat-after-reset",
+        "time-b1900-constant-value",
+        "time-j1950-constant-repeat-after-reset",
+        "time-j1950-constant-value",
+        "time-j2100-constant-repeat-after-reset",
+        "time-j2100-constant-value",
+        "time-jyear-constant-repeat-after-reset",
+        "time-jyear-constant-value",
+        "time-tyear-constant-repeat-after-reset",
+        "time-tyear-constant-value"
+      ],
+      "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately."
+    }
+  ],
   "routines": [
     {
       "routine": "b1900_c",
@@ -49,16 +182,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.b1900 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.b1900 -> WASM adapter -> typed/build-configured/binary _tspice_b1900 -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -88,16 +221,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.j1950 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.j1950 -> WASM adapter -> typed/build-configured/binary _tspice_j1950 -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -127,16 +260,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.j2100 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.j2100 -> WASM adapter -> typed/build-configured/binary _tspice_j2100 -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -166,16 +299,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.jyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.jyear -> WASM adapter -> typed/build-configured/binary _tspice_jyear -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -205,16 +338,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.tyear -> WASM adapter -> typed/build-configured/binary _tspice_tyear -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -244,16 +377,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.clight -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.clight -> WASM adapter -> typed/build-configured/binary _tspice_clight -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -283,16 +416,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dpmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dpmax -> WASM adapter -> typed/build-configured/binary _tspice_dpmax -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -322,16 +455,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dpmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dpmin -> WASM adapter -> typed/build-configured/binary _tspice_dpmin -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -361,16 +494,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.intmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.intmax -> WASM adapter -> typed/build-configured/binary _tspice_intmax -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     },
@@ -400,19 +533,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.intmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.intmin -> WASM adapter -> typed/build-configured/binary _tspice_intmin -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": []
+          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Reviewed source and complete runtime paths; local and canonical CI verification pending. No verification inferred from registration."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

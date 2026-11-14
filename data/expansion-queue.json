@@ -93,9 +93,10 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/707"],
       "validationEvidence": [],
-      "nextAction": "Implement the nine constant paths, regenerate owned artifacts and run required local/CI lanes."
+      "nextAction": "Inspect required CI completion, address failures, and record exact successful job/commit/source-digest evidence before marking PR-ready.",
+      "deliveryNote": "Draft PR open; required CI pending. Remains in-progress, not PR-ready or landed."
     },
     {
       "id": "A02-remaining-constants",
@@ -128,11 +129,27 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Create independent current-main worktree; implement the ten remaining constants, regenerate artifacts and run required local/CI lanes.",
+      "prs": ["https://github.com/rybosome/tspice/pull/708"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+          "observation": "Both required local lanes passed; native lane executed 2258 live Node/WASM comparisons and all 2475 parity-package tests with zero skips. Source-bound per-batch fingerprints and actual executions are recorded in data/parity-audits."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43536405345",
+          "observation": "All 15 source-commit jobs completed successfully; inspected uncached Linux Node 22 native-required job 132266367481, production native guard, all 2258 live comparisons and 2475 parity-package tests without skips. No CI retries."
+        }
+      ],
+      "nextAction": "Run the final metadata commit through required CI, explicitly verify GitHub rebaseability, and mark PR #708 ready only after every required job passes.",
       "worktree": "/private/tmp/tspice-step8-scalar-constants",
-      "branch": "codex/expand-scalar-constants"
+      "branch": "codex/expand-scalar-constants",
+      "deliveryNote": "Scientific source and both required local lanes passed; all 15 source CI jobs passed. Current Node/WASM audit fingerprints are verified. Final metadata commit CI and explicit final-head rebaseability remain pending, so this timestamped checkpoint remains in-progress and not landed."
     },
     {
       "id": "A03-scalar-math",
@@ -235,12 +252,13 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/709"],
       "validationEvidence": [],
-      "nextAction": "Complete the eight coordinate paths and reviewed live cases; regenerate artifacts and run required local/CI lanes before claiming verification.",
+      "nextAction": "Both required local lanes passed; draft PR #709 awaits canonical CI and source-bound verification metadata. Preserve no-merge boundary.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
-      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446"
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Compiled implementation and focused local run reported by integration owner: 80 live Node/WASM comparisons and 6 public-path tests passed. Full required lanes and CI remain pending; this note is not a source-bound verification record."
     },
     {
       "id": "A06-coordinate-conventions",
@@ -327,8 +345,8 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Existing Vec3 representation suffices. Establish zero-vector returns, boolean shape, unit-vector-plus-norm result and copy ownership.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
@@ -342,7 +360,11 @@
       },
       "prs": [],
       "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "nextAction": "Complete eight typed raw paths, live oracle scenarios and wrapper tests; regenerate compiled artifacts and run required local/CI lanes.",
+      "worktree": "/private/tmp/tspice-step8-vector-basics",
+      "branch": "codex/expand-vector-basics",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Bounded source implementation active; no verified or landed claim."
     },
     {
       "id": "A09-vector-combinations",
