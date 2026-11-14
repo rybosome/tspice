@@ -15,6 +15,19 @@ from .models import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -746,6 +759,109 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfetd.windowId"),
                 index=_expect_int(step.get("index"), label="cells-windows.wnfetd.index"),
+            )
+
+        case "cells-windows.wncomd":
+            return StepCellsWindowsWncomd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncomd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncomd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncomd.windowId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wncomd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wncomd.maxIntervals"),
+            )
+
+        case "cells-windows.wncond":
+            return StepCellsWindowsWncond(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncond.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncond.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncond.windowId"),
+            )
+
+        case "cells-windows.wndifd":
+            return StepCellsWindowsWndifd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wndifd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wndifd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wndifd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wndifd.maxIntervals"),
+            )
+
+        case "cells-windows.wnelmd":
+            return StepCellsWindowsWnelmd(
+                op=op,
+                point=_expect_number(step.get("point"), label="cells-windows.wnelmd.point"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnelmd.windowId"),
+            )
+
+        case "cells-windows.wnexpd":
+            return StepCellsWindowsWnexpd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnexpd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnexpd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnexpd.windowId"),
+            )
+
+        case "cells-windows.wnextd":
+            return StepCellsWindowsWnextd(
+                op=op,
+                side=_expect_string(step.get("side"), label="cells-windows.wnextd.side"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnextd.windowId"),
+            )
+
+        case "cells-windows.wnfild":
+            return StepCellsWindowsWnfild(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfild.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfild.windowId"),
+            )
+
+        case "cells-windows.wnfltd":
+            return StepCellsWindowsWnfltd(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfltd.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfltd.windowId"),
+            )
+
+        case "cells-windows.wnincd":
+            return StepCellsWindowsWnincd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnincd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnincd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnincd.windowId"),
+            )
+
+        case "cells-windows.wnintd":
+            return StepCellsWindowsWnintd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnintd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnintd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnintd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnintd.maxIntervals"),
+            )
+
+        case "cells-windows.wnreld":
+            return StepCellsWindowsWnreld(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnreld.aId"),
+                relation=_expect_string(step.get("relation"), label="cells-windows.wnreld.relation"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnreld.bId"),
+            )
+
+        case "cells-windows.wnsumd":
+            return StepCellsWindowsWnsumd(
+                op=op,
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnsumd.windowId"),
+            )
+
+        case "cells-windows.wnunid":
+            return StepCellsWindowsWnunid(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnunid.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnunid.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnunid.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnunid.maxIntervals"),
             )
 
         case "cells-windows.wnvald":

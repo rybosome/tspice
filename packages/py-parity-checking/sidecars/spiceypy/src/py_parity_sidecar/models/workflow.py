@@ -14,6 +14,19 @@ from .cells_windows import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
 )
 from .coords_vectors import (
@@ -255,6 +268,19 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepCellsWindowsWncomd
+    | StepCellsWindowsWncond
+    | StepCellsWindowsWndifd
+    | StepCellsWindowsWnelmd
+    | StepCellsWindowsWnexpd
+    | StepCellsWindowsWnextd
+    | StepCellsWindowsWnfild
+    | StepCellsWindowsWnfltd
+    | StepCellsWindowsWnincd
+    | StepCellsWindowsWnintd
+    | StepCellsWindowsWnreld
+    | StepCellsWindowsWnsumd
+    | StepCellsWindowsWnunid
     | StepCellsWindowsWnvald
     | StepKernelPoolGdpool
     | StepKernelPoolGipool

@@ -11,6 +11,19 @@ import type {
   StepCellsWindowsWncard,
   StepCellsWindowsWnfetd,
   StepCellsWindowsWninsd,
+  StepCellsWindowsWncomd,
+  StepCellsWindowsWncond,
+  StepCellsWindowsWndifd,
+  StepCellsWindowsWnelmd,
+  StepCellsWindowsWnexpd,
+  StepCellsWindowsWnextd,
+  StepCellsWindowsWnfild,
+  StepCellsWindowsWnfltd,
+  StepCellsWindowsWnincd,
+  StepCellsWindowsWnintd,
+  StepCellsWindowsWnreld,
+  StepCellsWindowsWnsumd,
+  StepCellsWindowsWnunid,
   StepCellsWindowsWnvald,
   StepOutput,
 } from "../../case-types.js";
@@ -38,6 +51,19 @@ type CellsWindowsStep =
   | StepCellsWindowsWncard
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
+  | StepCellsWindowsWncomd
+  | StepCellsWindowsWncond
+  | StepCellsWindowsWndifd
+  | StepCellsWindowsWnelmd
+  | StepCellsWindowsWnexpd
+  | StepCellsWindowsWnextd
+  | StepCellsWindowsWnfild
+  | StepCellsWindowsWnfltd
+  | StepCellsWindowsWnincd
+  | StepCellsWindowsWnintd
+  | StepCellsWindowsWnreld
+  | StepCellsWindowsWnsumd
+  | StepCellsWindowsWnunid
   | StepCellsWindowsWnvald;
 
 function requireTarget(
@@ -59,6 +85,19 @@ function requireTarget(
       throw new Error(`Unsupported cells-windows targetKind: ${exhaustive}`);
     }
   }
+}
+
+function snapshotWindow(
+  context: RunTspiceContext,
+  window: ReturnType<typeof requireWindow>,
+) {
+  return Array.from(
+    { length: context.spice.raw.wncard(window) },
+    (_, index) => {
+      const [left, right] = context.spice.raw.wnfetd(window, index);
+      return { left, right };
+    },
+  );
 }
 
 function snapshotSet(
@@ -206,18 +245,119 @@ export function runCellsWindowsStep(
       return { op: step.op, value: { left, right } };
     }
 
+    case "cells-windows.wncomd": {
+      const window = requireWindow(context, step.windowId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultId,
+        step.maxIntervals,
+      );
+      context.spice.raw.wncomd(step.left, step.right, window, result);
+      return { op: step.op, value: snapshotWindow(context, result) };
+    }
+
+    case "cells-windows.wncond": {
+      const window = requireWindow(context, step.windowId);
+      context.spice.raw.wncond(step.left, step.right, window);
+      return { op: step.op, value: snapshotWindow(context, window) };
+    }
+
+    case "cells-windows.wndifd": {
+      const a = requireWindow(context, step.aId);
+      const b = requireWindow(context, step.bId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultId,
+        step.maxIntervals,
+      );
+      context.spice.raw.wndifd(a, b, result);
+      return { op: step.op, value: snapshotWindow(context, result) };
+    }
+
+    case "cells-windows.wnelmd": {
+      const window = requireWindow(context, step.windowId);
+      return {
+        op: step.op,
+        value: context.spice.raw.wnelmd(step.point, window),
+      };
+    }
+
+    case "cells-windows.wnexpd": {
+      const window = requireWindow(context, step.windowId);
+      context.spice.raw.wnexpd(step.left, step.right, window);
+      return { op: step.op, value: snapshotWindow(context, window) };
+    }
+
+    case "cells-windows.wnextd": {
+      const window = requireWindow(context, step.windowId);
+      context.spice.raw.wnextd(step.side, window);
+      return { op: step.op, value: snapshotWindow(context, window) };
+    }
+
+    case "cells-windows.wnfild": {
+      const window = requireWindow(context, step.windowId);
+      context.spice.raw.wnfild(step.small, window);
+      return { op: step.op, value: snapshotWindow(context, window) };
+    }
+
+    case "cells-windows.wnfltd": {
+      const window = requireWindow(context, step.windowId);
+      context.spice.raw.wnfltd(step.small, window);
+      return { op: step.op, value: snapshotWindow(context, window) };
+    }
+
+    case "cells-windows.wnincd": {
+      const window = requireWindow(context, step.windowId);
+      return {
+        op: step.op,
+        value: context.spice.raw.wnincd(step.left, step.right, window),
+      };
+    }
+
+    case "cells-windows.wnintd": {
+      const a = requireWindow(context, step.aId);
+      const b = requireWindow(context, step.bId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultId,
+        step.maxIntervals,
+      );
+      context.spice.raw.wnintd(a, b, result);
+      return { op: step.op, value: snapshotWindow(context, result) };
+    }
+
+    case "cells-windows.wnreld": {
+      const a = requireWindow(context, step.aId);
+      const b = requireWindow(context, step.bId);
+      return {
+        op: step.op,
+        value: context.spice.raw.wnreld(a, step.relation, b),
+      };
+    }
+
+    case "cells-windows.wnsumd": {
+      const window = requireWindow(context, step.windowId);
+      return { op: step.op, value: context.spice.raw.wnsumd(window) };
+    }
+
+    case "cells-windows.wnunid": {
+      const a = requireWindow(context, step.aId);
+      const b = requireWindow(context, step.bId);
+      const result = getOrCreateWindow(
+        context,
+        step.resultId,
+        step.maxIntervals,
+      );
+      context.spice.raw.wnunid(a, b, result);
+      return { op: step.op, value: snapshotWindow(context, result) };
+    }
+
     case "cells-windows.wnvald": {
       const window = requireWindow(context, step.windowId);
       context.spice.raw.wnvald(step.size, step.n, window);
       return {
         op: step.op,
-        value: Array.from(
-          { length: context.spice.raw.wncard(window) },
-          (_, i) => {
-            const [left, right] = context.spice.raw.wnfetd(window, i);
-            return { left, right };
-          },
-        ),
+        value: snapshotWindow(context, window),
       };
     }
 

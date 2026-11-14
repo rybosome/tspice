@@ -93,6 +93,109 @@ class StepCellsWindowsWnfetd:
 
 
 @dataclass(frozen=True)
+class StepCellsWindowsWncomd:
+    op: Literal["cells-windows.wncomd"]
+    left: float
+    right: float
+    windowId: str
+    resultId: str
+    maxIntervals: int
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWncond:
+    op: Literal["cells-windows.wncond"]
+    left: float
+    right: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWndifd:
+    op: Literal["cells-windows.wndifd"]
+    aId: str
+    bId: str
+    resultId: str
+    maxIntervals: int
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnelmd:
+    op: Literal["cells-windows.wnelmd"]
+    point: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnexpd:
+    op: Literal["cells-windows.wnexpd"]
+    left: float
+    right: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnextd:
+    op: Literal["cells-windows.wnextd"]
+    side: str
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnfild:
+    op: Literal["cells-windows.wnfild"]
+    small: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnfltd:
+    op: Literal["cells-windows.wnfltd"]
+    small: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnincd:
+    op: Literal["cells-windows.wnincd"]
+    left: float
+    right: float
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnintd:
+    op: Literal["cells-windows.wnintd"]
+    aId: str
+    bId: str
+    resultId: str
+    maxIntervals: int
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnreld:
+    op: Literal["cells-windows.wnreld"]
+    aId: str
+    relation: str
+    bId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnsumd:
+    op: Literal["cells-windows.wnsumd"]
+    windowId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsWnunid:
+    op: Literal["cells-windows.wnunid"]
+    aId: str
+    bId: str
+    resultId: str
+    maxIntervals: int
+
+
+@dataclass(frozen=True)
 class StepCellsWindowsWnvald:
     op: Literal["cells-windows.wnvald"]
     size: int

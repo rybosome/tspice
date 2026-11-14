@@ -1357,6 +1357,33 @@ int tspice_cell_getc(
     char *err,
     int errMaxBytes);
 
+int tspice_wncomd(
+    double left, double right, uintptr_t windowHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wncond(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wndifd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wnelmd(
+    double point, uintptr_t windowHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnexpd(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnextd(
+    int side, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnfild(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnfltd(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes);
+int tspice_wnincd(
+    double left, double right, uintptr_t windowHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnintd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+int tspice_wnreld(
+    uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes);
+int tspice_wnsumd(
+    uintptr_t windowHandle, double *meas, double *avg, double *stddev, int *shortest, int *longest, char *err, int errMaxBytes);
+int tspice_wnunid(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes);
+
 int tspice_wninsd(double left, double right, uintptr_t window, char *err, int errMaxBytes);
 int tspice_wncard(uintptr_t window, int *outCard, char *err, int errMaxBytes);
 int tspice_wnfetd(

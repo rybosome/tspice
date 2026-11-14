@@ -419,6 +419,96 @@ export type StepCellsWindowsWnfetd = {
   index: number;
 };
 
+export type StepCellsWindowsWncomd = {
+  op: "cells-windows.wncomd";
+  left: number;
+  right: number;
+  windowId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWncond = {
+  op: "cells-windows.wncond";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWndifd = {
+  op: "cells-windows.wndifd";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWnelmd = {
+  op: "cells-windows.wnelmd";
+  point: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnexpd = {
+  op: "cells-windows.wnexpd";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnextd = {
+  op: "cells-windows.wnextd";
+  side: string;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnfild = {
+  op: "cells-windows.wnfild";
+  small: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnfltd = {
+  op: "cells-windows.wnfltd";
+  small: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnincd = {
+  op: "cells-windows.wnincd";
+  left: number;
+  right: number;
+  windowId: string;
+};
+
+export type StepCellsWindowsWnintd = {
+  op: "cells-windows.wnintd";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
+export type StepCellsWindowsWnreld = {
+  op: "cells-windows.wnreld";
+  aId: string;
+  relation: string;
+  bId: string;
+};
+
+export type StepCellsWindowsWnsumd = {
+  op: "cells-windows.wnsumd";
+  windowId: string;
+};
+
+export type StepCellsWindowsWnunid = {
+  op: "cells-windows.wnunid";
+  aId: string;
+  bId: string;
+  resultId: string;
+  maxIntervals: number;
+};
+
 export type StepCellsWindowsWnvald = {
   op: "cells-windows.wnvald";
   size: number;
@@ -1344,6 +1434,19 @@ export type WorkflowStep =
   | StepCellsWindowsWncard
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
+  | StepCellsWindowsWncomd
+  | StepCellsWindowsWncond
+  | StepCellsWindowsWndifd
+  | StepCellsWindowsWnelmd
+  | StepCellsWindowsWnexpd
+  | StepCellsWindowsWnextd
+  | StepCellsWindowsWnfild
+  | StepCellsWindowsWnfltd
+  | StepCellsWindowsWnincd
+  | StepCellsWindowsWnintd
+  | StepCellsWindowsWnreld
+  | StepCellsWindowsWnsumd
+  | StepCellsWindowsWnunid
   | StepCellsWindowsWnvald
   | StepKernelPoolGdpool
   | StepKernelPoolGipool
@@ -1555,6 +1658,28 @@ export type StepOutput =
   | { op: "cells-windows.wncard"; value: number }
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
+  | { op: "cells-windows.wncomd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wncond"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wndifd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnelmd"; value: boolean }
+  | { op: "cells-windows.wnexpd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnextd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnfild"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnfltd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnincd"; value: boolean }
+  | { op: "cells-windows.wnintd"; value: { left: number; right: number }[] }
+  | { op: "cells-windows.wnreld"; value: boolean }
+  | {
+      op: "cells-windows.wnsumd";
+      value: {
+        meas: number;
+        avg: number;
+        stddev: number;
+        shortest: number;
+        longest: number;
+      };
+    }
+  | { op: "cells-windows.wnunid"; value: { left: number; right: number }[] }
   | { op: "cells-windows.wnvald"; value: { left: number; right: number }[] }
   | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }

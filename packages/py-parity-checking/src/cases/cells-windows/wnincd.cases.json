@@ -1,0 +1,216 @@
+[
+  {
+    "caseId": "cells-windows-wnincd-whole-and-contained",
+    "description": "Compare matching intervals, interior ranges, singletons, boundary overruns and gap-spanning ranges.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 2,
+        "right": 3
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 1,
+        "right": 1
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 3,
+        "right": 7
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 10,
+        "right": 12
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 7,
+        "right": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnincd-empty",
+    "description": "No interval is included in an empty window.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": -1,
+        "right": 1
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 2,
+        "right": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnincd-reversed-endpoint-arguments",
+    "description": "WNINCD tests its two inequalities with the supplied bounds, including reversed bounds.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 7,
+        "right": 2
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 2,
+        "right": 7
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": -7,
+        "right": -8
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 30,
+        "right": 25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnincd-isolated-point",
+    "description": "An isolated member contains exactly its point among ordered enclosing test intervals.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 5,
+        "right": 5,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 5,
+        "right": 5
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 4,
+        "right": 5
+      },
+      {
+        "op": "cells-windows.wnincd",
+        "windowId": "W",
+        "left": 5,
+        "right": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

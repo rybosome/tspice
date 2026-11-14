@@ -7,6 +7,7 @@
 #include "../handle_validation.h"
 
 #include <inttypes.h>
+#include <math.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -200,7 +201,9 @@ static int tspice_alloc_and_init_double_cell_uninitialized(
   }
 
   size_t bytes = 0;
-  if (tspice_cell_storage_bytes(capacity, sizeof(SpiceDouble), &bytes, err, errMaxBytes) != 0) return 1;
+  // N0067 wnunid_ reads the first data value even in a logically empty
+  // window. Keep one initialized data slot when the declared capacity is zero.
+  if (tspice_cell_storage_bytes(capacity == 0 ? 1 : capacity, sizeof(SpiceDouble), &bytes, err, errMaxBytes) != 0) return 1;
 
   SpiceCell *cell = (SpiceCell *)malloc(sizeof(SpiceCell));
   if (!cell) {
@@ -313,7 +316,7 @@ int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes
 
   if (outCell && *outCell) {
     SpiceCell *cell = (SpiceCell *)(*outCell);
-    const int reg = tspice_registry_add(cell, "tspice_new_int_cell()", err, errMaxBytes);
+    const int reg = tspice_registry_add(cell, 0, "tspice_new_int_cell()", err, errMaxBytes);
     if (reg != 0) {
       tspice_destroy_cell_storage(cell);
       *outCell = 0;
@@ -342,7 +345,7 @@ int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBy
 
   if (outCell && *outCell) {
     SpiceCell *cell = (SpiceCell *)(*outCell);
-    const int reg = tspice_registry_add(cell, "tspice_new_double_cell()", err, errMaxBytes);
+    const int reg = tspice_registry_add(cell, 0, "tspice_new_double_cell()", err, errMaxBytes);
     if (reg != 0) {
       tspice_destroy_cell_storage(cell);
       *outCell = 0;
@@ -380,7 +383,7 @@ int tspice_new_char_cell(
 
   if (outCell && *outCell) {
     SpiceCell *cell = (SpiceCell *)(*outCell);
-    const int reg = tspice_registry_add(cell, "tspice_new_char_cell()", err, errMaxBytes);
+    const int reg = tspice_registry_add(cell, 0, "tspice_new_char_cell()", err, errMaxBytes);
     if (reg != 0) {
       tspice_destroy_cell_storage(cell);
       *outCell = 0;
@@ -419,7 +422,7 @@ int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int err
   }
 
   SpiceCell *window = (SpiceCell *)(*outWindow);
-  const int reg = tspice_registry_add(window, "tspice_new_window()", err, errMaxBytes);
+  const int reg = tspice_registry_add(window, 1, "tspice_new_window()", err, errMaxBytes);
   if (reg != 0) {
     tspice_destroy_cell_storage(window);
     *outWindow = 0;
@@ -533,6 +536,7 @@ int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  tspice_set_window_control_preserved(cell, 0);
   return 0;
 }
 
@@ -557,6 +561,7 @@ int tspice_scard(int card, uintptr_t cellHandle, char *err, int errMaxBytes) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  tspice_set_window_control_preserved(cell, 0);
   return 0;
 }
 
@@ -636,6 +641,7 @@ int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxByt
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
   }
+  tspice_set_window_control_preserved(cell, 0);
   return 0;
 }
 
@@ -689,6 +695,7 @@ int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes)
     return 1;
   }
 
+  tspice_set_window_control_preserved(cell, 0);
   return 0;
 }
 
@@ -857,6 +864,308 @@ int tspice_cell_getc(
 
 
 
+// N0067's failed C window-result wrappers skip Fortran-to-C descriptor
+// synchronization. Preserve the actual written range for subsequent window
+// queries; card_c continues to expose the C descriptor cardinality.
+static int PrepareWindowControl(SpiceCell *window, int *card, char *err, int errMaxBytes) {
+  if (!tspice_preserves_window_control(window)) {
+    window->init = SPICEFALSE;
+    *card = window->card;
+    return 0;
+  }
+  const double *base = window->base;
+  const double size = base[SPICE_CELL_CTRLSZ - 2];
+  const double written = base[SPICE_CELL_CTRLSZ - 1];
+  if (size != window->size || !(written >= 0 && written <= size) ||
+      written != trunc(written) || written > INT32_MAX - SPICE_CELL_CTRLSZ ||
+      ((int)written % 2) != 0 ||
+      tspice_validate_cell_capacity(window, window->size, "partial window", err, errMaxBytes)) {
+    return tspice_return_error(err, errMaxBytes, "Invalid partial window control; reset the window cardinality");
+  }
+  window->init = SPICETRUE;
+  *card = (int)written;
+  return 0;
+}
+
+typedef enum { WINDOW_INPUT, WINDOW_RESULT, WINDOW_SUMMARY } WindowUse;
+
+static SpiceCell *AlgebraWindow(uintptr_t handle, WindowUse use, char *err, int errMaxBytes) {
+  SpiceCell *window = tspice_validate_window_kind(handle, err, errMaxBytes);
+  if (!window) return NULL;
+  // The translated routines address endpoints relative to a six-slot
+  // control area. All pair writes must fit in an even result capacity.
+  if (window->dtype != SPICE_DP || window->size < 0 || window->card < 0 ||
+      window->card > window->size ||
+      (use == WINDOW_RESULT && (window->size % 2 || window->size > INT32_MAX - SPICE_CELL_CTRLSZ)) ||
+      (use != WINDOW_RESULT && window->card > INT32_MAX - SPICE_CELL_CTRLSZ)) {
+    tspice_write_error(err, errMaxBytes, "Invalid window storage size or cardinality");
+    return NULL;
+  }
+  if (tspice_validate_cell_capacity(window, window->size, "window algebra", err, errMaxBytes)) return NULL;
+  int card = 0;
+  if (PrepareWindowControl(window, &card, err, errMaxBytes)) return NULL;
+  if (use != WINDOW_RESULT) {
+    // WNSUMD diagnoses an odd cardinality before inspecting endpoints.
+    if (card % 2) {
+      if (use != WINDOW_SUMMARY) {
+        tspice_write_error(err, errMaxBytes, "Window requires an even endpoint cardinality");
+        return NULL;
+      }
+    } else {
+      const double *data = window->data;
+      for (int i = 0; i < card; i += 2) {
+        if (!(data[i] <= data[i + 1]) || (i > 0 && !(data[i - 1] < data[i]))) {
+          tspice_write_error(err, errMaxBytes, "Expected ordered, disjoint closed window intervals");
+          return NULL;
+        }
+      }
+    }
+  }
+  return window;
+}
+
+static int AlgebraCard(const SpiceCell *window) {
+  if (!tspice_preserves_window_control(window)) return window->card;
+  return (int)((const double *)window->base)[SPICE_CELL_CTRLSZ - 1];
+}
+
+int tspice_wncomd(
+    double left, double right, uintptr_t windowHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(left) || !isfinite(right)) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  if (resultHandle == windowHandle) return tspice_return_error(err, errMaxBytes, "Result window must be distinct from each input");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  SpiceCell *result = AlgebraWindow(resultHandle, WINDOW_RESULT, err, errMaxBytes);
+  if (!result) return 1;
+  wncomd_c(left, right, window, result);
+  if (failed_c()) {
+    tspice_set_window_control_preserved(result, 1);
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(result, 0);
+  return 0;
+}
+
+int tspice_wncond(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(left) || !isfinite(right)) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  wncond_c(left, right, window);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return 0;
+}
+
+int tspice_wndifd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (resultHandle == aHandle || resultHandle == bHandle) return tspice_return_error(err, errMaxBytes, "Result window must be distinct from each input");
+  SpiceCell *a = AlgebraWindow(aHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = AlgebraWindow(bHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = AlgebraWindow(resultHandle, WINDOW_RESULT, err, errMaxBytes);
+  if (!result) return 1;
+  // Bound the translated signed32 excess/result endpoint counters.
+  if ((int64_t)AlgebraCard(a) + AlgebraCard(b) > INT32_MAX)
+    return tspice_return_error(err, errMaxBytes, "Combined window cardinality exceeds signed32");
+  wndifd_c(a, b, result);
+  if (failed_c()) {
+    tspice_set_window_control_preserved(result, 1);
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(result, 0);
+  return 0;
+}
+
+int tspice_wnelmd(
+    double point, uintptr_t windowHandle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(point) || !out) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  *out = wnelmd_c(point, window) ? 1 : 0;
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_wnexpd(
+    double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(left) || !isfinite(right)) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  wnexpd_c(left, right, window);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return 0;
+}
+
+int tspice_wnextd(
+    int side, uintptr_t windowHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (side < 0 || side > 127) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  wnextd_c((SpiceChar)side, window);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_wnfild(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(small)) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  wnfild_c(small, window);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return 0;
+}
+
+int tspice_wnfltd(
+    double small, uintptr_t windowHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(small)) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  wnfltd_c(small, window);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(window, 0);
+  return 0;
+}
+
+int tspice_wnincd(
+    double left, double right, uintptr_t windowHandle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!isfinite(left) || !isfinite(right) || !out) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!window) return 1;
+  *out = wnincd_c(left, right, window) ? 1 : 0;
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_wnintd(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (resultHandle == aHandle || resultHandle == bHandle) return tspice_return_error(err, errMaxBytes, "Result window must be distinct from each input");
+  SpiceCell *a = AlgebraWindow(aHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = AlgebraWindow(bHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = AlgebraWindow(resultHandle, WINDOW_RESULT, err, errMaxBytes);
+  if (!result) return 1;
+  // Bound the translated signed32 excess/result endpoint counters.
+  if ((int64_t)AlgebraCard(a) + AlgebraCard(b) > INT32_MAX)
+    return tspice_return_error(err, errMaxBytes, "Combined window cardinality exceeds signed32");
+  wnintd_c(a, b, result);
+  if (failed_c()) {
+    tspice_set_window_control_preserved(result, 1);
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(result, 0);
+  return 0;
+}
+
+int tspice_wnreld(
+    uintptr_t aHandle, const char *op, uintptr_t bHandle, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!out || !op) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *a = AlgebraWindow(aHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = AlgebraWindow(bHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!b) return 1;
+  *out = wnreld_c(a, op, b) ? 1 : 0;
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_wnsumd(
+    uintptr_t windowHandle, double *meas, double *avg, double *stddev, int *shortest, int *longest, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!meas || !avg || !stddev || !shortest || !longest) return tspice_return_error(err, errMaxBytes, "Invalid window argument or output");
+  SpiceCell *window = AlgebraWindow(windowHandle, WINDOW_SUMMARY, err, errMaxBytes);
+  if (!window) return 1;
+  // The C wrapper decrements both indices even on the odd-cardinality error.
+  SpiceInt idxsml = 0, idxlon = 0;
+  wnsumd_c(window, meas, avg, stddev, &idxsml, &idxlon);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *shortest = idxsml;
+  *longest = idxlon;
+  return 0;
+}
+
+int tspice_wnunid(
+    uintptr_t aHandle, uintptr_t bHandle, uintptr_t resultHandle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (resultHandle == aHandle || resultHandle == bHandle) return tspice_return_error(err, errMaxBytes, "Result window must be distinct from each input");
+  SpiceCell *a = AlgebraWindow(aHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!a) return 1;
+  SpiceCell *b = AlgebraWindow(bHandle, WINDOW_INPUT, err, errMaxBytes);
+  if (!b) return 1;
+  SpiceCell *result = AlgebraWindow(resultHandle, WINDOW_RESULT, err, errMaxBytes);
+  if (!result) return 1;
+  // Bound the translated signed32 excess/result endpoint counters.
+  if ((int64_t)AlgebraCard(a) + AlgebraCard(b) > INT32_MAX)
+    return tspice_return_error(err, errMaxBytes, "Combined window cardinality exceeds signed32");
+  wnunid_c(a, b, result);
+  if (failed_c()) {
+    tspice_set_window_control_preserved(result, 1);
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  tspice_set_window_control_preserved(result, 0);
+  return 0;
+}
+
 int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
@@ -872,7 +1181,8 @@ int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, 
     return tspice_return_error(err, errMaxBytes, "tspice_wninsd(): expected SPICE_DP window");
   }
 
-  window->init = SPICEFALSE;
+  int written = 0;
+  if (PrepareWindowControl(window, &written, err, errMaxBytes)) return 1;
 
   wninsd_c((SpiceDouble)left, (SpiceDouble)right, window);
   if (failed_c()) {
@@ -880,6 +1190,7 @@ int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, 
     return 1;
   }
 
+  tspice_set_window_control_preserved(window, 0);
   return 0;
 }
 
@@ -903,7 +1214,8 @@ int tspice_wncard(uintptr_t windowHandle, int *outCard, char *err, int errMaxByt
     return tspice_return_error(err, errMaxBytes, "tspice_wncard(): expected SPICE_DP window");
   }
 
-  window->init = SPICEFALSE;
+  int written = 0;
+  if (PrepareWindowControl(window, &written, err, errMaxBytes)) return 1;
 
   SpiceInt card = wncard_c(window);
   if (failed_c()) {
@@ -952,7 +1264,8 @@ int tspice_wnfetd(
     return 1;
   }
 
-  window->init = SPICEFALSE;
+  int written = 0;
+  if (PrepareWindowControl(window, &written, err, errMaxBytes)) return 1;
 
   SpiceDouble left = 0.0;
   SpiceDouble right = 0.0;
@@ -1002,5 +1315,6 @@ int tspice_wnvald(int size, int n, uintptr_t windowHandle, char *err, int errMax
     return 1;
   }
 
+  tspice_set_window_control_preserved(window, 0);
   return 0;
 }

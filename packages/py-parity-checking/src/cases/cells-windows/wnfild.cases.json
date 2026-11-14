@@ -1,0 +1,202 @@
+[
+  {
+    "caseId": "cells-windows-wnfild-threshold-equality",
+    "description": "Successive thresholds visit gaps or widths just below, exactly at, and above the bound.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 1.999,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 2,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 3,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 4,
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfild-negative-zero-and-singletons",
+    "description": "Negative and zero thresholds distinguish singletons from positive-duration intervals.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": -1,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 0,
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfild-all-intervals",
+    "description": "A bound above every gap and interval width takes the filter to its extreme.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 100,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 100,
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfild-empty",
+    "description": "An empty window remains accessible after filtering.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 0,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 3,
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnfild-isolated-single",
+    "description": "A single interval has no interior gap and still has its own measurable width.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -2,
+        "right": 2,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 3,
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wnfild",
+        "small": 4,
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

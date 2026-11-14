@@ -2379,6 +2379,46 @@ export function createFakeBackend(
     cellGetc: (_cell, _index) => {
       throw new Error(spiceCellUnsupported);
     },
+    wncomd: () => {
+      throw new Error("Fake backend does not model wncomd()");
+    },
+    wncond: () => {
+      throw new Error("Fake backend does not model wncond()");
+    },
+    wndifd: () => {
+      throw new Error("Fake backend does not model wndifd()");
+    },
+    wnelmd: () => {
+      throw new Error("Fake backend does not model wnelmd()");
+    },
+    wnexpd: () => {
+      throw new Error("Fake backend does not model wnexpd()");
+    },
+    wnextd: () => {
+      throw new Error("Fake backend does not model wnextd()");
+    },
+    wnfild: () => {
+      throw new Error("Fake backend does not model wnfild()");
+    },
+    wnfltd: () => {
+      throw new Error("Fake backend does not model wnfltd()");
+    },
+    wnincd: () => {
+      throw new Error("Fake backend does not model wnincd()");
+    },
+    wnintd: () => {
+      throw new Error("Fake backend does not model wnintd()");
+    },
+    wnreld: () => {
+      throw new Error("Fake backend does not model wnreld()");
+    },
+    wnsumd: () => {
+      throw new Error("Fake backend does not model wnsumd()");
+    },
+    wnunid: () => {
+      throw new Error("Fake backend does not model wnunid()");
+    },
+
     wninsd: (_left, _right, _window) => {
       throw new Error(spiceCellUnsupported);
     },

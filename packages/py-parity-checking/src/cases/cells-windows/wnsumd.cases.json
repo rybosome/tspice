@@ -1,0 +1,225 @@
+[
+  {
+    "caseId": "cells-windows-wnsumd-empty",
+    "description": "Empty statistics and both extrema-index sentinels.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-all-fields-and-ties",
+    "description": "The first shortest and longest intervals occupy different nonzero flattened endpoint slots.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 5,
+        "right": 6
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 10,
+        "right": 16
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 20,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 30,
+        "right": 36
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-equal-width-and-singleton",
+    "description": "All widths equal, then add a zero-duration interval.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -8,
+        "right": -6,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -4,
+        "right": -2
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 2
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 10,
+        "right": 10
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-mixed-width-population",
+    "description": "Widths one, three, and five have total nine and population variance 8/3.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 5,
+        "right": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 13,
+        "right": 18
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-small-scale",
+    "description": "Finite tiny widths expose each moment and the first/last index independently.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1e-100,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 2e-100,
+        "right": 5e-100
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-large-scale",
+    "description": "Large finite widths whose squares remain in range.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 1e100,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 2e100,
+        "right": 5e100
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnsumd-odd-cardinality",
+    "description": "WNSUMD checks odd cardinality before visiting endpoint storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 1
+      },
+      {
+        "op": "cells-windows.wnsumd",
+        "windowId": "W"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCARDINALITY"]
+    }
+  }
+]

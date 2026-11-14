@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 175
+- Planned (not yet implemented): 474
 - Excluded: 3
 
 ## Implemented now
@@ -180,8 +180,21 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vscl_c` | Vector scaling, 3 dimensions |
 | `vsub_c` | Vector subtraction, 3 dimensions |
 | `wncard_c` | Cardinality of a double precision window |
+| `wncomd_c` | Complement a DP window |
+| `wncond_c` | Contract the intervals of a DP window |
+| `wndifd_c` | Difference two DP windows |
+| `wnelmd_c` | Element of a DP window |
+| `wnexpd_c` | Expand the intervals of a DP window |
+| `wnextd_c` | Extract the endpoints from a DP window |
 | `wnfetd_c` | Fetch an interval from a DP window |
+| `wnfild_c` | Fill small gaps in a DP window |
+| `wnfltd_c` | Filter small intervals from a DP window |
+| `wnincd_c` | Included in a double precision window |
 | `wninsd_c` | Insert an interval into a DP window |
+| `wnintd_c` | Intersect two DP windows |
+| `wnreld_c` | Compare two DP windows |
+| `wnsumd_c` | Summary of a double precision window |
+| `wnunid_c` | Union two DP windows |
 | `wnvald_c` | Validate a DP window |
 
 ## Planned (not yet implemented)
@@ -656,19 +669,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vupack_c` | Unpack three scalar components from a vector |
 | `vzero_c` | Is a vector the zero vector? |
 | `vzerog_c` | Is a vector the zero vector? -- general dim. |
-| `wncomd_c` | Complement a DP window |
-| `wncond_c` | Contract the intervals of a DP window |
-| `wndifd_c` | Difference two DP windows |
-| `wnelmd_c` | Element of a DP window |
-| `wnexpd_c` | Expand the intervals of a DP window |
-| `wnextd_c` | Extract the endpoints from a DP window |
-| `wnfild_c` | Fill small gaps in a DP window |
-| `wnfltd_c` | Filter small intervals from a DP window |
-| `wnincd_c` | Included in a double precision window |
-| `wnintd_c` | Intersect two DP windows |
-| `wnreld_c` | Compare two DP windows |
-| `wnsumd_c` | Summary of a double precision window |
-| `wnunid_c` | Union two DP windows |
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
 | `xfmsta_c` | Transform state between coordinate systems |

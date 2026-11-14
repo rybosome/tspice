@@ -4,8 +4,9 @@ from typing import Any
 
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
-from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
+from spiceypy.utils.support_types import SPICEINT_CELL
 
+from ..window_algebra_oracle import allocate_window
 from ..models import (
     StepFramesCcifrm,
     StepFramesCidfrm,
@@ -231,10 +232,7 @@ def _get_or_create_window(context: SidecarRuntimeContext, window_id: str, *, max
     if existing is not None:
         return existing
 
-    if max_intervals < 0:
-        raise ValueError("maxIntervals must be >= 0")
-
-    window = SPICEDOUBLE_CELL(max_intervals * 2)
+    window = allocate_window(max_intervals)
     context.state.cellsWindows.windows[window_id] = window
     context.register_finalizer(
         f"cellsWindows.release:{window_id}",

@@ -1,0 +1,931 @@
+{
+  "schemaVersion": 1,
+  "batch": "b03-window-algebra",
+  "traceFiles": [
+    "docs/step8-window-algebra.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/cells-windows.ts",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/domains/cells_windows.cc",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/spice-handles.ts",
+    "packages/backend-node/test/window-algebra-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/cells_windows.c",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/spice-handles.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts",
+    "packages/backend-wasm/test/window-algebra-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/window-algebra.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/frames.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/window-algebra.test.ts",
+    "packages/tspice/test/cells-lifecycle-recovery.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "wncomd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wncomd_c.html",
+      "semantics": "Write the closure of the input window\u2019s complement relative to the closed interval [left,right]. Clip at the bounds, retain closure endpoints and replace the caller-owned destination, which must be distinct from the input.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wncomd-closure-overwrites-result",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The interval-bounded complement overwrites a populated result; the original three intervals remain accessible."
+        },
+        {
+          "caseId": "cells-windows-wncomd-clipped-and-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Clip to interior endpoints, a disjoint range, a fully covered interval and a singleton."
+        },
+        {
+          "caseId": "cells-windows-wncomd-empty-window",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty input leaves the whole bounding interval."
+        },
+        {
+          "caseId": "cells-windows-wncomd-singleton-closure",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Closing the complement rejoins both sides of an isolated excluded point."
+        },
+        {
+          "caseId": "cells-windows-wncomd-zero-capacity-empty-result",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A covered bounding interval needs no result endpoints and uses a logical zero-capacity cell."
+        },
+        {
+          "caseId": "cells-windows-wncomd-undersized-result",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A one-interval destination cannot hold all complement intervals. Observe the actual toolkit error WINDOWEXCESS."
+        },
+        {
+          "caseId": "cells-windows-wncomd-reversed-endpoints",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The left complement bound exceeds the right bound. Observe the actual toolkit error BADENDPOINTS."
+        }
+      ],
+      "edgeAssessment": "Cases span clipping, empty input, a removed singleton, covered bounds with a zero-capacity empty result, replacement of a prepopulated destination, insufficient capacity and reversed bounds.",
+      "errorAssessment": "Reversed bounds raise SPICE(BADENDPOINTS). Insufficient result capacity raises SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [
+        {
+          "id": "caller-result-capacity-wncomd",
+          "status": "repaired",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wncomd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": [
+            "cells-windows-wncomd-closure-overwrites-result",
+            "cells-windows-wncomd-undersized-result"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wncomd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wncomd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncomd -> canonical wncomd_c. The independent sidecar calls the typed caller-owned result-cell binding to wncomd_c on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wncond_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wncond_c.html",
+      "semantics": "Add the left contraction and subtract the right contraction on every interval. Inverted pairs vanish, an equal pair survives as a singleton, and negative contraction can merge intervals that expand to touch. The pinned implementation delegates to WNEXPD with both adjustments negated.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wncond-asymmetric-margins",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinct left and right amounts move the two ends independently."
+        },
+        {
+          "caseId": "cells-windows-wncond-negative-and-mixed-margins",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Negative and opposite-signed amounts are forwarded in order on the evolving window."
+        },
+        {
+          "caseId": "cells-windows-wncond-crossed-and-equal-endpoints",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An interval contracted to a point survives; one contracted past itself disappears."
+        },
+        {
+          "caseId": "cells-windows-wncond-coalescing-at-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Adjacent expansions that first touch coalesce into one closed interval."
+        },
+        {
+          "caseId": "cells-windows-wncond-empty-and-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty and singleton windows admit zero and signed margins."
+        }
+      ],
+      "edgeAssessment": "Exercise independent signed margins on an evolving window, exact endpoint coincidence, crossed ranges, negative contraction that bridges a gap, empty windows and zero adjustments.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wncond -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wncond -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wncond -> canonical wncond_c. The independent sidecar calls the installed SpiceyPy wncond wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wndifd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wndifd_c.html",
+      "semantics": "Write the closure of the ordered difference A minus B into a distinct destination window. Removing an interior interval can create two closed intervals that retain the boundary points. Both input arguments may refer to the same window.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wndifd-interleaved-and-reversed",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
+        },
+        {
+          "caseId": "cells-windows-wndifd-touching-and-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
+        },
+        {
+          "caseId": "cells-windows-wndifd-empty-operands",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
+        },
+        {
+          "caseId": "cells-windows-wndifd-same-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Input operands may share a live handle; the destination remains independently allocated."
+        },
+        {
+          "caseId": "cells-windows-wndifd-nested-and-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
+        },
+        {
+          "caseId": "cells-windows-wndifd-undersized-result",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
+        },
+        {
+          "caseId": "cells-windows-wndifd-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Removing an interior interval splits the minuend into exactly two closed pieces."
+        }
+      ],
+      "edgeAssessment": "Compare both directions on interleaved, nested and disjoint windows. Exercise empty and identical inputs, touching and singleton boundaries, exact and insufficient capacity.",
+      "errorAssessment": "A destination that cannot hold the closed difference raises SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [
+        {
+          "id": "caller-result-capacity-wndifd",
+          "status": "repaired",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wndifd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": [
+            "cells-windows-wndifd-undersized-result",
+            "cells-windows-wndifd-exact-capacity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wndifd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wndifd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wndifd -> canonical wndifd_c. The independent sidecar calls the typed caller-owned result-cell binding to wndifd_c on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnelmd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnelmd_c.html",
+      "semantics": "Return whether the supplied point belongs to any stored closed interval, including singletons and both endpoints. Membership in an empty window is false.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnelmd-closed-boundaries-and-gaps",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Left and right boundaries are included, including isolated points; true gaps are excluded."
+        },
+        {
+          "caseId": "cells-windows-wnelmd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Membership in an empty window is false."
+        },
+        {
+          "caseId": "cells-windows-wnelmd-adjacent-representable-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Test successive representable values on either side of a singleton."
+        },
+        {
+          "caseId": "cells-windows-wnelmd-signed-extrema",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Finite endpoints near the limits compare without computing interval lengths."
+        }
+      ],
+      "edgeAssessment": "Check both sides of singletons with adjacent representable doubles, included endpoints and excluded gaps, empty input and signed finite extrema.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnelmd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnelmd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnelmd -> canonical wnelmd_c. The independent sidecar calls the installed SpiceyPy wnelmd wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnexpd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnexpd_c.html",
+      "semantics": "Subtract the left expansion from every lower bound and add the right expansion to each upper bound. Remove inverted intervals, retain singletons and coalesce touching or overlapping intervals. Negative or asymmetric margins are meaningful.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnexpd-asymmetric-margins",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinct left and right amounts move the two ends independently."
+        },
+        {
+          "caseId": "cells-windows-wnexpd-negative-and-mixed-margins",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Negative and opposite-signed amounts are forwarded in order on the evolving window."
+        },
+        {
+          "caseId": "cells-windows-wnexpd-crossed-and-equal-endpoints",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An interval contracted to a point survives; one contracted past itself disappears."
+        },
+        {
+          "caseId": "cells-windows-wnexpd-coalescing-at-boundary",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Adjacent expansions that first touch coalesce into one closed interval."
+        },
+        {
+          "caseId": "cells-windows-wnexpd-empty-and-zero",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty and singleton windows admit zero and signed margins."
+        }
+      ],
+      "edgeAssessment": "Check independent signed margins, contraction through zero width, coincident/touching endpoints, empty input and zero margins. Observe complete endpoints after each step.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnexpd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnexpd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnexpd -> canonical wnexpd_c. The independent sidecar calls the installed SpiceyPy wnexpd wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnextd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnextd_c.html",
+      "semantics": "Mutate each interval in place to the singleton at its left or right endpoint. The actual single-byte CSPICE selectors L/l and R/r accept either case. Unsupported representable selectors signal the toolkit endpoint error.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnextd-left-endpoints",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Each left endpoint becomes a singleton."
+        },
+        {
+          "caseId": "cells-windows-wnextd-right-endpoints",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Each right endpoint becomes a singleton."
+        },
+        {
+          "caseId": "cells-windows-wnextd-lowercase-left",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The canonical selector accepts lowercase l."
+        },
+        {
+          "caseId": "cells-windows-wnextd-lowercase-right",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The canonical selector accepts lowercase r."
+        },
+        {
+          "caseId": "cells-windows-wnextd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Both valid endpoint selectors preserve an empty window."
+        },
+        {
+          "caseId": "cells-windows-wnextd-unrecognized-selector",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A representable unknown byte receives the canonical endpoint error. Observe the actual toolkit error INVALIDENDPNTSPEC."
+        }
+      ],
+      "edgeAssessment": "Exercise left and right, upper and lower case, empty windows, singletons, and an unrecognized single byte.",
+      "errorAssessment": "An unrecognized single-byte selector reaches CSPICE and raises SPICE(INVALIDENDPNTSPEC). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [
+        {
+          "id": "canonical-byte-selector",
+          "status": "repaired",
+          "summary": "The installed SpiceyPy wrapper asserts uppercase L or R before CSPICE, hiding canonical lowercase success and the genuine invalid-selector error.",
+          "repair": "Use the canonical typed single-byte binding for other single ASCII selectors. Retain the ordinary locked wrapper for uppercase L and R.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wnextd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py"
+          ],
+          "caseIds": [
+            "cells-windows-wnextd-lowercase-left",
+            "cells-windows-wnextd-lowercase-right",
+            "cells-windows-wnextd-unrecognized-selector"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnextd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnextd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnextd -> canonical wnextd_c. The independent sidecar calls the locked wrapper for uppercase selectors or typed canonical byte call for remaining single ASCII selectors on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnfild_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnfild_c.html",
+      "semantics": "Fill each interior gap whose measure is less than or equal to the threshold, coalescing adjacent intervals. A negative threshold leaves a valid window unchanged. A single interval has no interior gap.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnfild-threshold-equality",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Successive thresholds visit gaps or widths just below, exactly at, and above the bound."
+        },
+        {
+          "caseId": "cells-windows-wnfild-negative-zero-and-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Negative and zero thresholds distinguish singletons from positive-duration intervals."
+        },
+        {
+          "caseId": "cells-windows-wnfild-all-intervals",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A bound above every gap and interval width takes the filter to its extreme."
+        },
+        {
+          "caseId": "cells-windows-wnfild-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty window remains accessible after filtering."
+        },
+        {
+          "caseId": "cells-windows-wnfild-isolated-single",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A single interval has no interior gap and still has its own measurable width."
+        }
+      ],
+      "edgeAssessment": "Compare thresholds below, equal to and above successive gaps, zero/negative values, a single interval, all merged and empty states.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnfild -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnfild -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfild -> canonical wnfild_c. The independent sidecar calls the installed SpiceyPy wnfild wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnfltd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnfltd_c.html",
+      "semantics": "Remove each interval whose measure is less than or equal to the threshold. Zero removes singletons, while a negative threshold leaves a valid window unchanged. Retain all other endpoints in order.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnfltd-threshold-equality",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Successive thresholds visit gaps or widths just below, exactly at, and above the bound."
+        },
+        {
+          "caseId": "cells-windows-wnfltd-negative-zero-and-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Negative and zero thresholds distinguish singletons from positive-duration intervals."
+        },
+        {
+          "caseId": "cells-windows-wnfltd-all-intervals",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A bound above every gap and interval width takes the filter to its extreme."
+        },
+        {
+          "caseId": "cells-windows-wnfltd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An empty window remains accessible after filtering."
+        },
+        {
+          "caseId": "cells-windows-wnfltd-isolated-single",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A single interval has no interior gap and still has its own measurable width."
+        }
+      ],
+      "edgeAssessment": "Compare thresholds below, equal to and above interval widths, zero/negative values with singletons, a sole interval, completely filtered and empty states.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnfltd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnfltd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnfltd -> canonical wnfltd_c. The independent sidecar calls the installed SpiceyPy wnfltd wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnincd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnincd_c.html",
+      "semantics": "Return true if one stored interval satisfies both left >= its lower bound and right <= its upper bound. Empty windows return false. Ordered queries test inclusion. The pinned routine evaluates both inequalities as supplied for reversed bounds.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnincd-whole-and-contained",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare matching intervals, interior ranges, singletons, boundary overruns and gap-spanning ranges."
+        },
+        {
+          "caseId": "cells-windows-wnincd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "No interval is included in an empty window."
+        },
+        {
+          "caseId": "cells-windows-wnincd-reversed-endpoint-arguments",
+          "coverage": ["success", "edge", "state"],
+          "observes": "WNINCD tests its two inequalities with the supplied bounds, including reversed bounds."
+        },
+        {
+          "caseId": "cells-windows-wnincd-isolated-point",
+          "coverage": ["success", "edge", "state"],
+          "observes": "An isolated member contains exactly its point among ordered enclosing test intervals."
+        }
+      ],
+      "edgeAssessment": "Observe contained and enclosing intervals, exact boundaries, gaps, a singleton, empty input and the raw predicate on reversed arguments.",
+      "errorAssessment": "Valid windows and finite arguments include empty windows and the signed margins, thresholds or queries represented in the registered scenarios. These operations do not require a manufactured toolkit error. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnincd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnincd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnincd -> canonical wnincd_c. The independent sidecar calls the installed SpiceyPy wnincd wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnintd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnintd_c.html",
+      "semantics": "Write the intersection of A and B into the distinct caller-owned result. Two closed intervals touching at just one endpoint intersect in a singleton. Identical input handles are allowed.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnintd-interleaved-and-reversed",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
+        },
+        {
+          "caseId": "cells-windows-wnintd-touching-and-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
+        },
+        {
+          "caseId": "cells-windows-wnintd-empty-operands",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
+        },
+        {
+          "caseId": "cells-windows-wnintd-same-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Input operands may share a live handle; the destination remains independently allocated."
+        },
+        {
+          "caseId": "cells-windows-wnintd-nested-and-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
+        },
+        {
+          "caseId": "cells-windows-wnintd-undersized-result",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
+        },
+        {
+          "caseId": "cells-windows-wnintd-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Three intersections exactly fill the six available endpoint slots."
+        }
+      ],
+      "edgeAssessment": "Compare operand reversal, identical handles, empties, interleaved/nested/disjoint windows, touching points, exact capacity and undersized output.",
+      "errorAssessment": "The intersection can require more output intervals than fit in the caller\u2019s result. This raises SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [
+        {
+          "id": "caller-result-capacity-wnintd",
+          "status": "repaired",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wnintd.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": [
+            "cells-windows-wnintd-undersized-result",
+            "cells-windows-wnintd-exact-capacity"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnintd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnintd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnintd -> canonical wnintd_c. The independent sidecar calls the typed caller-owned result-cell binding to wnintd_c on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnreld_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnreld_c.html",
+      "semantics": "Compare window equality, inequality, proper subset/superset or inclusive subset/superset with =, <>, <, >, <= or >=. The relation is checked by canonical CSPICE. Trailing ASCII blanks are accepted, and a leading blank is significant.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnreld-proper-subset-and-superset",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use all six operators in both directions on contained windows."
+        },
+        {
+          "caseId": "cells-windows-wnreld-equal-handles-and-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Equal but independently owned windows and identical references distinguish strict from inclusive relations."
+        },
+        {
+          "caseId": "cells-windows-wnreld-incomparable-overlap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overlapping windows with distinct outside endpoints are incomparable for inclusion."
+        },
+        {
+          "caseId": "cells-windows-wnreld-empty-relations",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty windows are equal; the empty set is a proper subset of a nonempty window."
+        },
+        {
+          "caseId": "cells-windows-wnreld-trailing-blanks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Fortran character comparison accepts trailing blanks on a recognized relation."
+        },
+        {
+          "caseId": "cells-windows-wnreld-unknown-operator",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An unsupported inequality spelling is a genuine toolkit error. Observe the actual toolkit error INVALIDOPERATION."
+        },
+        {
+          "caseId": "cells-windows-wnreld-leading-blank",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A leading blank is significant to the relation parser. Observe the actual toolkit error INVALIDOPERATION."
+        },
+        {
+          "caseId": "cells-windows-wnreld-empty-operator",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The C wrapper diagnoses an empty operator before the Fortran comparison. Observe the actual toolkit error EMPTYSTRING."
+        }
+      ],
+      "edgeAssessment": "All six operators are exercised on proper inclusion in both directions, identical versus equal-but-independent handles, incomparable overlap, empty windows, trailing blanks, leading blanks and empty or unknown tokens.",
+      "errorAssessment": "Unsupported or leading-blank spellings raise SPICE(INVALIDOPERATION). An empty C string raises SPICE(EMPTYSTRING). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The scientific return is boolean and equality is exact.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnreld -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnreld -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnreld -> canonical wnreld_c. The independent sidecar calls the installed SpiceyPy wnreld wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnsumd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnsumd_c.html",
+      "semantics": "Return meas, avg, stddev, shortest and longest. Finite interval measures use the population standard deviation. The first shortest/longest interval wins ties. Both indices are zero-based offsets to its left endpoint in flattened storage (0,2,4,\u2026). For an empty window the three statistics are zero and both C indices are \u22121.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnsumd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Empty statistics and both extrema-index sentinels."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-all-fields-and-ties",
+          "coverage": ["success", "edge", "state"],
+          "observes": "The first shortest and longest intervals occupy different nonzero flattened endpoint slots."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-equal-width-and-singleton",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All widths equal, then add a zero-duration interval."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-mixed-width-population",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Widths one, three, and five have total nine and population variance 8/3."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-small-scale",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Finite tiny widths expose each moment and the first/last index independently."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-large-scale",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Large finite widths whose squares remain in range."
+        },
+        {
+          "caseId": "cells-windows-wnsumd-odd-cardinality",
+          "coverage": ["error", "edge", "state"],
+          "observes": "WNSUMD checks odd cardinality before visiting endpoint storage. Observe the actual toolkit error INVALIDCARDINALITY."
+        }
+      ],
+      "edgeAssessment": "Inspect all five summary fields on empty windows, tied lengths with first winners at nonzero offsets, all-equal/zero widths, tiny and large finite intervals, mixed known population variance and deliberately odd cardinality.",
+      "errorAssessment": "With one endpoint deliberately exposed by scard, the translated routine diagnoses SPICE(INVALIDCARDINALITY) before reading the odd pair. Initialized index outputs safely accommodate the C wrapper\u2019s postcall index adjustment. Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. The toolkit error adapter captures and resets an active error before a subsequent valid call.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). Focused summary checks cover small measures and separately classify finite-input IEEE results and integer offset fields.",
+      "findings": [
+        {
+          "id": "canonical-empty-summary-indices",
+          "status": "repaired",
+          "summary": "The empty translated summary returns two zero indices, after which the pinned C wrapper decrements both. The actual empty endpoint-offset sentinels are \u22121.",
+          "repair": "Expose both signed indices directly together with the three double statistics. Test empty results, first-tie selection and offsets greater than one, and let the actual canonical routine diagnose odd cardinality.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wnsumd.cases.json",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": [
+            "cells-windows-wnsumd-empty",
+            "cells-windows-wnsumd-all-fields-and-ties",
+            "cells-windows-wnsumd-odd-cardinality"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnsumd -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnsumd -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnsumd -> canonical wnsumd_c. The independent sidecar calls the installed SpiceyPy wnsumd wrapper on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "wnunid_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/wnunid_c.html",
+      "semantics": "Write the union of A and B into the distinct caller-owned result. The pinned merge has capacity-dependent behavior when the result is already full. With [0,4] and [2,8], capacities of zero, one and two intervals return empty, [0,4] and [0,8], respectively. Registered cases preserve this actual output together with ordinary touching/overlapping and identical inputs.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-wnunid-interleaved-and-reversed",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
+        },
+        {
+          "caseId": "cells-windows-wnunid-touching-and-singletons",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
+        },
+        {
+          "caseId": "cells-windows-wnunid-empty-operands",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
+        },
+        {
+          "caseId": "cells-windows-wnunid-same-input",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Input operands may share a live handle; the destination remains independently allocated."
+        },
+        {
+          "caseId": "cells-windows-wnunid-nested-and-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
+        },
+        {
+          "caseId": "cells-windows-wnunid-undersized-result",
+          "coverage": ["error", "edge", "state"],
+          "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
+        },
+        {
+          "caseId": "cells-windows-wnunid-exact-capacity",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two disjoint intervals exactly fill the caller-owned result."
+        },
+        {
+          "caseId": "cells-windows-wnunid-full-capacity-overlap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "N0067 extends only a local endpoint once storage is full. Observe the same overlapping union at capacities one, two and zero."
+        }
+      ],
+      "edgeAssessment": "Read all intervals after reversing operands, identical handles, empty/nested/disjoint/touching and singleton combinations. Compare exact- and insufficient-capacity destinations.",
+      "errorAssessment": "Disjoint intervals can exceed the destination capacity and raise SPICE(WINDOWEXCESS). Opaque handle ownership and invalid storage are checked independently at the wrapper boundary.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric endpoints and capacities create real windows in both implementations. No kernels, external files or datasets are required.",
+      "cleanup": "The caller owns each input and result handle. Case-scoped finalizers free allocated windows. Node holds the shared lock during native handle resolution and the call. WASM validates module ownership and releases per-call temporaries on success or error. A failed C wrapper can leave the C descriptor unsynchronized with the underlying window control block. The shim validates the physical written endpoint count before window reads and clears preservation after an explicit cardinality reset. The output must be distinct from all inputs. Toolkit errors are captured and reset. Failure may leave a partially written result.",
+      "tolerance": "Interval counts, indices, selector/relation results and expected errors compare exactly. Finite endpoint/measure outputs use the unchanged live comparison (1e\u221212 absolute or relative). The workflow reads every resulting interval in order.",
+      "findings": [
+        {
+          "id": "caller-result-capacity-wnunid",
+          "status": "repaired",
+          "summary": "The installed high-level SpiceyPy wrapper creates its own output window. That representation loses the caller\u2019s capacity and existing contents, including observable state after a failed write.",
+          "repair": "Use the exact typed canonical symbol in a separate ctypes function table, passing distinct already-allocated input and result SpiceCells. Check the toolkit error status after the call. Compare destination replacement, capacity and the canonical window reads.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wnunid.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": [
+            "cells-windows-wnunid-undersized-result",
+            "cells-windows-wnunid-exact-capacity"
+          ]
+        },
+        {
+          "id": "pinned-full-capacity-merge",
+          "status": "repaired",
+          "summary": "When the result storage is exactly full, the pinned WNUNID routine tracks a later overlapping endpoint in its local END without updating the last stored interval. A call can succeed with a capacity-dependent interval.",
+          "repair": "Preserve the actual result in caller-owned storage and exercise zero, one and two interval capacities explicitly. Document the pinned toolkit limitation without changing capacity or computing a replacement union.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/cells-windows/wnunid.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
+            "docs/step8-window-algebra.md"
+          ],
+          "caseIds": ["cells-windows-wnunid-full-capacity-overlap"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnunid -> checked Node adapter and addon, resolving owned handles under the native SPICE lock -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.wnunid -> WASM adapter, resolving handles registered to the module and calling the corresponding exported shim -> shared tspice_wnunid -> canonical wnunid_c. The independent sidecar calls the typed caller-owned result-cell binding to wnunid_c on the locked N0067 library.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Source and locked oracle reviewed. Historical executions for the inherited routines are retained. Fresh local Node/WASM lanes and observed canonical CI are required for source-bound verification."
+}

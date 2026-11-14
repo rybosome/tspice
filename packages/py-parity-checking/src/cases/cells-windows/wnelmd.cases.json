@@ -1,0 +1,216 @@
+[
+  {
+    "caseId": "cells-windows-wnelmd-closed-boundaries-and-gaps",
+    "description": "Left and right boundaries are included, including isolated points; true gaps are excluded.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 3,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 7,
+        "right": 11
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 14,
+        "right": 14
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 17,
+        "right": 21
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": -1
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 2
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 3
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 3.001
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 6.999
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 7
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 11
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 13
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 14
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 15
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 21
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 22
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnelmd-empty",
+    "description": "Membership in an empty window is false.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 0,
+        "right": 0,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.scard",
+        "targetKind": "window",
+        "targetId": "W",
+        "card": 0
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": -1
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 0
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnelmd-adjacent-representable-values",
+    "description": "Test successive representable values on either side of a singleton.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1,
+        "right": 1,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 0.9999999999999999
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1.0000000000000002
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-wnelmd-signed-extrema",
+    "description": "Finite endpoints near the limits compare without computing interval lengths.",
+    "workflow": [
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": -1.7976931348623157e308,
+        "right": -1e300,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "W",
+        "left": 1e300,
+        "right": 1.7976931348623157e308
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": -1.7976931348623157e308
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": -1e300
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 0
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1e300
+      },
+      {
+        "op": "cells-windows.wnelmd",
+        "windowId": "W",
+        "point": 1.7976931348623157e308
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
