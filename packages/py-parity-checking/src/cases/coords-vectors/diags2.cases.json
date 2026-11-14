@@ -1,0 +1,99 @@
+[
+  {
+    "caseId": "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+    "description": "diags2: distinct-eigenvalues-and-signs; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4, 1.5, 1.5, 1]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4, -1.5, -1.5, 1]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [1, 1.5, 1.5, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-diags2-diagonal-zero-and-repeated",
+    "description": "diags2: diagonal-zero-and-repeated; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [2, 0, 0, 2]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [5, 0, 0, -3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-diags2-ignored-lower-triangle",
+    "description": "diags2: ignored-lower-triangle; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4, 1.5, -99, 1]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4, 1.5, 1.7976931348623157e308, 1]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [5, 0, -99, -3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-diags2-negative-and-indefinite",
+    "description": "diags2: negative-and-indefinite; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [-4, 1.5, 1.5, -1]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [2, 3, 3, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-diags2-scaled-magnitudes",
+    "description": "diags2: scaled-magnitudes; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4e200, 1.5e200, 1.5e200, 1e200]
+      },
+      {
+        "op": "coords-vectors.diags2",
+        "symmat": [4e-200, 1.5e-200, 1.5e-200, 1e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

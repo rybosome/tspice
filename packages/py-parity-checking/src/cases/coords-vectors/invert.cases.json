@@ -1,0 +1,152 @@
+[
+  {
+    "caseId": "coords-vectors-invert-nonsymmetric-positive-negative",
+    "description": "invert: nonsymmetric-positive-negative; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [2, 1, 0],
+          [0, 3, 1],
+          [1, 0, 4]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [0, 3, 1],
+          [2, 1, 0],
+          [1, 0, 4]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invert-singular-zero-and-dependent",
+    "description": "invert: singular-zero-and-dependent; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 2, 4],
+          [2, 4, 8],
+          [0, 1, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invert-determinant-below-threshold",
+    "description": "invert: determinant-below-threshold; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 5e-17]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -5e-17]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invert-determinant-at-threshold",
+    "description": "invert: determinant-at-threshold; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1e-16]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -1e-16]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invert-determinant-above-threshold",
+    "description": "invert: determinant-above-threshold; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 2e-16]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, -2e-16]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invert-finite-large-small-inverse",
+    "description": "invert: finite-large-small-inverse; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [1e100, 0, 0],
+          [0, 2e100, 0],
+          [0, 0, 4e100]
+        ]
+      },
+      {
+        "op": "coords-vectors.invert",
+        "m": [
+          [0.0001, 0, 0],
+          [0, 0.0002, 0],
+          [0, 0, 0.0004]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -408,5 +408,26 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a12-fixed-matrices",
+      "routines": [
+        "det_c",
+        "diags2_c",
+        "ident_c",
+        "invert_c",
+        "invort_c",
+        "isrot_c",
+        "mequ_c",
+        "mtxm_c",
+        "mxmt_c",
+        "trace_c",
+        "xpose_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Complete primary-semantic review, source and registered live cases; run focused result-helper/wrapper/allocation tests, both full required lanes and canonical CI before current-source verified status. Independent Step 8 batch; no merge authorized."
+    }
   ]
 }

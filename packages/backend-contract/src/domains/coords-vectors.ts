@@ -8,6 +8,138 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Return the determinant of a finite 3x3 matrix in row-major order.
+   *
+   * CSPICE evaluates the determinant directly. Overflow, underflow and
+   * cancellation retain its floating-point behavior, including nonfinite
+   * results. The input is unchanged. No kernels are needed. CSPICE is
+   * error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/det_c.html
+   */
+  det(m: Mat3RowMajor): number;
+
+  /**
+   * Diagonalize a symmetric 2x2 matrix, returning independent diag and rotate matrices.
+   *
+   * Input and outputs use flat row-major order [m00, m01, m10, m11]. All input
+   * entries must be finite. CSPICE uses only m00, m01 and m11; m10 is ignored,
+   * so differing off-diagonal entries are accepted without symmetrization.
+   * For the symmetric matrix represented by those upper-triangular entries,
+   * diag = transpose(rotate) * symmat * rotate. The columns of rotate are
+   * eigenvectors; CSPICE chooses a rotation of smallest absolute angle.
+   * Eigenvalues are not sorted and signs are not canonicalized; tied choices
+   * retain CSPICE's selection. A diagonal input retains its diagonal order
+   * and gives identity rotate. Zero or negative eigenvalues are allowed.
+   * Numerical limits, including nonfinite results, remain those of CSPICE.
+   * No kernels are needed. CSPICE is error-free; invalid JavaScript inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/diags2_c.html
+   */
+  diags2(symmat: readonly [number, number, number, number]): {
+    diag: [number, number, number, number];
+    rotate: [number, number, number, number];
+  };
+
+  /**
+   * Return an independent 3x3 identity matrix in row-major order.
+   *
+   * No kernels are needed. This calls CSPICE's error-free ident_c routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ident_c.html
+   */
+  ident(): Mat3RowMajor;
+
+  /**
+   * Return the inverse of a finite 3x3 row-major matrix as an independent matrix.
+   *
+   * Pinned CSPICE N0067 returns an all-zero matrix when abs(det(m)) < 1e-16;
+   * this is a strict threshold, not a SPICE error. Otherwise it evaluates
+   * cofactors and divides by the determinant. Inputs should keep these
+   * intermediate products within floating-point range. Overflow, underflow
+   * and cancellation are not corrected, and nonfinite outputs are retained.
+   * No kernels are needed. Invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invert_c.html
+   */
+  invert(m: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Transpose a finite 3x3 matrix and divide each output row by its squared norm.
+   *
+   * The result is an inverse when the input columns are orthogonal and
+   * nonzero; CSPICE does not validate orthogonality. Inputs and the independent
+   * output use row-major order. A zero-length column throws
+   * SPICE(ZEROLENGTHCOLUMN); a column whose norm is too small to reciprocate
+   * throws SPICE(COLUMNTOOSMALL). Other numerical limits retain CSPICE behavior.
+   * No kernels are needed. Invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invort_c.html
+   */
+  invort(m: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Test a finite 3x3 row-major matrix using CSPICE's rotation criteria.
+   *
+   * Column norms must be in [1 - ntol, 1 + ntol]. The determinant of the
+   * matrix with unitized columns must be in [1 - dtol, 1 + dtol]. Bounds
+   * are inclusive; this is a tolerance test, not an exact orthogonality test.
+   * Both tolerances must be finite. Negative tolerances reach CSPICE and
+   * throw SPICE(VALUEOUTOFRANGE); zero tolerances are allowed. No kernels
+   * are needed. Invalid JavaScript inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrot_c.html
+   */
+  isrot(m: Mat3RowMajor, ntol: number, dtol: number): boolean;
+
+  /**
+   * Return an independent row-major copy of a finite 3x3 matrix.
+   *
+   * Component order and signed zeros are retained. No kernels are needed.
+   * CSPICE is error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mequ_c.html
+   */
+  mequ(m: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Return transpose(a) * b as an independent 3x3 row-major matrix.
+   *
+   * Both input matrices contain exactly nine finite numbers in row-major
+   * order and are unchanged. Keep intermediate products within range for
+   * meaningful results; CSPICE overflow, underflow and cancellation are
+   * preserved, including nonfinite outputs. No kernels are needed. CSPICE
+   * is error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxm_c.html
+   */
+  mtxm(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Return a * transpose(b) as an independent 3x3 row-major matrix.
+   *
+   * Both input matrices contain exactly nine finite numbers in row-major
+   * order and are unchanged. Keep intermediate products within range for
+   * meaningful results; CSPICE overflow, underflow and cancellation are
+   * preserved, including nonfinite outputs. No kernels are needed. CSPICE
+   * is error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmt_c.html
+   */
+  mxmt(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor;
+
+  /**
+   * Return the sum of the diagonal entries of a finite 3x3 row-major matrix.
+   *
+   * The input is unchanged. Summation retains CSPICE floating-point behavior,
+   * including overflow and cancellation. No kernels are needed. CSPICE is
+   * error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trace_c.html
+   */
+  trace(m: Mat3RowMajor): number;
+
+  /**
+   * Return the transpose of a finite 3x3 matrix as an independent row-major matrix.
+   *
+   * The input is unchanged and every component, including signed zero, is
+   * retained in transposed position. No kernels are needed. CSPICE is
+   * error-free; invalid JavaScript matrix inputs throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xpose_c.html
+   */
+  xpose(m: Mat3RowMajor): Mat3RowMajor;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

@@ -23,6 +23,17 @@ from .coords_vectors import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsDet,
+    StepCoordsVectorsDiags2,
+    StepCoordsVectorsIdent,
+    StepCoordsVectorsInvert,
+    StepCoordsVectorsInvort,
+    StepCoordsVectorsIsrot,
+    StepCoordsVectorsMequ,
+    StepCoordsVectorsMtxm,
+    StepCoordsVectorsMxmt,
+    StepCoordsVectorsTrace,
+    StepCoordsVectorsXpose,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -224,6 +235,17 @@ WorkflowStep: TypeAlias = (
     | StepIdsNamesBodfnd
     | StepIdsNamesBods2c
     | StepIdsNamesBodvar
+    | StepCoordsVectorsDet
+    | StepCoordsVectorsDiags2
+    | StepCoordsVectorsIdent
+    | StepCoordsVectorsInvert
+    | StepCoordsVectorsInvort
+    | StepCoordsVectorsIsrot
+    | StepCoordsVectorsMequ
+    | StepCoordsVectorsMtxm
+    | StepCoordsVectorsMxmt
+    | StepCoordsVectorsTrace
+    | StepCoordsVectorsXpose
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph

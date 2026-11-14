@@ -1,0 +1,69 @@
+[
+  {
+    "caseId": "coords-vectors-xpose-ordered-asymmetric",
+    "description": "xpose: ordered-asymmetric; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.xpose",
+        "m": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      },
+      {
+        "op": "coords-vectors.xpose",
+        "m": [
+          [-2, 4, 7],
+          [3, -5, 11],
+          [13, 17, -19]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-xpose-zero-and-identity",
+    "description": "xpose: zero-and-identity; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.xpose",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.xpose",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-xpose-finite-extremes",
+    "description": "xpose: finite-extremes; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.xpose",
+        "m": [
+          [1.7976931348623157e308, -1.7976931348623157e308, 5e-324],
+          [0.125, -2.5, 8],
+          [3e-200, -4e200, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

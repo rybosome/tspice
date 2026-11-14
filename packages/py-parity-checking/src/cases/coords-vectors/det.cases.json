@@ -1,0 +1,110 @@
+[
+  {
+    "caseId": "coords-vectors-det-asymmetric-and-transpose",
+    "description": "det: asymmetric-and-transpose; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      },
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [2, 7, 17],
+          [-3, 11, 19],
+          [5, -13, 23]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-det-signed-and-singular",
+    "description": "det: signed-and-singular; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [2, 0, 0],
+          [0, 3, 0],
+          [0, 0, 4]
+        ]
+      },
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [-2, 0, 0],
+          [0, 3, 0],
+          [0, 0, 4]
+        ]
+      },
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [1, 2, 4],
+          [2, 4, 8],
+          [0, 1, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-det-scaled-magnitudes",
+    "description": "det: scaled-magnitudes; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [1e-50, 0, 0],
+          [0, 2e-50, 0],
+          [0, 0, 3e-50]
+        ]
+      },
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [1e50, 0, 0],
+          [0, 2e50, 0],
+          [0, 0, 3e50]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-det-triangular-distinct",
+    "description": "det: triangular-distinct; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.det",
+        "m": [
+          [2, 3, 5],
+          [0, -7, 11],
+          [0, 0, 13]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

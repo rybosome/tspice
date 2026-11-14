@@ -6,6 +6,7 @@ import {
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   invariant,
 } from "@rybosome/tspice-core";
 
@@ -15,9 +16,113 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertFixedMatrixScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertFixedMatrix2(
+  value: unknown,
+): asserts value is readonly [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(
+      "diags2(symmat) must contain exactly four finite numbers",
+    );
+  for (let i = 0; i < 4; i++)
+    assertFixedMatrixScalar(value[i], `diags2(symmat)[${i}]`);
+}
+
+function fixedMatrixOutputNumber(value: unknown, label: string): number {
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function fixedMatrix2Output(
+  value: unknown,
+  label: string,
+): [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(`${label} must contain exactly four numbers`);
+  return [
+    fixedMatrixOutputNumber(value[0], label),
+    fixedMatrixOutputNumber(value[1], label),
+    fixedMatrixOutputNumber(value[2], label),
+    fixedMatrixOutputNumber(value[3], label),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    det: (m) => {
+      assertMat3ArrayLike9(m, { label: "det(m)" });
+      const out = native.det(Array.from(m));
+      return fixedMatrixOutputNumber(out, "det result");
+    },
+    diags2: (symmat) => {
+      assertFixedMatrix2(symmat);
+      const out = native.diags2(symmat);
+      if (!isPlainObject(out))
+        throw new TypeError("diags2 result must be an object");
+      return {
+        diag: fixedMatrix2Output(out.diag, "diags2 result.diag"),
+        rotate: fixedMatrix2Output(out.rotate, "diags2 result.rotate"),
+      };
+    },
+    ident: () => {
+      const out = native.ident();
+      return brandMat3RowMajorResult(out, { label: "ident result" });
+    },
+    invert: (m) => {
+      assertMat3ArrayLike9(m, { label: "invert(m)" });
+      const out = native.invert(Array.from(m));
+      return brandMat3RowMajorResult(out, { label: "invert result" });
+    },
+    invort: (m) => {
+      assertMat3ArrayLike9(m, { label: "invort(m)" });
+      const out = native.invort(Array.from(m));
+      return brandMat3RowMajorResult(out, { label: "invort result" });
+    },
+    isrot: (m, ntol, dtol) => {
+      assertMat3ArrayLike9(m, { label: "isrot(m)" });
+      assertFixedMatrixScalar(ntol, "isrot(ntol)");
+      assertFixedMatrixScalar(dtol, "isrot(dtol)");
+      const out = native.isrot(Array.from(m), ntol, dtol);
+      if (typeof out !== "boolean")
+        throw new TypeError("isrot result must be a boolean");
+      return out;
+    },
+    mequ: (m) => {
+      assertMat3ArrayLike9(m, { label: "mequ(m)" });
+      const out = native.mequ(Array.from(m));
+      return brandMat3RowMajorResult(out, { label: "mequ result" });
+    },
+    mtxm: (a, b) => {
+      assertMat3ArrayLike9(a, { label: "mtxm(a)" });
+      assertMat3ArrayLike9(b, { label: "mtxm(b)" });
+      const out = native.mtxm(Array.from(a), Array.from(b));
+      return brandMat3RowMajorResult(out, { label: "mtxm result" });
+    },
+    mxmt: (a, b) => {
+      assertMat3ArrayLike9(a, { label: "mxmt(a)" });
+      assertMat3ArrayLike9(b, { label: "mxmt(b)" });
+      const out = native.mxmt(Array.from(a), Array.from(b));
+      return brandMat3RowMajorResult(out, { label: "mxmt result" });
+    },
+    trace: (m) => {
+      assertMat3ArrayLike9(m, { label: "trace(m)" });
+      const out = native.trace(Array.from(m));
+      return fixedMatrixOutputNumber(out, "trace result");
+    },
+    xpose: (m) => {
+      assertMat3ArrayLike9(m, { label: "xpose(m)" });
+      const out = native.xpose(Array.from(m));
+      return brandMat3RowMajorResult(out, { label: "xpose result" });
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

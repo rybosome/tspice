@@ -9,6 +9,17 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsDet,
+    StepCoordsVectorsDiags2,
+    StepCoordsVectorsIdent,
+    StepCoordsVectorsInvert,
+    StepCoordsVectorsInvort,
+    StepCoordsVectorsIsrot,
+    StepCoordsVectorsMequ,
+    StepCoordsVectorsMtxm,
+    StepCoordsVectorsMxmt,
+    StepCoordsVectorsTrace,
+    StepCoordsVectorsXpose,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +62,53 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsDet):
+        out = sp.det(step.m)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsDiags2):
+        diag, rotate = sp.diags2([[step.symmat[0], step.symmat[1]], [step.symmat[2], step.symmat[3]]])
+        return StepOutput(op=step.op, value={
+            "diag": [float(diag[0][0]), float(diag[0][1]), float(diag[1][0]), float(diag[1][1])],
+            "rotate": [float(rotate[0][0]), float(rotate[0][1]), float(rotate[1][0]), float(rotate[1][1])],
+        })
+
+    if isinstance(step, StepCoordsVectorsIdent):
+        out = sp.ident()
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsInvert):
+        out = sp.invert(step.m)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsInvort):
+        out = sp.invort(step.m)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsIsrot):
+        out = sp.isrot(step.m, step.ntol, step.dtol)
+        return StepOutput(op=step.op, value=bool(out))
+
+    if isinstance(step, StepCoordsVectorsMequ):
+        out = sp.mequ(step.m)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsMtxm):
+        out = sp.mtxm(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsMxmt):
+        out = sp.mxmt(step.a, step.b)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
+    if isinstance(step, StepCoordsVectorsTrace):
+        out = sp.trace(step.m)
+        return StepOutput(op=step.op, value=float(out))
+
+    if isinstance(step, StepCoordsVectorsXpose):
+        out = sp.xpose(step.m)
+        return StepOutput(op=step.op, value=_to_matrix3x3(out))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

@@ -1,0 +1,693 @@
+{
+  "schemaVersion": 1,
+  "batch": "a12-fixed-matrices",
+  "traceFiles": [
+    "packages/core/src/spice-runtime/shared/mat3.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/core/src/index.ts",
+    "packages/core/test/mat3-result.test.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/utils/matrix.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/fixed-matrices.test.ts",
+    "packages/py-parity-checking/test/fixed-matrices-overflow.test.ts",
+    "packages/backend-wasm/test/fixed-matrices-allocations.test.ts",
+    "packages/backend-node/test/fixed-matrices-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-fixed-matrix-numerics.md",
+    "packages/tspice/test/fixed-matrix-results-rpc.test.ts",
+    "packages/tspice/test/_helpers/fakeWorker.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/transport/rpc/protocol.ts",
+    "packages/tspice/src/transport/rpc/taskScheduling.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "det_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/det_c.html",
+      "semantics": "raw.det(m) returns the determinant of the finite nine-entry Mat3RowMajor input. The pinned routine directly evaluates the determinant expression; finite input can yield underflow, overflow or cancellation effects. No alternate algorithm or finite-result clamp is introduced. Input storage is unchanged. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-det-asymmetric-and-transpose",
+          "coverage": ["success"],
+          "observes": "Observe the scalar determinant of a nonsymmetric matrix and its transpose. Equality is a determinant invariant; these observations do not claim to distinguish a global input transpose. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-det-signed-and-singular",
+          "coverage": ["success", "edge"],
+          "observes": "Observe positive/negative determinant signs, a dependent-row singular matrix, and zero matrix. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-det-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe tiny and huge finite determinants; separate live scale-normalized assertions distinguish tiny nonzero values from zero. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-det-triangular-distinct",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the product of distinct signed diagonal entries in a triangular matrix despite nonzero off-diagonal entries. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Signed and zero/singular determinants, nonsymmetric/triangular matrices and tiny/huge finite scale are registered. Focused scalar rescaling strengthens tiny values. A scoped live test retains actual Infinity at a finite diagonal extreme and a finite large control.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls det_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "The unchanged shared 1e-12 absolute-or-relative comparator observes the scalar. A focused 1e150/1e-150 rescaling compares tiny/huge finite determinant results to the live oracle and requires a distinguishing nonzero value. Overflow uses explicit nonfinite classification without rounding or a global tolerance change.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.det -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_det shared C shim -> det_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.det -> typed WASM adapter -> configured _tspice_det export -> tspice_det shared C shim -> det_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "diags2_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/diags2_c.html",
+      "semantics": "raw.diags2(symmat) consumes a readonly finite flat [m00,m01,m10,m11] tuple and returns separate owned flat diag and rotate tuples. CSPICE uses only the upper triangle; the finite lower-left element is accepted but ignored. For the represented symmetric matrix, diag=transpose(rotate)*symmat*rotate. Both outputs retain CSPICE ordering, eigenvector signs and smallest-absolute-angle selection; eigenvalues are not sorted. Diagonal inputs preserve their diagonal order and return identity rotate. Nonfinite numerical results are preserved. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-diags2-distinct-eigenvalues-and-signs",
+          "coverage": ["success"],
+          "observes": "Observe all four diag entries and all four rotate entries for positive/negative off-diagonal signs and swapped diagonal magnitudes; retain the chosen orientation and ordering. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-diags2-diagonal-zero-and-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero, repeated eigenvalues, and signed diagonal entries, including identity rotate and preserved diagonal order. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-diags2-ignored-lower-triangle",
+          "coverage": ["success", "edge"],
+          "observes": "Vary only the ignored lower-left element through a negative value and maximum double; observe unchanged outputs, including the upper-off-diagonal-zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-diags2-negative-and-indefinite",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both output matrices for negative and mixed-sign eigenvalues, without imposing positive definiteness. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-diags2-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all eigenvalue and rotation entries for 1e200/1e-200 scalings; rescaled diagonal comparisons and unchanged order-one rotate comparisons remain separate. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Positive/negative off-diagonal signs, swapped diagonals, repeated/zero/negative/indefinite eigenvalues, ignored lower triangle and scaled magnitudes are registered. Focused assertions compare every diag and rotate entry and rescale tiny eigenvalues. Scoped live extremes preserve the nonfinite eigenvalue and all rotation entries.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls diags2_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 4 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "All eight returned entries use the unchanged shared comparator. Tiny diagonal entries are independently rescaled and compared live; rotate entries remain compared directly at their ordinary magnitude. No eigenvalue sorting, sign canonicalization or invariant-only substitute is used. The scoped probe retains both outputs, including nonfinite entries.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.diags2 -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_diags2 shared C shim -> diags2_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.diags2 -> typed WASM adapter -> configured _tspice_diags2 export -> tspice_diags2 shared C shim -> diags2_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ident_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ident_c.html",
+      "semantics": "raw.ident() invokes CSPICE ident_c and returns a fresh owned Mat3RowMajor identity with diagonal ones and off-diagonal zeros. There are no arguments or implied kernel/epoch dependencies; repeated calls return independent storage. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-ident-exact",
+          "coverage": ["success"],
+          "observes": "Observe all nine exact identity values through the real raw method and independent oracle; focused comparison is exact. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-ident-repeat-after-reset",
+          "coverage": ["success", "edge"],
+          "observes": "Observe distinct identity calls around an actual error.reset control. There are three identity calls across the two scenarios plus one reset control, not four new-routine calls. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "An exact identity scenario and repeated calls around reset cover all nine values. Focused exact live comparison and independent returned storage/heap-reuse assertions distinguish a copied CSPICE result from aliasing. No argument-error case is applicable to the zero-argument routine.",
+      "errorAssessment": "This zero-argument CSPICE routine is error-free. No fabricated invalid argument or kernel-error scenario is claimed. WASM allocation failures and malformed native result shapes remain separate wrapper tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls ident_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 2 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "The focused live test compares every identity entry exactly; generic float tolerance is not the only assertion. Each call returns independent owned storage. No numeric conditioning or invented input error is claimed.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ident -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_ident shared C shim -> ident_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ident -> typed WASM adapter -> configured _tspice_ident export -> tspice_ident shared C shim -> ident_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "invert_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invert_c.html",
+      "semantics": "raw.invert(m) returns an owned Mat3RowMajor result from actual CSPICE cofactor inversion. The pinned N0067 strict threshold abs(det(m))<1e-16 returns all zeros as a success, for either determinant sign; at exactly the threshold inversion proceeds. This is not solely an exact-singularity test. Cofactor/determinant overflow, underflow and cancellation remain observable, including nonfinite entries. Finite input validation is unchanged. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-invert-nonsymmetric-positive-negative",
+          "coverage": ["success"],
+          "observes": "Observe every inverse entry for nonsymmetric matrices with positive/negative determinants; a transpose or wrong cofactor sign changes distinguishing entries. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invert-singular-zero-and-dependent",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all-zero results for a zero matrix and a dependent-row matrix; these are successful calls. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invert-determinant-below-threshold",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all-zero results at determinant \u00b15e-17, distinguishing the magnitude-based threshold from a signed or exact-zero-only test. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invert-determinant-at-threshold",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual inverse entries at determinant \u00b11e-16; the comparison is strict, so these inputs must not return the zero shortcut. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invert-determinant-above-threshold",
+          "coverage": ["success", "edge"],
+          "observes": "Observe inverses at determinant \u00b12e-16 as controls immediately above the cutoff. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invert-finite-large-small-inverse",
+          "coverage": ["success", "edge"],
+          "observes": "Observe finite inverse entries from large and small diagonal inputs; separate scale-normalized live checks prevent tiny inverse values being accepted as zero. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric sign variants, exact singularity, both signs below/at/above the strict threshold, and finite tiny/large inverse outputs are registered. Focused scaled inverse entries and actual product checks supplement the oracle. Scoped live overflow compares every NaN/zero entry instead of rejecting the matrix or replacing it with zero.",
+      "errorAssessment": "The pinned determinant cutoff produces a successful zero matrix, not a SPICE exception. Cofactor overflow/underflow does not justify an invented error; the independent probe retains actual nonfinite results and checks failed()==false. Malformed input and allocation failures remain separate wrapper tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls invert_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Every entry reaches the unchanged shared comparator. A focused live rescaling makes tiny inverse entries observable, and threshold literals distinguish \u00b15e-17 from the exact \u00b11e-16 cutoff. Scoped nonfinite transport retains all nine entries with exact NaN/infinity class handling. Ill-conditioned arbitrary inverses are not claimed universally identical across builds.",
+      "findings": [
+        {
+          "id": "invert-numeric-matrix-result",
+          "status": "repaired",
+          "summary": "Successful finite-input CSPICE arithmetic can produce nonfinite matrix entries. Reusing the finite-only matrix input constructor for this new output path would reject or lose those actual results.",
+          "repair": "Added and used the narrowly scoped brandMat3RowMajorResult helper: validate nine numeric entries, preserve NaN/infinities/signed zero and return owned storage. Existing finite input constructors/validators remain unchanged. Core shape/ownership/finite-input regressions and a complete independent live overflow transport cover the representation; no scientific algorithm or output value is substituted. A focused transport regression also compares actual invert/mtxm/mequ/diags2 backend results across the existing RPC codec and structuredClone test boundary; it makes no browser asset/startup claim.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/mat3.ts",
+            "packages/core/test/mat3-result.test.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/py-parity-checking/test/fixed-matrices-overflow.test.ts",
+            "docs/step8-fixed-matrix-numerics.md",
+            "packages/tspice/test/fixed-matrix-results-rpc.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-invert-nonsymmetric-positive-negative",
+            "coords-vectors-invert-singular-zero-and-dependent",
+            "coords-vectors-invert-determinant-below-threshold",
+            "coords-vectors-invert-determinant-at-threshold",
+            "coords-vectors-invert-determinant-above-threshold",
+            "coords-vectors-invert-finite-large-small-inverse"
+          ]
+        },
+        {
+          "id": "invert-recovery-signed-zero",
+          "status": "repaired",
+          "summary": "Both actual backends passed the fourteen scientific extreme observations, but the final recovery assertion compared invert(identity) with ident() using signed-zero-sensitive deep equality. Cofactor signs legitimately produce negative zero in some inverse off-diagonal entries while ident produces positive zeros.",
+          "repair": "The recovery assertion now checks every component using exact JavaScript numeric equality (===), so nonzero entries still must match exactly and signed zero is accepted as mathematical zero. Returned output is not rewritten or normalized; the shared comparator and complete live extreme observations are unchanged. Separate copy/transpose signed-zero assertions remain explicit.",
+          "evidence": [
+            "packages/py-parity-checking/test/fixed-matrices-overflow.test.ts",
+            "docs/step8-fixed-matrix-numerics.md"
+          ],
+          "caseIds": [
+            "coords-vectors-invert-nonsymmetric-positive-negative",
+            "coords-vectors-invert-singular-zero-and-dependent"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.invert -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invert shared C shim -> invert_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.invert -> typed WASM adapter -> configured _tspice_invert export -> tspice_invert shared C shim -> invert_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "invort_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invort_c.html",
+      "semantics": "raw.invort(m) returns the original columns of finite m as output rows divided by their squared norms, using the actual CSPICE scaled-transpose algorithm. The result is an inverse for nonzero orthogonal columns; orthogonality is not validated and nonorthogonal matrices still return the scaled transpose. A zero column signals SPICE(ZEROLENGTHCOLUMN); a column too small to reciprocate signals SPICE(COLUMNTOOSMALL). Results are owned row-major matrices and retain other CSPICE numerical limits. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-invort-orthogonal-scaled-columns",
+          "coverage": ["success"],
+          "observes": "Observe every scaled-transpose entry for orthogonal columns with distinct signed lengths, plus a unit rotation. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-nonorthogonal-contract",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual scaled transpose of a nonsymmetric, nonorthogonal matrix; a focused literal check distinguishes it from general inversion. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all entries for huge/tiny signed diagonal columns, with separate result scaling to make small reciprocal entries observable. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-small-reciprocal-finite",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a finite reciprocal near 1e308 for a 1e-308 column, distinguishing valid small columns from the error boundary. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-zero-column-1",
+          "coverage": ["error"],
+          "observes": "Observe ZEROLENGTHCOLUMN for the first zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-too-small-column-1",
+          "coverage": ["error"],
+          "observes": "Observe COLUMNTOOSMALL for a first-column minimum subnormal whose reciprocal overflows. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-zero-column-2",
+          "coverage": ["error"],
+          "observes": "Observe ZEROLENGTHCOLUMN for the second zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-too-small-column-2",
+          "coverage": ["error"],
+          "observes": "Observe COLUMNTOOSMALL for the second-column minimum subnormal. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-zero-column-3",
+          "coverage": ["error"],
+          "observes": "Observe ZEROLENGTHCOLUMN for the third zero column. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-invort-too-small-column-3",
+          "coverage": ["error"],
+          "observes": "Observe COLUMNTOOSMALL for the third-column minimum subnormal. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Distinct signed orthogonal column lengths, a nonorthogonal input, reciprocal scales and a small finite reciprocal are registered. All three zero-column positions and all three minimum-subnormal positions have separate scientific error scenarios. Focused valid calls immediately follow every error; scoped overflow observes a huge-column norm producing a zero result row.",
+      "errorAssessment": "Six registered live error scenarios cover every column position: ZEROLENGTHCOLUMN at zero norm and COLUMNTOOSMALL at a minimum-subnormal norm. The 1e-308 reciprocal control remains valid. Focused public tests execute a valid same-client invort immediately after each error and require failed()==false, observing shim capture/reset and recovery. Nonorthogonality is not invented as an error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls invort_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Every entry reaches the unchanged shared comparator. Focused live result scaling distinguishes tiny reciprocals, while the 1e-308 valid-column control is checked at an ordinary scaled magnitude. Error identifiers are observed separately from numeric tolerance. The extreme probe retains all output rows, including a numerically zero huge-column row.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.invort -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_invort shared C shim -> invort_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.invort -> typed WASM adapter -> configured _tspice_invort export -> tspice_invort shared C shim -> invort_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "isrot_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrot_c.html",
+      "semantics": "raw.isrot(m,ntol,dtol) returns a boolean from the actual finite-matrix CSPICE rotation filter. Column norms must fall in inclusive [1-ntol,1+ntol], and the determinant of the matrix with unitized columns must fall in inclusive [1-dtol,1+dtol]. This caller-controlled test can accept zero/reflection matrices with sufficiently loose tolerances. Finite negative tolerances reach CSPICE and signal SPICE(VALUEOUTOFRANGE); nonfinite tolerances are rejected at the JS boundary. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-isrot-proper-reflection-singular",
+          "coverage": ["success"],
+          "observes": "Observe exact booleans for identity, a proper signed-axis rotation, reflection and zero matrix under tight tolerances. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-isrot-column-norm-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Observe acceptance at the inclusive 0.125 column-norm boundary and rejection with 0.124 tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-isrot-unitized-determinant-tolerance",
+          "coverage": ["success", "edge"],
+          "observes": "Observe different acceptance for the same unit-column, nonorthogonal matrix under two determinant tolerances; distinguish column normalization and tolerance argument order. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-isrot-loose-tolerances",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the actual true results for zero matrix at ntol=dtol=1 and reflection at ntol=0,dtol=2. No stricter orthogonality policy is substituted. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-isrot-negative-ntol",
+          "coverage": ["error"],
+          "observes": "Observe VALUEOUTOFRANGE from an actual negative finite norm tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-isrot-negative-dtol",
+          "coverage": ["error"],
+          "observes": "Observe VALUEOUTOFRANGE from an actual negative finite determinant tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Identity/proper rotation, reflection, zero, inclusive norm boundary, independent unitized-determinant tolerance and deliberately loose tolerances are registered. Separate negative-ntol/dtol scenarios observe scientific errors, with same-client recovery assertions. Boolean comparison is exact.",
+      "errorAssessment": "Separate registered live errors pass negative finite ntol and dtol to CSPICE and require VALUEOUTOFRANGE. Focused public tests immediately recover with a valid isrot call and require failed()==false. Zero and loose positive tolerances are permitted; nonfinite tolerance/type failures remain JS boundary tests.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls isrot_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Boolean results are exact. Boundary and loose-tolerance cases exercise the actual inclusive criteria, not a numeric closeness surrogate. Error tokens and same-client failed()==false recovery are separate observations; negative scientific tolerances are not blocked by finite-input validation.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrot -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_isrot shared C shim -> isrot_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.isrot -> typed WASM adapter -> configured _tspice_isrot export -> tspice_isrot shared C shim -> isrot_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mequ_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mequ_c.html",
+      "semantics": "raw.mequ(m) returns an independently owned Mat3RowMajor copy of the finite input, preserving all nine row-major positions, finite extremes, subnormals and signed zero. It invokes actual CSPICE mequ_c without normalization, transpose or input mutation. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mequ-ordered-asymmetric",
+          "coverage": ["success"],
+          "observes": "Observe every copied entry of two nonsymmetric mixed-sign matrices in row-major position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mequ-zero-and-identity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete zero and identity copies through the actual routine. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mequ-finite-extremes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe maximum values, a minimum subnormal and mixed scales in their original positions; focused exact live comparison supplements ordinary tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric order/signs, zero/identity and finite extremes are registered. Exact live comparisons distinguish subnormal loss. Literal signed-zero and caller mutation/later heap reuse assertions supplement the normal oracle transport.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls mequ_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Registered entries use the unchanged shared comparator; the focused finite-extreme workflow is additionally compared exactly to live SpiceyPy, distinguishing subnormal loss. Object.is separately checks signed zero, since generic JSON parity alone cannot certify its sign.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mequ -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mequ shared C shim -> mequ_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mequ -> typed WASM adapter -> configured _tspice_mequ export -> tspice_mequ shared C shim -> mequ_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mtxm_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mtxm_c.html",
+      "semantics": "raw.mtxm(a,b) returns transpose(a)*b in an independently owned Mat3RowMajor result. Both inputs contain nine finite row-major values; arbitrary nonsymmetric/nonrotation matrices are accepted. Operand order and the first-operand transpose are preserved through the C arrays. Actual CSPICE arithmetic, including nonfinite output, is retained. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mtxm-asymmetric-operand-order",
+          "coverage": ["success"],
+          "observes": "Observe all nine entries of transpose(a)*b and transpose(b)*a for distinct nonsymmetric matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mtxm-identity-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both identity operand positions and either zero operand, distinguishing which input is transposed. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mtxm-gram-matrix",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full column Gram matrix transpose(a)*a; it differs from a*transpose(a) for this input. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mtxm-balanced-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Observe ordinary-sized full results from reciprocal large/tiny operand scales in either position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric reversed operands, both identity/zero positions, column Gram matrix and reciprocal operand scales are registered. Full nine-entry literals distinguish transpose/order. Scoped live overflow retains all nine Infinity entries with finite controls.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls mtxm_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 4 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Every output entry uses the unchanged shared comparator. Distinct nonsymmetric operands and fixed nine-entry literals expose order/layout/transpose errors; reciprocal input scales yield ordinary-sized results. The scoped nonfinite-safe comparison preserves all entries without global tolerance changes.",
+      "findings": [
+        {
+          "id": "mtxm-numeric-matrix-result",
+          "status": "repaired",
+          "summary": "Successful finite-input CSPICE arithmetic can produce nonfinite matrix entries. Reusing the finite-only matrix input constructor for this new output path would reject or lose those actual results.",
+          "repair": "Added and used the narrowly scoped brandMat3RowMajorResult helper: validate nine numeric entries, preserve NaN/infinities/signed zero and return owned storage. Existing finite input constructors/validators remain unchanged. Core shape/ownership/finite-input regressions and a complete independent live overflow transport cover the representation; no scientific algorithm or output value is substituted. A focused transport regression also compares actual invert/mtxm/mequ/diags2 backend results across the existing RPC codec and structuredClone test boundary; it makes no browser asset/startup claim.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/mat3.ts",
+            "packages/core/test/mat3-result.test.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/py-parity-checking/test/fixed-matrices-overflow.test.ts",
+            "docs/step8-fixed-matrix-numerics.md",
+            "packages/tspice/test/fixed-matrix-results-rpc.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-mtxm-asymmetric-operand-order",
+            "coords-vectors-mtxm-identity-and-zero",
+            "coords-vectors-mtxm-gram-matrix",
+            "coords-vectors-mtxm-balanced-scales"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxm -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mtxm shared C shim -> mtxm_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mtxm -> typed WASM adapter -> configured _tspice_mtxm export -> tspice_mtxm shared C shim -> mtxm_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "mxmt_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mxmt_c.html",
+      "semantics": "raw.mxmt(a,b) returns a*transpose(b) in an independently owned Mat3RowMajor result. Both inputs contain nine finite row-major values; no orthogonality or symmetry constraint is imposed. The second operand is transposed, with operand order preserved. Actual CSPICE arithmetic, including nonfinite output, is retained. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mxmt-asymmetric-operand-order",
+          "coverage": ["success"],
+          "observes": "Observe all nine entries of a*transpose(b) and b*transpose(a) for distinct nonsymmetric matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mxmt-identity-and-zero",
+          "coverage": ["success", "edge"],
+          "observes": "Observe both identity operand positions and either zero operand, distinguishing the second-input transpose. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mxmt-gram-matrix",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the full row Gram matrix a*transpose(a); it differs from transpose(a)*a for this input. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-mxmt-balanced-scales",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all ordinary-sized output entries with reciprocal large/tiny operand scales in either position. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric reversed operands, both identity/zero positions, row Gram matrix and reciprocal operand scales are registered. Full nine-entry literals distinguish the second-input transpose. Scoped live overflow retains every Infinity entry with finite controls.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls mxmt_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 4 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Every output entry uses the unchanged shared comparator. Nonsymmetric operands, row-versus-column Gram differences and exact ordinary literals expose the second-input transpose and order. Scoped nonfinite handling compares all nine entries and finite controls without reducing precision.",
+      "findings": [
+        {
+          "id": "mxmt-numeric-matrix-result",
+          "status": "repaired",
+          "summary": "Successful finite-input CSPICE arithmetic can produce nonfinite matrix entries. Reusing the finite-only matrix input constructor for this new output path would reject or lose those actual results.",
+          "repair": "Added and used the narrowly scoped brandMat3RowMajorResult helper: validate nine numeric entries, preserve NaN/infinities/signed zero and return owned storage. Existing finite input constructors/validators remain unchanged. Core shape/ownership/finite-input regressions and a complete independent live overflow transport cover the representation; no scientific algorithm or output value is substituted. A focused transport regression also compares actual invert/mtxm/mequ/diags2 backend results across the existing RPC codec and structuredClone test boundary; it makes no browser asset/startup claim.",
+          "evidence": [
+            "packages/core/src/spice-runtime/shared/mat3.ts",
+            "packages/core/test/mat3-result.test.ts",
+            "packages/backend-node/test/fixed-matrices-domain.test.ts",
+            "packages/py-parity-checking/test/fixed-matrices-overflow.test.ts",
+            "docs/step8-fixed-matrix-numerics.md",
+            "packages/tspice/test/fixed-matrix-results-rpc.test.ts"
+          ],
+          "caseIds": [
+            "coords-vectors-mxmt-asymmetric-operand-order",
+            "coords-vectors-mxmt-identity-and-zero",
+            "coords-vectors-mxmt-gram-matrix",
+            "coords-vectors-mxmt-balanced-scales"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmt -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_mxmt shared C shim -> mxmt_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.mxmt -> typed WASM adapter -> configured _tspice_mxmt export -> tspice_mxmt shared C shim -> mxmt_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "trace_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trace_c.html",
+      "semantics": "raw.trace(m) returns the sum of the three diagonal entries of a finite Mat3RowMajor input. Off-diagonal entries do not contribute. Actual sequential CSPICE summation preserves overflow, underflow and cancellation behavior; the input is not modified. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-trace-diagonal-selection",
+          "coverage": ["success"],
+          "observes": "Keep the diagonal fixed while changing every off-diagonal entry; observe unchanged scalar trace. This does not claim to distinguish a global transpose, which leaves the trace invariant. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-trace-zero-and-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero matrix and exactly representable diagonal cancellation. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-trace-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe tiny and huge trace values; a separate live result scaling distinguishes tiny nonzero sums. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Fixed-diagonal/changing-off-diagonal inputs, zero/exact cancellation and tiny/huge finite magnitudes are registered. Focused scaled scalar comparison strengthens tiny sums. Scoped live overflow retains Infinity and a finite nearby control.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls trace_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "The scalar uses the unchanged shared comparator. Focused live rescaling of tiny sums prevents accepting zero through absolute tolerance alone. Off-diagonal mutations preserve the same expected trace. Explicit overflow classification keeps the real nonfinite scalar.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.trace -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_trace shared C shim -> trace_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.trace -> typed WASM adapter -> configured _tspice_trace export -> tspice_trace shared C shim -> trace_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "xpose_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xpose_c.html",
+      "semantics": "raw.xpose(m) returns an independently owned Mat3RowMajor transpose of the finite input. Diagonal entries keep their positions and the three off-diagonal pairs swap positions. Every value, including subnormals and signed zero, is preserved; input storage is unchanged. No kernels, files, handles or variable output capacity are required.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-xpose-ordered-asymmetric",
+          "coverage": ["success"],
+          "observes": "Observe all off-diagonal swaps and unchanged diagonal entries for two nonsymmetric mixed-sign inputs. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-xpose-zero-and-identity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete transposes of zero and identity matrices. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        },
+        {
+          "caseId": "coords-vectors-xpose-finite-extremes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe maximum/subnormal/mixed-scale values in transposed positions; focused exact live comparison supplements tolerance. The tspice route invokes the actual raw method and the independent sidecar invokes its locked SpiceyPy wrapper; complete outputs or the expected scientific error are observed."
+        }
+      ],
+      "edgeAssessment": "Nonsymmetric mixed-sign positions, zero/identity and finite extremes are registered. Full-output exact live comparison distinguishes subnormal loss; literal signed-zero positions, source mutation and later heap reuse check output ownership.",
+      "errorAssessment": "NAIF describes this operation as error-free for correctly shaped input; no scientific error is fabricated. Malformed/nonfinite JS inputs and allocation failures are wrapper boundaries, tested separately from CSPICE numeric behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored numeric matrices and tolerance values only; no downloaded scientific kernels, file handles or fixture distribution changes. Installed locked SpiceyPy 6.0.3 source was inspected: every wrapper invokes the matching libspice routine, independently of tspice.",
+      "cleanup": "The shared shim uses fixed local storage, maps flat arrays to C rows, calls xpose_c and publishes output only after SPICE status checking. Native holds the global CSPICE mutex and copies JS results. WASM uses 3 temporary allocations through withAllocs; source tests cover every failure position and successful cleanup with same-module recovery. Returned storage is copied before heap free; the approved numeric result helper owns 3x3 results without weakening finite input validation. Parity clients dispose in finally and workflow lifecycle clears/resets state. Fresh source-bound execution is required separately.",
+      "tolerance": "Every registered entry reaches the unchanged shared comparator. The finite-extreme case also uses exact live output equality, and literal Object.is assertions separately observe signed zero. All positions are retained, with no invariant-only or norm-only comparison.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.xpose -> typed Node adapter -> registered native handler under CSPICE mutex -> tspice_xpose shared C shim -> xpose_c; complete scalar/boolean/matrix output copied and propagated.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.xpose -> typed WASM adapter -> configured _tspice_xpose export -> tspice_xpose shared C shim -> xpose_c; every result entry copied before withAllocs cleanup. Artifact/export verification and source-bound execution remain required.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Primary semantics, pinned source, direct oracle observations, implementation routes and assertion source reviewed. Backend verification remains pending fresh full local and observed canonical CI evidence. No verified or landed claim."
+}

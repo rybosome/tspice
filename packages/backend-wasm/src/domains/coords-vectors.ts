@@ -7,9 +7,12 @@ import {
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
+
+import { withAllocs } from "../codec/alloc.js";
 
 import { throwWasmSpiceError } from "../codec/errors.js";
 
@@ -772,11 +775,262 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertFixedMatrixScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function assertFixedMatrix2(
+  value: unknown,
+): asserts value is readonly [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(
+      "diags2(symmat) must contain exactly four finite numbers",
+    );
+  for (let i = 0; i < 4; i++)
+    assertFixedMatrixScalar(value[i], `diags2(symmat)[${i}]`);
+}
+
+function readFixedMatrixResult(
+  module: EmscriptenModule,
+  ptr: number,
+  label: string,
+): Mat3RowMajor {
+  const start = ptr >> 3;
+  return brandMat3RowMajorResult(module.HEAPF64.subarray(start, start + 9), {
+    label,
+  });
+}
+
+function readFixedMatrix2(
+  module: EmscriptenModule,
+  ptr: number,
+): [number, number, number, number] {
+  const i = ptr >> 3;
+  const heap = module.HEAPF64;
+  return [heap[i]!, heap[i + 1]!, heap[i + 2]!, heap[i + 3]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    det: (m) => {
+      assertMat3ArrayLike9(m, { label: "det(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 8],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_det(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    diags2: (symmat) => {
+      assertFixedMatrix2(symmat);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 32, 32, 32],
+        (errPtr, symmatPtr, diagPtr, rotatePtr) => {
+          module.HEAPF64.set(symmat, symmatPtr >> 3);
+          const status = module._tspice_diags2(
+            symmatPtr,
+            diagPtr,
+            rotatePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            diag: readFixedMatrix2(module, diagPtr),
+            rotate: readFixedMatrix2(module, rotatePtr),
+          };
+        },
+      );
+    },
+    ident: () => {
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_ident(outPtr, errPtr, ERR_MAX_BYTES);
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "ident result");
+      });
+    },
+    invert: (m) => {
+      assertMat3ArrayLike9(m, { label: "invert(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_invert(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "invert result");
+        },
+      );
+    },
+    invort: (m) => {
+      assertMat3ArrayLike9(m, { label: "invort(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_invort(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "invort result");
+        },
+      );
+    },
+    isrot: (m, ntol, dtol) => {
+      assertMat3ArrayLike9(m, { label: "isrot(m)" });
+      assertFixedMatrixScalar(ntol, "isrot(ntol)");
+      assertFixedMatrixScalar(dtol, "isrot(dtol)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 4],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_isrot(
+            mPtr,
+            ntol,
+            dtol,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >> 2] !== 0;
+        },
+      );
+    },
+    mequ: (m) => {
+      assertMat3ArrayLike9(m, { label: "mequ(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_mequ(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mequ result");
+        },
+      );
+    },
+    mtxm: (a, b) => {
+      assertMat3ArrayLike9(a, { label: "mtxm(a)" });
+      assertMat3ArrayLike9(b, { label: "mtxm(b)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72, 72],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >> 3);
+          module.HEAPF64.set(b, bPtr >> 3);
+          const status = module._tspice_mtxm(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mtxm result");
+        },
+      );
+    },
+    mxmt: (a, b) => {
+      assertMat3ArrayLike9(a, { label: "mxmt(a)" });
+      assertMat3ArrayLike9(b, { label: "mxmt(b)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72, 72],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(a, aPtr >> 3);
+          module.HEAPF64.set(b, bPtr >> 3);
+          const status = module._tspice_mxmt(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mxmt result");
+        },
+      );
+    },
+    trace: (m) => {
+      assertMat3ArrayLike9(m, { label: "trace(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 8],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_trace(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    xpose: (m) => {
+      assertMat3ArrayLike9(m, { label: "xpose(m)" });
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(m, mPtr >> 3);
+          const status = module._tspice_xpose(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "xpose result");
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

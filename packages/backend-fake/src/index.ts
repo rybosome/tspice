@@ -34,6 +34,7 @@ import {
   assertGetmsgWhich,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   kxtrctJs,
   matchesKernelKind,
   normalizeBodItem,
@@ -286,6 +287,28 @@ function drotZRowMajor(theta: number, w: number): Mat3RowMajor {
     ] as const,
     { label: "fake.drotZRowMajor" },
   );
+}
+
+function fakeMatrixDet(m: Mat3RowMajor): number {
+  return (
+    m[0] * (m[4] * m[8] - m[5] * m[7]) -
+    m[1] * (m[3] * m[8] - m[5] * m[6]) +
+    m[2] * (m[3] * m[7] - m[4] * m[6])
+  );
+}
+
+function fakeMatrixTranspose(m: Mat3RowMajor): Mat3RowMajor {
+  return brandMat3RowMajorResult([
+    m[0],
+    m[3],
+    m[6],
+    m[1],
+    m[4],
+    m[7],
+    m[2],
+    m[5],
+    m[8],
+  ]);
 }
 
 function mmul3(a: Mat3RowMajor, b: Mat3RowMajor): Mat3RowMajor {
@@ -2391,6 +2414,78 @@ export function createFakeBackend(
     wnvald: (_size, _n, _window) => {
       throw new Error(spiceCellUnsupported);
     },
+
+    // Toy fixed matrices for facade tests, not a CSPICE numerical oracle.
+    det: (m) => fakeMatrixDet(m),
+    diags2: (symmat) => {
+      const a = symmat[0],
+        b = symmat[1],
+        c = symmat[3];
+      if (b === 0) return { diag: [a, 0, 0, c], rotate: [1, 0, 0, 1] };
+      let angle = Math.atan2(2 * b, a - c) / 2;
+      if (angle > Math.PI / 4) angle -= Math.PI / 2;
+      if (angle < -Math.PI / 4) angle += Math.PI / 2;
+      const co = Math.cos(angle),
+        si = Math.sin(angle);
+      return {
+        diag: [
+          a * co * co + 2 * b * co * si + c * si * si,
+          0,
+          0,
+          a * si * si - 2 * b * co * si + c * co * co,
+        ],
+        rotate: [co, -si, si, co],
+      };
+    },
+    ident: () => brandMat3RowMajor([1, 0, 0, 0, 1, 0, 0, 0, 1]),
+    invert: (m) => {
+      const d = fakeMatrixDet(m);
+      if (Math.abs(d) < 1e-16)
+        return brandMat3RowMajor([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      return brandMat3RowMajorResult([
+        (m[4] * m[8] - m[5] * m[7]) / d,
+        (m[2] * m[7] - m[1] * m[8]) / d,
+        (m[1] * m[5] - m[2] * m[4]) / d,
+        (m[5] * m[6] - m[3] * m[8]) / d,
+        (m[0] * m[8] - m[2] * m[6]) / d,
+        (m[2] * m[3] - m[0] * m[5]) / d,
+        (m[3] * m[7] - m[4] * m[6]) / d,
+        (m[1] * m[6] - m[0] * m[7]) / d,
+        (m[0] * m[4] - m[1] * m[3]) / d,
+      ]);
+    },
+    invort: (m) => {
+      const result: number[] = [];
+      for (let column = 0; column < 3; column++) {
+        const norm = Math.hypot(m[column]!, m[column + 3]!, m[column + 6]!);
+        if (norm === 0) throw new Error("SPICE(ZEROLENGTHCOLUMN)");
+        if (norm < 1 && norm * Number.MAX_VALUE < 1)
+          throw new Error("SPICE(COLUMNTOOSMALL)");
+        for (let row = 0; row < 3; row++)
+          result.push(m[row * 3 + column]! / norm / norm);
+      }
+      return brandMat3RowMajorResult(result);
+    },
+    isrot: (m, ntol, dtol) => {
+      if (ntol < 0 || dtol < 0) throw new Error("SPICE(VALUEOUTOFRANGE)");
+      const norms = [
+        Math.hypot(m[0], m[3], m[6]),
+        Math.hypot(m[1], m[4], m[7]),
+        Math.hypot(m[2], m[5], m[8]),
+      ];
+      const determinant =
+        fakeMatrixDet(m) / (norms[0]! * norms[1]! * norms[2]!);
+      return (
+        norms.every((n) => n >= 1 - ntol && n <= 1 + ntol) &&
+        determinant >= 1 - dtol &&
+        determinant <= 1 + dtol
+      );
+    },
+    mequ: (m) => brandMat3RowMajorResult(m),
+    mtxm: (a, b) => mmul3(fakeMatrixTranspose(a), b),
+    mxmt: (a, b) => mmul3(a, fakeMatrixTranspose(b)),
+    trace: (m) => m[0] + m[4] + m[8],
+    xpose: (m) => fakeMatrixTranspose(m),
 
     reclat: (rect) => {
       const x = rect[0];

@@ -10,6 +10,49 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Fixed matrices expansion
+
+The A12 record reviews `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`,
+`isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, and `xpose_c`. Its 50
+registered scenarios make 95 new-routine calls plus one `error.reset` control per
+backend. Eight calls exercise genuine column or tolerance errors; every matrix
+entry and both `diags2` outputs remain observable. Nonsymmetric operands,
+threshold signs/boundaries, ignored lower-triangle entries and independent
+tolerance parameters distinguish the underlying scientific contracts.
+
+Focused tests compare exact identity/copy/transpose outputs to the live oracle
+and rescale tiny determinants, traces, eigenvalues and inverse entries. A scoped
+14-observation live test retains every nonfinite output alongside finite
+controls. The narrow `brandMat3RowMajorResult` helper owns and brands nine numeric
+result entries while leaving existing finite input validation unchanged. Its
+six source tests cover nonfinite values, signed zero, ownership, malformed data,
+freezing and the unchanged input boundary. Native boundary tests and 46 WASM
+allocation failure/success checks cover the compiled adapters.
+
+A focused regression takes actual Node/WASM `invert`, `mtxm`, `mequ` and
+`diags2` results through the existing RPC codec and `structuredClone` on a
+connected test worker pair. It observes complete NaN/infinity, signed-zero and
+multi-matrix outputs. This tests the transport representation boundary; it does
+not claim browser worker startup or asset delivery.
+
+The [numerical review](step8-fixed-matrix-numerics.md) records the pinned-source
+semantics, independent oracle observations and the signed-zero recovery
+assertion repair. These descriptions and local progress do not establish final
+verification: A12 remains `reviewed` until fresh source-bound local and observed
+canonical CI evidence is recorded. The original Step 7 observations remain
+historical on this branch.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
