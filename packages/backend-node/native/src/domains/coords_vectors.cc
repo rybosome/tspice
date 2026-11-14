@@ -1,5 +1,7 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +9,139 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadStateDerivativeInput(Napi::Env env, const Napi::Value& value, double* out, const char* label) {
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, value, 6, out, label)) return false;
+  for (size_t i = 0; i < 6; i++) {
+    if (!std::isfinite(out[i])) {
+      ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must contain finite numbers"));
+      return false;
+    }
+  }
+  return true;
+}
+
+static Napi::Array Ducrss(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ducrss() expects 2 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double a[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], a, "ducrss(a)")) return Napi::Array::New(env);
+  double b[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[1], b, "ducrss(b)")) return Napi::Array::New(env);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[6] = {0.0};
+  const int status = tspice_ducrss(a, b, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ducrss", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
+static Napi::Array Dvcrss(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvcrss() expects 2 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double a[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], a, "dvcrss(a)")) return Napi::Array::New(env);
+  double b[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[1], b, "dvcrss(b)")) return Napi::Array::New(env);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[6] = {0.0};
+  const int status = tspice_dvcrss(a, b, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvcrss", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
+static Napi::Number Dvdot(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvdot() expects 2 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double a[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], a, "dvdot(a)")) return Napi::Number::New(env, 0);
+  double b[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[1], b, "dvdot(b)")) return Napi::Number::New(env, 0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_dvdot(a, b, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvdot", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Array Dvhat(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvhat() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double state[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], state, "dvhat(state)")) return Napi::Array::New(env);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[6] = {0.0};
+  const int status = tspice_dvhat(state, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvhat", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 6);
+}
+
+static Napi::Number Dvnorm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvnorm() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double state[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], state, "dvnorm(state)")) return Napi::Number::New(env, 0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_dvnorm(state, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvnorm", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Number Dvsep(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dvsep() expects 2 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double a[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[0], a, "dvsep(a)")) return Napi::Number::New(env, 0);
+  double b[6] = {0.0};
+  if (!ReadStateDerivativeInput(env, info[1], b, "dvsep(b)")) return Napi::Number::New(env, 0);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_dvsep(a, b, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling dvsep", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +707,12 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "ducrss", Napi::Function::New(env, Ducrss), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvcrss", Napi::Function::New(env, Dvcrss), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvdot", Napi::Function::New(env, Dvdot), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvhat", Napi::Function::New(env, Dvhat), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvnorm", Napi::Function::New(env, Dvnorm), __func__)) return;
+  if (!SetExportChecked(env, exports, "dvsep", Napi::Function::New(env, Dvsep), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

@@ -214,6 +214,48 @@ function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x));
 }
 
+// Toy state-derivative helpers for facade tests, not CSPICE numerical oracles.
+function fakeStateCross(
+  a: Readonly<SpiceStateVector>,
+  b: Readonly<SpiceStateVector>,
+): SpiceStateVector {
+  const p1: SpiceVector3 = [a[0], a[1], a[2]];
+  const p2: SpiceVector3 = [b[0], b[1], b[2]];
+  const v1: SpiceVector3 = [a[3], a[4], a[5]];
+  const v2: SpiceVector3 = [b[3], b[4], b[5]];
+  return [...vcrss(p1, p2), ...vadd(vcrss(v1, p2), vcrss(p1, v2))];
+}
+
+function fakeStateUnit(state: Readonly<SpiceStateVector>): SpiceStateVector {
+  const position: SpiceVector3 = [state[0], state[1], state[2]];
+  const velocity: SpiceVector3 = [state[3], state[4], state[5]];
+  const norm = vnorm(position);
+  if (norm === 0) return [0, 0, 0, ...velocity];
+  const unit = vscale(1 / norm, position);
+  const derivative = vscale(
+    1 / norm,
+    vsub(velocity, vscale(vdot(unit, velocity), unit)),
+  );
+  return [...unit, ...derivative];
+}
+
+function fakeScaledState(state: Readonly<SpiceStateVector>): SpiceStateVector {
+  const largest = Math.max(
+    Math.abs(state[0]),
+    Math.abs(state[1]),
+    Math.abs(state[2]),
+  );
+  const scale = largest === 0 ? 1 : 1 / largest;
+  return [
+    state[0] * scale,
+    state[1] * scale,
+    state[2] * scale,
+    state[3] * scale,
+    state[4] * scale,
+    state[5] * scale,
+  ];
+}
+
 function angleBetween(a: SpiceVector3, b: SpiceVector3): number {
   const na = vnorm(a);
   const nb = vnorm(b);
@@ -2390,6 +2432,37 @@ export function createFakeBackend(
     },
     wnvald: (_size, _n, _window) => {
       throw new Error(spiceCellUnsupported);
+    },
+
+    // Toy state derivatives; real backends call each corresponding CSPICE routine.
+    ducrss: (a, b) =>
+      fakeStateUnit(fakeStateCross(fakeScaledState(a), fakeScaledState(b))),
+    dvcrss: (a, b) => fakeStateCross(a, b),
+    dvdot: (a, b) =>
+      a[0] * b[3] +
+      a[1] * b[4] +
+      a[2] * b[5] +
+      a[3] * b[0] +
+      a[4] * b[1] +
+      a[5] * b[2],
+    dvhat: (state) => fakeStateUnit(state),
+    dvnorm: (state) =>
+      vdot(vhat([state[0], state[1], state[2]]), [
+        state[3],
+        state[4],
+        state[5],
+      ]),
+    dvsep: (a, b) => {
+      const u1 = fakeStateUnit(a);
+      const u2 = fakeStateUnit(b);
+      const p1: SpiceVector3 = [u1[0], u1[1], u1[2]];
+      const p2: SpiceVector3 = [u2[0], u2[1], u2[2]];
+      const denominator = vnorm(vcrss(p1, p2));
+      if (denominator === 0) return 0;
+      return (
+        -(vdot(p1, [u2[3], u2[4], u2[5]]) + vdot([u1[3], u1[4], u1[5]], p2)) /
+        denominator
+      );
     },
 
     reclat: (rect) => {

@@ -1,0 +1,224 @@
+[
+  {
+    "caseId": "coords-vectors-dvsep-mixed-components-and-order",
+    "description": "dvsep: mixed-components-and-order; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [-3, 5, 7, 11, 13, -17],
+        "b": [1, -2, 4, 3, -5, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-zero-position-and-velocity",
+    "description": "dvsep: zero-position-and-velocity; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [0, 0, 0, 0, 0, 0],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [0, 0, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [0, 0, 0, 2, -3, 4],
+        "b": [-3, 5, 7, 11, 13, -17]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 3, -5, 7],
+        "b": [0, 0, 0, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [0, 0, 0, 2, -3, 4],
+        "b": [0, 0, 0, -5, 7, 11]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 0, 0, 0],
+        "b": [-3, 5, 7, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-axis-collinear-states",
+    "description": "dvsep: exactly axis-aligned parallel and opposed positions return zero. Non-axis collinearity is a singular conditioning boundary after unit normalization; no cross-build equality is claimed there.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [2, 0, 0, 0, 2, 0],
+        "b": [4, 0, 0, 0, 0, 4]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [2, 0, 0, 0, 2, 0],
+        "b": [-4, 0, 0, 0, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-orthogonal-basis-rates",
+    "description": "dvsep: orthogonal-basis-rates; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 2, 0],
+        "b": [0, 1, 0, 0, 0, 3]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [0, 2, 0, 3, 0, 0],
+        "b": [0, 0, -4, 0, 5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-scaled-states",
+    "description": "dvsep: scaled-states; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1e100, -2e100, 4e100, 3.0000000000000002e100, -5e100, 7e100],
+        "b": [-3.0000000000000002e100, 5e100, 7e100, 1.1e101, 1.3e101, -1.7e101]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1e-100, -2e-100, 4e-100, 3e-100, -5e-100, 7e-100],
+        "b": [-3e-100, 5e-100, 7e-100, 1.1e-99, 1.3e-99, -1.7e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-scaled-derivatives",
+    "description": "dvsep: scaled-derivatives; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 3.0000000000000002e100, -5e100, 7e100],
+        "b": [-3, 5, 7, 1.1e101, 1.3e101, -1.7e101]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, -2, 4, 3e-100, -5e-100, 7e-100],
+        "b": [-3, 5, 7, 1.1e-99, 1.3e-99, -1.7e-99]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-near-parallel-axis",
+    "description": "dvsep: near-parallel-axis; kernel-free authored states in a common frame, observe every actual output component using the locked independent oracle.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 0.25, 0],
+        "b": [1, 0.01, 0, 0, 0.5, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 0.25, 0],
+        "b": [-1, 0.01, 0, 0, 0.5, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-division-underflow-and-finite-boundary",
+    "description": "dvsep: actual ZZDIV decimal-exponent guard returns zero below its underflow cutoff; representable rates on the accepted side remain observable without replacing the algorithm.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 1e-308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, -1e-308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 1e-306, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, -1e-306, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 1e308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, -1e308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-decimal-overflow-positive",
+    "description": "dvsep: genuine SPICE(NUMERICOVERFLOW) from ZZDIV decimal exponent limit, although the supplied finite numerator itself is representable.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, 1.5e308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMERICOVERFLOW"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-dvsep-decimal-overflow-negative",
+    "description": "dvsep: genuine SPICE(NUMERICOVERFLOW) from ZZDIV decimal exponent limit, although the supplied finite numerator itself is representable.",
+    "workflow": [
+      {
+        "op": "coords-vectors.dvsep",
+        "a": [1, 0, 0, 0, -1.5e308, 0],
+        "b": [0, 1, 0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMERICOVERFLOW"]
+    }
+  }
+]

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -61,6 +61,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `ducrss_c` | Unit Normalized Cross Product and Derivative |
+| `dvcrss_c` | Derivative of Vector cross product |
+| `dvdot_c` | Derivative of Vector Dot Product, 3-D |
+| `dvhat_c` | Derivative and unit vector "V-hat" of a state |
+| `dvnorm_c` | Derivative of vector norm |
+| `dvsep_c` | Time derivative of separation angle |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
@@ -314,13 +320,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dskz02_c` | DSK, fetch type 2 model size parameters |
 | `dsphdr_c` | Derivative of spherical w.r.t. rectangular |
-| `ducrss_c` | Unit Normalized Cross Product and Derivative |
-| `dvcrss_c` | Derivative of Vector cross product |
-| `dvdot_c` | Derivative of Vector Dot Product, 3-D |
-| `dvhat_c` | Derivative and unit vector "V-hat" of a state |
-| `dvnorm_c` | Derivative of vector norm |
 | `dvpool_c` | Delete a variable from the kernel pool |
-| `dvsep_c` | Time derivative of separation angle |
 | `edlimb_c` | Ellipsoid Limb |
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
 | `edpnt_c` | Ellipsoid point |

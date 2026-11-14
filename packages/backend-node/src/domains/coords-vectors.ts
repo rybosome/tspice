@@ -1,6 +1,7 @@
 import type {
   CoordsVectorsApi,
   SpiceVector3,
+  SpiceStateVector,
 } from "@rybosome/tspice-backend-contract";
 import {
   assertMat3ArrayLike9,
@@ -15,9 +16,89 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function copyStateDerivativeInput(
+  value: unknown,
+  label: string,
+): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError(`${label} must contain exactly six finite numbers`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`${label}[${i}] must be a finite number`);
+    return entry;
+  };
+  return [
+    component(0),
+    component(1),
+    component(2),
+    component(3),
+    component(4),
+    component(5),
+  ];
+}
+
+function stateDerivativeOutputNumber(value: unknown, label: string): number {
+  // Preserve nonfinite numeric outputs produced by defined finite CSPICE inputs.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function stateDerivativeOutput(
+  value: unknown,
+  label: string,
+): SpiceStateVector {
+  if (!Array.isArray(value) || value.length !== 6)
+    throw new TypeError(`${label} must be an array of length six`);
+  return [
+    stateDerivativeOutputNumber(value[0], `${label}[0]`),
+    stateDerivativeOutputNumber(value[1], `${label}[1]`),
+    stateDerivativeOutputNumber(value[2], `${label}[2]`),
+    stateDerivativeOutputNumber(value[3], `${label}[3]`),
+    stateDerivativeOutputNumber(value[4], `${label}[4]`),
+    stateDerivativeOutputNumber(value[5], `${label}[5]`),
+  ];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    ducrss: (a, b) => {
+      const aCopy = copyStateDerivativeInput(a, "ducrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "ducrss(b)");
+      const out: unknown = native.ducrss(aCopy, bCopy);
+      return stateDerivativeOutput(out, "ducrss result");
+    },
+    dvcrss: (a, b) => {
+      const aCopy = copyStateDerivativeInput(a, "dvcrss(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvcrss(b)");
+      const out: unknown = native.dvcrss(aCopy, bCopy);
+      return stateDerivativeOutput(out, "dvcrss result");
+    },
+    dvdot: (a, b) => {
+      const aCopy = copyStateDerivativeInput(a, "dvdot(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvdot(b)");
+      const out: unknown = native.dvdot(aCopy, bCopy);
+      return stateDerivativeOutputNumber(out, "dvdot result");
+    },
+    dvhat: (state) => {
+      const stateCopy = copyStateDerivativeInput(state, "dvhat(state)");
+      const out: unknown = native.dvhat(stateCopy);
+      return stateDerivativeOutput(out, "dvhat result");
+    },
+    dvnorm: (state) => {
+      const stateCopy = copyStateDerivativeInput(state, "dvnorm(state)");
+      const out: unknown = native.dvnorm(stateCopy);
+      return stateDerivativeOutputNumber(out, "dvnorm result");
+    },
+    dvsep: (a, b) => {
+      const aCopy = copyStateDerivativeInput(a, "dvsep(a)");
+      const bCopy = copyStateDerivativeInput(b, "dvsep(b)");
+      const out: unknown = native.dvsep(aCopy, bCopy);
+      return stateDerivativeOutputNumber(out, "dvsep result");
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

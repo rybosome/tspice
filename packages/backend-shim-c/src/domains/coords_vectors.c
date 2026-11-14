@@ -22,6 +22,99 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   }
 }
 
+static int tspice_state_derivative_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "state derivative requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_ducrss(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  SpiceDouble value[6] = {0.0};
+  ducrss_c(a, b, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, value, sizeof(value));
+  return 0;
+}
+
+int tspice_dvcrss(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  SpiceDouble value[6] = {0.0};
+  dvcrss_c(a, b, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, value, sizeof(value));
+  return 0;
+}
+
+int tspice_dvdot(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = dvdot_c(a, b);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_dvhat(const double *state, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!state || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  SpiceDouble value[6] = {0.0};
+  dvhat_c(state, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  memcpy(out, value, sizeof(value));
+  return 0;
+}
+
+int tspice_dvnorm(const double *state, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!state || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = dvnorm_c(state);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
+int tspice_dvsep(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_state_derivative_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = dvsep_c(a, b);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value;
+  return 0;
+}
+
 int tspice_reclat(
     const double *rect3,
     double *outRadius,

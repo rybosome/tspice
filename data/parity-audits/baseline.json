@@ -408,5 +408,21 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a11-state-derivatives",
+      "routines": [
+        "ducrss_c",
+        "dvcrss_c",
+        "dvdot_c",
+        "dvhat_c",
+        "dvnorm_c",
+        "dvsep_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/716"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

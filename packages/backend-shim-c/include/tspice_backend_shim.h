@@ -1079,6 +1079,19 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// ducrss_c: input states contain six doubles; out contains six doubles.
+int tspice_ducrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvcrss_c: input states contain six doubles; out contains six doubles.
+int tspice_dvcrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvdot_c: input states contain six doubles; out contains one double.
+int tspice_dvdot(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// dvhat_c: input states contain six doubles; out contains six doubles.
+int tspice_dvhat(const double *state, double *out, char *err, int errMaxBytes);
+// dvnorm_c: input states contain six doubles; out contains one double.
+int tspice_dvnorm(const double *state, double *out, char *err, int errMaxBytes);
+// dvsep_c: input states contain six doubles; out contains one double.
+int tspice_dvsep(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,
