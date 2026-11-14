@@ -2392,6 +2392,39 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    isordv: () => {
+      throw new Error("Fake backend does not model isordv()");
+    },
+    orderc: () => {
+      throw new Error("Fake backend does not model orderc()");
+    },
+    orderd: () => {
+      throw new Error("Fake backend does not model orderd()");
+    },
+    orderi: () => {
+      throw new Error("Fake backend does not model orderi()");
+    },
+    reordc: () => {
+      throw new Error("Fake backend does not model reordc()");
+    },
+    reordd: () => {
+      throw new Error("Fake backend does not model reordd()");
+    },
+    reordi: () => {
+      throw new Error("Fake backend does not model reordi()");
+    },
+    reordl: () => {
+      throw new Error("Fake backend does not model reordl()");
+    },
+    shellc: () => {
+      throw new Error("Fake backend does not model shellc()");
+    },
+    shelld: () => {
+      throw new Error("Fake backend does not model shelld()");
+    },
+    shelli: () => {
+      throw new Error("Fake backend does not model shelli()");
+    },
     lstlec: () => {
       throw new Error("Fake backend does not model lstlec()");
     },

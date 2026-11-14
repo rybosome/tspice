@@ -1,0 +1,99 @@
+[
+  {
+    "caseId": "coords-vectors-orderc-empty-singleton",
+    "description": "Exercise zero elements and one element, including the no-sort path.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderc",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": [" a  "]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": [""]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderc-blank-text",
+    "description": "Sort empty strings, all-space rows, trailing spaces and genuine case-sensitive prefixes.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["", "   ", " "]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["", ""]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["B ", "B", "A", " B", "a", "A  "]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderc-utf8-controls",
+    "description": "Compare encoded byte payloads containing Unicode, a BOM and tab or newline without locale collation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["é", "e", "😀", "月", "É", "﻿q"]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["A ", "A\t", "\t", "A\n", "\nA", "A"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderc-shell-ties",
+    "description": "Compare the actual unstable tied permutation and the toolkit’s complete returned spelling.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["B", "B ", "A", "A  "]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["b", "a", "b ", "a ", "b", "a "]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderc-ordered-reverse",
+    "description": "Check odd and even cardinalities in sorted, reverse and interleaved order.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["A", "AB", "B", "C", "D"]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["D", "C", "B", "AB", "A"]
+      },
+      {
+        "op": "coords-vectors.orderc",
+        "values": ["z", "a", "qq", "B"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -4,6 +4,12 @@ import type {
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
+  orderDoubles,
+  orderIntegers,
+  orderLogicals,
+  orderPermutation,
+  orderRows,
+  readOrderRows,
   sortedNumericInputs,
   sortedCharacterInputs,
   sortedBoundResult,
@@ -806,6 +812,277 @@ export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    isordv(order) {
+      const input = orderIntegers(order, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      return withAllocs(
+        module,
+        [Math.max(4, input.byteLength), 4, ERR_MAX_BYTES],
+        (pValues, pOut, pErr) => {
+          module.HEAP32.set(input, pValues >>> 2);
+          const status = module._tspice_isordv(
+            count,
+            pValues,
+            pOut,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          return module.HEAP32[pOut >>> 2] !== 0;
+        },
+      );
+    },
+    orderc(values) {
+      const {
+        bytes: input,
+        width,
+        count,
+      } = orderRows(values, true, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [Math.max(1, input.byteLength), Math.max(4, count * 4), ERR_MAX_BYTES],
+        (pValues, pOut, pErr) => {
+          module.HEAPU8.set(input, pValues);
+          const status = module._tspice_orderc(
+            count,
+            width,
+            pValues,
+            pOut,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pOut >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
+    orderd(values) {
+      const input = orderDoubles(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      return withAllocs(
+        module,
+        [Math.max(8, input.byteLength), Math.max(4, count * 4), ERR_MAX_BYTES],
+        (pValues, pOut, pErr) => {
+          module.HEAPF64.set(input, pValues >>> 3);
+          const status = module._tspice_orderd(
+            count,
+            pValues,
+            pOut,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pOut >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
+    orderi(values) {
+      const input = orderIntegers(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      return withAllocs(
+        module,
+        [Math.max(4, input.byteLength), Math.max(4, count * 4), ERR_MAX_BYTES],
+        (pValues, pOut, pErr) => {
+          module.HEAP32.set(input, pValues >>> 2);
+          const status = module._tspice_orderi(
+            count,
+            pValues,
+            pOut,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pOut >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
+    reordc(order, values) {
+      const {
+        bytes: input,
+        width,
+        count,
+      } = orderRows(values, false, WASM_MAX_ALLOC_BYTES);
+      const indices = orderPermutation(order, count, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(4, indices.byteLength),
+          Math.max(1, input.byteLength),
+          ERR_MAX_BYTES,
+        ],
+        (pOrder, pValues, pErr) => {
+          module.HEAP32.set(indices, pOrder >>> 2);
+          module.HEAPU8.set(input, pValues);
+          const status = module._tspice_reordc(
+            count,
+            pOrder,
+            width,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          return readOrderRows(
+            module.HEAPU8.subarray(pValues, pValues + input.length),
+            width,
+            count,
+          );
+        },
+      );
+    },
+    reordd(order, values) {
+      const input = orderDoubles(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      const indices = orderPermutation(order, count, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(4, indices.byteLength),
+          Math.max(8, input.byteLength),
+          ERR_MAX_BYTES,
+        ],
+        (pOrder, pValues, pErr) => {
+          module.HEAP32.set(indices, pOrder >>> 2);
+          module.HEAPF64.set(input, pValues >>> 3);
+          const status = module._tspice_reordd(
+            count,
+            pOrder,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pValues >>> 3;
+          return Array.from(module.HEAPF64.subarray(start, start + count));
+        },
+      );
+    },
+    reordi(order, values) {
+      const input = orderIntegers(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      const indices = orderPermutation(order, count, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(4, indices.byteLength),
+          Math.max(4, input.byteLength),
+          ERR_MAX_BYTES,
+        ],
+        (pOrder, pValues, pErr) => {
+          module.HEAP32.set(indices, pOrder >>> 2);
+          module.HEAP32.set(input, pValues >>> 2);
+          const status = module._tspice_reordi(
+            count,
+            pOrder,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pValues >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
+    reordl(order, values) {
+      const input = orderLogicals(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      const indices = orderPermutation(order, count, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [
+          Math.max(4, indices.byteLength),
+          Math.max(4, input.byteLength),
+          ERR_MAX_BYTES,
+        ],
+        (pOrder, pValues, pErr) => {
+          module.HEAP32.set(indices, pOrder >>> 2);
+          module.HEAP32.set(input, pValues >>> 2);
+          const status = module._tspice_reordl(
+            count,
+            pOrder,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pValues >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count), (v) =>
+            Boolean(v),
+          );
+        },
+      );
+    },
+    shellc(values) {
+      const {
+        bytes: input,
+        width,
+        count,
+      } = orderRows(values, false, WASM_MAX_ALLOC_BYTES);
+      return withAllocs(
+        module,
+        [Math.max(1, input.byteLength), ERR_MAX_BYTES],
+        (pValues, pErr) => {
+          module.HEAPU8.set(input, pValues);
+          const status = module._tspice_shellc(
+            count,
+            width,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          return readOrderRows(
+            module.HEAPU8.subarray(pValues, pValues + input.length),
+            width,
+            count,
+          );
+        },
+      );
+    },
+    shelld(values) {
+      const input = orderDoubles(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      return withAllocs(
+        module,
+        [Math.max(8, input.byteLength), ERR_MAX_BYTES],
+        (pValues, pErr) => {
+          module.HEAPF64.set(input, pValues >>> 3);
+          const status = module._tspice_shelld(
+            count,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pValues >>> 3;
+          return Array.from(module.HEAPF64.subarray(start, start + count));
+        },
+      );
+    },
+    shelli(values) {
+      const input = orderIntegers(values, WASM_MAX_ALLOC_BYTES);
+      const count = input.length;
+      return withAllocs(
+        module,
+        [Math.max(4, input.byteLength), ERR_MAX_BYTES],
+        (pValues, pErr) => {
+          module.HEAP32.set(input, pValues >>> 2);
+          const status = module._tspice_shelli(
+            count,
+            pValues,
+            pErr,
+            ERR_MAX_BYTES,
+          );
+          if (status) throwWasmSpiceError(module, pErr, ERR_MAX_BYTES, status);
+          const start = pValues >>> 2;
+          return Array.from(module.HEAP32.subarray(start, start + count));
+        },
+      );
+    },
     lstlec: (key, values) => {
       const input = sortedCharacterInputs(key, values, WASM_MAX_ALLOC_BYTES);
       const count = input.rows.length;

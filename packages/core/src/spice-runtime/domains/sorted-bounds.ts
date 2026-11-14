@@ -62,13 +62,17 @@ export function sortedCharacterInputs(
   key: string,
   values: readonly string[],
   maxBytes = SPICE_INT32_MAX,
+  maximumCount = Math.floor(maxBytes / 2),
 ): {
   keyBytes: number;
   rows: string[];
   width: number;
 } {
   const keyBytes = boundTextLength(key, maxBytes - 1);
-  const count = boundCount(values, Math.floor(maxBytes / 2));
+  const count = boundCount(
+    values,
+    Math.min(maximumCount, Math.floor(maxBytes / 2)),
+  );
   const maxRowBytes = Math.floor(maxBytes / Math.max(1, count)) - 1;
   const rows: string[] = [];
   let width = 2;

@@ -1080,6 +1080,17 @@ int tspice_gfdist(
 // --- coordinate conversions + small vector/matrix helpers ---
 
 // Sorted bounds use zero-based result indices. Character rows are blank padded and NUL terminated.
+int tspice_isordv(int n, int *values, int *out, char *err, int cap);
+int tspice_orderc(int n, int width, char *values, int *out, char *err, int cap);
+int tspice_orderd(int n, double *values, int *out, char *err, int cap);
+int tspice_orderi(int n, int *values, int *out, char *err, int cap);
+int tspice_reordc(int n, int *order, int width, char *values, char *err, int cap);
+int tspice_reordd(int n, int *order, double *values, char *err, int cap);
+int tspice_reordi(int n, int *order, int *values, char *err, int cap);
+int tspice_reordl(int n, int *order, int *values, char *err, int cap);
+int tspice_shellc(int n, int width, char *values, char *err, int cap);
+int tspice_shelld(int n, double *values, char *err, int cap);
+int tspice_shelli(int n, int *values, char *err, int cap);
 int tspice_lstlec(
     const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
 int tspice_lstled(

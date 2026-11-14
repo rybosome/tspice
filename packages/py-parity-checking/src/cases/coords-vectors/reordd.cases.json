@@ -1,0 +1,128 @@
+[
+  {
+    "caseId": "coords-vectors-reordd-empty-singleton",
+    "description": "Copy empty storage and a single datum without dropping trailing bytes or logical values.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [],
+        "values": []
+      },
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0],
+        "values": [0.0]
+      },
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0],
+        "values": [1.5e200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-cycles",
+    "description": "Apply a non-self-inverse source-index cycle and its inverse, distinguishing scatter from gather.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [1, 2, 3, 0],
+        "values": [0.0, -0.0, -1.25, 5e-324]
+      },
+      {
+        "op": "coords-vectors.reordd",
+        "order": [3, 0, 1, 2],
+        "values": [0.0, -0.0, -1.25, 5e-324]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-fixed-and-disjoint",
+    "description": "Reorder multiple disjoint cycles with fixed entries and every position occupied.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0, 2, 1, 4, 3, 6, 5],
+        "values": [0.0, -0.0, -1.25, 5e-324, -1.5e200, 2.5, 1.5e200]
+      },
+      {
+        "op": "coords-vectors.reordd",
+        "order": [3, 2, 1, 0, 6, 5, 4],
+        "values": [0.0, -0.0, -1.25, 5e-324, -1.5e200, 2.5, 1.5e200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-reverse-identity",
+    "description": "Keep typed payloads, extrema and duplicates intact under reversed and unchanged permutations.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [6, 5, 4, 3, 2, 1, 0],
+        "values": [0.0, -0.0, -1.25, 5e-324, -1.5e200, 2.5, 1.5e200]
+      },
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0, 1, 2, 3, 4, 5, 6],
+        "values": [0.0, -0.0, -1.25, 5e-324, -1.5e200, 2.5, 1.5e200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-duplicate-order",
+    "description": "An invalid permutation is rejected before an unsafe N0067 gather or cycle traversal.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0, 0],
+        "values": [0.0, -0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["Invalid zero-based permutation"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-order-out-of-range",
+    "description": "An out-of-range source index cannot address the input storage.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [-1, 1],
+        "values": [0.0, -0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["Invalid zero-based permutation"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-reordd-order-length",
+    "description": "Reject a permutation with mismatched cardinality before entry.",
+    "workflow": [
+      {
+        "op": "coords-vectors.reordd",
+        "order": [0],
+        "values": [0.0, -0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["Permutation length"]
+    }
+  }
+]

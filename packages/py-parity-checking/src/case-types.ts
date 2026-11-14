@@ -172,6 +172,54 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsIsordv = {
+  op: "coords-vectors.isordv";
+  order: number[];
+};
+export type StepCoordsVectorsOrderc = {
+  op: "coords-vectors.orderc";
+  values: string[];
+};
+export type StepCoordsVectorsOrderd = {
+  op: "coords-vectors.orderd";
+  values: number[];
+};
+export type StepCoordsVectorsOrderi = {
+  op: "coords-vectors.orderi";
+  values: number[];
+};
+export type StepCoordsVectorsReordc = {
+  op: "coords-vectors.reordc";
+  order: number[];
+  values: string[];
+};
+export type StepCoordsVectorsReordd = {
+  op: "coords-vectors.reordd";
+  order: number[];
+  values: number[];
+};
+export type StepCoordsVectorsReordi = {
+  op: "coords-vectors.reordi";
+  order: number[];
+  values: number[];
+};
+export type StepCoordsVectorsReordl = {
+  op: "coords-vectors.reordl";
+  order: number[];
+  values: boolean[];
+};
+export type StepCoordsVectorsShellc = {
+  op: "coords-vectors.shellc";
+  values: string[];
+};
+export type StepCoordsVectorsShelld = {
+  op: "coords-vectors.shelld";
+  values: number[];
+};
+export type StepCoordsVectorsShelli = {
+  op: "coords-vectors.shelli";
+  values: number[];
+};
 export type StepCoordsVectorsLstlec = {
   op: "coords-vectors.lstlec";
   key: string;
@@ -1349,6 +1397,17 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsIsordv
+  | StepCoordsVectorsOrderc
+  | StepCoordsVectorsOrderd
+  | StepCoordsVectorsOrderi
+  | StepCoordsVectorsReordc
+  | StepCoordsVectorsReordd
+  | StepCoordsVectorsReordi
+  | StepCoordsVectorsReordl
+  | StepCoordsVectorsShellc
+  | StepCoordsVectorsShelld
+  | StepCoordsVectorsShelli
   | StepCoordsVectorsLstlec
   | StepCoordsVectorsLstled
   | StepCoordsVectorsLstlei
@@ -1526,6 +1585,17 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.isordv"; value: boolean }
+  | { op: "coords-vectors.orderc"; value: number[] }
+  | { op: "coords-vectors.orderd"; value: number[] }
+  | { op: "coords-vectors.orderi"; value: number[] }
+  | { op: "coords-vectors.reordc"; value: string[] }
+  | { op: "coords-vectors.reordd"; value: number[] }
+  | { op: "coords-vectors.reordi"; value: number[] }
+  | { op: "coords-vectors.reordl"; value: boolean[] }
+  | { op: "coords-vectors.shellc"; value: string[] }
+  | { op: "coords-vectors.shelld"; value: number[] }
+  | { op: "coords-vectors.shelli"; value: number[] }
   | { op: "coords-vectors.lstlec"; value: number }
   | { op: "coords-vectors.lstled"; value: number }
   | { op: "coords-vectors.lstlei"; value: number }

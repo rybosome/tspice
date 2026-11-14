@@ -8,6 +8,76 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsIsordv:
+    op: Literal["coords-vectors.isordv"]
+    order: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsOrderc:
+    op: Literal["coords-vectors.orderc"]
+    values: list[str]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsOrderd:
+    op: Literal["coords-vectors.orderd"]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsOrderi:
+    op: Literal["coords-vectors.orderi"]
+    values: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsReordc:
+    op: Literal["coords-vectors.reordc"]
+    order: list[int]
+    values: list[str]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsReordd:
+    op: Literal["coords-vectors.reordd"]
+    order: list[int]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsReordi:
+    op: Literal["coords-vectors.reordi"]
+    order: list[int]
+    values: list[int]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsReordl:
+    op: Literal["coords-vectors.reordl"]
+    order: list[int]
+    values: list[bool]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsShellc:
+    op: Literal["coords-vectors.shellc"]
+    values: list[str]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsShelld:
+    op: Literal["coords-vectors.shelld"]
+    values: list[float]
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsShelli:
+    op: Literal["coords-vectors.shelli"]
+    values: list[int]
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsLstlec:
     op: Literal["coords-vectors.lstlec"]
     key: str

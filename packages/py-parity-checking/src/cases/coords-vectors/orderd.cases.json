@@ -1,0 +1,107 @@
+[
+  {
+    "caseId": "coords-vectors-orderd-empty-singleton",
+    "description": "Exercise zero elements and one element, including the no-sort path.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderd",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [2]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [-7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderd-shell-ties",
+    "description": "Distinguish the pinned Shell permutation of equal keys from a stable sort.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderd",
+        "values": [2, 2, 1, 1]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [1, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [2, 1, 2, 1, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderd-ordered-reverse",
+    "description": "Check ascending, descending and mixed arrays for odd and even lengths.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderd",
+        "values": [-5, -2, 0, 2, 5]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [9, 8, 7, 6, 5, 4]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [2, -9, 3, -4, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderd-extrema",
+    "description": "Compare extreme and adjacent representable numbers and repeated signs.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderd",
+        "values": [
+          1.7976931348623157e308, 5e-324, -5e-324, 0, -1.7976931348623157e308
+        ]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [1.0000000000000002, 1, 0.9999999999999999]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-orderd-nontrivial-gaps",
+    "description": "Exercise multiple Shell gap passes and a repeated-value longer prefix.",
+    "workflow": [
+      {
+        "op": "coords-vectors.orderd",
+        "values": [
+          -6, -2, 2, 6, -3, 1, 5, -4, 0, 4, -5, -1, 3, -6, -2, 2, 6, -3, 1, 5,
+          -4, 0, 4, -5, -1, 3, -6, -2, 2
+        ]
+      },
+      {
+        "op": "coords-vectors.orderd",
+        "values": [
+          25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8,
+          7, 6, 5, 4, 3, 2, 1, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

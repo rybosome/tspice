@@ -895,6 +895,73 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_isordv(
+    n: number,
+    values: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_orderc(
+    n: number,
+    width: number,
+    values: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_orderd(
+    n: number,
+    values: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_orderi(
+    n: number,
+    values: number,
+    out: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_reordc(
+    n: number,
+    order: number,
+    width: number,
+    values: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_reordd(
+    n: number,
+    order: number,
+    values: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_reordi(
+    n: number,
+    order: number,
+    values: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_reordl(
+    n: number,
+    order: number,
+    values: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_shellc(
+    n: number,
+    width: number,
+    values: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_shelld(n: number, values: number, err: number, cap: number): number;
+  _tspice_shelli(n: number, values: number, err: number, cap: number): number;
   _tspice_lstlec(
     keyPtr: number,
     n: number,
@@ -2364,6 +2431,17 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_isordv",
+  "_tspice_orderc",
+  "_tspice_orderd",
+  "_tspice_orderi",
+  "_tspice_reordc",
+  "_tspice_reordd",
+  "_tspice_reordi",
+  "_tspice_reordl",
+  "_tspice_shellc",
+  "_tspice_shelld",
+  "_tspice_shelli",
   "_tspice_lstlec",
   "_tspice_lstled",
   "_tspice_lstlei",

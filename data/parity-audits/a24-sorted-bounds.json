@@ -83,7 +83,8 @@
         "coords-vectors-lstlti-signed-int32-extremes",
         "coords-vectors-lstlti-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a24-6c475685-wasm",
@@ -139,7 +140,8 @@
         "coords-vectors-lstlti-signed-int32-extremes",
         "coords-vectors-lstlti-singleton"
       ],
-      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a24-6c475685-node",
@@ -197,7 +199,8 @@
       ],
       "commit": "6c47568546269a4648e9d9784a7da548beda00fd",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
-      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a24-6c475685-wasm",
@@ -255,7 +258,236 @@
       ],
       "commit": "6c47568546269a4648e9d9784a7da548beda00fd",
       "url": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
-      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a23-628f7b8d-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0796d9d440ac8562698b8bae5608761041cdfb63efc47ee182a172b654dcd8db",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a. JavaScript: 2,660 parity tests and one expected guard skip. Native-required: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a23-628f7b8d-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0796d9d440ac8562698b8bae5608761041cdfb63efc47ee182a172b654dcd8db",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a. JavaScript: 2,660 parity tests and one expected guard skip. Native-required: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a23-628f7b8d-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0796d9d440ac8562698b8bae5608761041cdfb63efc47ee182a172b654dcd8db",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "commit": "628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43571469197/job/132376590102",
+      "observation": "Inspected successful Linux Node 22 native-required job 132376590102 on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a23-628f7b8d-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0796d9d440ac8562698b8bae5608761041cdfb63efc47ee182a172b654dcd8db",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "commit": "628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43571469197/job/132376590102",
+      "observation": "Inspected successful Linux Node 22 native-required job 132376590102 on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -352,16 +584,30 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlec -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlec -> canonical lstlec_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlec wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlec -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlec -> shared tspice_lstlec -> canonical lstlec_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlec wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -430,16 +676,29 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstled -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstled -> canonical lstled_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstled wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstled -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstled -> shared tspice_lstled -> canonical lstled_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstled wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -503,16 +762,29 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlei -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlei -> canonical lstlei_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlei wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlei -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlei -> shared tspice_lstlei -> canonical lstlei_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlei wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -591,16 +863,29 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstltc -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstltc -> canonical lstltc_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltc wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstltc -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstltc -> shared tspice_lstltc -> canonical lstltc_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltc wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -669,16 +954,29 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstltd -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstltd -> canonical lstltd_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltd wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstltd -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstltd -> shared tspice_lstltd -> canonical lstltd_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltd wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -742,16 +1040,29 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlti -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlti -> canonical lstlti_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlti wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "raw.lstlti -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlti -> shared tspice_lstlti -> canonical lstlti_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlti wrapper for the actual integer result.",
-          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     }

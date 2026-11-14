@@ -74,3 +74,7 @@ workflows make 282 canonical calls using the six installed SpiceyPy wrappers.
 Character rows have explicit UTF-8 byte widths, ASCII blank padding and final
 NULs. Numeric cases include ordered double boundaries and signed integers.
 [Sorted-boundary semantics and evidence](step8-sorted-bounds.md)
+
+## Array ordering
+
+A23 adds eleven direct raw routines on the A24 array validation and UTF-8 layout. The 63 registered workflows cover source permutations, distinct output values, Shell-sort ties, signed bounds, UTF-8 rows and guarded domain errors. Focused tests compare the exact order and representation of double values outside JSON. [Semantic evidence](step8-array-order.md) [Per-routine audits](../data/parity-audits/a23-array-order.json)
