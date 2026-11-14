@@ -2402,6 +2402,9 @@ export function createFakeBackend(
     lparse: () => {
       throw new Error("Fake backend does not model lparse()");
     },
+    lparss: () => {
+      throw new Error("Fake backend does not model lparss()");
+    },
     lparsm: () => {
       throw new Error("Fake backend does not model lparsm()");
     },

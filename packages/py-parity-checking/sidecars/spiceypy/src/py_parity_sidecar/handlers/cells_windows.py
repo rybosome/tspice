@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import ctypes as ct
 from typing import Any
 
 import spiceypy as sp
-from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL
+from spiceypy.utils.libspicehelper import libspice
+from spiceypy.utils.support_types import SPICECHAR_CELL, SPICEDOUBLE_CELL, SPICEINT_CELL, SpiceCell
 
 from ..models import (
     StepCellsWindowsCard,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -22,6 +25,12 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+
+# Use a private ctypes binding so declaring the ABI does not change SpiceyPy's helper.
+_lparss = ct.CDLL(libspice._name).lparss_c
+_lparss.argtypes = [ct.c_char_p, ct.c_char_p, ct.POINTER(SpiceCell)]
+_lparss.restype = None
 
 
 def _get_or_create_int_cell(
@@ -167,6 +176,19 @@ def run_cells_windows_step(step: WorkflowStep, context: SidecarRuntimeContext) -
     if isinstance(step, StepCellsWindowsCard):
         target = _require_target(context, step.targetKind, step.targetId)
         return StepOutput(op=step.op, value=int(sp.card(target)))
+
+    if isinstance(step, StepCellsWindowsLparss):
+        # The locked high-level helper always creates a new cell. Call its
+        # typed canonical symbol on the actual workflow-owned persistent cell.
+        if not 0 <= step.maxCardinality <= 4096 or not 1 <= step.length <= 1024:
+            raise ValueError("LPARSS fixture cell exceeds the oracle workspace range")
+        data, delimiters = step.list.encode("utf-8"), step.delims.encode("utf-8")
+        if b"\x00" in data or b"\x00" in delimiters:
+            raise ValueError("LPARSS text cannot contain an embedded NUL")
+        cell = _get_or_create_char_cell(context, step.cellId, max_cardinality=step.maxCardinality, length=step.length)
+        _lparss(data, delimiters, ct.byref(cell))
+        sp.check_for_spice_error(None)
+        return StepOutput(op=step.op, value=list(cell))
 
     if isinstance(step, StepCellsWindowsInsrtc):
         cell = _get_or_create_char_cell(

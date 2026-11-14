@@ -4,6 +4,7 @@ from .case import CaseError, CaseRequest, CaseResponse, JsonScalar, JsonValue, S
 from .paths import PathRef, PathRefInput, PathRefKind, RuntimeConfig, RuntimePaths
 from .cells_windows import (
     StepCellsWindowsCard,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -304,6 +305,7 @@ __all__ = [
     "StepCoordsVectorsMxv",
     "StepCoordsVectorsMtxv",
     "StepCellsWindowsCard",
+    "StepCellsWindowsLparss",
     "StepCellsWindowsInsrtc",
     "StepCellsWindowsInsrtd",
     "StepCellsWindowsInsrti",

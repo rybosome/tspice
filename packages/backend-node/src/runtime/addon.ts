@@ -621,6 +621,7 @@ export type NativeAddon = {
 
   insrti(item: number, cell: number): void;
   insrtd(item: number, cell: number): void;
+  lparss(list: string, delims: string, set: number): void;
   insrtc(item: string, cell: number): void;
 
   cellGeti(cell: number, index: number): number;

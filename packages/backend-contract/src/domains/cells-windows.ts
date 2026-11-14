@@ -86,6 +86,18 @@ export interface CellsWindowsKitApi {
 
 /** Backend contract for low-level raw SPICE cell/window operations. */
 export interface CellsWindowsApi {
+  /**
+   * Parse a list into a live caller-owned character set. Delimiters are
+   * individual bytes; ASCII blank clusters around another delimiter count as
+   * one separator. Repeated nonblank delimiters can create an empty item.
+   * Items are sorted and deduplicated after fixed-width truncation. An empty
+   * list inserts an empty item into the existing set; a nonempty list replaces
+   * the set. Read the resulting cardinality and entries with card and cellGetc.
+   * N0067 can replace some rows before reporting insufficient capacity.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lparss_c.html
+   */
+  lparss(list: string, delims: string, set: SpiceCharCell): void;
+
   // -- Cells ------------------------------------------------------------------
 
   /**

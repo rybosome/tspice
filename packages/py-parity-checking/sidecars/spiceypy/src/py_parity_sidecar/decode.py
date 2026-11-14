@@ -5,6 +5,7 @@ from typing import Any, Mapping
 from .models import (
     CaseRequest,
     StepCellsWindowsCard,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -781,6 +782,15 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 targetKind=_expect_string(step.get("targetKind"), label="cells-windows.card.targetKind"),
                 targetId=_expect_string(step.get("targetId"), label="cells-windows.card.targetId"),
+            )
+
+        case "cells-windows.lparss":
+            return StepCellsWindowsLparss(
+                op=op, cellId=_expect_string(step.get("cellId"), label="lparss.cellId"),
+                list=_expect_string(step.get("list"), label="lparss.list"),
+                delims=_expect_string(step.get("delims"), label="lparss.delims"),
+                maxCardinality=_expect_int(step.get("maxCardinality", 8), label="lparss.maxCardinality"),
+                length=_expect_int(step.get("length", 32), label="lparss.length"),
             )
 
         case "cells-windows.insrtc":

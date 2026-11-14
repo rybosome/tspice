@@ -2,6 +2,10 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { StringsApi } from "@rybosome/tspice-backend-contract";
+import {
+  createCellsWindowsApi,
+  createCellsWindowsKitApi,
+} from "../src/domains/cells-windows.js";
 import { createErrorApi } from "../src/domains/error.js";
 import { createStringsApi } from "../src/domains/strings.js";
 import { assertEmscriptenModule } from "../src/lowlevel/exports.js";
@@ -216,4 +220,48 @@ describe("tokenization on the compiled WASM heap", () => {
       expect(api.nthwd("x", first)).toEqual({ word: "", loc: -1 });
     }
   });
+});
+
+describe("LPARSS caller-owned cell on the compiled WASM heap", () => {
+  for (const failedOrdinal of [1, 2, 3]) {
+    it(`releases all temporary buffers when allocation ${failedOrdinal} fails`, async () => {
+      const module = await actualModule(),
+        raw = createCellsWindowsApi(module),
+        kit = createCellsWindowsKitApi(module);
+      const set = kit.newCharCell(2, 8);
+      const malloc = module._malloc,
+        free = module._free;
+      const live = new Set<number>();
+      let calls = 0;
+      try {
+        raw.insrtc("seed", set);
+        module._malloc = (size: number) => {
+          if (++calls === failedOrdinal) return 0;
+          const pointer = malloc(size);
+          if (pointer) live.add(pointer);
+          return pointer;
+        };
+        module._free = (p: number) => {
+          live.delete(p);
+          free(p);
+        };
+        try {
+          expect(() => raw.lparss("A,B", ",", set)).toThrow();
+          expect(calls).toBe(failedOrdinal);
+          expect(live.size).toBe(0);
+        } finally {
+          module._malloc = malloc;
+          module._free = free;
+        }
+        expect(kit.cellGetc(set, 0)).toBe("seed");
+        raw.lparss("B,A", ",", set);
+        expect([kit.cellGetc(set, 0), kit.cellGetc(set, 1)]).toEqual([
+          "A",
+          "B",
+        ]);
+      } finally {
+        kit.freeCell(set);
+      }
+    });
+  }
 });

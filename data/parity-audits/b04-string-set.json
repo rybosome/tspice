@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "batch": "b04-string-set",
+  "traceFiles": [
+    "docs/step8-string-set.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/cells-windows.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/strings.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/string-set-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/cells_windows.c",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/string-tokenization-allocations.test.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/cells-windows/lparss.cases.json",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/test/string-set-public.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "lparss_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lparss_c.html",
+      "semantics": "Mutate a caller-owned byte-width character set. Nonempty input replaces its contents with sorted, deduplicated items. Empty input uses the C insertion shortcut.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-lparss-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Sort bytewise and remove repeated items before returning the full caller cell."
+        },
+        {
+          "caseId": "cells-windows-lparss-separator-rules",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated blanks and adjacent nonblank separators follow different rules."
+        },
+        {
+          "caseId": "cells-windows-lparss-mixed-delimiter-order",
+          "coverage": ["success", "edge"],
+          "observes": "The order and multiplicity of delimiter bytes do not change the resulting set."
+        },
+        {
+          "caseId": "cells-windows-lparss-empty-and-blank",
+          "coverage": ["success", "edge"],
+          "observes": "An empty input inserts an empty member; an all-blank list replaces the old set."
+        },
+        {
+          "caseId": "cells-windows-lparss-replace",
+          "coverage": ["success", "edge"],
+          "observes": "Observe replacement, sorting, duplicates and a subsequent insertion on the same nonempty caller-owned set."
+        },
+        {
+          "caseId": "cells-windows-lparss-capacity-after-dedup",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated items may exceed the item count before deduplication while the actual set fits."
+        },
+        {
+          "caseId": "cells-windows-lparss-width-collision",
+          "coverage": ["success", "edge"],
+          "observes": "Rows of width eight retain seven content bytes; equal truncated prefixes collapse."
+        },
+        {
+          "caseId": "cells-windows-lparss-utf8",
+          "coverage": ["success", "edge"],
+          "observes": "UTF-8 scalar sequences and a BOM are retained inside nontruncated rows."
+        },
+        {
+          "caseId": "cells-windows-lparss-nonblank-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Embedded tab and vertical tab are ordinary bytes unless explicitly designated delimiters."
+        },
+        {
+          "caseId": "cells-windows-lparss-no-delimiter",
+          "coverage": ["success", "edge"],
+          "observes": "Absence of a delimiter yields one trimmed or width-limited item."
+        },
+        {
+          "caseId": "cells-windows-lparss-split-full",
+          "coverage": ["success", "edge"],
+          "observes": "Trailing and leading delimiters share the same empty member."
+        },
+        {
+          "caseId": "cells-windows-lparss-empty-full",
+          "coverage": ["error", "edge"],
+          "observes": "An empty C list on a full cell inserts through INSRTC and reports capacity exhaustion."
+        },
+        {
+          "caseId": "cells-windows-lparss-nonempty-delims-required",
+          "coverage": ["error", "edge"],
+          "observes": "A nonempty list with zero-length delimiter string returns the CSPICE diagnostic."
+        },
+        {
+          "caseId": "cells-windows-lparss-blank-delims-required",
+          "coverage": ["error", "edge"],
+          "observes": "An all-blank nonempty list still checks the delimiter length."
+        },
+        {
+          "caseId": "cells-windows-lparss-late-excess",
+          "coverage": ["error", "edge"],
+          "observes": "A full destination receives distinct tokens past capacity after an early duplicate."
+        },
+        {
+          "caseId": "cells-windows-lparss-zero-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-capacity cell cannot accommodate the one blank member."
+        },
+        {
+          "caseId": "cells-windows-lparss-control-length",
+          "coverage": ["error", "edge"],
+          "observes": "The translated character control words need sufficient width."
+        },
+        {
+          "caseId": "cells-windows-lparss-narrow-empty-bypass",
+          "coverage": ["success", "edge"],
+          "observes": "The C empty-list branch inserts directly and bypasses translated cell controls."
+        }
+      ],
+      "edgeAssessment": "Exercise empty and all-blank input, mixed delimiters, narrow and truncated rows, UTF-8, capacity after deduplication, and existing sets.",
+      "errorAssessment": "Capture the exact toolkit errors on full, zero-capacity, undersized-control and empty delimiter inputs. Compiled wrapper tests independently check wrong owner, type, expiry, embedded NUL, malformed UTF-16 and post-failure state.",
+      "fixtures": [],
+      "fixtureRationale": "Authored strings and per-case character cell allocations require no kernels or external data.",
+      "cleanup": "Native and WASM release owned cells, reset toolkit failures and support cell reuse. Tests inject failure at all three WASM allocation positions and verify balanced ownership.",
+      "tolerance": "Exact sorted cell rows, integer cardinalities and error short codes. A subsequent insertion distinguishes significant stored trailing whitespace from the existing trimmed display representation.",
+      "findings": [
+        {
+          "id": "lparss-caller-owned-set",
+          "summary": "The locked high-level helper creates a fresh set and cannot observe the caller cell on a second parse.",
+          "repair": "Call the typed independent live C entry point with that same SpiceCell and inspect its contents after operations.",
+          "status": "repaired",
+          "caseIds": [
+            "cells-windows-lparss-empty-and-blank",
+            "cells-windows-lparss-replace"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+            "packages/py-parity-checking/src/cases/cells-windows/lparss.cases.json",
+            "docs/step8-string-set.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "CellsWindowsApi.lparss -> owned native token and serialized addon -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "CellsWindowsApi.lparss -> owned WASM token and scoped UTF-8 buffers -> tspice_lparss -> lparss_c, independently compared with the locked SpiceyPy C symbol.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused live and browser results are separate from full required local and canonical executions."
+}

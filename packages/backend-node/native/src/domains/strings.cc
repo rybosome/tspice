@@ -1,4 +1,5 @@
 #include "strings.h"
+#include "../cell_handles.h"
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -557,12 +558,32 @@ static Napi::Value Lxqstr(const Napi::CallbackInfo& info) {
   return result;
 }
 
+static Napi::Value Lparss(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "lparss expects list, delims and a character cell"));
+    return env.Undefined();
+  }
+  std::string list, delims;
+  uint32_t handle = 0;
+  if (!ReadText(env, info[0], &list) || !ReadText(env, info[1], &delims) ||
+      !tspice_backend_node::ReadCellHandleArg(env, info[2], "set", &handle)) return env.Undefined();
+  tspice_backend_node::CspiceLock lock;
+  const uintptr_t set = tspice_backend_node::GetCellHandlePtrOrThrow(lock, env, handle, SPICE_CHR, "lparss", "set");
+  if (env.IsExceptionPending()) return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes];
+  if (tspice_lparss(list.c_str(), delims.c_str(), set, err, sizeof(err)))
+    ThrowSpiceError(env, "CSPICE failed while calling lparss", err);
+  return env.Undefined();
+}
+
 namespace tspice_backend_node {
 
 void RegisterStrings(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "nextwd", Napi::Function::New(env, Nextwd), __func__)) return;
   if (!SetExportChecked(env, exports, "nthwd", Napi::Function::New(env, Nthwd), __func__)) return;
   if (!SetExportChecked(env, exports, "lparse", Napi::Function::New(env, Lparse), __func__)) return;
+  if (!SetExportChecked(env, exports, "lparss", Napi::Function::New(env, Lparss), __func__)) return;
   if (!SetExportChecked(env, exports, "lparsm", Napi::Function::New(env, Lparsm), __func__)) return;
   if (!SetExportChecked(env, exports, "lx4dec", Napi::Function::New(env, Lx4dec), __func__)) return;
   if (!SetExportChecked(env, exports, "lx4num", Napi::Function::New(env, Lx4num), __func__)) return;

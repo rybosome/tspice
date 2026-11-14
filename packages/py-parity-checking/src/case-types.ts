@@ -409,6 +409,15 @@ export type StepCellsWindowsCard = {
   targetId: string;
 };
 
+export type StepCellsWindowsLparss = {
+  op: "cells-windows.lparss";
+  cellId: string;
+  list: string;
+  delims: string;
+  maxCardinality?: number;
+  length?: number;
+};
+
 export type StepCellsWindowsInsrtc = {
   op: "cells-windows.insrtc";
   cellId: string;
@@ -1455,6 +1464,7 @@ export type WorkflowStep =
   | StepCoordsVectorsMxv
   | StepCoordsVectorsMtxv
   | StepCellsWindowsCard
+  | StepCellsWindowsLparss
   | StepCellsWindowsInsrtc
   | StepCellsWindowsInsrtd
   | StepCellsWindowsInsrti
@@ -1683,6 +1693,7 @@ export type StepOutput =
   | { op: "coords-vectors.mxv"; value: Vector3 }
   | { op: "coords-vectors.mtxv"; value: Vector3 }
   | { op: "cells-windows.card"; value: number }
+  | { op: "cells-windows.lparss"; value: string[] }
   | { op: "cells-windows.insrtc"; value: string[] }
   | { op: "cells-windows.insrtd"; value: number[] }
   | { op: "cells-windows.insrti"; value: number[] }

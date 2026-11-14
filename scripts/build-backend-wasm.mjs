@@ -571,6 +571,7 @@ const exportedFunctions = [
   "_tspice_valid",
   "_tspice_insrti",
   "_tspice_insrtd",
+  "_tspice_lparss",
   "_tspice_insrtc",
   "_tspice_cell_geti",
   "_tspice_cell_getd",

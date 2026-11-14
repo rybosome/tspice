@@ -4,6 +4,7 @@ from typing import TypeAlias
 
 from .cells_windows import (
     StepCellsWindowsCard,
+    StepCellsWindowsLparss,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -281,6 +282,7 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
     | StepCellsWindowsCard
+    | StepCellsWindowsLparss
     | StepCellsWindowsInsrtc
     | StepCellsWindowsInsrtd
     | StepCellsWindowsInsrti

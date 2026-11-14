@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 179
-- Planned (not yet implemented): 470
+- Implemented now (SpiceRawBackend): 180
+- Planned (not yet implemented): 469
 - Excluded: 3
 
 ## Implemented now
@@ -119,6 +119,7 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `lcase_c` | Convert to lowercase |
 | `lparse_c` | Parse items from a list |
 | `lparsm_c` | Parse a list of items having multiple delimiters |
+| `lparss_c` | Parse a list of items; return a set |
 | `lx4dec_c` | Scan for decimal number |
 | `lx4num_c` | Scan for number |
 | `lx4sgn_c` | Scan for signed integer |
@@ -443,7 +444,6 @@ SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `Kernel
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
 | `lmpool_c` | Load variables from memory into the pool |
-| `lparss_c` | Parse a list of items; return a set |
 | `lspcn_c` | Longitude of the sun, planetocentric |
 | `lstlec_c` | Last character element less than or equal to. |
 | `lstled_c` | Last double precision element less than or equal |

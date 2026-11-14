@@ -111,7 +111,8 @@
         "strings-nthwd-truncated-word",
         "strings-nthwd-utf8-byte-locations"
       ],
-      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-a20-4d4f03cd-wasm",
@@ -185,7 +186,8 @@
         "strings-nthwd-truncated-word",
         "strings-nthwd-utf8-byte-locations"
       ],
-      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 4d4f03cd111409d7993311854d0f1132c654140d. JavaScript: 2,697 parity tests and one expected guard skip. Native-required: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a20-4d4f03cd-node",
@@ -261,7 +263,8 @@
       ],
       "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
-      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-a20-4d4f03cd-wasm",
@@ -337,7 +340,8 @@
       ],
       "commit": "4d4f03cd111409d7993311854d0f1132c654140d",
       "url": "https://github.com/rybosome/tspice/actions/runs/43565592056/job/132358618309",
-      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132358618309 on 4d4f03cd111409d7993311854d0f1132c654140d: 2,470 registered Node/WASM live comparisons; 2,698 parity-package tests with no skips, including the native-required guard; 124 native wrapper, 687 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -411,16 +415,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.nextwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.nextwd -> module-local WASM byte buffers and typed export -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -484,16 +500,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.nthwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.nthwd -> module-local WASM byte buffers and typed export -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -572,16 +600,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lparse -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lparse -> module-local WASM byte buffers and typed export -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -660,16 +700,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lparsm -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lparsm -> module-local WASM byte buffers and typed export -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -746,16 +798,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4dec -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4dec -> module-local WASM byte buffers and typed export -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -832,16 +896,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4num -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4num -> module-local WASM byte buffers and typed export -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -905,16 +981,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4sgn -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4sgn -> module-local WASM byte buffers and typed export -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -978,16 +1066,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4uns -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lx4uns -> module-local WASM byte buffers and typed export -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     },
@@ -1051,19 +1151,31 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lxqstr -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-node", "ci-a20-4d4f03cd-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.lxqstr -> module-local WASM byte buffers and typed export -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": ["local-a20-4d4f03cd-wasm", "ci-a20-4d4f03cd-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source-matched executions are historical on this expanded source. Fresh local and canonical executions are required."
 }

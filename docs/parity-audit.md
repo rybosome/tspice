@@ -85,3 +85,7 @@ validation of the signed leading-dot mantissa count. The audit retains the
 actual index and count, each row or word, and strict byte-capacity diagnostics.
 Parent A18 executions remain historical on their original source.
 [String contracts, assumptions and observed edge values](step8-string-tokenization.md)
+
+## Character list parsing
+
+B04 adds LPARSS on the A20 string parsing prerequisite. The reference shares one independent cell across steps so both replacement and empty-list insertion are observable. [Semantics and evidence](step8-string-set.md)

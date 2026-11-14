@@ -295,6 +295,10 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.mxv(m, v)`                    | `mxv_c`              | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
 | `coords-vectors.mtxv(m, v)`                   | `mtxv_c`             | `(m: Mat3RowMajor, v: SpiceVector3)`                             | `SpiceVector3`                                   | float tolerance                                | none                                                                                  |
 
+### Character list parsing
+
+`raw.lparss(list, delims, set)` calls `lparss_c` on the live caller-owned character set. [Byte widths, empty-list insertion and partial mutation](step8-string-set.md)
+
 ### Cell backing bounds
 
 `ssize`, `valid`, and `wnvald` may change logical sizes only within the originally allocated cell capacity. The shared registry retains that original bound independently of mutable descriptors; requests beyond it throw before CSPICE runs. NAIF documents that CSPICE cannot detect an oversized backing declaration. `ssize` clears cardinality; `valid` sorts/deduplicates stored elements; `wnvald` sorts/merges endpoint pairs. The audit compares these observable effects and uses safe direct regressions for allocation-precondition violations rather than asking SpiceyPy to access invalid storage.

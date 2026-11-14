@@ -692,6 +692,26 @@ int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes)
   return 0;
 }
 
+int tspice_lparss(const char *list, const char *delims, uintptr_t handle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (!list || !delims || strlen(list) > INT_MAX - 2 || strlen(delims) >= INT_MAX)
+    return tspice_return_error(err, errMaxBytes, "Invalid lparss byte length");
+  SpiceCell *set = tspice_validate_handle(handle, "cell", "tspice_lparss()", err, errMaxBytes);
+  if (!set) return 1;
+  if (set->dtype != SPICE_CHR)
+    return tspice_return_error(err, errMaxBytes, "lparss requires a character cell");
+  // The Fortran/C character repacking loops index the full control and data area with SpiceInt.
+  if (list[0] && delims[0] && (set->length < 1 || set->size > INT_MAX - SPICE_CELL_CTRLSZ ||
+      set->size + SPICE_CELL_CTRLSZ > INT_MAX / set->length))
+    return tspice_return_error(err, errMaxBytes, "lparss cell exceeds signed workspace bounds");
+  lparss_c(list, delims, set);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
 int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   if (err && errMaxBytes > 0) {
