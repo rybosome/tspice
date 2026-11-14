@@ -1,5 +1,7 @@
 #include "coords_vectors.h"
 
+#include <cmath>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -7,6 +9,202 @@
 using tspice_napi::MakeNumberArray;
 using tspice_napi::SetExportChecked;
 using tspice_napi::ThrowSpiceError;
+
+static bool ReadBasicVector(Napi::Env env, const Napi::Value& value, double out[3], const char* label) {
+  if (!tspice_backend_node::ReadVec3(env, value, out, label)) return false;
+  if (!std::isfinite(out[0]) || !std::isfinite(out[1]) || !std::isfinite(out[2])) {
+    ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must contain finite numbers"));
+    return false;
+  }
+  return true;
+}
+
+static Napi::Number Vdist(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vdist() expects 2 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double a[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], a, "vdist(a)")) return Napi::Number::New(env, 0);
+  double b[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[1], b, "vdist(b)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_vdist(a, b, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vdist", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Array Vequ(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vequ() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double v[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], v, "vequ(v)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_vequ(v, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vequ", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Array Vpack(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vpack() expects 3 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  if (!info[0].IsNumber() || !std::isfinite(info[0].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vpack(x) must be a finite number"));
+    return Napi::Array::New(env);
+  }
+  const double x = info[0].As<Napi::Number>().DoubleValue();
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vpack(y) must be a finite number"));
+    return Napi::Array::New(env);
+  }
+  const double y = info[1].As<Napi::Number>().DoubleValue();
+  if (!info[2].IsNumber() || !std::isfinite(info[2].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vpack(z) must be a finite number"));
+    return Napi::Array::New(env);
+  }
+  const double z = info[2].As<Napi::Number>().DoubleValue();
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_vpack(x, y, z, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vpack", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Object Vupack(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vupack() expects 1 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  double v[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], v, "vupack(v)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_vupack(v, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vupack", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object value = Napi::Object::New(env);
+  value.Set("x", Napi::Number::New(env, out[0]));
+  value.Set("y", Napi::Number::New(env, out[1]));
+  value.Set("z", Napi::Number::New(env, out[2]));
+  return value;
+}
+
+static Napi::Boolean Vzero(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vzero() expects 1 argument(s)"));
+    return Napi::Boolean::New(env, 0);
+  }
+  double v[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], v, "vzero(v)")) return Napi::Boolean::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_vzero(v, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vzero", err);
+    return Napi::Boolean::New(env, 0);
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Object Unorm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "unorm() expects 1 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  double v[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], v, "unorm(v)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[3] = {0.0, 0.0, 0.0};
+  double norm = 0.0;
+  const int status = tspice_unorm(v, out, &norm, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling unorm", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object value = Napi::Object::New(env);
+  value.Set("unit", MakeNumberArray(env, out, 3));
+  value.Set("norm", Napi::Number::New(env, norm));
+  return value;
+}
+
+static Napi::Array Ucrss(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ucrss() expects 2 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double a[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], a, "ucrss(a)")) return Napi::Array::New(env);
+  double b[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[1], b, "ucrss(b)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[3] = {0.0, 0.0, 0.0};
+  const int status = tspice_ucrss(a, b, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ucrss", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 3);
+}
+
+static Napi::Number Vsep(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "vsep() expects 2 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double a[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[0], a, "vsep(a)")) return Napi::Number::New(env, 0);
+  double b[3] = {0.0, 0.0, 0.0};
+  if (!ReadBasicVector(env, info[1], b, "vsep(b)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_vsep(a, b, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling vsep", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
 
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -572,6 +770,14 @@ static Napi::Object Recgeo(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "vdist", Napi::Function::New(env, Vdist), __func__)) return;
+  if (!SetExportChecked(env, exports, "vequ", Napi::Function::New(env, Vequ), __func__)) return;
+  if (!SetExportChecked(env, exports, "vpack", Napi::Function::New(env, Vpack), __func__)) return;
+  if (!SetExportChecked(env, exports, "vupack", Napi::Function::New(env, Vupack), __func__)) return;
+  if (!SetExportChecked(env, exports, "vzero", Napi::Function::New(env, Vzero), __func__)) return;
+  if (!SetExportChecked(env, exports, "unorm", Napi::Function::New(env, Unorm), __func__)) return;
+  if (!SetExportChecked(env, exports, "ucrss", Napi::Function::New(env, Ucrss), __func__)) return;
+  if (!SetExportChecked(env, exports, "vsep", Napi::Function::New(env, Vsep), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

@@ -408,5 +408,23 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a08-vector-basics",
+      "routines": [
+        "vdist_c",
+        "vequ_c",
+        "vpack_c",
+        "vupack_c",
+        "vzero_c",
+        "unorm_c",
+        "ucrss_c",
+        "vsep_c"
+      ],
+      "dependsOn": [],
+      "prs": [],
+      "nextAction": "Run focused live/wrapper/allocation checks, both required lanes and canonical CI; record current source-bound evidence before verified status. Independent Step 8 batch; no merge authorized."
+    }
   ]
 }

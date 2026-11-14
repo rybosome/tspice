@@ -8,6 +8,59 @@ Matrix3x3: TypeAlias = list[list[float]]
 
 
 @dataclass(frozen=True)
+class StepCoordsVectorsVdist:
+    op: Literal["coords-vectors.vdist"]
+    a: Vec3
+    b: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVequ:
+    op: Literal["coords-vectors.vequ"]
+    v: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVpack:
+    op: Literal["coords-vectors.vpack"]
+    x: float
+    y: float
+    z: float
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVupack:
+    op: Literal["coords-vectors.vupack"]
+    v: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVzero:
+    op: Literal["coords-vectors.vzero"]
+    v: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsUnorm:
+    op: Literal["coords-vectors.unorm"]
+    v: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsUcrss:
+    op: Literal["coords-vectors.ucrss"]
+    a: Vec3
+    b: Vec3
+
+
+@dataclass(frozen=True)
+class StepCoordsVectorsVsep:
+    op: Literal["coords-vectors.vsep"]
+    a: Vec3
+    b: Vec3
+
+
+@dataclass(frozen=True)
 class StepCoordsVectorsReclat:
     op: Literal["coords-vectors.reclat"]
     rectan: Vec3

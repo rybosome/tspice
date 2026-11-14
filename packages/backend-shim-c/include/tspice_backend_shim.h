@@ -11,6 +11,16 @@
 extern "C" {
 #endif
 
+// Basic vector operations; outputs are copied into caller-owned buffers.
+int tspice_vdist(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+int tspice_vequ(const double *v, double *out, char *err, int errMaxBytes);
+int tspice_vpack(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_vupack(const double *v, double *out, char *err, int errMaxBytes);
+int tspice_vzero(const double *v, int *out, char *err, int errMaxBytes);
+int tspice_unorm(const double *v, double *outUnit3, double *outNorm, char *err, int errMaxBytes);
+int tspice_ucrss(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+int tspice_vsep(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+
 // --- CSPICE error handling helpers ---
 //
 // These helpers are a stable ABI surface. Callers should treat them as part of

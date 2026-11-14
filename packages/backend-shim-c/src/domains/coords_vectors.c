@@ -4,6 +4,145 @@
 
 #include <string.h>
 
+static int tspice_basic_vector_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "vector operation requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_vdist(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = vdist_c(a, b);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
+int tspice_vequ(const double *v, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vequ_c(v, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vpack(double x, double y, double z, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vpack_c(x, y, z, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vupack(const double *v, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  vupack_c(v, &value[0], &value[1], &value[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vzero(const double *v, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  *out = 0;
+  const SpiceBoolean value = vzero_c(v);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value ? 1 : 0;
+  return 0;
+}
+
+int tspice_unorm(const double *v, double *outUnit3, double *outNorm, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!v || !outUnit3 || !outNorm) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  outUnit3[0] = outUnit3[1] = outUnit3[2] = 0.0;
+  *outNorm = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  SpiceDouble norm = 0.0;
+  unorm_c(v, value, &norm);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  outUnit3[0] = value[0];
+  outUnit3[1] = value[1];
+  outUnit3[2] = value[2];
+  *outNorm = norm;
+  return 0;
+}
+
+int tspice_ucrss(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  out[0] = out[1] = out[2] = 0.0;
+  SpiceDouble value[3] = {0.0, 0.0, 0.0};
+  ucrss_c(a, b, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out[0] = value[0];
+  out[1] = value[1];
+  out[2] = value[2];
+  return 0;
+}
+
+int tspice_vsep(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_basic_vector_invalid_arg(err, errMaxBytes);
+  *out = 0.0;
+  const SpiceDouble value = vsep_c(a, b);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
   int j;

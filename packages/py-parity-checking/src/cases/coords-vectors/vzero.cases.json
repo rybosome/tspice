@@ -1,0 +1,74 @@
+[
+  {
+    "caseId": "coords-vectors-vzero-zero",
+    "description": "vzero: zero; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzero",
+        "v": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzero-each-nonzero-slot",
+    "description": "vzero: each-nonzero-slot; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzero",
+        "v": [1, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vzero",
+        "v": [0, -2, 0]
+      },
+      {
+        "op": "coords-vectors.vzero",
+        "v": [0, 0, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzero-subnormal-nonzero",
+    "description": "vzero: subnormal-nonzero; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzero",
+        "v": [5e-324, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vzero",
+        "v": [0, -5e-324, 0]
+      },
+      {
+        "op": "coords-vectors.vzero",
+        "v": [0, 0, 5e-324]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vzero-mixed-components",
+    "description": "vzero: mixed-components; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vzero",
+        "v": [1, -1, 0]
+      },
+      {
+        "op": "coords-vectors.vzero",
+        "v": [3e200, -4e200, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

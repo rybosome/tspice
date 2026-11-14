@@ -10,6 +10,45 @@ A routine review records the contract, primary NAIF reference, semantics, exact 
 
 `verified` requires meaningful success evidence, no open findings, a PR reference, and both local and observed CI execution for that backend covering every reviewed scenario. An unsupported raw implementation cannot be verified through a harness fallback. Error-free routines can explain why CSPICE error scenarios are inapplicable rather than inventing them.
 
+## Step 8 expansion
+
+The same maintained evidence and acceptance rules apply to new raw routines.
+`baseline.json` retains the original Step 7 `batches` and baseline commit;
+its additive `expansionBatches` assigns newly contract-present routines without
+rewriting that historical denominator. Both sets must be disjoint and together
+cover the current raw contract. Planned routines live only in the
+[expansion queue](step8-expansion.md), where open PRs remain distinct from landed work.
+Adding an expansion assignment alone does not certify a routine. Its same-named
+record must supply the same semantic review and source-bound Node/WASM execution.
+
+## Vector basics expansion
+
+The A08 record reviews `vdist_c`, `vequ_c`, `vpack_c`, `vupack_c`, `vzero_c`,
+`unorm_c`, `ucrss_c`, and `vsep_c`. Its 32 registered workflows make 70 actual
+routine calls per backend, retaining every result component. Copy/pack/unpack
+extremes receive an additional exact live comparison; signed zero is checked
+separately because ordinary JSON parity does not certify its sign. Scaled norm,
+distance and near-parallel angle assertions make small nonzero results
+observable. A scoped live probe preserves and compares nonfinite output classes
+without changing the shared comparator.
+
+The first `ucrss` run exposed a compiler-dependent residual for a mathematically
+parallel pair. The [numerical investigation](step8-vector-numerics.md) preserves
+the original inputs, observed results and source/compiler evidence. Exact-zero
+parity uses dyadic parallel/opposed vectors; mixed, scaled, handedness and
+near-parallel cases remain. This repairs the assertion's conditioning assumption
+and records a numerical limit of direct CSPICE builds; it does not establish
+identical results at ill-conditioned parallel or near-parallel inputs. No routine
+is excluded and the global
+tolerance is unchanged.
+
+Real-backend argument/recovery checks, native result-shape checks, and WASM
+allocation rollback tests cover the wrapper boundary. These are assertion-source
+descriptions, not execution claims. The audit remains `reviewed` until fresh
+source-bound local and observed canonical CI evidence satisfies the normal
+verification requirements. Prior Step 7 observations remain historical on this
+branch.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.

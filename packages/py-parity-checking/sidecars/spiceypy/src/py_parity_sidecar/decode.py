@@ -22,6 +22,14 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsVdist,
+    StepCoordsVectorsVequ,
+    StepCoordsVectorsVpack,
+    StepCoordsVectorsVupack,
+    StepCoordsVectorsVzero,
+    StepCoordsVectorsUnorm,
+    StepCoordsVectorsUcrss,
+    StepCoordsVectorsVsep,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +502,59 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.vdist":
+            return StepCoordsVectorsVdist(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vdist.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vdist.b"),
+            )
+
+        case "coords-vectors.vequ":
+            return StepCoordsVectorsVequ(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.vequ.v"),
+            )
+
+        case "coords-vectors.vpack":
+            return StepCoordsVectorsVpack(
+                op=op,
+                x=_expect_number(step.get("x"), label="coords-vectors.vpack.x"),
+                y=_expect_number(step.get("y"), label="coords-vectors.vpack.y"),
+                z=_expect_number(step.get("z"), label="coords-vectors.vpack.z"),
+            )
+
+        case "coords-vectors.vupack":
+            return StepCoordsVectorsVupack(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.vupack.v"),
+            )
+
+        case "coords-vectors.vzero":
+            return StepCoordsVectorsVzero(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.vzero.v"),
+            )
+
+        case "coords-vectors.unorm":
+            return StepCoordsVectorsUnorm(
+                op=op,
+                v=_expect_vec3(step.get("v"), label="coords-vectors.unorm.v"),
+            )
+
+        case "coords-vectors.ucrss":
+            return StepCoordsVectorsUcrss(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.ucrss.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.ucrss.b"),
+            )
+
+        case "coords-vectors.vsep":
+            return StepCoordsVectorsVsep(
+                op=op,
+                a=_expect_vec3(step.get("a"), label="coords-vectors.vsep.a"),
+                b=_expect_vec3(step.get("b"), label="coords-vectors.vsep.b"),
             )
 
         case "coords-vectors.reclat":
