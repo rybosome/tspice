@@ -2050,18 +2050,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/755"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "Both real backends exchanged persisted files with the independent locked library, retained logical data and completed 5001 partial-read/close cycles. The final real Chrome worker observed all three operations and recovered after a short row. See docs/step8-das-comments.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+          "result": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run complete required local and canonical lanes on the combined source. Confirm final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "baseCommit": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
       "worktree": "/private/tmp/tspice-step8-das-comments",
       "branch": "codex/expand-das-comments",
-      "progressNote": "43 workflows, 362 steps, 109 new-method calls, 13 terminal toolkit errors; 86 registered comparisons, 11 public, 4 native and 12 WASM focused tests plus real Chrome passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source df179e56. 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "43 workflows, 362 steps, 109 new-method calls, 13 terminal toolkit errors; 86 registered comparisons, 11 public, 4 native and 12 WASM focused tests plus real Chrome passed."
     },
     {
       "id": "C07-dla-segments",

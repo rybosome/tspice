@@ -289,6 +289,242 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43570988079/job/132375119005",
       "observation": "Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-c06-df179e56-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0eea0c184acce3317cd5b7fe10b9be3b19a1234d11e76a3289c30c3606f2f51e",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c06-df179e56-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0eea0c184acce3317cd5b7fe10b9be3b19a1234d11e76a3289c30c3606f2f51e",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0eea0c184acce3317cd5b7fe10b9be3b19a1234d11e76a3289c30c3606f2f51e",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0eea0c184acce3317cd5b7fe10b9be3b19a1234d11e76a3289c30c3606f2f51e",
+      "caseIds": [
+        "file-io-dashfn-full-logical-path",
+        "file-io-dashfn-reader",
+        "file-io-dashfn-short",
+        "file-io-dashfn-unnamed",
+        "file-io-dashfn-width",
+        "file-io-dashfs-authored-mesh",
+        "file-io-dashfs-dsk-with-comments",
+        "file-io-dashfs-full-ek",
+        "file-io-dashfs-two-claims",
+        "file-io-dashfs-zero",
+        "file-io-daslla-authored-mesh",
+        "file-io-daslla-dsk-with-comments",
+        "file-io-daslla-full-ek",
+        "file-io-daslla-two-claims",
+        "file-io-daslla-zero",
+        "file-io-dasllc-clean-writer",
+        "file-io-dasllc-flush",
+        "file-io-dasllc-read-claim",
+        "file-io-dasllc-scratch",
+        "file-io-dasonw-blank-type",
+        "file-io-dasonw-empty-name",
+        "file-io-dasonw-empty-type",
+        "file-io-dasonw-existing-file",
+        "file-io-dasonw-negative-records",
+        "file-io-dasonw-record-and-persistence",
+        "file-io-dasonw-two-new-files",
+        "file-io-dasonw-type-and-name-width",
+        "file-io-dasops-cleanup-on-failure",
+        "file-io-dasops-scratch-metadata",
+        "file-io-dasops-two-claims",
+        "file-io-dasopw-missing",
+        "file-io-dasopw-read-conflict",
+        "file-io-dasopw-reopen-modify",
+        "file-io-dasopw-write-conflict",
+        "file-io-dasrfr-authored-mesh",
+        "file-io-dasrfr-dsk-with-comments",
+        "file-io-dasrfr-full-ek",
+        "file-io-dasrfr-idwlen-short",
+        "file-io-dasrfr-ifnlen-short",
+        "file-io-dasrfr-independent-widths",
+        "file-io-dasrfr-two-claims",
+        "file-io-dasrfr-zero",
+        "file-io-daswbr-flush",
+        "file-io-daswbr-ordinary",
+        "file-io-daswbr-reader",
+        "file-io-daswbr-scratch"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -348,16 +584,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasonw -> serialized native addon and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasonw -> WASM export, scoped allocation and owner handle registry -> tspice_dasonw -> dasonw_c. Independent reference uses locked sp.dasonw.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -410,11 +658,12 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasops -> serialized native addon and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -422,11 +671,12 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasops -> WASM export, scoped allocation and owner handle registry -> tspice_dasops -> dasops_c. Independent reference uses locked sp.dasops.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -466,16 +716,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasopw -> serialized native addon and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasopw -> WASM export, scoped allocation and owner handle registry -> tspice_dasopw -> dasopw_c. Independent reference uses locked sp.dasopw.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -526,16 +788,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dashfn -> serialized native addon and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dashfn -> WASM export, scoped allocation and owner handle registry -> tspice_dashfn -> dashfn_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -596,16 +870,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dashfs -> serialized native addon and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dashfs -> WASM export, scoped allocation and owner handle registry -> tspice_dashfs -> dashfs_c. Independent reference uses locked sp.dashfs.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -666,16 +952,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.daslla -> serialized native addon and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.daslla -> WASM export, scoped allocation and owner handle registry -> tspice_daslla -> daslla_c. Independent reference uses locked sp.daslla.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -745,11 +1043,12 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasllc -> serialized native addon and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
           "history": [
@@ -757,11 +1056,12 @@
             "needs-repair",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "FileIoApi.dasllc -> WASM export, scoped allocation and owner handle registry -> tspice_dasllc -> dasllc_c. Independent reference uses locked sp.dasllc.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -837,16 +1137,28 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrfr -> serialized native addon and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.dasrfr -> WASM export, scoped allocation and owner handle registry -> tspice_dasrfr -> dasrfr_c. Independent reference uses typed symbol from the locked SpiceyPy library.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     },
@@ -892,19 +1204,31 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.daswbr -> serialized native addon and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
-          "executions": []
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
           "route": "direct",
           "trace": "FileIoApi.daswbr -> WASM export, scoped allocation and owner handle registry -> tspice_daswbr -> daswbr_c. Independent reference uses locked sp.daswbr.",
-          "executions": []
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Previous executions are historical and remain bound to their original source. Revalidate the combined DAS lifecycle and comment surface in complete required local and canonical CI runs."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

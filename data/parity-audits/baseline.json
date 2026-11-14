@@ -431,8 +431,8 @@
       "id": "c06-das-comments",
       "routines": ["dasac_c", "dasdc_c", "dasec_c"],
       "dependsOn": ["c04-das-lifecycle"],
-      "prs": [],
-      "nextAction": "Record complete required local and canonical executions, then inspect the final-head matrix and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/755"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
