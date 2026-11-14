@@ -3021,18 +3021,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/752"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "45 registered workflows/98 calls, 12 toolkit errors. Both compiled backends passed 90 comparisons, eight public/oracle tests, 14 native and 35 WASM tests. Chrome exercised all six including unsupported coordinate recovery."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "19fb8dac5dc784bdaaad83e6681d847dc3ceb806",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43575242344/job/132387941020",
+          "result": "Both complete required lanes passed locally on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806. JavaScript: 2,528 parity tests and one expected guard skip. Native-required: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132387941020 on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both complete required local lanes, commit source and inspect canonical CI execution before final-head checks.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-plate-math",
       "branch": "codex/expand-plate-math",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "45 registered workflows/98 calls, 12 toolkit errors. Both compiled backends passed 90 comparisons, eight public/oracle tests, 14 native and 35 WASM tests. Chrome exercised all six including unsupported coordinate recovery."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 19fb8dac. 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "45 registered workflows/98 calls, 12 toolkit errors. Both compiled backends passed 90 comparisons, eight public/oracle tests, 14 native and 35 WASM tests. Chrome exercised all six including unsupported coordinate recovery."
     },
     {
       "id": "E18-dsk-data",

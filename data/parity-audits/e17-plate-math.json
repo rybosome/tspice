@@ -35,7 +35,240 @@
     "packages/py-parity-checking/test/plate-math.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e17-19fb8dac-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4862585a706e639a8bab51693a20a518283a8ce0960c70d85e40948e3ccbcb25",
+      "caseIds": [
+        "dsk-dskrb2-cylindrical",
+        "dsk-dskrb2-degenerate-plate",
+        "dsk-dskrb2-empty-bounds",
+        "dsk-dskrb2-flattening-error",
+        "dsk-dskrb2-latitudinal-face",
+        "dsk-dskrb2-parameter-layout",
+        "dsk-dskrb2-planetodetic-shape",
+        "dsk-dskrb2-radius-error",
+        "dsk-dskrb2-rectangular",
+        "dsk-dskrb2-scaled-point-error",
+        "dsk-dskrb2-unknown",
+        "dsk-pltar-closed-mesh",
+        "dsk-pltar-degenerate",
+        "dsk-pltar-empty",
+        "dsk-pltar-index-above",
+        "dsk-pltar-index-below",
+        "dsk-pltar-oblique-scale",
+        "dsk-pltar-open-and-repeated",
+        "dsk-pltar-vertex-count",
+        "dsk-pltexp-centroid-expansion",
+        "dsk-pltexp-contraction-and-collapse",
+        "dsk-pltexp-coordinate-scale",
+        "dsk-pltexp-degenerate",
+        "dsk-pltexp-identity-and-order",
+        "dsk-pltexp-through-centroid",
+        "dsk-pltnp-coincident",
+        "dsk-pltnp-collinear",
+        "dsk-pltnp-coordinate-scale",
+        "dsk-pltnp-edge-projections",
+        "dsk-pltnp-face-interior",
+        "dsk-pltnp-oblique-winding",
+        "dsk-pltnp-vertex-regions",
+        "dsk-pltnrm-degenerate",
+        "dsk-pltnrm-handedness",
+        "dsk-pltnrm-oblique-components",
+        "dsk-pltnrm-quadratic-scale",
+        "dsk-pltnrm-translation",
+        "dsk-pltvol-coplanar-and-repeated",
+        "dsk-pltvol-index-large",
+        "dsk-pltvol-index-zero",
+        "dsk-pltvol-plate-count",
+        "dsk-pltvol-signed-orientation",
+        "dsk-pltvol-translation-and-scale",
+        "dsk-pltvol-unreferenced-and-reordered",
+        "dsk-pltvol-vertex-count"
+      ],
+      "observation": "Both complete required lanes passed locally on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806. JavaScript: 2,528 parity tests and one expected guard skip. Native-required: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e17-19fb8dac-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4862585a706e639a8bab51693a20a518283a8ce0960c70d85e40948e3ccbcb25",
+      "caseIds": [
+        "dsk-dskrb2-cylindrical",
+        "dsk-dskrb2-degenerate-plate",
+        "dsk-dskrb2-empty-bounds",
+        "dsk-dskrb2-flattening-error",
+        "dsk-dskrb2-latitudinal-face",
+        "dsk-dskrb2-parameter-layout",
+        "dsk-dskrb2-planetodetic-shape",
+        "dsk-dskrb2-radius-error",
+        "dsk-dskrb2-rectangular",
+        "dsk-dskrb2-scaled-point-error",
+        "dsk-dskrb2-unknown",
+        "dsk-pltar-closed-mesh",
+        "dsk-pltar-degenerate",
+        "dsk-pltar-empty",
+        "dsk-pltar-index-above",
+        "dsk-pltar-index-below",
+        "dsk-pltar-oblique-scale",
+        "dsk-pltar-open-and-repeated",
+        "dsk-pltar-vertex-count",
+        "dsk-pltexp-centroid-expansion",
+        "dsk-pltexp-contraction-and-collapse",
+        "dsk-pltexp-coordinate-scale",
+        "dsk-pltexp-degenerate",
+        "dsk-pltexp-identity-and-order",
+        "dsk-pltexp-through-centroid",
+        "dsk-pltnp-coincident",
+        "dsk-pltnp-collinear",
+        "dsk-pltnp-coordinate-scale",
+        "dsk-pltnp-edge-projections",
+        "dsk-pltnp-face-interior",
+        "dsk-pltnp-oblique-winding",
+        "dsk-pltnp-vertex-regions",
+        "dsk-pltnrm-degenerate",
+        "dsk-pltnrm-handedness",
+        "dsk-pltnrm-oblique-components",
+        "dsk-pltnrm-quadratic-scale",
+        "dsk-pltnrm-translation",
+        "dsk-pltvol-coplanar-and-repeated",
+        "dsk-pltvol-index-large",
+        "dsk-pltvol-index-zero",
+        "dsk-pltvol-plate-count",
+        "dsk-pltvol-signed-orientation",
+        "dsk-pltvol-translation-and-scale",
+        "dsk-pltvol-unreferenced-and-reordered",
+        "dsk-pltvol-vertex-count"
+      ],
+      "observation": "Both complete required lanes passed locally on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806. JavaScript: 2,528 parity tests and one expected guard skip. Native-required: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e17-19fb8dac-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4862585a706e639a8bab51693a20a518283a8ce0960c70d85e40948e3ccbcb25",
+      "caseIds": [
+        "dsk-dskrb2-cylindrical",
+        "dsk-dskrb2-degenerate-plate",
+        "dsk-dskrb2-empty-bounds",
+        "dsk-dskrb2-flattening-error",
+        "dsk-dskrb2-latitudinal-face",
+        "dsk-dskrb2-parameter-layout",
+        "dsk-dskrb2-planetodetic-shape",
+        "dsk-dskrb2-radius-error",
+        "dsk-dskrb2-rectangular",
+        "dsk-dskrb2-scaled-point-error",
+        "dsk-dskrb2-unknown",
+        "dsk-pltar-closed-mesh",
+        "dsk-pltar-degenerate",
+        "dsk-pltar-empty",
+        "dsk-pltar-index-above",
+        "dsk-pltar-index-below",
+        "dsk-pltar-oblique-scale",
+        "dsk-pltar-open-and-repeated",
+        "dsk-pltar-vertex-count",
+        "dsk-pltexp-centroid-expansion",
+        "dsk-pltexp-contraction-and-collapse",
+        "dsk-pltexp-coordinate-scale",
+        "dsk-pltexp-degenerate",
+        "dsk-pltexp-identity-and-order",
+        "dsk-pltexp-through-centroid",
+        "dsk-pltnp-coincident",
+        "dsk-pltnp-collinear",
+        "dsk-pltnp-coordinate-scale",
+        "dsk-pltnp-edge-projections",
+        "dsk-pltnp-face-interior",
+        "dsk-pltnp-oblique-winding",
+        "dsk-pltnp-vertex-regions",
+        "dsk-pltnrm-degenerate",
+        "dsk-pltnrm-handedness",
+        "dsk-pltnrm-oblique-components",
+        "dsk-pltnrm-quadratic-scale",
+        "dsk-pltnrm-translation",
+        "dsk-pltvol-coplanar-and-repeated",
+        "dsk-pltvol-index-large",
+        "dsk-pltvol-index-zero",
+        "dsk-pltvol-plate-count",
+        "dsk-pltvol-signed-orientation",
+        "dsk-pltvol-translation-and-scale",
+        "dsk-pltvol-unreferenced-and-reordered",
+        "dsk-pltvol-vertex-count"
+      ],
+      "commit": "19fb8dac5dc784bdaaad83e6681d847dc3ceb806",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43575242344/job/132387941020",
+      "observation": "Inspected successful Linux Node 22 native-required job 132387941020 on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e17-19fb8dac-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4862585a706e639a8bab51693a20a518283a8ce0960c70d85e40948e3ccbcb25",
+      "caseIds": [
+        "dsk-dskrb2-cylindrical",
+        "dsk-dskrb2-degenerate-plate",
+        "dsk-dskrb2-empty-bounds",
+        "dsk-dskrb2-flattening-error",
+        "dsk-dskrb2-latitudinal-face",
+        "dsk-dskrb2-parameter-layout",
+        "dsk-dskrb2-planetodetic-shape",
+        "dsk-dskrb2-radius-error",
+        "dsk-dskrb2-rectangular",
+        "dsk-dskrb2-scaled-point-error",
+        "dsk-dskrb2-unknown",
+        "dsk-pltar-closed-mesh",
+        "dsk-pltar-degenerate",
+        "dsk-pltar-empty",
+        "dsk-pltar-index-above",
+        "dsk-pltar-index-below",
+        "dsk-pltar-oblique-scale",
+        "dsk-pltar-open-and-repeated",
+        "dsk-pltar-vertex-count",
+        "dsk-pltexp-centroid-expansion",
+        "dsk-pltexp-contraction-and-collapse",
+        "dsk-pltexp-coordinate-scale",
+        "dsk-pltexp-degenerate",
+        "dsk-pltexp-identity-and-order",
+        "dsk-pltexp-through-centroid",
+        "dsk-pltnp-coincident",
+        "dsk-pltnp-collinear",
+        "dsk-pltnp-coordinate-scale",
+        "dsk-pltnp-edge-projections",
+        "dsk-pltnp-face-interior",
+        "dsk-pltnp-oblique-winding",
+        "dsk-pltnp-vertex-regions",
+        "dsk-pltnrm-degenerate",
+        "dsk-pltnrm-handedness",
+        "dsk-pltnrm-oblique-components",
+        "dsk-pltnrm-quadratic-scale",
+        "dsk-pltnrm-translation",
+        "dsk-pltvol-coplanar-and-repeated",
+        "dsk-pltvol-index-large",
+        "dsk-pltvol-index-zero",
+        "dsk-pltvol-plate-count",
+        "dsk-pltvol-signed-orientation",
+        "dsk-pltvol-translation-and-scale",
+        "dsk-pltvol-unreferenced-and-reordered",
+        "dsk-pltvol-vertex-count"
+      ],
+      "commit": "19fb8dac5dc784bdaaad83e6681d847dc3ceb806",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43575242344/job/132387941020",
+      "observation": "Inspected successful Linux Node 22 native-required job 132387941020 on 19fb8dac5dc784bdaaad83e6681d847dc3ceb806: 2,308 registered Node/WASM live comparisons; 2,529 parity-package tests with no skips, including the native-required guard; 80 native wrapper, 635 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "pltar_c",
@@ -93,16 +326,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltar -> native domain and C++ addon under the process mutex -> tspice_pltar -> pltar_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltar -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltar -> pltar_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     },
@@ -152,16 +385,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltexp -> native domain and C++ addon under the process mutex -> tspice_pltexp -> pltexp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltexp -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltexp -> pltexp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     },
@@ -216,16 +449,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltnp -> native domain and C++ addon under the process mutex -> tspice_pltnp -> pltnp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltnp -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltnp -> pltnp_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     },
@@ -282,16 +515,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltnrm -> native domain and C++ addon under the process mutex -> tspice_pltnrm -> pltnrm_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltnrm -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltnrm -> pltnrm_c. Full observable results and applicable errors compared with independent locked SpiceyPy wrapper.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     },
@@ -351,16 +584,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltvol -> native domain and C++ addon under the process mutex -> tspice_pltvol -> pltvol_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pltvol -> WASM domain, checked allocations and compiled Emscripten export -> tspice_pltvol -> pltvol_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     },
@@ -454,19 +687,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dskrb2 -> native domain and C++ addon under the process mutex -> tspice_dskrb2 -> dskrb2_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-node", "ci-e17-19fb8dac-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dskrb2 -> WASM domain, checked allocations and compiled Emscripten export -> tspice_dskrb2 -> dskrb2_c. Full observable results and applicable errors compared with independent SpiceyPy plus a typed canonical binding for zero logical mesh dimensions.",
-          "executions": []
+          "executions": ["local-e17-19fb8dac-wasm", "ci-e17-19fb8dac-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Current focused evidence includes all registered, public, native, WASM and Chrome observations. Source-bound required local and canonical CI verification is pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

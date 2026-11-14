@@ -421,8 +421,8 @@
         "pltvol_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Run both full local lanes, observe source CI and confirm final-head checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/752"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
