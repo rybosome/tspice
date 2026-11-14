@@ -2385,6 +2385,39 @@ export function createFakeBackend(
     elemi: () => {
       throw new Error(spiceCellUnsupported);
     },
+    diff: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    inter: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    sdiff: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    union: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    set: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    removi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordc: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordd: () => {
+      throw new Error(spiceCellUnsupported);
+    },
+    ordi: () => {
+      throw new Error(spiceCellUnsupported);
+    },
     copy: () => {
       throw new Error(spiceCellUnsupported);
     },

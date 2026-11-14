@@ -7,6 +7,14 @@ from .cells_windows import (
     StepCellsWindowsAppndc,
     StepCellsWindowsAppndd,
     StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
     StepCellsWindowsCopy,
     StepCellsWindowsElemc,
     StepCellsWindowsElemd,
@@ -268,6 +276,14 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsAppndc
     | StepCellsWindowsAppndd
     | StepCellsWindowsAppndi
+    | StepCellsWindowsSetResult
+    | StepCellsWindowsSet
+    | StepCellsWindowsRemovc
+    | StepCellsWindowsRemovd
+    | StepCellsWindowsRemovi
+    | StepCellsWindowsOrdc
+    | StepCellsWindowsOrdd
+    | StepCellsWindowsOrdi
     | StepCellsWindowsCopy
     | StepCellsWindowsElemc
     | StepCellsWindowsElemd

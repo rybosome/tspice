@@ -73,6 +73,17 @@ export function dispatchStep(
     case "cells-windows.appndc":
     case "cells-windows.appndd":
     case "cells-windows.appndi":
+    case "cells-windows.diff":
+    case "cells-windows.inter":
+    case "cells-windows.sdiff":
+    case "cells-windows.union":
+    case "cells-windows.set":
+    case "cells-windows.removc":
+    case "cells-windows.removd":
+    case "cells-windows.removi":
+    case "cells-windows.ordc":
+    case "cells-windows.ordd":
+    case "cells-windows.ordi":
     case "cells-windows.copy":
     case "cells-windows.elemc":
     case "cells-windows.elemd":

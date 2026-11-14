@@ -1,0 +1,1400 @@
+{
+  "schemaVersion": 1,
+  "batch": "b02-set-algebra",
+  "traceFiles": [
+    "docs/step8-set-algebra.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/cells-windows.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/cell_handles.cc",
+    "packages/backend-node/native/src/domains/cells_windows.cc",
+    "packages/backend-node/src/domains/cells-windows.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/spice-handles.ts",
+    "packages/backend-node/test/set-algebra-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/cells_windows.c",
+    "packages/backend-shim-c/src/handle_validation.c",
+    "packages/backend-shim-c/src/handle_validation.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/cells-windows.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/spice-handles.ts",
+    "packages/backend-wasm/test/cell-handle-ownership.test.ts",
+    "packages/backend-wasm/test/set-algebra-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/core/src/spice-runtime/domains/window-algebra.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/cell_array_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/cells_windows.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/set_algebra_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/cells-windows.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+    "packages/tspice/test/cells-lifecycle-recovery.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-b02-1b3e4370-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a9f7509e62db720fe6991ff74bfcc9c8f19780876b1a8559feaa581348c09519",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-b02-1b3e4370-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a9f7509e62db720fe6991ff74bfcc9c8f19780876b1a8559feaa581348c09519",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "observation": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b02-1b3e4370-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a9f7509e62db720fe6991ff74bfcc9c8f19780876b1a8559feaa581348c09519",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b02-1b3e4370-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a9f7509e62db720fe6991ff74bfcc9c8f19780876b1a8559feaa581348c09519",
+      "caseIds": [
+        "cells-windows-diff-char-both-orders",
+        "cells-windows-diff-char-capacity",
+        "cells-windows-diff-char-empty-identities",
+        "cells-windows-diff-double-both-orders",
+        "cells-windows-diff-double-capacity",
+        "cells-windows-diff-double-empty-identities",
+        "cells-windows-diff-int-both-orders",
+        "cells-windows-diff-int-capacity",
+        "cells-windows-diff-int-empty-identities",
+        "cells-windows-diff-short-control-encoding",
+        "cells-windows-diff-unequal-character-widths",
+        "cells-windows-diff-unset-input",
+        "cells-windows-inter-char-both-orders",
+        "cells-windows-inter-char-capacity",
+        "cells-windows-inter-char-empty-identities",
+        "cells-windows-inter-double-both-orders",
+        "cells-windows-inter-double-capacity",
+        "cells-windows-inter-double-empty-identities",
+        "cells-windows-inter-int-both-orders",
+        "cells-windows-inter-int-capacity",
+        "cells-windows-inter-int-empty-identities",
+        "cells-windows-inter-short-control-encoding",
+        "cells-windows-inter-unequal-character-widths",
+        "cells-windows-inter-unset-input",
+        "cells-windows-ordc-blanks-and-tabs",
+        "cells-windows-ordc-empty",
+        "cells-windows-ordc-misses",
+        "cells-windows-ordc-ordered-members",
+        "cells-windows-ordc-unset",
+        "cells-windows-ordd-adjacent-values",
+        "cells-windows-ordd-empty",
+        "cells-windows-ordd-misses",
+        "cells-windows-ordd-ordered-members",
+        "cells-windows-ordd-unset",
+        "cells-windows-ordi-empty",
+        "cells-windows-ordi-misses",
+        "cells-windows-ordi-ordered-members",
+        "cells-windows-ordi-unset",
+        "cells-windows-removc-blanks-and-tabs",
+        "cells-windows-removc-empty",
+        "cells-windows-removc-misses",
+        "cells-windows-removc-ordered-members",
+        "cells-windows-removc-unset",
+        "cells-windows-removd-adjacent-values",
+        "cells-windows-removd-empty",
+        "cells-windows-removd-misses",
+        "cells-windows-removd-ordered-members",
+        "cells-windows-removd-unset",
+        "cells-windows-removi-empty",
+        "cells-windows-removi-misses",
+        "cells-windows-removi-ordered-members",
+        "cells-windows-removi-unset",
+        "cells-windows-sdiff-char-both-orders",
+        "cells-windows-sdiff-char-capacity",
+        "cells-windows-sdiff-char-empty-identities",
+        "cells-windows-sdiff-double-both-orders",
+        "cells-windows-sdiff-double-capacity",
+        "cells-windows-sdiff-double-empty-identities",
+        "cells-windows-sdiff-int-both-orders",
+        "cells-windows-sdiff-int-capacity",
+        "cells-windows-sdiff-int-empty-identities",
+        "cells-windows-sdiff-short-control-encoding",
+        "cells-windows-sdiff-unequal-character-widths",
+        "cells-windows-sdiff-unset-input",
+        "cells-windows-set-char-disjoint",
+        "cells-windows-set-char-empty",
+        "cells-windows-set-char-equal",
+        "cells-windows-set-char-partial",
+        "cells-windows-set-char-subset",
+        "cells-windows-set-double-disjoint",
+        "cells-windows-set-double-empty",
+        "cells-windows-set-double-equal",
+        "cells-windows-set-double-partial",
+        "cells-windows-set-double-subset",
+        "cells-windows-set-int-disjoint",
+        "cells-windows-set-int-empty",
+        "cells-windows-set-int-equal",
+        "cells-windows-set-int-partial",
+        "cells-windows-set-int-subset",
+        "cells-windows-set-operator-empty",
+        "cells-windows-set-operator-leading-space",
+        "cells-windows-set-operator-padding",
+        "cells-windows-set-operator-unknown",
+        "cells-windows-set-unset-input",
+        "cells-windows-union-char-both-orders",
+        "cells-windows-union-char-capacity",
+        "cells-windows-union-char-empty-identities",
+        "cells-windows-union-double-both-orders",
+        "cells-windows-union-double-capacity",
+        "cells-windows-union-double-empty-identities",
+        "cells-windows-union-int-both-orders",
+        "cells-windows-union-int-capacity",
+        "cells-windows-union-int-empty-identities",
+        "cells-windows-union-short-control-encoding",
+        "cells-windows-union-unequal-character-widths",
+        "cells-windows-union-unset-input"
+      ],
+      "commit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
+      "observation": "Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "diff_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/diff_c.html",
+      "semantics": "Compute A minus B. Store all and only A-exclusive members in ascending order in the existing result. Character output rows must accommodate the declared width of A.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-diff-int-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-diff-int-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-diff-int-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-diff-double-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-diff-double-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-diff-double-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-diff-char-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-diff-char-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-diff-char-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-diff-unset-input",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-diff-unequal-character-widths",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use a wider second input, short actual values and a result only as wide as the first input."
+        },
+        {
+          "caseId": "cells-windows-diff-short-control-encoding",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
+        }
+      ],
+      "edgeAssessment": "Both operand orders on overlapping sets, empty operands, distinct equal-content inputs, all three element types and replacement of nonset destination contents. Compare full exact IEEE values and character membership independently of display normalization.",
+      "errorAssessment": "SETEXCESS on a seeded too-small result, NOTASET on unset input, INSUFFLEN during character control conversion; actual declared width distinction is observed. Direct native tests exercise TYPEMISMATCH. Alias rejection is wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "diff-named-output-state",
+          "status": "repaired",
+          "summary": "The high-level locked wrapper allocates a fresh result and cannot observe seeded capacity, character width, previous descriptor cardinality or a cleared output set flag.",
+          "repair": "Bind the installed public toolkit symbol with three typed pointers, retain caller-owned output and capture status immediately. Compare successful outputs to the high-level wrapper in supplemental observations. Inspect the bounded character and numeric prefixes, set flag and successful same-handle recovery after native SETEXCESS.",
+          "caseIds": [
+            "cells-windows-diff-int-both-orders",
+            "cells-windows-diff-int-capacity",
+            "cells-windows-diff-double-both-orders",
+            "cells-windows-diff-double-capacity",
+            "cells-windows-diff-char-both-orders",
+            "cells-windows-diff-char-capacity"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/set_algebra_oracle.py",
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.diff → mutex-serialized native addon with ordinary-cell registry → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.diff → compiled WASM export with module-owned ordinary handles → tspice_diff → diff_c. Independent oracle uses typed caller-allocated diff_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "inter_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inter_c.html",
+      "semantics": "Store the ascending intersection in the existing result. Character result width must accommodate the wider input.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-inter-int-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-inter-int-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-inter-int-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-inter-double-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-inter-double-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-inter-double-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-inter-char-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-inter-char-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-inter-char-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-inter-unset-input",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-inter-unequal-character-widths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
+        },
+        {
+          "caseId": "cells-windows-inter-short-control-encoding",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
+        }
+      ],
+      "edgeAssessment": "Both operand orders on overlapping sets, empty operands, distinct equal-content inputs, all three element types and replacement of nonset destination contents. Compare full exact IEEE values and character membership independently of display normalization.",
+      "errorAssessment": "SETEXCESS on a seeded too-small result, NOTASET on unset input, INSUFFLEN during character control conversion; actual declared width distinction is observed. Direct native tests exercise TYPEMISMATCH. Alias rejection is wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "inter-named-output-state",
+          "status": "repaired",
+          "summary": "The high-level locked wrapper allocates a fresh result and cannot observe seeded capacity, character width, previous descriptor cardinality or a cleared output set flag.",
+          "repair": "Bind the installed public toolkit symbol with three typed pointers, retain caller-owned output and capture status immediately. Compare successful outputs to the high-level wrapper in supplemental observations. Inspect the bounded character and numeric prefixes, set flag and successful same-handle recovery after native SETEXCESS.",
+          "caseIds": [
+            "cells-windows-inter-int-both-orders",
+            "cells-windows-inter-int-capacity",
+            "cells-windows-inter-double-both-orders",
+            "cells-windows-inter-double-capacity",
+            "cells-windows-inter-char-both-orders",
+            "cells-windows-inter-char-capacity"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/set_algebra_oracle.py",
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.inter → mutex-serialized native addon with ordinary-cell registry → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.inter → compiled WASM export with module-owned ordinary handles → tspice_inter → inter_c. Independent oracle uses typed caller-allocated inter_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sdiff_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sdiff_c.html",
+      "semantics": "Store ascending members of exactly one input. Shared members are excluded. Character result width must accommodate both inputs.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-sdiff-int-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-sdiff-int-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-sdiff-int-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-sdiff-double-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-sdiff-double-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-sdiff-double-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-sdiff-char-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-sdiff-char-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-sdiff-char-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-sdiff-unset-input",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-sdiff-unequal-character-widths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
+        },
+        {
+          "caseId": "cells-windows-sdiff-short-control-encoding",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
+        }
+      ],
+      "edgeAssessment": "Both operand orders on overlapping sets, empty operands, distinct equal-content inputs, all three element types and replacement of nonset destination contents. Compare full exact IEEE values and character membership independently of display normalization.",
+      "errorAssessment": "SETEXCESS on a seeded too-small result, NOTASET on unset input, INSUFFLEN during character control conversion; actual declared width distinction is observed. Direct native tests exercise TYPEMISMATCH. Alias rejection is wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "sdiff-named-output-state",
+          "status": "repaired",
+          "summary": "The high-level locked wrapper allocates a fresh result and cannot observe seeded capacity, character width, previous descriptor cardinality or a cleared output set flag.",
+          "repair": "Bind the installed public toolkit symbol with three typed pointers, retain caller-owned output and capture status immediately. Compare successful outputs to the high-level wrapper in supplemental observations. Inspect the bounded character and numeric prefixes, set flag and successful same-handle recovery after native SETEXCESS.",
+          "caseIds": [
+            "cells-windows-sdiff-int-both-orders",
+            "cells-windows-sdiff-int-capacity",
+            "cells-windows-sdiff-double-both-orders",
+            "cells-windows-sdiff-double-capacity",
+            "cells-windows-sdiff-char-both-orders",
+            "cells-windows-sdiff-char-capacity"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/set_algebra_oracle.py",
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sdiff → mutex-serialized native addon with ordinary-cell registry → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.sdiff → compiled WASM export with module-owned ordinary handles → tspice_sdiff → sdiff_c. Independent oracle uses typed caller-allocated sdiff_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "set_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/set_c.html",
+      "semantics": "Evaluate the eight CSPICE relations on same-kind sets, including subset/superset, equality, inequality, overlap and disjointness. Preserve operand direction, right-blank handling and both input sets.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-set-int-subset",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-int-equal",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-int-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-int-partial",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-int-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-double-subset",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-double-equal",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-double-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-double-partial",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-double-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-char-subset",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-char-equal",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-char-disjoint",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-char-partial",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-char-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every relational operator in both directions and retain cardinality and operand ordering."
+        },
+        {
+          "caseId": "cells-windows-set-operator-padding",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Right-padded relation strings reach the actual comparison."
+        },
+        {
+          "caseId": "cells-windows-set-operator-empty",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(EMPTYSTRING)."
+        },
+        {
+          "caseId": "cells-windows-set-operator-unknown",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(INVALIDOPERATION)."
+        },
+        {
+          "caseId": "cells-windows-set-operator-leading-space",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe the toolkit diagnostic for an invalid relational operator. Check the toolkit status SPICE(INVALIDOPERATION)."
+        },
+        {
+          "caseId": "cells-windows-set-unset-input",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An ordinary cell with duplicate appends has a cleared set flag. Check the toolkit status SPICE(NOTASET)."
+        }
+      ],
+      "edgeAssessment": "All eight operators on equal, empty, disjoint, partially overlapping and subset/superset cells, with both operand orders and all supported element types; test right-padding and self-comparison.",
+      "errorAssessment": "Empty operator produces EMPTYSTRING, unrecognized or leading-space operator produces INVALIDOPERATION, and duplicate append on an input produces NOTASET. Direct compiled wrong-type operands produce TYPEMISMATCH.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.set → mutex-serialized native addon with ordinary-cell registry → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.set → compiled WASM export with module-owned ordinary handles → tspice_set → set_c. Independent oracle uses sp.set_c wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "union_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/union_c.html",
+      "semantics": "Store the ascending union in the existing result, including each common member once. Character result width must accommodate both inputs.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-union-int-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-union-int-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-union-int-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-union-double-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-union-double-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-union-double-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-union-char-both-orders",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs."
+        },
+        {
+          "caseId": "cells-windows-union-char-empty-identities",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer."
+        },
+        {
+          "caseId": "cells-windows-union-char-capacity",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a seeded result whose capacity is smaller than the actual result. Check the toolkit status SPICE(SETEXCESS)."
+        },
+        {
+          "caseId": "cells-windows-union-unset-input",
+          "coverage": ["error", "edge", "state"],
+          "observes": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-union-unequal-character-widths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Use a wider second input, short actual values and a result only as wide as the first input. Check the toolkit status SPICE(ELEMENTSTOOSHORT)."
+        },
+        {
+          "caseId": "cells-windows-union-short-control-encoding",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Reach the character cell conversion with rows too narrow for the Fortran control encoding. Check the toolkit status SPICE(INSUFFLEN)."
+        }
+      ],
+      "edgeAssessment": "Both operand orders on overlapping sets, empty operands, distinct equal-content inputs, all three element types and replacement of nonset destination contents. Compare full exact IEEE values and character membership independently of display normalization.",
+      "errorAssessment": "SETEXCESS on a seeded too-small result, NOTASET on unset input, INSUFFLEN during character control conversion; actual declared width distinction is observed. Direct native tests exercise TYPEMISMATCH. Alias rejection is wrapper validation.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "union-named-output-state",
+          "status": "repaired",
+          "summary": "The high-level locked wrapper allocates a fresh result and cannot observe seeded capacity, character width, previous descriptor cardinality or a cleared output set flag.",
+          "repair": "Bind the installed public toolkit symbol with three typed pointers, retain caller-owned output and capture status immediately. Compare successful outputs to the high-level wrapper in supplemental observations. Inspect the bounded character and numeric prefixes, set flag and successful same-handle recovery after native SETEXCESS.",
+          "caseIds": [
+            "cells-windows-union-int-both-orders",
+            "cells-windows-union-int-capacity",
+            "cells-windows-union-double-both-orders",
+            "cells-windows-union-double-capacity",
+            "cells-windows-union-char-both-orders",
+            "cells-windows-union-char-capacity"
+          ],
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/set_algebra_oracle.py",
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "packages/backend-shim-c/src/domains/cells_windows.c",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.union → mutex-serialized native addon with ordinary-cell registry → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.union → compiled WASM export with module-owned ordinary handles → tspice_union → union_c. Independent oracle uses typed caller-allocated union_c symbol from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "removc_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removc_c.html",
+      "semantics": "Remove a matching UTF-8 character member, shift subsequent storage and reduce cardinality. A missing key leaves the set unchanged.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-removc-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-removc-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-removc-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-removc-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-removc-blanks-and-tabs",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Retain actual byte-sensitive comparisons for interior and endpoint rows, empty keys, trailing ASCII spaces and significant tabs."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses. Padded, case-sensitive and tabbed character keys are compared through raw calls as well as displayed rows.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "removc-raw-row-observation",
+          "status": "repaired",
+          "summary": "The cell display getters trim trailing whitespace and would hide a comparison or removal bug on a stored terminal tab.",
+          "repair": "Compare actual raw ordinal probes on each written result and before/after removal against the independently installed toolkit; also inspect the complete displayed rows and retained result after clearing the inputs.",
+          "caseIds": ["cells-windows-removc-blanks-and-tabs"],
+          "evidence": [
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removc → mutex-serialized native addon with ordinary-cell registry → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removc → compiled WASM export with module-owned ordinary handles → tspice_removc → removc_c. Independent oracle uses sp.removc wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "removd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removd_c.html",
+      "semantics": "Remove a matching ordered binary64 member, shift subsequent storage and reduce cardinality. A missing key leaves the set unchanged.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-removd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-removd-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-removd-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-removd-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-removd-adjacent-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use adjacent distinct binary64 values and a subnormal member; exact matching is visible through ordinals and cardinality."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses. Supplemental exact comparisons observe subnormals, adjacent doubles, infinite endpoints and equal opposite signs of zero.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removd → mutex-serialized native addon with ordinary-cell registry → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removd → compiled WASM export with module-owned ordinary handles → tspice_removd → removd_c. Independent oracle uses sp.removd wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "removi_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removi_c.html",
+      "semantics": "Remove a matching signed32 member, shift subsequent storage and reduce cardinality. A missing key leaves the set unchanged.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-removi-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-removi-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-removi-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-removi-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removi → mutex-serialized native addon with ordinary-cell registry → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.removi → compiled WASM export with module-owned ordinary handles → tspice_removi → removi_c. Independent oracle uses sp.removi wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ordc_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordc_c.html",
+      "semantics": "Return the zero-based index of a matching UTF-8 character member, or −1 for an absent member or empty set. The input is preserved.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-ordc-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-ordc-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-ordc-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-ordc-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-ordc-blanks-and-tabs",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Retain actual byte-sensitive comparisons for interior and endpoint rows, empty keys, trailing ASCII spaces and significant tabs."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses. Padded, case-sensitive and tabbed character keys are compared through raw calls as well as displayed rows.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [
+        {
+          "id": "ordc-raw-row-observation",
+          "status": "repaired",
+          "summary": "The cell display getters trim trailing whitespace and would hide a comparison or removal bug on a stored terminal tab.",
+          "repair": "Compare actual raw ordinal probes on each written result and before/after removal against the independently installed toolkit; also inspect the complete displayed rows and retained result after clearing the inputs.",
+          "caseIds": ["cells-windows-ordc-blanks-and-tabs"],
+          "evidence": [
+            "packages/py-parity-checking/test/set-algebra-behavior.test.ts",
+            "docs/step8-set-algebra.md"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordc → mutex-serialized native addon with ordinary-cell registry → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordc → compiled WASM export with module-owned ordinary handles → tspice_ordc → ordc_c. Independent oracle uses sp.ordc wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ordd_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordd_c.html",
+      "semantics": "Return the zero-based index of a matching ordered binary64 member, or −1 for an absent member or empty set. The input is preserved.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-ordd-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-ordd-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-ordd-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-ordd-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        },
+        {
+          "caseId": "cells-windows-ordd-adjacent-values",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Use adjacent distinct binary64 values and a subnormal member; exact matching is visible through ordinals and cardinality."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses. Supplemental exact comparisons observe subnormals, adjacent doubles, infinite endpoints and equal opposite signs of zero.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordd → mutex-serialized native addon with ordinary-cell registry → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordd → compiled WASM export with module-owned ordinary handles → tspice_ordd → ordd_c. Independent oracle uses sp.ordd wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "ordi_c",
+      "contract": "packages/backend-contract/src/domains/cells-windows.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordi_c.html",
+      "semantics": "Return the zero-based index of a matching signed32 member, or −1 for an absent member or empty set. The input is preserved.",
+      "scenarios": [
+        {
+          "caseId": "cells-windows-ordi-empty",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Query or remove from a newly allocated empty cell."
+        },
+        {
+          "caseId": "cells-windows-ordi-ordered-members",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal."
+        },
+        {
+          "caseId": "cells-windows-ordi-misses",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Search gaps, end ranges and independent live storage."
+        },
+        {
+          "caseId": "cells-windows-ordi-unset",
+          "coverage": ["error", "edge", "state"],
+          "observes": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET. Check the toolkit status SPICE(NOTASET)."
+        }
+      ],
+      "edgeAssessment": "Sorted empty and nonempty ordinary cells, independent live storage, first, middle and last members, repeated calls and gap/boundary misses.",
+      "errorAssessment": "A duplicate append clears the set flag and the toolkit reports NOTASET; compiled wrong-type calls preserve TYPEMISMATCH. Toolkit miss returns a normal sentinel or successful no-op, according to the method.",
+      "fixtures": [],
+      "fixtureRationale": "Kernel-free authored literal cells and capacities; surface state is created by actual public insert, append, cardinality or ordinal operations in the same workflow.",
+      "cleanup": "Workflow finalizers release all owned cells on success and error. Native calls hold the process mutex and resolve ordinary handles. WASM resolves module-owned tokens and releases all call and error buffers. Supplemental clients free all registered cells and dispose the client.",
+      "tolerance": "Unchanged default finite absolute and relative tolerance is 1e−12. Booleans, rows, lengths and diagnostic labels compare exactly; signed32 ordinals differ by at least one. Additional exact tagged observations preserve subnormal doubles, adjacent values, signed zero and both infinities.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordi → mutex-serialized native addon with ordinary-cell registry → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-node", "ci-b02-1b3e4370-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.ordi → compiled WASM export with module-owned ordinary handles → tspice_ordi → ordi_c. Independent oracle uses sp.ordi wrapper from locked SpiceyPy 6.0.3.",
+          "executions": ["local-b02-1b3e4370-wasm", "ci-b02-1b3e4370-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

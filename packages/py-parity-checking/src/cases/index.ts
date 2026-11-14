@@ -4,6 +4,17 @@ import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { ty
 import cellsWindowsAppndcCasesRaw from "./cells-windows/appndc.cases.json" with { type: "json" };
 import cellsWindowsAppnddCasesRaw from "./cells-windows/appndd.cases.json" with { type: "json" };
 import cellsWindowsAppndiCasesRaw from "./cells-windows/appndi.cases.json" with { type: "json" };
+import cellsWindowsDiffCasesRaw from "./cells-windows/diff.cases.json" with { type: "json" };
+import cellsWindowsInterCasesRaw from "./cells-windows/inter.cases.json" with { type: "json" };
+import cellsWindowsSdiffCasesRaw from "./cells-windows/sdiff.cases.json" with { type: "json" };
+import cellsWindowsUnionCasesRaw from "./cells-windows/union.cases.json" with { type: "json" };
+import cellsWindowsSetCasesRaw from "./cells-windows/set.cases.json" with { type: "json" };
+import cellsWindowsRemovcCasesRaw from "./cells-windows/removc.cases.json" with { type: "json" };
+import cellsWindowsRemovdCasesRaw from "./cells-windows/removd.cases.json" with { type: "json" };
+import cellsWindowsRemoviCasesRaw from "./cells-windows/removi.cases.json" with { type: "json" };
+import cellsWindowsOrdcCasesRaw from "./cells-windows/ordc.cases.json" with { type: "json" };
+import cellsWindowsOrddCasesRaw from "./cells-windows/ordd.cases.json" with { type: "json" };
+import cellsWindowsOrdiCasesRaw from "./cells-windows/ordi.cases.json" with { type: "json" };
 import cellsWindowsCopyCasesRaw from "./cells-windows/copy.cases.json" with { type: "json" };
 import cellsWindowsElemcCasesRaw from "./cells-windows/elemc.cases.json" with { type: "json" };
 import cellsWindowsElemdCasesRaw from "./cells-windows/elemd.cases.json" with { type: "json" };
@@ -201,6 +212,17 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsAppndcCasesRaw as ParityCase[]),
   ...(cellsWindowsAppnddCasesRaw as ParityCase[]),
   ...(cellsWindowsAppndiCasesRaw as ParityCase[]),
+  ...(cellsWindowsDiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsInterCasesRaw as ParityCase[]),
+  ...(cellsWindowsSdiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsUnionCasesRaw as ParityCase[]),
+  ...(cellsWindowsSetCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovcCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovdCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemoviCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdcCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrddCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdiCasesRaw as ParityCase[]),
   ...(cellsWindowsCopyCasesRaw as ParityCase[]),
   ...(cellsWindowsElemcCasesRaw as ParityCase[]),
   ...(cellsWindowsElemdCasesRaw as ParityCase[]),

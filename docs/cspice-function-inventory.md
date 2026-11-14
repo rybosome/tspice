@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 182
-- Planned (not yet implemented): 467
+- Implemented now (SpiceRawBackend): 193
+- Planned (not yet implemented): 456
 - Excluded: 3
 
 ## Implemented now
@@ -53,6 +53,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
 | `deltet_c` | Delta ET, ET - UTC |
+| `diff_c` | Difference of two sets |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
@@ -112,6 +113,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `inter_c` | Intersection of two sets |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -125,6 +127,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
+| `ordc_c` | The ordinal position of an element in a set |
+| `ordd_c` | The ordinal position of an element in a set |
+| `ordi_c` | The ordinal position of an element in a set |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
@@ -133,6 +138,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
+| `removc_c` | Remove an item from a character set |
+| `removd_c` | Remove an item from a double precision set |
+| `removi_c` | Remove an item from an integer set |
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
@@ -143,6 +151,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `scencd_c` | Encode spacecraft clock |
 | `scs2e_c` | SCLK string to ET |
 | `sct2e_c` | SCLK ticks to ET |
+| `sdiff_c` | Symmetric difference of two sets |
+| `set_c` | Compare sets |
 | `setmsg_c` | Set Long Error Message |
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
@@ -175,6 +185,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `union_c` | Union of two sets |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -298,7 +309,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `det_c` | Determinant of a double precision 3x3 matrix |
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
-| `diff_c` | Difference of two sets |
 | `dlabbs_c` | DLA, begin backward search |
 | `dlabns_c` | DLA, begin new segment |
 | `dlaens_c` | DLA, end new segment |
@@ -414,7 +424,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
-| `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
 | `invert_c` | Invert a 3x3 matrix |
@@ -487,12 +496,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `nplnpt_c` | Nearest point on line to point |
 | `nthwd_c` | n'th word in a character string |
 | `nvp2pl_c` | Normal vector and point to plane |
-| `ordc_c` | The ordinal position of an element in a set |
-| `ordd_c` | The ordinal position of an element in a set |
 | `orderc_c` | Order of a character array |
 | `orderd_c` | Order of a double precision array |
 | `orderi_c` | Order of an integer array |
-| `ordi_c` | The ordinal position of an element in a set |
 | `oscelt_c` | Determine conic elements from state |
 | `oscltx_c` | Extended osculating elements from state |
 | `pckcls_c` | PCK, close file |
@@ -535,9 +541,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `reccyl_c` | Rectangular to cylindrical coordinates |
 | `recpgr_c` | Rectangular to planetographic |
 | `recrad_c` | Rectangular coordinates to RA and DEC |
-| `removc_c` | Remove an item from a character set |
-| `removd_c` | Remove an item from a double precision set |
-| `removi_c` | Remove an item from an integer set |
 | `reordc_c` | Reorder a character array |
 | `reordd_c` | Reorder a double precision array |
 | `reordi_c` | Reorder an integer array |
@@ -558,8 +561,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `scfmt_c` | Convert SCLK "ticks" to character clock format |
 | `scpart_c` | Spacecraft Clock Partition Information |
 | `sctiks_c` | Convert spacecraft clock string to ticks. |
-| `sdiff_c` | Symmetric difference of two sets |
-| `set_c` | Compare sets |
 | `shellc_c` | Shell sort a character array |
 | `shelld_c` | Shell sort a double precision array |
 | `shelli_c` | Shell sort an integer array |
@@ -635,7 +636,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
 | `uddf_c` | First derivative of a function, df(x)/dx |
 | `udf_c` | GF, dummy function |
-| `union_c` | Union of two sets |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
 | `unormg_c` | Unit vector and norm, general dimension |
 | `utc2et_c` | UTC to Ephemeris Time |

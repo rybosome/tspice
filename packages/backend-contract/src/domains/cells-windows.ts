@@ -26,6 +26,17 @@ export type SpiceCharCell = number & { readonly [__spiceCharCellBrand]: true };
 /** Opaque handle to a CSPICE DP window (a `SPICE_DP` cell interpreted as intervals). */
 export type SpiceWindow = number & { readonly [__spiceWindowBrand]: true };
 
+/** Three ordinary cells of the same CSPICE element type, in input/input/result order. */
+type SetOperationArgs =
+  | [a: SpiceCharCell, b: SpiceCharCell, result: SpiceCharCell]
+  | [a: SpiceDoubleCell, b: SpiceDoubleCell, result: SpiceDoubleCell]
+  | [a: SpiceIntCell, b: SpiceIntCell, result: SpiceIntCell];
+
+type SetRelationArgs =
+  | [a: SpiceCharCell, op: string, b: SpiceCharCell]
+  | [a: SpiceDoubleCell, op: string, b: SpiceDoubleCell]
+  | [a: SpiceIntCell, op: string, b: SpiceIntCell];
+
 /**
  * Backend-only cell/window helpers exposed to higher-level kit code.
  *
@@ -138,6 +149,96 @@ export interface CellsWindowsApi {
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/elemi_c.html
    */
   elemi(item: number, cell: SpiceIntCell): boolean;
+
+  /**
+   * Write the sorted elements of a that are absent from b. Character result rows
+   * must be at least as wide as a. Pass distinct input and result cells; both
+   * inputs must be sorted sets. SETEXCESS can write a prefix while the result
+   * descriptor retains its old cardinality. Reset with scard(0, result) before
+   * reusing as empty.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/diff_c.html
+   */
+  diff(...args: SetOperationArgs): void;
+
+  /**
+   * Write the sorted common elements of a and b. Character result rows must be at
+   * least as wide as both inputs. Pass distinct input and result cells; both
+   * inputs must be sorted sets. SETEXCESS can write a prefix while the result
+   * descriptor retains its old cardinality. Reset with scard(0, result) before
+   * reusing as empty.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inter_c.html
+   */
+  inter(...args: SetOperationArgs): void;
+
+  /**
+   * Write the sorted elements belonging to exactly one input. Character result
+   * rows must be at least as wide as both inputs. Pass distinct input and result
+   * cells; both inputs must be sorted sets. SETEXCESS can write a prefix while the
+   * result descriptor retains its old cardinality. Reset with scard(0, result)
+   * before reusing as empty.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sdiff_c.html
+   */
+  sdiff(...args: SetOperationArgs): void;
+
+  /**
+   * Write the sorted union, retaining each common element once. Character result
+   * rows must be at least as wide as both inputs. Pass distinct input and result
+   * cells; both inputs must be sorted sets. SETEXCESS can write a prefix while the
+   * result descriptor retains its old cardinality. Reset with scard(0, result)
+   * before reusing as empty.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/union_c.html
+   */
+  union(...args: SetOperationArgs): void;
+
+  /**
+   * Compare two ordinary, same-type sets using <, <=, =, <>, >, >=, & (intersect),
+   * or ~ (disjoint). The two input handles may coincide. CSPICE reports invalid
+   * operators and unset set flags.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/set_c.html
+   */
+  set(...args: SetRelationArgs): boolean;
+
+  /**
+   * Remove a NUL-free UTF-8 character member in place. An absent item leaves the
+   * set unchanged. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removc_c.html
+   */
+  removc(item: string, cell: SpiceCharCell): void;
+
+  /**
+   * Remove a ordered double (including either infinity) member in place. An absent
+   * item leaves the set unchanged. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removd_c.html
+   */
+  removd(item: number, cell: SpiceDoubleCell): void;
+
+  /**
+   * Remove a signed 32-bit integer member in place. An absent item leaves the set
+   * unchanged. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/removi_c.html
+   */
+  removi(item: number, cell: SpiceIntCell): void;
+
+  /**
+   * Return the zero-based ordinal of a NUL-free UTF-8 character member, or −1 if
+   * absent. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordc_c.html
+   */
+  ordc(item: string, cell: SpiceCharCell): number;
+
+  /**
+   * Return the zero-based ordinal of a ordered double (including either infinity)
+   * member, or −1 if absent. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordd_c.html
+   */
+  ordd(item: number, cell: SpiceDoubleCell): number;
+
+  /**
+   * Return the zero-based ordinal of a signed 32-bit integer member, or −1 if
+   * absent. Requires a sorted, set-flagged ordinary cell.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ordi_c.html
+   */
+  ordi(item: number, cell: SpiceIntCell): number;
 
   /**
    * Copy elements in order into a live, same-type ordinary cell, preserving its

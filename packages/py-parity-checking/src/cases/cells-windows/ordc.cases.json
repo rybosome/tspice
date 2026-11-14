@@ -1,0 +1,258 @@
+[
+  {
+    "caseId": "cells-windows-ordc-empty",
+    "description": "Query or remove from a newly allocated empty cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordc-ordered-members",
+    "description": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "Z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordc-misses",
+    "description": "Search gaps, end ranges and independent live storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "0"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "B"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "Y"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "zz"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "B",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordc-unset",
+    "description": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": " A"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-ordc-blanks-and-tabs",
+    "description": "Retain actual byte-sensitive comparisons for interior and endpoint rows, empty keys, trailing ASCII spaces and significant tabs.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "M"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": " A   "
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "A  "
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "B"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "M  "
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": "z   "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

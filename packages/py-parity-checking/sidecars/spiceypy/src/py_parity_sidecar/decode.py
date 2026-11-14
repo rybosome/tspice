@@ -8,6 +8,14 @@ from .models import (
     StepCellsWindowsAppndc,
     StepCellsWindowsAppndd,
     StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
     StepCellsWindowsCopy,
     StepCellsWindowsElemc,
     StepCellsWindowsElemd,
@@ -679,6 +687,82 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 cellId=_expect_string(step.get("cellId"), label="cells-windows.appndi.cellId"),
                 item=_expect_int(step.get("item"), label="cells-windows.appndi.item"),
                 maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndi.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.diff" | "cells-windows.inter" | "cells-windows.sdiff" | "cells-windows.union":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSetResult(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+                resultId=_expect_string(step.get("resultId"), label=f"{op}.resultId"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.set":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSet(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                relation=_expect_string(step.get("relation"), label=f"{op}.relation"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+            )
+
+        case "cells-windows.removc":
+            return StepCellsWindowsRemovc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.removd":
+            return StepCellsWindowsRemovd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.removi":
+            return StepCellsWindowsRemovi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordc":
+            return StepCellsWindowsOrdc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.ordd":
+            return StepCellsWindowsOrdd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordi":
+            return StepCellsWindowsOrdi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
             )
 
         case "cells-windows.copy":

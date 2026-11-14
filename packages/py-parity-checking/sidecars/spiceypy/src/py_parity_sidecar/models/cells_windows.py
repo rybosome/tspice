@@ -39,6 +39,76 @@ class StepCellsWindowsAppndi:
 
 
 @dataclass(frozen=True)
+class StepCellsWindowsSetResult:
+    op: Literal["cells-windows.diff", "cells-windows.inter", "cells-windows.sdiff", "cells-windows.union"]
+    kind: Literal["char", "double", "int"]
+    aId: str
+    bId: str
+    resultId: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsSet:
+    op: Literal["cells-windows.set"]
+    kind: Literal["char", "double", "int"]
+    aId: str
+    relation: str
+    bId: str
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsRemovc:
+    op: Literal["cells-windows.removc"]
+    cellId: str
+    item: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsRemovd:
+    op: Literal["cells-windows.removd"]
+    cellId: str
+    item: float
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsRemovi:
+    op: Literal["cells-windows.removi"]
+    cellId: str
+    item: int
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsOrdc:
+    op: Literal["cells-windows.ordc"]
+    cellId: str
+    item: str
+    maxCardinality: int | None = None
+    length: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsOrdd:
+    op: Literal["cells-windows.ordd"]
+    cellId: str
+    item: float
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
+class StepCellsWindowsOrdi:
+    op: Literal["cells-windows.ordi"]
+    cellId: str
+    item: int
+    maxCardinality: int | None = None
+
+
+@dataclass(frozen=True)
 class StepCellsWindowsCopy:
     op: Literal["cells-windows.copy"]
     kind: Literal["char", "int", "double"]

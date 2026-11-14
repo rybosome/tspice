@@ -1,0 +1,703 @@
+[
+  {
+    "caseId": "cells-windows-diff-int-both-orders",
+    "description": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "R",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "R",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "int",
+        "aId": "R",
+        "bId": "R",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "R",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "B",
+        "item": 6
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-int-empty-identities",
+    "description": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.ordi",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "C",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "B",
+        "bId": "C",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "A",
+        "bId": "E",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-int-capacity",
+    "description": "Use a seeded result whose capacity is smaller than the actual result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": -3
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 6
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "R",
+        "item": 2147483647,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-double-both-orders",
+    "description": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "R",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "R",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "double",
+        "aId": "R",
+        "bId": "R",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "R",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "B",
+        "item": 2.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-double-empty-identities",
+    "description": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "E",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "C",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "B",
+        "bId": "C",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "A",
+        "bId": "E",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-double-capacity",
+    "description": "Use a seeded result whose capacity is smaller than the actual result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "R",
+        "item": 1e180,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "double",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-char-both-orders",
+    "description": "Overwrite an unset destination, compare every result member in both operand orders, and inspect the retained inputs.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "R",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "R",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.set",
+        "kind": "char",
+        "aId": "R",
+        "bId": "R",
+        "relation": "="
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "R",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "B",
+        "item": "Z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-char-empty-identities",
+    "description": "Check each empty operand, equal contents in distinct cells, and overwriting a populated result with the empty answer.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "A",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.ordc",
+        "cellId": "E",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "C",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "B",
+        "bId": "A",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "B",
+        "bId": "C",
+        "resultId": "R"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "E",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-char-capacity",
+    "description": "Use a seeded result whose capacity is smaller than the actual result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "B\t"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "R",
+        "item": "z",
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-unset-input",
+    "description": "An out-of-order append clears the set flag and the algebra routine diagnoses the invalid input.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 7
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "A",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "B",
+        "item": 3
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "int",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-unequal-character-widths",
+    "description": "Use a wider second input, short actual values and a result only as wide as the first input.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A",
+        "length": 7
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "M"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B",
+        "length": 11
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "M"
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "length": 7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-diff-short-control-encoding",
+    "description": "Reach the character cell conversion with rows too narrow for the Fortran control encoding.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "A",
+        "item": "A",
+        "length": 4
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "B",
+        "item": "B",
+        "length": 8
+      },
+      {
+        "op": "cells-windows.diff",
+        "kind": "char",
+        "aId": "A",
+        "bId": "B",
+        "resultId": "R",
+        "length": 8
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INSUFFLEN"]
+    }
+  }
+]

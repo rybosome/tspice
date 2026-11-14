@@ -86,6 +86,73 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
       );
       return result;
     },
+    diff: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.diff(a, b, result);
+    },
+    inter: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.inter(a, b, result);
+    },
+    sdiff: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.sdiff(a, b, result);
+    },
+    union: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.union(a, b, result);
+    },
+    set: (a, op, b) => {
+      spiceStringByteLength(op, "set(op)");
+      const out = native.set(a, op, b);
+      invariant(typeof out === "boolean", "Expected set() to return a boolean");
+      return out;
+    },
+    removc: (item, cell) => {
+      spiceStringByteLength(item, "removc(item)");
+      native.removc(item, cell);
+    },
+    removd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("removd(item) must be an ordered number");
+      native.removd(item, cell);
+    },
+    removi: (item, cell) => {
+      assertSpiceInt32(item, "removi(item)");
+      native.removi(item, cell);
+    },
+    ordc: (item, cell) => {
+      spiceStringByteLength(item, "ordc(item)");
+      const result = native.ordc(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordc() to return a set ordinal",
+      );
+      return result;
+    },
+    ordd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("ordd(item) must be an ordered number");
+      const result = native.ordd(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordd() to return a set ordinal",
+      );
+      return result;
+    },
+    ordi: (item, cell) => {
+      assertSpiceInt32(item, "ordi(item)");
+      const result = native.ordi(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordi() to return a set ordinal",
+      );
+      return result;
+    },
     copy: (source, destination) => {
       native.copy(source, destination);
     },
