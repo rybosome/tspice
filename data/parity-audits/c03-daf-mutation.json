@@ -59,7 +59,244 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c03-1bbd2534-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0913613e28c003b8205443e330beec20d4bf56b43e464bf48f1c1bf266939734",
+      "caseIds": [
+        "file-io-dafac-all-blank",
+        "file-io-dafac-append-twice",
+        "file-io-dafac-del",
+        "file-io-dafac-multi-record",
+        "file-io-dafac-no-rows",
+        "file-io-dafac-pre-reserved",
+        "file-io-dafac-read-only",
+        "file-io-dafac-record-ends",
+        "file-io-dafac-relocated-summaries",
+        "file-io-dafac-single",
+        "file-io-dafac-tab",
+        "file-io-dafac-unicode",
+        "file-io-dafac-whitespace",
+        "file-io-dafdc-empty",
+        "file-io-dafdc-independent-files",
+        "file-io-dafdc-populated",
+        "file-io-dafdc-read-only",
+        "file-io-dafdc-repeat-and-append",
+        "file-io-dafdc-reserved-only",
+        "file-io-dafdc-spanning",
+        "file-io-dafec-aliases",
+        "file-io-dafec-blank-pages",
+        "file-io-dafec-changing-page-size",
+        "file-io-dafec-close-incomplete",
+        "file-io-dafec-cross-record",
+        "file-io-dafec-empty",
+        "file-io-dafec-exact-final-page",
+        "file-io-dafec-interleaved-files",
+        "file-io-dafec-negative-count",
+        "file-io-dafec-negative-width",
+        "file-io-dafec-row-too-long",
+        "file-io-dafec-short-final-page",
+        "file-io-dafec-single-default-width",
+        "file-io-dafec-width-one",
+        "file-io-dafec-width-precedes-count",
+        "file-io-dafec-zero-count",
+        "file-io-dafrs-after-last",
+        "file-io-dafrs-after-relocation",
+        "file-io-dafrs-before-first",
+        "file-io-dafrs-first",
+        "file-io-dafrs-first-vs-second",
+        "file-io-dafrs-last",
+        "file-io-dafrs-no-search",
+        "file-io-dafrs-preserve-addresses",
+        "file-io-dafrs-read-only",
+        "file-io-dafrs-select-file"
+      ],
+      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c03-1bbd2534-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0913613e28c003b8205443e330beec20d4bf56b43e464bf48f1c1bf266939734",
+      "caseIds": [
+        "file-io-dafac-all-blank",
+        "file-io-dafac-append-twice",
+        "file-io-dafac-del",
+        "file-io-dafac-multi-record",
+        "file-io-dafac-no-rows",
+        "file-io-dafac-pre-reserved",
+        "file-io-dafac-read-only",
+        "file-io-dafac-record-ends",
+        "file-io-dafac-relocated-summaries",
+        "file-io-dafac-single",
+        "file-io-dafac-tab",
+        "file-io-dafac-unicode",
+        "file-io-dafac-whitespace",
+        "file-io-dafdc-empty",
+        "file-io-dafdc-independent-files",
+        "file-io-dafdc-populated",
+        "file-io-dafdc-read-only",
+        "file-io-dafdc-repeat-and-append",
+        "file-io-dafdc-reserved-only",
+        "file-io-dafdc-spanning",
+        "file-io-dafec-aliases",
+        "file-io-dafec-blank-pages",
+        "file-io-dafec-changing-page-size",
+        "file-io-dafec-close-incomplete",
+        "file-io-dafec-cross-record",
+        "file-io-dafec-empty",
+        "file-io-dafec-exact-final-page",
+        "file-io-dafec-interleaved-files",
+        "file-io-dafec-negative-count",
+        "file-io-dafec-negative-width",
+        "file-io-dafec-row-too-long",
+        "file-io-dafec-short-final-page",
+        "file-io-dafec-single-default-width",
+        "file-io-dafec-width-one",
+        "file-io-dafec-width-precedes-count",
+        "file-io-dafec-zero-count",
+        "file-io-dafrs-after-last",
+        "file-io-dafrs-after-relocation",
+        "file-io-dafrs-before-first",
+        "file-io-dafrs-first",
+        "file-io-dafrs-first-vs-second",
+        "file-io-dafrs-last",
+        "file-io-dafrs-no-search",
+        "file-io-dafrs-preserve-addresses",
+        "file-io-dafrs-read-only",
+        "file-io-dafrs-select-file"
+      ],
+      "observation": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c03-1bbd2534-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0913613e28c003b8205443e330beec20d4bf56b43e464bf48f1c1bf266939734",
+      "caseIds": [
+        "file-io-dafac-all-blank",
+        "file-io-dafac-append-twice",
+        "file-io-dafac-del",
+        "file-io-dafac-multi-record",
+        "file-io-dafac-no-rows",
+        "file-io-dafac-pre-reserved",
+        "file-io-dafac-read-only",
+        "file-io-dafac-record-ends",
+        "file-io-dafac-relocated-summaries",
+        "file-io-dafac-single",
+        "file-io-dafac-tab",
+        "file-io-dafac-unicode",
+        "file-io-dafac-whitespace",
+        "file-io-dafdc-empty",
+        "file-io-dafdc-independent-files",
+        "file-io-dafdc-populated",
+        "file-io-dafdc-read-only",
+        "file-io-dafdc-repeat-and-append",
+        "file-io-dafdc-reserved-only",
+        "file-io-dafdc-spanning",
+        "file-io-dafec-aliases",
+        "file-io-dafec-blank-pages",
+        "file-io-dafec-changing-page-size",
+        "file-io-dafec-close-incomplete",
+        "file-io-dafec-cross-record",
+        "file-io-dafec-empty",
+        "file-io-dafec-exact-final-page",
+        "file-io-dafec-interleaved-files",
+        "file-io-dafec-negative-count",
+        "file-io-dafec-negative-width",
+        "file-io-dafec-row-too-long",
+        "file-io-dafec-short-final-page",
+        "file-io-dafec-single-default-width",
+        "file-io-dafec-width-one",
+        "file-io-dafec-width-precedes-count",
+        "file-io-dafec-zero-count",
+        "file-io-dafrs-after-last",
+        "file-io-dafrs-after-relocation",
+        "file-io-dafrs-before-first",
+        "file-io-dafrs-first",
+        "file-io-dafrs-first-vs-second",
+        "file-io-dafrs-last",
+        "file-io-dafrs-no-search",
+        "file-io-dafrs-preserve-addresses",
+        "file-io-dafrs-read-only",
+        "file-io-dafrs-select-file"
+      ],
+      "commit": "1bbd25341467aaa7683a9816578856601ab89b1d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574811423/job/132386652756",
+      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c03-1bbd2534-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0913613e28c003b8205443e330beec20d4bf56b43e464bf48f1c1bf266939734",
+      "caseIds": [
+        "file-io-dafac-all-blank",
+        "file-io-dafac-append-twice",
+        "file-io-dafac-del",
+        "file-io-dafac-multi-record",
+        "file-io-dafac-no-rows",
+        "file-io-dafac-pre-reserved",
+        "file-io-dafac-read-only",
+        "file-io-dafac-record-ends",
+        "file-io-dafac-relocated-summaries",
+        "file-io-dafac-single",
+        "file-io-dafac-tab",
+        "file-io-dafac-unicode",
+        "file-io-dafac-whitespace",
+        "file-io-dafdc-empty",
+        "file-io-dafdc-independent-files",
+        "file-io-dafdc-populated",
+        "file-io-dafdc-read-only",
+        "file-io-dafdc-repeat-and-append",
+        "file-io-dafdc-reserved-only",
+        "file-io-dafdc-spanning",
+        "file-io-dafec-aliases",
+        "file-io-dafec-blank-pages",
+        "file-io-dafec-changing-page-size",
+        "file-io-dafec-close-incomplete",
+        "file-io-dafec-cross-record",
+        "file-io-dafec-empty",
+        "file-io-dafec-exact-final-page",
+        "file-io-dafec-interleaved-files",
+        "file-io-dafec-negative-count",
+        "file-io-dafec-negative-width",
+        "file-io-dafec-row-too-long",
+        "file-io-dafec-short-final-page",
+        "file-io-dafec-single-default-width",
+        "file-io-dafec-width-one",
+        "file-io-dafec-width-precedes-count",
+        "file-io-dafec-zero-count",
+        "file-io-dafrs-after-last",
+        "file-io-dafrs-after-relocation",
+        "file-io-dafrs-before-first",
+        "file-io-dafrs-first",
+        "file-io-dafrs-first-vs-second",
+        "file-io-dafrs-last",
+        "file-io-dafrs-no-search",
+        "file-io-dafrs-preserve-addresses",
+        "file-io-dafrs-read-only",
+        "file-io-dafrs-select-file"
+      ],
+      "commit": "1bbd25341467aaa7683a9816578856601ab89b1d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43574811423/job/132386652756",
+      "observation": "Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "dafac_c",
@@ -168,16 +405,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafac -> serialized Node addon -> tspice_dafac -> dafac_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafac -> compiled WASM export with bounded temporary allocations -> tspice_dafac -> dafac_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
         }
       }
     },
@@ -258,16 +495,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafdc -> serialized Node addon -> tspice_dafdc -> dafdc_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafdc -> compiled WASM export with bounded temporary allocations -> tspice_dafdc -> dafdc_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
         }
       }
     },
@@ -394,16 +631,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "composed",
           "trace": "raw.dafec -> serialized Node addon -> tspice_dafec -> initialized dafec_ with original trace and F2C_ConvertTrStrArr converter. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "composed",
           "trace": "raw.dafec -> compiled WASM export with bounded temporary allocations -> tspice_dafec -> initialized dafec_ with original trace and F2C_ConvertTrStrArr converter. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
         }
       }
     },
@@ -499,19 +736,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafrs -> serialized Node addon -> tspice_dafrs -> dafrs_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-node", "ci-c03-1bbd2534-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dafrs -> compiled WASM export with bounded temporary allocations -> tspice_dafrs -> dafrs_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
-          "executions": []
+          "executions": ["local-c03-1bbd2534-wasm", "ci-c03-1bbd2534-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Individual compiled, independent scientific and real browser observations are recorded in docs/step8-daf-mutation.md. Fresh combined-source full local and canonical execution evidence remains outstanding."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

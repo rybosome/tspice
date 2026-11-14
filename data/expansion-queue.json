@@ -1873,18 +1873,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/751"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "92 registered + seven public + four Node + 15 WASM and real Chrome passed. Each backend writer was independently reread by locked SpiceyPy; each completed 5001 partial-read/close cycles. See docs/step8-daf-mutation.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1bbd25341467aaa7683a9816578856601ab89b1d",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43574811423/job/132386652756",
+          "result": "Both complete required lanes passed locally on 1bbd25341467aaa7683a9816578856601ab89b1d. JavaScript: 2,710 parity tests and one expected guard skip. Native-required: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132386652756 on 1bbd25341467aaa7683a9816578856601ab89b1d: 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Run required complete local and canonical CI lanes on the combined source. Inspect final-head CI and rebaseability before marking PR-ready.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "baseCommit": "a44387fd58874de62a4a5e5b0852ac186ba54727",
       "branch": "codex/expand-daf-mutation",
       "worktree": "/private/tmp/tspice-step8-daf-mutation",
-      "progressNote": "Stacked on #738. 46 workflows/581 steps/103 new-routine calls, 92 registered live comparisons, seven public, four native and 15 WASM tests passed. Actual Chrome observed all four methods, retained addresses, cross-record short-width recovery and EOF restart."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1bbd2534. 2,484 registered Node/WASM live comparisons; 2,711 parity-package tests with no skips, including the native-required guard; 91 native wrapper, 669 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "Stacked on #738. 46 workflows/581 steps/103 new-routine calls, 92 registered live comparisons, seven public, four native and 15 WASM tests passed. Actual Chrome observed all four methods, retained addresses, cross-record short-width recovery and EOF restart."
     },
     {
       "id": "C04-das-lifecycle",
