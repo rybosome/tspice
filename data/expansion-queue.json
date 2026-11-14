@@ -2907,14 +2907,20 @@
           "testedCommit": "90107a0ecd761923b58c606ef371db6e4da4b2e6",
           "ciRun": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
           "result": "Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+          "result": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both complete local lanes and canonical source CI, then check the final matrix and explicit GitHub rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-spk-streaming",
       "branch": "codex/expand-spk-streaming",
       "baseCommit": "42ab560be7af07e10363015a408fcef1128fde50",
-      "progressNote": "Public sync and async client disposal finalized unfinished disk-backed SPKs. Independent SpiceyPy reopened and evaluated both products.",
-      "priorCheckpoint": "33 workflows, 283 steps, 112 type 14 target invocations and one inherited type 10 write, 21 expected toolkit errors. Actual focus: 66 registered comparisons, 9 public/independent, 4 native plus existing disposal, 12 WASM and real Chrome."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 860084ff. 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Public sync and async client disposal finalized unfinished disk-backed SPKs. Independent SpiceyPy reopened and evaluated both products."
     },
     {
       "id": "E08-spk-corrections",

@@ -77,3 +77,7 @@ After a parent lands, restack its dependent PRs on the merged history, regenerat
 ## E07 source validation checkpoint
 
 [PR #766](https://github.com/rybosome/tspice/pull/766) remains in progress. Both complete required lanes passed locally on 90107a0ecd761923b58c606ef371db6e4da4b2e6. JavaScript: 2,762 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.
+
+## E07 source validation checkpoint
+
+[PR #766](https://github.com/rybosome/tspice/pull/766) remains in progress. Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

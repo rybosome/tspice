@@ -429,7 +429,7 @@
       "routines": ["spk14a_c", "spk14b_c", "spk14e_c"],
       "dependsOn": ["e06-spk-analytic"],
       "prs": ["https://github.com/rybosome/tspice/pull/766"],
-      "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

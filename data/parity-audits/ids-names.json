@@ -1309,6 +1309,186 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43585257578/job/132418255422",
       "observation": "Inspected successful Linux Node 22 native-required job 132418255422 on 90107a0ecd761923b58c606ef371db6e4da4b2e6: 2,526 registered Node/WASM live comparisons; 2,763 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-e07-860084ff-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e140e22f209666c1a53ecf5125827fe1678138361fa755a7bde3947a67c83145",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e07-860084ff-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e140e22f209666c1a53ecf5125827fe1678138361fa755a7bde3947a67c83145",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 860084ffebc5682073ff7b97cc74727cd8267bb4. JavaScript: 2,764 parity tests and one expected guard skip. Native-required: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e140e22f209666c1a53ecf5125827fe1678138361fa755a7bde3947a67c83145",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e07-860084ff-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e140e22f209666c1a53ecf5125827fe1678138361fa755a7bde3947a67c83145",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "860084ffebc5682073ff7b97cc74727cd8267bb4",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588439235/job/132427833156",
+      "observation": "Inspected successful Linux Node 22 native-required job 132427833156 on 860084ffebc5682073ff7b97cc74727cd8267bb4: 2,526 registered Node/WASM live comparisons; 2,765 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 651 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1404,11 +1584,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2n -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1426,11 +1607,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2n -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1496,11 +1678,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2s -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1518,11 +1701,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2s -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1594,11 +1778,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.boddef -> Node typed adapter -> serialized native registered handler -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1616,11 +1801,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.boddef -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1739,11 +1925,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodfnd -> Node typed adapter -> serialized native registered handler -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1761,11 +1948,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodfnd -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1840,11 +2028,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodn2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1862,11 +2051,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodn2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -1941,11 +2131,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bods2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -1963,11 +2154,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bods2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     },
@@ -2091,11 +2283,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "composed",
           "trace": "Workflow -> actual raw.bodvar -> Node typed adapter -> serialized native registered handler -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
-          "executions": []
+          "executions": ["local-e07-860084ff-node", "ci-e07-860084ff-node"]
         },
         "wasm": {
           "history": [
@@ -2113,14 +2306,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "composed",
           "trace": "Workflow -> actual raw.bodvar -> WASM typed adapter -> owned buffers and required compiled export -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
-          "executions": []
+          "executions": ["local-e07-860084ff-wasm", "ci-e07-860084ff-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
