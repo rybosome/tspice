@@ -117,6 +117,28 @@ export type StepTimeTimdefSet = {
   value: string;
 };
 
+export type StepIdsNamesSrfc2s = {
+  op: "ids-names.srfc2s";
+  code: number;
+  bodyId: number;
+  srflen?: number;
+};
+export type StepIdsNamesSrfcss = {
+  op: "ids-names.srfcss";
+  code: number;
+  body: string;
+  srflen?: number;
+};
+export type StepIdsNamesSrfs2c = {
+  op: "ids-names.srfs2c";
+  surface: string;
+  body: string;
+};
+export type StepIdsNamesSrfscc = {
+  op: "ids-names.srfscc";
+  surface: string;
+  bodyId: number;
+};
 export type StepIdsNamesBodn2c = {
   op: "ids-names.bodn2c";
   name: string;
@@ -1306,6 +1328,10 @@ export type WorkflowStep =
   | StepTimeScdecd
   | StepTimeSct2e
   | StepTimeSce2c
+  | StepIdsNamesSrfc2s
+  | StepIdsNamesSrfcss
+  | StepIdsNamesSrfs2c
+  | StepIdsNamesSrfscc
   | StepIdsNamesBodn2c
   | StepIdsNamesBodc2n
   | StepIdsNamesBodc2s
@@ -1506,6 +1532,16 @@ export type StepOutput =
   | {
       op: "ids-names.bodc2n";
       value: { found: false } | { found: true; name: string };
+    }
+  | { op: "ids-names.srfc2s"; value: { surface: string; isName: boolean } }
+  | { op: "ids-names.srfcss"; value: { surface: string; isName: boolean } }
+  | {
+      op: "ids-names.srfs2c";
+      value: { found: false } | { found: true; code: number };
+    }
+  | {
+      op: "ids-names.srfscc";
+      value: { found: false } | { found: true; code: number };
     }
   | { op: "ids-names.bodc2s"; value: string }
   | { op: "ids-names.boddef"; value: null }

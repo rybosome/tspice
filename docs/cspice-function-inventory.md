@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 166
+- Planned (not yet implemented): 483
 - Excluded: 3
 
 ## Implemented now
@@ -157,6 +157,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `srfc2s_c` | Surface and body ID codes to surface string |
+| `srfcss_c` | Surface ID and body string to surface string |
+| `srfs2c_c` | Surface and body strings to surface ID code |
+| `srfscc_c` | Surface string and body ID code to surface ID code |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
@@ -580,12 +584,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkw17_c` | SPK, write a type 17 segment |
 | `spkw18_c` | Write SPK segment, type 18 |
 | `spkw20_c` | Write SPK segment, type 20 |
-| `srfc2s_c` | Surface and body ID codes to surface string |
-| `srfcss_c` | Surface ID and body string to surface string |
 | `srfnrm_c` | Map surface points to outward normal vectors |
 | `srfrec_c` | Surface to rectangular coordinates |
-| `srfs2c_c` | Surface and body strings to surface ID code |
-| `srfscc_c` | Surface string and body ID code to surface ID code |
 | `srfxpt_c` | Surface intercept point |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |

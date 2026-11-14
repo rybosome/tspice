@@ -9,6 +9,38 @@ import type { Found } from "../shared/types.js";
 /** Backend contract for NAIF ID/name and body-constant lookups. */
 export interface IdsNamesApi {
   /**
+   * Translate a signed surface and body ID to the latest pool-defined name, preserving case and embedded blanks. If no name exists, surface is the decimal ID and isName is false. Optional signed32 srflen counts bytes including NUL; by default it holds all 36 name bytes and the terminator. Small capacities retain toolkit truncation; below two signals STRINGTOOSHORT. A truncated UTF-8 scalar cannot be represented and throws TypeError. Surface associations come from NAIF_SURFACE_NAME, NAIF_SURFACE_CODE and NAIF_SURFACE_BODY. Malformed mappings signal CSPICE errors.
+   * N0067 cannot hash surface ID -2147483648. Direct surface codes and NAIF_SURFACE_CODE pool values rounding to that ID are rejected before entering the translation routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfc2s_c.html
+   */
+  srfc2s(
+    code: number,
+    bodyId: number,
+    srflen?: number,
+  ): { surface: string; isName: boolean };
+  /**
+   * Translate a signed surface ID and body name or numeric body string. Unknown bodies or unmapped surfaces return the decimal surface ID with isName false. Optional signed32 srflen counts bytes including NUL; by default it holds all 36 name bytes and the terminator. Small capacities retain toolkit truncation; below two signals STRINGTOOSHORT. A truncated UTF-8 scalar cannot be represented and throws TypeError. Surface associations come from NAIF_SURFACE_NAME, NAIF_SURFACE_CODE and NAIF_SURFACE_BODY. Malformed mappings signal CSPICE errors. Text must be well-formed, without embedded NUL. Empty strings reach CSPICE; WASM limits each encoded buffer to 256 MiB.
+   * N0067 cannot hash surface ID -2147483648. Direct surface codes and NAIF_SURFACE_CODE pool values rounding to that ID are rejected before entering the translation routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfcss_c.html
+   */
+  srfcss(
+    code: number,
+    body: string,
+    srflen?: number,
+  ): { surface: string; isName: boolean };
+  /**
+   * Resolve a surface name or numeric string for a recognized body name or numeric body string. A mapped name takes precedence over number parsing; an unknown body returns found:false even for numeric surfaces. Surface associations come from NAIF_SURFACE_NAME, NAIF_SURFACE_CODE and NAIF_SURFACE_BODY. Malformed mappings signal CSPICE errors. Text must be well-formed, without embedded NUL. Empty strings reach CSPICE; WASM limits each encoded buffer to 256 MiB.
+   * N0067 cannot hash surface ID -2147483648. NAIF_SURFACE_CODE pool values rounding to that ID are rejected before entering the translation routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfs2c_c.html
+   */
+  srfs2c(surface: string, body: string): Found<{ code: number }>;
+  /**
+   * Resolve a surface name or numeric string for a signed body ID. Name lookup ignores letter case, leading/trailing ASCII blanks and repeated embedded blanks. If neither lookup nor CSPICE integer parsing succeeds, return found:false without a code. Surface associations come from NAIF_SURFACE_NAME, NAIF_SURFACE_CODE and NAIF_SURFACE_BODY. Malformed mappings signal CSPICE errors. Text must be well-formed, without embedded NUL. Empty strings reach CSPICE; WASM limits each encoded buffer to 256 MiB.
+   * N0067 cannot hash surface ID -2147483648. NAIF_SURFACE_CODE pool values rounding to that ID are rejected before entering the translation routine.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfscc_c.html
+   */
+  srfscc(surface: string, bodyId: number): Found<{ code: number }>;
+  /**
    * Resolve a body name (case-insensitive, normalized blanks) to a signed NAIF ID.
    * Numeric strings are not interpreted as IDs here; use bods2c for that behavior.
    * Unknown names return found:false; malformed kernel mappings signal errors.

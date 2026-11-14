@@ -1,14 +1,59 @@
 import type { IdsNamesApi } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32, normalizeBodItem } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  normalizeBodItem,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs } from "../codec/alloc.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { readFixedWidthCString, writeUtf8CString } from "../codec/strings.js";
 import { tspiceCallFoundInt, tspiceCallFoundString } from "../codec/found.js";
 
 const BODY_NAME_MAX_BYTES = 256;
+
+// N0067 SpiceSrf.h: 36 payload bytes, then the terminating NUL.
+const SURFACE_BYTES = 37;
+const surfaceDecoder = new TextDecoder("utf-8", {
+  fatal: true,
+  ignoreBOM: true,
+});
+const surfaceEncoder = new TextEncoder();
+
+function encodeSurfaceText(value: string, label: string): Uint8Array {
+  spiceStringByteLength(value, label, WASM_MAX_ALLOC_BYTES - 1);
+  return surfaceEncoder.encode(value);
+}
+
+function storeSurfaceText(
+  module: EmscriptenModule,
+  ptr: number,
+  bytes: Uint8Array,
+): void {
+  module.HEAPU8.set(bytes, ptr);
+  module.HEAPU8[ptr + bytes.length] = 0;
+}
+
+function surfaceResult(
+  module: EmscriptenModule,
+  text: number,
+  room: number,
+  flag: number,
+) {
+  const bytes = module.HEAPU8.subarray(text, text + room);
+  const end = bytes.indexOf(0);
+  if (end < 0) throw new Error("Missing terminator in CSPICE surface name");
+  return {
+    surface: surfaceDecoder.decode(bytes.subarray(0, end)),
+    isName: module.HEAP32[flag >>> 2] !== 0,
+  };
+}
 
 function stringArg(value: string, label: string): string {
   if (typeof value !== "string")
@@ -163,6 +208,108 @@ function tspiceCallBodvar(
 /** Create an {@link IdsNamesApi} implementation backed by a WASM Emscripten module. */
 export function createIdsNamesApi(module: EmscriptenModule): IdsNamesApi {
   return {
+    srfc2s: (code, bodyId, srflen = 37) => {
+      assertSpiceInt32(code, "srfc2s(code)", { min: -2147483647 });
+      assertSpiceInt32(bodyId, "srfc2s(bodyId)");
+      assertSpiceInt32(srflen, "srfc2s(srflen)");
+      const capacity = Math.min(srflen, SURFACE_BYTES);
+      return withAllocs(
+        module,
+        [Math.max(1, capacity), 4, WASM_ERR_MAX_BYTES],
+        (out, flag, err) => {
+          const status = module._tspice_srfc2s(
+            code,
+            bodyId,
+            capacity,
+            out,
+            flag,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return surfaceResult(module, out, capacity, flag);
+        },
+      );
+    },
+    srfcss: (code, body, srflen = 37) => {
+      assertSpiceInt32(code, "srfcss(code)", { min: -2147483647 });
+      const bodyBytes = encodeSurfaceText(body, "srfcss(body)");
+      assertSpiceInt32(srflen, "srfcss(srflen)");
+      const capacity = Math.min(srflen, SURFACE_BYTES);
+      return withAllocs(
+        module,
+        [bodyBytes.length + 1, Math.max(1, capacity), 4, WASM_ERR_MAX_BYTES],
+        (bodyPtr, out, flag, err) => {
+          storeSurfaceText(module, bodyPtr, bodyBytes);
+          const status = module._tspice_srfcss(
+            code,
+            bodyPtr,
+            capacity,
+            out,
+            flag,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return surfaceResult(module, out, capacity, flag);
+        },
+      );
+    },
+    srfs2c: (surface, body) => {
+      const surfaceBytes = encodeSurfaceText(surface, "srfs2c(surface)");
+      const bodyBytes = encodeSurfaceText(body, "srfs2c(body)");
+      return withAllocs(
+        module,
+        [
+          surfaceBytes.length + 1,
+          bodyBytes.length + 1,
+          4,
+          4,
+          WASM_ERR_MAX_BYTES,
+        ],
+        (surfacePtr, bodyPtr, out, flag, err) => {
+          storeSurfaceText(module, surfacePtr, surfaceBytes);
+          storeSurfaceText(module, bodyPtr, bodyBytes);
+          const status = module._tspice_srfs2c(
+            surfacePtr,
+            bodyPtr,
+            out,
+            flag,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          if (!module.HEAP32[flag >>> 2]) return { found: false };
+          return { found: true, code: module.HEAP32[out >>> 2]! };
+        },
+      );
+    },
+    srfscc: (surface, bodyId) => {
+      const surfaceBytes = encodeSurfaceText(surface, "srfscc(surface)");
+      assertSpiceInt32(bodyId, "srfscc(bodyId)");
+      return withAllocs(
+        module,
+        [surfaceBytes.length + 1, 4, 4, WASM_ERR_MAX_BYTES],
+        (surfacePtr, out, flag, err) => {
+          storeSurfaceText(module, surfacePtr, surfaceBytes);
+          const status = module._tspice_srfscc(
+            surfacePtr,
+            bodyId,
+            out,
+            flag,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          if (!module.HEAP32[flag >>> 2]) return { found: false };
+          return { found: true, code: module.HEAP32[out >>> 2]! };
+        },
+      );
+    },
     bodn2c: (name: string) => {
       const out = tspiceCallFoundInt(
         module,

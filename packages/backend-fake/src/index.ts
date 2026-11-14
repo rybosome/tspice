@@ -1378,6 +1378,18 @@ export function createFakeBackend(
 
     timdef,
 
+    srfc2s: () => {
+      throw new Error("Fake backend: srfc2s() is not implemented");
+    },
+    srfcss: () => {
+      throw new Error("Fake backend: srfcss() is not implemented");
+    },
+    srfs2c: () => {
+      throw new Error("Fake backend: srfs2c() is not implemented");
+    },
+    srfscc: () => {
+      throw new Error("Fake backend: srfscc() is not implemented");
+    },
     bodn2c: (name) => {
       const trimmed = normalizeName(name);
 

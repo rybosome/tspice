@@ -3,6 +3,10 @@ import type {
   StepIdsNamesBodc2s,
   StepIdsNamesBoddef,
   StepIdsNamesBodfnd,
+  StepIdsNamesSrfc2s,
+  StepIdsNamesSrfcss,
+  StepIdsNamesSrfs2c,
+  StepIdsNamesSrfscc,
   StepIdsNamesBodn2c,
   StepIdsNamesBods2c,
   StepIdsNamesBodvar,
@@ -11,6 +15,10 @@ import type {
 import type { RunTspiceContext } from "../context.js";
 
 type IdsNamesStep =
+  | StepIdsNamesSrfc2s
+  | StepIdsNamesSrfcss
+  | StepIdsNamesSrfs2c
+  | StepIdsNamesSrfscc
   | StepIdsNamesBodn2c
   | StepIdsNamesBodc2n
   | StepIdsNamesBodc2s
@@ -25,6 +33,26 @@ export function runIdsNamesStep(
   step: IdsNamesStep,
 ): StepOutput {
   switch (step.op) {
+    case "ids-names.srfc2s":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfc2s(step.code, step.bodyId, step.srflen),
+      };
+    case "ids-names.srfcss":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfcss(step.code, step.body, step.srflen),
+      };
+    case "ids-names.srfs2c":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfs2c(step.surface, step.body),
+      };
+    case "ids-names.srfscc":
+      return {
+        op: step.op,
+        value: context.spice.raw.srfscc(step.surface, step.bodyId),
+      };
     case "ids-names.bodn2c": {
       const out = context.spice.raw.bodn2c(step.name);
 

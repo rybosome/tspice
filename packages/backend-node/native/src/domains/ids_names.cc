@@ -1,5 +1,7 @@
 #include "ids_names.h"
 
+#include <cmath>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -47,6 +49,132 @@ static std::string NormalizeBodItem(const std::string& itemRaw) {
 }
 
 constexpr size_t kMaxBodItemChars = 1024;
+
+static bool SurfaceInteger(Napi::Env env, Napi::Value v, int *out) {
+  if (v.IsNumber()) {
+    const double x = v.As<Napi::Number>().DoubleValue();
+    if (x >= INT32_MIN && x <= INT32_MAX && std::trunc(x) == x) { *out = static_cast<int>(x); return true; }
+  }
+  ThrowSpiceError(Napi::TypeError::New(env,"Surface integer must be signed 32-bit")); return false;
+}
+
+static bool SurfaceText(Napi::Env env, Napi::Value v, std::string *out) {
+  if (v.IsString()) {
+    const auto input = v.As<Napi::String>();
+    *out = input.Utf8Value();
+    if (out->size() < INT32_MAX && out->find(char(0)) == std::string::npos &&
+        Napi::String::New(env,*out).Utf16Value() == input.Utf16Value()) return true;
+  }
+  ThrowSpiceError(Napi::TypeError::New(env,"Expected well-formed surface text without embedded NUL")); return false;
+}
+
+static Napi::Value Srfc2s(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfc2s: unexpected argument count"));
+    return env.Undefined();
+  }
+  int code;
+  if (!SurfaceInteger(env, info[0], &code)) return env.Undefined();
+  int bodyId;
+  if (!SurfaceInteger(env, info[1], &bodyId)) return env.Undefined();
+  int srflen;
+  if (!SurfaceInteger(env, info[2], &srflen)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int flag = 0;
+  char text[37] = {};  // SPICE_SRF_SFNMLN, including NUL.
+  if (srflen > 37) srflen = 37;
+  if (tspice_srfc2s(code, bodyId, srflen, text, &flag, err, sizeof(err))) {
+    ThrowSpiceError(env, "srfc2s", err);
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  const auto decoded = Napi::String::New(env, text);
+  if (decoded.Utf8Value() != text) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Surface result is not valid UTF-8"));
+    return env.Undefined();
+  }
+  result.Set("surface", decoded);
+  result.Set("isName", Napi::Boolean::New(env, flag != 0));
+  return result;
+}
+
+static Napi::Value Srfcss(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfcss: unexpected argument count"));
+    return env.Undefined();
+  }
+  int code;
+  if (!SurfaceInteger(env, info[0], &code)) return env.Undefined();
+  std::string body;
+  if (!SurfaceText(env, info[1], &body)) return env.Undefined();
+  int srflen;
+  if (!SurfaceInteger(env, info[2], &srflen)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int flag = 0;
+  char text[37] = {};  // SPICE_SRF_SFNMLN, including NUL.
+  if (srflen > 37) srflen = 37;
+  if (tspice_srfcss(code, body.c_str(), srflen, text, &flag, err, sizeof(err))) {
+    ThrowSpiceError(env, "srfcss", err);
+    return env.Undefined();
+  }
+  auto result = Napi::Object::New(env);
+  const auto decoded = Napi::String::New(env, text);
+  if (decoded.Utf8Value() != text) {
+    ThrowSpiceError(Napi::TypeError::New(env,"Surface result is not valid UTF-8"));
+    return env.Undefined();
+  }
+  result.Set("surface", decoded);
+  result.Set("isName", Napi::Boolean::New(env, flag != 0));
+  return result;
+}
+
+static Napi::Value Srfs2c(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfs2c: unexpected argument count"));
+    return env.Undefined();
+  }
+  std::string surface;
+  if (!SurfaceText(env, info[0], &surface)) return env.Undefined();
+  std::string body;
+  if (!SurfaceText(env, info[1], &body)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int flag = 0;
+  int code = 0;
+  if (tspice_srfs2c(surface.c_str(), body.c_str(), &code, &flag, err, sizeof(err))) {
+    ThrowSpiceError(env, "srfs2c", err);
+    return env.Undefined();
+  }
+  if (!flag) return MakeNotFound(env);
+  return MakeFound<double>(env,"code",static_cast<double>(code));
+}
+
+static Napi::Value Srfscc(const Napi::CallbackInfo& info) {
+  auto env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "srfscc: unexpected argument count"));
+    return env.Undefined();
+  }
+  std::string surface;
+  if (!SurfaceText(env, info[0], &surface)) return env.Undefined();
+  int bodyId;
+  if (!SurfaceInteger(env, info[1], &bodyId)) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  int flag = 0;
+  int code = 0;
+  if (tspice_srfscc(surface.c_str(), bodyId, &code, &flag, err, sizeof(err))) {
+    ThrowSpiceError(env, "srfscc", err);
+    return env.Undefined();
+  }
+  if (!flag) return MakeNotFound(env);
+  return MakeFound<double>(env,"code",static_cast<double>(code));
+}
 
 static Napi::Object Bodn2c(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
@@ -261,6 +389,10 @@ namespace tspice_backend_node {
 void RegisterIdsNames(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "bodn2c", Napi::Function::New(env, Bodn2c), __func__)) return;
   if (!SetExportChecked(env, exports, "bodc2n", Napi::Function::New(env, Bodc2n), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfc2s", Napi::Function::New(env, Srfc2s), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfcss", Napi::Function::New(env, Srfcss), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfs2c", Napi::Function::New(env, Srfs2c), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfscc", Napi::Function::New(env, Srfscc), __func__)) return;
   if (!SetExportChecked(env, exports, "bodc2s", Napi::Function::New(env, Bodc2s), __func__)) return;
   if (!SetExportChecked(env, exports, "bods2c", Napi::Function::New(env, Bods2c), __func__)) return;
   if (!SetExportChecked(env, exports, "boddef", Napi::Function::New(env, Boddef), __func__)) return;

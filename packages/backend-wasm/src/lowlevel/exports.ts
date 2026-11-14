@@ -1402,6 +1402,40 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_srfc2s(
+    code: number,
+    bodyId: number,
+    srflen: number,
+    textPtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfcss(
+    code: number,
+    bodyPtr: number,
+    srflen: number,
+    textPtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfs2c(
+    surfacePtr: number,
+    bodyPtr: number,
+    codePtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_srfscc(
+    surfacePtr: number,
+    bodyId: number,
+    codePtr: number,
+    flagPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_bodc2s(
     code: number,
     outNamePtr: number,
@@ -2207,6 +2241,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_sce2c",
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_srfc2s",
+  "_tspice_srfcss",
+  "_tspice_srfs2c",
+  "_tspice_srfscc",
   "_tspice_bodc2s",
   "_tspice_bods2c",
   "_tspice_boddef",

@@ -240,6 +240,10 @@ export type NativeAddon = {
 
   bodn2c(name: string): { found: boolean; code?: number };
   bodc2n(code: number): { found: boolean; name?: string };
+  srfc2s(code: number, bodyId: number, srflen: number): unknown;
+  srfcss(code: number, body: string, srflen: number): unknown;
+  srfs2c(surface: string, body: string): { found: boolean; code?: number };
+  srfscc(surface: string, bodyId: number): { found: boolean; code?: number };
   bodc2s(code: number): string;
   bods2c(name: string): { found: boolean; code?: number };
   boddef(name: string, code: number): void;

@@ -448,6 +448,10 @@ const exportedFunctions = [
   // --- ids/names ---
   "_tspice_bodn2c",
   "_tspice_bodc2n",
+  "_tspice_srfc2s",
+  "_tspice_srfcss",
+  "_tspice_srfs2c",
+  "_tspice_srfscc",
   "_tspice_bodc2s",
   "_tspice_bods2c",
   "_tspice_boddef",
