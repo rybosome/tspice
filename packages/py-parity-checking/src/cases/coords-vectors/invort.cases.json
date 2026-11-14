@@ -1,0 +1,194 @@
+[
+  {
+    "caseId": "coords-vectors-invort-orthogonal-scaled-columns",
+    "description": "invort: orthogonal-scaled-columns; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [0, -3, 0],
+          [2, 0, 0],
+          [0, 0, -4]
+        ]
+      },
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [0, -1, 0],
+          [1, 0, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-nonorthogonal-contract",
+    "description": "invort: nonorthogonal-contract; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [2, 1, 0],
+          [0, 3, 1],
+          [1, 0, 4]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-scaled-magnitudes",
+    "description": "invort: scaled-magnitudes; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1e200, 0, 0],
+          [0, -2e200, 0],
+          [0, 0, 4e200]
+        ]
+      },
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1e-200, 0, 0],
+          [0, -2e-200, 0],
+          [0, 0, 4e-200]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-small-reciprocal-finite",
+    "description": "invort: small-reciprocal-finite; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1e-308, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-zero-column-1",
+    "description": "invort: column 1 signals the documented ZEROLENGTHCOLUMN diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROLENGTHCOLUMN"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-too-small-column-1",
+    "description": "invort: column 1 signals the documented COLUMNTOOSMALL diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [5e-324, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COLUMNTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-zero-column-2",
+    "description": "invort: column 2 signals the documented ZEROLENGTHCOLUMN diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1, 0, 0],
+          [0, 0, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROLENGTHCOLUMN"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-too-small-column-2",
+    "description": "invort: column 2 signals the documented COLUMNTOOSMALL diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1, 0, 0],
+          [0, 5e-324, 0],
+          [0, 0, 1]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COLUMNTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-zero-column-3",
+    "description": "invort: column 3 signals the documented ZEROLENGTHCOLUMN diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ZEROLENGTHCOLUMN"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-invort-too-small-column-3",
+    "description": "invort: column 3 signals the documented COLUMNTOOSMALL diagnostic.",
+    "workflow": [
+      {
+        "op": "coords-vectors.invort",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 5e-324]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["COLUMNTOOSMALL"]
+    }
+  }
+]

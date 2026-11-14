@@ -1,0 +1,77 @@
+[
+  {
+    "caseId": "coords-vectors-trace-diagonal-selection",
+    "description": "trace: diagonal-selection; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ]
+      },
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [2, 999, -999],
+          [333, 11, 444],
+          [-777, -888, 23]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-trace-zero-and-cancellation",
+    "description": "trace: zero-and-cancellation; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ]
+      },
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [2, 0, 0],
+          [0, -5, 0],
+          [0, 0, 3]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-trace-scaled-magnitudes",
+    "description": "trace: scaled-magnitudes; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [1e-200, 0, 0],
+          [0, 2e-200, 0],
+          [0, 0, 4e-200]
+        ]
+      },
+      {
+        "op": "coords-vectors.trace",
+        "m": [
+          [1e200, 0, 0],
+          [0, 2e200, 0],
+          [0, 0, 4e200]
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

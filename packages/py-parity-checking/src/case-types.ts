@@ -172,6 +172,66 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type Matrix2RowMajor = [number, number, number, number];
+
+export type StepCoordsVectorsDet = {
+  op: "coords-vectors.det";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsDiags2 = {
+  op: "coords-vectors.diags2";
+  symmat: Matrix2RowMajor;
+};
+
+export type StepCoordsVectorsIdent = {
+  op: "coords-vectors.ident";
+};
+
+export type StepCoordsVectorsInvert = {
+  op: "coords-vectors.invert";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsInvort = {
+  op: "coords-vectors.invort";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsIsrot = {
+  op: "coords-vectors.isrot";
+  m: Matrix3x3;
+  ntol: number;
+  dtol: number;
+};
+
+export type StepCoordsVectorsMequ = {
+  op: "coords-vectors.mequ";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsMtxm = {
+  op: "coords-vectors.mtxm";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsMxmt = {
+  op: "coords-vectors.mxmt";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsTrace = {
+  op: "coords-vectors.trace";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsXpose = {
+  op: "coords-vectors.xpose";
+  m: Matrix3x3;
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1373,17 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsDet
+  | StepCoordsVectorsDiags2
+  | StepCoordsVectorsIdent
+  | StepCoordsVectorsInvert
+  | StepCoordsVectorsInvort
+  | StepCoordsVectorsIsrot
+  | StepCoordsVectorsMequ
+  | StepCoordsVectorsMtxm
+  | StepCoordsVectorsMxmt
+  | StepCoordsVectorsTrace
+  | StepCoordsVectorsXpose
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1555,20 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.det"; value: number }
+  | {
+      op: "coords-vectors.diags2";
+      value: { diag: Matrix2RowMajor; rotate: Matrix2RowMajor };
+    }
+  | { op: "coords-vectors.ident"; value: Matrix3x3 }
+  | { op: "coords-vectors.invert"; value: Matrix3x3 }
+  | { op: "coords-vectors.invort"; value: Matrix3x3 }
+  | { op: "coords-vectors.isrot"; value: boolean }
+  | { op: "coords-vectors.mequ"; value: Matrix3x3 }
+  | { op: "coords-vectors.mtxm"; value: Matrix3x3 }
+  | { op: "coords-vectors.mxmt"; value: Matrix3x3 }
+  | { op: "coords-vectors.trace"; value: number }
+  | { op: "coords-vectors.xpose"; value: Matrix3x3 }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }

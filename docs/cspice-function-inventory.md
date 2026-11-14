@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 173
+- Planned (not yet implemented): 476
 - Excluded: 3
 
 ## Implemented now
@@ -49,6 +49,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dascls_c` | DAS, close file |
 | `dasopr_c` | DAS, open for read |
 | `deltet_c` | Delta ET, ET - UTC |
+| `det_c` | Determinant of a double precision 3x3 matrix |
+| `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
@@ -99,12 +101,16 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `ident_c` | Return the 3x3 identity matrix |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `invert_c` | Invert a 3x3 matrix |
+| `invort_c` | Invert nearly orthogonal matrices |
+| `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -112,8 +118,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `mequ_c` | Matrix equal to another, 3x3 |
+| `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
+| `mxmt_c` | Matrix times matrix transpose, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
@@ -168,6 +177,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `trace_c` | Trace of a 3x3 matrix |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -183,6 +193,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `wnfetd_c` | Fetch an interval from a DP window |
 | `wninsd_c` | Insert an interval into a DP window |
 | `wnvald_c` | Validate a DP window |
+| `xpose_c` | Transpose a matrix, 3x3 |
 
 ## Planned (not yet implemented)
 
@@ -279,9 +290,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `daswbr_c` | DAS, write buffered records |
 | `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
 | `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
-| `det_c` | Determinant of a double precision 3x3 matrix |
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
-| `diags2_c` | Diagonalize symmetric 2x2 matrix |
 | `diff_c` | Difference of two sets |
 | `dlabbs_c` | DLA, begin backward search |
 | `dlabns_c` | DLA, begin new segment |
@@ -394,7 +403,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
 | `hx2dp_c` | Hexadecimal string to d.p. number |
-| `ident_c` | Return the 3x3 identity matrix |
 | `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
@@ -404,14 +412,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
-| `invert_c` | Invert a 3x3 matrix |
-| `invort_c` | Invert nearly orthogonal matrices |
 | `invstm_c` | Inverse of state transformation matrix |
 | `isordv_c` | Is array an order vector? |
 | `isrchc_c` | Search in a character array |
 | `isrchd_c` | Search in a double precision array |
 | `isrchi_c` | Search in an integer array |
-| `isrot_c` | Indicate whether a matrix is a rotation matrix |
 | `iswhsp_c` | Determine whether a string is white space |
 | `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
 | `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
@@ -453,16 +458,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `matchw_c` | Match string against wildcard template |
 | `maxd_c` | Maximum of a set of double precision values |
 | `maxi_c` | Maximum of a set of integers |
-| `mequ_c` | Matrix equal to another, 3x3 |
 | `mequg_c` | Matrix equal to another, general dimension |
 | `mind_c` | Minimum of a set of double precision values |
 | `mini_c` | minimum of a set of integers |
 | `moved_c` | Move a double precision array to another |
-| `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxmg_c` | Matrix transpose times matrix, general dimension |
 | `mtxvg_c` | Matrix transpose times vector, general dimension |
 | `mxmg_c` | Matrix times matrix, general dimension |
-| `mxmt_c` | Matrix times matrix transpose, 3x3 |
 | `mxmtg_c` | Matrix times matrix transpose, general dimension |
 | `mxvg_c` | Matrix times vector, general dimension |
 | `ncpos_c` | NOT Character position |
@@ -607,7 +609,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tisbod_c` | Transformation, inertial state to bodyfixed |
 | `tkfram_c` | TK frame, find position rotation |
 | `tparch_c` | Parse check---check format of strings |
-| `trace_c` | Trace of a 3x3 matrix |
 | `trcdep_c` | Traceback depth |
 | `trcnam_c` | Get module name from traceback |
 | `trcoff_c` | Turn tracing off |
@@ -672,7 +673,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
 | `xfmsta_c` | Transform state between coordinate systems |
-| `xpose_c` | Transpose a matrix, 3x3 |
 | `xpose6_c` | Transpose a matrix, 6x6 |
 | `xposeg_c` | Transpose a matrix, general |
 

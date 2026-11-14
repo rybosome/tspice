@@ -1,0 +1,178 @@
+[
+  {
+    "caseId": "coords-vectors-isrot-proper-reflection-singular",
+    "description": "isrot: proper-reflection-singular; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0,
+        "dtol": 0
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [0, -1, 0],
+          [1, 0, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0,
+        "dtol": 0
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [-1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 1e-12,
+        "dtol": 1e-12
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        "ntol": 0,
+        "dtol": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrot-column-norm-tolerance",
+    "description": "isrot: column-norm-tolerance; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1.125, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0.125,
+        "dtol": 0
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1.125, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0.124,
+        "dtol": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrot-unitized-determinant-tolerance",
+    "description": "isrot: unitized-determinant-tolerance; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1, 0.6, 0],
+          [0, 0.8, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 1e-12,
+        "dtol": 0.25
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1, 0.6, 0],
+          [0, 0.8, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 1e-12,
+        "dtol": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrot-loose-tolerances",
+    "description": "isrot: loose-tolerances; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        "ntol": 1,
+        "dtol": 1
+      },
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [-1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0,
+        "dtol": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrot-negative-ntol",
+    "description": "isrot: finite negative ntol signals VALUEOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": -0.125,
+        "dtol": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-isrot-negative-dtol",
+    "description": "isrot: finite negative dtol signals VALUEOUTOFRANGE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.isrot",
+        "m": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "ntol": 0,
+        "dtol": -0.125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  }
+]

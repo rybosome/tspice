@@ -408,5 +408,26 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a12-fixed-matrices",
+      "routines": [
+        "det_c",
+        "diags2_c",
+        "ident_c",
+        "invert_c",
+        "invort_c",
+        "isrot_c",
+        "mequ_c",
+        "mtxm_c",
+        "mxmt_c",
+        "trace_c",
+        "xpose_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/712"],
+      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310706167 verified corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
+    }
   ]
 }

@@ -22,6 +22,17 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsDet,
+    StepCoordsVectorsDiags2,
+    StepCoordsVectorsIdent,
+    StepCoordsVectorsInvert,
+    StepCoordsVectorsInvort,
+    StepCoordsVectorsIsrot,
+    StepCoordsVectorsMequ,
+    StepCoordsVectorsMtxm,
+    StepCoordsVectorsMxmt,
+    StepCoordsVectorsTrace,
+    StepCoordsVectorsXpose,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +505,75 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.det":
+            return StepCoordsVectorsDet(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.det.m"),
+            )
+
+        case "coords-vectors.diags2":
+            return StepCoordsVectorsDiags2(
+                op=op,
+                symmat=_expect_vec4(step.get("symmat"), label="coords-vectors.diags2.symmat"),
+            )
+
+        case "coords-vectors.ident":
+            return StepCoordsVectorsIdent(
+                op=op,
+            )
+
+        case "coords-vectors.invert":
+            return StepCoordsVectorsInvert(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.invert.m"),
+            )
+
+        case "coords-vectors.invort":
+            return StepCoordsVectorsInvort(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.invort.m"),
+            )
+
+        case "coords-vectors.isrot":
+            return StepCoordsVectorsIsrot(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.isrot.m"),
+                ntol=_expect_number(step.get("ntol"), label="coords-vectors.isrot.ntol"),
+                dtol=_expect_number(step.get("dtol"), label="coords-vectors.isrot.dtol"),
+            )
+
+        case "coords-vectors.mequ":
+            return StepCoordsVectorsMequ(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.mequ.m"),
+            )
+
+        case "coords-vectors.mtxm":
+            return StepCoordsVectorsMtxm(
+                op=op,
+                a=_expect_3x3_matrix(step.get("a"), label="coords-vectors.mtxm.a"),
+                b=_expect_3x3_matrix(step.get("b"), label="coords-vectors.mtxm.b"),
+            )
+
+        case "coords-vectors.mxmt":
+            return StepCoordsVectorsMxmt(
+                op=op,
+                a=_expect_3x3_matrix(step.get("a"), label="coords-vectors.mxmt.a"),
+                b=_expect_3x3_matrix(step.get("b"), label="coords-vectors.mxmt.b"),
+            )
+
+        case "coords-vectors.trace":
+            return StepCoordsVectorsTrace(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.trace.m"),
+            )
+
+        case "coords-vectors.xpose":
+            return StepCoordsVectorsXpose(
+                op=op,
+                m=_expect_3x3_matrix(step.get("m"), label="coords-vectors.xpose.m"),
             )
 
         case "coords-vectors.reclat":

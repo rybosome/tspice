@@ -7,9 +7,12 @@ import {
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
+
+import { withAllocs } from "../codec/alloc.js";
 
 import { throwWasmSpiceError } from "../codec/errors.js";
 
@@ -772,11 +775,293 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertFixedMatrixScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyFixedMatrix2(value: unknown): [number, number, number, number] {
+  const label = "diags2(symmat)";
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(`${label} must contain exactly four finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertFixedMatrixScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
+function copyMatrixInput(value: unknown, label: string): number[] {
+  // As with the structural Mat3 contract, accept numeric TypedArrays as well
+  // as ordinary arrays. Read by index only; a caller iterator is not trusted.
+  if (
+    !(
+      Array.isArray(value) ||
+      value instanceof Float64Array ||
+      value instanceof Float32Array ||
+      value instanceof Int8Array ||
+      value instanceof Uint8Array ||
+      value instanceof Uint8ClampedArray ||
+      value instanceof Int16Array ||
+      value instanceof Uint16Array ||
+      value instanceof Int32Array ||
+      value instanceof Uint32Array
+    ) ||
+    value.length !== 9
+  ) {
+    throw new TypeError(`${label} must contain exactly nine finite numbers`);
+  }
+  const copy: number[] = [];
+  for (let i = 0; i < 9; i++) {
+    const component: unknown = value[i];
+    assertFixedMatrixScalar(component, `${label}[${i}]`);
+    copy.push(component);
+  }
+  return copy;
+}
+
+function readFixedMatrixResult(
+  module: EmscriptenModule,
+  ptr: number,
+  label: string,
+): Mat3RowMajor {
+  const start = ptr >> 3;
+  return brandMat3RowMajorResult(module.HEAPF64.subarray(start, start + 9), {
+    label,
+  });
+}
+
+function readFixedMatrix2(
+  module: EmscriptenModule,
+  ptr: number,
+): [number, number, number, number] {
+  const i = ptr >> 3;
+  const heap = module.HEAPF64;
+  return [heap[i]!, heap[i + 1]!, heap[i + 2]!, heap[i + 3]!];
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    det: (m) => {
+      const mCopy = copyMatrixInput(m, "det(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 8],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_det(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    diags2: (symmat) => {
+      const symmatCopy = copyFixedMatrix2(symmat);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 32, 32, 32],
+        (errPtr, symmatPtr, diagPtr, rotatePtr) => {
+          module.HEAPF64.set(symmatCopy, symmatPtr >> 3);
+          const status = module._tspice_diags2(
+            symmatPtr,
+            diagPtr,
+            rotatePtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return {
+            diag: readFixedMatrix2(module, diagPtr),
+            rotate: readFixedMatrix2(module, rotatePtr),
+          };
+        },
+      );
+    },
+    ident: () => {
+      return withAllocs(module, [ERR_MAX_BYTES, 72], (errPtr, outPtr) => {
+        const status = module._tspice_ident(outPtr, errPtr, ERR_MAX_BYTES);
+        if (status !== 0)
+          throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+        return readFixedMatrixResult(module, outPtr, "ident result");
+      });
+    },
+    invert: (m) => {
+      const mCopy = copyMatrixInput(m, "invert(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_invert(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "invert result");
+        },
+      );
+    },
+    invort: (m) => {
+      const mCopy = copyMatrixInput(m, "invort(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_invort(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "invort result");
+        },
+      );
+    },
+    isrot: (m, ntol, dtol) => {
+      const mCopy = copyMatrixInput(m, "isrot(m)");
+      assertFixedMatrixScalar(ntol, "isrot(ntol)");
+      assertFixedMatrixScalar(dtol, "isrot(dtol)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 4],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_isrot(
+            mPtr,
+            ntol,
+            dtol,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAP32[outPtr >> 2] !== 0;
+        },
+      );
+    },
+    mequ: (m) => {
+      const mCopy = copyMatrixInput(m, "mequ(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_mequ(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mequ result");
+        },
+      );
+    },
+    mtxm: (a, b) => {
+      const aCopy = copyMatrixInput(a, "mtxm(a)");
+      const bCopy = copyMatrixInput(b, "mtxm(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72, 72],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_mtxm(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mtxm result");
+        },
+      );
+    },
+    mxmt: (a, b) => {
+      const aCopy = copyMatrixInput(a, "mxmt(a)");
+      const bCopy = copyMatrixInput(b, "mxmt(b)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72, 72],
+        (errPtr, aPtr, bPtr, outPtr) => {
+          module.HEAPF64.set(aCopy, aPtr >> 3);
+          module.HEAPF64.set(bCopy, bPtr >> 3);
+          const status = module._tspice_mxmt(
+            aPtr,
+            bPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "mxmt result");
+        },
+      );
+    },
+    trace: (m) => {
+      const mCopy = copyMatrixInput(m, "trace(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 8],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_trace(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return module.HEAPF64[outPtr >> 3]!;
+        },
+      );
+    },
+    xpose: (m) => {
+      const mCopy = copyMatrixInput(m, "xpose(m)");
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 72, 72],
+        (errPtr, mPtr, outPtr) => {
+          module.HEAPF64.set(mCopy, mPtr >> 3);
+          const status = module._tspice_xpose(
+            mPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          return readFixedMatrixResult(module, outPtr, "xpose result");
+        },
+      );
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),
