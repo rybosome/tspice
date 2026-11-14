@@ -451,8 +451,8 @@
         "term_pl02"
       ],
       "dependsOn": ["e20-extended-surfaces"],
-      "prs": [],
-      "nextAction": "Run both full uncached local lanes and inspect the canonical Linux Node 22 native-required job on the combined source, then require final-head checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/778"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

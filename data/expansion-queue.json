@@ -3653,18 +3653,25 @@
         ],
         "route": "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/legacy_plates_oracle.py"
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/778"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "57 workflows, 388 steps, 92 target calls and 29 expected toolkit errors. Both backends passed all 114 live comparisons. Ten public scientific/state/cache tests, one native ownership test, 56 WASM allocation/boundary tests, and all seven real Chrome worker methods plus recovery passed."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+          "result": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both full uncached local lanes and inspect the canonical Linux Node 22 native-required job on the combined source, then require final-head checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-legacy-plates",
       "branch": "codex/expand-legacy-plates",
       "baseCommit": "c8d8cf6153eb64b0ef752442ac789d73faee955b",
-      "progressNote": "All seven canonical unsuffixed symbols called on each production route and independently in the locked reference."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source fd1e2a3b. 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All seven canonical unsuffixed symbols called on each production route and independently in the locked reference."
     },
     {
       "id": "E22-gf-scalar",

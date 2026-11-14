@@ -537,6 +537,246 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43587623253/job/132425407035",
       "observation": "Inspected successful Linux Node 22 native-required job 132425407035 on 8b8168dc2a9bd31c4844aecf9e0870c6ebaf6ce5: 2,526 registered Node/WASM live comparisons; 2,770 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 694 WASM, 28 core and 150 facade tests passed.",
       "historical": true
+    },
+    {
+      "id": "local-e21-fd1e2a3b-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb79d6c814bbd415bc6f7412f91b1d8ba3a29573f3d9b14841ceddb8dca97f68",
+      "caseIds": [
+        "dsk-dskgtl-invalid-key-0",
+        "dsk-dskgtl-invalid-key-7",
+        "dsk-dskgtl-kclear-persistence",
+        "dsk-dskgtl-six-keys",
+        "dsk-dskgtl-updates",
+        "dsk-dskstl-immutable-5",
+        "dsk-dskstl-immutable-6",
+        "dsk-dskstl-invalid-key-0",
+        "dsk-dskstl-invalid-key-7",
+        "dsk-dskstl-kclear-persistence",
+        "dsk-dskstl-updates",
+        "dsk-dskx02-direction-scale",
+        "dsk-dskx02-edge-and-vertex",
+        "dsk-dskx02-facets",
+        "dsk-dskx02-miss-inside-recovery",
+        "dsk-dskx02-zero-direction",
+        "dsk-dskxsi-closest-overlap",
+        "dsk-dskxsi-empty-selector",
+        "dsk-dskxsi-frame-center",
+        "dsk-dskxsi-insufficient-maxd",
+        "dsk-dskxsi-insufficient-maxi",
+        "dsk-dskxsi-missing-surface",
+        "dsk-dskxsi-no-dsk",
+        "dsk-dskxsi-outward-miss",
+        "dsk-dskxsi-priority",
+        "dsk-dskxsi-priority-before-room",
+        "dsk-dskxsi-reversed-load-order",
+        "dsk-dskxsi-rotated-frame",
+        "dsk-dskxsi-time-endpoints",
+        "dsk-dskxsi-unknown-frame",
+        "dsk-dskxsi-unknown-target",
+        "dsk-dskxsi-wide-capacity",
+        "dsk-dskxv-closest-overlap",
+        "dsk-dskxv-empty-before-priority",
+        "dsk-dskxv-empty-selector",
+        "dsk-dskxv-frame-center",
+        "dsk-dskxv-missing-surface",
+        "dsk-dskxv-mixed-order",
+        "dsk-dskxv-no-dsk",
+        "dsk-dskxv-no-rays",
+        "dsk-dskxv-priority",
+        "dsk-dskxv-reversed-load-order",
+        "dsk-dskxv-rotated-frame",
+        "dsk-dskxv-single-ray",
+        "dsk-dskxv-time-endpoints",
+        "dsk-dskxv-unknown-frame",
+        "dsk-dskxv-unknown-target"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e21-fd1e2a3b-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb79d6c814bbd415bc6f7412f91b1d8ba3a29573f3d9b14841ceddb8dca97f68",
+      "caseIds": [
+        "dsk-dskgtl-invalid-key-0",
+        "dsk-dskgtl-invalid-key-7",
+        "dsk-dskgtl-kclear-persistence",
+        "dsk-dskgtl-six-keys",
+        "dsk-dskgtl-updates",
+        "dsk-dskstl-immutable-5",
+        "dsk-dskstl-immutable-6",
+        "dsk-dskstl-invalid-key-0",
+        "dsk-dskstl-invalid-key-7",
+        "dsk-dskstl-kclear-persistence",
+        "dsk-dskstl-updates",
+        "dsk-dskx02-direction-scale",
+        "dsk-dskx02-edge-and-vertex",
+        "dsk-dskx02-facets",
+        "dsk-dskx02-miss-inside-recovery",
+        "dsk-dskx02-zero-direction",
+        "dsk-dskxsi-closest-overlap",
+        "dsk-dskxsi-empty-selector",
+        "dsk-dskxsi-frame-center",
+        "dsk-dskxsi-insufficient-maxd",
+        "dsk-dskxsi-insufficient-maxi",
+        "dsk-dskxsi-missing-surface",
+        "dsk-dskxsi-no-dsk",
+        "dsk-dskxsi-outward-miss",
+        "dsk-dskxsi-priority",
+        "dsk-dskxsi-priority-before-room",
+        "dsk-dskxsi-reversed-load-order",
+        "dsk-dskxsi-rotated-frame",
+        "dsk-dskxsi-time-endpoints",
+        "dsk-dskxsi-unknown-frame",
+        "dsk-dskxsi-unknown-target",
+        "dsk-dskxsi-wide-capacity",
+        "dsk-dskxv-closest-overlap",
+        "dsk-dskxv-empty-before-priority",
+        "dsk-dskxv-empty-selector",
+        "dsk-dskxv-frame-center",
+        "dsk-dskxv-missing-surface",
+        "dsk-dskxv-mixed-order",
+        "dsk-dskxv-no-dsk",
+        "dsk-dskxv-no-rays",
+        "dsk-dskxv-priority",
+        "dsk-dskxv-reversed-load-order",
+        "dsk-dskxv-rotated-frame",
+        "dsk-dskxv-single-ray",
+        "dsk-dskxv-time-endpoints",
+        "dsk-dskxv-unknown-frame",
+        "dsk-dskxv-unknown-target"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb79d6c814bbd415bc6f7412f91b1d8ba3a29573f3d9b14841ceddb8dca97f68",
+      "caseIds": [
+        "dsk-dskgtl-invalid-key-0",
+        "dsk-dskgtl-invalid-key-7",
+        "dsk-dskgtl-kclear-persistence",
+        "dsk-dskgtl-six-keys",
+        "dsk-dskgtl-updates",
+        "dsk-dskstl-immutable-5",
+        "dsk-dskstl-immutable-6",
+        "dsk-dskstl-invalid-key-0",
+        "dsk-dskstl-invalid-key-7",
+        "dsk-dskstl-kclear-persistence",
+        "dsk-dskstl-updates",
+        "dsk-dskx02-direction-scale",
+        "dsk-dskx02-edge-and-vertex",
+        "dsk-dskx02-facets",
+        "dsk-dskx02-miss-inside-recovery",
+        "dsk-dskx02-zero-direction",
+        "dsk-dskxsi-closest-overlap",
+        "dsk-dskxsi-empty-selector",
+        "dsk-dskxsi-frame-center",
+        "dsk-dskxsi-insufficient-maxd",
+        "dsk-dskxsi-insufficient-maxi",
+        "dsk-dskxsi-missing-surface",
+        "dsk-dskxsi-no-dsk",
+        "dsk-dskxsi-outward-miss",
+        "dsk-dskxsi-priority",
+        "dsk-dskxsi-priority-before-room",
+        "dsk-dskxsi-reversed-load-order",
+        "dsk-dskxsi-rotated-frame",
+        "dsk-dskxsi-time-endpoints",
+        "dsk-dskxsi-unknown-frame",
+        "dsk-dskxsi-unknown-target",
+        "dsk-dskxsi-wide-capacity",
+        "dsk-dskxv-closest-overlap",
+        "dsk-dskxv-empty-before-priority",
+        "dsk-dskxv-empty-selector",
+        "dsk-dskxv-frame-center",
+        "dsk-dskxv-missing-surface",
+        "dsk-dskxv-mixed-order",
+        "dsk-dskxv-no-dsk",
+        "dsk-dskxv-no-rays",
+        "dsk-dskxv-priority",
+        "dsk-dskxv-reversed-load-order",
+        "dsk-dskxv-rotated-frame",
+        "dsk-dskxv-single-ray",
+        "dsk-dskxv-time-endpoints",
+        "dsk-dskxv-unknown-frame",
+        "dsk-dskxv-unknown-target"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "cb79d6c814bbd415bc6f7412f91b1d8ba3a29573f3d9b14841ceddb8dca97f68",
+      "caseIds": [
+        "dsk-dskgtl-invalid-key-0",
+        "dsk-dskgtl-invalid-key-7",
+        "dsk-dskgtl-kclear-persistence",
+        "dsk-dskgtl-six-keys",
+        "dsk-dskgtl-updates",
+        "dsk-dskstl-immutable-5",
+        "dsk-dskstl-immutable-6",
+        "dsk-dskstl-invalid-key-0",
+        "dsk-dskstl-invalid-key-7",
+        "dsk-dskstl-kclear-persistence",
+        "dsk-dskstl-updates",
+        "dsk-dskx02-direction-scale",
+        "dsk-dskx02-edge-and-vertex",
+        "dsk-dskx02-facets",
+        "dsk-dskx02-miss-inside-recovery",
+        "dsk-dskx02-zero-direction",
+        "dsk-dskxsi-closest-overlap",
+        "dsk-dskxsi-empty-selector",
+        "dsk-dskxsi-frame-center",
+        "dsk-dskxsi-insufficient-maxd",
+        "dsk-dskxsi-insufficient-maxi",
+        "dsk-dskxsi-missing-surface",
+        "dsk-dskxsi-no-dsk",
+        "dsk-dskxsi-outward-miss",
+        "dsk-dskxsi-priority",
+        "dsk-dskxsi-priority-before-room",
+        "dsk-dskxsi-reversed-load-order",
+        "dsk-dskxsi-rotated-frame",
+        "dsk-dskxsi-time-endpoints",
+        "dsk-dskxsi-unknown-frame",
+        "dsk-dskxsi-unknown-target",
+        "dsk-dskxsi-wide-capacity",
+        "dsk-dskxv-closest-overlap",
+        "dsk-dskxv-empty-before-priority",
+        "dsk-dskxv-empty-selector",
+        "dsk-dskxv-frame-center",
+        "dsk-dskxv-missing-surface",
+        "dsk-dskxv-mixed-order",
+        "dsk-dskxv-no-dsk",
+        "dsk-dskxv-no-rays",
+        "dsk-dskxv-priority",
+        "dsk-dskxv-reversed-load-order",
+        "dsk-dskxv-rotated-frame",
+        "dsk-dskxv-single-ray",
+        "dsk-dskxv-time-endpoints",
+        "dsk-dskxv-unknown-frame",
+        "dsk-dskxv-unknown-target"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -603,11 +843,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskx02 -> native adapter and mutex-protected N-API handler -> tspice_dskx02 -> dskx02_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -616,11 +857,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskx02 -> validated WASM heap adapter and required compiled export -> tspice_dskx02 -> dskx02_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -761,11 +1003,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "DskApi.dskxsi -> native adapter and mutex-protected N-API handler -> tspice_dskxsi -> traced N0067 dskxsi_ with initialized outputs, independent locked callee and confirmed-hit public cross-check.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -775,11 +1018,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "alias",
           "trace": "DskApi.dskxsi -> validated WASM heap adapter and required compiled export -> tspice_dskxsi -> traced N0067 dskxsi_ with initialized outputs, independent locked callee and confirmed-hit public cross-check.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -896,11 +1140,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskxv -> native adapter and mutex-protected N-API handler -> tspice_dskxv -> dskxv_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -909,11 +1154,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskxv -> validated WASM heap adapter and required compiled export -> tspice_dskxv -> dskxv_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -964,11 +1210,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskgtl -> native adapter and mutex-protected N-API handler -> tspice_dskgtl -> dskgtl_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -977,11 +1224,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskgtl -> validated WASM heap adapter and required compiled export -> tspice_dskgtl -> dskgtl_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -1051,11 +1299,12 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskstl -> native adapter and mutex-protected N-API handler -> tspice_dskstl -> dskstl_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
           "history": [
@@ -1065,14 +1314,15 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "DskApi.dskstl -> validated WASM heap adapter and required compiled export -> tspice_dskstl -> dskstl_c, independently invoked through locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Earlier source-bound observations remain historical for this combined E18/E19/E20/E21 delivery."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

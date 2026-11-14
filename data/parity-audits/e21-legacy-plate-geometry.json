@@ -60,7 +60,288 @@
     "scripts/stage-legacy-plates.mjs",
     "scripts/stage-limbpt.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e21-fd1e2a3b-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "13b7c4e5de555b3e62fe3f8e3ae4443d683bd90da3d909d70511747b7fb38631",
+      "caseIds": [
+        "dsk-illum_pl02-geometry",
+        "dsk-illum_pl02-opposing-facets",
+        "dsk-illum_pl02-opposite-observer",
+        "dsk-illum_pl02-origin",
+        "dsk-illum_pl02-reception",
+        "dsk-illum_pl02-segment-target",
+        "dsk-illum_pl02-transmission",
+        "dsk-illum_pl02-unknown-target",
+        "dsk-illum_plid_pl02-geometry",
+        "dsk-illum_plid_pl02-opposing-facets",
+        "dsk-illum_plid_pl02-opposite-observer",
+        "dsk-illum_plid_pl02-plate-index",
+        "dsk-illum_plid_pl02-reception",
+        "dsk-illum_plid_pl02-rectangular-parameterization",
+        "dsk-illum_plid_pl02-segment-target",
+        "dsk-illum_plid_pl02-transmission",
+        "dsk-illum_plid_pl02-unknown-target",
+        "dsk-limb_pl02-dense-order",
+        "dsk-limb_pl02-fixed-frame",
+        "dsk-limb_pl02-geometry",
+        "dsk-limb_pl02-negative-count",
+        "dsk-limb_pl02-reception",
+        "dsk-limb_pl02-segment-target",
+        "dsk-limb_pl02-unknown-frame",
+        "dsk-limb_pl02-unknown-target",
+        "dsk-limb_pl02-zero-count",
+        "dsk-llgrid_pl02-empty",
+        "dsk-llgrid_pl02-miss",
+        "dsk-llgrid_pl02-periodic",
+        "dsk-llgrid_pl02-rectangular",
+        "dsk-llgrid_pl02-repeated",
+        "dsk-llgrid_pl02-signed-faces",
+        "dsk-subpt_pl02-geometry",
+        "dsk-subpt_pl02-method",
+        "dsk-subpt_pl02-method-error",
+        "dsk-subpt_pl02-observer",
+        "dsk-subpt_pl02-reception",
+        "dsk-subpt_pl02-segment-target",
+        "dsk-subpt_pl02-transmission",
+        "dsk-subpt_pl02-unknown-target",
+        "dsk-subsol_pl02-geometry",
+        "dsk-subsol_pl02-method",
+        "dsk-subsol_pl02-method-error",
+        "dsk-subsol_pl02-observer",
+        "dsk-subsol_pl02-reception",
+        "dsk-subsol_pl02-segment-target",
+        "dsk-subsol_pl02-transmission",
+        "dsk-subsol_pl02-unknown-target",
+        "dsk-term_pl02-dense-order",
+        "dsk-term_pl02-geometry",
+        "dsk-term_pl02-negative-count",
+        "dsk-term_pl02-reception",
+        "dsk-term_pl02-segment-target",
+        "dsk-term_pl02-shadow-type",
+        "dsk-term_pl02-unknown-source",
+        "dsk-term_pl02-unknown-target",
+        "dsk-term_pl02-zero-count"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e21-fd1e2a3b-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "13b7c4e5de555b3e62fe3f8e3ae4443d683bd90da3d909d70511747b7fb38631",
+      "caseIds": [
+        "dsk-illum_pl02-geometry",
+        "dsk-illum_pl02-opposing-facets",
+        "dsk-illum_pl02-opposite-observer",
+        "dsk-illum_pl02-origin",
+        "dsk-illum_pl02-reception",
+        "dsk-illum_pl02-segment-target",
+        "dsk-illum_pl02-transmission",
+        "dsk-illum_pl02-unknown-target",
+        "dsk-illum_plid_pl02-geometry",
+        "dsk-illum_plid_pl02-opposing-facets",
+        "dsk-illum_plid_pl02-opposite-observer",
+        "dsk-illum_plid_pl02-plate-index",
+        "dsk-illum_plid_pl02-reception",
+        "dsk-illum_plid_pl02-rectangular-parameterization",
+        "dsk-illum_plid_pl02-segment-target",
+        "dsk-illum_plid_pl02-transmission",
+        "dsk-illum_plid_pl02-unknown-target",
+        "dsk-limb_pl02-dense-order",
+        "dsk-limb_pl02-fixed-frame",
+        "dsk-limb_pl02-geometry",
+        "dsk-limb_pl02-negative-count",
+        "dsk-limb_pl02-reception",
+        "dsk-limb_pl02-segment-target",
+        "dsk-limb_pl02-unknown-frame",
+        "dsk-limb_pl02-unknown-target",
+        "dsk-limb_pl02-zero-count",
+        "dsk-llgrid_pl02-empty",
+        "dsk-llgrid_pl02-miss",
+        "dsk-llgrid_pl02-periodic",
+        "dsk-llgrid_pl02-rectangular",
+        "dsk-llgrid_pl02-repeated",
+        "dsk-llgrid_pl02-signed-faces",
+        "dsk-subpt_pl02-geometry",
+        "dsk-subpt_pl02-method",
+        "dsk-subpt_pl02-method-error",
+        "dsk-subpt_pl02-observer",
+        "dsk-subpt_pl02-reception",
+        "dsk-subpt_pl02-segment-target",
+        "dsk-subpt_pl02-transmission",
+        "dsk-subpt_pl02-unknown-target",
+        "dsk-subsol_pl02-geometry",
+        "dsk-subsol_pl02-method",
+        "dsk-subsol_pl02-method-error",
+        "dsk-subsol_pl02-observer",
+        "dsk-subsol_pl02-reception",
+        "dsk-subsol_pl02-segment-target",
+        "dsk-subsol_pl02-transmission",
+        "dsk-subsol_pl02-unknown-target",
+        "dsk-term_pl02-dense-order",
+        "dsk-term_pl02-geometry",
+        "dsk-term_pl02-negative-count",
+        "dsk-term_pl02-reception",
+        "dsk-term_pl02-segment-target",
+        "dsk-term_pl02-shadow-type",
+        "dsk-term_pl02-unknown-source",
+        "dsk-term_pl02-unknown-target",
+        "dsk-term_pl02-zero-count"
+      ],
+      "observation": "Both complete required lanes passed locally on fd1e2a3b029d254b0af6164b5f28e0fa862a729c. JavaScript: 2,893 parity tests and one expected guard skip. Native-required: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "13b7c4e5de555b3e62fe3f8e3ae4443d683bd90da3d909d70511747b7fb38631",
+      "caseIds": [
+        "dsk-illum_pl02-geometry",
+        "dsk-illum_pl02-opposing-facets",
+        "dsk-illum_pl02-opposite-observer",
+        "dsk-illum_pl02-origin",
+        "dsk-illum_pl02-reception",
+        "dsk-illum_pl02-segment-target",
+        "dsk-illum_pl02-transmission",
+        "dsk-illum_pl02-unknown-target",
+        "dsk-illum_plid_pl02-geometry",
+        "dsk-illum_plid_pl02-opposing-facets",
+        "dsk-illum_plid_pl02-opposite-observer",
+        "dsk-illum_plid_pl02-plate-index",
+        "dsk-illum_plid_pl02-reception",
+        "dsk-illum_plid_pl02-rectangular-parameterization",
+        "dsk-illum_plid_pl02-segment-target",
+        "dsk-illum_plid_pl02-transmission",
+        "dsk-illum_plid_pl02-unknown-target",
+        "dsk-limb_pl02-dense-order",
+        "dsk-limb_pl02-fixed-frame",
+        "dsk-limb_pl02-geometry",
+        "dsk-limb_pl02-negative-count",
+        "dsk-limb_pl02-reception",
+        "dsk-limb_pl02-segment-target",
+        "dsk-limb_pl02-unknown-frame",
+        "dsk-limb_pl02-unknown-target",
+        "dsk-limb_pl02-zero-count",
+        "dsk-llgrid_pl02-empty",
+        "dsk-llgrid_pl02-miss",
+        "dsk-llgrid_pl02-periodic",
+        "dsk-llgrid_pl02-rectangular",
+        "dsk-llgrid_pl02-repeated",
+        "dsk-llgrid_pl02-signed-faces",
+        "dsk-subpt_pl02-geometry",
+        "dsk-subpt_pl02-method",
+        "dsk-subpt_pl02-method-error",
+        "dsk-subpt_pl02-observer",
+        "dsk-subpt_pl02-reception",
+        "dsk-subpt_pl02-segment-target",
+        "dsk-subpt_pl02-transmission",
+        "dsk-subpt_pl02-unknown-target",
+        "dsk-subsol_pl02-geometry",
+        "dsk-subsol_pl02-method",
+        "dsk-subsol_pl02-method-error",
+        "dsk-subsol_pl02-observer",
+        "dsk-subsol_pl02-reception",
+        "dsk-subsol_pl02-segment-target",
+        "dsk-subsol_pl02-transmission",
+        "dsk-subsol_pl02-unknown-target",
+        "dsk-term_pl02-dense-order",
+        "dsk-term_pl02-geometry",
+        "dsk-term_pl02-negative-count",
+        "dsk-term_pl02-reception",
+        "dsk-term_pl02-segment-target",
+        "dsk-term_pl02-shadow-type",
+        "dsk-term_pl02-unknown-source",
+        "dsk-term_pl02-unknown-target",
+        "dsk-term_pl02-zero-count"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e21-fd1e2a3b-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "13b7c4e5de555b3e62fe3f8e3ae4443d683bd90da3d909d70511747b7fb38631",
+      "caseIds": [
+        "dsk-illum_pl02-geometry",
+        "dsk-illum_pl02-opposing-facets",
+        "dsk-illum_pl02-opposite-observer",
+        "dsk-illum_pl02-origin",
+        "dsk-illum_pl02-reception",
+        "dsk-illum_pl02-segment-target",
+        "dsk-illum_pl02-transmission",
+        "dsk-illum_pl02-unknown-target",
+        "dsk-illum_plid_pl02-geometry",
+        "dsk-illum_plid_pl02-opposing-facets",
+        "dsk-illum_plid_pl02-opposite-observer",
+        "dsk-illum_plid_pl02-plate-index",
+        "dsk-illum_plid_pl02-reception",
+        "dsk-illum_plid_pl02-rectangular-parameterization",
+        "dsk-illum_plid_pl02-segment-target",
+        "dsk-illum_plid_pl02-transmission",
+        "dsk-illum_plid_pl02-unknown-target",
+        "dsk-limb_pl02-dense-order",
+        "dsk-limb_pl02-fixed-frame",
+        "dsk-limb_pl02-geometry",
+        "dsk-limb_pl02-negative-count",
+        "dsk-limb_pl02-reception",
+        "dsk-limb_pl02-segment-target",
+        "dsk-limb_pl02-unknown-frame",
+        "dsk-limb_pl02-unknown-target",
+        "dsk-limb_pl02-zero-count",
+        "dsk-llgrid_pl02-empty",
+        "dsk-llgrid_pl02-miss",
+        "dsk-llgrid_pl02-periodic",
+        "dsk-llgrid_pl02-rectangular",
+        "dsk-llgrid_pl02-repeated",
+        "dsk-llgrid_pl02-signed-faces",
+        "dsk-subpt_pl02-geometry",
+        "dsk-subpt_pl02-method",
+        "dsk-subpt_pl02-method-error",
+        "dsk-subpt_pl02-observer",
+        "dsk-subpt_pl02-reception",
+        "dsk-subpt_pl02-segment-target",
+        "dsk-subpt_pl02-transmission",
+        "dsk-subpt_pl02-unknown-target",
+        "dsk-subsol_pl02-geometry",
+        "dsk-subsol_pl02-method",
+        "dsk-subsol_pl02-method-error",
+        "dsk-subsol_pl02-observer",
+        "dsk-subsol_pl02-reception",
+        "dsk-subsol_pl02-segment-target",
+        "dsk-subsol_pl02-transmission",
+        "dsk-subsol_pl02-unknown-target",
+        "dsk-term_pl02-dense-order",
+        "dsk-term_pl02-geometry",
+        "dsk-term_pl02-negative-count",
+        "dsk-term_pl02-reception",
+        "dsk-term_pl02-segment-target",
+        "dsk-term_pl02-shadow-type",
+        "dsk-term_pl02-unknown-source",
+        "dsk-term_pl02-unknown-target",
+        "dsk-term_pl02-zero-count"
+      ],
+      "commit": "fd1e2a3b029d254b0af6164b5f28e0fa862a729c",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43591172251/job/132436008369",
+      "observation": "Inspected successful Linux Node 22 native-required job 132436008369 on fd1e2a3b029d254b0af6164b5f28e0fa862a729c: 2,640 registered Node/WASM live comparisons; 2,894 parity-package tests with no skips, including the native-required guard; 84 native wrapper, 750 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "illum_pl02",
@@ -139,16 +420,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.illum_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_illum_pl02 -> external unsuffixed illum_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.illum_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_illum_pl02 -> external unsuffixed illum_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -239,16 +520,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.illum_plid_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_illum_plid_pl02 -> external unsuffixed illum_plid_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.illum_plid_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_illum_plid_pl02 -> external unsuffixed illum_plid_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -347,16 +628,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.limb_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_limb_pl02 -> external unsuffixed limb_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.limb_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_limb_pl02 -> external unsuffixed limb_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -422,16 +703,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.llgrid_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_llgrid_pl02 -> external unsuffixed llgrid_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.llgrid_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_llgrid_pl02 -> external unsuffixed llgrid_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -512,16 +793,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.subpt_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_subpt_pl02 -> external unsuffixed subpt_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.subpt_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_subpt_pl02 -> external unsuffixed subpt_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -615,16 +896,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.subsol_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_subsol_pl02 -> external unsuffixed subsol_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.subsol_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_subsol_pl02 -> external unsuffixed subsol_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     },
@@ -723,19 +1004,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.term_pl02 -> checked Node N-API callback with owned typed arrays -> tspice_term_pl02 -> external unsuffixed term_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-node", "ci-e21-fd1e2a3b-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "DskApi.term_pl02 -> checked WASM adapter with bounded allocations and 2 MiB traversal stack -> tspice_term_pl02 -> external unsuffixed term_pl02. Compare independently typed locked SpiceyPy library outputs.",
-          "executions": []
+          "executions": ["local-e21-fd1e2a3b-wasm", "ci-e21-fd1e2a3b-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Run both full uncached local lanes and inspect the canonical Linux Node 22 native-required job on the combined source, then require final-head checks and rebaseability."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
