@@ -203,6 +203,14 @@ export function dispatchStep(
     case "geometry.illumg":
     case "geometry.illumf":
     case "geometry.occult":
+    case "geometry.nvp2pl":
+    case "geometry.pl2nvp":
+    case "geometry.pl2psv":
+    case "geometry.psv2pl":
+    case "geometry.inrypl":
+    case "geometry.vprjp":
+    case "geometry.vprjpi":
+    case "geometry.nplnpt":
     case "geometry.nvc2pl":
     case "geometry.pl2nvc":
       return runGeometryStep(context, step);

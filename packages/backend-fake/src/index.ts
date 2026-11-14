@@ -1862,6 +1862,30 @@ export function createFakeBackend(
       throw new Error("Fake backend: spkuds() is not implemented");
     },
 
+    nvp2pl: () => {
+      throw new Error("Fake backend: nvp2pl() is not implemented");
+    },
+    pl2nvp: () => {
+      throw new Error("Fake backend: pl2nvp() is not implemented");
+    },
+    pl2psv: () => {
+      throw new Error("Fake backend: pl2psv() is not implemented");
+    },
+    psv2pl: () => {
+      throw new Error("Fake backend: psv2pl() is not implemented");
+    },
+    inrypl: () => {
+      throw new Error("Fake backend: inrypl() is not implemented");
+    },
+    vprjp: () => {
+      throw new Error("Fake backend: vprjp() is not implemented");
+    },
+    vprjpi: () => {
+      throw new Error("Fake backend: vprjpi() is not implemented");
+    },
+    nplnpt: () => {
+      throw new Error("Fake backend: nplnpt() is not implemented");
+    },
     nvc2pl: (normal, konst) => {
       if (!Array.isArray(normal) || normal.length !== 3) {
         throw new TypeError(

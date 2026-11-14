@@ -9,6 +9,12 @@ import type {
   SpiceVector3,
   SubPointResult,
 } from "@rybosome/tspice-backend-contract";
+import {
+  copyPlaneComponents,
+  copyPlaneVector,
+  planeComponent,
+  planeIntersectionCount,
+} from "@rybosome/tspice-core";
 import { invariant } from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
@@ -356,6 +362,83 @@ export function createGeometryApi(native: NativeAddon): GeometryApi {
       return out;
     },
 
+    nvp2pl: (normal, point) => {
+      const out = native.nvp2pl(
+        copyPlaneVector(normal, "nvp2pl(normal)", true),
+        copyPlaneVector(point, "nvp2pl(point)", true),
+      );
+      return copyPlaneComponents(out, "nvp2pl result", false);
+    },
+    pl2nvp: (plane) => {
+      const out = native.pl2nvp(
+        copyPlaneComponents(plane, "pl2nvp(plane)", true),
+      );
+      return {
+        normal: copyPlaneVector(out.normal, "pl2nvp result", false),
+        point: copyPlaneVector(out.point, "pl2nvp result", false),
+      };
+    },
+    pl2psv: (plane) => {
+      const out = native.pl2psv(
+        copyPlaneComponents(plane, "pl2psv(plane)", true),
+      );
+      return {
+        point: copyPlaneVector(out.point, "pl2psv result", false),
+        span1: copyPlaneVector(out.span1, "pl2psv result", false),
+        span2: copyPlaneVector(out.span2, "pl2psv result", false),
+      };
+    },
+    psv2pl: (point, span1, span2) => {
+      const out = native.psv2pl(
+        copyPlaneVector(point, "psv2pl(point)", true),
+        copyPlaneVector(span1, "psv2pl(span1)", true),
+        copyPlaneVector(span2, "psv2pl(span2)", true),
+      );
+      return copyPlaneComponents(out, "psv2pl result", false);
+    },
+    inrypl: (vertex, dir, plane) => {
+      const out = native.inrypl(
+        copyPlaneVector(vertex, "inrypl(vertex)", true),
+        copyPlaneVector(dir, "inrypl(dir)", true),
+        copyPlaneComponents(plane, "inrypl(plane)", true),
+      );
+      return {
+        nxpts: planeIntersectionCount(out.nxpts),
+        xpt: copyPlaneVector(out.xpt, "inrypl result", false),
+      };
+    },
+    vprjp: (vin, plane) => {
+      const out = native.vprjp(
+        copyPlaneVector(vin, "vprjp(vin)", true),
+        copyPlaneComponents(plane, "vprjp(plane)", true),
+      );
+      return copyPlaneVector(out, "vprjp result", false);
+    },
+    vprjpi: (vin, projpl, invpl) => {
+      const out = native.vprjpi(
+        copyPlaneVector(vin, "vprjpi(vin)", true),
+        copyPlaneComponents(projpl, "vprjpi(projpl)", true),
+        copyPlaneComponents(invpl, "vprjpi(invpl)", true),
+      );
+      if (out.found === false) return { found: false };
+      if (out.found !== true)
+        throw new TypeError("Invalid VPRJPI found result");
+      return {
+        vout: copyPlaneVector(out.vout, "vprjpi result", false),
+        found: true,
+      };
+    },
+    nplnpt: (linpt, lindir, point) => {
+      const out = native.nplnpt(
+        copyPlaneVector(linpt, "nplnpt(linpt)", true),
+        copyPlaneVector(lindir, "nplnpt(lindir)", true),
+        copyPlaneVector(point, "nplnpt(point)", true),
+      );
+      return {
+        pnear: copyPlaneVector(out.pnear, "nplnpt result", false),
+        dist: planeComponent(out.dist, "nplnpt(dist)", false),
+      };
+    },
     nvc2pl: (normal, konst) => {
       assertFiniteNumberArrayFixed(normal, 3, "nvc2pl(): normal");
       invariant(

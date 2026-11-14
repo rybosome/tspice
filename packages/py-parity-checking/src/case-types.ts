@@ -1188,6 +1188,42 @@ export type StepGeometryOccult = {
   et: number;
 };
 
+export type StepGeometryNvp2pl = {
+  op: "geometry.nvp2pl";
+  normal: Vec3;
+  point: Vec3;
+};
+export type StepGeometryPl2nvp = { op: "geometry.pl2nvp"; plane: SpicePlane };
+export type StepGeometryPl2psv = { op: "geometry.pl2psv"; plane: SpicePlane };
+export type StepGeometryPsv2pl = {
+  op: "geometry.psv2pl";
+  point: Vec3;
+  span1: Vec3;
+  span2: Vec3;
+};
+export type StepGeometryInrypl = {
+  op: "geometry.inrypl";
+  vertex: Vec3;
+  dir: Vec3;
+  plane: SpicePlane;
+};
+export type StepGeometryVprjp = {
+  op: "geometry.vprjp";
+  vin: Vec3;
+  plane: SpicePlane;
+};
+export type StepGeometryVprjpi = {
+  op: "geometry.vprjpi";
+  vin: Vec3;
+  projpl: SpicePlane;
+  invpl: SpicePlane;
+};
+export type StepGeometryNplnpt = {
+  op: "geometry.nplnpt";
+  linpt: Vec3;
+  lindir: Vec3;
+  point: Vec3;
+};
 export type StepGeometryNvc2pl = {
   op: "geometry.nvc2pl";
   normal: Vec3;
@@ -1439,6 +1475,14 @@ export type WorkflowStep =
   | StepGeometryIllumg
   | StepGeometryIllumf
   | StepGeometryOccult
+  | StepGeometryNvp2pl
+  | StepGeometryPl2nvp
+  | StepGeometryPl2psv
+  | StepGeometryPsv2pl
+  | StepGeometryInrypl
+  | StepGeometryVprjp
+  | StepGeometryVprjpi
+  | StepGeometryNplnpt
   | StepGeometryNvc2pl
   | StepGeometryPl2nvc
   | StepGeometryGfGfsstp
@@ -1878,6 +1922,17 @@ export type StepOutput =
       };
     }
   | { op: "geometry.occult"; value: number }
+  | { op: "geometry.nvp2pl"; value: SpicePlane }
+  | { op: "geometry.pl2nvp"; value: { normal: Vec3; point: Vec3 } }
+  | { op: "geometry.pl2psv"; value: { point: Vec3; span1: Vec3; span2: Vec3 } }
+  | { op: "geometry.psv2pl"; value: SpicePlane }
+  | { op: "geometry.inrypl"; value: { nxpts: -1 | 0 | 1; xpt: Vec3 } }
+  | { op: "geometry.vprjp"; value: Vec3 }
+  | {
+      op: "geometry.vprjpi";
+      value: { found: false } | { found: true; vout: Vec3 };
+    }
+  | { op: "geometry.nplnpt"; value: { pnear: Vec3; dist: number } }
   | { op: "geometry.nvc2pl"; value: SpicePlane }
   | {
       op: "geometry.pl2nvc";

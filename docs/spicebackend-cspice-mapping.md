@@ -215,6 +215,19 @@ Notes:
 
 ## Domain: `geometry` (`GeometryApi`)
 
+E10 adds eight direct canonical mappings on Node and WASM. All use the existing four-word plane representation and kernel-independent vectors. [Plane and line geometry semantics, component comparisons and primary references](step8-plane-geometry.md)
+
+| Raw method | CSPICE     | Result                                                |
+| ---------- | ---------- | ----------------------------------------------------- |
+| `nvp2pl`   | `nvp2pl_c` | Normalized plane through a point                      |
+| `pl2nvp`   | `pl2nvp_c` | Normal and closest plane point                        |
+| `pl2psv`   | `pl2psv_c` | Plane point and two ordered spanning vectors          |
+| `psv2pl`   | `psv2pl_c` | Plane from a point and independent spans              |
+| `inrypl`   | `inrypl_c` | Intersection count and all three returned coordinates |
+| `vprjp`    | `vprjp_c`  | Orthogonal projection onto an offset plane            |
+| `vprjpi`   | `vprjpi_c` | Found flag and three inverse coordinates on a hit     |
+| `nplnpt`   | `nplnpt_c` | Closest point on an infinite line and distance        |
+
 | domain.method                                                                         | CSPICE entrypoint(s) | Args (TS shape)                                                                                                                                                     | Returns (TS shape)                                                                        | Comparison notes (tolerance/normalization)       | Statefulness / required kernels                                                                                                                                            |
 | ------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `geometry.subpnt(method, target, et, fixref, abcorr, observer)`                       | `subpnt_c`           | `(method: string, target: string, et: number, fixref: string, abcorr: AbCorr \| string, observer: string): SubPointResult`                                          | `{ spoint: SpiceVector3; trgepc: number; srfvec: SpiceVector3 }`                          | float tolerance on vectors + `trgepc`            | **stateful**: requires SPK (observer/target positions) and body shape/frames (often PCK + FK); method choice may require additional kernels (e.g. DSK for high-res shapes) |

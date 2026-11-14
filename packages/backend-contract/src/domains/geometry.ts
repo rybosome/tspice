@@ -144,6 +144,80 @@ export interface GeometryApi {
   ): number;
 
   /**
+   * Construct a plane through point from a finite nonzero normal. CSPICE unitizes the normal and reverses its direction when needed for a nonnegative distance constant. A zero normal signals ZEROVECTOR.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nvp2pl_c.html
+   */
+  nvp2pl(
+    normal: Readonly<SpiceVector3>,
+    point: Readonly<SpiceVector3>,
+  ): SpicePlane;
+
+  /**
+   * Extract the stored unit normal and the closest point to the origin from a finite CSPICE plane. The input plane must have its canonical unit normal and nonnegative constant.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pl2nvp_c.html
+   */
+  pl2nvp(plane: Readonly<SpicePlane>): {
+    normal: SpiceVector3;
+    point: SpiceVector3;
+  };
+
+  /**
+   * Return the closest point to the origin and the ordered orthonormal spanning vectors chosen by CSPICE for this finite canonical plane. The normal, span1 and span2 form a right-handed system.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pl2psv_c.html
+   */
+  pl2psv(plane: Readonly<SpicePlane>): {
+    point: SpiceVector3;
+    span1: SpiceVector3;
+    span2: SpiceVector3;
+  };
+
+  /**
+   * Construct a plane through a point and two spanning vectors. A computed zero cross product signals DEGENERATECASE. Nearly parallel vectors can amplify floating-point roundoff when their cross product is unitized.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/psv2pl_c.html
+   */
+  psv2pl(
+    point: Readonly<SpiceVector3>,
+    span1: Readonly<SpiceVector3>,
+    span2: Readonly<SpiceVector3>,
+  ): SpicePlane;
+
+  /**
+   * Intersect a ray with a finite canonical plane. Return nxpts = -1 for a contained ray, 0 for a miss, or 1 for a single intersection. xpt is the vertex for a contained ray and the zero vector for a miss. CSPICE rejects a zero direction or a vertex norm or plane distance at least DPMAX/3.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/inrypl_c.html
+   */
+  inrypl(
+    vertex: Readonly<SpiceVector3>,
+    dir: Readonly<SpiceVector3>,
+    plane: Readonly<SpicePlane>,
+  ): { nxpts: -1 | 0 | 1; xpt: SpiceVector3 };
+
+  /**
+   * Orthogonally project vin onto a finite canonical plane. Its supplied normal must be unit length. Finite inputs can produce nonfinite components when intermediate products or sums overflow.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vprjp_c.html
+   */
+  vprjp(vin: Readonly<SpiceVector3>, plane: Readonly<SpicePlane>): SpiceVector3;
+
+  /**
+   * Find the point on invpl whose orthogonal projection onto projpl is vin. Supply finite canonical planes and vin in projpl. CSPICE reports found=false for an undefined or excessively large inverse displacement, including perpendicular plane normals. Only a hit has a vout.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/vprjpi_c.html
+   */
+  vprjpi(
+    vin: Readonly<SpiceVector3>,
+    projpl: Readonly<SpicePlane>,
+    invpl: Readonly<SpicePlane>,
+  ): Found<{ vout: SpiceVector3 }>;
+
+  /**
+   * Return the nearest point on the infinite line and its distance from point, in the coordinate units of the inputs. A zero line direction signals ZEROVECTOR. Preserve the toolkit’s IEEE results at finite arithmetic extremes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/nplnpt_c.html
+   */
+  nplnpt(
+    linpt: Readonly<SpiceVector3>,
+    lindir: Readonly<SpiceVector3>,
+    point: Readonly<SpiceVector3>,
+  ): { pnear: SpiceVector3; dist: number };
+
+  /**
    * Construct a canonical plane for dot(x,normal)=konst. The finite nonzero
    * normal need not be unit; the result has a unit normal and nonnegative
    * distance constant. A negative input constant reverses orientation. Zero

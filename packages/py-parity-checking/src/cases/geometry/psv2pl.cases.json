@@ -1,0 +1,125 @@
+[
+  {
+    "caseId": "geometry-psv2pl-coordinate-spans",
+    "description": "Order, origin side and orientation of axes.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, 3, -4],
+        "span1": [1, 0, 0],
+        "span2": [0, 1, 0]
+      },
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, 3, -4],
+        "span1": [0, 1, 0],
+        "span2": [1, 0, 0]
+      },
+      {
+        "op": "geometry.psv2pl",
+        "point": [0, 0, 0],
+        "span1": [0, 1, 0],
+        "span2": [0, 0, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-psv2pl-oblique",
+    "description": "Nonorthogonal spanning vectors, both signs, and translated points.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [1, 2, 0],
+        "span2": [0, 2, 3]
+      },
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [-1, -2, 0],
+        "span2": [0, 2, 3]
+      },
+      {
+        "op": "geometry.psv2pl",
+        "point": [-1, 2, 3],
+        "span1": [0, 2, 3],
+        "span2": [1, 2, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-psv2pl-scaled-spans",
+    "description": "Disparate nonzero spans define the same plane.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [3e80, 4e80, 0],
+        "span2": [0, 0, 1e-100]
+      },
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [0.3, 0.4, 0],
+        "span2": [0, 0, 10]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-psv2pl-zero-first",
+    "description": "Dependent spanning vectors must signal the actual toolkit condition.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [0, 0, 0],
+        "span2": [0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-psv2pl-zero-second",
+    "description": "Dependent spanning vectors must signal the actual toolkit condition.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [1, 0, 0],
+        "span2": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  },
+  {
+    "caseId": "geometry-psv2pl-parallel",
+    "description": "Dependent spanning vectors must signal the actual toolkit condition.",
+    "workflow": [
+      {
+        "op": "geometry.psv2pl",
+        "point": [2, -3, 7],
+        "span1": [1, 0, 0],
+        "span2": [-3, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DEGENERATECASE"]
+    }
+  }
+]

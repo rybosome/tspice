@@ -383,6 +383,26 @@ export type NativeAddon = {
 
   spkcov(spk: string, idcode: number, cover: SpiceWindow): void;
 
+  nvp2pl(normal: number[], point: number[]): unknown;
+  pl2nvp(plane: number[]): { normal: unknown; point: unknown };
+  pl2psv(plane: number[]): { point: unknown; span1: unknown; span2: unknown };
+  psv2pl(point: number[], span1: number[], span2: number[]): unknown;
+  inrypl(
+    vertex: number[],
+    dir: number[],
+    plane: number[],
+  ): { nxpts: unknown; xpt: unknown };
+  vprjp(vin: number[], plane: number[]): unknown;
+  vprjpi(
+    vin: number[],
+    projpl: number[],
+    invpl: number[],
+  ): { vout?: unknown; found: unknown };
+  nplnpt(
+    linpt: number[],
+    lindir: number[],
+    point: number[],
+  ): { pnear: unknown; dist: unknown };
   nvc2pl(normal: number[], konst: number): number[];
   pl2nvc(plane: number[]): { normal: number[]; konst: number };
   spkobj(spk: string, ids: SpiceIntCell): void;

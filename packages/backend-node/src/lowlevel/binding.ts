@@ -609,5 +609,37 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
   );
 
+  invariant(
+    typeof native.nvp2pl === "function",
+    "Expected native addon to export nvp2pl",
+  );
+  invariant(
+    typeof native.pl2nvp === "function",
+    "Expected native addon to export pl2nvp",
+  );
+  invariant(
+    typeof native.pl2psv === "function",
+    "Expected native addon to export pl2psv",
+  );
+  invariant(
+    typeof native.psv2pl === "function",
+    "Expected native addon to export psv2pl",
+  );
+  invariant(
+    typeof native.inrypl === "function",
+    "Expected native addon to export inrypl",
+  );
+  invariant(
+    typeof native.vprjp === "function",
+    "Expected native addon to export vprjp",
+  );
+  invariant(
+    typeof native.vprjpi === "function",
+    "Expected native addon to export vprjpi",
+  );
+  invariant(
+    typeof native.nplnpt === "function",
+    "Expected native addon to export nplnpt",
+  );
   return native;
 }

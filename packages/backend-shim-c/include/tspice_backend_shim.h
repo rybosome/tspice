@@ -811,6 +811,62 @@ int tspice_spkssb(
 
 // --- plane helpers ---
 
+int tspice_nvp2pl(
+    const double *normal,
+    const double *point,
+    double *outResult,
+    char *err,
+    int errMaxBytes);
+int tspice_pl2nvp(
+    const double *plane,
+    double *outNormal,
+    double *outPoint,
+    char *err,
+    int errMaxBytes);
+int tspice_pl2psv(
+    const double *plane,
+    double *outPoint,
+    double *outSpan1,
+    double *outSpan2,
+    char *err,
+    int errMaxBytes);
+int tspice_psv2pl(
+    const double *point,
+    const double *span1,
+    const double *span2,
+    double *outResult,
+    char *err,
+    int errMaxBytes);
+int tspice_inrypl(
+    const double *vertex,
+    const double *dir,
+    const double *plane,
+    int *outNxpts,
+    double *outXpt,
+    char *err,
+    int errMaxBytes);
+int tspice_vprjp(
+    const double *vin,
+    const double *plane,
+    double *outVout,
+    char *err,
+    int errMaxBytes);
+int tspice_vprjpi(
+    const double *vin,
+    const double *projpl,
+    const double *invpl,
+    double *outVout,
+    int *outFound,
+    char *err,
+    int errMaxBytes);
+int tspice_nplnpt(
+    const double *linpt,
+    const double *lindir,
+    const double *point,
+    double *outPnear,
+    double *outDist,
+    char *err,
+    int errMaxBytes);
 // nvc2pl_c: normal vector + constant -> plane.
 //
 // Output plane is written as 4 doubles: [normalX, normalY, normalZ, constant]

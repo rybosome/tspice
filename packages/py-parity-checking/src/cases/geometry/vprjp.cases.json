@@ -1,0 +1,93 @@
+[
+  {
+    "caseId": "geometry-vprjp-axes",
+    "description": "Orthogonal projection onto translated coordinate planes on both sides.",
+    "workflow": [
+      {
+        "op": "geometry.vprjp",
+        "vin": [2, -3, 7],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [2, -3, 7],
+        "plane": [1, 0, 0, 0]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [2, -3, 7],
+        "plane": [0, 1, 0, 3]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [0, 0, 0],
+        "plane": [0, 0, 1, 2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-vprjp-oblique",
+    "description": "Signed mixed normals and interior/exterior points.",
+    "workflow": [
+      {
+        "op": "geometry.vprjp",
+        "vin": [2, -3, 7],
+        "plane": [-0.6, 0, 0.8, 2.5]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [0, 0, 0],
+        "plane": [-0.6, 0, 0.8, 2.5]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [-7.3, 4.5, -0.1],
+        "plane": [0.6, 0.8, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-vprjp-already-in-plane",
+    "description": "Projection leaves an in-plane point on a nonzero plane.",
+    "workflow": [
+      {
+        "op": "geometry.vprjp",
+        "vin": [2, 3, 2],
+        "plane": [0, 0, 1, 2]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [3, 4, 1],
+        "plane": [0.6, 0.8, 0, 5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-vprjp-scales",
+    "description": "Recover offsets and all vector components at different scales.",
+    "workflow": [
+      {
+        "op": "geometry.vprjp",
+        "vin": [1e125, -1e124, 4e125],
+        "plane": [0.6, 0.8, 0, 1e123]
+      },
+      {
+        "op": "geometry.vprjp",
+        "vin": [1e-75, 2e-75, 0],
+        "plane": [0, 0, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
