@@ -477,6 +477,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_sce2t(
+    sc: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scfmt(
+    sc: number,
+    ticks: number,
+    clklen: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scpart(
+    sc: number,
+    room: number,
+    countPtr: number,
+    startPtr: number,
+    stopPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sctiks(
+    sc: number,
+    textPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -1509,6 +1541,38 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_sce2t(
+    sc: number,
+    et: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scfmt(
+    sc: number,
+    ticks: number,
+    clklen: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_scpart(
+    sc: number,
+    room: number,
+    countPtr: number,
+    startPtr: number,
+    stopPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sctiks(
+    sc: number,
+    textPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_sce2s(
     sc: number,
     et: number,
@@ -2219,6 +2283,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_frinfo",
   "_tspice_ccifrm",
   "_tspice_scs2e",
+  "_tspice_sce2t",
+  "_tspice_scfmt",
+  "_tspice_scpart",
+  "_tspice_sctiks",
   "_tspice_sce2s",
   "_tspice_ckgp",
   "_tspice_ckgpav",

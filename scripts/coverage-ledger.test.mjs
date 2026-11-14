@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 162,
-    planned: 487,
+    implemented: 166,
+    planned: 483,
     excluded: 3,
-    caseFiles: 162,
-    scenarios: 1109,
+    caseFiles: 166,
+    scenarios: 1158,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -314,6 +314,39 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
+test("the SCE2T alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "sce2t_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("sce2t_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("sce2t_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/time.c";
+  const call = "sce2t_(&spacecraft, &epoch, &encoded)";
+  for (const replacement of [
+    "0 /* sce2t_(&spacecraft, &epoch, &encoded) */",
+    "sce2c_(&spacecraft, &epoch, &encoded)",
+    "sce2t_c(spacecraft, epoch, &encoded)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  for (const traceCall of ['chkin_c("sce2t_c");', 'chkout_c("sce2t_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.sce2t/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
 test("CI native expectation forwarding is distinct from exporting it in the shell", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "turbo.json");
@@ -445,7 +478,12 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
-  assert.equal(ledger.audit.baselineRoutines, ledger.summary.implemented);
+  assert.equal(ledger.audit.baselineRoutines, 162);
+  assert.equal(ledger.audit.expansionRoutines, 4);
+  assert.equal(
+    ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
+    ledger.summary.implemented,
+  );
   for (const backend of ["node", "wasm"]) {
     assert.ok(ledger.audit.counts[backend].reviewed >= 8);
     assert.equal(ledger.audit.counts[backend].verified, 0);
@@ -470,7 +508,21 @@ test("baseline rejects duplicate, removed, and omitted routines", (t) => {
   ]) {
     const f = fixture(t);
     editAudit(f, mutation, "baseline.json");
-    assert.throws(f.build, /duplicate|unknown\/removed|missing from baseline/);
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
+  }
+});
+
+test("expansion assignments cannot omit routines, duplicate baseline, or plan absent APIs", (t) => {
+  for (const mutation of [
+    (r) => {
+      r.expansionBatches = [];
+    },
+    (r) => r.expansionBatches[0].routines.push(r.batches[0].routines[0]),
+    (r) => r.expansionBatches[0].routines.push("clight_c"),
+  ]) {
+    const f = fixture(t);
+    editAudit(f, mutation, "baseline.json");
+    assert.throws(f.build, /duplicate|unknown\/removed|missing from audit/);
   }
 });
 

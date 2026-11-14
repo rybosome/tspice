@@ -1,0 +1,377 @@
+[
+  {
+    "caseId": "time-sce2t-integral-rounding",
+    "description": "Compare integral encoded ticks at half-tick and adjacent dyadic ET values.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.0
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.0009765625
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.001953125
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.0029296875
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.00390625
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.0048828125
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.005859375
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0.0068359375
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-raw-partition-boundaries",
+    "description": "Convert ET around the shared encoded boundary and final representable tick.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 3.994140625
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 3.99609375
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 3.998046875
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 4.0
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 15.990234375
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 15.9921875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-first-half-tick",
+    "description": "A slightly negative ET can still round to the first encoded tick.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": -0.0009765625
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-lower-and-upper-clock-rates",
+    "description": "Separate the single-field one-second clock from a 256-ticks-per-second clock.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -123,
+        "et": -1000
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -123,
+        "et": -999.5
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1.25
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -123,
+        "et": 1.25
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-piecewise-coefficients",
+    "description": "An updated coefficient set changes the rate at encoded tick 512.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK01_COEFFICIENTS_12345",
+        "values": [0, 0, 1, 512, 2, 2]
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1.75
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 2
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 2.5
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-missing-clock",
+    "description": "A spacecraft without loaded SCLK data reports a toolkit error.",
+    "workflow": [
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-unknown-spacecraft",
+    "description": "Loading a clock for another spacecraft does not define this clock.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-before-clock",
+    "description": "An ET rounding below the minimum count is rejected.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": -0.001953125
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-after-clock",
+    "description": "An ET rounding above the maximum encoded count is rejected.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 15.994140625
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-non-tdb-clock-no-lsk",
+    "description": "A non-TDB correlation needs conversion data.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-non-tdb-clock-with-lsk",
+    "description": "Evaluate a TDT correlation with the leap-seconds kernel loaded.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1.25
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2t-invalid-rate",
+    "description": "A zero coefficient rate is rejected by the linked SCLK conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK01_COEFFICIENTS_12345",
+        "values": [0, 0, 0]
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-sce2t-unsupported-clock-type",
+    "description": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK_DATA_TYPE_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.sce2t",
+        "sc": -12345,
+        "et": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  }
+]

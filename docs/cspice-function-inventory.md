@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 166
+- Planned (not yet implemented): 483
 - Excluded: 3
 
 ## Implemented now
@@ -133,9 +133,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `scdecd_c` | Decode spacecraft clock |
 | `sce2c_c` | ET to continuous SCLK ticks |
 | `sce2s_c` | ET to SCLK string |
+| `sce2t_c` | ET to SCLK ticks |
 | `scencd_c` | Encode spacecraft clock |
+| `scfmt_c` | Convert SCLK "ticks" to character clock format |
+| `scpart_c` | Spacecraft Clock Partition Information |
 | `scs2e_c` | SCLK string to ET |
 | `sct2e_c` | SCLK ticks to ET |
+| `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `setmsg_c` | Set Long Error Message |
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
@@ -541,10 +545,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
-| `sce2t_c` | ET to SCLK ticks |
-| `scfmt_c` | Convert SCLK "ticks" to character clock format |
-| `scpart_c` | Spacecraft Clock Partition Information |
-| `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `sdiff_c` | Symmetric difference of two sets |
 | `set_c` | Compare sets |
 | `shellc_c` | Shell sort a character array |

@@ -1,0 +1,350 @@
+[
+  {
+    "caseId": "time-sctiks-raw-field-separators",
+    "description": "All five input separators and mixed whitespace encode the same two raw clock fields.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1.2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1-2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1,2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": " 1  2 "
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "000001.002"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sctiks-absent-fields-and-carry",
+    "description": "Omitted, trailing and leading fields plus an oversized minor field reveal positional units.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": ":2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:256"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "2:0"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1e2.2"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sctiks-outside-partition",
+    "description": "String counts beyond a partition boundary remain raw readings.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "3:255"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "4:0"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "15:255"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "16:0"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sctiks-single-field-clock",
+    "description": "The lexical count may use leading zeros and exceed signed32.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-clock.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -123,
+        "clkstr": "0"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -123,
+        "clkstr": "0000000042"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -123,
+        "clkstr": "4294967295"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sctiks-nonzero-field-offsets",
+    "description": "The parser subtracts each field offset and an omitted field contributes zero.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK01_OFFSETS_12345",
+        "values": [1, 5]
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:5"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:7"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "2"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "2:5"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "2:6"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sctiks-below-field-offset",
+    "description": "An explicitly supplied minor field is below its minimum.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "SCLK01_OFFSETS_12345",
+        "values": [1, 5]
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:4"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSCLKSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-partition-prefix",
+    "description": "Raw clock parser diagnoses an encoded-clock partition prefix.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "2/4:0"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSCLKSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-extra-field",
+    "description": "Three fields exceed the two-field clock.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1::2"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSCLKSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-invalid-character",
+    "description": "An unsupported separator is part of an unparseable field.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1@2"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSCLKSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-empty-string",
+    "description": "Empty NUL-terminated input is diagnosed by the C wrapper.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-blank-string",
+    "description": "A nonempty string consisting only of blanks reaches the clock parser.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": " "
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSCLKSTRING"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-missing-clock",
+    "description": "A nonempty clock string still needs the spacecraft-specific definition.",
+    "workflow": [
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:0"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-sctiks-unsupported-clock-type",
+    "description": "Changing only the spacecraft clock type to two rejects a fresh type-dependent lookup.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK_DATA_TYPE_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.sctiks",
+        "sc": -12345,
+        "clkstr": "1:2"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTSUPPORTED"]
+    }
+  }
+]

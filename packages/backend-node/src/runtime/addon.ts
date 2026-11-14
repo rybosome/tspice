@@ -265,6 +265,11 @@ export type NativeAddon = {
   ): { found: boolean; frcode?: number; frname?: string; center?: number };
 
   scs2e(sc: number, sclkch: string): number;
+  sce2t(sc: number, et: number): number;
+  scfmt(sc: number, ticks: number, clklen: number): string;
+  scpart(sc: number): { pstart: number[]; pstop: number[] };
+  sctiks(sc: number, clkstr: string): number;
+
   sce2s(sc: number, et: number): string;
   scencd(sc: number, sclkch: string): number;
   scdecd(sc: number, sclkdp: number): string;

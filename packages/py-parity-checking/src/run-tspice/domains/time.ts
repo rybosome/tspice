@@ -4,6 +4,10 @@ import type {
   StepTimeEt2Utc,
   StepTimeScdecd,
   StepTimeScencd,
+  StepTimeSce2t,
+  StepTimeScfmt,
+  StepTimeScpart,
+  StepTimeSctiks,
   StepTimeSce2c,
   StepTimeSce2s,
   StepTimeScs2e,
@@ -50,6 +54,10 @@ type TimeStep =
   | StepTimeScencd
   | StepTimeScdecd
   | StepTimeSct2e
+  | StepTimeSce2t
+  | StepTimeScfmt
+  | StepTimeScpart
+  | StepTimeSctiks
   | StepTimeSce2c;
 
 /** Execute one `time.*` workflow step in tspice. */
@@ -157,6 +165,24 @@ export function runTimeStep(
       return {
         op: step.op,
         value: context.spice.raw.sct2e(step.sc, step.sclkdp),
+      };
+
+    case "time.sce2t":
+      return { op: step.op, value: context.spice.raw.sce2t(step.sc, step.et) };
+
+    case "time.scfmt":
+      return {
+        op: step.op,
+        value: context.spice.raw.scfmt(step.sc, step.ticks, step.clklen),
+      };
+
+    case "time.scpart":
+      return { op: step.op, value: context.spice.raw.scpart(step.sc) };
+
+    case "time.sctiks":
+      return {
+        op: step.op,
+        value: context.spice.raw.sctiks(step.sc, step.clkstr),
       };
 
     case "time.sce2c":

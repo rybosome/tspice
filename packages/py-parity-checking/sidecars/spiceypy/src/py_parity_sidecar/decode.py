@@ -164,6 +164,10 @@ from .models import (
     StepTimeEt2Utc,
     StepTimeScdecd,
     StepTimeScencd,
+    StepTimeSce2t,
+    StepTimeScfmt,
+    StepTimeScpart,
+    StepTimeSctiks,
     StepTimeSce2c,
     StepTimeSce2s,
     StepTimeScs2e,
@@ -454,6 +458,34 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 sc=_expect_int(step.get("sc"), label="time.sct2e.sc"),
                 sclkdp=_expect_number(step.get("sclkdp"), label="time.sct2e.sclkdp"),
+            )
+
+        case "time.sce2t":
+            return StepTimeSce2t(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.sce2t.sc"),
+                et=_expect_number(step.get("et"), label="time.sce2t.et"),
+            )
+
+        case "time.scfmt":
+            return StepTimeScfmt(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.scfmt.sc"),
+                ticks=_expect_number(step.get("ticks"), label="time.scfmt.ticks"),
+                clklen=_expect_int(step.get("clklen", 2048), label="time.scfmt.clklen"),
+            )
+
+        case "time.scpart":
+            return StepTimeScpart(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.scpart.sc"),
+            )
+
+        case "time.sctiks":
+            return StepTimeSctiks(
+                op=op,
+                sc=_expect_int(step.get("sc"), label="time.sctiks.sc"),
+                clkstr=_expect_string(step.get("clkstr"), label="time.sctiks.clkstr"),
             )
 
         case "time.sce2c":

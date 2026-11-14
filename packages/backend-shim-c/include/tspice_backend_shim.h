@@ -1211,6 +1211,15 @@ int tspice_scs2e(
     char *err,
     int errMaxBytes);
 
+// N0067 SCPART has no room parameter. Supply full-size caller-owned arrays.
+#define TSPICE_SCLK_MAX_PARTITIONS 9999
+// A type-1 clock has at most 10 fields, each with nominal width <=309.
+#define TSPICE_SCLK_FORMAT_MAX_BYTES 3100
+int tspice_sce2t(int sc, double et, double *out, char *err, int errMaxBytes);
+int tspice_scfmt(int sc, double ticks, int clklen, char *out, char *err, int errMaxBytes);
+int tspice_scpart(int sc, int room, int *count, double *pstart, double *pstop, char *err, int errMaxBytes);
+int tspice_sctiks(int sc, const char *clkstr, double *out, char *err, int errMaxBytes);
+
 // sce2s_c: convert ET seconds past J2000 -> an encoded SCLK string.
 int tspice_sce2s(
     int sc,
