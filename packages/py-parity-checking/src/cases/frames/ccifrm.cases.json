@@ -2,13 +2,135 @@
   {
     "caseId": "frames-ccifrm-found-success",
     "description": "ccifrm resolves built-in frame class/class-id mapping",
-    "workflow": [{ "op": "frames.ccifrm", "frameClass": 1, "classId": 1 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 1,
+        "classId": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-ccifrm-not-found-success",
     "description": "ccifrm miss returns found=false",
-    "workflow": [{ "op": "frames.ccifrm", "frameClass": 99, "classId": 99 }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 99,
+        "classId": 99
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ccifrm-audit-builtin-class-pairs",
+    "description": "Compare complete frame code/name/center triples for class/class-ID lookup and a real missing pair.",
+    "workflow": [
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 1,
+        "classId": 1
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 1,
+        "classId": 17
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 2,
+        "classId": 399
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 4,
+        "classId": -1234567
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ccifrm-audit-authored-distinct-class-id",
+    "description": "Actual class ID maps to a different negative frame code and authored center; all fields and unload disappearance reach assertions.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 4,
+        "classId": -1800999
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 5,
+        "classId": 1800101
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 4,
+        "classId": -1800999
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ccifrm-audit-invalid-class-type",
+    "description": "String-valued CLASS reaches actual INVALIDFRAMEDEF; it must not be coerced into missing.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "FRAME_1800193_CLASS",
+        "values": ["BAD"]
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 4,
+        "classId": 1800193
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAMEDEF"]
+    }
+  },
+  {
+    "caseId": "frames-ccifrm-audit-missing-class-id",
+    "description": "A matching frame CLASS without CLASS_ID reaches actual INVALIDFRAMEDEF.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "FRAME_1800194_NAME",
+        "values": ["BAD_CLASS_ID"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "FRAME_1800194_CLASS",
+        "values": [4]
+      },
+      {
+        "op": "frames.ccifrm",
+        "frameClass": 4,
+        "classId": 1800194
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFRAMEDEF"]
+    }
   }
 ]

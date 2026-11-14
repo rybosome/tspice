@@ -112,6 +112,12 @@ export {
   isBrandedMat6RowMajor,
 } from "./spice-runtime/shared/mat6.js";
 
+export {
+  copySpkPackedDescriptor,
+  copySpkPackedDescriptorWords,
+  hasSpkPackedDescriptorStorage,
+} from "./spice-runtime/shared/spk-descriptor.js";
+
 export type { AssertSpiceInt32Options } from "./spice-runtime/shared/spice-int.js";
 export {
   SPICE_INT32_MIN,
@@ -153,3 +159,5 @@ export {
   nativeKindQueryOrNull,
   matchesKernelKind,
 } from "./spice-runtime/domains/kernels-utils.js";
+
+export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";

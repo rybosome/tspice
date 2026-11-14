@@ -624,11 +624,8 @@ int tspice_spkopn(
   if (!path || path[0] == '\0') {
     return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): path must be a non-empty string");
   }
-  if (!ifname || ifname[0] == '\0') {
-    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): ifname must be a non-empty string");
-  }
-  if (ncomch < 0) {
-    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): ncomch must be >= 0");
+  if (!ifname) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): ifname must not be NULL");
   }
   if (!outHandle) {
     return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkopn(): outHandle must not be NULL");
@@ -756,11 +753,11 @@ int tspice_spkw08_v2(
     err[0] = '\0';
   }
 
-  if (!frame || frame[0] == '\0') {
-    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): frame must be a non-empty string");
+  if (!frame) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): frame must not be NULL");
   }
-  if (!segid || segid[0] == '\0') {
-    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): segid must be a non-empty string");
+  if (!segid) {
+    return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): segid must not be NULL");
   }
   if (n <= 0) {
     return tspice_ephemeris_invalid_arg(err, errMaxBytes, "tspice_spkw08_v2(): n must be > 0");

@@ -24,7 +24,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
       {
         "op": "ephemeris.spkobj",
         "spk": "kernels/ephemeris-spkobj-happy.bsp",
@@ -32,7 +35,9 @@
         "maxCardinality": 8
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkobj-missing-file-error",
@@ -45,6 +50,141 @@
         "maxCardinality": 8
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-all-objects-and-deduplication",
+    "description": "Compare every sorted signed object ID from repeated/negative-center segments.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-union-across-files",
+    "description": "Repeated raw queries append/deduplicate into the same actual set; observe all intermediate and final IDs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris-priority.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-empty-zero-capacity",
+    "description": "An empty SPK has no IDs and permits a genuine zero-capacity output cell.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-empty.bsp"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris-empty.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-populated-zero-capacity",
+    "description": "Preserve zero capacity and require actual SETEXCESS.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-insufficient-capacity",
+    "description": "One slot cannot contain five distinct IDs; require SETEXCESS.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idsCellId": "IDS",
+        "maxCardinality": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SETEXCESS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkobj-audit-wrong-daf-type",
+    "description": "A CK DAF must fail actual SPK object inspection with INVALIDFILETYPE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "ephemeris.spkobj",
+        "spk": "kernels/mgs_hga_hinge_v2.bc",
+        "idsCellId": "IDS",
+        "maxCardinality": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
   }
 ]

@@ -13,7 +13,9 @@
         "last": 120
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkpds-invalid-frame-error",
@@ -29,6 +31,196 @@
         "last": 120
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDREFFRAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-signed-negative-center",
+    "description": "Signed instrument/negative center produce a legitimate NaN packed word. Compare all six integer fields rather than subnormal doubles.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+    "description": "Valid descriptor type1000 is allowed without claiming an implementation of that planned segment routine; signed ID bounds and negative epochs retain exact fields.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 2147483647,
+        "center": -2147483648,
+        "frame": "ECLIPJ2000",
+        "type": 1000,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+    "description": "Fractional negative/positive endpoints and frame code must survive packing; all six embedded integers are compared.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 1234567,
+        "center": 399,
+        "frame": "J2000",
+        "type": 1,
+        "first": -1.25,
+        "last": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-barycenter-body",
+    "description": "Require actual BARYCENTEREPHEM from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 0,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BARYCENTEREPHEM"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-same-body-center",
+    "description": "Require actual BODYANDCENTERSAME from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -123456,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BODYANDCENTERSAME"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-equal-epochs",
+    "description": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": -123.5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-reversed-epochs",
+    "description": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": -124.0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADDESCRTIMES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-zero-type",
+    "description": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 0,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNSPKTYPE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-large-type",
+    "description": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 1001,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["UNKNOWNSPKTYPE"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkpds-audit-empty-frame",
+    "description": "Require actual EMPTYSTRING from the raw descriptor constructor, not a success, miss or unrelated exception.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "",
+        "type": 8,
+        "first": -123.5,
+        "last": 456.75
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]

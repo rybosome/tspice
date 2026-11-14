@@ -3,18 +3,133 @@
     "caseId": "ek-ekfind-happy-query-loaded-fixture",
     "description": "ekfind returns nmrows for a valid query over the fixed EK fixture",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekfind", "query": "SELECT NAME FROM PY_PARITY_DATA" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT NAME FROM PY_PARITY_DATA"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekfind-query-error-shape-success",
     "description": "ekfind parse errors are returned in-value instead of throwing",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/py-parity-minimal.ek" },
-      { "op": "ek.ekfind", "query": "SELECT * FROM PY_PARITY_DATA" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/py-parity-minimal.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT * FROM PY_PARITY_DATA"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekfind-audit-zero-rows-and-replacement",
+    "description": "Distinguish successful zero rows from errors, then replace selection and observe exact first/last descending keys30/10.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT KEY FROM AUDIT_QUERY WHERE KEY < 0"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT KEY FROM AUDIT_QUERY ORDER BY KEY DESC"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekfind-audit-full-parse-diagnostic",
+    "description": "Actual273-character name-resolution diagnostic is returned as ok:false, not thrown/truncated; then a new valid query and concrete data prove recovery.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT KEY FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekfind-audit-syntax-and-column-order",
+    "description": "Syntax failure stays an ok:false result, followed by reordered SELECT columns, vector element1 and leading blanks in character data.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT FROM"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IV,DV,CV FROM AUDIT_QUERY WHERE KEY = 30"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgd",
+        "selidx": 1,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgc",
+        "selidx": 2,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

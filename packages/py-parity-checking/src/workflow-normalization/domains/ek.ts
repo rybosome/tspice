@@ -17,6 +17,13 @@ function publishGeneratedEkPath(
   step: EkPathPublisherStep,
   context: NormalizationContext,
 ): void {
+  if (typeof step.path !== "string") {
+    if (step.path.kind === "scratch") {
+      const rel = normalizePathRefRelativePath(step.path.rel);
+      publishGeneratedPath(context, step.path.rel, { kind: "scratch", rel });
+    }
+    return;
+  }
   if (path.isAbsolute(step.path)) {
     return;
   }

@@ -14,15 +14,122 @@
       },
       {
         "op": "ephemeris.spkuds",
-        "descr": [0, 120, 4.9406564584124654e-321, 1.6975966328216244e-313, 0]
+        "descr": [0, 120, 4.94e-321, 1.6975966328e-313, 0]
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkuds-arbitrary-packed-input-success",
     "description": "spkuds accepts arbitrary packed-descriptor bit patterns",
-    "workflow": [{ "op": "ephemeris.spkuds", "descr": [1, 2, 3, 4, 5] }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "ephemeris.spkuds",
+        "descr": [1, 2, 3, 4, 5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuds-audit-actual-packed-negative-payload",
+    "description": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": -123456,
+        "center": -42,
+        "frame": "ECLIPJ2000",
+        "type": 8,
+        "first": -123.5,
+        "last": 456.75,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuds-audit-actual-packed-id-limits",
+    "description": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 2147483647,
+        "center": -2147483648,
+        "frame": "ECLIPJ2000",
+        "type": 1000,
+        "first": -123.5,
+        "last": 456.75,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuds-audit-actual-packed-frame-code",
+    "description": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkpds",
+        "body": 1234567,
+        "center": 399,
+        "frame": "J2000",
+        "type": 2,
+        "first": -123.5,
+        "last": 456.75,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+    "description": "Unpack a literal native DAF summary with independently encoded signed IDs/frame/type and nonzero first/last DAF addresses.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkuds",
+        "descr": [
+          -12.5, 44.25, 8.487982553907e-312, 1.6975966336e-313,
+          2.619745977664877e-308
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+    "description": "Error-free SPKUDS unpacks arbitrary bits without inventing scientific validity errors; zero fields/addresses are compared exactly.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkuds",
+        "descr": [0, 0, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

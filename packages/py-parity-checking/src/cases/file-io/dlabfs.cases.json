@@ -3,29 +3,124 @@
     "caseId": "file-io-dlabfs-first-segment-found-success",
     "description": "dlabfs finds the first segment in a deterministic DSK fixture",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bds" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
       {
         "op": "file-io.dasopr",
         "path": "kernels/file-io-minimal.bds",
         "handleId": "reader"
       },
-      { "op": "file-io.dlabfs", "handleId": "reader", "descrId": "seg0" },
-      { "op": "file-io.dascls", "handleId": "reader" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "reader",
+        "descrId": "seg0"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "reader"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dlabfs-kind-mismatch-error",
     "description": "Representative dlabfs error when called with a DAF handle",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/file-io-minimal.bsp" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
       {
         "op": "file-io.dafopr",
         "path": "kernels/file-io-minimal.bsp",
         "handleId": "daf"
       },
-      { "op": "file-io.dlabfs", "handleId": "daf", "descrId": "seg0" }
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "daf",
+        "descrId": "seg0"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["kind"]
+    }
+  },
+  {
+    "caseId": "file-io-dlabfs-audit-repeat-descriptor",
+    "description": "Beginning DLA search repeatedly returns all eight fields of the same first descriptor, not only found=true.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": "kernels/file-io-minimal.bds"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "a",
+        "descrId": "first"
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "a",
+        "descrId": "again"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dlabfs-audit-empty-closed-writer",
+    "description": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-empty-search.dla"
+        },
+        "ftype": "DLA",
+        "ifname": "AUTHORED AUDIT",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "w"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "dascls-empty-search.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "r",
+        "descrId": "none"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

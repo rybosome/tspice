@@ -60,5 +60,209 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "dsk-dskb02-audit-asymmetric-vertex-bounds",
+    "description": "Nonzero unequal xyz axis bounds prove the actual C 3x2 layout and SpiceyPy normalization; full voxel counts/origin/extent/list sizes are compared.",
+    "workflow": [
+      {
+        "op": "dsk.dskopn",
+        "handleId": "WRITE",
+        "path": {
+          "kind": "scratch",
+          "rel": "bookkeeping-tetra.bds"
+        },
+        "ifname": "TSPICE",
+        "ncomch": 0
+      },
+      {
+        "op": "dsk.dskmi2",
+        "spatialIndexId": "IDX",
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ],
+        "finscl": 0.5,
+        "corscl": 2,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": true,
+        "spxisz": 120000
+      },
+      {
+        "op": "dsk.dskw02",
+        "handleId": "WRITE",
+        "spatialIndexId": "IDX",
+        "center": 499,
+        "surfid": 72,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": 1,
+        "mxcor1": 4,
+        "mncor2": 2,
+        "mxcor2": 6,
+        "mncor3": 3,
+        "mxcor3": 8,
+        "first": -25,
+        "last": 75,
+        "vrtces": [
+          [1, 2, 3],
+          [4, 2, 3],
+          [1, 6, 3],
+          [1, 2, 8]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 2, 4],
+          [2, 3, 4],
+          [3, 1, 4]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "WRITE"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "scratch",
+          "rel": "bookkeeping-tetra.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dskb02",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dskb02-audit-different-mesh-without-vertex-lists",
+    "description": "Five-vertex/six-plate pyramid and disabled optional lists distinguish nv/np, vtxnpl, voxel scale/grid and all six vertex-bound values.",
+    "workflow": [
+      {
+        "op": "dsk.dskopn",
+        "handleId": "WRITE",
+        "path": {
+          "kind": "scratch",
+          "rel": "bookkeeping-pyramid.bds"
+        },
+        "ifname": "TSPICE",
+        "ncomch": 0
+      },
+      {
+        "op": "dsk.dskmi2",
+        "spatialIndexId": "IDX",
+        "vrtces": [
+          [-2, -3, 1],
+          [4, -3, 1],
+          [4, 5, 1],
+          [-2, 5, 1],
+          [1, 1, 9]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 4, 3],
+          [1, 2, 5],
+          [2, 3, 5],
+          [3, 4, 5],
+          [4, 1, 5]
+        ],
+        "finscl": 1.25,
+        "corscl": 3,
+        "worksz": 100000,
+        "voxpsz": 5000,
+        "voxlsz": 5000,
+        "makvtl": false,
+        "spxisz": 120000
+      },
+      {
+        "op": "dsk.dskw02",
+        "handleId": "WRITE",
+        "spatialIndexId": "IDX",
+        "center": 499,
+        "surfid": 72,
+        "dclass": 2,
+        "frame": "J2000",
+        "corsys": 3,
+        "corpar": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "mncor1": -2,
+        "mxcor1": 4,
+        "mncor2": -3,
+        "mxcor2": 5,
+        "mncor3": 1,
+        "mxcor3": 9,
+        "first": -25,
+        "last": 75,
+        "vrtces": [
+          [-2, -3, 1],
+          [4, -3, 1],
+          [4, 5, 1],
+          [-2, 5, 1],
+          [1, 1, 9]
+        ],
+        "plates": [
+          [1, 3, 2],
+          [1, 4, 3],
+          [1, 2, 5],
+          [2, 3, 5],
+          [3, 4, 5],
+          [4, 1, 5]
+        ]
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "WRITE"
+      },
+      {
+        "op": "dsk.dasopr",
+        "handleId": "READ",
+        "path": {
+          "kind": "scratch",
+          "rel": "bookkeeping-pyramid.bds"
+        }
+      },
+      {
+        "op": "dsk.dlabfs",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dskb02",
+        "handleId": "READ",
+        "dladscId": "SEG0"
+      },
+      {
+        "op": "dsk.dascls",
+        "handleId": "READ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

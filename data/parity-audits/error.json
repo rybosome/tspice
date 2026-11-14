@@ -2,25 +2,25 @@
   "schemaVersion": 1,
   "batch": "error",
   "traceFiles": [
-    "packages/py-parity-checking/src/run-tspice/index.ts",
-    "packages/py-parity-checking/src/run-tspice/context.ts",
-    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
-    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/error-allocation-cleanup.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
     "packages/py-parity-checking/src/case-types.ts",
     "packages/py-parity-checking/src/run-sidecar.ts",
-    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
-    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/error.py",
-    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
-    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
-    "packages/backend-wasm/src/codec/alloc.ts",
-    "packages/backend-wasm/src/codec/strings.ts",
-    "packages/backend-wasm/src/codec/errors.ts",
-    "packages/backend-wasm/src/lowlevel/exports.ts",
-    "packages/backend-node/native/src/napi_helpers.h",
-    "packages/py-parity-checking/test/error-capture.test.ts",
-    "packages/backend-wasm/test/error-allocation-cleanup.test.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
     "packages/py-parity-checking/src/runtime/context.ts",
-    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py"
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/error-capture.test.ts"
   ],
   "executions": [
     {
@@ -169,6 +169,154 @@
       "commit": "27b603b8531ed621bcd3ff76a6a1518ac5bcf796",
       "url": "https://github.com/rybosome/tspice/actions/runs/43315317543/job/131521684722",
       "observation": "Observed successful Linux Node22 production native lane and native-required assertion. Logs show 660 live parity tests (330 per backend), all 695 parity-package tests passed with no skips; all 15 jobs passed on the first attempt. Configured lanes are separate from this observed job evidence.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
       "historical": true
     },
     {
@@ -466,6 +614,298 @@
       "url": "https://github.com/rybosome/tspice/actions/runs/43506468615/job/132165337313",
       "observation": "All 15 source CI jobs passed on 6838cf31801067b70c56e01135c38bbc2c50a07a. The inspected Linux Node22 native-required job 132165337313 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 768 live comparisons (384 scenarios per actual Node/WASM backend), all 803 parity-package tests with zero skips, 122 WASM / 62 Node / 21 core / 129 facade tests. All eight cell/window lifecycle/recovery tests, four actual WASM ownership regressions, all 16 capacity/registry integration tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed without retries. REST explicitly confirmed mergeable:true and rebaseable:true on the restacked source/main1bc826b0 base. This observation remains bound to the actual tested source/job; earlier observations remain historical. C/build inputs and the owning-script WASM binary are unchanged.",
       "historical": true
+    },
+    {
+      "id": "local-687-main-748e3836-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e2cae8db99c2ce5fe1753b54d85f747fe63410fc2e885a0d8e96306c2ed5e0d5",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required local lanes passed after restacking #687 directly onto merged #686/main748e3836. The production N0067 native addon was rebuilt before either test lane, loaded successfully and executed its native-required sanity assertion. All 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero native-required skips, 189 WASM / 62 Node / 21 core / 142 facade tests passed. All six ID boundary/recovery tests, 24 ID allocation rollback positions, inherited 43 pool allocation positions, 16 capacity tests and real C allocator regression passed. Both doctors, all 38 ledger regressions, generated drift, formatting, lint and typecheck passed. All 18 reviewed package implementation/test/binary files and all 71 other merged-main package files are byte-identical to their respective reviewed sources. The shared C shim, pinned acquisition/build scripts, manifest and generated web/Node assets match the reviewed original #687 owning N0067/Emscripten3.1.74 build exactly; the binary SHA256 remains d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The restack introduces no new WASM compile input changes. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. All eight maintained audit fingerprints are refreshed for this binary; earlier observations retain their actual source/job references as historical evidence. Current-source canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "local-687-main-748e3836-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e2cae8db99c2ce5fe1753b54d85f747fe63410fc2e885a0d8e96306c2ed5e0d5",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required local lanes passed after restacking #687 directly onto merged #686/main748e3836. The production N0067 native addon was rebuilt before either test lane, loaded successfully and executed its native-required sanity assertion. All 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero native-required skips, 189 WASM / 62 Node / 21 core / 142 facade tests passed. All six ID boundary/recovery tests, 24 ID allocation rollback positions, inherited 43 pool allocation positions, 16 capacity tests and real C allocator regression passed. Both doctors, all 38 ledger regressions, generated drift, formatting, lint and typecheck passed. All 18 reviewed package implementation/test/binary files and all 71 other merged-main package files are byte-identical to their respective reviewed sources. The shared C shim, pinned acquisition/build scripts, manifest and generated web/Node assets match the reviewed original #687 owning N0067/Emscripten3.1.74 build exactly; the binary SHA256 remains d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The restack introduces no new WASM compile input changes. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. All eight maintained audit fingerprints are refreshed for this binary; earlier observations retain their actual source/job references as historical evidence. Current-source canonical CI is pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-687-main-748e3836-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e2cae8db99c2ce5fe1753b54d85f747fe63410fc2e885a0d8e96306c2ed5e0d5",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43515867491/job/132197541428",
+      "observation": "All 15 source CI jobs passed on 893744b9d27bb82ae5a5dfbfe2f4d68491813acc without retries. The inspected Linux Node22 native-required job 132197541428 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero skips, 189 WASM / 62 Node / 21 core / 142 facade tests. Six ID boundary/recovery tests, all 24 ID allocation rollback positions, all 43 inherited pool allocation positions, all 16 capacity tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed. REST explicitly confirmed mergeable:true and rebaseable:true against unchanged main748e3836. All eight audit fingerprints are verified against the preserved reviewed #687 owning-script binary d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The shared C shim, pinned build/acquisition inputs and generated web/Node assets match its original N0067/Emscripten3.1.74 build exactly; no new compiled input changes arise from the restack. Execution remains bound to this actual tested source/job; earlier observations stay historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-687-main-748e3836-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e2cae8db99c2ce5fe1753b54d85f747fe63410fc2e885a0d8e96306c2ed5e0d5",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43515867491/job/132197541428",
+      "observation": "All 15 source CI jobs passed on 893744b9d27bb82ae5a5dfbfe2f4d68491813acc without retries. The inspected Linux Node22 native-required job 132197541428 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and ran all 836 live comparisons (418 scenarios per actual Node/WASM backend), all 871 parity-package tests with zero skips, 189 WASM / 62 Node / 21 core / 142 facade tests. Six ID boundary/recovery tests, all 24 ID allocation rollback positions, all 43 inherited pool allocation positions, all 16 capacity tests and the real C allocator regression passed. Node20/22 Linux/macOS JS/native lanes, all 38 ledger regressions/drift, docs, generated-artifact and packed-native checks passed. REST explicitly confirmed mergeable:true and rebaseable:true against unchanged main748e3836. All eight audit fingerprints are verified against the preserved reviewed #687 owning-script binary d3a2bd9b29b9e152045f32d336dc32969b242124624f14d6285e9f16c7ec493d. The shared C shim, pinned build/acquisition inputs and generated web/Node assets match its original N0067/Emscripten3.1.74 build exactly; no new compiled input changes arise from the restack. Execution remains bound to this actual tested source/job; earlier observations stay historical.",
+      "historical": true
+    },
+    {
+      "id": "local-706-main-c5f0b058-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "local-706-main-c5f0b058-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "90a33f783c0b1c727b9b60b6d1cf39c674d4151d30679facb69dcc1298c8ccf3",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
     }
   ],
   "routines": [
@@ -536,11 +976,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -552,11 +998,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -638,11 +1090,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -654,11 +1112,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -701,11 +1165,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -716,11 +1186,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -781,11 +1257,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -797,11 +1279,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -839,11 +1327,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -854,11 +1348,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -906,11 +1406,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -921,11 +1427,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     },
@@ -991,11 +1503,17 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
         },
         "wasm": {
           "history": [
@@ -1007,14 +1525,20 @@
             "verified",
             "reviewed",
             "verified",
-            "reviewed"
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": []
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
         }
       }
     }
   ],
-  "verificationNote": "Earlier observed source/job evidence is preserved as historical. Required local and canonical CI verification of the restacked source is pending."
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
 }

@@ -297,6 +297,7 @@ export type EmscriptenModule = {
   _tspice_ekffld(
     handle: number,
     segno: number,
+    nrows: number,
     rcptrsPtr: number,
     errPtr: number,
     errMaxBytes: number,

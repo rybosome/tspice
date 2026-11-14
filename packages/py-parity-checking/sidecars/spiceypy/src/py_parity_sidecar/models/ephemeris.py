@@ -10,6 +10,7 @@ from .paths import PathRefInput
 class StepEphemerisSpkcls:
     op: Literal["ephemeris.spkcls"]
     handleId: str
+    captureError: bool = False
 
 
 @dataclass(frozen=True)
@@ -102,6 +103,7 @@ class StepEphemerisSpkpds:
     type: int
     first: float
     last: float
+    descrId: str | None = None
 
 
 @dataclass(frozen=True)
@@ -119,6 +121,7 @@ class StepEphemerisSpksfs:
     op: Literal["ephemeris.spksfs"]
     body: int
     et: float
+    descrId: str | None = None
 
 
 @dataclass(frozen=True)
@@ -132,7 +135,8 @@ class StepEphemerisSpkssb:
 @dataclass(frozen=True)
 class StepEphemerisSpkuds:
     op: Literal["ephemeris.spkuds"]
-    descr: tuple[float, float, float, float, float]
+    descr: tuple[float, float, float, float, float] | None = None
+    descrId: str | None = None
 
 
 @dataclass(frozen=True)

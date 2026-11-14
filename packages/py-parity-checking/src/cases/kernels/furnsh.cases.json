@@ -3,18 +3,207 @@
     "caseId": "kernels-furnsh-loads-text-kernel-success",
     "description": "furnsh loads a text kernel that is visible through ktotal/kdata",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.ktotal", "kind": "ALL" },
-      { "op": "kernels.kdata", "which": 0, "kind": "ALL" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kdata",
+        "which": 0,
+        "kind": "ALL"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "kernels-furnsh-missing-file-error",
     "description": "Representative furnsh missing-file error path",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/does-not-exist.tls" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/does-not-exist.tls"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOSUCHFILE"]
+    }
+  },
+  {
+    "caseId": "kernels-furnsh-audit-duplicate-byte-loads",
+    "description": "Repeated identical loads remain separate CSPICE database entries; one unload removes one reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-furnsh-audit-binary-and-text",
+    "description": "Binary and text registrations preserve order, paths and zero/nonzero metadata handles.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/file-io-minimal.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "SPK"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "TEXT"
+      },
+      {
+        "op": "kernels.kdata",
+        "which": 0,
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kdata",
+        "which": 1,
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/file-io-minimal.bsp"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-furnsh-audit-empty-meta",
+    "description": "An authored empty meta-kernel is registered as TEXT, with its actual filtyp/handle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty.tm"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "META"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "TEXT"
+      },
+      {
+        "op": "kernels.kdata",
+        "which": 0,
+        "kind": "ALL"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-empty.tm"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-empty.tm"
+      },
+      {
+        "op": "kernels.ktotal",
+        "kind": "ALL"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernels-furnsh-audit-malformed-text",
+    "description": "A malformed kernel reaches CSPICE after assigning an earlier variable; supplemental tests inspect retained partial pool state.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-partial-error.tpc"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMBEREXPECTED"]
+    }
+  },
+  {
+    "caseId": "kernels-furnsh-audit-observable-pool-values",
+    "description": "Loading the corrected authored text fixture must populate actual numeric, integer and character pool values.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/kernel-pool-parity.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "TSPICE_PARITY_DOUBLE_VAR",
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "kernel-pool.gipool",
+        "name": "TSPICE_PARITY_INT_VAR",
+        "start": 0,
+        "room": 4
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "TSPICE_PARITY_CHAR_VAR",
+        "start": 0,
+        "room": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

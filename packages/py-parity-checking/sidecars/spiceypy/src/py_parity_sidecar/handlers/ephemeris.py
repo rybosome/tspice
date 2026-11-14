@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+import struct
 from typing import Any
 
 import spiceypy as sp
-from spiceypy.utils.exceptions import NotFoundError
+from spiceypy.utils.exceptions import SpiceyError
 from spiceypy.utils.support_types import SPICEDOUBLE_CELL, SPICEINT_CELL
 
 from ..models import (
@@ -70,8 +71,8 @@ def _get_window(context: SidecarRuntimeContext, window_id: str, *, max_intervals
     if existing is not None:
         return existing
 
-    if max_intervals <= 0:
-        raise ValueError("maxIntervals must be > 0")
+    if max_intervals < 0:
+        raise ValueError("maxIntervals must be >= 0")
 
     window = SPICEDOUBLE_CELL(max_intervals * 2)
     windows[window_id] = window
@@ -88,8 +89,8 @@ def _get_int_cell(context: SidecarRuntimeContext, cell_id: str, *, max_cardinali
     if existing is not None:
         return existing
 
-    if max_cardinality <= 0:
-        raise ValueError("maxCardinality must be > 0")
+    if max_cardinality < 0:
+        raise ValueError("maxCardinality must be >= 0")
 
     cell = SPICEINT_CELL(max_cardinality)
     cells[cell_id] = cell
@@ -111,18 +112,28 @@ def _resolve_path(context: SidecarRuntimeContext, path_ref_input: Any) -> str:
     return resolve_path_ref(context.paths, path_ref_input)
 
 
-def _close_spk_handle_best_effort(handle: int) -> None:
+def _close_spk_handle_best_effort(handle: int) -> bool:
     try:
         sp.spkcls(handle)
+        return True
+    except SpiceyError as error:
+        if error.short == "SPICE(NOSEGMENTSFOUND)":
+            # Disposal may close an empty container via its DAF handle; raw
+            # SPKCLS retains its normal error-and-recover semantics above.
+            try:
+                sp.dafcls(handle)
+                return True
+            except BaseException:
+                return False
+        return False
     except BaseException:
-        # best-effort cleanup only
-        pass
+        return False
 
 
 def _set_spk_handle(context: SidecarRuntimeContext, handle_id: str, handle: int) -> None:
     existing = context.state.ephemeris.spkHandles.get(handle_id)
-    if existing is not None and existing != handle:
-        _close_spk_handle_best_effort(existing)
+    if existing is not None:
+        raise ValueError(f"SPK handle already exists: {handle_id}")
 
     context.state.ephemeris.spkHandles[handle_id] = handle
 
@@ -130,8 +141,8 @@ def _set_spk_handle(context: SidecarRuntimeContext, handle_id: str, handle: int)
         current = context.state.ephemeris.spkHandles.get(handle_id)
         if current is None or current != handle:
             return
-        _close_spk_handle_best_effort(handle)
-        context.state.ephemeris.spkHandles.pop(handle_id, None)
+        if _close_spk_handle_best_effort(handle):
+            context.state.ephemeris.spkHandles.pop(handle_id, None)
 
     context.register_finalizer(f"ephemeris.spkcls:{handle_id}:{handle}", _finalize)
 
@@ -163,7 +174,14 @@ def _normalize_spksfs_result(value: Any) -> dict[str, Any]:
 def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     if isinstance(step, StepEphemerisSpkcls):
         handle = _require_spk_handle(context, step.handleId)
-        sp.spkcls(handle)
+        try:
+            sp.spkcls(handle)
+        except SpiceyError as error:
+            if not step.captureError:
+                raise
+            return StepOutput(op=step.op,value={"short":str(error.short)})
+        if step.captureError:
+            raise RuntimeError("sp.spkcls did not throw the required toolkit error")
         context.state.ephemeris.spkHandles.pop(step.handleId, None)
         return StepOutput(op=step.op, value=None)
 
@@ -231,11 +249,15 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value={"ids": ids})
 
     if isinstance(step, StepEphemerisSpkopa):
+        if step.handleId in context.state.ephemeris.spkHandles:
+            raise ValueError(f"SPK handle already exists: {step.handleId}")
         handle = int(sp.spkopa(_resolve_path(context, step.file)))
         _set_spk_handle(context, step.handleId, handle)
         return StepOutput(op=step.op, value={"handleId": step.handleId})
 
     if isinstance(step, StepEphemerisSpkopn):
+        if step.handleId in context.state.ephemeris.spkHandles:
+            raise ValueError(f"SPK handle already exists: {step.handleId}")
         output_path = Path(_resolve_path(context, step.file))
         output_path.parent.mkdir(parents=True, exist_ok=True)
         handle = int(sp.spkopn(str(output_path), step.ifname, step.ncomch))
@@ -248,7 +270,9 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
             expected_len=5,
             label="spkpds",
         )
-        return StepOutput(op=step.op, value=packed)
+        if step.descrId is not None:
+            context.state.ephemeris.descriptors[step.descrId]=packed
+        return StepOutput(op=step.op, value={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))})
 
     if isinstance(step, StepEphemerisSpkpos):
         pos, lt = _normalize_pos_lt(
@@ -258,11 +282,16 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value={"pos": pos, "lt": lt})
 
     if isinstance(step, StepEphemerisSpksfs):
-        try:
-            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 256))
+        # Preserve the actual toolkit error before interpreting the found flag:
+        # the default decorator otherwise masks NOLOADEDFILES as NotFoundError.
+        with sp.no_found_check():
+            out = _normalize_spksfs_result(sp.spksfs(step.body, step.et, 41))
+            if out["found"]:
+                packed=_to_float_list(out["descr"],expected_len=5,label="spksfs.descr")
+                if step.descrId is not None:
+                    context.state.ephemeris.descriptors[step.descrId]=packed
+                out["descr"]={"first":packed[0],"last":packed[1],"packedIntegers":list(struct.unpack("=6i",struct.pack("=3d",*packed[2:])))}
             return StepOutput(op=step.op, value=out)
-        except NotFoundError:
-            return StepOutput(op=step.op, value={"found": False})
 
     if isinstance(step, StepEphemerisSpkssb):
         state = _to_float_list(sp.spkssb(step.target, step.et, step.ref), expected_len=6, label="spkssb")
@@ -270,7 +299,10 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
         return StepOutput(op=step.op, value=state)
 
     if isinstance(step, StepEphemerisSpkuds):
-        body, center, frame, typenum, first, last, baddr, eaddr = sp.spkuds(step.descr)
+        descriptor = step.descr if step.descr is not None else context.state.ephemeris.descriptors.get(step.descrId)
+        if descriptor is None:
+            raise ValueError(f"SPK descriptor does not exist: {step.descrId}")
+        body, center, frame, typenum, first, last, baddr, eaddr = sp.spkuds(descriptor)
         return StepOutput(
             op=step.op,
             value={

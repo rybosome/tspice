@@ -1,0 +1,2963 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-11-13T13:13:42.909674+00:00",
+  "policy": "Dated explicit observations of exact PR heads. All 15 jobs completed successfully and REST reports rebaseable:true and mergeable:true. Source/base changes require new observations; this is not a live monitor.",
+  "pullRequests": [
+    {
+      "number": 681,
+      "url": "https://github.com/rybosome/tspice/pull/681",
+      "title": "Audit coordinate and matrix parity with strict axis validation",
+      "head": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "branch": "codex/parity-coordinates-matrices",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384973087,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384973087",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131751206578,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751206810,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751206912,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751206966,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751206979,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207213,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207224,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207253,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207287,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207302,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207333,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207341,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207382,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207450,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751207493,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 682,
+      "url": "https://github.com/rybosome/tspice/pull/682",
+      "title": "Audit raw error state and preserve diagnostics and traceback cleanup",
+      "head": "f87df8b4f3fc219d8279e271e5f3e536e478bbae",
+      "branch": "codex/parity-error-state",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43385146373,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43385146373",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131751746447,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751746872,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751746946,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751746998,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747113,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747120,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747145,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747186,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747193,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747220,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747238,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747298,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747311,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747316,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751747785,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 683,
+      "url": "https://github.com/rybosome/tspice/pull/683",
+      "title": "Enforce cell backing capacity and repair constructor allocation failures",
+      "head": "874d9c296bf7fc94d46e6867f02508b57a9dff73",
+      "branch": "codex/cell-capacity-guards",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43385147870,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43385147870",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131751751385,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751636,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751653,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751701,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751724,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751729,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751785,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751800,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751844,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751862,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751751898,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751752037,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751752135,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751752150,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131751752192,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 684,
+      "url": "https://github.com/rybosome/tspice/pull/684",
+      "title": "Preserve WASM cell ownership and lifetime across pointer reuse",
+      "head": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "branch": "codex/wasm-cell-handle-lifetimes",
+      "base": "codex/cell-capacity-guards",
+      "baseSha": "4fde43104f52ce69b04eff62fa5f044178f3c2f4",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384131020,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384131020",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748512834,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513110,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513126,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513181,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513228,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513386,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513420,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513434,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513440,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513471,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513487,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513489,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513527,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513641,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748513835,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 685,
+      "url": "https://github.com/rybosome/tspice/pull/685",
+      "title": "Audit raw cell/window contents, boundaries and recovery",
+      "head": "497313aad0c4c80765a70ac323b332f897d897b5",
+      "branch": "codex/parity-cells-windows",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384131675,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384131675",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748513909,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514010,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514061,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514126,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514130,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514136,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514147,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514154,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514190,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514269,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514277,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514373,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514452,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514521,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748514581,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 686,
+      "url": "https://github.com/rybosome/tspice/pull/686",
+      "title": "Audit kernel-pool values, paging and watch notifications",
+      "head": "e27adddbfe768471780a4bc1683141182452f2bc",
+      "branch": "codex/parity-kernel-pool",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43404351189,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43404351189",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131814879181,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879406,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879424,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879449,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879456,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879469,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879481,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879493,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879635,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879641,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879790,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879905,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814879921,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814880031,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131814880037,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 687,
+      "url": "https://github.com/rybosome/tspice/pull/687",
+      "title": "Audit body names, ID translation and complete constant retrieval",
+      "head": "62393108d1af9bdfc3f3f7189af39b2dce532489",
+      "branch": "codex/parity-ids-names",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384137996,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384137996",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748533634,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748533987,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534010,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534030,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534053,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534118,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534161,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534198,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534235,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534271,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534332,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534681,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534694,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534771,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748534787,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 688,
+      "url": "https://github.com/rybosome/tspice/pull/688",
+      "title": "Audit time parsing, formatting and persistent defaults",
+      "head": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "branch": "codex/parity-time-formats",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43406803063,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43406803063",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131822997386,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822997780,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822997789,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822997855,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822997888,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822997936,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998020,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998022,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998038,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998067,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998070,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998107,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998146,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998300,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131822998383,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 689,
+      "url": "https://github.com/rybosome/tspice/pull/689",
+      "title": "Audit UTC and spacecraft clock partitions, precision and recovery",
+      "head": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "branch": "codex/parity-time-sclk",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43403560103,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43403560103",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131812172249,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172564,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172570,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172664,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172697,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172752,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172789,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172791,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172883,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172887,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172921,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812172976,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812173205,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812173221,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812173263,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 690,
+      "url": "https://github.com/rybosome/tspice/pull/690",
+      "title": "Audit kernel lifecycle, metadata and exact keyword extraction",
+      "head": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "branch": "codex/parity-kernel-lifecycle",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43425927990,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43425927990",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131887206675,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887206954,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207021,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207085,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207111,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207163,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207334,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207366,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207392,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207415,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207489,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207541,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207586,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207610,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131887207723,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 691,
+      "url": "https://github.com/rybosome/tspice/pull/691",
+      "title": "Preserve opaque file handle ownership across backends",
+      "head": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "branch": "codex/file-handle-owner-identity",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384138981,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384138981",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748538123,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538402,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538442,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538504,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538543,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538552,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538562,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538569,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538581,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538600,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538607,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538616,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538647,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538774,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748538909,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 692,
+      "url": "https://github.com/rybosome/tspice/pull/692",
+      "title": "Audit DAF and DAS reader state, descriptors and cleanup",
+      "head": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "branch": "codex/parity-file-readers",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384143717,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384143717",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748551441,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551756,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551765,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551824,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551840,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551849,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551850,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748551973,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552125,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552185,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552215,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552243,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552255,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552258,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748552444,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 693,
+      "url": "https://github.com/rybosome/tspice/pull/693",
+      "title": "Keep the DSK traversal fixture offline to prevent CI timeouts",
+      "head": "bf8c7ec81626629ab0b6c2ea3820ee3f2c66bc7e",
+      "branch": "codex/ci-dsk-fixture-offline",
+      "base": "main",
+      "baseSha": "e96d7cb854bd20085e3d6293117f535ecf9b1648",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43376505294,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43376505294",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131724124337,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724124639,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724124755,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724124783,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724124912,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724124963,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125047,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125108,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125114,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125136,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125138,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125167,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125177,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125187,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131724125251,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 694,
+      "url": "https://github.com/rybosome/tspice/pull/694",
+      "title": "Audit DLA/DSK writers and guard spatial-index bounds",
+      "head": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "branch": "codex/parity-file-writers",
+      "base": "codex/parity-file-readers",
+      "baseSha": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43384148179,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43384148179",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131748565873,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566179,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566309,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566383,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566438,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566439,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566503,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566516,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566543,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566564,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566565,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566590,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566660,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566697,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131748566702,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 695,
+      "url": "https://github.com/rybosome/tspice/pull/695",
+      "title": "Audit DSK query unions, descriptor layout and resource boundaries",
+      "head": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "branch": "codex/parity-dsk-queries",
+      "base": "codex/parity-file-writers",
+      "baseSha": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43392766902,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43392766902",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131776400887,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401080,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401141,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401144,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401280,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401362,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401452,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401456,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401482,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401483,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401506,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401616,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401675,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401726,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131776401858,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 696,
+      "url": "https://github.com/rybosome/tspice/pull/696",
+      "title": "Audit EK file and segment lifecycle and repair allocation and cleanup defects",
+      "head": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "branch": "codex/parity-ek-lifecycle",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43401235768,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43401235768",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131804299208,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299517,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299534,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299543,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299567,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299589,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299603,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299608,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299615,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299668,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299692,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299694,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299704,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299795,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131804299868,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 697,
+      "url": "https://github.com/rybosome/tspice/pull/697",
+      "title": "Audit EK columns and query results and guard native storage boundaries",
+      "head": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "branch": "codex/parity-ek-columns-queries",
+      "base": "codex/parity-ek-lifecycle",
+      "baseSha": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43407518548,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43407518548",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131825395781,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396133,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396213,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396232,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396352,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396402,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396531,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396578,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396604,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396675,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396711,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396733,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396830,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825396932,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131825397064,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 698,
+      "url": "https://github.com/rybosome/tspice/pull/698",
+      "title": "Audit frame metadata and dynamic transforms with allocation and error fidelity",
+      "head": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "branch": "codex/parity-frame-lookups-transforms",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43406816182,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43406816182",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131823041280,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823041687,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823041762,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823041801,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823041837,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042104,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042166,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042206,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042225,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042228,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042253,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042259,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042271,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042298,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823042361,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 699,
+      "url": "https://github.com/rybosome/tspice/pull/699",
+      "title": "Audit CK pointing, coverage, priority and cleanup against live CSPICE",
+      "head": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "branch": "codex/parity-ck-pointing-coverage",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43406821425,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43406821425",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131823059370,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059439,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059456,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059572,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059638,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059639,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059662,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059691,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059715,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059727,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059737,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059886,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823059954,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823060210,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131823060268,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 700,
+      "url": "https://github.com/rybosome/tspice/pull/700",
+      "title": "Preserve opaque SPK descriptor bits and audit pack/unpack parity",
+      "head": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "branch": "codex/parity-spk-descriptors",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43410376662,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43410376662",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131834988010,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988254,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988366,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988367,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988421,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988449,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988533,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988592,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988608,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988704,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988772,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988854,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834988870,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834989079,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131834989346,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 701,
+      "url": "https://github.com/rybosome/tspice/pull/701",
+      "title": "Keep ephemeris fixture tests offline with exact tracked hashes",
+      "head": "b1c64b096451f7f836db09be3d8bc79544dbcfb8",
+      "branch": "codex/offline-ephemeris-test-fixtures",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43403721188,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43403721188",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131812719759,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720120,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720246,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720248,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720381,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720385,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720393,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720444,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720637,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720661,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720695,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720835,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812720900,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812721053,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131812721718,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 702,
+      "url": "https://github.com/rybosome/tspice/pull/702",
+      "title": "Audit SPK file lifecycle, type8 writers and complete coverage outputs",
+      "head": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "branch": "codex/parity-spk-files-writers",
+      "base": "codex/parity-spk-descriptors",
+      "baseSha": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43415606888,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43415606888",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131852584558,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852584978,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585011,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585026,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585218,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585355,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585387,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585421,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585436,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585438,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585492,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585529,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585550,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585673,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131852585691,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 703,
+      "url": "https://github.com/rybosome/tspice/pull/703",
+      "title": "Audit SPK states, all aberration modes and segment search",
+      "head": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "branch": "codex/parity-spk-states",
+      "base": "codex/parity-spk-files-writers",
+      "baseSha": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43417075614,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43417075614",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131857550116,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550387,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550402,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550478,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550508,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550552,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550569,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550585,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550587,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550588,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550607,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550611,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550656,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550697,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131857550752,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 704,
+      "url": "https://github.com/rybosome/tspice/pull/704",
+      "title": "Audit surface geometry, illumination, occultations and planes",
+      "head": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "branch": "codex/parity-geometry",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43422317297,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43422317297",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131875058955,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059335,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059465,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059476,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059498,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059528,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059709,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059730,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059756,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059828,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059863,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059944,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875059994,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875060075,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131875060166,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 705,
+      "url": "https://github.com/rybosome/tspice/pull/705",
+      "title": "Audit eight GF routines with complete event windows and actual reporter output",
+      "head": "3a648de8a4158f6a18e61f3ee568c3c7e333708c",
+      "branch": "codex/parity-geometry-finder",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "rebaseable": true,
+      "mergeable": true,
+      "ciRun": 43428791524,
+      "ciUrl": "https://github.com/rybosome/tspice/actions/runs/43428791524",
+      "all15Green": true,
+      "jobs": [
+        {
+          "id": 131896751002,
+          "name": "check:llm-artifacts (ubuntu + node 22)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751308,
+          "name": "Verify dist-publish tarball (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751348,
+          "name": "check-native (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751349,
+          "name": "Coverage ledger (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751390,
+          "name": "check-native (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751541,
+          "name": "check-native (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751699,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15-intel) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751710,
+          "name": "check (macos-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751791,
+          "name": "check (ubuntu-latest, 20) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751797,
+          "name": "check (ubuntu-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751823,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (macos-15) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751835,
+          "name": "Smoke: packed @rybosome/tspice + native optionalDependency (ubuntu-latest) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751927,
+          "name": "check (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896751932,
+          "name": "Docs build (ubuntu + node 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 131896752215,
+          "name": "check-native (macos-latest, 22) / run",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "historical": true,
+  "supersededBy": "https://github.com/rybosome/tspice/pull/706",
+  "consolidationObservedAt": "2026-11-13T22:35:19.804502+00:00",
+  "deliveryPolicy": "The original exact-head/base CI snapshot below is historical. Remaining implementation PRs are retained for review; only the consolidated PR #706 targets current main for delivery. Their individual rebaseability is not a merge prerequisite.",
+  "componentSnapshot": [
+    {
+      "number": 681,
+      "url": "https://github.com/rybosome/tspice/pull/681",
+      "title": "Audit coordinate and matrix parity with strict axis validation",
+      "state": "closed",
+      "merged": true,
+      "head": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "branch": "codex/parity-coordinates-matrices",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": "eae36117b5c9fc3ee5efdd48fb6fa77b456d3080"
+    },
+    {
+      "number": 682,
+      "url": "https://github.com/rybosome/tspice/pull/682",
+      "title": "Audit raw error state and preserve diagnostics and traceback cleanup",
+      "state": "closed",
+      "merged": true,
+      "head": "bb23c707bd70f78f4c42b9751aa8c322e6b08a72",
+      "branch": "codex/parity-error-state",
+      "base": "main",
+      "baseSha": "eae36117b5c9fc3ee5efdd48fb6fa77b456d3080",
+      "mergeCommit": "22f45b80b1472fc5130b24a8c4e754acbbac3ad0"
+    },
+    {
+      "number": 683,
+      "url": "https://github.com/rybosome/tspice/pull/683",
+      "title": "Enforce cell backing capacity and repair constructor allocation failures",
+      "state": "closed",
+      "merged": true,
+      "head": "91b31ea8f861c361624aa24f87f71a63ea456cc1",
+      "branch": "codex/cell-capacity-guards",
+      "base": "main",
+      "baseSha": "22f45b80b1472fc5130b24a8c4e754acbbac3ad0",
+      "mergeCommit": "373b55ddd85eb3b926f9c6f48e0d254b5e1afb4f"
+    },
+    {
+      "number": 684,
+      "url": "https://github.com/rybosome/tspice/pull/684",
+      "title": "Preserve WASM cell ownership and lifetime across pointer reuse",
+      "state": "closed",
+      "merged": true,
+      "head": "5b77abcad6d0ac32e4d05c50b84fca0353342a5c",
+      "branch": "codex/wasm-cell-handle-lifetimes",
+      "base": "main",
+      "baseSha": "373b55ddd85eb3b926f9c6f48e0d254b5e1afb4f",
+      "mergeCommit": "1bc826b0af877dde0ca305216a503a8367929456"
+    },
+    {
+      "number": 685,
+      "url": "https://github.com/rybosome/tspice/pull/685",
+      "title": "Audit raw cell/window contents, boundaries and recovery",
+      "state": "closed",
+      "merged": true,
+      "head": "2c2f8f48ed93864e720643420e0ef8279c158286",
+      "branch": "codex/parity-cells-windows",
+      "base": "main",
+      "baseSha": "1bc826b0af877dde0ca305216a503a8367929456",
+      "mergeCommit": "54a226e3a8b093f611c7dcfd5ac398a36b0ebd25"
+    },
+    {
+      "number": 686,
+      "url": "https://github.com/rybosome/tspice/pull/686",
+      "title": "Audit kernel-pool values, paging and watch notifications",
+      "state": "closed",
+      "merged": true,
+      "head": "8e35dedf80fd9882045732ef5da58ba5eb360664",
+      "branch": "codex/parity-kernel-pool",
+      "base": "main",
+      "baseSha": "54a226e3a8b093f611c7dcfd5ac398a36b0ebd25",
+      "mergeCommit": "748e3836ffaaab223c55f16fab9afee01e9e43e5"
+    },
+    {
+      "number": 687,
+      "url": "https://github.com/rybosome/tspice/pull/687",
+      "title": "Audit body names, ID translation and complete constant retrieval",
+      "state": "closed",
+      "merged": true,
+      "head": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "branch": "codex/parity-ids-names",
+      "base": "main",
+      "baseSha": "748e3836ffaaab223c55f16fab9afee01e9e43e5",
+      "mergeCommit": "c5f0b058da08940f2fc7cb0453c9508663d91434"
+    },
+    {
+      "number": 688,
+      "url": "https://github.com/rybosome/tspice/pull/688",
+      "title": "Audit time parsing, formatting and persistent defaults",
+      "state": "open",
+      "merged": false,
+      "head": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "branch": "codex/parity-time-formats",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 689,
+      "url": "https://github.com/rybosome/tspice/pull/689",
+      "title": "Audit UTC and spacecraft clock partitions, precision and recovery",
+      "state": "open",
+      "merged": false,
+      "head": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "branch": "codex/parity-time-sclk",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 690,
+      "url": "https://github.com/rybosome/tspice/pull/690",
+      "title": "Audit kernel lifecycle, metadata and exact keyword extraction",
+      "state": "open",
+      "merged": false,
+      "head": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "branch": "codex/parity-kernel-lifecycle",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 691,
+      "url": "https://github.com/rybosome/tspice/pull/691",
+      "title": "Preserve opaque file handle ownership across backends",
+      "state": "open",
+      "merged": false,
+      "head": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "branch": "codex/file-handle-owner-identity",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "d1f161af6f6b2376dfae4796fb8a3a8662722ccb",
+      "mergeCommit": null
+    },
+    {
+      "number": 692,
+      "url": "https://github.com/rybosome/tspice/pull/692",
+      "title": "Audit DAF and DAS reader state, descriptors and cleanup",
+      "state": "open",
+      "merged": false,
+      "head": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "branch": "codex/parity-file-readers",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "775d178d254ae4e7917fad95b25bf89caae56084"
+    },
+    {
+      "number": 693,
+      "url": "https://github.com/rybosome/tspice/pull/693",
+      "title": "Keep the DSK traversal fixture offline to prevent CI timeouts",
+      "state": "open",
+      "merged": false,
+      "head": "bf8c7ec81626629ab0b6c2ea3820ee3f2c66bc7e",
+      "branch": "codex/ci-dsk-fixture-offline",
+      "base": "main",
+      "baseSha": "e96d7cb854bd20085e3d6293117f535ecf9b1648",
+      "mergeCommit": "58c8813025c2b273fb62e6bd8d37f7fc3443d9a9"
+    },
+    {
+      "number": 694,
+      "url": "https://github.com/rybosome/tspice/pull/694",
+      "title": "Audit DLA/DSK writers and guard spatial-index bounds",
+      "state": "open",
+      "merged": false,
+      "head": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "branch": "codex/parity-file-writers",
+      "base": "codex/parity-file-readers",
+      "baseSha": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "mergeCommit": "1e644af8264f266f7ba59adb226f98337cc2b72b"
+    },
+    {
+      "number": 695,
+      "url": "https://github.com/rybosome/tspice/pull/695",
+      "title": "Audit DSK query unions, descriptor layout and resource boundaries",
+      "state": "open",
+      "merged": false,
+      "head": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "branch": "codex/parity-dsk-queries",
+      "base": "codex/parity-file-writers",
+      "baseSha": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "mergeCommit": "612f8b6aebc9dc632513e86f796ac84cff341d5b"
+    },
+    {
+      "number": 696,
+      "url": "https://github.com/rybosome/tspice/pull/696",
+      "title": "Audit EK file and segment lifecycle and repair allocation and cleanup defects",
+      "state": "open",
+      "merged": false,
+      "head": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "branch": "codex/parity-ek-lifecycle",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "db398638b02b51ba4d9b19cde5c2f54f6e06d7f9"
+    },
+    {
+      "number": 697,
+      "url": "https://github.com/rybosome/tspice/pull/697",
+      "title": "Audit EK columns and query results and guard native storage boundaries",
+      "state": "open",
+      "merged": false,
+      "head": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "branch": "codex/parity-ek-columns-queries",
+      "base": "codex/parity-ek-lifecycle",
+      "baseSha": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "mergeCommit": "e319a5394c5245f5d9fd2a1cd9f639787dcf4f9e"
+    },
+    {
+      "number": 698,
+      "url": "https://github.com/rybosome/tspice/pull/698",
+      "title": "Audit frame metadata and dynamic transforms with allocation and error fidelity",
+      "state": "open",
+      "merged": false,
+      "head": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "branch": "codex/parity-frame-lookups-transforms",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 699,
+      "url": "https://github.com/rybosome/tspice/pull/699",
+      "title": "Audit CK pointing, coverage, priority and cleanup against live CSPICE",
+      "state": "open",
+      "merged": false,
+      "head": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "branch": "codex/parity-ck-pointing-coverage",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "dd3da057141454297d0e27971413c44b9441402e"
+    },
+    {
+      "number": 700,
+      "url": "https://github.com/rybosome/tspice/pull/700",
+      "title": "Preserve opaque SPK descriptor bits and audit pack/unpack parity",
+      "state": "open",
+      "merged": false,
+      "head": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "branch": "codex/parity-spk-descriptors",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "aaac937e1bb7da81bac5f7b612d25cb0896df482"
+    },
+    {
+      "number": 701,
+      "url": "https://github.com/rybosome/tspice/pull/701",
+      "title": "Keep ephemeris fixture tests offline with exact tracked hashes",
+      "state": "open",
+      "merged": false,
+      "head": "b1c64b096451f7f836db09be3d8bc79544dbcfb8",
+      "branch": "codex/offline-ephemeris-test-fixtures",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": "1696315c69b5299e06a84c46a852e8b3208f479a"
+    },
+    {
+      "number": 702,
+      "url": "https://github.com/rybosome/tspice/pull/702",
+      "title": "Audit SPK file lifecycle, type8 writers and complete coverage outputs",
+      "state": "open",
+      "merged": false,
+      "head": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "branch": "codex/parity-spk-files-writers",
+      "base": "codex/parity-spk-descriptors",
+      "baseSha": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "mergeCommit": "b05ed60215287d586ec135a7ce1823099c8a0afc"
+    },
+    {
+      "number": 703,
+      "url": "https://github.com/rybosome/tspice/pull/703",
+      "title": "Audit SPK states, all aberration modes and segment search",
+      "state": "open",
+      "merged": false,
+      "head": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "branch": "codex/parity-spk-states",
+      "base": "codex/parity-spk-files-writers",
+      "baseSha": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "mergeCommit": "4c52f9d8c290d1c94a1a3de95a20f98134f703b7"
+    },
+    {
+      "number": 704,
+      "url": "https://github.com/rybosome/tspice/pull/704",
+      "title": "Audit surface geometry, illumination, occultations and planes",
+      "state": "open",
+      "merged": false,
+      "head": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "branch": "codex/parity-geometry",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 705,
+      "url": "https://github.com/rybosome/tspice/pull/705",
+      "title": "Audit eight GF routines with complete event windows and actual reporter output",
+      "state": "open",
+      "merged": false,
+      "head": "3a648de8a4158f6a18e61f3ee568c3c7e333708c",
+      "branch": "codex/parity-geometry-finder",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "d1f161af6f6b2376dfae4796fb8a3a8662722ccb",
+      "mergeCommit": null
+    }
+  ]
+}

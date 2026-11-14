@@ -21,28 +21,69 @@ export type CkCoverageTimeSystem = "SCLK" | "TDB";
 
 /** Backend contract for frame/name lookups, CK access, and frame transformations. */
 export interface FramesApi {
-  /** SPICE `namfrm_c`: look up a frame code by frame name. */
+  /**
+   * Resolve a frame name; case and outer blanks are insignificant.
+   * @param name Frame name; empty strings signal EMPTYSTRING.
+   * @returns Frame code, or found:false for CSPICE's unknown-name code 0 sentinel.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/namfrm_c.html
+   */
   namfrm(name: string): Found<{ code: number }>;
-  /** SPICE `frmnam_c`: look up a frame name by frame code. */
+  /**
+   * Resolve a signed int32 frame code, including loaded kernel definitions.
+   * @returns Complete frame name (up to 32 characters), or found:false for an unknown ID.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frmnam_c.html
+   */
   frmnam(code: number): Found<{ name: string }>;
 
-  /** SPICE `cidfrm_c`: look up frame information for a center body ID. */
+  /**
+   * Resolve a center body's preferred frame, including `OBJECT_<id>_FRAME` overrides.
+   * @param center Signed int32 body ID; unknown centers are normal misses.
+   * @returns Preferred frame code/name, or found:false. The frame code differs from center ID.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cidfrm_c.html
+   */
   cidfrm(center: number): Found<{ frcode: number; frname: string }>;
-  /** SPICE `cnmfrm_c`: look up frame information for a center body name. */
+  /**
+   * Resolve a body name/alias to its preferred frame using current loaded mappings.
+   * @param centerName Body name; case/outer blanks are insignificant. Empty input throws.
+   * @returns Complete preferred frame code/name, or found:false for an unknown body.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cnmfrm_c.html
+   */
   cnmfrm(centerName: string): Found<{ frcode: number; frname: string }>;
 
-  /** SPICE `frinfo_c`: get center + frame class info for a frame ID. */
+  /**
+   * Retrieve frame center, class and class ID for a signed int32 frame code.
+   * @returns All three distinct fields, or found:false for an unknown frame.
+   * Incomplete/malformed loaded definitions throw actual toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frinfo_c.html
+   */
   frinfo(
     frameId: number,
   ): Found<{ center: number; frameClass: number; classId: number }>;
 
-  /** SPICE `ccifrm_c`: map frame class + class ID to a frame code/name/center triple. */
+  /**
+   * Resolve signed int32 class/class-ID into frame code/name/center.
+   * @returns Complete triple, or found:false for an unmatched pair. Class ID can differ
+   * from frame code. Caller must avoid conflicting duplicate class/class-ID definitions.
+   * Malformed matching frame metadata throws actual toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ccifrm_c.html
+   */
   ccifrm(
     frameClass: number,
     classId: number,
   ): Found<{ frcode: number; frname: string; center: number }>;
 
-  /** Get pointing (attitude) for a CK instrument at a given encoded spacecraft clock time. */
+  /**
+   * Get CK pointing (`ckgp_c`) from reference coordinates to instrument coordinates.
+   *
+   * @param inst Signed instrument ID.
+   * @param sclkdp Encoded spacecraft clock ticks, not ET seconds.
+   * @param tol Search tolerance in encoded ticks; negative tolerance returns a miss.
+   * @param ref Reference frame name.
+   * @returns Found row-major 3x3 matrix and actual selected encoded `clkout`, or a miss.
+   * Interpolation gaps and segment/file priority follow CSPICE. Real toolkit errors
+   * (including no loaded CK files) remain errors, distinct from `found:false`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgp_c.html
+   */
   ckgp(
     inst: number,
     sclkdp: number,
@@ -50,7 +91,15 @@ export interface FramesApi {
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; clkout: number }>;
 
-  /** Get pointing + angular velocity for a CK instrument at a given encoded spacecraft clock time. */
+  /**
+   * Get CK pointing and angular velocity (`ckgpav_c`).
+   *
+   * Inputs and the row-major matrix/encoded clock follow {@link FramesApi.ckgp}.
+   * AV is instrument-relative-to-reference angular velocity, expressed in `ref`,
+   * in radians/second. Only AV-bearing segments are eligible; no such segment is
+   * a miss. All three AV components are returned only when `found:true`.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgpav_c.html
+   */
   ckgpav(
     inst: number,
     sclkdp: number,
@@ -63,17 +112,42 @@ export interface FramesApi {
   /**
    * Load a CK file for access by pointing routines (`cklpf_c`).
    *
-   * Returns a CK file handle suitable for {@link FramesApi.ckupf}.
+   * @returns Actual numeric CK handle suitable for {@link FramesApi.ckupf}.
+   * Reloading the same file returns its existing handle and raises its search
+   * priority; this is not reference counting. CKLPF does not add a FURNSH table
+   * entry. Native backends share process SPICE state; use process/worker isolation
+   * for independent state. Handles are not portable between isolated states.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cklpf_c.html
    */
   cklpf(ck: string): number;
 
-  /** Unload a CK file previously loaded by {@link FramesApi.cklpf} (`ckupf_c`). */
+  /**
+   * Unload/close the physical CK loaded by {@link FramesApi.cklpf} (`ckupf_c`).
+   * One unload removes a duplicate-load alias too; an unknown valid numeric
+   * handle is a no-op. This public API accepts nonnegative signed-int32 handles.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckupf_c.html
+   */
   ckupf(handle: number): void;
 
-  /** Return the set of instrument/object IDs for which the specified CK has segments (`ckobj_c`). */
+  /**
+   * Append every instrument ID present in `ck` to the supplied integer set (`ckobj_c`).
+   * Existing IDs are preserved, sorted and deduplicated. No pointing load is needed.
+   * Insufficient capacity signals SETEXCESS; zero capacity is valid for an empty CK.
+   * The cell must be live and owned by the backend that allocated it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckobj_c.html
+   */
   ckobj(ck: string, ids: SpiceIntCell): void;
 
-  /** Return coverage for an instrument/object in a CK file (`ckcov_c`). */
+  /**
+   * Append CK coverage for `idcode` to a supplied live double window (`ckcov_c`).
+   * SEGMENT returns segment bounds; INTERVAL respects interpolation gaps.
+   * `needav` filters out segments without angular velocity. `tol` is nonnegative
+   * encoded ticks for both time systems, expands coverage, and may merge intervals.
+   * TDB output converts to ET seconds and requires spacecraft-clock coefficients.
+   * Existing window intervals are unioned; missing objects yield no new intervals.
+   * Capacity errors signal WINDOWEXCESS; output after a toolkit error is unspecified.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckcov_c.html
+   */
   ckcov(
     ck: string,
     idcode: number,
@@ -84,9 +158,20 @@ export interface FramesApi {
     cover: SpiceWindow,
   ): void;
 
-  /** Compute a 3x3 frame transformation matrix (row-major). */
+  /**
+   * Map column position vectors from one frame to another at a finite ET.
+   * @param et TDB ephemeris seconds past J2000; negative epochs are valid.
+   * @returns All 9 row-major rotation entries. Unknown frames/missing orientation data throw.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxform_c.html
+   */
   pxform(from: string, to: string, et: number): Mat3RowMajor;
 
-  /** Compute a 6x6 state transformation matrix (row-major). */
+  /**
+   * Map position/velocity states from one frame to another at a finite TDB ET.
+   * @param et Ephemeris seconds past J2000; derivative rates are per second.
+   * @returns Mutable 36-element row-major tuple, with blocks [R,0;dR/dt,R].
+   * Unknown frames/missing orientation data throw; every returned component is finite.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sxform_c.html
+   */
   sxform(from: string, to: string, et: number): SpiceMatrix6x6;
 }

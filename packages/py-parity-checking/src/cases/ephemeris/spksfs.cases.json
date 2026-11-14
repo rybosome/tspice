@@ -24,11 +24,23 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
-      { "op": "kernels.furnsh", "file": "kernels/ephemeris-spksfs-happy.bsp" },
-      { "op": "ephemeris.spksfs", "body": 1000, "et": 60 }
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/ephemeris-spksfs-happy.bsp"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 1000,
+        "et": 60
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spksfs-not-found-success",
@@ -55,13 +67,253 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H2" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H2"
+      },
       {
         "op": "kernels.furnsh",
         "file": "kernels/ephemeris-spksfs-not-found.bsp"
       },
-      { "op": "ephemeris.spksfs", "body": 999999, "et": 60 }
+      {
+        "op": "ephemeris.spksfs",
+        "body": 999999,
+        "et": 60
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-no-files-error",
+    "description": "A true toolkit NOLOADEDFILES error must not be converted into found:false",
+    "workflow": [
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-negative-center",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": -100011,
+        "descrId": "D"
+      },
+      {
+        "op": "ephemeris.spkuds",
+        "descrId": "D"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-coverage-gap",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 50,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-unknown-object",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-first-endpoint",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": -1000,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-last-endpoint",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 1000,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-outside",
+    "description": "Observe complete found flag, segment identifier, TDB bounds and all six packed integers; negative center is unpacked through the real descriptor",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 1000.001,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-priority-unload-reload",
+    "description": "Observe selected segment changes after load/unload, cache reuse and reverse load order",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 100001
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 100001
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 100001
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-priority.bsp"
+        }
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "et": 125.25,
+        "body": 100001
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spksfs-audit-loaded-empty",
+    "description": "A loaded valid empty SPK produces a genuine miss, distinct from NOLOADEDFILES",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": {
+          "kind": "fixture",
+          "rel": "kernels/audit-ephemeris-empty.bsp"
+        }
+      },
+      {
+        "op": "ephemeris.spksfs",
+        "body": 100001,
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

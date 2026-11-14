@@ -390,7 +390,7 @@ export type NativeAddon = {
   spksfs(
     body: number,
     et: number,
-  ): { found: boolean; handle?: number; descr?: number[]; ident?: string };
+  ): { found: boolean; handle?: number; descr?: Float64Array; ident?: string };
 
   spkpds(
     body: number,
@@ -399,8 +399,8 @@ export type NativeAddon = {
     type: number,
     first: number,
     last: number,
-  ): number[];
-  spkuds(descr: ReadonlyArray<number>): {
+  ): Float64Array;
+  spkuds(descr: Float64Array): {
     body: number;
     center: number;
     frame: number;

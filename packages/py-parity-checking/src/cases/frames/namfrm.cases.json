@@ -2,13 +2,103 @@
   {
     "caseId": "frames-namfrm-found-success",
     "description": "namfrm resolves J2000 -> frame code",
-    "workflow": [{ "op": "frames.namfrm", "name": "J2000" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "name": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-namfrm-not-found-success",
     "description": "namfrm miss returns found=false via code=0 sentinel",
-    "workflow": [{ "op": "frames.namfrm", "name": "NOT_A_FRAME" }],
-    "expectation": { "kind": "success" }
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "name": "NOT_A_FRAME"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-namfrm-audit-builtins-case-and-blanks",
+    "description": "Case/outer blanks are insignificant for known names, while a real miss yields found:false; every actual code reaches comparison.",
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "name": "  j2000  "
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "eclipj2000"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "B1950"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "NOT_A_FRAME"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+    "description": "Observe unknown/negative static ID/dynamic ID/unknown transitions across actual frame load/unload without confusing loaded state and cached builtins.",
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "name": "AUDIT_FIXED_12345678901234"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "audit_fixed_12345678901234"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "AUDIT_SPIN"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-frames.tf"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "AUDIT_FIXED_12345678901234"
+      },
+      {
+        "op": "frames.namfrm",
+        "name": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-namfrm-audit-empty-name",
+    "description": "Actual empty C string signals EMPTYSTRING rather than a normal unknown-name miss.",
+    "workflow": [
+      {
+        "op": "frames.namfrm",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
   }
 ]

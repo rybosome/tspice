@@ -3,17 +3,75 @@
     "caseId": "file-io-exists-fixture-present-success",
     "description": "exists reports true for fixture path after furnsh staging",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "file-io.exists", "path": "kernels/naif0012.tls" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "file-io.exists",
+        "path": "kernels/naif0012.tls"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-exists-missing-file-success",
     "description": "exists reports false for a missing fixture-relative file",
     "workflow": [
-      { "op": "file-io.exists", "path": "kernels/does-not-exist.any" }
+      {
+        "op": "file-io.exists",
+        "path": "kernels/does-not-exist.any"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-exists-audit-create-open-close-lifecycle",
+    "description": "Observe false before creation and true both while open and after actual close; scratch is removed after finalization.",
+    "workflow": [
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "created.dla"
+        }
+      },
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "created.dla"
+        },
+        "ftype": "DLA",
+        "ifname": "AUTHORED_EXISTS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "created.dla"
+        }
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "w"
+      },
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "created.dla"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

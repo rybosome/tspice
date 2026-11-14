@@ -563,6 +563,21 @@ int tspice_dskw02(
     return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixiLen must be >= SPICE_DSK02_IXIFIX");
   }
 
+  /* N0067 reads these variable arrays after the fixed coarse-grid block.
+     It reads NV vertex pointers even when the vertex-plate list is absent.
+     Validate backing before CSPICE computes offsets or dereferences storage. */
+  const int32_t voxelPointers = spaixi[SPICE_DSK02_SIVXNP];
+  const int32_t voxelList = spaixi[SPICE_DSK02_SIVXNL];
+  const int32_t vertexList = spaixi[SPICE_DSK02_SIVTNL];
+  if (voxelPointers < 0 || voxelList < 0 || vertexList < 0) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixi component lengths must be nonnegative");
+  }
+  const uint64_t required = (uint64_t)SPICE_DSK02_IXIFIX +
+      (uint64_t)voxelPointers + (uint64_t)voxelList + (uint64_t)nv + (uint64_t)vertexList;
+  if (required > (uint64_t)spaixiLen) {
+    return tspice_return_error(err, errMaxBytes, "tspice_dskw02: spaixi is too short for its declared index components");
+  }
+
   dskw02_c(
       (SpiceInt)handle,
       (SpiceInt)center,

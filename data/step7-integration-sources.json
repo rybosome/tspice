@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
+  "mainAtAssembly": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+  "purpose": "Single merge delivery for all remaining reviewed Step 7 work through PR #706 on current main. All 162 routines / 324 backend judgments have fresh local and observed canonical verification. Original PRs #688-#705 remain review records, merged #681-#687 are deduplicated and historical source/job evidence is preserved. Final verification-metadata checks precede handoff; no PR/main merge performed.",
+  "batches": [
+    {
+      "batch": "vectors-arithmetic",
+      "pr": "https://github.com/rybosome/tspice/pull/679",
+      "routines": [
+        "vadd_c",
+        "vcrss_c",
+        "vdot_c",
+        "vhat_c",
+        "vminus_c",
+        "vnorm_c",
+        "vscl_c",
+        "vsub_c"
+      ],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "reviewPRHead": "cbfcf156a72987957c484d99b6b9a14ce44e00f3",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "kplfrm-prerequisite",
+      "pr": "https://github.com/rybosome/tspice/pull/680",
+      "routines": ["kplfrm_c"],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "reviewPRHead": "e68c37e39e9264c265abb7adde08105deaea523d",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "cell-capacity-prerequisite",
+      "pr": "https://github.com/rybosome/tspice/pull/684",
+      "routines": ["ssize_c", "valid_c", "wnvald_c"],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "reviewPRHead": "3027f291e3c4e7f333ad81fe96b06b51604a3e79",
+      "currentReviewPRHead": "5b77abcad6d0ac32e4d05c50b84fca0353342a5c",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "coordinates-matrices",
+      "pr": "https://github.com/rybosome/tspice/pull/681",
+      "routines": [
+        "axisar_c",
+        "georec_c",
+        "latrec_c",
+        "mtxv_c",
+        "mxm_c",
+        "mxv_c",
+        "recgeo_c",
+        "reclat_c",
+        "recsph_c",
+        "rotate_c",
+        "rotmat_c",
+        "sphrec_c"
+      ],
+      "auditRecordSourceCommit": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "reviewPRHead": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "currentReviewPRHead": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "error",
+      "pr": "https://github.com/rybosome/tspice/pull/682",
+      "routines": [
+        "chkin_c",
+        "chkout_c",
+        "failed_c",
+        "getmsg_c",
+        "reset_c",
+        "setmsg_c",
+        "sigerr_c"
+      ],
+      "auditRecordSourceCommit": "f87df8b4f3fc219d8279e271e5f3e536e478bbae",
+      "reviewPRHead": "f87df8b4f3fc219d8279e271e5f3e536e478bbae",
+      "currentReviewPRHead": "bb23c707bd70f78f4c42b9751aa8c322e6b08a72",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "cells-windows",
+      "pr": "https://github.com/rybosome/tspice/pull/685",
+      "routines": [
+        "card_c",
+        "insrtc_c",
+        "insrtd_c",
+        "insrti_c",
+        "scard_c",
+        "size_c",
+        "wncard_c",
+        "wnfetd_c",
+        "wninsd_c"
+      ],
+      "auditRecordSourceCommit": "497313aad0c4c80765a70ac323b332f897d897b5",
+      "reviewPRHead": "497313aad0c4c80765a70ac323b332f897d897b5",
+      "currentReviewPRHead": "2c2f8f48ed93864e720643420e0ef8279c158286",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "kernel-pool",
+      "pr": "https://github.com/rybosome/tspice/pull/686",
+      "routines": [
+        "cvpool_c",
+        "dtpool_c",
+        "expool_c",
+        "gcpool_c",
+        "gdpool_c",
+        "gipool_c",
+        "gnpool_c",
+        "pcpool_c",
+        "pdpool_c",
+        "pipool_c",
+        "swpool_c"
+      ],
+      "auditRecordSourceCommit": "e27adddbfe768471780a4bc1683141182452f2bc",
+      "reviewPRHead": "e27adddbfe768471780a4bc1683141182452f2bc",
+      "currentReviewPRHead": "8e35dedf80fd9882045732ef5da58ba5eb360664",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "ids-names",
+      "pr": "https://github.com/rybosome/tspice/pull/687",
+      "routines": [
+        "bodc2n_c",
+        "bodc2s_c",
+        "boddef_c",
+        "bodfnd_c",
+        "bodn2c_c",
+        "bods2c_c",
+        "bodvar_c"
+      ],
+      "auditRecordSourceCommit": "62393108d1af9bdfc3f3f7189af39b2dce532489",
+      "reviewPRHead": "62393108d1af9bdfc3f3f7189af39b2dce532489",
+      "currentReviewPRHead": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "reviewPRState": "closed",
+      "delivery": "already-on-main",
+      "maintainedRecordSourceCommit": "3f67a51240ae3bc238066beb6c3ac561af64e60f"
+    },
+    {
+      "batch": "time-2",
+      "pr": "https://github.com/rybosome/tspice/pull/688",
+      "routines": [
+        "str2et_c",
+        "timdef_c",
+        "timout_c",
+        "tkvrsn_c",
+        "tparse_c",
+        "tpictr_c",
+        "unitim_c"
+      ],
+      "auditRecordSourceCommit": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "reviewPRHead": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "currentReviewPRHead": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "time-1",
+      "pr": "https://github.com/rybosome/tspice/pull/689",
+      "routines": [
+        "deltet_c",
+        "et2utc_c",
+        "scdecd_c",
+        "sce2c_c",
+        "sce2s_c",
+        "scencd_c",
+        "scs2e_c",
+        "sct2e_c"
+      ],
+      "auditRecordSourceCommit": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "reviewPRHead": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "currentReviewPRHead": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "kernels",
+      "pr": "https://github.com/rybosome/tspice/pull/690",
+      "routines": [
+        "furnsh_c",
+        "kclear_c",
+        "kdata_c",
+        "kinfo_c",
+        "ktotal_c",
+        "kxtrct_c",
+        "unload_c"
+      ],
+      "auditRecordSourceCommit": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "reviewPRHead": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "currentReviewPRHead": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "file-io-1",
+      "pr": "https://github.com/rybosome/tspice/pull/692",
+      "routines": [
+        "dafbfs_c",
+        "dafcls_c",
+        "daffna_c",
+        "dafopr_c",
+        "dascls_c",
+        "dasopr_c",
+        "dlabfs_c",
+        "dlacls"
+      ],
+      "auditRecordSourceCommit": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "reviewPRHead": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "currentReviewPRHead": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "file-io-2",
+      "pr": "https://github.com/rybosome/tspice/pull/694",
+      "routines": [
+        "dlafns_c",
+        "dlaopn_c",
+        "dskmi2_c",
+        "dskopn_c",
+        "dskw02_c",
+        "exists_c",
+        "getfat_c"
+      ],
+      "auditRecordSourceCommit": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "reviewPRHead": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "currentReviewPRHead": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "dsk",
+      "pr": "https://github.com/rybosome/tspice/pull/695",
+      "routines": ["dskb02_c", "dskgd_c", "dskobj_c", "dsksrf_c"],
+      "auditRecordSourceCommit": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "reviewPRHead": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "currentReviewPRHead": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "ek-2",
+      "pr": "https://github.com/rybosome/tspice/pull/696",
+      "routines": [
+        "ekcls_c",
+        "ekifld_c",
+        "eknseg_c",
+        "ekntab_c",
+        "ekopn_c",
+        "ekopr_c",
+        "ekopw_c",
+        "ektnam_c"
+      ],
+      "auditRecordSourceCommit": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "reviewPRHead": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "currentReviewPRHead": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "ek-1",
+      "pr": "https://github.com/rybosome/tspice/pull/697",
+      "routines": [
+        "ekaclc_c",
+        "ekacld_c",
+        "ekacli_c",
+        "ekffld_c",
+        "ekfind_c",
+        "ekgc_c",
+        "ekgd_c",
+        "ekgi_c"
+      ],
+      "auditRecordSourceCommit": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "reviewPRHead": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "currentReviewPRHead": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "frames-2",
+      "pr": "https://github.com/rybosome/tspice/pull/698",
+      "routines": [
+        "ccifrm_c",
+        "cidfrm_c",
+        "cnmfrm_c",
+        "frinfo_c",
+        "frmnam_c",
+        "namfrm_c",
+        "pxform_c",
+        "sxform_c"
+      ],
+      "auditRecordSourceCommit": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "reviewPRHead": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "currentReviewPRHead": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "frames-1",
+      "pr": "https://github.com/rybosome/tspice/pull/699",
+      "routines": [
+        "ckcov_c",
+        "ckgp_c",
+        "ckgpav_c",
+        "cklpf_c",
+        "ckobj_c",
+        "ckupf_c"
+      ],
+      "auditRecordSourceCommit": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "reviewPRHead": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "currentReviewPRHead": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "ephemeris-descriptors",
+      "pr": "https://github.com/rybosome/tspice/pull/700",
+      "routines": ["spkpds_c", "spkuds_c"],
+      "auditRecordSourceCommit": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "reviewPRHead": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "currentReviewPRHead": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "ephemeris-1",
+      "pr": "https://github.com/rybosome/tspice/pull/702",
+      "routines": [
+        "spkcls_c",
+        "spkcov_c",
+        "spkobj_c",
+        "spkopa_c",
+        "spkopn_c",
+        "spkw08_c"
+      ],
+      "auditRecordSourceCommit": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "reviewPRHead": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "currentReviewPRHead": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "ephemeris-2",
+      "pr": "https://github.com/rybosome/tspice/pull/703",
+      "routines": [
+        "spkez_c",
+        "spkezp_c",
+        "spkezr_c",
+        "spkgeo_c",
+        "spkgps_c",
+        "spkpos_c",
+        "spksfs_c",
+        "spkssb_c"
+      ],
+      "auditRecordSourceCommit": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "reviewPRHead": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "currentReviewPRHead": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "geometry",
+      "pr": "https://github.com/rybosome/tspice/pull/704",
+      "routines": [
+        "illumf_c",
+        "illumg_c",
+        "ilumin_c",
+        "nvc2pl_c",
+        "occult_c",
+        "pl2nvc_c",
+        "sincpt_c",
+        "subpnt_c",
+        "subslr_c"
+      ],
+      "auditRecordSourceCommit": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "reviewPRHead": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "currentReviewPRHead": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    },
+    {
+      "batch": "geometry-gf",
+      "pr": "https://github.com/rybosome/tspice/pull/705",
+      "routines": [
+        "gfdist_c",
+        "gfrefn_c",
+        "gfrepf_c",
+        "gfrepi_c",
+        "gfsep_c",
+        "gfsstp_c",
+        "gfstep_c",
+        "gfstol_c"
+      ],
+      "auditRecordSourceCommit": "71e30af5504b95af6307d839b5bee41ec6629099",
+      "reviewPRHead": "3a648de8a4158f6a18e61f3ee568c3c7e333708c",
+      "currentReviewPRHead": "3a648de8a4158f6a18e61f3ee568c3c7e333708c",
+      "reviewPRState": "open",
+      "delivery": "consolidated-in-706"
+    }
+  ],
+  "combinedWasmSha256": "31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911",
+  "resolutions": [
+    "Preserve both frame utility and CK helpers/imports.",
+    "Combine SPK/EK/CK/DAF/DAS/DSK early-close paths and retain failed claims before Scratch deletion.",
+    "Combine KernelKindInput/FoundDlaDescriptor imports, permissive TIMDEF error inputs and complete GF window payload types.",
+    "Retain disjoint audit/provenance documentation; remove known kernel README conflict text.",
+    "Carry ID audit direct BODFND and fail-closed composed BODVAR ledger expectations.",
+    "Regenerate combined WASM through its pinned owning script.",
+    "Rebuild a linear delivery branch from current main c5f0b058; preserve already-merged implementation bytes and apply only remaining changes.",
+    "Preserve newer main/#687 human assessments and all historical executions alongside the original assembly evidence.",
+    "Retain PRs #688-#705 as review records and use #706 as the sole merge target; required integrated verification is refreshed once."
+  ],
+  "assemblyBaseCommit": "1931af4f3ce46fbcc1041c290561145f2d399cca",
+  "supportPRs": [
+    {
+      "pr": "https://github.com/rybosome/tspice/pull/691",
+      "head": "66110f259f7bbe99af4958c405e814dfc55a5d5e"
+    },
+    {
+      "pr": "https://github.com/rybosome/tspice/pull/693",
+      "head": "bf8c7ec81626629ab0b6c2ea3820ee3f2c66bc7e"
+    },
+    {
+      "pr": "https://github.com/rybosome/tspice/pull/701",
+      "head": "b1c64b096451f7f836db09be3d8bc79544dbcfb8"
+    }
+  ],
+  "foundationsMergedExternally": [
+    "https://github.com/rybosome/tspice/pull/678",
+    "https://github.com/rybosome/tspice/pull/679",
+    "https://github.com/rybosome/tspice/pull/680",
+    "https://github.com/rybosome/tspice/pull/681",
+    "https://github.com/rybosome/tspice/pull/682",
+    "https://github.com/rybosome/tspice/pull/683",
+    "https://github.com/rybosome/tspice/pull/684",
+    "https://github.com/rybosome/tspice/pull/685",
+    "https://github.com/rybosome/tspice/pull/686",
+    "https://github.com/rybosome/tspice/pull/687"
+  ],
+  "historicalCanonicalVerifications": [
+    {
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "ciRun": "https://github.com/rybosome/tspice/actions/runs/43428741796",
+      "nativeRequiredJob": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "all15JobsPassed": true,
+      "verifiedRoutines": 162,
+      "verifiedBackendJudgments": 324,
+      "liveComparisons": 2218,
+      "nativeRequiredParityPackageTests": 2431,
+      "nativeRequiredSkips": 0,
+      "historical": true
+    }
+  ],
+  "mainAtConsolidation": "c5f0b058da08940f2fc7cb0453c9508663d91434",
+  "previousIntegrationHead": "43a4f952d07896561b8aedecab6da54cee064cb7",
+  "deliveryPR": "https://github.com/rybosome/tspice/pull/706",
+  "consolidatedReviewPRs": [
+    688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702,
+    703, 704, 705
+  ],
+  "componentSnapshotObservedAt": "2026-11-13T22:35:19.804502+00:00",
+  "componentSnapshot": [
+    {
+      "number": 681,
+      "url": "https://github.com/rybosome/tspice/pull/681",
+      "title": "Audit coordinate and matrix parity with strict axis validation",
+      "state": "closed",
+      "merged": true,
+      "head": "8d79ab430bcd94d25e1ef39fa0ab04d15e7c5245",
+      "branch": "codex/parity-coordinates-matrices",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": "eae36117b5c9fc3ee5efdd48fb6fa77b456d3080"
+    },
+    {
+      "number": 682,
+      "url": "https://github.com/rybosome/tspice/pull/682",
+      "title": "Audit raw error state and preserve diagnostics and traceback cleanup",
+      "state": "closed",
+      "merged": true,
+      "head": "bb23c707bd70f78f4c42b9751aa8c322e6b08a72",
+      "branch": "codex/parity-error-state",
+      "base": "main",
+      "baseSha": "eae36117b5c9fc3ee5efdd48fb6fa77b456d3080",
+      "mergeCommit": "22f45b80b1472fc5130b24a8c4e754acbbac3ad0"
+    },
+    {
+      "number": 683,
+      "url": "https://github.com/rybosome/tspice/pull/683",
+      "title": "Enforce cell backing capacity and repair constructor allocation failures",
+      "state": "closed",
+      "merged": true,
+      "head": "91b31ea8f861c361624aa24f87f71a63ea456cc1",
+      "branch": "codex/cell-capacity-guards",
+      "base": "main",
+      "baseSha": "22f45b80b1472fc5130b24a8c4e754acbbac3ad0",
+      "mergeCommit": "373b55ddd85eb3b926f9c6f48e0d254b5e1afb4f"
+    },
+    {
+      "number": 684,
+      "url": "https://github.com/rybosome/tspice/pull/684",
+      "title": "Preserve WASM cell ownership and lifetime across pointer reuse",
+      "state": "closed",
+      "merged": true,
+      "head": "5b77abcad6d0ac32e4d05c50b84fca0353342a5c",
+      "branch": "codex/wasm-cell-handle-lifetimes",
+      "base": "main",
+      "baseSha": "373b55ddd85eb3b926f9c6f48e0d254b5e1afb4f",
+      "mergeCommit": "1bc826b0af877dde0ca305216a503a8367929456"
+    },
+    {
+      "number": 685,
+      "url": "https://github.com/rybosome/tspice/pull/685",
+      "title": "Audit raw cell/window contents, boundaries and recovery",
+      "state": "closed",
+      "merged": true,
+      "head": "2c2f8f48ed93864e720643420e0ef8279c158286",
+      "branch": "codex/parity-cells-windows",
+      "base": "main",
+      "baseSha": "1bc826b0af877dde0ca305216a503a8367929456",
+      "mergeCommit": "54a226e3a8b093f611c7dcfd5ac398a36b0ebd25"
+    },
+    {
+      "number": 686,
+      "url": "https://github.com/rybosome/tspice/pull/686",
+      "title": "Audit kernel-pool values, paging and watch notifications",
+      "state": "closed",
+      "merged": true,
+      "head": "8e35dedf80fd9882045732ef5da58ba5eb360664",
+      "branch": "codex/parity-kernel-pool",
+      "base": "main",
+      "baseSha": "54a226e3a8b093f611c7dcfd5ac398a36b0ebd25",
+      "mergeCommit": "748e3836ffaaab223c55f16fab9afee01e9e43e5"
+    },
+    {
+      "number": 687,
+      "url": "https://github.com/rybosome/tspice/pull/687",
+      "title": "Audit body names, ID translation and complete constant retrieval",
+      "state": "closed",
+      "merged": true,
+      "head": "893744b9d27bb82ae5a5dfbfe2f4d68491813acc",
+      "branch": "codex/parity-ids-names",
+      "base": "main",
+      "baseSha": "748e3836ffaaab223c55f16fab9afee01e9e43e5",
+      "mergeCommit": "c5f0b058da08940f2fc7cb0453c9508663d91434"
+    },
+    {
+      "number": 688,
+      "url": "https://github.com/rybosome/tspice/pull/688",
+      "title": "Audit time parsing, formatting and persistent defaults",
+      "state": "open",
+      "merged": false,
+      "head": "196dcf627c2f6799e3fcd137e918e98c99c4ef22",
+      "branch": "codex/parity-time-formats",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 689,
+      "url": "https://github.com/rybosome/tspice/pull/689",
+      "title": "Audit UTC and spacecraft clock partitions, precision and recovery",
+      "state": "open",
+      "merged": false,
+      "head": "3478956494cc1f22ebb7f2348a676b2e9a72463b",
+      "branch": "codex/parity-time-sclk",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 690,
+      "url": "https://github.com/rybosome/tspice/pull/690",
+      "title": "Audit kernel lifecycle, metadata and exact keyword extraction",
+      "state": "open",
+      "merged": false,
+      "head": "0db2edf37b46adff2fc33d8c605f93995b771679",
+      "branch": "codex/parity-kernel-lifecycle",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 691,
+      "url": "https://github.com/rybosome/tspice/pull/691",
+      "title": "Preserve opaque file handle ownership across backends",
+      "state": "open",
+      "merged": false,
+      "head": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "branch": "codex/file-handle-owner-identity",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "d1f161af6f6b2376dfae4796fb8a3a8662722ccb",
+      "mergeCommit": null
+    },
+    {
+      "number": 692,
+      "url": "https://github.com/rybosome/tspice/pull/692",
+      "title": "Audit DAF and DAS reader state, descriptors and cleanup",
+      "state": "open",
+      "merged": false,
+      "head": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "branch": "codex/parity-file-readers",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "775d178d254ae4e7917fad95b25bf89caae56084"
+    },
+    {
+      "number": 693,
+      "url": "https://github.com/rybosome/tspice/pull/693",
+      "title": "Keep the DSK traversal fixture offline to prevent CI timeouts",
+      "state": "open",
+      "merged": false,
+      "head": "bf8c7ec81626629ab0b6c2ea3820ee3f2c66bc7e",
+      "branch": "codex/ci-dsk-fixture-offline",
+      "base": "main",
+      "baseSha": "e96d7cb854bd20085e3d6293117f535ecf9b1648",
+      "mergeCommit": "58c8813025c2b273fb62e6bd8d37f7fc3443d9a9"
+    },
+    {
+      "number": 694,
+      "url": "https://github.com/rybosome/tspice/pull/694",
+      "title": "Audit DLA/DSK writers and guard spatial-index bounds",
+      "state": "open",
+      "merged": false,
+      "head": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "branch": "codex/parity-file-writers",
+      "base": "codex/parity-file-readers",
+      "baseSha": "aa80eb6a1a7e5ea197b1793a0b53492d5e6ad460",
+      "mergeCommit": "1e644af8264f266f7ba59adb226f98337cc2b72b"
+    },
+    {
+      "number": 695,
+      "url": "https://github.com/rybosome/tspice/pull/695",
+      "title": "Audit DSK query unions, descriptor layout and resource boundaries",
+      "state": "open",
+      "merged": false,
+      "head": "8aca7d6be85d48fec0dde9cefb243e2b5496caf6",
+      "branch": "codex/parity-dsk-queries",
+      "base": "codex/parity-file-writers",
+      "baseSha": "d0df237bf73aac0e4ccdf7cbbfe93337ce6dd816",
+      "mergeCommit": "612f8b6aebc9dc632513e86f796ac84cff341d5b"
+    },
+    {
+      "number": 696,
+      "url": "https://github.com/rybosome/tspice/pull/696",
+      "title": "Audit EK file and segment lifecycle and repair allocation and cleanup defects",
+      "state": "open",
+      "merged": false,
+      "head": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "branch": "codex/parity-ek-lifecycle",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "db398638b02b51ba4d9b19cde5c2f54f6e06d7f9"
+    },
+    {
+      "number": 697,
+      "url": "https://github.com/rybosome/tspice/pull/697",
+      "title": "Audit EK columns and query results and guard native storage boundaries",
+      "state": "open",
+      "merged": false,
+      "head": "902e5ba12e7e1b3c746a9acdeac1b7a1e478192d",
+      "branch": "codex/parity-ek-columns-queries",
+      "base": "codex/parity-ek-lifecycle",
+      "baseSha": "b843316b78b8e36a2a69206cec9a880f394cfb16",
+      "mergeCommit": "e319a5394c5245f5d9fd2a1cd9f639787dcf4f9e"
+    },
+    {
+      "number": 698,
+      "url": "https://github.com/rybosome/tspice/pull/698",
+      "title": "Audit frame metadata and dynamic transforms with allocation and error fidelity",
+      "state": "open",
+      "merged": false,
+      "head": "33a6ee7f1c8a9bea9a07a41e8d3b84e0513970c7",
+      "branch": "codex/parity-frame-lookups-transforms",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 699,
+      "url": "https://github.com/rybosome/tspice/pull/699",
+      "title": "Audit CK pointing, coverage, priority and cleanup against live CSPICE",
+      "state": "open",
+      "merged": false,
+      "head": "ec98cd0b9d7508da23564f77876aa8f99d828544",
+      "branch": "codex/parity-ck-pointing-coverage",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "dd3da057141454297d0e27971413c44b9441402e"
+    },
+    {
+      "number": 700,
+      "url": "https://github.com/rybosome/tspice/pull/700",
+      "title": "Preserve opaque SPK descriptor bits and audit pack/unpack parity",
+      "state": "open",
+      "merged": false,
+      "head": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "branch": "codex/parity-spk-descriptors",
+      "base": "codex/file-handle-owner-identity",
+      "baseSha": "66110f259f7bbe99af4958c405e814dfc55a5d5e",
+      "mergeCommit": "aaac937e1bb7da81bac5f7b612d25cb0896df482"
+    },
+    {
+      "number": 701,
+      "url": "https://github.com/rybosome/tspice/pull/701",
+      "title": "Keep ephemeris fixture tests offline with exact tracked hashes",
+      "state": "open",
+      "merged": false,
+      "head": "b1c64b096451f7f836db09be3d8bc79544dbcfb8",
+      "branch": "codex/offline-ephemeris-test-fixtures",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": "1696315c69b5299e06a84c46a852e8b3208f479a"
+    },
+    {
+      "number": 702,
+      "url": "https://github.com/rybosome/tspice/pull/702",
+      "title": "Audit SPK file lifecycle, type8 writers and complete coverage outputs",
+      "state": "open",
+      "merged": false,
+      "head": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "branch": "codex/parity-spk-files-writers",
+      "base": "codex/parity-spk-descriptors",
+      "baseSha": "0d4655d28d25a38ec1099af534d295711a3947c6",
+      "mergeCommit": "b05ed60215287d586ec135a7ce1823099c8a0afc"
+    },
+    {
+      "number": 703,
+      "url": "https://github.com/rybosome/tspice/pull/703",
+      "title": "Audit SPK states, all aberration modes and segment search",
+      "state": "open",
+      "merged": false,
+      "head": "2f70a1391090cbbb90523b19d8e6159bfe2d13a3",
+      "branch": "codex/parity-spk-states",
+      "base": "codex/parity-spk-files-writers",
+      "baseSha": "2cbbb17cebaa0cf29ceb8700b2fd65792a86fb9c",
+      "mergeCommit": "4c52f9d8c290d1c94a1a3de95a20f98134f703b7"
+    },
+    {
+      "number": 704,
+      "url": "https://github.com/rybosome/tspice/pull/704",
+      "title": "Audit surface geometry, illumination, occultations and planes",
+      "state": "open",
+      "merged": false,
+      "head": "70dd1e29ed57cb8c27356890f6fd4d9c601b951e",
+      "branch": "codex/parity-geometry",
+      "base": "main",
+      "baseSha": "d9b430dd3f58b6beee5c43d11739a536cf3bfbd5",
+      "mergeCommit": null
+    },
+    {
+      "number": 705,
+      "url": "https://github.com/rybosome/tspice/pull/705",
+      "title": "Audit eight GF routines with complete event windows and actual reporter output",
+      "state": "open",
+      "merged": false,
+      "head": "3a648de8a4158f6a18e61f3ee568c3c7e333708c",
+      "branch": "codex/parity-geometry-finder",
+      "base": "codex/wasm-cell-handle-lifetimes",
+      "baseSha": "d1f161af6f6b2376dfae4796fb8a3a8662722ccb",
+      "mergeCommit": null
+    }
+  ],
+  "canonicalSourceVerification": {
+    "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+    "mainBaseCommit": "c5f0b058da08940f2fc7cb0453c9508663d91434",
+    "ciRun": "https://github.com/rybosome/tspice/actions/runs/43521244532",
+    "nativeRequiredJob": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+    "all15JobsPassed": true,
+    "testTasksFreshlyExecuted": true,
+    "verifiedRoutines": 162,
+    "verifiedBackendJudgments": 324,
+    "liveComparisons": 2218,
+    "nativeRequiredParityPackageTests": 2431,
+    "nativeRequiredSkips": 0
+  },
+  "sourceTreePreservation": {
+    "referenceCommit": "43a4f952d07896561b8aedecab6da54cee064cb7",
+    "executableTestBuildInputsIdentical": true,
+    "scope": [
+      "packages",
+      "scripts",
+      ".github",
+      "turbo.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "deduplicatedChanges": [
+    {
+      "pr": "https://github.com/rybosome/tspice/pull/701",
+      "alreadyMergedVia": "https://github.com/rybosome/tspice/pull/686",
+      "paths": [
+        "packages/tspice/test/helpers/kernels.ts",
+        "packages/tspice/test/offline-kernel-fixtures.test.ts"
+      ],
+      "note": "Retain the assembly's additional DSK offline fixture repair from #693; do not replay the already-merged SPK/PCK repair."
+    }
+  ],
+  "localVerification": {
+    "sourceCommit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+    "requiredLanesPassed": true,
+    "requiredLanesUsedMatchingCaches": true,
+    "freshCommand": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+    "freshGraphTasks": 15,
+    "freshCachedTasks": 0,
+    "liveComparisons": 2218,
+    "nativeRequiredParityPackageTests": 2431,
+    "nativeRequiredSkips": 0
+  },
+  "reviewRecordsLinkedTo706": [
+    688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702,
+    703, 704, 705
+  ],
+  "reviewFeedback": {
+    "observedAt": "2026-11-13T22:50:19.777790+00:00",
+    "checkedPRs": [
+      688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702,
+      703, 704, 705
+    ],
+    "openThreads": 0,
+    "discussionComments": 0,
+    "reviews": 0
+  }
+}

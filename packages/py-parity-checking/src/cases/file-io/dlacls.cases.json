@@ -5,22 +5,59 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlacls-alias.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-alias.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dlacls", "handleId": "writer" },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      },
       {
         "op": "file-io.dasopr",
-        "path": "kernels/generated/dlacls-alias.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-alias.dla"
+        },
         "handleId": "reader"
       },
-      { "op": "file-io.dlacls", "handleId": "reader" },
-      { "op": "file-io.exists", "path": "kernels/generated/dlacls-alias.dla" }
+      {
+        "op": "file-io.dlacls",
+        "handleId": "reader"
+      },
+      {
+        "op": "file-io.exists",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-alias.dla"
+        }
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "verify",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-alias.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "verify",
+        "descrId": "empty"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "verify"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "file-io-dlacls-double-close-error",
@@ -28,15 +65,68 @@
     "workflow": [
       {
         "op": "file-io.dlaopn",
-        "path": "kernels/generated/dlacls-double-close.dla",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-double-close.dla"
+        },
         "ftype": "DLA",
         "ifname": "TSPICE",
         "ncomch": 0,
         "handleId": "writer"
       },
-      { "op": "file-io.dlacls", "handleId": "writer" },
-      { "op": "file-io.dlacls", "handleId": "writer" }
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "writer"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["closed"]
+    }
+  },
+  {
+    "caseId": "file-io-dlacls-audit-empty-closed-writer",
+    "description": "An empty authored DLA is valid after actual writer close, and its search returns a genuine miss; close aliases interoperate.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "w",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-empty-search.dla"
+        },
+        "ftype": "DLA",
+        "ifname": "AUTHORED AUDIT",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "w"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "r",
+        "path": {
+          "kind": "scratch",
+          "rel": "dlacls-empty-search.dla"
+        }
+      },
+      {
+        "op": "file-io.dlabfs",
+        "handleId": "r",
+        "descrId": "none"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

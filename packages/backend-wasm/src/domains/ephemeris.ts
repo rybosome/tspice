@@ -14,7 +14,11 @@ import type {
   SpkposResult,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { assertSpiceInt32 } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  copySpkPackedDescriptor,
+  copySpkPackedDescriptorWords,
+} from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
@@ -27,6 +31,59 @@ import type {
   SpiceHandleRegistry,
 } from "../runtime/spice-handles.js";
 import type { VirtualOutputRegistry } from "../runtime/virtual-outputs.js";
+
+function requireSpkNumber(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new RangeError(`${label} must be finite`);
+  return value;
+}
+function requireSpkString(value: unknown, label: string): void {
+  if (typeof value !== "string")
+    throw new TypeError(`${label} must be a string`);
+}
+function readSpkState(module: EmscriptenModule, ptr: number): SpiceStateVector {
+  const i = ptr >> 3;
+  return [
+    requireSpkNumber(module.HEAPF64[i], "state[0]"),
+    requireSpkNumber(module.HEAPF64[i + 1], "state[1]"),
+    requireSpkNumber(module.HEAPF64[i + 2], "state[2]"),
+    requireSpkNumber(module.HEAPF64[i + 3], "state[3]"),
+    requireSpkNumber(module.HEAPF64[i + 4], "state[4]"),
+    requireSpkNumber(module.HEAPF64[i + 5], "state[5]"),
+  ];
+}
+function readSpkPosition(module: EmscriptenModule, ptr: number): SpiceVector3 {
+  const i = ptr >> 3;
+  return [
+    requireSpkNumber(module.HEAPF64[i], "pos[0]"),
+    requireSpkNumber(module.HEAPF64[i + 1], "pos[1]"),
+    requireSpkNumber(module.HEAPF64[i + 2], "pos[2]"),
+  ];
+}
+
+function validateSpkWriterNumbers(
+  body: number,
+  center: number,
+  degree: number,
+  first: number,
+  last: number,
+  epoch1: number,
+  step: number,
+  states: readonly number[] | Float64Array,
+): void {
+  assertSpiceInt32(body, "spkw08(body)");
+  assertSpiceInt32(center, "spkw08(center)");
+  assertSpiceInt32(degree, "spkw08(degree)");
+  if (![first, last, epoch1, step].every(Number.isFinite))
+    throw new RangeError("spkw08 epochs and step must be finite");
+  // Bound work/allocation before reading any caller state element, including
+  // sparse/proxied arrays. Match the existing WASM codec's 256 MiB guard.
+  if (states.length * 8 + 7 > 256 * 1024 * 1024)
+    throw new RangeError("spkw08 state buffer exceeds 256 MiB");
+  for (let i = 0; i < states.length; i++)
+    if (!Number.isFinite(states[i]))
+      throw new RangeError("spkw08 states must contain only finite numbers");
+}
 
 const I32_MAX = 2147483647;
 
@@ -92,9 +149,10 @@ function tspiceCallSpkopn(
   ncomch: number,
 ): number {
   const pathPtr = writeUtf8CString(module, path);
-  const ifnamePtr = writeUtf8CString(module, ifname);
+  let ifnamePtr = 0;
 
   try {
+    ifnamePtr = writeUtf8CString(module, ifname);
     return withAllocs(
       module,
       [4, WASM_ERR_MAX_BYTES],
@@ -115,7 +173,7 @@ function tspiceCallSpkopn(
       },
     );
   } finally {
-    module._free(ifnamePtr);
+    if (ifnamePtr) module._free(ifnamePtr);
     module._free(pathPtr);
   }
 }
@@ -161,9 +219,10 @@ function tspiceCallSpkw08(
   step: number,
 ): void {
   const framePtr = writeUtf8CString(module, frame);
-  const segidPtr = writeUtf8CString(module, segid);
+  let segidPtr = 0;
 
   try {
+    segidPtr = writeUtf8CString(module, segid);
     const n = states.length / 6;
     if (!Number.isSafeInteger(n) || n <= 0 || n * 6 !== states.length) {
       throw new Error(
@@ -217,7 +276,7 @@ function tspiceCallSpkw08(
       },
     );
   } finally {
-    module._free(segidPtr);
+    if (segidPtr) module._free(segidPtr);
     module._free(framePtr);
   }
 }
@@ -230,12 +289,19 @@ function tspiceCallSpkezr(
   abcorr: string,
   obs: string,
 ): SpkezrResult {
+  requireSpkNumber(et, "spkezr(et)");
+  requireSpkString(ref, "spkezr(ref)");
+  requireSpkString(abcorr, "spkezr(abcorr)");
+  requireSpkString(target, "spkezr(target)");
+  requireSpkString(obs, "spkezr(observer)");
   const targetPtr = writeUtf8CString(module, target);
-  const refPtr = writeUtf8CString(module, ref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const obsPtr = writeUtf8CString(module, obs);
-
+  let refPtr = 0,
+    abcorrPtr = 0,
+    obsPtr = 0;
   try {
+    refPtr = writeUtf8CString(module, ref);
+    abcorrPtr = writeUtf8CString(module, abcorr);
+    obsPtr = writeUtf8CString(module, obs);
     return withAllocs(
       module,
       [WASM_ERR_MAX_BYTES, 6 * 8, 8],
@@ -258,17 +324,15 @@ function tspiceCallSpkezr(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const state = Array.from(
-          module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
-        ) as unknown as SpiceStateVector;
+        const state = readSpkState(module, outStatePtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { state, lt };
       },
     );
   } finally {
-    module._free(obsPtr);
-    module._free(abcorrPtr);
-    module._free(refPtr);
+    if (obsPtr) module._free(obsPtr);
+    if (abcorrPtr) module._free(abcorrPtr);
+    if (refPtr) module._free(refPtr);
     module._free(targetPtr);
   }
 }
@@ -281,12 +345,19 @@ function tspiceCallSpkpos(
   abcorr: string,
   obs: string,
 ): SpkposResult {
+  requireSpkNumber(et, "spkpos(et)");
+  requireSpkString(ref, "spkpos(ref)");
+  requireSpkString(abcorr, "spkpos(abcorr)");
+  requireSpkString(target, "spkpos(target)");
+  requireSpkString(obs, "spkpos(observer)");
   const targetPtr = writeUtf8CString(module, target);
-  const refPtr = writeUtf8CString(module, ref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-  const obsPtr = writeUtf8CString(module, obs);
-
+  let refPtr = 0,
+    abcorrPtr = 0,
+    obsPtr = 0;
   try {
+    refPtr = writeUtf8CString(module, ref);
+    abcorrPtr = writeUtf8CString(module, abcorr);
+    obsPtr = writeUtf8CString(module, obs);
     return withAllocs(
       module,
       [WASM_ERR_MAX_BYTES, 3 * 8, 8],
@@ -309,17 +380,15 @@ function tspiceCallSpkpos(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const pos = Array.from(
-          module.HEAPF64.subarray(outPosPtr >> 3, (outPosPtr >> 3) + 3),
-        ) as unknown as SpiceVector3;
+        const pos = readSpkPosition(module, outPosPtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { pos, lt };
       },
     );
   } finally {
-    module._free(obsPtr);
-    module._free(abcorrPtr);
-    module._free(refPtr);
+    if (obsPtr) module._free(obsPtr);
+    if (abcorrPtr) module._free(abcorrPtr);
+    if (refPtr) module._free(refPtr);
     module._free(targetPtr);
   }
 }
@@ -332,13 +401,16 @@ function tspiceCallSpkez(
   abcorr: string,
   observer: number,
 ): SpkezrResult {
+  requireSpkNumber(et, "spkez(et)");
+  requireSpkString(ref, "spkez(ref)");
+  requireSpkString(abcorr, "spkez(abcorr)");
   assertSpiceInt32(target, "spkez(target)");
   assertSpiceInt32(observer, "spkez(observer)");
 
   const refPtr = writeUtf8CString(module, ref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-
+  let abcorrPtr = 0;
   try {
+    abcorrPtr = writeUtf8CString(module, abcorr);
     return withAllocs(
       module,
       [WASM_ERR_MAX_BYTES, 6 * 8, 8],
@@ -361,15 +433,13 @@ function tspiceCallSpkez(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const state = Array.from(
-          module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
-        ) as unknown as SpiceStateVector;
+        const state = readSpkState(module, outStatePtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { state, lt };
       },
     );
   } finally {
-    module._free(abcorrPtr);
+    if (abcorrPtr) module._free(abcorrPtr);
     module._free(refPtr);
   }
 }
@@ -382,13 +452,16 @@ function tspiceCallSpkezp(
   abcorr: string,
   observer: number,
 ): SpkposResult {
+  requireSpkNumber(et, "spkezp(et)");
+  requireSpkString(ref, "spkezp(ref)");
+  requireSpkString(abcorr, "spkezp(abcorr)");
   assertSpiceInt32(target, "spkezp(target)");
   assertSpiceInt32(observer, "spkezp(observer)");
 
   const refPtr = writeUtf8CString(module, ref);
-  const abcorrPtr = writeUtf8CString(module, abcorr);
-
+  let abcorrPtr = 0;
   try {
+    abcorrPtr = writeUtf8CString(module, abcorr);
     return withAllocs(
       module,
       [WASM_ERR_MAX_BYTES, 3 * 8, 8],
@@ -411,15 +484,13 @@ function tspiceCallSpkezp(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const pos = Array.from(
-          module.HEAPF64.subarray(outPosPtr >> 3, (outPosPtr >> 3) + 3),
-        ) as unknown as SpiceVector3;
+        const pos = readSpkPosition(module, outPosPtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { pos, lt };
       },
     );
   } finally {
-    module._free(abcorrPtr);
+    if (abcorrPtr) module._free(abcorrPtr);
     module._free(refPtr);
   }
 }
@@ -431,6 +502,8 @@ function tspiceCallSpkgeo(
   ref: string,
   observer: number,
 ): SpkezrResult {
+  requireSpkNumber(et, "spkgeo(et)");
+  requireSpkString(ref, "spkgeo(ref)");
   assertSpiceInt32(target, "spkgeo(target)");
   assertSpiceInt32(observer, "spkgeo(observer)");
 
@@ -457,9 +530,7 @@ function tspiceCallSpkgeo(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const state = Array.from(
-          module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
-        ) as unknown as SpiceStateVector;
+        const state = readSpkState(module, outStatePtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { state, lt };
       },
@@ -476,6 +547,8 @@ function tspiceCallSpkgps(
   ref: string,
   observer: number,
 ): SpkposResult {
+  requireSpkNumber(et, "spkgps(et)");
+  requireSpkString(ref, "spkgps(ref)");
   assertSpiceInt32(target, "spkgps(target)");
   assertSpiceInt32(observer, "spkgps(observer)");
 
@@ -502,9 +575,7 @@ function tspiceCallSpkgps(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        const pos = Array.from(
-          module.HEAPF64.subarray(outPosPtr >> 3, (outPosPtr >> 3) + 3),
-        ) as unknown as SpiceVector3;
+        const pos = readSpkPosition(module, outPosPtr);
         const lt = module.HEAPF64[outLtPtr >> 3] ?? 0;
         return { pos, lt };
       },
@@ -520,6 +591,8 @@ function tspiceCallSpkssb(
   et: number,
   ref: string,
 ): SpiceStateVector {
+  requireSpkNumber(et, "spkssb(et)");
+  requireSpkString(ref, "spkssb(ref)");
   assertSpiceInt32(target, "spkssb(target)");
 
   const refPtr = writeUtf8CString(module, ref);
@@ -541,9 +614,7 @@ function tspiceCallSpkssb(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        return Array.from(
-          module.HEAPF64.subarray(outStatePtr >> 3, (outStatePtr >> 3) + 6),
-        ) as unknown as SpiceStateVector;
+        return readSpkState(module, outStatePtr);
       },
     );
   } finally {
@@ -612,6 +683,7 @@ function tspiceCallSpksfs(
   body: number,
   et: number,
 ): Found<{ handle: number; descr: SpkPackedDescriptor; ident: string }> {
+  requireSpkNumber(et, "spksfs(et)");
   assertSpiceInt32(body, "spksfs(body)");
 
   // SIDLEN=40 + NUL.
@@ -647,9 +719,9 @@ function tspiceCallSpksfs(
       }
 
       const handle = module.HEAP32[outHandlePtr >> 2] ?? 0;
-      const descr = Array.from(
+      const descr = copySpkPackedDescriptor(
         module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
-      ) as unknown as SpkPackedDescriptor;
+      );
       const ident = readFixedWidthCString(module, outIdentPtr, identMaxBytes);
 
       return {
@@ -697,9 +769,9 @@ function tspiceCallSpkpds(
           throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
         }
 
-        return Array.from(
+        return copySpkPackedDescriptor(
           module.HEAPF64.subarray(outDescrPtr >> 3, (outDescrPtr >> 3) + 5),
-        ) as unknown as SpkPackedDescriptor;
+        );
       },
     );
   } finally {
@@ -726,10 +798,11 @@ function tspiceCallSpkuds(
       outBaddrPtr,
       outEaddrPtr,
     ) => {
-      const base = descrPtr >> 3;
-      for (let i = 0; i < 5; i++) {
-        module.HEAPF64[base + i] = descr[i] ?? 0;
-      }
+      const words = copySpkPackedDescriptorWords(descr);
+      module.HEAPU8.set(
+        new Uint8Array(words.buffer, words.byteOffset, 40),
+        descrPtr,
+      );
 
       module.HEAP32[outBodyPtr >> 2] = 0;
       module.HEAP32[outCenterPtr >> 2] = 0;
@@ -837,15 +910,23 @@ export function createEphemerisApi(
       type: number,
       first: number,
       last: number,
-    ) => tspiceCallSpkpds(module, body, center, frame, type, first, last),
+    ) => {
+      if (!Number.isFinite(first) || !Number.isFinite(last))
+        throw new RangeError("spkpds epochs must be finite");
+      return tspiceCallSpkpds(module, body, center, frame, type, first, last);
+    },
 
-    spkuds: (descr: SpkPackedDescriptor) => tspiceCallSpkuds(module, descr),
+    spkuds: (descr: SpkPackedDescriptor) =>
+      tspiceCallSpkuds(module, copySpkPackedDescriptor(descr)),
 
     // --- SPK writers -------------------------------------------------------
 
     spkopn: (file: string | VirtualOutput, ifname: string, ncomch: number) => {
       const resolved = resolveSpkPath(file, "spkopn(file)");
       ensureParentDir(module, resolved);
+      assertSpiceInt32(ncomch, "spkopn(ncomch)");
+      if (typeof ifname !== "string")
+        throw new TypeError("spkopn ifname must be a string");
       const nativeHandle = tspiceCallSpkopn(module, resolved, ifname, ncomch);
 
       const handle = handles.register("SPK", nativeHandle);
@@ -931,6 +1012,18 @@ export function createEphemerisApi(
         );
       }
 
+      if (typeof frame !== "string" || typeof segid !== "string")
+        throw new TypeError("spkw08 frame and segid must be strings");
+      validateSpkWriterNumbers(
+        body,
+        center,
+        degree,
+        first,
+        last,
+        epoch1,
+        step,
+        states,
+      );
       const nativeHandle = handles.lookup(
         handle,
         ["SPK"],

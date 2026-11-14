@@ -281,7 +281,7 @@ int tspice_ekaclc(
     char *err,
     int errMaxBytes);
 
-int tspice_ekffld(int handle, int segno, int *rcptrs, char *err, int errMaxBytes);
+int tspice_ekffld(int handle, int segno, int nrows, int *rcptrs, char *err, int errMaxBytes);
 
 // --- DSK -------------------------------------------------------------------
 

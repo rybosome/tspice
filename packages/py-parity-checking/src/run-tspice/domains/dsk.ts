@@ -227,6 +227,15 @@ function toDskType2BookkeepingPayload(value: {
   };
 }
 
+function queryRepetitions(step: StepDskDskobj | StepDskDsksrf): number {
+  const count = step.repetitions ?? 1;
+  if (!Number.isInteger(count) || count < 1 || count > 10)
+    throw new RangeError(
+      "DSK fixture repetitions must be an integer in [1,10]",
+    );
+  return count;
+}
+
 /** Execute one `dsk.*` workflow step in tspice. */
 export function runDskStep(
   context: RunTspiceContext,
@@ -236,26 +245,39 @@ export function runDskStep(
 
   switch (step.op) {
     case "dsk.dskobj": {
-      const cell = context.spice.kit.newIntCell(10_000);
+      const cell = context.spice.kit.newIntCell(step.cellSize ?? 10_000);
       try {
-        context.spice.raw.dskobj(resolveDskPathRef(context, step.path), cell);
-        return { op: step.op, value: { bodyIds: readIntCell(context, cell) } };
+        for (const id of step.initial ?? []) context.spice.raw.insrti(id, cell);
+        const snapshots: number[][] = [];
+        for (let i = 0; i < queryRepetitions(step); i++) {
+          context.spice.raw.dskobj(resolveDskPathRef(context, step.path), cell);
+          snapshots.push(readIntCell(context, cell));
+        }
+        return {
+          op: step.op,
+          value: { bodyIds: readIntCell(context, cell), snapshots },
+        };
       } finally {
         context.spice.kit.freeCell(cell);
       }
     }
 
     case "dsk.dsksrf": {
-      const cell = context.spice.kit.newIntCell(10_000);
+      const cell = context.spice.kit.newIntCell(step.cellSize ?? 10_000);
       try {
-        context.spice.raw.dsksrf(
-          resolveDskPathRef(context, step.path),
-          step.bodyid,
-          cell,
-        );
+        for (const id of step.initial ?? []) context.spice.raw.insrti(id, cell);
+        const snapshots: number[][] = [];
+        for (let i = 0; i < queryRepetitions(step); i++) {
+          context.spice.raw.dsksrf(
+            resolveDskPathRef(context, step.path),
+            step.bodyid,
+            cell,
+          );
+          snapshots.push(readIntCell(context, cell));
+        }
         return {
           op: step.op,
-          value: { surfaceIds: readIntCell(context, cell) },
+          value: { surfaceIds: readIntCell(context, cell), snapshots },
         };
       } finally {
         context.spice.kit.freeCell(cell);

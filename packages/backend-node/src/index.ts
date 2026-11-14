@@ -96,7 +96,27 @@ export function createNodeBackend(): SpiceBackend & { kind: "node" } {
         try {
           if (entry.kind === "SPK") {
             // Ensure VirtualOutputStager bookkeeping stays consistent.
-            backend.raw.spkcls(handle);
+            try {
+              backend.raw.spkcls(handle);
+            } catch (error) {
+              if (
+                typeof error !== "object" ||
+                error === null ||
+                !("spiceShort" in error) ||
+                error.spiceShort !== "SPICE(NOSEGMENTSFOUND)"
+              ) {
+                throw error;
+              }
+              // Raw SPKCLS intentionally retains an empty writer after this
+              // error so callers can recover by writing data. Disposal must
+              // still release its underlying DAF without manufacturing data.
+              spiceHandles.close(
+                handle,
+                ["SPK"],
+                (e) => native.dafcls(e.nativeHandle),
+                "disposeAll:dafcls-empty-spk",
+              );
+            }
             continue;
           }
 

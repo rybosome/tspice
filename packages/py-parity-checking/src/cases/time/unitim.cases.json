@@ -3,17 +3,116 @@
     "caseId": "time-unitim-happy-et-to-tai",
     "description": "Converts ET to TAI with leap-seconds kernel loaded",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.unitim", "epoch": 0, "insys": "ET", "outsys": "TAI" }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 0,
+        "insys": "ET",
+        "outsys": "TAI"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-unitim-missing-lsk-error",
     "description": "Representative unitim error when leap-seconds kernel is missing",
     "workflow": [
-      { "op": "time.unitim", "epoch": 0, "insys": "ET", "outsys": "TAI" }
+      {
+        "op": "time.unitim",
+        "epoch": 0,
+        "insys": "ET",
+        "outsys": "TAI"
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-unitim-audit-systems-julian-days-and-fractions",
+    "description": "unitim: systems julian days and fractions, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 1.25,
+        "insys": "ET",
+        "outsys": "TAI"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": -86400.875,
+        "insys": "ET",
+        "outsys": "TDT"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 123.25,
+        "insys": "TAI",
+        "outsys": "ET"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 1.25,
+        "insys": "ET",
+        "outsys": "JDTDB"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": -5,
+        "insys": "TDT",
+        "outsys": "JDTDT"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 2451545.0000144676,
+        "insys": "JDTDB",
+        "outsys": "ET"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 2451545.125,
+        "insys": "JED",
+        "outsys": "TDT"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 3.25,
+        "insys": "TDB",
+        "outsys": "TDB"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-unitim-audit-bad-system",
+    "description": "unitim: bad system, compare complete actual live SpiceyPy outputs/effects",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.unitim",
+        "epoch": 1.25,
+        "insys": "NOT_A_SYSTEM",
+        "outsys": "TDB"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADTIMETYPE"]
+    }
   }
 ]

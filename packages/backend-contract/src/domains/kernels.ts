@@ -35,26 +35,55 @@ export interface KernelsApi {
    *
    * - If a string is provided, it is treated as a filesystem path.
    * - If bytes are provided, the backend may write them to a virtual filesystem
-   *   at `path` before calling into SPICE.
+   *   at `path` before calling into SPICE. Each call adds a registration,
+   *   including repeated loads of the same path. Meta-kernel child paths must
+   *   already exist in the backend's filesystem.
+   * - A failed load can leave earlier kernel-pool assignments/loads in place.
+   *   Call `kclear()` when complete cleanup is required.
+   *
+   * @param kernel Filesystem path or bytes and a virtual identifier.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/furnsh_c.html
    */
   furnsh(kernel: KernelSource): void;
 
   /**
-   * Unload a SPICE kernel previously loaded via `furnsh()`.
+   * Unload one registration of a SPICE kernel previously loaded via `furnsh()`.
+   * Unknown nonempty paths are harmless. Text-kernel unload can reread remaining
+   * files; staged bytes are retained until `kclear()` on Node.
+   * @param path Original filesystem path or byte-backed virtual identifier.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unload_c.html
    */
   unload(path: string): void;
 
-  /** Clear all loaded kernels. */
+  /**
+   * Clear loaded kernels and kernel-pool variables; repeated calls are harmless.
+   * Node also reclaims staged files. WASM files remain in its virtual filesystem.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kclear_c.html
+   */
   kclear(): void;
 
-  /** Retrieve information about a currently loaded kernel by filename. */
+  /**
+   * Retrieve a loaded kernel's type, meta-kernel source and numeric SPICE handle.
+   * Empty/blank or unknown filenames return `{ found: false }`. Text/meta handles
+   * are zero; binary handle numbers are backend-local metadata, not portable IDs.
+   * @param path Original filesystem path or byte-backed virtual identifier.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kinfo_c.html
+   */
   kinfo(path: string): Found<KernelInfo>;
 
   /**
    * Extract a substring from a word sequence.
    *
    * This is a string-parsing utility (used by some NAIF kernels and tooling).
-   * It does **not** extract kernel bytes.
+   * It does **not** extract kernel bytes. Only ASCII spaces delimit words;
+   * significant tabs/newlines/non-ASCII whitespace survive in returned strings.
+   * Inputs use C-string prefixes before NUL. Keyword and terminator arguments
+   * are trimmed of ASCII whitespace; empty terminators are ignored.
+   * @param keywd Nonempty keyword, matched case-sensitively as a whole word.
+   * @param terms Terminator words; an empty list extracts through the end.
+   * @param wordsq Input sequence, limited to fewer than 1 MiB of UTF-8 bytes.
+   * @returns A miss or the remaining sequence and extracted substring.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kxtrct_c.html
    */
   kxtrct(
     keywd: string,
@@ -72,9 +101,19 @@ export interface KernelsApi {
    */
   kplfrm(frmcls: number, idset: SpiceIntCell): void;
 
-  /** Count loaded kernels of a given kind. */
+  /**
+   * Count loaded registrations selected by kind (default `ALL`).
+   * @param kind Case-insensitive selector(s), including filename-inferred text subtypes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ktotal_c.html
+   */
   ktotal(kind?: KernelKindInput): number;
 
-  /** Retrieve kernel metadata at position `which` for a given kind. */
+  /**
+   * Retrieve type, file, meta-kernel source and numeric handle at a filtered index.
+   * @param which Zero-based signed 32-bit integer; negative/out-of-range indices miss.
+   * @param kind Selector(s), default `ALL`; ordering follows CSPICE's loaded table.
+   * @returns A miss or metadata, including backend-local handle zero for text/meta.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/kdata_c.html
+   */
   kdata(which: number, kind?: KernelKindInput): Found<KernelData>;
 }

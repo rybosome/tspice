@@ -11,6 +11,91 @@
         ]
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-0",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [0.6, 0.8, 0.0, 2.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-1",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [
+          0.5570860145311556, -0.7427813527082074, -0.3713906763541037,
+          1.299867367239363
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-2",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [0.0, 0.0, -1.0, 2.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-3",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [
+          0.23076923076923078, 0.3076923076923077, 0.9230769230769231, 0.0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-4",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [0.6, 0.7999999999999999, 0.0, 2.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-pl2nvc-audit-canonical-5",
+    "description": "Observe every canonical plane word or decoded unit normal/constant; serialized input is produced by actual CSPICE NVC2PL",
+    "workflow": [
+      {
+        "op": "geometry.pl2nvc",
+        "plane": [0.6000000000000001, 0.8, 0.0, 2.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

@@ -4,7 +4,6 @@ from ctypes import c_double
 
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
-from spiceypy.utils.exceptions import NotFoundError
 
 from ..models import (
     StepGeometryIlumin,
@@ -63,8 +62,10 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
         )
 
     if isinstance(step, StepGeometrySincpt):
-        try:
-            spoint, trgepc, srfvec = sp.sincpt(
+        # Check the real toolkit error before reading found. The default
+        # found decorator otherwise hides BADMETHODSYNTAX as NotFoundError.
+        with sp.no_found_check():
+            spoint, trgepc, srfvec, found = sp.sincpt(
                 step.method,
                 step.target,
                 step.et,
@@ -74,9 +75,7 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
                 step.dref,
                 step.dvec,
             )
-        except NotFoundError:
-            if bool(sp.failed()):
-                raise
+        if not found:
             return StepOutput(op=step.op, value={"found": False})
 
         return StepOutput(

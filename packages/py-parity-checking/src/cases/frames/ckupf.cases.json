@@ -3,20 +3,153 @@
     "caseId": "frames-ckupf-open-close-success",
     "description": "ckupf unloads a CK handle previously opened by cklpf",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/mgs_sclkscet_00061.tsc" },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_sclkscet_00061.tsc"
+      },
       {
         "op": "frames.cklpf",
         "ck": "kernels/mgs_hga_hinge_v2.bc",
         "handleId": "CKH_CKUPF"
       },
-      { "op": "frames.ckupf", "handleId": "CKH_CKUPF" }
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_CKUPF"
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "frames-ckupf-unknown-handle-error",
     "description": "Representative ckupf error for unknown handle ID",
-    "workflow": [{ "op": "frames.ckupf", "handleId": "CKH_UNKNOWN" }],
-    "expectation": { "kind": "error" }
+    "workflow": [
+      {
+        "op": "frames.ckupf",
+        "handleId": "CKH_UNKNOWN"
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "frames-ckupf-audit-unload-effects-and-alias-noop",
+    "description": "Actual unload changes which full pointing/AV solution is returned; unloading a now-unknown alias is a no-op and leaves B searchable, rather than merely matching void outputs.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing-priority.bc",
+        "handleId": "B"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "ALIAS"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "ALIAS"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "B"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckupf-audit-kclear-makes-handle-unloaded",
+    "description": "Kernel clearing unloads the actual CK manager; later ckupf on that native handle is a no-op. No artificial error is required for an unloaded handle.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckupf-audit-no-loaded-files-after-close",
+    "description": "After the last CK unload, actual pointing raises NOLOADEDFILES; a missing workflow label is not raw unload error evidence.",
+    "workflow": [
+      {
+        "op": "frames.cklpf",
+        "ck": "kernels/audit-pointing.bc",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckupf",
+        "handleId": "A"
+      },
+      {
+        "op": "frames.ckgpav",
+        "inst": -123000,
+        "sclkdp": 1005,
+        "tol": 0,
+        "ref": "J2000"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
   }
 ]

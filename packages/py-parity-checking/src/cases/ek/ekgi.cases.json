@@ -27,14 +27,38 @@
         "entszs": [1, 1],
         "nlflgs": [false, false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_EKGI" },
-      { "op": "ek.ekcls", "handleId": "H_EKGI" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-happy.ek" },
-      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_TABLE ORDER BY ID" },
-      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 0 },
-      { "op": "ek.ekgi", "selidx": 0, "row": 1, "elment": 0 }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_EKGI"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_EKGI"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekgi-happy.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID FROM EKGI_TABLE ORDER BY ID"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekgi-valid-row-out-of-range-element-found-false",
@@ -64,13 +88,32 @@
         "entszs": [2],
         "nlflgs": [false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_VEC" },
-      { "op": "ek.ekcls", "handleId": "H_EKGI_VEC" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-vector.ek" },
-      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_VECTOR" },
-      { "op": "ek.ekgi", "selidx": 0, "row": 0, "elment": 2 }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_EKGI_VEC"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_EKGI_VEC"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekgi-vector.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID FROM EKGI_VECTOR"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ek-ekgi-invalid-selidx-error",
@@ -100,16 +143,33 @@
         "entszs": [1],
         "nlflgs": [false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_SELIDX" },
-      { "op": "ek.ekcls", "handleId": "H_EKGI_SELIDX" },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_EKGI_SELIDX"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_EKGI_SELIDX"
+      },
       {
         "op": "kernels.furnsh",
         "file": ".py-parity-ek-ekgi-invalid-selidx.ek"
       },
-      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_SELIDX" },
-      { "op": "ek.ekgi", "selidx": 5, "row": 0, "elment": 0 }
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID FROM EKGI_SELIDX"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 5,
+        "row": 0,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
   },
   {
     "caseId": "ek-ekgi-invalid-row-error",
@@ -139,12 +199,169 @@
         "entszs": [1],
         "nlflgs": [false]
       },
-      { "op": "ek.ekffld", "segmentId": "SEG_EKGI_ERR" },
-      { "op": "ek.ekcls", "handleId": "H_EKGI_ERR" },
-      { "op": "kernels.furnsh", "file": ".py-parity-ek-ekgi-error.ek" },
-      { "op": "ek.ekfind", "query": "SELECT ID FROM EKGI_ERR" },
-      { "op": "ek.ekgi", "selidx": 0, "row": 99, "elment": 0 }
+      {
+        "op": "ek.ekffld",
+        "segmentId": "SEG_EKGI_ERR"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "H_EKGI_ERR"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": ".py-parity-ek-ekgi-error.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT ID FROM EKGI_ERR"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 99,
+        "elment": 0
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekgi-audit-vectors-nulls-and-missing",
+    "description": "Compare every vector element, true missing elements, NULL with large nonnegative element index, last-row value and a valid fetch after misses. Actual pinned N0067 returns NULL before checking the NULL entry element bound.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 2
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 1,
+        "elment": 9
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 0
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 2,
+        "elment": 1
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekgi-audit-wrong-selected-type",
+    "description": "Actual wrong-type retrieval must retain INVALIDTYPE rather than coerce it to missing.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT CV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDTYPE"]
+    }
+  },
+  {
+    "caseId": "ek-ekgi-audit-invalid-selected-index",
+    "description": "Out-of-range SELECT index must remain actual INVALIDINDEX even when the row is valid.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IV FROM AUDIT_QUERY"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 1,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
+  },
+  {
+    "caseId": "ek-ekgi-audit-empty-result-row",
+    "description": "Zero selected rows make row0 invalid, distinct from a missing vector element.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "ek.ekfind",
+        "query": "SELECT IV FROM AUDIT_QUERY WHERE KEY < 0"
+      },
+      {
+        "op": "ek.ekgi",
+        "selidx": 0,
+        "row": 0,
+        "elment": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDINDEX"]
+    }
   }
 ]

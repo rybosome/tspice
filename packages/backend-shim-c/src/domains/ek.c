@@ -654,6 +654,57 @@ static int tspice_ek_get_wkindx_workspace(
   return 0;
 }
 
+/* The toolkit's column writers derive their row/entry counts from the actual
+   segment, not from our caller-provided array lengths. Validate before any
+   downstream array read. ekssum_c is also used by the toolkit writers themselves
+   and does not interrupt the active fast-write workspace. */
+static int tspice_ek_check_column_storage(
+    int handle, int segno, const char *column, int nrows,
+    const int *entszs, const int *nlflgs, int nvals,
+    SpiceEKAttDsc *outDescriptor, char *err, int errMaxBytes) {
+  SpiceEKSegSum summary;
+  ekssum_c((SpiceInt)handle, (SpiceInt)segno, &summary);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  if (nrows != summary.nrows) {
+    return tspice_ek_invalid_arg(err, errMaxBytes,
+        "EK column arrays must match the actual segment row count");
+  }
+  for (SpiceInt i = 0; i < summary.ncols; ++i) {
+    if (!eqstr_c(column, summary.cnames[i])) continue;
+    const SpiceEKAttDsc descriptor = summary.cdescrs[i];
+    if (descriptor.size != SPICE_EK_VARSIZ) {
+      const long long required = (long long)nrows * descriptor.size;
+      if (required != nvals) {
+        return tspice_ek_invalid_arg(err, errMaxBytes,
+            "EK values must cover every actual fixed-size column entry");
+      }
+      for (int row = 0; row < nrows; ++row) {
+        if (entszs[row] != descriptor.size) {
+          return tspice_ek_invalid_arg(err, errMaxBytes,
+              "EK fixed-size entszs must match the declared entry size");
+        }
+      }
+    } else if (!descriptor.nullok) {
+      for (int row = 0; row < nrows; ++row) {
+        if (entszs[row] < 1) {
+          return tspice_ek_invalid_arg(err, errMaxBytes,
+              "EK non-nullable entries require at least one value; null flags are ignored");
+        }
+      }
+    }
+    *outDescriptor = descriptor;
+    return 0;
+  }
+  /* Preserve actual toolkit NOCOLUMN/WRONGDATATYPE reporting. Row storage is
+     already safe; no unknown column's values can be consumed. */
+  memset(outDescriptor, 0, sizeof(*outDescriptor));
+  (void)nlflgs;
+  return 0;
+}
+
 int tspice_ekacli(
     int handle,
     int segno,
@@ -696,6 +747,10 @@ int tspice_ekacli(
   if (nvals > 0 && !ivals) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacli: ivals must be non-NULL when nvals > 0");
   }
+
+  SpiceEKAttDsc descriptor;
+  if (tspice_ek_check_column_storage(handle, segno, column, nrows, entszs,
+          nlflgs, nvals, &descriptor, err, errMaxBytes) != 0) return 1;
 
   int required = 0;
   const int sumCode = tspice_ek_sum_entszs(nrows, entszs, nlflgs, &required, err, errMaxBytes);
@@ -776,6 +831,10 @@ int tspice_ekacld(
   if (nvals > 0 && !dvals) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekacld: dvals must be non-NULL when nvals > 0");
   }
+
+  SpiceEKAttDsc descriptor;
+  if (tspice_ek_check_column_storage(handle, segno, column, nrows, entszs,
+          nlflgs, nvals, &descriptor, err, errMaxBytes) != 0) return 1;
 
   int required = 0;
   const int sumCode = tspice_ek_sum_entszs(nrows, entszs, nlflgs, &required, err, errMaxBytes);
@@ -865,6 +924,10 @@ int tspice_ekaclc(
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekaclc: cvalsMaxBytes must be >= 0");
   }
 
+  SpiceEKAttDsc descriptor;
+  if (tspice_ek_check_column_storage(handle, segno, column, nrows, entszs,
+          nlflgs, nvals, &descriptor, err, errMaxBytes) != 0) return 1;
+
   int required = 0;
   const int sumCode = tspice_ek_sum_entszs(nrows, entszs, nlflgs, &required, err, errMaxBytes);
   if (sumCode != 0) {
@@ -894,16 +957,65 @@ int tspice_ekaclc(
     return 1;
   }
 
+  /* N0067 ekaclc_c allocates its logical flag array using the total
+     character count, then copies nrows flags. Give zero-size NULL rows one
+     ignored blank placeholder so that count is at least nrows. This preserves
+     every observable NULL/value while avoiding its zero/short allocation.
+     Empty character values also require a two-byte C-string slot. */
+  int *paddedSizes = NULL;
+  char *paddedValues = NULL;
+  const int *callSizes = entszs;
+  const char *callValues = cvals;
+  int missingSlots = 0;
+  if (descriptor.size == SPICE_EK_VARSIZ && descriptor.nullok) {
+    for (int row = 0; row < nrows; ++row)
+      if (nlflgs[row] && entszs[row] == 0) ++missingSlots;
+  }
+  if (missingSlots > 0) {
+    const long long paddedCount = (long long)nvals + missingSlots;
+    const long long paddedBytes = paddedCount * vallen;
+    if (vallen < 2 || paddedBytes > 256LL * 1024 * 1024) {
+      return tspice_ek_invalid_arg(err, errMaxBytes,
+          "EK NULL placeholder storage exceeds character buffer bounds");
+    }
+    paddedSizes = (int *)malloc((size_t)nrows * sizeof(int));
+    paddedValues = (char *)calloc((size_t)paddedCount, (size_t)vallen);
+    if (!paddedSizes || !paddedValues) {
+      free(paddedSizes);
+      free(paddedValues);
+      return tspice_ek_invalid_arg(err, errMaxBytes,
+          "EK failed to allocate NULL placeholder storage");
+    }
+    size_t inputIndex = 0, outputIndex = 0;
+    for (int row = 0; row < nrows; ++row) {
+      if (nlflgs[row] && entszs[row] == 0) {
+        paddedSizes[row] = 1;
+        ++outputIndex;
+      } else {
+        paddedSizes[row] = entszs[row];
+        const size_t bytes = (size_t)entszs[row] * (size_t)vallen;
+        memcpy(paddedValues + outputIndex * (size_t)vallen,
+               cvals + inputIndex * (size_t)vallen, bytes);
+        inputIndex += (size_t)entszs[row];
+        outputIndex += (size_t)entszs[row];
+      }
+    }
+    callSizes = paddedSizes;
+    callValues = paddedValues;
+  }
+
   ekaclc_c(
       (SpiceInt)handle,
       (SpiceInt)segno,
       column,
       (SpiceInt)vallen,
-      (const void *)cvals,
-      (const SpiceInt *)entszs,
+      (const void *)callValues,
+      (const SpiceInt *)callSizes,
       (const SpiceBoolean *)nlflgs,
       (const SpiceInt *)rcptrs,
       wkindx);
+  free(paddedSizes);
+  free(paddedValues);
 
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
@@ -913,7 +1025,7 @@ int tspice_ekaclc(
   return 0;
 }
 
-int tspice_ekffld(int handle, int segno, int *rcptrs, char *err, int errMaxBytes) {
+int tspice_ekffld(int handle, int segno, int nrows, int *rcptrs, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
 
   if (err && errMaxBytes > 0) {
@@ -925,6 +1037,17 @@ int tspice_ekffld(int handle, int segno, int *rcptrs, char *err, int errMaxBytes
   }
   if (!rcptrs) {
     return tspice_ek_invalid_arg(err, errMaxBytes, "tspice_ekffld: rcptrs must be non-NULL");
+  }
+
+  SpiceEKSegSum summary;
+  ekssum_c((SpiceInt)handle, (SpiceInt)segno, &summary);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  if (nrows != summary.nrows) {
+    return tspice_ek_invalid_arg(err, errMaxBytes,
+        "ekffld record pointers must match the actual segment row count");
   }
 
   ekffld_c((SpiceInt)handle, (SpiceInt)segno, (SpiceInt *)rcptrs);

@@ -1,0 +1,7 @@
+KPL/PCK
+
+Authored Step 7 partial-load failure fixture.
+\begindata
+AUDIT_PARTIAL_VALUE = ( 17 23 )
+AUDIT_BAD_VALUE = ( 12 THIS_IS_NOT_A_NUMBER )
+\begintext

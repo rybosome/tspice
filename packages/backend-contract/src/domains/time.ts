@@ -14,22 +14,41 @@ export interface TimeApi {
   /**
    * Thin wrapper over the SPICE primitive `tkvrsn()`.
    *
-   * Currently, only the TOOLKIT item is exposed.
+   * Only TOOLKIT is exposed; other items are rejected by this contract. The
+   * version is immutable for a loaded toolkit: WASM obtains it from CSPICE once
+   * during module initialization and returns that cached value.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tkvrsn_c.html
    */
   tkvrsn(item: "TOOLKIT"): string;
 
   // --- core conversions ----------------------------------------------------
 
-  /** Convert a time string to ET seconds past J2000. */
+  /**
+   * Parse a time string to TDB/ET seconds past J2000 (2000 JAN 1 12:00 TDB).
+   * UTC conversion requires leap-second information; explicit labels and TIMDEF
+   * defaults determine system/calendar/zone. Invalid strings signal CSPICE errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/str2et_c.html
+   */
   str2et(time: string): number;
 
-  /** Convert ET seconds past J2000 to a formatted UTC string. */
+  /**
+   * Format ET/TDB seconds past J2000 as UTC using an LSK. Formats C, D, J,
+   * ISOC and ISOD select calendar, ordinal or Julian-day output. Signed SpiceInt
+   * precision is clamped by CSPICE to [0,14]; fractional values are invalid.
+   * Calendar formats include era text when needed; ISO before 1 AD signals
+   * YEAROUTOFRANGE. Unknown format signals INVALIDTIMEFORMAT.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/et2utc_c.html
+   */
   et2utc(et: number, format: string, prec: number): string;
 
   /**
    * Format an ephemeris time using a NAIF time picture.
    *
-   * Wrapper around CSPICE `timout_c`.
+   * `et` is TDB seconds past J2000; nonempty `picture` selects fields, precision,
+   * system and zone directives. Default system/calendar/zone follow TIMDEF.
+   * Leap-second information is required for conversion. CSPICE applies its own
+   * internal formatting limits; the actual rendered string is returned.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timout_c.html
    */
   timout(et: number, picture: string): string;
 
@@ -39,7 +58,10 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - Requires an LSK (leapseconds) kernel to be loaded.
    *
-   * Wrapper around CSPICE `deltet_c`.
+   * Epoch is formal UTC or ET seconds past J2000 according to eptype; the
+   * result is ET minus UTC in seconds, including the epoch-dependent leap step.
+   * This contract accepts uppercase ET/UTC selectors only on both backends.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/deltet_c.html
    */
   deltet(epoch: number, eptype: "ET" | "UTC"): number;
 
@@ -49,7 +71,10 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - Requires an LSK (leapseconds) kernel to be loaded.
    *
-   * Wrapper around CSPICE `unitim_c`.
+   * Epoch units follow the system: ET/TDB, TAI and TDT/TT use seconds past
+   * J2000, while JED/JDTDB/JDTDT use Julian days. Unsupported system names signal
+   * SPICE(BADTIMETYPE); missing conversion constants signal MISSINGTIMEINFO.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/unitim_c.html
    */
   unitim(epoch: number, insys: string, outsys: string): number;
 
@@ -68,12 +93,16 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `tparse_c`.
+   * TPARSE diagnostic text is translated to a thrown error even when CSPICE's
+   * global failed flag is false; no epoch is returned on a parse failure.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tparse_c.html
    */
   tparse(timstr: string): number;
 
   /**
-   * Transform a NAIF time picture to match a sample time string.
+   * Derive a NAIF formatting picture from a nonempty sample time string.
+   * `pictur` is a nonempty initial output-template argument retained by this API;
+   * derivation is sample-driven and its length does not limit the output.
    *
    * Statefulness: this is affected by TIMDEF defaults (SYSTEM/CALENDAR/ZONE),
    * since `sample` is interpreted under the current TIMDEF state.
@@ -81,7 +110,9 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `tpictr_c`.
+   * An unrecognized sample produces a thrown diagnostic from CSPICE ok/errmsg,
+   * even when no global SPICE failure is signaled.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/tpictr_c.html
    */
   tpictr(sample: string, pictur: string): string;
 
@@ -91,7 +122,10 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - None.
    *
-   * Wrapper around CSPICE `timdef_c`.
+   * Items include SYSTEM, CALENDAR and ZONE. SYSTEM/ZONE are mutually exclusive;
+   * setting one clears the other. Defaults persist across kclear/reset until set
+   * explicitly again; callers own restoration after temporary changes.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/timdef_c.html
    */
   timdef(action: "GET", item: string): string;
   /** Set a time conversion default (see `timdef_c`). */
@@ -99,10 +133,20 @@ export interface TimeApi {
 
   // --- SCLK conversions + CK attitude -------------------------------------
 
-  /** Convert an encoded SCLK string to ET seconds past J2000. */
+  /**
+   * Convert a formatted, optionally partitioned SCLK string to ET seconds past
+   * J2000 for a signed 32-bit spacecraft ID. Requires its clock kernel and, when
+   * the clock time system is not TDB, LSK conversion information.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scs2e_c.html
+   */
   scs2e(sc: number, sclkch: string): number;
 
-  /** Convert ET seconds past J2000 to an encoded SCLK string. */
+  /**
+   * Convert ET seconds past J2000 to a partitioned clock string, rounded to the
+   * nearest tick, for a signed 32-bit spacecraft ID. Requires its clock kernel
+   * and any conversion information required by that clock's time system.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2s_c.html
+   */
   sce2s(sc: number, et: number): string;
 
   /**
@@ -111,7 +155,9 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - Requires an SCLK kernel to be loaded.
    *
-   * Wrapper around CSPICE `scencd_c`.
+   * The signed 32-bit spacecraft ID selects the clock. Partition information
+   * is reflected in encoded ticks; omitted partitions are inferred when possible.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scencd_c.html
    */
   scencd(sc: number, sclkch: string): number;
 
@@ -121,7 +167,9 @@ export interface TimeApi {
    * Kernel prerequisites:
    * - Requires an SCLK kernel to be loaded.
    *
-   * Wrapper around CSPICE `scdecd_c`.
+   * The signed 32-bit spacecraft ID selects the clock. Fractional ticks round
+   * to the nearest tick; a shared boundary decodes to the later partition.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/scdecd_c.html
    */
   scdecd(sc: number, sclkdp: number): string;
 
@@ -132,7 +180,9 @@ export interface TimeApi {
    * - Requires an SCLK kernel to be loaded.
    * - Often requires an LSK (leapseconds) kernel as well (see NAIF docs).
    *
-   * Wrapper around CSPICE `sct2e_c`.
+   * The signed 32-bit spacecraft ID selects the clock. Fractional encoded
+   * ticks are retained during ET conversion, including partition offsets.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sct2e_c.html
    */
   sct2e(sc: number, sclkdp: number): number;
 
@@ -143,7 +193,9 @@ export interface TimeApi {
    * - Requires an SCLK kernel to be loaded.
    * - Often requires an LSK (leapseconds) kernel as well (see NAIF docs).
    *
-   * Wrapper around CSPICE `sce2c_c`.
+   * The signed 32-bit spacecraft ID selects the clock. Fractional ticks are
+   * retained; this differs from the rounded formatted result of sce2s.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sce2c_c.html
    */
   sce2c(sc: number, et: number): number;
 }

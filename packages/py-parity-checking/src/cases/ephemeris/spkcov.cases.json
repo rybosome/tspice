@@ -24,7 +24,10 @@
         "epoch1": 0,
         "step": 120
       },
-      { "op": "ephemeris.spkcls", "handleId": "H1" },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "H1"
+      },
       {
         "op": "ephemeris.spkcov",
         "spk": "kernels/ephemeris-spkcov-happy.bsp",
@@ -33,7 +36,9 @@
         "maxIntervals": 8
       }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "ephemeris-spkcov-missing-file-error",
@@ -47,6 +52,148 @@
         "maxIntervals": 8
       }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-disjoint-intervals",
+    "description": "Observe all ET-second endpoints of two real segments and the intervening coverage gap.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-union-merges-gap",
+    "description": "A competing file covers the gap; existing coverage must be unioned into [-1000,1000], not reset before inspection.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-priority.bsp"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris-priority.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-absent-object",
+    "description": "An absent object yields no intervals without a manufactured error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idcode": 7654321,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-empty-zero-capacity",
+    "description": "Empty SPK coverage fits a genuine zero-capacity window.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris-empty.bsp"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris-empty.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-insufficient-capacity",
+    "description": "A single interval slot cannot hold two disjoint intervals; require actual WINDOWEXCESS.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/audit-ephemeris.bsp",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["WINDOWEXCESS"]
+    }
+  },
+  {
+    "caseId": "ephemeris-spkcov-audit-wrong-daf-type",
+    "description": "Require INVALIDFILETYPE when inspecting a real CK DAF for SPK coverage.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/mgs_hga_hinge_v2.bc"
+      },
+      {
+        "op": "ephemeris.spkcov",
+        "spk": "kernels/mgs_hga_hinge_v2.bc",
+        "idcode": 100001,
+        "coverWindowId": "COV",
+        "maxIntervals": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
   }
 ]

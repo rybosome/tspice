@@ -3,19 +3,154 @@
     "caseId": "time-sce2c-happy-with-cook-sclk",
     "description": "Converts cookbook ET to encoded SCLK ticks",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "kernels.furnsh", "file": "kernels/cook_01.tsc" },
-      { "op": "time.sce2c", "sc": -77, "et": -287063909.06101716 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/cook_01.tsc"
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -77,
+        "et": -287063909.06101716
+      }
     ],
-    "expectation": { "kind": "success" }
+    "expectation": {
+      "kind": "success"
+    }
   },
   {
     "caseId": "time-sce2c-missing-sclk-error",
     "description": "Representative sce2c error when SCLK kernel is missing",
     "workflow": [
-      { "op": "kernels.furnsh", "file": "kernels/naif0012.tls" },
-      { "op": "time.sce2c", "sc": -77, "et": -287063909.06101716 }
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -77,
+        "et": -287063909.06101716
+      }
     ],
-    "expectation": { "kind": "error" }
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["KERNELVARNOTFOUND"]
+    }
+  },
+  {
+    "caseId": "time-sce2c-audit-fractional-tick-versus-rounded-string",
+    "description": "sce2c: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 0
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 0.001953125
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 1.25
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 3.99609375
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 3.998046875
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 15.9921875
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "time-sce2c-audit-negative-epoch-range",
+    "description": "sce2c: negative epoch range, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["VALUEOUTOFRANGE"]
+    }
+  },
+  {
+    "caseId": "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+    "description": "sce2c: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["MISSINGTIMEINFO"]
+    }
+  },
+  {
+    "caseId": "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+    "description": "Loading LSK makes non-TDB clock mapping perform the actual time-system conversion.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-partition.tsc"
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "SCLK01_TIME_SYSTEM_12345",
+        "values": [2]
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/naif0012.tls"
+      },
+      {
+        "op": "time.sce2c",
+        "sc": -12345,
+        "et": 1.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

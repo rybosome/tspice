@@ -25,7 +25,12 @@ import {
   toPathRef,
   toVirtualKernelPath,
 } from "../../fixtures.js";
-import { getOrCreateWindow, type RunTspiceContext } from "../context.js";
+import {
+  getOrCreateIntCell,
+  getOrCreateWindow,
+  registerFinalizer,
+  type RunTspiceContext,
+} from "../context.js";
 import { unflattenMatrix } from "../utils/matrix.js";
 
 type FramesStep =
@@ -81,6 +86,7 @@ function ensureVirtualCkPath(
   const virtualPath = toVirtualKernelPath(pathRef);
   if (!context.state.frames.stagedVirtualKernelPaths.has(virtualPath)) {
     const resolvedPath = resolvePathRef(context.paths, pathRef);
+    if (!fs.existsSync(resolvedPath)) return virtualPath;
     const bytes = fs.readFileSync(resolvedPath);
 
     // Stage CK bytes into virtual FS once, then unload; cklpf controls loaded state thereafter.
@@ -101,6 +107,12 @@ function setCkHandle(
     throw new Error(`CK handle already exists: ${handleId}`);
   }
   context.state.frames.ckHandles.set(handleId, handle);
+  registerFinalizer(context, `frames.ckupf:${handleId}`, () => {
+    const tracked = context.state.frames.ckHandles.get(handleId);
+    if (tracked === undefined) return;
+    context.spice.raw.ckupf(tracked);
+    context.state.frames.ckHandles.delete(handleId);
+  });
 }
 
 function requireCkHandle(context: RunTspiceContext, handleId: string): number {
@@ -319,6 +331,8 @@ export function runFramesStep(
     }
 
     case "frames.cklpf": {
+      if (context.state.frames.ckHandles.has(step.handleId))
+        throw new Error(`CK handle already exists: ${step.handleId}`);
       const ck = ensureVirtualCkPath(
         context,
         canonicalizeFramesCkPath(context, step),
@@ -340,24 +354,13 @@ export function runFramesStep(
         context,
         canonicalizeFramesCkPath(context, step),
       );
-      const ids = context.spice.kit.newIntCell(step.maxCard ?? 32);
-      try {
-        context.spice.raw.scard(0, ids);
-        context.spice.raw.ckobj(ck, ids);
-
-        const nIds = context.spice.raw.card(ids);
-        const values: number[] = [];
-        for (let index = 0; index < nIds; index += 1) {
-          values.push(context.spice.kit.cellGeti(ids, index));
-        }
-
-        return {
-          op: step.op,
-          value: { ids: values },
-        };
-      } finally {
-        context.spice.kit.freeCell(ids);
-      }
+      const ids = getOrCreateIntCell(context, step.idsId, step.maxCard ?? 32);
+      if (step.reset ?? true) context.spice.raw.scard(0, ids);
+      context.spice.raw.ckobj(ck, ids);
+      const values: number[] = [];
+      for (let index = 0; index < context.spice.raw.card(ids); index++)
+        values.push(context.spice.kit.cellGeti(ids, index));
+      return { op: step.op, value: { ids: values } };
     }
 
     case "frames.ckcov": {
@@ -370,7 +373,7 @@ export function runFramesStep(
         step.coverId,
         step.maxIntervals ?? 128,
       );
-      context.spice.raw.scard(0, cover);
+      if (step.reset ?? true) context.spice.raw.scard(0, cover);
       context.spice.raw.ckcov(
         ck,
         step.idcode,

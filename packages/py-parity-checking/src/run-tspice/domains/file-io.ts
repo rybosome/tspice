@@ -42,8 +42,6 @@ type FileIoStep =
   | StepFileIoDskmi2
   | StepFileIoDskw02;
 
-const SPAIX_HEAD_LIMIT = 8;
-
 function resolveFileIoPath(path: PathRefLike): string {
   return toVirtualKernelPath(path);
 }
@@ -97,23 +95,6 @@ function requireSpatialIndex(
   }
 
   return index;
-}
-
-function summarizeSpatialIndex(
-  spaixd: number[],
-  spaixi: number[],
-): {
-  spaixdLength: number;
-  spaixiLength: number;
-  spaixdHead: number[];
-  spaixiHead: number[];
-} {
-  return {
-    spaixdLength: spaixd.length,
-    spaixiLength: spaixi.length,
-    spaixdHead: spaixd.slice(0, SPAIX_HEAD_LIMIT),
-    spaixiHead: spaixi.slice(0, SPAIX_HEAD_LIMIT),
-  };
 }
 
 /** Execute one `file-io.*` workflow step in tspice. */
@@ -194,7 +175,7 @@ export function runFileIoStep(
       }
 
       context.state.fileIo.descriptors.set(step.descrId, out.descr);
-      return { op: step.op, value: { found: true } };
+      return { op: step.op, value: { found: true, descr: out.descr } };
     }
 
     case "file-io.dlafns": {
@@ -207,7 +188,7 @@ export function runFileIoStep(
       }
 
       context.state.fileIo.descriptors.set(step.descrId, out.descr);
-      return { op: step.op, value: { found: true } };
+      return { op: step.op, value: { found: true, descr: out.descr } };
     }
 
     case "file-io.dlacls": {
@@ -253,7 +234,7 @@ export function runFileIoStep(
 
       return {
         op: step.op,
-        value: summarizeSpatialIndex(spaixd, spaixi),
+        value: { spaixd, spaixi },
       };
     }
 

@@ -30,7 +30,191 @@
       }
     ],
     "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARCHTYPE"]
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-union-duplicates-and-repeat",
+    "description": "Actual caller-owned cell union preserves initial IDs, adds missing IDs, sorts/deduplicates repeated segment IDs and remains idempotent on a second call; every snapshot is compared.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": 399,
+        "cellSize": 10,
+        "initial": [72, -5, 72],
+        "repetitions": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-empty-zero-capacity",
+    "description": "A valid empty DSK and an actual zero-capacity output cell return an empty set; Python must not substitute a default large cell.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-empty-dsk.bds"
+        },
+        "bodyid": 399,
+        "cellSize": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-small-capacity",
+    "description": "A real two-ID result overflows capacity1 and must signal actual CELLTOOSMALL; contents after toolkit failure are not assumed unchanged.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": 399,
+        "cellSize": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-missing-file",
+    "description": "Missing scratch path reaches the actual CSPICE query and requires FILENOTFOUND, not a fixture read failure.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "scratch",
+          "rel": "missing.bds"
+        },
+        "bodyid": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-wrong-das-file-type",
+    "description": "An actual closed DAS/DLA file has the right architecture but wrong type; query must reach INVALIDFILETYPE.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "non-dsk",
+        "path": {
+          "kind": "scratch",
+          "rel": "dsksrf-wrong-type.dla"
+        },
+        "ftype": "DLA",
+        "ifname": "AUTHORED_NON_DSK",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "non-dsk"
+      },
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "scratch",
+          "rel": "dsksrf-wrong-type.dla"
+        },
+        "bodyid": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDFILETYPE"]
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-absent-body-preserves-set",
+    "description": "No matching body is a successful unchanged input union, not an error or an empty replacement.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": -910000,
+        "cellSize": 2,
+        "initial": [-7, 99],
+        "repetitions": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-fractional-body",
+    "description": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": 399.5
+      }
+    ],
+    "expectation": {
       "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-overflow-body",
+    "description": "Strict body ID int32 precondition prevents WASM FFI coercion; this is a contract error before the scientific call.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": 2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "error"
+    }
+  },
+  {
+    "caseId": "dsk-dsksrf-audit-transient-capacity-before-deduplication",
+    "description": "CSPICE temporarily appends segment IDs before deduplicating: capacity3 can fail even though the final unique union would have only three IDs. Preserve this raw behavior.",
+    "workflow": [
+      {
+        "op": "dsk.dsksrf",
+        "path": {
+          "kind": "fixture",
+          "rel": "kernels/audit-multi-dsk.bds"
+        },
+        "bodyid": 399,
+        "cellSize": 3,
+        "initial": [72, -5, 72],
+        "repetitions": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
     }
   }
 ]

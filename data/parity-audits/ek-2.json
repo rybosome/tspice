@@ -1,0 +1,1489 @@
+{
+  "schemaVersion": 1,
+  "batch": "ek-2",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ek.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ek.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/backend-node/native/src/domains/ek.cc",
+    "packages/backend-shim-c/src/domains/ek.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/backend-wasm/test/ek-lifecycle-allocations.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-shapes.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/py-parity-checking/fixtures/generate-audit-ek.py"
+  ],
+  "executions": [
+    {
+      "id": "local-ek-lifecycle-2026-11-13-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "79a83194799aa202451daa70c0aa3a085cb55531b8a74aed021d41aba8225b02",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source.",
+      "historical": true
+    },
+    {
+      "id": "local-ek-lifecycle-2026-11-13-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "79a83194799aa202451daa70c0aa3a085cb55531b8a74aed021d41aba8225b02",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both final required JS and production-native lanes passed on the current reviewed source. All 692 live comparisons (346 scenarios per backend), all 741 parity-package tests and required native sanity passed without native skips; 90 WASM, 62 Node, 26 core and 121 facade tests passed. Eight lifecycle routines have 35 registered cases, including 19 new, full segno/record-pointer outputs and named actual errors. Independent locked SpiceyPy readback compared complete DAS headers, all segment/column attributes and all persisted rows for actual Node/WASM writers; actual 100-column write/read and 101-column-before-element rejection passed. All 23 actual WASM heap fault positions passed after priming lazy malloc/free wrappers; failing-before controls established the ekopn second-allocation leak and 3 accepted shape gaps. Actual pending-error cleanup closes before scratch deletion; failed close retains claims for retry. Initial full-lane lint and empty-EK extra-reset regressions were repaired before final passes. Node 22.23.4/pnpm 10.13.1/CSPICE N0067/locked SpiceyPy 6.0.3/Python 3.12.15/macOS arm64. No C shim or WASM binary change. The 256 MiB packed-buffer limit was reviewed arithmetically rather than stress allocated. Rebase onto merged #680 / current #691 preserves byte-identical reviewed source.",
+      "historical": true
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "79a83194799aa202451daa70c0aa3a085cb55531b8a74aed021d41aba8225b02",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-ek-lifecycle-43385411734-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "79a83194799aa202451daa70c0aa3a085cb55531b8a74aed021d41aba8225b02",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "ff835e68bd3c7714bd877afb5413c2c67fdbfad1",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43385411734/job/131752596794",
+      "observation": "Observed exact-source canonical Linux22 job: all692live parity tests (346scenarios on each actual backend), all741parity-package tests, actual native-required guard, all90WASM/62Node/26core/121facade tests and production CSPICE_N0067 sanity passed without native skips. All15source CI jobs passed.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "local-step7-combined-final-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required local lanes passed on the assembled executable source. Native-required rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. The JS lane ran all live comparisons and 2,430 package tests; its single native-required-only sanity assertion ran in the native-required lane. All 38 ledger regressions passed after retaining the ID audit BODFND direct-route and BODVAR fail-closed expectations. Final documentation-only temporal clarifications preceded the native-required run and passed separate format/lint/drift checks; executable inputs were unchanged between lanes. Fresh frozen install and all three doctors passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Emscripten 3.1.74 / CSPICE N0067 / Node 22.23.4 / pnpm 10.13.1 / locked SpiceyPy 6.0.3-Python 3.12.15 on macOS arm64. Original observations remain historical.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "ci-step7-combined-final-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "30753720aaed683d25a1807a7a789b3a8d1fe43a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43428741796/job/131896580478",
+      "observation": "All 15 canonical combined-source jobs passed on 30753720aaed683d25a1807a7a789b3a8d1fe43a. Inspected Linux Node 22 native-required job 131896580478 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and executed all 2,218 live comparisons (1,109 scenarios per actual Node/WASM backend), all 2,431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All Node 20/22 Linux/macOS JS/native lanes, 38 ledger regressions/drift, docs, LLM artifact and packed distribution/native-platform checks passed. Owning-script regenerated Node/web WASM SHA256: 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. The exact immutable 162-routine set is preserved; 324 reviewed backend judgments had zero open findings before promotion. REST explicitly reported rebaseable:true and mergeable:true on this source head. No retries, job cancellations or PR merges. Evidence remains bound to the actual tested source/job; later metadata does not relabel it.",
+      "historical": true
+    },
+    {
+      "id": "local-706-main-c5f0b058-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "local-706-main-c5f0b058-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run test:required --force",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "observation": "Both complete required lanes passed on the consolidated delivery source after production N0067 native rebuild. Matching task caches were reused by those lanes; an additional TSPICE_EXPECT_NATIVE=true pnpm run test:required --force then executed all 15 graph tasks with zero cache hits. That fresh run passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests, including real C bounds/allocator fixtures, allocation rollback, GF reporter/knob child processes and SPK/EK/CK/file cleanup tests. All 38 ledger regressions, generated drift and formatting passed; both required lanes supplied lint/typecheck/guard/orchestration gates. All three doctors and frozen dependency installation passed. Fresh pinned N0067/Emscripten3.1.74 owning-script regeneration asserted matching Node/web binaries with SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. Executable/test/workflow/build inputs match the previously reviewed complete assembly exactly; recent main/#687 semantic assessments and all historical observations are preserved. Node22.23.4 / pnpm10.13.1 / locked SpiceyPy6.0.3-Python3.12.15 / macOS arm64. No local test failed or was retried. Current-source canonical CI is pending."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+    },
+    {
+      "id": "ci-706-main-c5f0b058-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4e1efea252c7fb06c29d7ccce5dd2ca796675d7682b780b2bd07a31e8e61f11a",
+      "caseIds": [
+        "ek-ekcls-audit-finalized-output-reopens",
+        "ek-ekcls-audit-read-claim-survives-kclear",
+        "ek-ekcls-double-close-error",
+        "ek-ekcls-happy-close-and-reopen",
+        "ek-ekifld-audit-full-workspace-and-data",
+        "ek-ekifld-audit-invalid-column",
+        "ek-ekifld-audit-invalid-declaration",
+        "ek-ekifld-audit-invalid-table",
+        "ek-ekifld-audit-long-table",
+        "ek-ekifld-audit-read-only-claim",
+        "ek-ekifld-audit-second-segment-number",
+        "ek-ekifld-happy-segment-initialization-observable",
+        "ek-ekifld-invalid-nrows-error",
+        "ek-eknseg-audit-physical-versus-logical",
+        "ek-eknseg-closed-handle-error",
+        "ek-eknseg-happy-on-open-handle",
+        "ek-ekntab-audit-logical-table-load-state",
+        "ek-ekntab-audit-raw-open-does-not-load",
+        "ek-ekntab-happy-empty-state",
+        "ek-ekntab-happy-with-loaded-table",
+        "ek-ekopn-audit-existing-file",
+        "ek-ekopn-audit-long-header-and-comment-reservation",
+        "ek-ekopn-duplicate-path-error",
+        "ek-ekopn-happy-open-new-file",
+        "ek-ekopr-audit-duplicate-read-claims",
+        "ek-ekopr-happy-reopen-created-file",
+        "ek-ekopr-missing-file-error",
+        "ek-ekopw-audit-append-finalize-and-reopen",
+        "ek-ekopw-audit-conflicting-read-claim",
+        "ek-ekopw-happy-open-created-file-for-write",
+        "ek-ekopw-missing-file-error",
+        "ek-ektnam-audit-all-loaded-names",
+        "ek-ektnam-audit-no-loaded-files",
+        "ek-ektnam-happy-first-table",
+        "ek-ektnam-out-of-range-error"
+      ],
+      "commit": "388063d4ee0c81c58b3ed653d84a9195e4f31da7",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43521244532/job/132215745970",
+      "observation": "All 15 canonical source CI jobs passed on 388063d4ee0c81c58b3ed653d84a9195e4f31da7 against current main c5f0b058 without CI retries or cancellations. The inspected Linux Node22 native-required job 132215745970 enforced TSPICE_EXPECT_NATIVE=true, rebuilt/loaded production N0067 and freshly executed the test tasks (cache misses). It passed all 2218 live comparisons (1109 scenarios per actual Node/WASM backend), all 2431 parity-package tests with zero skips, 600 WASM / 66 Node / 28 core / 150 facade tests. All 38 ledger regressions/drift, Node20/22 Linux/macOS JS/native lanes, docs, generated-artifact and packed-native checks passed. The unchanged 1e-12 live comparator and genuine child-process/allocator/bounds/cleanup tests are retained. All 162 original baseline routine names and 324 human backend judgments are verified; no support exception or planned routine was added. Owning-script N0067/Emscripten3.1.74 regeneration produced identical web/Node SHA256 31f67b0204e16fd1c95c483d5d9f554911b3d1f97daf2cb93af9794dc3a71911. REST explicitly reported mergeable:true and rebaseable:true on the linear main-based delivery branch. PR #706 is the single merge target; #688-#705 retain their exact review heads and context. Earlier source/job observations stay historical; this observation identifies the actual current tested source/job."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "ekopn_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekopn_c.html",
+      "semantics": "Create a new DAS-based EK with nonnegative int32 comment-character reservation. Internal names are C strings truncated to 60 bytes; 2050 characters reserve 3 comment records. Existing files fail. Return a backend-owned write claim, distinct from query loading.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekopn-happy-open-new-file",
+          "coverage": ["success", "state"],
+          "observes": "ekopn opens a new EK handle and exposes observable segment count. Actual returned handle is used for physical count/close/reopen; supplemental independent header reader checks 60-byte label and comment reservation."
+        },
+        {
+          "caseId": "ek-ekopn-duplicate-path-error",
+          "coverage": ["error"],
+          "observes": "ekopn rejects creating a new EK at an existing path. Actual returned handle is used for physical count/close/reopen; supplemental independent header reader checks 60-byte label and comment reservation."
+        },
+        {
+          "caseId": "ek-ekopn-audit-long-header-and-comment-reservation",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Create with a long internal name and 2050 reserved comment characters, close and reopen a valid empty EK; independent header readback verifies actual 60-character truncation and three comment records.. Actual returned handle is used for physical count/close/reopen; supplemental independent header reader checks 60-byte label and comment reservation."
+        },
+        {
+          "caseId": "ek-ekopn-audit-existing-file",
+          "coverage": ["error", "edge"],
+          "observes": "Existing output must reach actual FILEOPENFAIL without losing other cleanup claims.. Actual returned handle is used for physical count/close/reopen; supplemental independent header reader checks 60-byte label and comment reservation."
+        }
+      ],
+      "edgeAssessment": "Long internal name,2050-comment reservation, empty physical file, existing output, invalid JS internal-name shape and all four actual-heap allocations.",
+      "errorAssessment": "Actual FILEOPENFAIL for existing output; typed nonnegative int32 ncomch and string ifname preflight remain separate. Blank/control internal names are accepted by actual CSPICE and no printable-name restriction is added.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekopn-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekopn.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekopn-audit-long-header-and-comment-reservation",
+            "ek-ekopn-audit-existing-file"
+          ]
+        },
+        {
+          "id": "ekopn-second-allocation-leak-and-shape",
+          "status": "repaired",
+          "summary": "Actual heap faulting exposed one leaked path allocation when internal-name allocation failed; numeric internal names were silently coerced.",
+          "repair": "Allocate the second string inside the protected try and free only allocated pointers; validate string input before coercion. Prime Emscripten lazy malloc/free wrappers before installing actual-heap test hooks. All 23 lifecycle fault positions pass; the failing-before control exposed exactly this leak.",
+          "evidence": [
+            "packages/backend-wasm/src/domains/ek.ts",
+            "packages/backend-wasm/test/ek-lifecycle-allocations.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-shapes.test.ts"
+          ],
+          "caseIds": ["ek-ekopn-happy-open-new-file"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopn -> Node typed adapter -> registered N-API handler -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopn -> WASM typed helper -> configured compiled _tspice_ekopn export -> shared tspice_ekopn -> ekopn_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopn; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ekopr_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekopr_c.html",
+      "semantics": "Open an existing EK for read; opening does not load logical tables. Duplicate read opens retain separate claims even when CSPICE shares its physical handle. Closing one claim preserves the other.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekopr-happy-reopen-created-file",
+          "coverage": ["success", "state"],
+          "observes": "ekopr can reopen an EK file created earlier in the same workflow. The actual claim reaches eknseg and close; duplicate-read case observes3 after the first claim closes."
+        },
+        {
+          "caseId": "ek-ekopr-missing-file-error",
+          "coverage": ["error"],
+          "observes": "ekopr reports an error when opening a missing EK file. The actual claim reaches eknseg and close; duplicate-read case observes3 after the first claim closes."
+        },
+        {
+          "caseId": "ek-ekopr-audit-duplicate-read-claims",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two public tokens retain separate read claims on one native EK; one close leaves the other valid and all three physical segments visible.. The actual claim reaches eknseg and close; duplicate-read case observes3 after the first claim closes."
+        }
+      ],
+      "edgeAssessment": "Missing files, duplicate same-file read claims, foreign/expired claims, three physical segments and all three actual-heap allocations.",
+      "errorAssessment": "Actual FILENOTFOUND. Owner/lifetime/kind rejection belongs to typed handle contract, not a CSPICE numeric error equivalence claim.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekopr-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekopr.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": ["ek-ekopr-audit-duplicate-read-claims"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopr -> Node typed adapter -> registered N-API handler -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopr -> WASM typed helper -> configured compiled _tspice_ekopr export -> shared tspice_ekopr -> ekopr_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopr; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ekopw_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekopw_c.html",
+      "semantics": "Open an existing EK for write and append finalized segments. An outstanding read claim conflicts. Fast-write work must be completed before close/reopen, and reopening must preserve all data.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekopw-happy-open-created-file-for-write",
+          "coverage": ["success", "state"],
+          "observes": "ekopw opens an existing EK file for write-mode access. Actual write claim creates/finalizes appended data; reopened count2 and full independent rows/schema check distinguish access effects."
+        },
+        {
+          "caseId": "ek-ekopw-missing-file-error",
+          "coverage": ["error"],
+          "observes": "ekopw errors when opening a non-existent EK file. Actual write claim creates/finalizes appended data; reopened count2 and full independent rows/schema check distinguish access effects."
+        },
+        {
+          "caseId": "ek-ekopw-audit-append-finalize-and-reopen",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Write and finalize a first segment, reopen for write, append a second segment, finalize/close and reopen for read. Count2 and independent actual data readback prove write access and persistence.. Actual write claim creates/finalizes appended data; reopened count2 and full independent rows/schema check distinguish access effects."
+        },
+        {
+          "caseId": "ek-ekopw-audit-conflicting-read-claim",
+          "coverage": ["error", "edge"],
+          "observes": "An outstanding read claim prevents a conflicting write open; require actual FILEOPENCONFLICT.. Actual write claim creates/finalizes appended data; reopened count2 and full independent rows/schema check distinguish access effects."
+        }
+      ],
+      "edgeAssessment": "Missing files, read/write conflict, append second populated segment and independent full content/schema readback; all three actual-heap allocations.",
+      "errorAssessment": "Actual FILENOTFOUND and FILEOPENCONFLICT, with pending claims retained for cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekopw-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekopw.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekopw-audit-append-finalize-and-reopen",
+            "ek-ekopw-audit-conflicting-read-claim"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopw -> Node typed adapter -> registered N-API handler -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekopw -> WASM typed helper -> configured compiled _tspice_ekopw export -> shared tspice_ekopw -> ekopw_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekopw; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ekcls_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekcls_c.html",
+      "semantics": "Finalize explicit file ownership after completed fast writes. The typed raw API rejects foreign, expired and wrong-kind tokens even though CSPICE numeric ekcls permits unrecognized-handle no-ops. kclear does not close explicit EK read claims.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekcls-happy-close-and-reopen",
+          "coverage": ["success", "state"],
+          "observes": "ekcls closes a handle so the same file can be reopened and inspected. Actual close effect reaches reopened counts or invalid-token error; supplemental content and ordered-cleanup tests observe persisted data and close timing."
+        },
+        {
+          "caseId": "ek-ekcls-double-close-error",
+          "coverage": ["error"],
+          "observes": "ekcls reports an error on double-close of the same handle. Actual close effect reaches reopened counts or invalid-token error; supplemental content and ordered-cleanup tests observe persisted data and close timing."
+        },
+        {
+          "caseId": "ek-ekcls-audit-finalized-output-reopens",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Finalize populated output before each close, reopen and observe both physical segments; independent content checks ensure close flushes actual data.. Actual close effect reaches reopened counts or invalid-token error; supplemental content and ordered-cleanup tests observe persisted data and close timing."
+        },
+        {
+          "caseId": "ek-ekcls-audit-read-claim-survives-kclear",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Kernel clearing does not close an explicit EK read claim. Its later count and actual close still succeed; cleanup must retain that token independently of loaded kernels.. Actual close effect reaches reopened counts or invalid-token error; supplemental content and ordered-cleanup tests observe persisted data and close timing."
+        }
+      ],
+      "edgeAssessment": "Double close, owner/kind/lifetime misuse, live read claim after kclear, actual close before scratch removal, failed-close metadata retry and one actual-heap allocation.",
+      "errorAssessment": "No intrinsic error for an arbitrary native numeric handle is manufactured. Public double-close/foreign/kind guards are intentional typed wrapper semantics, exercised separately from CSPICE parity.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekcls-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekcls.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekcls-audit-finalized-output-reopens",
+            "ek-ekcls-audit-read-claim-survives-kclear"
+          ]
+        },
+        {
+          "id": "ekcls-cleanup-workspace-boundaries",
+          "status": "repaired",
+          "summary": "Python scratch cleanup could run before pending EK closes; a failed close discarded ownership metadata. EKifld string arrays and packed buffers lacked consistent early validation.",
+          "repair": "Reset already-captured error status and close pending actual EK handles before scratch removal; retain failed claims for retry. Compare all actual workspace values. Validate 1..100 columns before element access, require arrays/strings, and bound padded buffers before allocating.",
+          "evidence": [
+            "packages/py-parity-checking/src/runtime/lifecycle.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+            "packages/backend-node/native/src/domains/ek.cc",
+            "packages/backend-wasm/src/domains/ek.ts"
+          ],
+          "caseIds": [
+            "ek-ekcls-audit-finalized-output-reopens",
+            "ek-ekcls-audit-read-claim-survives-kclear"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekcls -> Node typed adapter -> registered N-API handler -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekcls -> WASM typed helper -> configured compiled _tspice_ekcls export -> shared tspice_ekcls -> ekcls_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekcls; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ekntab_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekntab_c.html",
+      "semantics": "Return the number of distinct logical EK table names loaded for queries, deduplicating shared names across segments and files. This differs from physical segment counts; read/write opens alone do not load tables.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekntab-happy-with-loaded-table",
+          "coverage": ["success", "state"],
+          "observes": "ekntab returns visible table count after loading EK fixtures. Every count reaches StepOutput.value and exact recursive comparison, including0/2/3/2/0 transitions."
+        },
+        {
+          "caseId": "ek-ekntab-happy-empty-state",
+          "coverage": ["success", "state"],
+          "observes": "ekntab is observable in an empty kernel state as zero tables. Every count reaches StepOutput.value and exact recursive comparison, including0/2/3/2/0 transitions."
+        },
+        {
+          "caseId": "ek-ekntab-audit-logical-table-load-state",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare logical table counts0,2,3,2,0 across multi-segment files, shared table names, unload and empty state; ekntab has no intrinsic scientific error case.. Every count reaches StepOutput.value and exact recursive comparison, including0/2/3/2/0 transitions."
+        },
+        {
+          "caseId": "ek-ekntab-audit-raw-open-does-not-load",
+          "coverage": ["success", "edge", "state"],
+          "observes": "A populated file opened for read is not loaded for EK querying: physical count1 and logical loaded-table count 0 reach assertions.. Every count reaches StepOutput.value and exact recursive comparison, including0/2/3/2/0 transitions."
+        }
+      ],
+      "edgeAssessment": "Loaded counts0/2/3/2/0 across shared names, load/unload and empty state; raw-open populated file still reports zero loaded tables; two actual-heap allocations.",
+      "errorAssessment": "NAIF has no scientific-input error for this no-argument count operation. Empty state is a meaningful zero result. Allocation fault recovery is separately tested.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekntab-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekntab.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekntab-audit-logical-table-load-state",
+            "ek-ekntab-audit-raw-open-does-not-load"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekntab -> Node typed adapter -> registered N-API handler -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekntab -> WASM typed helper -> configured compiled _tspice_ekntab export -> shared tspice_ekntab -> ekntab_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekntab; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ektnam_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ektnam_c.html",
+      "semantics": "Return a loaded table name by zero-based toolkit enumeration index. Empty loaded state and out-of-range indices are actual toolkit errors. N0067 header typo INVALDINDEX differs from actual INVALIDINDEX.",
+      "scenarios": [
+        {
+          "caseId": "ek-ektnam-happy-first-table",
+          "coverage": ["success", "state"],
+          "observes": "ektnam returns the loaded EK table name for index 0. Actual returned table strings reach StepOutput.value and exact string comparison, or named code is checked."
+        },
+        {
+          "caseId": "ek-ektnam-out-of-range-error",
+          "coverage": ["error"],
+          "observes": "ektnam errors for a table index outside 0..ekntab-1. Actual returned table strings reach StepOutput.value and exact string comparison, or named code is checked."
+        },
+        {
+          "caseId": "ek-ektnam-audit-all-loaded-names",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare every actual table name in toolkit enumeration order, with mixed/shared segment names and zero-based first/last indices.. Actual returned table strings reach StepOutput.value and exact string comparison, or named code is checked."
+        },
+        {
+          "caseId": "ek-ektnam-audit-no-loaded-files",
+          "coverage": ["error", "edge"],
+          "observes": "Actual empty-state lookup requires NOLOADEDFILES, distinct from a typed negative-index precondition.. Actual returned table strings reach StepOutput.value and exact string comparison, or named code is checked."
+        }
+      ],
+      "edgeAssessment": "First/last zero-based indices, every actual loaded name across two files, empty state, out-of-range index and two actual-heap allocations.",
+      "errorAssessment": "Actual NOLOADEDFILES and INVALIDINDEX asserted by named code; negative/fractional JS indices are preflight bounds.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ektnam-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ektnam.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ektnam-audit-all-loaded-names",
+            "ek-ektnam-audit-no-loaded-files"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ektnam -> Node typed adapter -> registered N-API handler -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ektnam -> WASM typed helper -> configured compiled _tspice_ektnam export -> shared tspice_ektnam -> ektnam_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ektnam; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "eknseg_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eknseg_c.html",
+      "semantics": "Return the number of physical segments in an open EK; count 0 for a new file and count 3 for the authored file containing two logical tables. Require a live backend-owned EK token.",
+      "scenarios": [
+        {
+          "caseId": "ek-eknseg-happy-on-open-handle",
+          "coverage": ["success", "state"],
+          "observes": "eknseg returns observable segment count for an open EK handle. Physical integer count reaches StepOutput.value and exact recursive comparison, distinct from logical table counts."
+        },
+        {
+          "caseId": "ek-eknseg-closed-handle-error",
+          "coverage": ["error"],
+          "observes": "eknseg rejects a handle after it has been closed. Physical integer count reaches StepOutput.value and exact recursive comparison, distinct from logical table counts."
+        },
+        {
+          "caseId": "ek-eknseg-audit-physical-versus-logical",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Three physical segments spanning two logical tables distinguish eknseg3 from ekntab2.. Physical integer count reaches StepOutput.value and exact recursive comparison, distinct from logical table counts."
+        }
+      ],
+      "edgeAssessment": "Counts0/1/2/3 after create, finalize, append and reopen; closed/foreign/kind misuse; two actual-heap allocations.",
+      "errorAssessment": "Closed tokens fail before FFI; actual valid empty/populated counts are compared, without passing invented invalid native handles into CSPICE.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "eknseg-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/eknseg.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": ["ek-eknseg-audit-physical-versus-logical"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.eknseg -> Node typed adapter -> registered N-API handler -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.eknseg -> WASM typed helper -> configured compiled _tspice_eknseg export -> shared tspice_eknseg -> eknseg_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy eknseg; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    },
+    {
+      "routine": "ekifld_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekifld_c.html",
+      "semantics": "Initialize one fast-write segment and return the actual zero-based segno and all nrows record pointers. Preserve these pointers unchanged through column insertion/finalization; no other EK operation may interrupt the active segment. nrows guard 1..1,000,000; N0067 maximum 100 columns; column names/declarations are real string arrays. Omitted SIZE/INDEXED/NULLS use CSPICE defaults1/FALSE/FALSE.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekifld-happy-segment-initialization-observable",
+          "coverage": ["success", "state"],
+          "observes": "ekifld initializes a fast-write segment that can be finalized and counted. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-invalid-nrows-error",
+          "coverage": ["error"],
+          "observes": "ekifld errors when nrows is outside the allowed range. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-full-workspace-and-data",
+          "coverage": ["success", "edge", "state"],
+          "observes": "All returned segno/rcptrs entries are compared, retained unchanged for column writing/finalization, then consumed through actual finalized data and segment count. Lowercase table/default scalar declaration exercise CSPICE defaults.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-second-segment-number",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Two sequential completed fast writes return distinct zero-based segment numbers and full record pointer arrays; no query or other EK operation interrupts a fast write.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-long-table",
+          "coverage": ["error", "edge"],
+          "observes": "Valid-shaped buffers reach actual CSPICE IDSTRINGTOOLONG; failed-writer cleanup closes the outstanding EK before scratch removal.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-invalid-table",
+          "coverage": ["error", "edge"],
+          "observes": "Valid-shaped buffers reach actual CSPICE INVALIDNAME; failed-writer cleanup closes the outstanding EK before scratch removal.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-invalid-column",
+          "coverage": ["error", "edge"],
+          "observes": "Valid-shaped buffers reach actual CSPICE INVALIDNAME; failed-writer cleanup closes the outstanding EK before scratch removal.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-invalid-declaration",
+          "coverage": ["error", "edge"],
+          "observes": "Valid-shaped buffers reach actual CSPICE BADCOLUMNDECL; failed-writer cleanup closes the outstanding EK before scratch removal.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        },
+        {
+          "caseId": "ek-ekifld-audit-read-only-claim",
+          "coverage": ["error", "edge"],
+          "observes": "A real read-only claim reaches actual DASINVALIDACCESS when initialized for fast-write; cleanup still closes the valid read claim.. Actual segno and every rcptrs value reach StepOutput.value; the same values are used unchanged for real column writes and finalization. Named errors retain actual failure response."
+        }
+      ],
+      "edgeAssessment": "Full workspace/zero-based first and second segno, lowercase/default declaration, actual100-column write and readback, reject 101columns before item getters; malformed names/declarations, read-only file, six actual-heap allocations. Packed 256 MiB cap arithmetic reviewed, not stress allocated.",
+      "errorAssessment": "Actual IDSTRINGTOOLONG, INVALIDNAME, BADCOLUMNDECL and DASINVALIDACCESS using valid-shaped input buffers. Invalid nrows/column counts/shapes are separate preflight errors. Error responses captured before resetting pending status for actual cleanup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-one.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-tables-two.ek",
+          "provenance": "Authored deterministic integer EK tables generated by fixtures/generate-audit-ek.py using locked SpiceyPy 6.0.3/CSPICE N0067; no external scientific observations. One file has AUDIT_SHARED[11,12],AUDIT_ALPHA[21],AUDIT_SHARED[13]; the second has AUDIT_SHARED[14],AUDIT_BETA[31].",
+          "distribution": "Repository-authored synthetic fixture distributed under repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Minimal authored tables distinguish loaded logical names from physical segments. Scratch outputs are created/finalized/read inside isolated cases. Supplemental actual writers compare full DAS header, segment/column metadata and all rows with independent locked SpiceyPy; authored integer values are literal-checked. Generator and provenance are maintained.",
+      "cleanup": "Actual EK claims close before scratch deletion after captured status reset. A failed close retains maps for a later finalizer retry. Fast writes are completed before other EK operations; file handles are explicit resources independent of kclear. Both harnesses clear/reset and dispose on success/error; WASM temporaries are freed in finally. Public tokens preserve backend owner, kind and lifetime.",
+      "tolerance": "Counts, pointer workspaces, integer rows, schema values, strings and named codes compare exactly under the recursive comparator; these small integers are below 2^53 and no numeric tolerance change is required. No physical file byte equality is claimed. Full independent semantic metadata/data compare without dropping fields.",
+      "findings": [
+        {
+          "id": "ekifld-lifecycle-evidence",
+          "status": "repaired",
+          "summary": "Existing smoke workflows did not establish the lifecycle/state/output distinctions described in this review.",
+          "repair": "Add distinguishing registered cases plus actual public Node/WASM ownership, cleanup and independent SpiceyPy full-header/schema/data readback. Full workspace propagation replaces a local segment-label-only assertion for ekifld.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ek/ekifld.cases.json",
+            "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts"
+          ],
+          "caseIds": [
+            "ek-ekifld-audit-full-workspace-and-data",
+            "ek-ekifld-audit-second-segment-number",
+            "ek-ekifld-audit-long-table",
+            "ek-ekifld-audit-invalid-table",
+            "ek-ekifld-audit-invalid-column",
+            "ek-ekifld-audit-invalid-declaration",
+            "ek-ekifld-audit-read-only-claim"
+          ]
+        },
+        {
+          "id": "ekifld-cleanup-workspace-boundaries",
+          "status": "repaired",
+          "summary": "Python scratch cleanup could run before pending EK closes; a failed close discarded ownership metadata. EKifld string arrays and packed buffers lacked consistent early validation.",
+          "repair": "Reset already-captured error status and close pending actual EK handles before scratch removal; retain failed claims for retry. Compare all actual workspace values. Validate 1..100 columns before element access, require arrays/strings, and bound padded buffers before allocating.",
+          "evidence": [
+            "packages/py-parity-checking/src/runtime/lifecycle.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+            "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+            "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+            "packages/backend-node/native/src/domains/ek.cc",
+            "packages/backend-wasm/src/domains/ek.ts"
+          ],
+          "caseIds": [
+            "ek-ekifld-audit-full-workspace-and-data",
+            "ek-ekifld-audit-second-segment-number",
+            "ek-ekifld-audit-long-table",
+            "ek-ekifld-audit-invalid-table",
+            "ek-ekifld-audit-invalid-column",
+            "ek-ekifld-audit-invalid-declaration",
+            "ek-ekifld-audit-read-only-claim"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekifld -> Node typed adapter -> registered N-API handler -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-node",
+            "ci-706-main-c5f0b058-node"
+          ]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.ekifld -> WASM typed helper -> configured compiled _tspice_ekifld export -> shared tspice_ekifld -> ekifld_c. Registered workflow dispatches that raw method. Python invokes actual locked SpiceyPy ekifld; adapters normalize only handles/path identity and scalar enum representations, with actual workspace fully observed.",
+          "executions": [
+            "local-706-main-c5f0b058-wasm",
+            "ci-706-main-c5f0b058-wasm"
+          ]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Both required local lanes and explicitly observed canonical CI passed on this reviewed source fingerprint. CI observations identify the actual source commit/job and remain separate from configured lanes and historical executions."
+}

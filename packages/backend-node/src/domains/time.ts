@@ -1,5 +1,9 @@
 import type { TimeApi, TimeKitApi } from "@rybosome/tspice-backend-contract";
-import { assertNever, invariant } from "@rybosome/tspice-core";
+import {
+  assertNever,
+  assertSpiceInt32,
+  invariant,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
@@ -60,6 +64,7 @@ export function createTimeApi(native: NativeAddon): TimeApi {
       return native.str2et(time);
     },
     et2utc: (et, format, prec) => {
+      assertSpiceInt32(prec, "et2utc(prec)");
       return native.et2utc(et, format, prec);
     },
     timout: (et, picture) => {
@@ -115,18 +120,21 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     timdef,
 
     scs2e: (sc, sclkch) => {
+      assertSpiceInt32(sc, "scs2e(sc)");
       const et = native.scs2e(sc, sclkch);
       invariant(typeof et === "number", "Expected scs2e() to return a number");
       return et;
     },
 
     sce2s: (sc, et) => {
+      assertSpiceInt32(sc, "sce2s(sc)");
       const out = native.sce2s(sc, et);
       invariant(typeof out === "string", "Expected sce2s() to return a string");
       return out;
     },
 
     scencd: (sc, sclkch) => {
+      assertSpiceInt32(sc, "scencd(sc)");
       const out = native.scencd(sc, sclkch);
       invariant(
         typeof out === "number",
@@ -136,6 +144,7 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     scdecd: (sc, sclkdp) => {
+      assertSpiceInt32(sc, "scdecd(sc)");
       const out = native.scdecd(sc, sclkdp);
       invariant(
         typeof out === "string",
@@ -145,12 +154,14 @@ export function createTimeApi(native: NativeAddon): TimeApi {
     },
 
     sct2e: (sc, sclkdp) => {
+      assertSpiceInt32(sc, "sct2e(sc)");
       const out = native.sct2e(sc, sclkdp);
       invariant(typeof out === "number", "Expected sct2e() to return a number");
       return out;
     },
 
     sce2c: (sc, et) => {
+      assertSpiceInt32(sc, "sce2c(sc)");
       const out = native.sce2c(sc, et);
       invariant(typeof out === "number", "Expected sce2c() to return a number");
       return out;

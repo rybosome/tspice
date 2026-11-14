@@ -64,5 +64,1002 @@
     "expectation": {
       "kind": "error"
     }
+  },
+  {
+    "caseId": "geometry-occult-audit-total",
+    "description": "Independently verified literal occultation code 3",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-partial",
+    "description": "Independently verified literal occultation code 1",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 40
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-none",
+    "description": "Independently verified literal occultation code 0",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-annular",
+    "description": "Independently verified literal occultation code 2",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100105",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_LARGE",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-reverse-total",
+    "description": "Independently verified literal occultation code -3",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100103",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_OCCULT_SMALL",
+        "targ2": "100101",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-reverse-partial",
+    "description": "Independently verified literal occultation code -1",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100103",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_OCCULT_SMALL",
+        "targ2": "100101",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 40
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-reverse-annular",
+    "description": "Independently verified literal occultation code -2",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100105",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_OCCULT_LARGE",
+        "targ2": "100101",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-point-target",
+    "description": "A point-like background target uses an ignored nonempty frame",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-dsk-point",
+    "description": "Actual DSK silhouette against a point target",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "DSK/UNPRIORITIZED",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-lt",
+    "description": "Observe actual occultation correction parsing for LT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "LT",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-lt-s",
+    "description": "Observe actual occultation correction parsing for LT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "LT+S",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-cn",
+    "description": "Observe actual occultation correction parsing for CN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "CN",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-cn-s",
+    "description": "Observe actual occultation correction parsing for CN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "CN+S",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-xlt",
+    "description": "Observe actual occultation correction parsing for XLT",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XLT",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-xlt-s",
+    "description": "Observe actual occultation correction parsing for XLT+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XLT+S",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-xcn",
+    "description": "Observe actual occultation correction parsing for XCN",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XCN",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-correction-xcn-s",
+    "description": "Observe actual occultation correction parsing for XCN+S",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "XCN+S",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-both-points",
+    "description": "Require actual structured error for both-points",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "POINT",
+        "frame1": "IGNORED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSHAPECOMBO)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-same-targets",
+    "description": "Require actual structured error for same-targets",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100101",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-bad-shape",
+    "description": "Require actual structured error for bad-shape",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "TSPICE_BAD_SHAPE",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADMETHODSYNTAX)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-bad-correction",
+    "description": "Require actual structured error for bad-correction",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "TSPICE_BAD",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-unknown-observer",
+    "description": "Require actual structured error for unknown-observer",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "TSPICE_UNKNOWN",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-empty-name",
+    "description": "Require actual structured error for empty-name",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-outside-coverage",
+    "description": "Require actual structured error for outside-coverage",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "ELLIPSOID",
+        "frame2": "AUDIT_OCCULT_SMALL",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 20000
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-before-none",
+    "description": "At analytic apparent-limb contact plus -5e-05s, NONE must produce literal code 3, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 40.457688993933886
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-before-xlt",
+    "description": "At analytic apparent-limb contact plus -5e-05s, XLT must produce literal code 0, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "XLT",
+        "observer": "100104",
+        "et": 40.457688993933886
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-before-xcn",
+    "description": "At analytic apparent-limb contact plus -5e-05s, XCN must produce literal code 0, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "XCN",
+        "observer": "100104",
+        "et": 40.457688993933886
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-after-none",
+    "description": "At analytic apparent-limb contact plus 5e-05s, NONE must produce literal code 0, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "NONE",
+        "observer": "100104",
+        "et": 40.45778899393389
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-after-lt",
+    "description": "At analytic apparent-limb contact plus 5e-05s, LT must produce literal code 3, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "LT",
+        "observer": "100104",
+        "et": 40.45778899393389
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-occult-audit-contact-after-cn",
+    "description": "At analytic apparent-limb contact plus 5e-05s, CN must produce literal code 3, distinguishing light-time behavior",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bds"
+      },
+      {
+        "op": "geometry.occult",
+        "targ1": "100101",
+        "shape1": "ELLIPSOID",
+        "frame1": "AUDIT_GEOMETRY_FIXED",
+        "targ2": "100103",
+        "shape2": "POINT",
+        "frame2": "IGNORED_FRAME",
+        "abcorr": "CN",
+        "observer": "100104",
+        "et": 40.45778899393389
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
   }
 ]

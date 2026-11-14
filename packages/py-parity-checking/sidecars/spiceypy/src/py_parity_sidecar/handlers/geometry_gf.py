@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ctypes
 import os
 import sys
 from contextlib import contextmanager
@@ -35,12 +36,23 @@ def _get_or_create_window(windows: WindowStore, window_id: str, *, max_intervals
     existing = windows.get(window_id)
     if existing is not None:
         return existing
-    if max_intervals <= 0:
-        raise ValueError("maxIntervals must be > 0")
+    if max_intervals < 0:
+        raise ValueError("maxIntervals must be >= 0")
 
     window = SPICEDOUBLE_CELL(max_intervals * 2)
     windows[window_id] = window
     return window
+
+
+_libc = ctypes.CDLL(None)
+_libc.fflush.argtypes = [ctypes.c_void_p]
+_libc.fflush.restype = ctypes.c_int
+
+
+def _flush_native_stdout() -> None:
+    # Python's text stream flush does not drain libc's CSPICE/f2c buffers.
+    if _libc.fflush(None) != 0:
+        raise OSError("Could not flush native progress output")
 
 
 @contextmanager
@@ -51,11 +63,15 @@ def _suppress_native_stdout() -> Iterator[None]:
     except BaseException:
         pass
 
+    _flush_native_stdout()
     saved_stdout_fd = os.dup(1)
     try:
         with open(os.devnull, "w", encoding="utf-8") as devnull:
             os.dup2(devnull.fileno(), 1)
-            yield
+            try:
+                yield
+            finally:
+                _flush_native_stdout()
     finally:
         os.dup2(saved_stdout_fd, 1)
         os.close(saved_stdout_fd)
@@ -95,7 +111,7 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
 
     if isinstance(step, StepGeometryGfGfsep):
         cnfine = _require_window(windows, step.cnfineWindowId)
-        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=max(step.nintvls, 8))
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else max(step.nintvls, 8))
         sp.gfsep(
             step.targ1,
             step.shape1,
@@ -113,11 +129,11 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
             cnfine,
             result,
         )
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value={"intervals":[list(map(float,sp.wnfetd(result,i))) for i in range(sp.wncard(result))],"confinementIntervals":[list(map(float,sp.wnfetd(cnfine,i))) for i in range(sp.wncard(cnfine))]})
 
     if isinstance(step, StepGeometryGfGfdist):
         cnfine = _require_window(windows, step.cnfineWindowId)
-        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=max(step.nintvls, 8))
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else max(step.nintvls, 8))
         sp.gfdist(
             step.target,
             step.abcorr,
@@ -130,6 +146,6 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
             cnfine,
             result,
         )
-        return StepOutput(op=step.op, value=None)
+        return StepOutput(op=step.op, value={"intervals":[list(map(float,sp.wnfetd(result,i))) for i in range(sp.wncard(result))],"confinementIntervals":[list(map(float,sp.wnfetd(cnfine,i))) for i in range(sp.wncard(cnfine))]})
 
     return None

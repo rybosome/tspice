@@ -5,6 +5,7 @@ import type {
   SpiceHandle,
   SpiceIntCell,
   SpiceWindow,
+  SpkPackedDescriptor,
 } from "@rybosome/tspice-backend-contract";
 import type { Spice } from "@rybosome/tspice";
 
@@ -55,6 +56,7 @@ export type EkSegmentState = {
 };
 
 export type EphemerisState = {
+  descriptors: Map<string, SpkPackedDescriptor>;
   requestedTargets: Set<number>;
   intCells: Map<string, SpiceIntCell>;
   spkHandles: Map<string, SpiceHandle>;
@@ -141,6 +143,7 @@ export function createRunTspiceContext(
         segments: new Map<string, EkSegmentState>(),
       },
       ephemeris: {
+        descriptors: new Map<string, SpkPackedDescriptor>(),
         requestedTargets: new Set<number>(),
         intCells: new Map<string, SpiceIntCell>(),
         spkHandles: new Map<string, SpiceHandle>(),
@@ -357,11 +360,12 @@ export function requireEphemerisIntCell(
 function closeSpkHandleBestEffort(
   context: RunTspiceContext,
   handle: SpiceHandle,
-): void {
+): boolean {
   try {
     context.spice.raw.spkcls(handle);
+    return true;
   } catch {
-    // best-effort cleanup only
+    return false;
   }
 }
 
@@ -372,9 +376,8 @@ export function setSpkHandle(
   handle: SpiceHandle,
 ): void {
   const existing = context.state.ephemeris.spkHandles.get(handleId);
-  if (existing != null) {
-    closeSpkHandleBestEffort(context, existing);
-  }
+  if (existing != null)
+    throw new Error(`SPK handle already exists: ${handleId}`);
 
   context.state.ephemeris.spkHandles.set(handleId, handle);
   registerFinalizer(
@@ -386,8 +389,8 @@ export function setSpkHandle(
         return;
       }
 
-      closeSpkHandleBestEffort(context, handle);
-      context.state.ephemeris.spkHandles.delete(handleId);
+      if (closeSpkHandleBestEffort(context, handle))
+        context.state.ephemeris.spkHandles.delete(handleId);
     },
   );
 }
