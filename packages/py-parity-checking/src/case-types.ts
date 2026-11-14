@@ -426,6 +426,62 @@ export type StepCellsWindowsWnvald = {
   windowId: string;
 };
 
+export type StepKernelPoolBadkpv = {
+  op: "kernel-pool.badkpv";
+  caller: string;
+  name: string;
+  comp: string;
+  size: number;
+  divby: number;
+  type: string;
+};
+
+export type StepKernelPoolBodvcd = {
+  op: "kernel-pool.bodvcd";
+  body: number;
+  item: string;
+  maxn: number;
+};
+
+export type StepKernelPoolBodvrd = {
+  op: "kernel-pool.bodvrd";
+  body: string;
+  item: string;
+  maxn: number;
+};
+
+export type StepKernelPoolClpool = {
+  op: "kernel-pool.clpool";
+};
+
+export type StepKernelPoolDvpool = {
+  op: "kernel-pool.dvpool";
+  name: string;
+};
+
+export type StepKernelPoolLdpool = {
+  op: "kernel-pool.ldpool";
+  file: PathRefLike;
+};
+
+export type StepKernelPoolLmpool = {
+  op: "kernel-pool.lmpool";
+  lines: string[];
+};
+
+export type StepKernelPoolStpool = {
+  op: "kernel-pool.stpool";
+  item: string;
+  nth: number;
+  contin: string;
+  lenout: number;
+};
+
+export type StepKernelPoolSzpool = {
+  op: "kernel-pool.szpool";
+  name: string;
+};
+
 export type StepKernelPoolGdpool = {
   op: "kernel-pool.gdpool";
   name: string;
@@ -1345,6 +1401,15 @@ export type WorkflowStep =
   | StepCellsWindowsWninsd
   | StepCellsWindowsWnfetd
   | StepCellsWindowsWnvald
+  | StepKernelPoolBadkpv
+  | StepKernelPoolBodvcd
+  | StepKernelPoolBodvrd
+  | StepKernelPoolClpool
+  | StepKernelPoolDvpool
+  | StepKernelPoolLdpool
+  | StepKernelPoolLmpool
+  | StepKernelPoolStpool
+  | StepKernelPoolSzpool
   | StepKernelPoolGdpool
   | StepKernelPoolGipool
   | StepKernelPoolGcpool
@@ -1556,6 +1621,21 @@ export type StepOutput =
   | { op: "cells-windows.wninsd"; value: null }
   | { op: "cells-windows.wnfetd"; value: { left: number; right: number } }
   | { op: "cells-windows.wnvald"; value: { left: number; right: number }[] }
+  | { op: "kernel-pool.badkpv"; value: boolean }
+  | { op: "kernel-pool.bodvcd"; value: { dim: number; values: number[] } }
+  | { op: "kernel-pool.bodvrd"; value: { dim: number; values: number[] } }
+  | { op: "kernel-pool.clpool"; value: null }
+  | { op: "kernel-pool.dvpool"; value: null }
+  | { op: "kernel-pool.ldpool"; value: null }
+  | { op: "kernel-pool.lmpool"; value: null }
+  | {
+      op: "kernel-pool.stpool";
+      value: { found: false } | { found: true; nthstr: string; size: number };
+    }
+  | {
+      op: "kernel-pool.szpool";
+      value: { found: false } | { found: true; n: number };
+    }
   | { op: "kernel-pool.gdpool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gipool"; value: KernelPoolFoundNumbers }
   | { op: "kernel-pool.gcpool"; value: KernelPoolFoundStrings }

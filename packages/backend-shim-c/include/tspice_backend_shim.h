@@ -376,6 +376,20 @@ int tspice_dskb02(
 
 // --- Kernel pool -----------------------------------------------------------
 
+// N0067 pool MAXVAL, MAXLIN and MAXCHR bound the largest meaningful output buffers.
+#define TSPICE_POOL_MAX_VALUES 400000
+#define TSPICE_POOL_MAX_CHAR_ROWS 15000
+#define TSPICE_POOL_TEXT_CAPACITY (TSPICE_POOL_MAX_CHAR_ROWS * 80 + 1)
+int tspice_badkpv(const char *caller, const char *name, const char *comp, int size, int divby, int type, int *bad, char *err, int errMaxBytes);
+int tspice_bodvcd(int body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes);
+int tspice_bodvrd(const char *body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes);
+int tspice_clpool(char *err, int errMaxBytes);
+int tspice_dvpool(const char *name, char *err, int errMaxBytes);
+int tspice_ldpool(const char *path, char *err, int errMaxBytes);
+int tspice_lmpool(const char *rows, int stride, int count, char *err, int errMaxBytes);
+int tspice_stpool(const char *item, int nth, const char *contin, int lenout, char *text, int *size, int *found, char *err, int errMaxBytes);
+int tspice_szpool(const char *name, int *n, int *found, char *err, int errMaxBytes);
+
 int tspice_gdpool(
     const char *name,
     int start,

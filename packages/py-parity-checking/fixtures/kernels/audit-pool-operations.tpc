@@ -1,0 +1,15 @@
+KPL/PCK
+
+Project-authored synthetic pool values. The B05 item is arbitrary test
+data, with no physical interpretation or dependency on planetary models.
+\begindata
+BODY399_B05 = ( 8.5 -3.25 0.125 19 )
+BODY399_b05 = ( -7 2 )
+BODY399_B05_TEXT = ( 'first' 'second' )
+BODY-707007_B05 = ( -4.75 13.5 )
+NAIF_BODY_NAME += ( 'POOL TEST BODY' )
+NAIF_BODY_CODE += ( -707007 )
+B05_JOIN = ( 'alpha++' ' beta++' 'gamma' 'delta' )
+B05_TRACK = ( 10 20 )
+B05_APPEND += ( 17 )
+\begintext

@@ -163,3 +163,10 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+B05 uses `audit-pool-operations.tpc`, a project-authored synthetic text kernel
+distributed under the repository's MIT license. Its mixed-case keys, numeric
+arrays, continued string components, append assignment and invented negative
+body/name pair distinguish pool updates and lookup conventions. The locked
+sidecar reads this file directly. Node and WASM receive the same bytes through
+the public loader; KEEPER registration is queried independently.

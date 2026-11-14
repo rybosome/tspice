@@ -184,6 +184,22 @@ Notes:
 
 ---
 
+## Kernel-pool validation, loading and continued strings
+
+| Raw method | Matching CSPICE routine | Result or effect                                                                                                                                                                          |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `badkpv`   | `badkpv_c`              | Validate a pool variable’s type, comparison with expected dimension and dimension divisibility. A valid variable returns false. A failed check signals a toolkit error naming the caller. |
+| `bodvcd`   | `bodvcd_c`              | Find the numeric pool constant BODY<id>_<item> by signed body ID, reporting its exact dimension and stored units.                                                                         |
+| `bodvrd`   | `bodvrd_c`              | Resolve a body name or decimal ID string, then return owned ordered body-constant values and their actual dimension.                                                                      |
+| `clpool`   | `clpool_c`              | Clear all kernel-pool variables and signal registered watchers while retaining KEEPER inventory.                                                                                          |
+| `dvpool`   | `dvpool_c`              | Delete a named variable and notify its watchers when an existing variable is deleted.                                                                                                     |
+| `ldpool`   | `ldpool_c`              | Load file-based text-kernel assignments directly into the pool, without KEEPER registration.                                                                                              |
+| `lmpool`   | `lmpool_c`              | Load ordered text-kernel records through the canonical rectangular C buffer.                                                                                                              |
+| `stpool`   | `stpool_c`              | Fetch a continued logical string by zero-based ordinal, carrying the exact C text and pre-truncation size in bytes, or found false.                                                       |
+| `szpool`   | `szpool_c`              | Read a named implementation limit as a found integer, preserving legitimate absent names.                                                                                                 |
+
+The public contract and batch review describe native and WASM buffer limits, file staging, error precedence, source-derived guards and independent oracle routes. [Kernel-pool review](step8-kernel-pool.md)
+
 ## Domain: `error` (`ErrorApi`)
 
 | domain.method           | CSPICE entrypoint(s) | Args (TS shape)                                   | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                                                            |

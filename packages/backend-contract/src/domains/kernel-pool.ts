@@ -14,12 +14,108 @@
  * - `swpool` accepts `names: []` and watches nothing (but still arms the agent so the next
  *   `cvpool(agent)` returns `true`).
  */
-import type { Found } from "../shared/types.js";
+import type { Found, KernelSource } from "../shared/types.js";
 
 export type KernelPoolVarType = "C" | "N";
 
 /** Backend contract for reading/writing kernel pool variables. */
 export interface KernelPoolApi {
+  /**
+   * Check a pool variable’s type and dimension. Returns false for a valid variable. Missing
+   * variables, mismatches and invalid operators signal a CSPICE error identifying the caller.
+   * N0067 accepts =, <, >, <= and =>. The type is one ASCII byte.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/badkpv_c.html
+   */
+  badkpv(
+    caller: string,
+    name: string,
+    comp: string,
+    size: number,
+    divby: number,
+    type: string,
+  ): boolean;
+
+  /**
+   * Read a body constant by signed integer ID and case-sensitive item. The signed maxn is the
+   * caller’s room in doubles. Returns the actual dimension and owned values in stored units.
+   * Insufficient room, missing constants and character-valued constants signal CSPICE errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodvcd_c.html
+   */
+  bodvcd(
+    body: number,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+
+  /**
+   * Read a body constant by name or decimal ID string and case-sensitive item. Returns its
+   * dimension and owned values in stored units. Insufficient room, unknown bodies and missing
+   * or nonnumeric constants signal CSPICE errors. N0067 body-name hashing requires external
+   * mapping codes with a representable signed absolute value.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodvrd_c.html
+   */
+  bodvrd(
+    body: string,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+
+  /**
+   * Clear kernel-pool variables and notify all registered watch agents. The KEEPER loaded-
+   * kernel inventory and watch registrations are retained.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/clpool_c.html
+   */
+  clpool(): void;
+
+  /**
+   * Delete a case-sensitive pool variable and update watchers according to CSPICE. Deleting a
+   * missing variable is allowed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvpool_c.html
+   */
+  dvpool(name: string): void;
+
+  /**
+   * Load assignments from a text kernel directly into the pool. This operation adds no KEEPER
+   * entry. String paths use the backend’s filesystem. A byte source uses a private file for
+   * this call and leaves existing staged files intact. A parse error can leave earlier
+   * assignments in the pool.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ldpool_c.html
+   */
+  ldpool(kernel: KernelSource): void;
+
+  /**
+   * Load an ordered buffer of text-kernel assignment lines, read once and encoded as NUL-
+   * terminated UTF-8 rows. N0067 processes the first 132 bytes of each line. The byte size of
+   * a rectangular table must fit signed 32-bit arithmetic and the backend’s allocation limit.
+   * Parse errors can leave earlier assignments in the pool.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lmpool_c.html
+   */
+  lmpool(lines: readonly string[]): void;
+
+  /**
+   * Read the zero-based logical string from continued character components. The byte capacity
+   * includes the terminator. A found result carries the returned text and complete pre-
+   * truncation byte size. Missing, wrong-type and out-of-range requests return found false.
+   * Capacities below two signal a CSPICE error. A byte-split UTF-8 result raises a decoding
+   * error. The adapter rejects a visited component whose significant byte length is exactly
+   * one less than the marker’s, avoiding an invalid N0067 comparison. Blank components have
+   * significant length one.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stpool_c.html
+   */
+  stpool(
+    item: string,
+    nth: number,
+    contin: string,
+    lenout: number,
+  ): Found<{ nthstr: string; size: number }>;
+
+  /**
+   * Read a kernel-pool implementation parameter. Unknown parameters return found false. Names
+   * follow CSPICE’s case- and blank-insensitive comparison.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/szpool_c.html
+   */
+  szpool(name: string): Found<{ n: number }>;
+
   // --- Read ---------------------------------------------------------------
 
   /**

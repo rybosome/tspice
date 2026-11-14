@@ -1,0 +1,121 @@
+[
+  {
+    "caseId": "kernel-pool-szpool-all-named-limits",
+    "description": "Observe all seven configurable pool constants through their actual found/value fields.",
+    "workflow": [
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXVAR"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXVAL"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXLIN"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXCHR"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MXNOTE"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXLEN"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXAGT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-szpool-name-comparison",
+    "description": "Compare mixed case, embedded blanks, leading/trailing blanks and distinct unknown names.",
+    "workflow": [
+      {
+        "op": "kernel-pool.szpool",
+        "name": "maxlen"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "m a X l E N"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "  MAXCHR   "
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXNOTES"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "UNKNOWN"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": " "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-szpool-pool-independent",
+    "description": "Pool variables and clearing do not change the compiled toolkit limits.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "MAXLEN",
+        "values": [7]
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXLEN"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "MAXLEN",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.clpool"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXLEN"
+      },
+      {
+        "op": "kernel-pool.szpool",
+        "name": "MAXVAR"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-szpool-empty-name",
+    "description": "An empty name is diagnosed before parameter lookup.",
+    "workflow": [
+      {
+        "op": "kernel-pool.szpool",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

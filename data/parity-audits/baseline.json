@@ -11,7 +11,7 @@
         "https://github.com/rybosome/tspice/pull/684",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "cells-windows",
@@ -31,7 +31,7 @@
         "https://github.com/rybosome/tspice/pull/685",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "coordinates-matrices",
@@ -54,7 +54,7 @@
         "https://github.com/rybosome/tspice/pull/681",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "dsk",
@@ -64,7 +64,7 @@
         "https://github.com/rybosome/tspice/pull/695",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ek-1",
@@ -83,7 +83,7 @@
         "https://github.com/rybosome/tspice/pull/697",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ek-2",
@@ -102,7 +102,7 @@
         "https://github.com/rybosome/tspice/pull/696",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ephemeris-1",
@@ -119,7 +119,7 @@
         "https://github.com/rybosome/tspice/pull/702",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ephemeris-2",
@@ -138,7 +138,7 @@
         "https://github.com/rybosome/tspice/pull/703",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ephemeris-descriptors",
@@ -148,7 +148,7 @@
         "https://github.com/rybosome/tspice/pull/700",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "error",
@@ -166,7 +166,7 @@
         "https://github.com/rybosome/tspice/pull/682",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "file-io-1",
@@ -186,7 +186,7 @@
         "https://github.com/rybosome/tspice/pull/692",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "file-io-2",
@@ -204,7 +204,7 @@
         "https://github.com/rybosome/tspice/pull/694",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "frames-1",
@@ -221,7 +221,7 @@
         "https://github.com/rybosome/tspice/pull/699",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "frames-2",
@@ -240,7 +240,7 @@
         "https://github.com/rybosome/tspice/pull/698",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "geometry",
@@ -260,7 +260,7 @@
         "https://github.com/rybosome/tspice/pull/704",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "geometry-gf",
@@ -281,7 +281,7 @@
         "https://github.com/rybosome/tspice/pull/705",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "ids-names",
@@ -299,7 +299,7 @@
         "https://github.com/rybosome/tspice/pull/687",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "kernel-pool",
@@ -321,7 +321,7 @@
         "https://github.com/rybosome/tspice/pull/686",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "kernels",
@@ -339,7 +339,7 @@
         "https://github.com/rybosome/tspice/pull/690",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "kplfrm-prerequisite",
@@ -350,7 +350,7 @@
         "https://github.com/rybosome/tspice/pull/684",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "time-1",
@@ -369,7 +369,7 @@
         "https://github.com/rybosome/tspice/pull/689",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "time-2",
@@ -387,7 +387,7 @@
         "https://github.com/rybosome/tspice/pull/688",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
     },
     {
       "id": "vectors-arithmetic",
@@ -406,7 +406,26 @@
         "https://github.com/rybosome/tspice/pull/679",
         "https://github.com/rybosome/tspice/pull/706"
       ],
-      "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
+      "nextAction": "Step 7 evidence was recorded on its original source and the consolidated baseline landed in #706. Revalidate the covered scenarios on both backends on this expanded source."
+    }
+  ],
+  "expansionBatches": [
+    {
+      "id": "b05-kernel-pool",
+      "routines": [
+        "badkpv_c",
+        "bodvcd_c",
+        "bodvrd_c",
+        "clpool_c",
+        "dvpool_c",
+        "ldpool_c",
+        "lmpool_c",
+        "stpool_c",
+        "szpool_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/734"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

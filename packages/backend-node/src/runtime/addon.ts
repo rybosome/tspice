@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import type {
+  Found,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -51,6 +52,36 @@ export type NativeAddon = {
   kplfrm(frmcls: number, idset: number): void;
 
   // --- kernel pool ---
+  badkpv(
+    caller: string,
+    name: string,
+    comp: string,
+    size: number,
+    divby: number,
+    type: string,
+  ): boolean;
+  bodvcd(
+    body: number,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+  bodvrd(
+    body: string,
+    item: string,
+    maxn: number,
+  ): { dim: number; values: number[] };
+  clpool(): void;
+  dvpool(name: string): void;
+  ldpool(path: string): void;
+  lmpool(lines: readonly string[]): void;
+  stpool(
+    item: string,
+    nth: number,
+    contin: string,
+    lenout: number,
+  ): Found<{ nthstr: string; size: number }>;
+  szpool(name: string): Found<{ n: number }>;
+
   gdpool(
     name: string,
     start: number,

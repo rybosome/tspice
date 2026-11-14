@@ -1,0 +1,186 @@
+[
+  {
+    "caseId": "kernel-pool-dvpool-delete-and-reinsert",
+    "description": "Remove exactly the named variable, retain sibling types, then reinsert a different type.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_TAG",
+        "values": ["x"]
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_NUM"
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_NUM"
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_TAG",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_NUM",
+        "values": ["again"]
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_NUM",
+        "start": 0,
+        "room": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-dvpool-missing-and-case",
+    "description": "Delete a case-distinct pool variable and repeat deletion of an absent name.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_X",
+        "values": [2]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "b05_x",
+        "values": [7]
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "b05_x"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_X",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "b05_x"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "b05_x"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-dvpool-watch-only-real-deletion",
+    "description": "A watch observes real removal and subsequent insertion. Repeat the missing deletion and drain flags.",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "B05_DW",
+        "names": ["B05_TRACK"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_TRACK",
+        "values": [1]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_DW"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-dvpool-keeper-metadata",
+    "description": "Deleting a loaded text variable leaves other data and its KEEPER listing available.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_APPEND",
+        "start": 0,
+        "room": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-dvpool-empty-name",
+    "description": "The C wrapper signals on an empty deletion name.",
+    "workflow": [
+      {
+        "op": "kernel-pool.dvpool",
+        "name": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  }
+]

@@ -418,6 +418,15 @@ const exportedFunctions = [
   "_tspice_dskb02",
 
   // --- kernel pool ---
+  "_tspice_badkpv",
+  "_tspice_bodvcd",
+  "_tspice_bodvrd",
+  "_tspice_clpool",
+  "_tspice_dvpool",
+  "_tspice_ldpool",
+  "_tspice_lmpool",
+  "_tspice_stpool",
+  "_tspice_szpool",
   "_tspice_gdpool",
   "_tspice_gipool",
   "_tspice_gcpool",

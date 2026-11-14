@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+from .paths import PathRefInput
+
 KernelPoolVarType = Literal["C", "N"]
 
 
@@ -81,4 +83,69 @@ class StepKernelPoolCvpool:
 @dataclass(frozen=True)
 class StepKernelPoolExpool:
     op: Literal["kernel-pool.expool"]
+    name: str
+
+
+@dataclass(frozen=True)
+class StepKernelPoolBadkpv:
+    op: Literal["kernel-pool.badkpv"]
+    caller: str
+    name: str
+    comp: str
+    size: int
+    divby: int
+    type: str
+
+
+@dataclass(frozen=True)
+class StepKernelPoolBodvcd:
+    op: Literal["kernel-pool.bodvcd"]
+    body: int
+    item: str
+    maxn: int
+
+
+@dataclass(frozen=True)
+class StepKernelPoolBodvrd:
+    op: Literal["kernel-pool.bodvrd"]
+    body: str
+    item: str
+    maxn: int
+
+
+@dataclass(frozen=True)
+class StepKernelPoolClpool:
+    op: Literal["kernel-pool.clpool"]
+
+
+@dataclass(frozen=True)
+class StepKernelPoolDvpool:
+    op: Literal["kernel-pool.dvpool"]
+    name: str
+
+
+@dataclass(frozen=True)
+class StepKernelPoolLdpool:
+    op: Literal["kernel-pool.ldpool"]
+    file: PathRefInput
+
+
+@dataclass(frozen=True)
+class StepKernelPoolLmpool:
+    op: Literal["kernel-pool.lmpool"]
+    lines: list[str]
+
+
+@dataclass(frozen=True)
+class StepKernelPoolStpool:
+    op: Literal["kernel-pool.stpool"]
+    item: str
+    nth: int
+    contin: str
+    lenout: int
+
+
+@dataclass(frozen=True)
+class StepKernelPoolSzpool:
+    op: Literal["kernel-pool.szpool"]
     name: str

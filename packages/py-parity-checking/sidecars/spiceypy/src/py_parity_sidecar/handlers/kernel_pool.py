@@ -11,6 +11,15 @@ from ..models import (
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolBadkpv,
+    StepKernelPoolBodvcd,
+    StepKernelPoolBodvrd,
+    StepKernelPoolClpool,
+    StepKernelPoolDvpool,
+    StepKernelPoolLdpool,
+    StepKernelPoolLmpool,
+    StepKernelPoolStpool,
+    StepKernelPoolSzpool,
     StepKernelPoolGdpool,
     StepKernelPoolGipool,
     StepKernelPoolGnpool,
@@ -21,7 +30,8 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
-from ..runtime import SidecarRuntimeContext
+from ..kernel_pool_oracle import body_values, load_lines, pool_string, spice_int, input_text
+from ..runtime import SidecarRuntimeContext, resolve_path_ref
 
 
 def _normalize_found_scalars(
@@ -62,7 +72,41 @@ def _swpool_lenvals(names: list[str]) -> int:
     return max(2, max(len(name) for name in names))
 
 
-def run_kernel_pool_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+def run_kernel_pool_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepKernelPoolBadkpv):
+        if len(step.type) != 1 or not step.type.isascii():
+            raise ValueError("badkpv type must be one ASCII byte")
+        result = sp.badkpv(input_text(step.caller), input_text(step.name), input_text(step.comp),
+                           spice_int(step.size), spice_int(step.divby), step.type)
+        return StepOutput(op=step.op, value=bool(result))
+
+    if isinstance(step, (StepKernelPoolBodvcd, StepKernelPoolBodvrd)):
+        return StepOutput(op=step.op, value=body_values(step.body, step.item, step.maxn))
+
+    if isinstance(step, StepKernelPoolClpool):
+        sp.clpool()
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepKernelPoolDvpool):
+        sp.dvpool(input_text(step.name))
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepKernelPoolLdpool):
+        sp.ldpool(resolve_path_ref(context.paths, step.file))
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepKernelPoolLmpool):
+        load_lines(step.lines)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepKernelPoolStpool):
+        return StepOutput(op=step.op, value=pool_string(step.item, step.nth, step.contin, step.lenout))
+
+    if isinstance(step, StepKernelPoolSzpool):
+        with sp.no_found_check():
+            n, found = sp.szpool(input_text(step.name))
+        return StepOutput(op=step.op, value={"found": True, "n": int(n)} if found else {"found": False})
+
     if isinstance(step, StepKernelPoolGdpool):
         try:
             out = _normalize_found_scalars(
