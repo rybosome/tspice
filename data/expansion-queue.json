@@ -2237,19 +2237,26 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/739"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "46/46 registered comparisons and seven supplementary public tests, four native and eleven WASM focused tests passed; Chrome exercised both parser and propagation, including missing-kernel recovery. 23 workflows, 80 steps, 58 targeted calls, nine terminal genuine errors and four captured errors. See docs/step8-tle-propagation.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "bd92b9f7c8ca4b3c01617b316830fecfa2d31e39",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43568124187/job/132366361966",
+          "result": "Both complete required lanes passed locally on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39. JavaScript: 2,483 parity tests and one expected guard skip. Native-required: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132366361966 on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run the full required native and JS-only lanes. Inspect canonical CI and final-head rebaseability before promotion.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-tle-propagation",
       "worktree": "/private/tmp/tspice-step8-tle-propagation",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "46/46 registered comparisons and seven supplementary public tests, four native and eleven WASM focused tests passed; Chrome exercised both parser and propagation, including missing-kernel recovery.",
-      "sourceOwner": "Codex Step 8 (/root/constant_parity)"
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source bd92b9f7. 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed.",
+      "sourceOwner": "Codex Step 8 (/root/constant_parity)",
+      "priorCheckpoint": "46/46 registered comparisons and seven supplementary public tests, four native and eleven WASM focused tests passed; Chrome exercised both parser and propagation, including missing-kernel recovery."
     },
     {
       "id": "E03-spk-lowlevel",

@@ -414,8 +414,8 @@
       "id": "e02-tle-propagation",
       "routines": ["getelm_c", "evsgp4_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Capture required native and WASM local and inspected canonical CI executions, final-head checks and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/739"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

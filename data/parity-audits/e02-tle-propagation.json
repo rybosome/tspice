@@ -41,7 +41,152 @@
     "packages/tspice/src/index.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e02-bd92b9f7-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe0921aaa098ce7de26876c92eb2d5ab6b79444f8f52b9dd2e511a430738af02",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "observation": "Both complete required lanes passed locally on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39. JavaScript: 2,483 parity tests and one expected guard skip. Native-required: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e02-bd92b9f7-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe0921aaa098ce7de26876c92eb2d5ab6b79444f8f52b9dd2e511a430738af02",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "observation": "Both complete required lanes passed locally on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39. JavaScript: 2,483 parity tests and one expected guard skip. Native-required: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e02-bd92b9f7-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe0921aaa098ce7de26876c92eb2d5ab6b79444f8f52b9dd2e511a430738af02",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "commit": "bd92b9f7c8ca4b3c01617b316830fecfa2d31e39",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43568124187/job/132366361966",
+      "observation": "Inspected successful Linux Node 22 native-required job 132366361966 on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e02-bd92b9f7-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "fe0921aaa098ce7de26876c92eb2d5ab6b79444f8f52b9dd2e511a430738af02",
+      "caseIds": [
+        "ephemeris-evsgp4-change-orbit",
+        "ephemeris-evsgp4-earth-constants",
+        "ephemeris-evsgp4-eccentric-halfday",
+        "ephemeris-evsgp4-error-recovery",
+        "ephemeris-evsgp4-negative-eccentricity",
+        "ephemeris-evsgp4-no-leapseconds",
+        "ephemeris-evsgp4-nonresonant-deep",
+        "ephemeris-evsgp4-relay-resonance",
+        "ephemeris-evsgp4-suborbital",
+        "ephemeris-evsgp4-survey-state",
+        "ephemeris-getelm-bad-angle",
+        "ephemeris-getelm-bad-motion",
+        "ephemeris-getelm-blank-rows",
+        "ephemeris-getelm-century-pivot",
+        "ephemeris-getelm-civil-survey",
+        "ephemeris-getelm-error-recovery",
+        "ephemeris-getelm-inclination-endpoints",
+        "ephemeris-getelm-lsk-unloaded",
+        "ephemeris-getelm-mean-motion-boundaries",
+        "ephemeris-getelm-mismatched-id",
+        "ephemeris-getelm-mixed-orbits",
+        "ephemeris-getelm-optional-checksum",
+        "ephemeris-getelm-unparseable-field"
+      ],
+      "commit": "bd92b9f7c8ca4b3c01617b316830fecfa2d31e39",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43568124187/job/132366361966",
+      "observation": "Inspected successful Linux Node 22 native-required job 132366361966 on bd92b9f7c8ca4b3c01617b316830fecfa2d31e39: 2,264 registered Node/WASM live comparisons; 2,484 parity-package tests with no skips, including the native-required guard; 70 native wrapper, 611 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "getelm_c",
@@ -131,16 +276,16 @@
       "tolerance": "Full strings, counts and diagnostics are exact; the 1e−12 relative/absolute numerical comparator covers each scalar or vector slot at realistic epochs. Supplementary parser derivative tests restore input units; a separate millennium-scale guard control has a scoped 1e−6 relative allowance.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.getelm -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e02-bd92b9f7-node", "ci-e02-bd92b9f7-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.getelm -> validated module-local WASM adapter, actual generated export -> tspice_getelm -> getelm_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e02-bd92b9f7-wasm", "ci-e02-bd92b9f7-wasm"]
         }
       },
       "semantics": "Parse the supplied pair to TDB seconds after J2000 and ten model elements, preserving the signed exponents, angle/rate conversions and repeated epoch. The fractional UTC day uses the loaded leap-seconds kernel and firstYear selects the two-digit century.",
@@ -240,16 +385,16 @@
       "tolerance": "Full strings, counts and diagnostics are exact; the 1e−12 relative/absolute numerical comparator covers each scalar or vector slot at realistic epochs. Supplementary parser derivative tests restore input units; a separate millennium-scale guard control has a scoped 1e−6 relative allowance.",
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.evsgp4 -> validated Node adapter, actual mutex-protected N-API entry point -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e02-bd92b9f7-node", "ci-e02-bd92b9f7-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.evsgp4 -> validated module-local WASM adapter, actual generated export -> tspice_evsgp4 -> evsgp4_c. The independent oracle calls the actual operation from locked SpiceyPy.",
-          "executions": []
+          "executions": ["local-e02-bd92b9f7-wasm", "ci-e02-bd92b9f7-wasm"]
         }
       },
       "semantics": "Initialize from the complete Earth constants and elements at the UTC Julian date corresponding to the elements TDB epoch, then return all six TEME state components (km and km/s) at the requested TDB epoch. Initialization is repeated even after a different prior orbit.",
@@ -292,5 +437,5 @@
       ]
     }
   ],
-  "verificationNote": "Compiled local comparisons, focused tests and browser smoke support this source review. The required full local and inspected canonical CI executions remain separate."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
