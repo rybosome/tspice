@@ -414,8 +414,8 @@
       "id": "c14-text-command-state",
       "routines": ["rdtext_c", "putcml_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
+      "prs": ["https://github.com/rybosome/tspice/pull/772"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

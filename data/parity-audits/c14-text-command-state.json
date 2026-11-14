@@ -63,7 +63,128 @@
     "scripts/coverage-ledger.test.mjs",
     "scripts/generate-coverage-ledger.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c14-04bb7542-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "observation": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c14-04bb7542-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "observation": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c14-04bb7542-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "commit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+      "observation": "Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c14-04bb7542-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "c5a198592f49b3d02a01ac397b1c27ab25b2a18f358d06c2ed30db9b70d8fcc9",
+      "caseIds": [
+        "file-io-putcml-empty-argv",
+        "file-io-putcml-exact-argv",
+        "file-io-putcml-persists",
+        "file-io-putcml-repeated",
+        "file-io-putcml-single-empty",
+        "file-io-rdtext-across-kclear",
+        "file-io-rdtext-byte-capacity",
+        "file-io-rdtext-empty-file",
+        "file-io-rdtext-empty-path",
+        "file-io-rdtext-empty-path-width-order",
+        "file-io-rdtext-empty-record",
+        "file-io-rdtext-independent-files",
+        "file-io-rdtext-minimum-width",
+        "file-io-rdtext-negative-width",
+        "file-io-rdtext-records-and-restart",
+        "file-io-rdtext-rightmost-controls",
+        "file-io-rdtext-unterminated-tail"
+      ],
+      "commit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+      "observation": "Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "rdtext_c",
@@ -155,16 +276,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FileIoApi.rdtext -> mutex-serialized native addon -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
-          "executions": []
+          "executions": ["local-c14-04bb7542-node", "ci-c14-04bb7542-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FileIoApi.rdtext -> scoped WASM allocations and required export -> tspice_rdtext -> rdtext_c. Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes.",
-          "executions": []
+          "executions": ["local-c14-04bb7542-wasm", "ci-c14-04bb7542-wasm"]
         }
       }
     },
@@ -223,19 +344,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FileIoApi.putcml -> mutex-serialized native addon -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
-          "executions": []
+          "executions": ["local-c14-04bb7542-node", "ci-c14-04bb7542-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FileIoApi.putcml -> scoped WASM allocations and required export -> tspice_putcml -> putcml_c. Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.",
-          "executions": []
+          "executions": ["local-c14-04bb7542-wasm", "ci-c14-04bb7542-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Prior executions are historical. Rebind both required lanes and canonical CI to the revised source."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

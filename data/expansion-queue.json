@@ -2465,18 +2465,25 @@
         "status": "independent-route-investigation-required",
         "missingTopLevelWrappers": ["putcml_c"]
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/772"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "17 workflows / 34 registered backend comparisons, 11 public, 2 native and 10 WASM-focused checks. Final actual Chrome worker passed record/EOF/restart, FILEOPENFAILED recovery and command state."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+          "result": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run both complete local lanes and canonical source CI, then check the final matrix and explicit GitHub rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-text-command-state",
       "branch": "codex/expand-text-command-state",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Repaired standalone C fixture linkage to the canonical staged text-reader definitions."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 04bb7542. 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Repaired standalone C fixture linkage to the canonical staged text-reader definitions."
     },
     {
       "id": "D01-time-additions",
