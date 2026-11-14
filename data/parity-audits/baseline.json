@@ -424,8 +424,8 @@
         "szpool_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Record source-bound full local and canonical CI evidence for each backend, inspect the final PR checks and confirm rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/734"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

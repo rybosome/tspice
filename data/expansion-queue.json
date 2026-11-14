@@ -1427,7 +1427,7 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/734"],
       "validationEvidence": [
         {
           "kind": "local-focused",
@@ -1436,13 +1436,20 @@
         {
           "kind": "source-and-abi",
           "result": "Pinned numeric output bound MAXVAL 400000 and character output bound MAXLIN × MAXCHR + 1 = 1200001 bytes. Source-derived visited-component and body hash guards preserve the defined call domains. Generated WASM SHA-256 c923aff5e333c387f4d5d54497708ddd9ab3943223b4569b442b1b5ece429ec2."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "2b1e2fc58371f7cb324252947d956cc128571e3a",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43565521263/job/132358391458",
+          "result": "Both complete required lanes passed locally on 2b1e2fc58371f7cb324252947d956cc128571e3a. JavaScript: 2,576 parity tests and one expected guard skip. Native-required: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132358391458 on 2b1e2fc58371f7cb324252947d956cc128571e3a: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run full required local lanes, capture canonical CI and inspect final checks and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-kernel-pool",
       "branch": "codex/expand-kernel-pool",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Nine direct calls and source-derived STPOOL and BODVRD repairs reviewed. Direct text-kernel loading preserves KEEPER inventory. Full source-matched evidence pending."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 2b1e2fc5. 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Nine direct calls and source-derived STPOOL and BODVRD repairs reviewed. Direct text-kernel loading preserves KEEPER inventory. Full source-matched evidence pending."
     },
     {
       "id": "B06-error-observation",

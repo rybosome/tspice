@@ -45,7 +45,336 @@
     "packages/tspice/test/kernel-pool-boundaries.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-b05-2b1e2fc5-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0de88ebc8e355bba8ea6bb4f3019ae7dc8afac270270ecb61ac3f27fb4b6e4bc",
+      "caseIds": [
+        "kernel-pool-badkpv-changing-pool-type",
+        "kernel-pool-badkpv-comparison-operators",
+        "kernel-pool-badkpv-empty-caller",
+        "kernel-pool-badkpv-indivisible",
+        "kernel-pool-badkpv-missing",
+        "kernel-pool-badkpv-operator",
+        "kernel-pool-badkpv-unknown-type",
+        "kernel-pool-badkpv-wrong-size",
+        "kernel-pool-badkpv-wrong-type",
+        "kernel-pool-badkpv-zero-divisor",
+        "kernel-pool-bodvcd-capacity",
+        "kernel-pool-bodvcd-case-sensitive-miss",
+        "kernel-pool-bodvcd-character-item",
+        "kernel-pool-bodvcd-empty-item",
+        "kernel-pool-bodvcd-exact-and-oversized",
+        "kernel-pool-bodvcd-negative-capacity",
+        "kernel-pool-bodvcd-replacement-and-ownership",
+        "kernel-pool-bodvcd-signed-body",
+        "kernel-pool-bodvcd-signed-id-limits",
+        "kernel-pool-bodvcd-zero-capacity",
+        "kernel-pool-bodvrd-capacity",
+        "kernel-pool-bodvrd-case-sensitive-miss",
+        "kernel-pool-bodvrd-character-item",
+        "kernel-pool-bodvrd-empty-item",
+        "kernel-pool-bodvrd-exact-and-oversized",
+        "kernel-pool-bodvrd-missing-body-pair",
+        "kernel-pool-bodvrd-negative-capacity",
+        "kernel-pool-bodvrd-replacement-and-ownership",
+        "kernel-pool-bodvrd-signed-body",
+        "kernel-pool-bodvrd-unknown-body",
+        "kernel-pool-bodvrd-zero-capacity",
+        "kernel-pool-clpool-clear-all-types",
+        "kernel-pool-clpool-keeper-and-pool",
+        "kernel-pool-clpool-reload-and-replace",
+        "kernel-pool-clpool-retained-watches",
+        "kernel-pool-dvpool-delete-and-reinsert",
+        "kernel-pool-dvpool-empty-name",
+        "kernel-pool-dvpool-keeper-metadata",
+        "kernel-pool-dvpool-missing-and-case",
+        "kernel-pool-dvpool-watch-only-real-deletion",
+        "kernel-pool-ldpool-keeper-furnsh-composition",
+        "kernel-pool-ldpool-load-without-keeper",
+        "kernel-pool-ldpool-missing-file",
+        "kernel-pool-ldpool-partial-syntax-error",
+        "kernel-pool-ldpool-repeat-append",
+        "kernel-pool-ldpool-watch-and-delete",
+        "kernel-pool-lmpool-empty-and-blank-rows",
+        "kernel-pool-lmpool-fixed-source-column",
+        "kernel-pool-lmpool-malformed-assignment",
+        "kernel-pool-lmpool-malformed-number",
+        "kernel-pool-lmpool-multiline-numeric",
+        "kernel-pool-lmpool-overwrite-and-change-type",
+        "kernel-pool-lmpool-quoted-and-utf8",
+        "kernel-pool-lmpool-watches-and-bookkeeping",
+        "kernel-pool-stpool-empty-item",
+        "kernel-pool-stpool-empty-marker",
+        "kernel-pool-stpool-literal-whitespace",
+        "kernel-pool-stpool-logical-ordinal",
+        "kernel-pool-stpool-longer-marker-safe",
+        "kernel-pool-stpool-markers-and-final-continuation",
+        "kernel-pool-stpool-maximum-components",
+        "kernel-pool-stpool-missing-type-and-index",
+        "kernel-pool-stpool-negative-output",
+        "kernel-pool-stpool-short-output",
+        "kernel-pool-stpool-truncated-full-size",
+        "kernel-pool-szpool-all-named-limits",
+        "kernel-pool-szpool-empty-name",
+        "kernel-pool-szpool-name-comparison",
+        "kernel-pool-szpool-pool-independent"
+      ],
+      "observation": "Both complete required lanes passed locally on 2b1e2fc58371f7cb324252947d956cc128571e3a. JavaScript: 2,576 parity tests and one expected guard skip. Native-required: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-b05-2b1e2fc5-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0de88ebc8e355bba8ea6bb4f3019ae7dc8afac270270ecb61ac3f27fb4b6e4bc",
+      "caseIds": [
+        "kernel-pool-badkpv-changing-pool-type",
+        "kernel-pool-badkpv-comparison-operators",
+        "kernel-pool-badkpv-empty-caller",
+        "kernel-pool-badkpv-indivisible",
+        "kernel-pool-badkpv-missing",
+        "kernel-pool-badkpv-operator",
+        "kernel-pool-badkpv-unknown-type",
+        "kernel-pool-badkpv-wrong-size",
+        "kernel-pool-badkpv-wrong-type",
+        "kernel-pool-badkpv-zero-divisor",
+        "kernel-pool-bodvcd-capacity",
+        "kernel-pool-bodvcd-case-sensitive-miss",
+        "kernel-pool-bodvcd-character-item",
+        "kernel-pool-bodvcd-empty-item",
+        "kernel-pool-bodvcd-exact-and-oversized",
+        "kernel-pool-bodvcd-negative-capacity",
+        "kernel-pool-bodvcd-replacement-and-ownership",
+        "kernel-pool-bodvcd-signed-body",
+        "kernel-pool-bodvcd-signed-id-limits",
+        "kernel-pool-bodvcd-zero-capacity",
+        "kernel-pool-bodvrd-capacity",
+        "kernel-pool-bodvrd-case-sensitive-miss",
+        "kernel-pool-bodvrd-character-item",
+        "kernel-pool-bodvrd-empty-item",
+        "kernel-pool-bodvrd-exact-and-oversized",
+        "kernel-pool-bodvrd-missing-body-pair",
+        "kernel-pool-bodvrd-negative-capacity",
+        "kernel-pool-bodvrd-replacement-and-ownership",
+        "kernel-pool-bodvrd-signed-body",
+        "kernel-pool-bodvrd-unknown-body",
+        "kernel-pool-bodvrd-zero-capacity",
+        "kernel-pool-clpool-clear-all-types",
+        "kernel-pool-clpool-keeper-and-pool",
+        "kernel-pool-clpool-reload-and-replace",
+        "kernel-pool-clpool-retained-watches",
+        "kernel-pool-dvpool-delete-and-reinsert",
+        "kernel-pool-dvpool-empty-name",
+        "kernel-pool-dvpool-keeper-metadata",
+        "kernel-pool-dvpool-missing-and-case",
+        "kernel-pool-dvpool-watch-only-real-deletion",
+        "kernel-pool-ldpool-keeper-furnsh-composition",
+        "kernel-pool-ldpool-load-without-keeper",
+        "kernel-pool-ldpool-missing-file",
+        "kernel-pool-ldpool-partial-syntax-error",
+        "kernel-pool-ldpool-repeat-append",
+        "kernel-pool-ldpool-watch-and-delete",
+        "kernel-pool-lmpool-empty-and-blank-rows",
+        "kernel-pool-lmpool-fixed-source-column",
+        "kernel-pool-lmpool-malformed-assignment",
+        "kernel-pool-lmpool-malformed-number",
+        "kernel-pool-lmpool-multiline-numeric",
+        "kernel-pool-lmpool-overwrite-and-change-type",
+        "kernel-pool-lmpool-quoted-and-utf8",
+        "kernel-pool-lmpool-watches-and-bookkeeping",
+        "kernel-pool-stpool-empty-item",
+        "kernel-pool-stpool-empty-marker",
+        "kernel-pool-stpool-literal-whitespace",
+        "kernel-pool-stpool-logical-ordinal",
+        "kernel-pool-stpool-longer-marker-safe",
+        "kernel-pool-stpool-markers-and-final-continuation",
+        "kernel-pool-stpool-maximum-components",
+        "kernel-pool-stpool-missing-type-and-index",
+        "kernel-pool-stpool-negative-output",
+        "kernel-pool-stpool-short-output",
+        "kernel-pool-stpool-truncated-full-size",
+        "kernel-pool-szpool-all-named-limits",
+        "kernel-pool-szpool-empty-name",
+        "kernel-pool-szpool-name-comparison",
+        "kernel-pool-szpool-pool-independent"
+      ],
+      "observation": "Both complete required lanes passed locally on 2b1e2fc58371f7cb324252947d956cc128571e3a. JavaScript: 2,576 parity tests and one expected guard skip. Native-required: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b05-2b1e2fc5-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0de88ebc8e355bba8ea6bb4f3019ae7dc8afac270270ecb61ac3f27fb4b6e4bc",
+      "caseIds": [
+        "kernel-pool-badkpv-changing-pool-type",
+        "kernel-pool-badkpv-comparison-operators",
+        "kernel-pool-badkpv-empty-caller",
+        "kernel-pool-badkpv-indivisible",
+        "kernel-pool-badkpv-missing",
+        "kernel-pool-badkpv-operator",
+        "kernel-pool-badkpv-unknown-type",
+        "kernel-pool-badkpv-wrong-size",
+        "kernel-pool-badkpv-wrong-type",
+        "kernel-pool-badkpv-zero-divisor",
+        "kernel-pool-bodvcd-capacity",
+        "kernel-pool-bodvcd-case-sensitive-miss",
+        "kernel-pool-bodvcd-character-item",
+        "kernel-pool-bodvcd-empty-item",
+        "kernel-pool-bodvcd-exact-and-oversized",
+        "kernel-pool-bodvcd-negative-capacity",
+        "kernel-pool-bodvcd-replacement-and-ownership",
+        "kernel-pool-bodvcd-signed-body",
+        "kernel-pool-bodvcd-signed-id-limits",
+        "kernel-pool-bodvcd-zero-capacity",
+        "kernel-pool-bodvrd-capacity",
+        "kernel-pool-bodvrd-case-sensitive-miss",
+        "kernel-pool-bodvrd-character-item",
+        "kernel-pool-bodvrd-empty-item",
+        "kernel-pool-bodvrd-exact-and-oversized",
+        "kernel-pool-bodvrd-missing-body-pair",
+        "kernel-pool-bodvrd-negative-capacity",
+        "kernel-pool-bodvrd-replacement-and-ownership",
+        "kernel-pool-bodvrd-signed-body",
+        "kernel-pool-bodvrd-unknown-body",
+        "kernel-pool-bodvrd-zero-capacity",
+        "kernel-pool-clpool-clear-all-types",
+        "kernel-pool-clpool-keeper-and-pool",
+        "kernel-pool-clpool-reload-and-replace",
+        "kernel-pool-clpool-retained-watches",
+        "kernel-pool-dvpool-delete-and-reinsert",
+        "kernel-pool-dvpool-empty-name",
+        "kernel-pool-dvpool-keeper-metadata",
+        "kernel-pool-dvpool-missing-and-case",
+        "kernel-pool-dvpool-watch-only-real-deletion",
+        "kernel-pool-ldpool-keeper-furnsh-composition",
+        "kernel-pool-ldpool-load-without-keeper",
+        "kernel-pool-ldpool-missing-file",
+        "kernel-pool-ldpool-partial-syntax-error",
+        "kernel-pool-ldpool-repeat-append",
+        "kernel-pool-ldpool-watch-and-delete",
+        "kernel-pool-lmpool-empty-and-blank-rows",
+        "kernel-pool-lmpool-fixed-source-column",
+        "kernel-pool-lmpool-malformed-assignment",
+        "kernel-pool-lmpool-malformed-number",
+        "kernel-pool-lmpool-multiline-numeric",
+        "kernel-pool-lmpool-overwrite-and-change-type",
+        "kernel-pool-lmpool-quoted-and-utf8",
+        "kernel-pool-lmpool-watches-and-bookkeeping",
+        "kernel-pool-stpool-empty-item",
+        "kernel-pool-stpool-empty-marker",
+        "kernel-pool-stpool-literal-whitespace",
+        "kernel-pool-stpool-logical-ordinal",
+        "kernel-pool-stpool-longer-marker-safe",
+        "kernel-pool-stpool-markers-and-final-continuation",
+        "kernel-pool-stpool-maximum-components",
+        "kernel-pool-stpool-missing-type-and-index",
+        "kernel-pool-stpool-negative-output",
+        "kernel-pool-stpool-short-output",
+        "kernel-pool-stpool-truncated-full-size",
+        "kernel-pool-szpool-all-named-limits",
+        "kernel-pool-szpool-empty-name",
+        "kernel-pool-szpool-name-comparison",
+        "kernel-pool-szpool-pool-independent"
+      ],
+      "commit": "2b1e2fc58371f7cb324252947d956cc128571e3a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43565521263/job/132358391458",
+      "observation": "Inspected successful Linux Node 22 native-required job 132358391458 on 2b1e2fc58371f7cb324252947d956cc128571e3a: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-b05-2b1e2fc5-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0de88ebc8e355bba8ea6bb4f3019ae7dc8afac270270ecb61ac3f27fb4b6e4bc",
+      "caseIds": [
+        "kernel-pool-badkpv-changing-pool-type",
+        "kernel-pool-badkpv-comparison-operators",
+        "kernel-pool-badkpv-empty-caller",
+        "kernel-pool-badkpv-indivisible",
+        "kernel-pool-badkpv-missing",
+        "kernel-pool-badkpv-operator",
+        "kernel-pool-badkpv-unknown-type",
+        "kernel-pool-badkpv-wrong-size",
+        "kernel-pool-badkpv-wrong-type",
+        "kernel-pool-badkpv-zero-divisor",
+        "kernel-pool-bodvcd-capacity",
+        "kernel-pool-bodvcd-case-sensitive-miss",
+        "kernel-pool-bodvcd-character-item",
+        "kernel-pool-bodvcd-empty-item",
+        "kernel-pool-bodvcd-exact-and-oversized",
+        "kernel-pool-bodvcd-negative-capacity",
+        "kernel-pool-bodvcd-replacement-and-ownership",
+        "kernel-pool-bodvcd-signed-body",
+        "kernel-pool-bodvcd-signed-id-limits",
+        "kernel-pool-bodvcd-zero-capacity",
+        "kernel-pool-bodvrd-capacity",
+        "kernel-pool-bodvrd-case-sensitive-miss",
+        "kernel-pool-bodvrd-character-item",
+        "kernel-pool-bodvrd-empty-item",
+        "kernel-pool-bodvrd-exact-and-oversized",
+        "kernel-pool-bodvrd-missing-body-pair",
+        "kernel-pool-bodvrd-negative-capacity",
+        "kernel-pool-bodvrd-replacement-and-ownership",
+        "kernel-pool-bodvrd-signed-body",
+        "kernel-pool-bodvrd-unknown-body",
+        "kernel-pool-bodvrd-zero-capacity",
+        "kernel-pool-clpool-clear-all-types",
+        "kernel-pool-clpool-keeper-and-pool",
+        "kernel-pool-clpool-reload-and-replace",
+        "kernel-pool-clpool-retained-watches",
+        "kernel-pool-dvpool-delete-and-reinsert",
+        "kernel-pool-dvpool-empty-name",
+        "kernel-pool-dvpool-keeper-metadata",
+        "kernel-pool-dvpool-missing-and-case",
+        "kernel-pool-dvpool-watch-only-real-deletion",
+        "kernel-pool-ldpool-keeper-furnsh-composition",
+        "kernel-pool-ldpool-load-without-keeper",
+        "kernel-pool-ldpool-missing-file",
+        "kernel-pool-ldpool-partial-syntax-error",
+        "kernel-pool-ldpool-repeat-append",
+        "kernel-pool-ldpool-watch-and-delete",
+        "kernel-pool-lmpool-empty-and-blank-rows",
+        "kernel-pool-lmpool-fixed-source-column",
+        "kernel-pool-lmpool-malformed-assignment",
+        "kernel-pool-lmpool-malformed-number",
+        "kernel-pool-lmpool-multiline-numeric",
+        "kernel-pool-lmpool-overwrite-and-change-type",
+        "kernel-pool-lmpool-quoted-and-utf8",
+        "kernel-pool-lmpool-watches-and-bookkeeping",
+        "kernel-pool-stpool-empty-item",
+        "kernel-pool-stpool-empty-marker",
+        "kernel-pool-stpool-literal-whitespace",
+        "kernel-pool-stpool-logical-ordinal",
+        "kernel-pool-stpool-longer-marker-safe",
+        "kernel-pool-stpool-markers-and-final-continuation",
+        "kernel-pool-stpool-maximum-components",
+        "kernel-pool-stpool-missing-type-and-index",
+        "kernel-pool-stpool-negative-output",
+        "kernel-pool-stpool-short-output",
+        "kernel-pool-stpool-truncated-full-size",
+        "kernel-pool-szpool-all-named-limits",
+        "kernel-pool-szpool-empty-name",
+        "kernel-pool-szpool-name-comparison",
+        "kernel-pool-szpool-pool-independent"
+      ],
+      "commit": "2b1e2fc58371f7cb324252947d956cc128571e3a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43565521263/job/132358391458",
+      "observation": "Inspected successful Linux Node 22 native-required job 132358391458 on 2b1e2fc58371f7cb324252947d956cc128571e3a: 2,356 registered Node/WASM live comparisons; 2,577 parity-package tests with no skips, including the native-required guard; 85 native wrapper, 634 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "badkpv_c",
@@ -113,16 +442,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.badkpv → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.badkpv → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -198,16 +527,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bodvcd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bodvcd → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -305,16 +634,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bodvrd → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bodvrd → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -360,16 +689,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.clpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.clpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -420,16 +749,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dvpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.dvpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -490,16 +819,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ldpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.ldpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -559,16 +888,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lmpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lmpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -666,16 +995,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.stpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.stpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     },
@@ -715,19 +1044,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.szpool → KernelPoolApi process-mutex-serialized native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-node", "ci-b05-2b1e2fc5-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.szpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
-          "executions": []
+          "executions": ["local-b05-2b1e2fc5-wasm", "ci-b05-2b1e2fc5-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused compiled Node and WASM, independent SpiceyPy and Chrome runs passed. Full source-local and canonical CI observations are required for each backend."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
