@@ -8,6 +8,96 @@ import type { Mat3RowMajor, SpiceVector3 } from "../shared/types.js";
 
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing, case-sensitive byte order.
+   * CSPICE compares unsigned bytes and extends shorter strings with ASCII
+   * spaces. Trailing spaces compare equal. Control bytes, including tabs,
+   * retain their byte ordering. Empty keys and rows are supported.
+   * Well-formed UTF-16 inputs are encoded as UTF-8. Embedded NUL is invalid.
+   * A row has max(2, longest encoded row length + 1) bytes, with ASCII
+   * spaces after the text and a final NUL. The table and the terminated key
+   * each fit in signed 32-bit byte counts.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlec_c.html
+   */
+  lstlec(key: string, values: readonly string[]): number;
+
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries are doubles. Infinities are ordered, positive and negative zero
+   * compare equal, and NaN is rejected because it is unordered. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstled_c.html
+   */
+  lstled(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries must be signed 32-bit integers. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlei_c.html
+   */
+  lstlei(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing, case-sensitive byte order.
+   * CSPICE compares unsigned bytes and extends shorter strings with ASCII
+   * spaces. Trailing spaces compare equal. Control bytes, including tabs,
+   * retain their byte ordering. Empty keys and rows are supported.
+   * Well-formed UTF-16 inputs are encoded as UTF-8. Embedded NUL is invalid.
+   * A row has max(2, longest encoded row length + 1) bytes, with ASCII
+   * spaces after the text and a final NUL. The table and the terminated key
+   * each fit in signed 32-bit byte counts.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltc_c.html
+   */
+  lstltc(key: string, values: readonly string[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries are doubles. Infinities are ordered, positive and negative zero
+   * compare equal, and NaN is rejected because it is unordered. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltd_c.html
+   */
+  lstltd(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries must be signed 32-bit integers. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlti_c.html
+   */
+  lstlti(key: number, values: readonly number[]): number;
+
   /** SPICE `reclat_c`: rectangular -> latitudinal coordinates. */
   reclat(rect: SpiceVector3): { radius: number; lon: number; lat: number };
   /** SPICE `latrec_c`: latitudinal -> rectangular coordinates. */

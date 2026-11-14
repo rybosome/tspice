@@ -349,6 +349,30 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export sxform(from, to, et)",
   );
   invariant(
+    typeof native.lstlec === "function",
+    "Native addon missing lstlec()",
+  );
+  invariant(
+    typeof native.lstled === "function",
+    "Native addon missing lstled()",
+  );
+  invariant(
+    typeof native.lstlei === "function",
+    "Native addon missing lstlei()",
+  );
+  invariant(
+    typeof native.lstltc === "function",
+    "Native addon missing lstltc()",
+  );
+  invariant(
+    typeof native.lstltd === "function",
+    "Native addon missing lstltd()",
+  );
+  invariant(
+    typeof native.lstlti === "function",
+    "Native addon missing lstlti()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );

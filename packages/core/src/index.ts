@@ -161,3 +161,9 @@ export {
 } from "./spice-runtime/domains/kernels-utils.js";
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
+
+export {
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
+} from "./spice-runtime/domains/sorted-bounds.js";

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 168
+- Planned (not yet implemented): 481
 - Excluded: 3
 
 ## Implemented now
@@ -112,6 +112,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `lstlec_c` | Last character element less than or equal to. |
+| `lstled_c` | Last double precision element less than or equal |
+| `lstlei_c` | Last integer element less than or equal to |
+| `lstltc_c` | Last character element less than |
+| `lstltd_c` | Last double precision element less than |
+| `lstlti_c` | Last integer element less than |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -435,12 +441,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `lparsm_c` | Parse a list of items having multiple delimiters |
 | `lparss_c` | Parse a list of items; return a set |
 | `lspcn_c` | Longitude of the sun, planetocentric |
-| `lstlec_c` | Last character element less than or equal to. |
-| `lstled_c` | Last double precision element less than or equal |
-| `lstlei_c` | Last integer element less than or equal to |
-| `lstltc_c` | Last character element less than |
-| `lstltd_c` | Last double precision element less than |
-| `lstlti_c` | Last integer element less than |
 | `ltime_c` | Light Time |
 | `lx4dec_c` | Scan for decimal number |
 | `lx4num_c` | Scan for number |

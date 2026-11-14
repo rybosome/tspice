@@ -1079,6 +1079,20 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// Sorted bounds use zero-based result indices. Character rows are blank padded and NUL terminated.
+int tspice_lstlec(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstled(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlei(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+int tspice_lstltc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstltd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlti(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,
