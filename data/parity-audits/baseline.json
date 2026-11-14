@@ -443,8 +443,8 @@
         "elemi_c"
       ],
       "dependsOn": ["b03-window-algebra"],
-      "prs": [],
-      "nextAction": "Record both required local lanes and the observed canonical CI run for this combined source, then check final-head CI and rebaseability before readiness."
+      "prs": ["https://github.com/rybosome/tspice/pull/728"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

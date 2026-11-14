@@ -1207,18 +1207,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/728"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "Both compiled backends passed 136 registered live comparisons plus eight public tests. The 22 native and 21 WASM domain tests passed, with a real headless Chrome inline Web Worker run on all seven operations. Required source CI is separate."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561148351/job/132344875851",
+          "result": "Both complete required lanes passed locally on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f. JavaScript: 2,741 parity tests and one expected guard skip. Native-required: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132344875851 on 4ab87429d709c4d30eb90552ad95f98ddd8c9c0f: 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Record both required local lanes and inspect canonical source CI on this combined B03/B01 fingerprint. Verify final-head matrix and explicit rebaseability before reporting readiness.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-cell-arrays",
       "branch": "codex/expand-cell-arrays",
       "baseCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
-      "progressNote": "Stacked on B03 PR #722 at 7d575af9. Seven new methods, 68 scenarios / 321 steps / 307 new-method calls. Local 136 registered comparisons, eight public cross-backend, 22 native domain, 21 real WASM domain/allocator tests and a headless Chrome inline Web Worker exercising all seven passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 4ab87429. 2,510 registered Node/WASM live comparisons; 2,742 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 658 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Stacked on B03 PR #722 at 7d575af9. Seven new methods, 68 scenarios / 321 steps / 307 new-method calls. Local 136 registered comparisons, eight public cross-backend, 22 native domain, 21 real WASM domain/allocator tests and a headless Chrome inline Web Worker exercising all seven passed."
     },
     {
       "id": "B02-set-algebra",
