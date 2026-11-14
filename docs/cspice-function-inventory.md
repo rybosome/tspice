@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 176
-- Planned (not yet implemented): 473
+- Implemented now (SpiceRawBackend): 183
+- Planned (not yet implemented): 466
 - Excluded: 3
 
 ## Implemented now
@@ -35,9 +35,16 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `chkout_c` | Module Check Out |
 | `cidfrm_c` | center SPK ID frame |
 | `ckcov_c` | CK coverage |
+| `ckfrot_c` | CK frame, find position rotation |
+| `ckfxfm_c` | CK frame, find state transformation |
 | `ckgp_c` | C-kernel, get pointing |
 | `ckgpav_c` | C-kernel, get pointing and angular velocity |
+| `ckgr02_c` | C-kernel, get record, type 02 |
+| `ckgr03_c` | C-kernel, get record, type 03 |
 | `cklpf_c` | CK, load pointing file |
+| `ckmeta_c` | CK ID to associated SCLK |
+| `cknr02_c` | C-kernel, number of records, type 02 |
+| `cknr03_c` | C-kernel, number of records, type 03 |
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
@@ -226,13 +233,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `chbint_c` | Interpolate a Chebyshev expansion |
 | `chbval_c` | Value of a Chebyshev polynomial expansion |
 | `ckcls_c` | CK, Close file |
-| `ckfrot_c` | CK frame, find position rotation |
-| `ckfxfm_c` | CK frame, find state transformation |
-| `ckgr02_c` | C-kernel, get record, type 02 |
-| `ckgr03_c` | C-kernel, get record, type 03 |
-| `ckmeta_c` | CK ID to associated SCLK |
-| `cknr02_c` | C-kernel, number of records, type 02 |
-| `cknr03_c` | C-kernel, number of records, type 03 |
 | `ckopn_c` | CK, open new file. |
 | `ckw01_c` | C-Kernel, write segment to C-kernel, data type 1 |
 | `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |

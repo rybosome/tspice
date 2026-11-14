@@ -119,6 +119,13 @@ from .models import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesCkfrot,
+    StepFramesCkfxfm,
+    StepFramesCkgr02,
+    StepFramesCkgr03,
+    StepFramesCkmeta,
+    StepFramesCknr02,
+    StepFramesCknr03,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -1095,6 +1102,7 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
             return StepFileIoDafgs(
                 op=op,
                 handleId=_expect_string(step.get("handleId"), label="file-io.dafgs.handleId"),
+                summaryId=_expect_optional_string(step.get("summaryId"),label="file-io.dafgs.summaryId"),
             )
 
         case "file-io.dafhsf":
@@ -1355,6 +1363,57 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 sclkdp=_expect_number(step.get("sclkdp"), label="frames.ckgpav.sclkdp"),
                 tol=_expect_number(step.get("tol"), label="frames.ckgpav.tol"),
                 ref=_expect_string(step.get("ref"), label="frames.ckgpav.ref"),
+            )
+
+        case "frames.ckfrot":
+            return StepFramesCkfrot(
+                op=op,
+                inst=_expect_int(step.get("inst"), label="frames.ckfrot.inst"),
+                et=_expect_number(step.get("et"), label="frames.ckfrot.et"),
+            )
+
+        case "frames.ckfxfm":
+            return StepFramesCkfxfm(
+                op=op,
+                inst=_expect_int(step.get("inst"), label="frames.ckfxfm.inst"),
+                et=_expect_number(step.get("et"), label="frames.ckfxfm.et"),
+            )
+
+        case "frames.ckgr02":
+            return StepFramesCkgr02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.ckgr02.handleId"),
+                summaryId=_expect_string(step.get("summaryId"), label="frames.ckgr02.summaryId"),
+                recno=_expect_int(step.get("recno"), label="frames.ckgr02.recno"),
+            )
+
+        case "frames.ckgr03":
+            return StepFramesCkgr03(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.ckgr03.handleId"),
+                summaryId=_expect_string(step.get("summaryId"), label="frames.ckgr03.summaryId"),
+                recno=_expect_int(step.get("recno"), label="frames.ckgr03.recno"),
+            )
+
+        case "frames.ckmeta":
+            return StepFramesCkmeta(
+                op=op,
+                ckid=_expect_int(step.get("ckid"), label="frames.ckmeta.ckid"),
+                meta=_expect_string(step.get("meta"), label="frames.ckmeta.meta"),
+            )
+
+        case "frames.cknr02":
+            return StepFramesCknr02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.cknr02.handleId"),
+                summaryId=_expect_string(step.get("summaryId"), label="frames.cknr02.summaryId"),
+            )
+
+        case "frames.cknr03":
+            return StepFramesCknr03(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="frames.cknr03.handleId"),
+                summaryId=_expect_string(step.get("summaryId"), label="frames.cknr03.summaryId"),
             )
 
         case "frames.cklpf":

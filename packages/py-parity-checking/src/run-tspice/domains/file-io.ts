@@ -262,15 +262,13 @@ export function runFileIoStep(
       const out = context.spice.raw.dafgda(handle, step.begin, step.end);
       return { op: step.op, value: out };
     }
-    case "file-io.dafgs":
-      return {
-        op: step.op,
-        value: Array.from(
-          context.spice.raw.dafgs(
-            requireHandleState(context, step.handleId).handle,
-          ),
-        ),
-      };
+    case "file-io.dafgs": {
+      const handle = requireHandleState(context, step.handleId).handle;
+      const bytes = context.spice.raw.dafgs(handle);
+      if (step.summaryId)
+        context.state.fileIo.ckSummaries.set(step.summaryId, { handle, bytes });
+      return { op: step.op, value: Array.from(bytes) };
+    }
     case "file-io.dafhsf":
       return {
         op: step.op,

@@ -29,6 +29,7 @@ export type FileIoHandleState = {
 };
 
 export type FileIoState = {
+  ckSummaries: Map<string, { handle: SpiceHandle; bytes: Uint8Array }>;
   handles: Map<string, FileIoHandleState>;
   descriptors: Map<string, DlaDescriptor>;
   spatialIndexes: Map<string, { spaixd: number[]; spaixi: number[] }>;
@@ -119,6 +120,7 @@ export function createRunTspiceContext(
         loadedVirtualKernelPaths: [],
       },
       fileIo: {
+        ckSummaries: new Map(),
         handles: new Map<string, FileIoHandleState>(),
         descriptors: new Map<string, DlaDescriptor>(),
         spatialIndexes: new Map<

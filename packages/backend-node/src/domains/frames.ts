@@ -1,8 +1,15 @@
 import type {
+  SpiceHandleRegistry,
   FramesApi,
   SpiceMatrix6x6,
 } from "@rybosome/tspice-backend-contract";
 import {
+  brandMat3RowMajorResult,
+  ckStateResult,
+  ckType2Record,
+  ckType3Record,
+  dafBytes,
+  dafPathByteLength,
   assertSpiceInt32,
   brandMat6RowMajor,
   brandMat3RowMajor,
@@ -102,10 +109,60 @@ function validateCkPointing(
 export function createFramesApi(
   native: NativeAddon,
   stager: Pick<KernelStager, "resolvePathForSpice">,
+  handles: SpiceHandleRegistry,
 ): FramesApi {
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    ckfrot: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      const out = native.ckfrot(inst, et);
+      if (!out.found) return { found: false };
+      assertSpiceInt32(out.ref, "CK reference");
+      return {
+        found: true,
+        ref: out.ref,
+        rotate: brandMat3RowMajorResult(out.rotate),
+      };
+    },
+    ckfxfm: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      const out = native.ckfxfm(inst, et);
+      if (!out.found) return { found: false };
+      assertSpiceInt32(out.ref, "CK reference");
+      return { found: true, ref: out.ref, xform: ckStateResult(out.xform) };
+    },
+    ckgr02: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return ckType2Record(native.ckgr02(h, bytes, recno));
+    },
+    ckgr03: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return ckType3Record(native.ckgr03(h, bytes, recno));
+    },
+    ckmeta: (ckid, meta) => {
+      assertSpiceInt32(ckid, "CK ID");
+      dafPathByteLength(meta);
+      return native.ckmeta(ckid, meta);
+    },
+    cknr02: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return native.cknr02(h, bytes);
+    },
+    cknr03: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return native.cknr03(h, bytes);
+    },
     namfrm: (name) => {
       const out = native.namfrm(name);
       if (!out.found) {

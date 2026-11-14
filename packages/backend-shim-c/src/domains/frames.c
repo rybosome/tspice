@@ -4,6 +4,10 @@
 
 #include "../handle_validation.h"
 
+#include "SpiceZfc.h"
+#include <limits.h>
+#include <math.h>
+#include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -626,6 +630,188 @@ static int tspice_frames_validate_cell_handle(
     *outCell = cell;
   }
   return 0;
+}
+
+static int ck_record_status(char *err, int room) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, room);
+  return 1;
+}
+
+// Resolve the same metadata CKFROT/CKFXFM read before ZZSCLK negates it.
+// A prior error in CKMETA may also leave their local SCLK ID undefined.
+static int ck_frame_clock(int inst, char *err, int room) {
+  int clock = 0;
+  ckmeta_c(inst, "SCLK", &clock);
+  if (ck_record_status(err, room)) return 1;
+  if (clock == INT_MIN) {
+    logical have = SPICEFALSE;
+    ckhave_(&have);
+    if (ck_record_status(err, room)) return 1;
+    if (have) return tspice_frames_invalid_arg(err, room, "CK SCLK ID cannot be negated");
+  }
+  return 0;
+}
+
+// Locate the exact five packed words in this file without selecting or moving
+// any DAF search. C02's reader also checks non-native summary translation.
+static int ck_record_descriptor(int handle, const unsigned char *bytes, int size,
+                                double words[5], int *freeAddr, char *err, int room) {
+  if (!bytes || size != 40) return tspice_frames_invalid_arg(err, room, "Expected 40 CK descriptor bytes");
+  char path[256] = {0}, arch[8] = {0}, type[8] = {0};
+  dafhfn_(&handle, path, 255);
+  if (ck_record_status(err, room)) return 1;
+  for (int i = 254; i >= 0 && path[i] == ' '; --i) path[i] = 0;
+  getfat_c(path, sizeof(arch), sizeof(type), arch, type);
+  if (ck_record_status(err, room)) return 1;
+  if (strcmp(arch,"DAF") || strcmp(type,"CK")) return tspice_frames_invalid_arg(err, room, "Expected a CK DAF");
+  char ifname[61] = {0};
+  int fields[5] = {0};
+  if (tspice_dafrfr(handle, sizeof(ifname), ifname, sizeof(ifname), fields, err, room)) return 1;
+  if (fields[0] != 2 || fields[1] != 6 || fields[4] < 2)
+    return tspice_frames_invalid_arg(err, room, "Invalid CK DAF summary format");
+  *freeAddr = fields[4];
+  const int lastRecord = (*freeAddr-2)/128+1;
+  int rec = fields[2], prev = 0;
+  for (int visited = 0; rec && visited < lastRecord; ++visited) {
+    double row[128] = {0};
+    int found = 0;
+    if (rec < 2 || rec > lastRecord) break;
+    if (tspice_dafgsr(handle, rec, 1, 128, (unsigned char *)row, sizeof(row), &found, err, room)) return 1;
+    if (!found || row[1] != prev || !(row[0] >= 0 && row[0] <= lastRecord && trunc(row[0]) == row[0]) ||
+        !(row[2] >= 0 && row[2] <= 25 && trunc(row[2]) == row[2])) break;
+    for (int i = 0; i < (int)row[2]; ++i) {
+      if (!memcmp(row+3+5*i, bytes, 40)) { memcpy(words,bytes,40); return 0; }
+    }
+    prev = rec;
+    rec = (int)row[0];
+  }
+  return tspice_frames_invalid_arg(err, room, "CK descriptor does not belong to this DAF");
+}
+
+// N0067 uses on-disk counts in signed address arithmetic without checking
+// their representability. Check the physical layout before the actual read.
+static int ck_record_layout(int handle, const double words[5], int freeAddr, int type,
+                            int recno, int *av, char *err, int room) {
+  double dc[2] = {0};
+  int ic[6] = {0};
+  dafus_c(words, 2, 6, dc, ic);
+  if (ck_record_status(err,room)) return 1;
+  if (ic[2] != type) return 0; // Canonical routine signals CKWRONGDATATYPE.
+  const int beg = ic[4], end = ic[5];
+  if (beg < 1 || end < beg || end >= freeAddr || (ic[3] != 0 && ic[3] != 1))
+    return tspice_frames_invalid_arg(err,room,"Invalid CK segment addresses or AV flag");
+  const int64_t span = (int64_t)end-beg+1;
+  int64_t n, length;
+  *av = ic[3];
+  if (type == 2) {
+    n = (span*100+501)/1001;
+    length = n*10+(n-1)/100;
+  } else {
+    if (span < 2) return tspice_frames_invalid_arg(err,room,"Missing CK type 3 trailer");
+    double tail[2] = {0};
+    if (tspice_dafgda(handle,end-1,end,tail,2,err,room)) return 1;
+    if (!(tail[1] >= 1 && tail[1] <= INT_MAX && trunc(tail[1]) == tail[1] &&
+          tail[0] >= 1 && tail[0] <= tail[1] && trunc(tail[0]) == tail[0]))
+      return tspice_frames_invalid_arg(err,room,"Invalid CK type 3 trailer");
+    n = (int)tail[1];
+    const int64_t intervals = (int)tail[0];
+    length = (ic[3] ? 8 : 5)*n + (n-1)/100 + intervals + (intervals-1)/100 + 2;
+  }
+  if (n < 1 || length != span) return tspice_frames_invalid_arg(err,room,"Invalid CK record layout");
+  if (type == 2 && recno >= 1 && recno <= n) {
+    // CKGR02 copies a local pointing packet immediately after DAFGDA. Check
+    // that exact range first so an unreadable physical record is not consumed.
+    const int first = beg+8*(recno-1);
+    double packet[8] = {0};
+    if (tspice_dafgda(handle,first,first+7,packet,8,err,room)) return 1;
+  }
+  return 0;
+}
+
+int tspice_ckfrot(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !ref || !found || !isfinite(et)) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CK frame inputs");
+  if (ck_frame_clock(inst,err,errMaxBytes)) return 1;
+  SpiceDouble matrix[3][3] = {0};
+  *found = SPICEFALSE;
+  *ref = 0;
+  ckfrot_c(inst, et, matrix, ref, found);
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (*found) memcpy(out,matrix,sizeof(matrix));
+  return 0;
+}
+
+int tspice_ckfxfm(int inst, double et, double *out, int *ref, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !ref || !found || !isfinite(et)) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CK frame inputs");
+  if (ck_frame_clock(inst,err,errMaxBytes)) return 1;
+  SpiceDouble matrix[6][6] = {0};
+  *found = SPICEFALSE;
+  *ref = 0;
+  ckfxfm_c(inst, et, matrix, ref, found);
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (*found) memcpy(out,matrix,sizeof(matrix));
+  return 0;
+}
+
+int tspice_ckgr02(int handle, const unsigned char *bytes, int size, int recno, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,2,recno,&av,err,errMaxBytes)) return 1;
+  ckgr02_c(handle,words,recno,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_ckgr03(int handle, const unsigned char *bytes, int size, int recno, double *out, int *nwords, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out || !nwords) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,3,recno,&av,err,errMaxBytes)) return 1;
+  ckgr03_c(handle,words,recno,out);
+  *nwords = av ? 8 : 5;
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_ckmeta(int ckid, const char *meta, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!meta || !out) return tspice_frames_invalid_arg(err,errMaxBytes,"Invalid CKMETA inputs");
+  ckmeta_c(ckid,meta,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_cknr02(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,2,0,&av,err,errMaxBytes)) return 1;
+  cknr02_c(handle,words,out);
+  return ck_record_status(err,errMaxBytes);
+}
+
+int tspice_cknr03(int handle, const unsigned char *bytes, int size, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (ck_record_status(err,errMaxBytes)) return 1;
+  if (!out) return tspice_frames_invalid_arg(err,errMaxBytes,"Missing CK record output");
+  double words[5] = {0};
+  int freeAddr = 0, av = 0;
+  if (ck_record_descriptor(handle,bytes,size,words,&freeAddr,err,errMaxBytes) ||
+      ck_record_layout(handle,words,freeAddr,3,0,&av,err,errMaxBytes)) return 1;
+  cknr03_c(handle,words,out);
+  return ck_record_status(err,errMaxBytes);
 }
 
 int tspice_cklpf(const char *ck, int *outHandle, char *err, int errMaxBytes) {

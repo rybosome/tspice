@@ -389,6 +389,34 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export sce2c(sc, et)",
   );
   invariant(
+    typeof native.ckfrot === "function",
+    "Expected native addon to export ckfrot",
+  );
+  invariant(
+    typeof native.ckfxfm === "function",
+    "Expected native addon to export ckfxfm",
+  );
+  invariant(
+    typeof native.ckgr02 === "function",
+    "Expected native addon to export ckgr02",
+  );
+  invariant(
+    typeof native.ckgr03 === "function",
+    "Expected native addon to export ckgr03",
+  );
+  invariant(
+    typeof native.ckmeta === "function",
+    "Expected native addon to export ckmeta",
+  );
+  invariant(
+    typeof native.cknr02 === "function",
+    "Expected native addon to export cknr02",
+  );
+  invariant(
+    typeof native.cknr03 === "function",
+    "Expected native addon to export cknr03",
+  );
+  invariant(
     typeof native.ckgp === "function",
     "Expected native addon to export ckgp(inst, sclkdp, tol, ref)",
   );

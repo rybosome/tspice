@@ -2,6 +2,7 @@ import type {
   CkCoverageLevel,
   CkCoverageTimeSystem,
   Found,
+  SpiceHandleRegistry,
   FramesApi,
   Mat3RowMajor,
   SpiceIntCell,
@@ -10,6 +11,13 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  brandMat3RowMajorResult,
+  ckStateResult,
+  ckType2Record,
+  ckType3Record,
+  dafBytes,
+  dafPathByteLength,
+  createSpiceHandleRegistry,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   brandMat6RowMajor,
@@ -617,8 +625,184 @@ function validateCkPointing(
 }
 
 /** Create a {@link FramesApi} implementation backed by a WASM Emscripten module. */
-export function createFramesApi(module: EmscriptenModule): FramesApi {
+export function createFramesApi(
+  module: EmscriptenModule,
+  handles: SpiceHandleRegistry = createSpiceHandleRegistry(),
+): FramesApi {
+  function check(code: number, err: number) {
+    if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+  }
+
   return {
+    ckfrot: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 72, 4, 4],
+        (err, out, ref, found) => {
+          check(
+            module._tspice_ckfrot(
+              inst,
+              et,
+              out,
+              ref,
+              found,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          if (!module.HEAP32[found >>> 2]) return { found: false };
+          return {
+            found: true,
+            ref: module.HEAP32[ref >>> 2]!,
+            rotate: brandMat3RowMajorResult(
+              Array.from(module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 9)),
+            ),
+          };
+        },
+      );
+    },
+    ckfxfm: (inst, et) => {
+      assertSpiceInt32(inst, "CK instrument");
+      if (!Number.isFinite(et))
+        throw new RangeError("Expected finite CK epoch");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 288, 4, 4],
+        (err, out, ref, found) => {
+          check(
+            module._tspice_ckfxfm(
+              inst,
+              et,
+              out,
+              ref,
+              found,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          if (!module.HEAP32[found >>> 2]) return { found: false };
+          return {
+            found: true,
+            ref: module.HEAP32[ref >>> 2]!,
+            xform: ckStateResult(
+              Array.from(module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 36)),
+            ),
+          };
+        },
+      );
+    },
+    ckgr02: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 80],
+        (err, ptr, out) => {
+          module.HEAPU8.set(bytes, ptr);
+          check(
+            module._tspice_ckgr02(
+              h,
+              ptr,
+              40,
+              recno,
+              out,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          return ckType2Record(
+            Array.from(module.HEAPF64.subarray(out >>> 3, (out >>> 3) + 10)),
+          );
+        },
+      );
+    },
+    ckgr03: (handle, descr, recno) => {
+      const h = handles.lookup(handle, ["DAF"], "ckgr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      assertSpiceInt32(recno, "CK record number");
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 64, 4],
+        (err, ptr, out, words) => {
+          module.HEAPU8.set(bytes, ptr);
+          check(
+            module._tspice_ckgr03(
+              h,
+              ptr,
+              40,
+              recno,
+              out,
+              words,
+              err,
+              WASM_ERR_MAX_BYTES,
+            ),
+            err,
+          );
+          const count = module.HEAP32[words >>> 2];
+          if (count !== 5 && count !== 8)
+            throw new Error("Invalid CK type 3 word count");
+          return ckType3Record(
+            Array.from(module.HEAPF64.subarray(out >>> 3, (out >>> 3) + count)),
+          );
+        },
+      );
+    },
+    ckmeta: (ckid, meta) => {
+      assertSpiceInt32(ckid, "CK ID");
+      const n = dafPathByteLength(meta, 268435455);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, n + 1, 4],
+        (err, text, out) => {
+          module.HEAPU8.set(new TextEncoder().encode(meta), text);
+          module.HEAPU8[text + n] = 0;
+          check(
+            module._tspice_ckmeta(ckid, text, out, err, WASM_ERR_MAX_BYTES),
+            err,
+          );
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+    },
+    cknr02: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr02").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 4],
+        (err, ptr, out) => {
+          module.HEAPU8.set(bytes, ptr);
+          check(
+            module._tspice_cknr02(h, ptr, 40, out, err, WASM_ERR_MAX_BYTES),
+            err,
+          );
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+    },
+    cknr03: (handle, descr) => {
+      const h = handles.lookup(handle, ["DAF"], "cknr03").nativeHandle;
+      const bytes = dafBytes(descr, 40, true);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, 40, 4],
+        (err, ptr, out) => {
+          module.HEAPU8.set(bytes, ptr);
+          check(
+            module._tspice_cknr03(h, ptr, 40, out, err, WASM_ERR_MAX_BYTES),
+            err,
+          );
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+    },
     namfrm: (name: string) => {
       assertFrameString(name, "namfrm(name)");
       const out = tspiceCallFoundInt(module, module._tspice_namfrm, name);

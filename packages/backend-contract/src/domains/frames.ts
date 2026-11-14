@@ -7,6 +7,7 @@
 import type {
   Found,
   Mat3RowMajor,
+  SpiceHandle,
   SpiceMatrix6x6,
   SpiceVector3,
 } from "../shared/types.js";
@@ -106,6 +107,52 @@ export interface FramesApi {
     tol: number,
     ref: string,
   ): Found<{ cmat: Mat3RowMajor; av: SpiceVector3; clkout: number }>;
+
+  /** Rotation from CK frame class ID inst to the selected segment base frame at ET seconds past J2000. Returns its row-major matrix and reference frame ID, or found:false when pointing or clock data are unavailable. Segment priority and exact-time search follow CSPICE. A loaded CK cannot use a clock ID of −2147483648 because N0067 negates it.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfrot_c.html */
+  ckfrot(
+    inst: number,
+    et: number,
+  ): Found<{ rotate: Mat3RowMajor; ref: number }>;
+  /** State transformation from CK frame class ID inst to the returned segment base frame at ET seconds past J2000. The 36 row-major entries include a lower-left derivative block in inverse seconds; arithmetic at extreme angular velocities may yield IEEE nonfinite values. Only segments containing angular velocity are eligible. Clock, priority and genuine absence follow ckfrot.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckfxfm_c.html */
+  ckfxfm(
+    inst: number,
+    et: number,
+  ): Found<{ xform: SpiceMatrix6x6; ref: number }>;
+  /** Read a one-based record of an authenticated type 2 segment on a live owned DAF handle. start/stop are encoded SCLK ticks; rate is seconds per tick. The scalar-first SPICE quaternion rotates reference to instrument; angular velocity is in reference-frame radians/second. All returned fields are copies.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr02_c.html */
+  ckgr02(
+    handle: SpiceHandle,
+    descr: Uint8Array,
+    recno: number,
+  ): {
+    start: number;
+    stop: number;
+    rate: number;
+    quaternion: [number, number, number, number];
+    av: SpiceVector3;
+  };
+  /** Read a one-based type 3 record from an authenticated segment on a live owned DAF handle. sclkdp is encoded ticks. The scalar-first reference-to-instrument quaternion is followed by reference-frame angular velocity (radians/second) when stored; av is null for a segment without angular velocity.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckgr03_c.html */
+  ckgr03(
+    handle: SpiceHandle,
+    descr: Uint8Array,
+    recno: number,
+  ): {
+    sclkdp: number;
+    quaternion: [number, number, number, number];
+    av: SpiceVector3 | null;
+  };
+  /** Resolve a CK frame class ID’s SCLK or SPK ID from kernel-pool overrides or the conventional spacecraft code. The zero default for IDs above −1000 is an actual result. The selector is NUL-free text; unrecognized selectors raise toolkit errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ckmeta_c.html */
+  ckmeta(ckid: number, meta: string): number;
+  /** Count type 2 pointing intervals. Supply exactly 40 native-order packed descriptor bytes matching an actual segment in this owned CK DAF. A retained copy remains usable as the search moves. Wrong segment type raises CKWRONGDATATYPE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr02_c.html */
+  cknr02(handle: SpiceHandle, descr: Uint8Array): number;
+  /** Count type 3 discrete pointing records across all interpolation intervals. Supply the same owned CK DAF handle and exact packed segment descriptor as cknr02. Reads preserve the current DAF search cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/cknr03_c.html */
+  cknr03(handle: SpiceHandle, descr: Uint8Array): number;
 
   // --- CK file query / management (read-only) ------------------------------
 

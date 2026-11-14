@@ -716,6 +716,7 @@ export type StepFileIoDafgn = {
 export type StepFileIoDafgs = {
   op: "file-io.dafgs";
   handleId: string;
+  summaryId?: string;
 };
 
 export type StepFileIoDafhsf = {
@@ -960,6 +961,50 @@ export type StepFramesCkgpav = {
   sclkdp: number;
   tol: number;
   ref: string;
+};
+
+export type StepFramesCkfrot = {
+  op: "frames.ckfrot";
+  inst: number;
+  et: number;
+};
+
+export type StepFramesCkfxfm = {
+  op: "frames.ckfxfm";
+  inst: number;
+  et: number;
+};
+
+export type StepFramesCkgr02 = {
+  op: "frames.ckgr02";
+  handleId: string;
+  summaryId: string;
+  recno: number;
+};
+
+export type StepFramesCkgr03 = {
+  op: "frames.ckgr03";
+  handleId: string;
+  summaryId: string;
+  recno: number;
+};
+
+export type StepFramesCkmeta = {
+  op: "frames.ckmeta";
+  ckid: number;
+  meta: string;
+};
+
+export type StepFramesCknr02 = {
+  op: "frames.cknr02";
+  handleId: string;
+  summaryId: string;
+};
+
+export type StepFramesCknr03 = {
+  op: "frames.cknr03";
+  handleId: string;
+  summaryId: string;
 };
 
 export type StepFramesCklpf = {
@@ -1504,6 +1549,13 @@ export type WorkflowStep =
   | StepFramesCcifrm
   | StepFramesCkgp
   | StepFramesCkgpav
+  | StepFramesCkfrot
+  | StepFramesCkfxfm
+  | StepFramesCkgr02
+  | StepFramesCkgr03
+  | StepFramesCkmeta
+  | StepFramesCknr02
+  | StepFramesCknr03
   | StepFramesCklpf
   | StepFramesCkupf
   | StepFramesCkobj
@@ -1877,6 +1929,31 @@ export type StepOutput =
             clkout: number;
           };
     }
+  | {
+      op: "frames.ckfrot";
+      value: { found: false } | { found: true; ref: number; rotate: number[] };
+    }
+  | {
+      op: "frames.ckfxfm";
+      value: { found: false } | { found: true; ref: number; xform: number[] };
+    }
+  | {
+      op: "frames.ckgr02";
+      value: {
+        start: number;
+        stop: number;
+        rate: number;
+        quaternion: number[];
+        av: number[];
+      };
+    }
+  | {
+      op: "frames.ckgr03";
+      value: { sclkdp: number; quaternion: number[]; av: number[] | null };
+    }
+  | { op: "frames.ckmeta"; value: number }
+  | { op: "frames.cknr02"; value: number }
+  | { op: "frames.cknr03"; value: number }
   | { op: "frames.cklpf"; value: { opened: true } }
   | { op: "frames.ckupf"; value: { closed: true } }
   | { op: "frames.ckobj"; value: { ids: number[] } }

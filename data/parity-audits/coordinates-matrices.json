@@ -1357,7 +1357,8 @@
         "coords-vectors-sphrec-audit-zero-and-poles",
         "coords-vectors-sphrec-happy-equatorial-quarter-turn"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c02-0138a1b3-wasm",
@@ -1409,7 +1410,8 @@
         "coords-vectors-sphrec-audit-zero-and-poles",
         "coords-vectors-sphrec-happy-equatorial-quarter-turn"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-node",
@@ -1463,7 +1465,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-wasm",
@@ -1517,7 +1520,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1581,11 +1585,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1602,11 +1607,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1688,11 +1694,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1709,11 +1716,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1777,11 +1785,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1798,11 +1807,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1858,11 +1868,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1879,11 +1890,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1947,11 +1959,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1968,11 +1981,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2028,11 +2042,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2049,11 +2064,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2135,11 +2151,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2156,11 +2173,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2224,11 +2242,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2245,11 +2264,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2313,11 +2333,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2334,11 +2355,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2418,11 +2440,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2439,11 +2462,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2523,11 +2547,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2544,11 +2569,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2612,11 +2638,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2633,14 +2660,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier source executions remain historical. Revalidate the combined C01/C02/C13 source on both runtimes."
 }

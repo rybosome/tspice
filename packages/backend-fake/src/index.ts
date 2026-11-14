@@ -1548,6 +1548,21 @@ export function createFakeBackend(
       return et;
     },
 
+    ckfrot: () => ({ found: false }),
+    ckfxfm: () => ({ found: false }),
+    ckgr02: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    ckgr03: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    ckmeta: () => 0,
+    cknr02: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
+    cknr03: () => {
+      throw new Error("Fake backend does not read CK records");
+    },
     ckgp: (_inst: number, _sclkdp: number, _tol: number, _ref: string) => {
       return { found: false };
     },

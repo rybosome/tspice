@@ -131,6 +131,18 @@ Notes:
 
 ## Domain: `frames` (`FramesApi`)
 
+[CK record and frame access](step8-ck-records.md)
+
+| Raw method | CSPICE     | Contract effect                                                                                |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `ckfrot`   | `ckfrot_c` | Search in ET for zero-tolerance instrument-to-base rotation and reference frame ID.            |
+| `ckfxfm`   | `ckfxfm_c` | Search AV-bearing segments for the instrument-to-base state transform and derivative at ET.    |
+| `ckgr02`   | `ckgr02_c` | Read every field in a one-based type 2 interval including the stored seconds per tick.         |
+| `ckgr03`   | `ckgr03_c` | Read a one-based tick and quaternion and return AV only when the descriptor declares it.       |
+| `ckmeta`   | `ckmeta_c` | Resolve the selected SCLK or SPK ID with live pool overrides and signed conventional defaults. |
+| `cknr02`   | `cknr02_c` | Read the number of constant-rate intervals in a genuine packed type 2 segment.                 |
+| `cknr03`   | `cknr03_c` | Read the number of discrete pointing records across the interpolation intervals.               |
+
 | domain.method                           | CSPICE entrypoint(s) | Args (TS shape)                                                                                                             | Returns (TS shape)                                                | Comparison notes (tolerance/normalization)                    | Statefulness / required kernels                                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `frames.namfrm(name)`                   | `namfrm_c`           | `(name: string): Found<{ code: number }>`                                                                                   | `Found<{ code: number }>`                                         | exact integer match                                           | requires FK and/or built-in frame definitions; per NAIF docs, `namfrm_c` returns the frame code, or `0` if `name` is not recognized (there is no `found` output). In this project `J2000` is code `1` (see tests), so treating `0` as “not found” is safe. If you want to avoid depending on the `0` sentinel, validate the returned code via `frinfo_c` (it provides a `found` flag). |

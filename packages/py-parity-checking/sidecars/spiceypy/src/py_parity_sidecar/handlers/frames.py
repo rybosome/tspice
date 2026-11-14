@@ -12,6 +12,13 @@ from ..models import (
     StepFramesCkcov,
     StepFramesCkgp,
     StepFramesCkgpav,
+    StepFramesCkfrot,
+    StepFramesCkfxfm,
+    StepFramesCkgr02,
+    StepFramesCkgr03,
+    StepFramesCkmeta,
+    StepFramesCknr02,
+    StepFramesCknr03,
     StepFramesCklpf,
     StepFramesCkobj,
     StepFramesCkupf,
@@ -298,6 +305,45 @@ def run_frames_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepO
         with sp.no_found_check():
             out = _normalize_ckgpav(sp.ckgpav(step.inst, step.sclkdp, step.tol, step.ref))
         return StepOutput(op=step.op, value=out)
+
+    if isinstance(step, (StepFramesCkfrot, StepFramesCkfxfm)):
+        # A loaded CK requires ZZSCLK to negate the mapped clock. The
+        # registered oracle scenarios intentionally use representable clocks.
+        clock = sp.ckmeta(step.inst, "SCLK")
+        if clock == -2147483648:
+            raise ValueError("Unrepresentable CK SCLK negation in oracle workflow")
+        with sp.no_found_check():
+            if isinstance(step, StepFramesCkfrot):
+                matrix, ref, found = sp.ckfrot(step.inst, step.et)
+                key = "rotate"
+            else:
+                matrix, ref, found = sp.ckfxfm(step.inst, step.et)
+                key = "xform"
+        value = {"found": True, "ref": int(ref), key: matrix.ravel().tolist()} if found else {"found": False}
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFramesCkmeta):
+        return StepOutput(op=step.op, value=sp.ckmeta(step.ckid, step.meta))
+
+    if isinstance(step, (StepFramesCkgr02, StepFramesCkgr03, StepFramesCknr02, StepFramesCknr03)):
+        import numpy as np
+        handle = context.state.fileIo.handles[step.handleId]
+        owner, packed = context.state.fileIo.ckSummaries[step.summaryId]
+        if not handle.isOpen or owner is not handle or len(packed) != 40:
+            raise ValueError("Expected live CK descriptor and owning DAF")
+        desc = np.frombuffer(packed, dtype=np.float64).copy()
+        if isinstance(step, StepFramesCknr02):
+            return StepOutput(op=step.op, value=sp.cknr02(handle.handle, desc))
+        if isinstance(step, StepFramesCknr03):
+            return StepOutput(op=step.op, value=sp.cknr03(handle.handle, desc))
+        if isinstance(step, StepFramesCkgr02):
+            record = sp.ckgr02(handle.handle, desc, step.recno).tolist()
+            return StepOutput(op=step.op, value={"start": record[0], "stop": record[1], "rate": record[2],
+                                                "quaternion": record[3:7], "av": record[7:10]})
+        record = sp.ckgr03(handle.handle, desc, step.recno).tolist()
+        _, ic = sp.dafus(desc, 2, 6)
+        return StepOutput(op=step.op, value={"sclkdp": record[0], "quaternion": record[1:5],
+                                             "av": record[5:8] if ic[3] else None})
 
     if isinstance(step, StepFramesCklpf):
         if step.handleId in context.state.frames.ckHandles:

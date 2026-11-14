@@ -1,0 +1,491 @@
+[
+  {
+    "caseId": "frames-ckgr03-all-packets",
+    "description": "Use the retained exact five-word descriptor and read each one-based record or repeat the segment count.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 1
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 2
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 3
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 4
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-cursor-independent",
+    "description": "Moving the active DAF search beyond the selected array preserves retained descriptor access and current cursor.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 2
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-wrong-segment-type",
+    "description": "A genuine CK descriptor of the other type signals CKWRONGDATATYPE.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-records.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-ck-records.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKWRONGDATATYPE"]
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-separate-segments",
+    "description": "Read two independently retained descriptors in reverse order while a third array is selected.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d2"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d3"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d3",
+        "recno": 2
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d2",
+        "recno": 2
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 2
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-missing-av",
+    "description": "Select the type 3 segment without angular velocities; compare each defined data word or its count.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 1
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 2
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-ordinal-0",
+    "description": "One-based ordinal 0 lies outside this actual segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKNONEXISTREC"]
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-ordinal-negative1",
+    "description": "One-based ordinal -1 lies outside this actual segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKNONEXISTREC"]
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-ordinal-5",
+    "description": "One-based ordinal 5 lies outside this actual segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKNONEXISTREC"]
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-ordinal-2147483647",
+    "description": "One-based ordinal 2147483647 lies outside this actual segment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-pointing.bc"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CKNONEXISTREC"]
+    }
+  },
+  {
+    "caseId": "frames-ckgr03-second-summary-directory",
+    "description": "Find a retained segment on the second physical DAF summary record and compare actual directory-bearing segment counts or records across the hundredth sample.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ck-record-directory.bc"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "f",
+        "path": "kernels/audit-ck-record-directory.bc"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "f"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "f",
+        "summaryId": "d"
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 99
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 100
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 101
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 102
+      },
+      {
+        "op": "frames.ckgr03",
+        "handleId": "f",
+        "summaryId": "d",
+        "recno": 103
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "f"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

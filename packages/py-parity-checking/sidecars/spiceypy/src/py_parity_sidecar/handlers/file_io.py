@@ -181,6 +181,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         else:
             handle = int(sp.dafopr(_resolve_file_io_path(context, step.path)))
         _register_handle(state, step.handleId, handle, kind="DAF", close_with="dafcls")
+        state.handles[step.handleId].path = str(_resolve_file_io_path(context, step.path))
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepFileIoDafps):
@@ -240,7 +241,13 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
                 raise AssertionError("DAFGN did not raise the expected toolkit error")
             return StepOutput(op=step.op, value=value)
         if isinstance(step, StepFileIoDafgs):
-            return StepOutput(op=step.op, value=daf_oracle.summary(handle))
+            data = daf_oracle.summary(handle)
+            if step.summaryId:
+                owner = state.handles[step.handleId]
+                if owner.path is None or sp.getfat(owner.path) != ("DAF", "CK"):
+                    raise ValueError("CK descriptor capture requires an actual CK DAF")
+                state.ckSummaries[step.summaryId] = (owner, bytes(data))
+            return StepOutput(op=step.op,value=data)
         nd, ni = sp.dafhsf(handle)
         return StepOutput(op=step.op, value={"nd": nd, "ni": ni})
 
