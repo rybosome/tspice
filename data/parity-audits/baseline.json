@@ -421,8 +421,8 @@
       "id": "e15-field-of-view",
       "routines": ["getfov_c", "getfvn_c", "fovray_c", "fovtrg_c"],
       "dependsOn": ["e16-geometry-quantities"],
-      "prs": [],
-      "nextAction": "Capture complete source-bound local and canonical CI observations."
+      "prs": ["https://github.com/rybosome/tspice/pull/756"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
