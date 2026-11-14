@@ -144,6 +144,7 @@ export type {
 } from "./spice-runtime/shared/types.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
+export { spiceStringByteLength } from "./spice-runtime/domains/string-bytes.js";
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";
 export {
   GETMSG_WHICH_VALUES,

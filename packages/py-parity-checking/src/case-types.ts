@@ -797,6 +797,43 @@ export type StepFileIoDskw02 = {
   spaixId: string;
 };
 
+export type StepErrorErrch = {
+  op: "error.errch";
+  marker: string;
+  value: string;
+};
+
+export type StepErrorErrdp = {
+  op: "error.errdp";
+  marker: string;
+  value: number;
+};
+
+export type StepErrorErrint = {
+  op: "error.errint";
+  marker: string;
+  value: number;
+};
+
+export type StepErrorQcktrc = {
+  op: "error.qcktrc";
+  tracelen?: number;
+};
+
+export type StepErrorReturn = {
+  op: "error.return";
+};
+
+export type StepErrorTrcdep = {
+  op: "error.trcdep";
+};
+
+export type StepErrorTrcnam = {
+  op: "error.trcnam";
+  index: number;
+  namlen?: number;
+};
+
 export type StepErrorFailed = {
   op: "error.failed";
 };
@@ -1395,6 +1432,13 @@ export type WorkflowStep =
   | StepFileIoDskopn
   | StepFileIoDskmi2
   | StepFileIoDskw02
+  | StepErrorErrch
+  | StepErrorErrdp
+  | StepErrorErrint
+  | StepErrorQcktrc
+  | StepErrorReturn
+  | StepErrorTrcdep
+  | StepErrorTrcnam
   | StepErrorFailed
   | StepErrorReset
   | StepErrorGetmsg
@@ -1697,6 +1741,13 @@ export type StepOutput =
       };
     }
   | { op: "file-io.dskw02"; value: null }
+  | { op: "error.errch"; value: string }
+  | { op: "error.errdp"; value: string }
+  | { op: "error.errint"; value: string }
+  | { op: "error.qcktrc"; value: string }
+  | { op: "error.return"; value: boolean }
+  | { op: "error.trcdep"; value: number }
+  | { op: "error.trcnam"; value: string }
   | { op: "error.failed"; value: boolean }
   | { op: "error.reset"; value: null }
   | { op: "error.getmsg"; value: string }

@@ -186,6 +186,18 @@ Notes:
 
 ## Domain: `error` (`ErrorApi`)
 
+The following direct operations extend the original error API. [Prepared and frozen diagnostic state](step8-error-observation.md)
+
+| Raw method | CSPICE     | Effect                                                                                                                                                                               |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `errch`    | `errch_c`  | Replace the leftmost nonblank marker in the prepared long diagnostic with a character field. Blank replacement inserts one space, and the toolkit applies its 1840-byte field width. |
+| `errdp`    | `errdp_c`  | Substitute a finite double into the prepared message with the exact N0067 14-significant-digit diagnostic rendering.                                                                 |
+| `errint`   | `errint_c` | Substitute a signed SpiceInt into the prepared message, including both endpoints and zero.                                                                                           |
+| `qcktrc`   | `qcktrc_c` | Observe the printable current traceback, or the frozen traceback while an error is pending. Explicit byte capacity includes NUL.                                                     |
+| `return`   | `return_c` | Read the immediate-return indicator. With the backend’s RETURN action it is true exactly while failure is pending.                                                                   |
+| `trcdep`   | `trcdep_c` | Read the logical depth of the current or frozen traceback, including overflow entries beyond the 100 stored names.                                                                   |
+| `trcnam`   | `trcnam_c` | Read one zero-based module name, bounded by caller byte capacity. Observe legitimate overflow placeholders and genuine index and capacity errors.                                    |
+
 | domain.method           | CSPICE entrypoint(s) | Args (TS shape)                                   | Returns (TS shape) | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                                                            |
 | ----------------------- | -------------------- | ------------------------------------------------- | ------------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `error.failed()`        | `failed_c`           | `(): boolean`                                     | `boolean`          | exact boolean                              | **stateful**: reflects the CSPICE error status flag                                                                                                                        |

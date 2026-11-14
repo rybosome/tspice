@@ -1,10 +1,18 @@
 from __future__ import annotations
 
+import ctypes
 import spiceypy as sp
 
 from ..models import (
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrch,
+    StepErrorErrdp,
+    StepErrorErrint,
+    StepErrorQcktrc,
+    StepErrorReturn,
+    StepErrorTrcdep,
+    StepErrorTrcnam,
     StepErrorFailed,
     StepErrorGetmsg,
     StepErrorReset,
@@ -14,6 +22,30 @@ from ..models import (
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext
+
+# SpiceyPy's text decoder strips all trailing whitespace and ignores invalid UTF-8.
+# Observe the independent toolkit's actual C output bytes at the requested capacity.
+_trace_library = ctypes.CDLL(sp.libspice._name)
+_quick_trace = _trace_library.qcktrc_c
+_quick_trace.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
+_quick_trace.restype = None
+_trace_name = _trace_library.trcnam_c
+_trace_name.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
+_trace_name.restype = None
+
+
+def _trace_text(capacity: int, index: int | None = None) -> str:
+    if not -(2**31) <= capacity < 2**31 or (index is not None and not -(2**31) <= index < 2**31):
+        raise ValueError("Trace arguments must fit SpiceInt")
+    length = min(capacity, 4096 if index is None else 33)
+    buf = ctypes.create_string_buffer(max(1, length))
+    if index is None:
+        _quick_trace(length, buf)
+    else:
+        _trace_name(index, length, buf)
+    sp.check_for_spice_error(None)
+    return buf.value.decode("utf-8")
+
 
 _ALLOWED_GETMSG_SELECTORS = {"SHORT", "LONG", "EXPLAIN"}
 
@@ -33,6 +65,33 @@ def _format_sigerr_message() -> str:
 
 
 def run_error_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepErrorErrch):
+        sp.errch(step.marker, step.value)
+        sp.check_for_spice_error(None)
+        return StepOutput(op=step.op, value=str(sp.getmsg("LONG", 1841)))
+
+    if isinstance(step, StepErrorErrdp):
+        sp.errdp(step.marker, step.value)
+        sp.check_for_spice_error(None)
+        return StepOutput(op=step.op, value=str(sp.getmsg("LONG", 1841)))
+
+    if isinstance(step, StepErrorErrint):
+        sp.errint(step.marker, step.value)
+        sp.check_for_spice_error(None)
+        return StepOutput(op=step.op, value=str(sp.getmsg("LONG", 1841)))
+
+    if isinstance(step, StepErrorQcktrc):
+        return StepOutput(op=step.op, value=_trace_text(4096 if step.tracelen is None else step.tracelen))
+
+    if isinstance(step, StepErrorReturn):
+        return StepOutput(op=step.op, value=bool(sp.return_c()))
+
+    if isinstance(step, StepErrorTrcdep):
+        return StepOutput(op=step.op, value=int(sp.trcdep()))
+
+    if isinstance(step, StepErrorTrcnam):
+        return StepOutput(op=step.op, value=_trace_text(33 if step.namlen is None else step.namlen, step.index))
+
     if isinstance(step, StepErrorFailed):
         return StepOutput(op=step.op, value=bool(sp.failed()))
 

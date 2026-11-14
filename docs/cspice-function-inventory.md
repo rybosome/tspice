@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 169
+- Planned (not yet implemented): 480
 - Excluded: 3
 
 ## Implemented now
@@ -77,6 +77,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `errch_c` | Insert String into Error Message Text |
+| `errdp_c` | Insert D.P. Number into Error Message Text |
+| `errint_c` | Insert Integer into Error Message Text |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -123,10 +126,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `pxform_c` | Position Transformation Matrix |
+| `qcktrc_c` | Get Quick Traceback |
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
 | `reset_c` | Reset Error Status |
+| `return_c` | Immediate Return Indicator |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
 | `scard_c` | Set the cardinality of a cell |
@@ -168,6 +173,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkvrsn_c` | Toolkit version strings |
 | `tparse_c` | Parse a UTC time string |
 | `tpictr_c` | Create a Time Format Picture |
+| `trcdep_c` | Traceback depth |
+| `trcnam_c` | Get module name from traceback |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `vadd_c` | Vector addition, 3 dimensional |
@@ -353,10 +360,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |
-| `errch_c` | Insert String into Error Message Text |
 | `errdev_c` | Get/Set Error Output Device Name |
-| `errdp_c` | Insert D.P. Number into Error Message Text |
-| `errint_c` | Insert Integer into Error Message Text |
 | `errprt_c` | Get/Set Error Output Items |
 | `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
@@ -510,7 +514,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `q2m_c` | Quaternion to matrix |
-| `qcktrc_c` | Get Quick Traceback |
 | `qderiv_c` | Quadratic derivative |
 | `qdq2av_c` | Quaternion and quaternion derivative to a.v. |
 | `qxq_c` | Quaternion times quaternion |
@@ -536,7 +539,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `repmi_c` | Replace marker with integer |
 | `repml_c` | Replace marker with logical value text |
 | `repmot_c` | Replace marker with ordinal text |
-| `return_c` | Immediate Return Indicator |
 | `rotvec_c` | Transform a vector via a rotation |
 | `rpd_c` | Radians per degree |
 | `rquad_c` | Roots of a quadratic equation |
@@ -608,8 +610,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `tkfram_c` | TK frame, find position rotation |
 | `tparch_c` | Parse check---check format of strings |
 | `trace_c` | Trace of a 3x3 matrix |
-| `trcdep_c` | Traceback depth |
-| `trcnam_c` | Get module name from traceback |
 | `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |

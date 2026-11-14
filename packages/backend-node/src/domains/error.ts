@@ -1,11 +1,44 @@
 import type { ErrorApi } from "@rybosome/tspice-backend-contract";
-import { assertGetmsgWhich, invariant } from "@rybosome/tspice-core";
+import {
+  assertGetmsgWhich,
+  assertSpiceInt32,
+  invariant,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 
 /** Create an {@link ErrorApi} implementation backed by the native Node addon. */
 export function createErrorApi(native: NativeAddon): ErrorApi {
   return {
+    errch: (marker, value) => {
+      spiceStringByteLength(marker, "marker");
+      spiceStringByteLength(value, "value");
+      native.errch(marker, value);
+    },
+    errdp: (marker, value) => {
+      spiceStringByteLength(marker, "marker");
+      if (!Number.isFinite(value))
+        throw new TypeError("errdp expects a finite number");
+      native.errdp(marker, value);
+    },
+    errint: (marker, value) => {
+      spiceStringByteLength(marker, "marker");
+      assertSpiceInt32(value, "value");
+      native.errint(marker, value);
+    },
+    qcktrc: (tracelen = 4096) => {
+      assertSpiceInt32(tracelen, "tracelen");
+      return native.qcktrc(tracelen);
+    },
+    return: () => native.return(),
+    trcdep: () => native.trcdep(),
+    trcnam: (index, namlen = 33) => {
+      assertSpiceInt32(index, "index");
+      assertSpiceInt32(namlen, "namlen");
+      return native.trcnam(index, namlen);
+    },
+
     failed: () => {
       const out = native.failed();
       invariant(

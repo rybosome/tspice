@@ -1,0 +1,456 @@
+{
+  "schemaVersion": 1,
+  "batch": "b06-error-observation",
+  "traceFiles": [
+    "docs/step8-error-observation.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/error.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/error.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/error.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/error-observation-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-shim-c/test/error-observation.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/error.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/error-observation-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/error.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/error/errch.cases.json",
+    "packages/py-parity-checking/src/cases/error/errdp.cases.json",
+    "packages/py-parity-checking/src/cases/error/errint.cases.json",
+    "packages/py-parity-checking/src/cases/error/index.ts",
+    "packages/py-parity-checking/src/cases/error/qcktrc.cases.json",
+    "packages/py-parity-checking/src/cases/error/return.cases.json",
+    "packages/py-parity-checking/src/cases/error/trcdep.cases.json",
+    "packages/py-parity-checking/src/cases/error/trcnam.cases.json",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/error.ts",
+    "packages/py-parity-checking/test/error-observation-public.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "errch_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errch_c.html",
+      "semantics": "Replace the leftmost nonblank marker in the prepared long diagnostic with a character field. Blank replacement inserts one space, and the toolkit applies its 1840-byte field width.",
+      "scenarios": [
+        {
+          "caseId": "error-errch-repeat",
+          "coverage": ["success", "edge"],
+          "observes": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic."
+        },
+        {
+          "caseId": "error-errch-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged."
+        },
+        {
+          "caseId": "error-errch-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits."
+        },
+        {
+          "caseId": "error-errch-empty-marker",
+          "coverage": ["error", "edge"],
+          "observes": "An empty marker is a genuine C-string error even when the message is prepared."
+        },
+        {
+          "caseId": "error-errch-empty-value",
+          "coverage": ["error", "edge"],
+          "observes": "Distinguish an empty C string from a blank replacement."
+        },
+        {
+          "caseId": "error-errch-blank-and-utf8",
+          "coverage": ["success", "edge"],
+          "observes": "A blank replacement inserts one space and a multi-byte marker and value retain their case and complete UTF-8 sequence."
+        }
+      ],
+      "edgeAssessment": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic. Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged. Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits. A blank replacement inserts one space and a multi-byte marker and value retain their case and complete UTF-8 sequence.",
+      "errorAssessment": "An empty marker is a genuine C-string error even when the message is prepared. SPICE(EMPTYSTRING). Distinguish an empty C string from a blank replacement. SPICE(EMPTYSTRING).",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errch -> serialized native addon -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errch -> scoped WASM adapter -> tspice_errch -> errch_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "errdp_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errdp_c.html",
+      "semantics": "Substitute a finite double into the prepared message with the exact N0067 14-significant-digit diagnostic rendering.",
+      "scenarios": [
+        {
+          "caseId": "error-errdp-repeat",
+          "coverage": ["success", "edge"],
+          "observes": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic."
+        },
+        {
+          "caseId": "error-errdp-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged."
+        },
+        {
+          "caseId": "error-errdp-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits."
+        },
+        {
+          "caseId": "error-errdp-empty-marker",
+          "coverage": ["error", "edge"],
+          "observes": "An empty marker is a genuine C-string error even when the message is prepared."
+        },
+        {
+          "caseId": "error-errdp-format",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact CSPICE decimal rendering for zero, a large positive exponent, a small negative exponent, and an adjacent rounding boundary."
+        }
+      ],
+      "edgeAssessment": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic. Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged. Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits. Compare exact CSPICE decimal rendering for zero, a large positive exponent, a small negative exponent, and an adjacent rounding boundary.",
+      "errorAssessment": "An empty marker is a genuine C-string error even when the message is prepared. SPICE(EMPTYSTRING).",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errdp -> serialized native addon -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errdp -> scoped WASM adapter -> tspice_errdp -> errdp_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "errint_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/errint_c.html",
+      "semantics": "Substitute a signed SpiceInt into the prepared message, including both endpoints and zero.",
+      "scenarios": [
+        {
+          "caseId": "error-errint-repeat",
+          "coverage": ["success", "edge"],
+          "observes": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic."
+        },
+        {
+          "caseId": "error-errint-positions",
+          "coverage": ["success", "edge"],
+          "observes": "Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged."
+        },
+        {
+          "caseId": "error-errint-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits."
+        },
+        {
+          "caseId": "error-errint-empty-marker",
+          "coverage": ["error", "edge"],
+          "observes": "An empty marker is a genuine C-string error even when the message is prepared."
+        },
+        {
+          "caseId": "error-errint-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Compare long-message decimals at both signed endpoints, zero and a positive interior integer."
+        }
+      ],
+      "edgeAssessment": "Replace just the first occurrence, observing the prepared message after each call and the final structured diagnostic. Replace markers at the beginning, end and whole message. Keep unmatched markers and whitespace-only markers unchanged. Preserve the pinned 1840-byte message limit and observe the portion of the replacement that fits. Compare long-message decimals at both signed endpoints, zero and a positive interior integer.",
+      "errorAssessment": "An empty marker is a genuine C-string error even when the message is prepared. SPICE(EMPTYSTRING).",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errint -> serialized native addon -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.errint -> scoped WASM adapter -> tspice_errint -> errint_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "qcktrc_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/qcktrc_c.html",
+      "semantics": "Observe the printable current traceback, or the frozen traceback while an error is pending. Explicit byte capacity includes NUL.",
+      "scenarios": [
+        {
+          "caseId": "error-qcktrc-nested",
+          "coverage": ["success", "edge"],
+          "observes": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset."
+        },
+        {
+          "caseId": "error-qcktrc-byte-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the single-byte and full-name capacities independently, with UTF-8 and significant trailing tab."
+        },
+        {
+          "caseId": "error-qcktrc-length-1",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the original output-length diagnostic before indexing or writing."
+        },
+        {
+          "caseId": "error-qcktrc-length--3",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the original output-length diagnostic before indexing or writing."
+        },
+        {
+          "caseId": "error-qcktrc-overflow",
+          "coverage": ["success", "edge"],
+          "observes": "Observe stored or overflowed trace names and the native overflow annotation after crossing the 100-entry stack."
+        },
+        {
+          "caseId": "error-qcktrc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the exact empty stack between complete push/pop sequences."
+        }
+      ],
+      "edgeAssessment": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset. Observe the single-byte and full-name capacities independently, with UTF-8 and significant trailing tab. Observe stored or overflowed trace names and the native overflow annotation after crossing the 100-entry stack. Observe the exact empty stack between complete push/pop sequences.",
+      "errorAssessment": "Retain the original output-length diagnostic before indexing or writing. SPICE(STRINGTOOSHORT). Retain the original output-length diagnostic before indexing or writing. SPICE(STRINGTOOSHORT).",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [
+        {
+          "id": "qcktrc-byte-exact-reference",
+          "status": "repaired",
+          "summary": "SpiceyPy convenience string decoding discards trailing non-space whitespace and silently ignores malformed UTF-8.",
+          "repair": "Use a private typed C symbol with independently allocated output and strict UTF-8 decoding.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "docs/step8-error-observation.md",
+            "packages/py-parity-checking/test/error-observation-public.test.ts"
+          ],
+          "caseIds": ["error-qcktrc-byte-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.qcktrc -> serialized native addon -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.qcktrc -> scoped WASM adapter -> tspice_qcktrc -> qcktrc_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "return_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/return_c.html",
+      "semantics": "Read the immediate-return indicator. With the backend’s RETURN action it is true exactly while failure is pending.",
+      "scenarios": [
+        {
+          "caseId": "error-return-nested",
+          "coverage": ["success", "edge"],
+          "observes": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset."
+        },
+        {
+          "caseId": "error-return-recovery",
+          "coverage": ["success", "edge"],
+          "observes": "Immediate return is clear before signaling, after backend capture/reset, and after independent error cleanup."
+        }
+      ],
+      "edgeAssessment": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset. Immediate return is clear before signaling, after backend capture/reset, and after independent error cleanup.",
+      "errorAssessment": "The toolkit status observer is error-free. Public tests check state following captured error, while the isolated compiled test observes an actual pending error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [
+        {
+          "id": "return-pending-state",
+          "status": "repaired",
+          "summary": "A post-capture check alone never observes the RETURN action with an actual pending exception.",
+          "repair": "Signal in a standalone linked toolkit harness and observe the true indicator, then reset/capture and observe false on the production shim.",
+          "evidence": [
+            "packages/backend-shim-c/test/error-observation.c",
+            "packages/py-parity-checking/test/error-observation-public.test.ts",
+            "docs/step8-error-observation.md"
+          ],
+          "caseIds": ["error-return-nested", "error-return-recovery"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.return -> serialized native addon -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.return -> scoped WASM adapter -> tspice_return -> return_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "trcdep_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcdep_c.html",
+      "semantics": "Read the logical depth of the current or frozen traceback, including overflow entries beyond the 100 stored names.",
+      "scenarios": [
+        {
+          "caseId": "error-trcdep-nested",
+          "coverage": ["success", "edge"],
+          "observes": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset."
+        },
+        {
+          "caseId": "error-trcdep-depth-overflow",
+          "coverage": ["success", "edge"],
+          "observes": "A stack beyond the stored-name limit retains the logical depth; explicit checkout returns it to zero."
+        }
+      ],
+      "edgeAssessment": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset. A stack beyond the stored-name limit retains the logical depth; explicit checkout returns it to zero.",
+      "errorAssessment": "The toolkit status observer is error-free. Public tests check state following captured error, while the isolated compiled test observes an actual pending error.",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcdep -> serialized native addon -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcdep -> scoped WASM adapter -> tspice_trcdep -> trcdep_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "trcnam_c",
+      "contract": "packages/backend-contract/src/domains/error.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/trcnam_c.html",
+      "semantics": "Read one zero-based module name, bounded by caller byte capacity. Observe legitimate overflow placeholders and genuine index and capacity errors.",
+      "scenarios": [
+        {
+          "caseId": "error-trcnam-nested",
+          "coverage": ["success", "edge"],
+          "observes": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset."
+        },
+        {
+          "caseId": "error-trcnam-byte-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the single-byte and full-name capacities independently, with UTF-8 and significant trailing tab."
+        },
+        {
+          "caseId": "error-trcnam-length-1",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the original output-length diagnostic before indexing or writing."
+        },
+        {
+          "caseId": "error-trcnam-length--3",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the original output-length diagnostic before indexing or writing."
+        },
+        {
+          "caseId": "error-trcnam-overflow",
+          "coverage": ["success", "edge"],
+          "observes": "Observe stored or overflowed trace names and the native overflow annotation after crossing the 100-entry stack."
+        },
+        {
+          "caseId": "error-trcnam-range--1",
+          "coverage": ["error", "edge"],
+          "observes": "The C interface indexes the oldest entry from zero and reports both lower- and upper-bound errors."
+        },
+        {
+          "caseId": "error-trcnam-range-1",
+          "coverage": ["error", "edge"],
+          "observes": "The C interface indexes the oldest entry from zero and reports both lower- and upper-bound errors."
+        }
+      ],
+      "edgeAssessment": "Observe live error status or complete current trace at distinct depths, after a pop, after a captured signal and after a toolkit reset. Observe the single-byte and full-name capacities independently, with UTF-8 and significant trailing tab. Observe stored or overflowed trace names and the native overflow annotation after crossing the 100-entry stack.",
+      "errorAssessment": "Retain the original output-length diagnostic before indexing or writing. SPICE(STRINGTOOSHORT). Retain the original output-length diagnostic before indexing or writing. SPICE(STRINGTOOSHORT). The C interface indexes the oldest entry from zero and reports both lower- and upper-bound errors. SPICE(INDEXOUTOFRANGE). The C interface indexes the oldest entry from zero and reports both lower- and upper-bound errors. SPICE(INDEXOUTOFRANGE).",
+      "fixtures": [],
+      "fixtureRationale": "Authored primitive inputs; no kernels or external fixture data.",
+      "cleanup": "Both registered interpreters unwind caller-managed trace entries through finalizers. Captured errors reset the toolkit and leave the caller stack intact. Standalone pending-state tests run in their own process/module.",
+      "tolerance": "Exact text, decimal representation, integer depths, booleans and short error codes. The direct trace output decoder retains non-space bytes.",
+      "findings": [
+        {
+          "id": "trcnam-byte-exact-reference",
+          "status": "repaired",
+          "summary": "SpiceyPy convenience string decoding discards trailing non-space whitespace and silently ignores malformed UTF-8.",
+          "repair": "Use a private typed C symbol with independently allocated output and strict UTF-8 decoding.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
+            "docs/step8-error-observation.md",
+            "packages/py-parity-checking/test/error-observation-public.test.ts"
+          ],
+          "caseIds": ["error-trcnam-byte-capacity"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcnam -> serialized native addon -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "ErrorApi.trcnam -> scoped WASM adapter -> tspice_trcnam -> trcnam_c. Independent locked library and exact exposed state are observed.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Full local and source-bound canonical native-required verification pending."
+}

@@ -997,6 +997,23 @@ export function createFakeBackend(
   } satisfies FileIoKitApi;
 
   const rawAndKit = {
+    errch: () => {
+      throw new Error("Fake backend: errch is not implemented");
+    },
+    errdp: () => {
+      throw new Error("Fake backend: errdp is not implemented");
+    },
+    errint: () => {
+      throw new Error("Fake backend: errint is not implemented");
+    },
+    qcktrc: () => {
+      throw new Error("Fake backend: qcktrc is not implemented");
+    },
+    return: () => spiceFailed,
+    trcdep: () => traceStack.length,
+    trcnam: () => {
+      throw new Error("Fake backend: trcnam is not implemented");
+    },
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;

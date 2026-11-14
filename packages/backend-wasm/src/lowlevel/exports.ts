@@ -17,6 +17,39 @@ export type EmscriptenModule = {
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
 
+  _tspice_errch(
+    markerPtr: number,
+    valuePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_errdp(
+    markerPtr: number,
+    value: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_errint(
+    markerPtr: number,
+    value: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qcktrc(
+    capacity: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_return(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_trcdep(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_trcnam(
+    index: number,
+    capacity: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_failed(
     outFailedPtr: number,
     errPtr: number,
@@ -2150,6 +2183,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
   "_tspice_get_last_error_trace",
+  "_tspice_errch",
+  "_tspice_errdp",
+  "_tspice_errint",
+  "_tspice_qcktrc",
+  "_tspice_return",
+  "_tspice_trcdep",
+  "_tspice_trcnam",
   "_tspice_failed",
   "_tspice_reset",
   "_tspice_getmsg",

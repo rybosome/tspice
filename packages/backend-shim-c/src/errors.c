@@ -1,6 +1,9 @@
 #include "tspice_backend_shim.h"
 
 #include "SpiceUsr.h"
+#include "tspice_error.h"
+#include <limits.h>
+#include <math.h>
 
 #include <stdbool.h>
 #include <stdatomic.h>
@@ -265,4 +268,87 @@ int tspice_chkout(const char *name, char *err, int errMaxBytes) {
   }
 
   return 0;
+}
+
+static int capture_if_new_error(SpiceBoolean wasFailed, char *err, int errMaxBytes) {
+  if (!wasFailed && failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_errch(const char *marker, const char *value, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if ((marker && strlen(marker) >= INT_MAX) || (value && strlen(value) >= INT_MAX)) return tspice_return_error(err, errMaxBytes, "Invalid errch input");
+  const SpiceBoolean wasFailed = failed_c();
+  errch_c(marker, value);
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_errdp(const char *marker, double value, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if ((marker && strlen(marker) >= INT_MAX) || !isfinite(value)) return tspice_return_error(err, errMaxBytes, "Invalid errdp input");
+  const SpiceBoolean wasFailed = failed_c();
+  errdp_c(marker, value);
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_errint(const char *marker, int value, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if ((marker && strlen(marker) >= INT_MAX)) return tspice_return_error(err, errMaxBytes, "Invalid errint input");
+  const SpiceBoolean wasFailed = failed_c();
+  errint_c(marker, value);
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_qcktrc(int capacity, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing traceback output");
+  out[0] = 0;
+  const SpiceBoolean wasFailed = failed_c();
+  qcktrc_c(capacity, out);
+  // The public C entry replaces an already pending error on invalid arguments.
+  if (capacity < 2) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
+}
+
+int tspice_return(int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing status output");
+  *out = return_c() == SPICETRUE;
+  return 0;
+}
+
+int tspice_trcdep(int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing status output");
+  trcdep_c(out);
+  return 0;
+}
+
+int tspice_trcnam(int index, int capacity, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!out) return tspice_return_error(err, errMaxBytes, "Missing traceback output");
+  out[0] = 0;
+  const SpiceBoolean wasFailed = failed_c();
+  SpiceInt depth = 0;
+  trcdep_c(&depth);
+  trcnam_c(index, capacity, out);
+  // The public C entry replaces an already pending error on invalid arguments.
+  if (capacity < 2 || index < 0 || index >= depth) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return capture_if_new_error(wasFailed, err, errMaxBytes);
 }
