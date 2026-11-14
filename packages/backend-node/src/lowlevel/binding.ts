@@ -609,5 +609,21 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
   );
 
+  invariant(
+    typeof native.srfc2s === "function",
+    "Expected native addon to export srfc2s",
+  );
+  invariant(
+    typeof native.srfcss === "function",
+    "Expected native addon to export srfcss",
+  );
+  invariant(
+    typeof native.srfs2c === "function",
+    "Expected native addon to export srfs2c",
+  );
+  invariant(
+    typeof native.srfscc === "function",
+    "Expected native addon to export srfscc",
+  );
   return native;
 }

@@ -1,0 +1,561 @@
+{
+  "schemaVersion": 1,
+  "batch": "d04-surface-names",
+  "traceFiles": [
+    "docs/step8-surface-names.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ids-names.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/ids_names.cc",
+    "packages/backend-node/src/domains/ids-names.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/surface-names-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ids_names.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/ids-names.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/surface-names-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ids_names.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ids-names.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/surface-names.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "srfc2s_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfc2s_c.html",
+      "semantics": "Translate a signed surface ID to its highest-precedence name for the body. With no matching surface, return the decimal code text with isName false. Preserve the complete toolkit string and the separate isName flag, including when optional srflen truncates the text. The default 37 bytes includes NUL and holds the N0067 36-byte name. Resolve a signed body ID directly.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-srfc2s-body-scoped-aliases",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
+        },
+        {
+          "caseId": "ids-names-srfc2s-pool-clear-reload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare before load, after replacement, after clear and after reloading the original."
+        },
+        {
+          "caseId": "ids-names-srfc2s-decimal-fallback",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe decimal text and false isName, independently from a pool name with numeric spelling."
+        },
+        {
+          "caseId": "ids-names-srfc2s-capacity-prefix",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities."
+        },
+        {
+          "caseId": "ids-names-srfc2s-maximum-name",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle."
+        },
+        {
+          "caseId": "ids-names-srfc2s-short-capacity-1",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfc2s-short-capacity-0",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfc2s-short-capacity-neg3",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfc2s-missing-variables",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
+        },
+        {
+          "caseId": "ids-names-srfc2s-wrong-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
+        },
+        {
+          "caseId": "ids-names-srfc2s-unequal-lengths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
+        },
+        {
+          "caseId": "ids-names-srfc2s-blank-name",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
+        }
+      ],
+      "edgeAssessment": "Compare body-specific aliases, later row precedence, name spelling, pool replacement/clear/reload, decimal fallback, the 36-byte mapping limit, exact prefixes and flags, and trailing tab bytes.",
+      "errorAssessment": "Codes outside the safe signed hash range are wrapper input errors. With valid scalar IDs, capacities below two signal SPICE(STRINGTOOSHORT). A truncated UTF-8 scalar cannot be represented and the typed adapters raise a decoding error. Malformed pool associations have independent genuine errors BADSURFACEMAP, BADVARIABLETYPE, ARRAYSIZEMISMATCH and BLANKNAMEASSIGNED. Hash guards reject unrepresentable signed absolute values before the canonical lookup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/surface-translation.tpc",
+          "provenance": "Project-authored synthetic text kernel assigns aliases for test body IDs 399 and 499, including repeated codes and a numeric-looking surface name. It contains no external measurements or mission material.",
+          "distribution": "Checked into the project under its MIT license. Its test-only origin and use are documented in the parity fixture README."
+        }
+      ],
+      "fixtureRationale": "The authored kernel supplies duplicate codes, names differing by body, and a numeric-looking mapped string. Dynamic pool assignments exercise precedence, cache invalidation and the actual retained hash state after a malformed-table diagnostic.",
+      "cleanup": "The workflow lifecycle tracks loaded kernels and clears session pool state. Read back translations before and after mutation, clear and reload. Shared shim collects and resets CSPICE errors. Native uses owned bounded strings and WASM releases temporary inputs, outputs and diagnostic buffers across failures.",
+      "tolerance": "Compare complete text, discriminated found/name flags and signed integer codes exactly. No floating tolerance applies to the returned data. Byte-prefix truncation is observed independently.",
+      "findings": [
+        {
+          "id": "srfc2s-signed-hash-boundary",
+          "status": "repaired",
+          "summary": "The N0067 integer surface hash computes signed abs before the modulus; INT32_MIN has no representable signed32 absolute value. Pool surface codes also enter this hash during table initialization.",
+          "repair": "The shared shim checks direct hashed surface codes and numeric pool values that round to INT32_MIN before translation under the existing serialized call. The independent oracle excludes the same unsafe domain. Defined numerical text parsing and safe neighboring IDs retain their canonical route.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/backend-node/test/surface-names-domain.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": ["ids-names-srfc2s-decimal-fallback"]
+        },
+        {
+          "id": "srfc2s-failed-refresh-state",
+          "status": "repaired",
+          "summary": "After successful table initialization, replacing the numeric code column with character data consumes the watched update before BADVARIABLETYPE. Subsequent lookups can consult the previously built table until another watched mutation.",
+          "repair": "Retain actual cache behavior. The same-session focused test compares all four translation directions after the genuine refresh error and again after replacement, unload and reload. No caller-side replay, cache clearing or error fabrication.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfc2s.cases.json",
+            "packages/py-parity-checking/test/surface-names.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfc2s-pool-clear-reload",
+            "ids-names-srfc2s-wrong-type"
+          ]
+        },
+        {
+          "id": "srfc2s-exact-text-and-name-flag",
+          "status": "repaired",
+          "summary": "High-level Python string conversion uses permissive decoding and strips trailing whitespace. Naive found handling can also obscure a successful decimal fallback with isName false.",
+          "repair": "The independent oracle calls the exact canonical routine into sized, canary-guarded byte storage and observes its separate output flag. Decode strictly up to the first terminator and compare the full result. Test names ending with a tab and legal small capacities.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfc2s.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfc2s-decimal-fallback",
+            "ids-names-srfc2s-capacity-prefix",
+            "ids-names-srfc2s-maximum-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfc2s -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfc2s -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "srfcss_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfcss_c.html",
+      "semantics": "Translate a signed surface ID to its highest-precedence name for the body. With no matching surface, return the decimal code text with isName false. Preserve the complete toolkit string and the separate isName flag, including when optional srflen truncates the text. The default 37 bytes includes NUL and holds the N0067 36-byte name. Resolve the supplied body string by the toolkit. An unrecognized nonempty body also returns the decimal surface code and isName false.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-srfcss-body-scoped-aliases",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
+        },
+        {
+          "caseId": "ids-names-srfcss-pool-clear-reload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare before load, after replacement, after clear and after reloading the original."
+        },
+        {
+          "caseId": "ids-names-srfcss-decimal-fallback",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe decimal text and false isName, independently from a pool name with numeric spelling."
+        },
+        {
+          "caseId": "ids-names-srfcss-capacity-prefix",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities."
+        },
+        {
+          "caseId": "ids-names-srfcss-maximum-name",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle."
+        },
+        {
+          "caseId": "ids-names-srfcss-short-capacity-1",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfcss-short-capacity-0",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfcss-short-capacity-neg3",
+          "coverage": ["error", "edge"],
+          "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
+        },
+        {
+          "caseId": "ids-names-srfcss-body-lookup",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare recognized names, numeric strings and unknown bodies without collapsing decimal fallbacks."
+        },
+        {
+          "caseId": "ids-names-srfcss-empty-body",
+          "coverage": ["error", "edge"],
+          "observes": "Check the genuine empty body string error. Actual CSPICE diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "ids-names-srfcss-missing-variables",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
+        },
+        {
+          "caseId": "ids-names-srfcss-wrong-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
+        },
+        {
+          "caseId": "ids-names-srfcss-unequal-lengths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
+        },
+        {
+          "caseId": "ids-names-srfcss-blank-name",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
+        }
+      ],
+      "edgeAssessment": "Compare body-specific aliases, later row precedence, name spelling, pool replacement/clear/reload, decimal fallback, the 36-byte mapping limit, exact prefixes and flags, and trailing tab bytes. Body strings include recognized names, numeric body IDs and unknown bodies.",
+      "errorAssessment": "Codes outside the safe signed hash range are wrapper input errors. With valid scalar IDs, capacities below two signal SPICE(STRINGTOOSHORT). A truncated UTF-8 scalar cannot be represented and the typed adapters raise a decoding error. An empty body string signals SPICE(EMPTYSTRING). Malformed pool associations have independent genuine errors BADSURFACEMAP, BADVARIABLETYPE, ARRAYSIZEMISMATCH and BLANKNAMEASSIGNED. Hash guards reject unrepresentable signed absolute values before the canonical lookup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/surface-translation.tpc",
+          "provenance": "Project-authored synthetic text kernel assigns aliases for test body IDs 399 and 499, including repeated codes and a numeric-looking surface name. It contains no external measurements or mission material.",
+          "distribution": "Checked into the project under its MIT license. Its test-only origin and use are documented in the parity fixture README."
+        }
+      ],
+      "fixtureRationale": "The authored kernel supplies duplicate codes, names differing by body, and a numeric-looking mapped string. Dynamic pool assignments exercise precedence, cache invalidation and the actual retained hash state after a malformed-table diagnostic.",
+      "cleanup": "The workflow lifecycle tracks loaded kernels and clears session pool state. Read back translations before and after mutation, clear and reload. Shared shim collects and resets CSPICE errors. Native uses owned bounded strings and WASM releases temporary inputs, outputs and diagnostic buffers across failures.",
+      "tolerance": "Compare complete text, discriminated found/name flags and signed integer codes exactly. No floating tolerance applies to the returned data. Byte-prefix truncation is observed independently.",
+      "findings": [
+        {
+          "id": "srfcss-signed-hash-boundary",
+          "status": "repaired",
+          "summary": "The N0067 integer surface hash computes signed abs before the modulus; INT32_MIN has no representable signed32 absolute value. Pool surface codes also enter this hash during table initialization.",
+          "repair": "The shared shim checks direct hashed surface codes and numeric pool values that round to INT32_MIN before translation under the existing serialized call. The independent oracle excludes the same unsafe domain. Defined numerical text parsing and safe neighboring IDs retain their canonical route.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/backend-node/test/surface-names-domain.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": ["ids-names-srfcss-decimal-fallback"]
+        },
+        {
+          "id": "srfcss-failed-refresh-state",
+          "status": "repaired",
+          "summary": "After successful table initialization, replacing the numeric code column with character data consumes the watched update before BADVARIABLETYPE. Subsequent lookups can consult the previously built table until another watched mutation.",
+          "repair": "Retain actual cache behavior. The same-session focused test compares all four translation directions after the genuine refresh error and again after replacement, unload and reload. No caller-side replay, cache clearing or error fabrication.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfcss.cases.json",
+            "packages/py-parity-checking/test/surface-names.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfcss-pool-clear-reload",
+            "ids-names-srfcss-wrong-type"
+          ]
+        },
+        {
+          "id": "srfcss-exact-text-and-name-flag",
+          "status": "repaired",
+          "summary": "High-level Python string conversion uses permissive decoding and strips trailing whitespace. Naive found handling can also obscure a successful decimal fallback with isName false.",
+          "repair": "The independent oracle calls the exact canonical routine into sized, canary-guarded byte storage and observes its separate output flag. Decode strictly up to the first terminator and compare the full result. Test names ending with a tab and legal small capacities.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfcss.cases.json",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfcss-decimal-fallback",
+            "ids-names-srfcss-capacity-prefix",
+            "ids-names-srfcss-maximum-name"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfcss -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfcss -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "srfs2c_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfs2c_c.html",
+      "semantics": "Resolve a surface name by its normalized spelling in the body-specific mappings. If no association matches, CSPICE parses the surface as an integer. The mapped numeric-looking name takes precedence over integer parsing. Return found:true with the actual integer code or found:false without a code. Resolve the body first. A numeric surface cannot produce a hit for an unrecognized body.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-srfs2c-body-scoped-aliases",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
+        },
+        {
+          "caseId": "ids-names-srfs2c-pool-clear-reload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare before load, after replacement, after clear and after reloading the original."
+        },
+        {
+          "caseId": "ids-names-srfs2c-numeric-parser",
+          "coverage": ["success", "edge", "state"],
+          "observes": "CSPICE parses numeric spellings after name lookup; compare overflow, decimal, exponent, signs, and missing name."
+        },
+        {
+          "caseId": "ids-names-srfs2c-precedence-remap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinguish normalized duplicate names, assigned numeric spellings, case, repeats, integer endpoints and trailing blanks."
+        },
+        {
+          "caseId": "ids-names-srfs2c-empty-surface",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-length input must remain a toolkit error. Actual CSPICE diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "ids-names-srfs2c-body-lookup",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare recognized names, numeric strings and unknown bodies without collapsing decimal fallbacks."
+        },
+        {
+          "caseId": "ids-names-srfs2c-empty-body",
+          "coverage": ["error", "edge"],
+          "observes": "Check the genuine empty body string error. Actual CSPICE diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "ids-names-srfs2c-missing-variables",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
+        },
+        {
+          "caseId": "ids-names-srfs2c-wrong-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
+        },
+        {
+          "caseId": "ids-names-srfs2c-unequal-lengths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
+        },
+        {
+          "caseId": "ids-names-srfs2c-blank-name",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
+        }
+      ],
+      "edgeAssessment": "Exercise normalized aliases and repeated blanks, name collisions scoped by body, a numeric-looking name that maps to a different code, signed integer spellings and integer bounds, replacement/clear/reload, and genuine unresolved names. Body strings include recognized names, numeric body IDs and unknown bodies.",
+      "errorAssessment": "An empty surface C string signals SPICE(EMPTYSTRING). An unmapped nonnumeric string returns found:false. The wrapper preserves this distinction without invoking Python\u2019s default found decorator. An empty body string signals SPICE(EMPTYSTRING). Malformed pool associations have independent genuine errors BADSURFACEMAP, BADVARIABLETYPE, ARRAYSIZEMISMATCH and BLANKNAMEASSIGNED. Hash guards reject unrepresentable signed absolute values before the canonical lookup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/surface-translation.tpc",
+          "provenance": "Project-authored synthetic text kernel assigns aliases for test body IDs 399 and 499, including repeated codes and a numeric-looking surface name. It contains no external measurements or mission material.",
+          "distribution": "Checked into the project under its MIT license. Its test-only origin and use are documented in the parity fixture README."
+        }
+      ],
+      "fixtureRationale": "The authored kernel supplies duplicate codes, names differing by body, and a numeric-looking mapped string. Dynamic pool assignments exercise precedence, cache invalidation and the actual retained hash state after a malformed-table diagnostic.",
+      "cleanup": "The workflow lifecycle tracks loaded kernels and clears session pool state. Read back translations before and after mutation, clear and reload. Shared shim collects and resets CSPICE errors. Native uses owned bounded strings and WASM releases temporary inputs, outputs and diagnostic buffers across failures.",
+      "tolerance": "Compare complete text, discriminated found/name flags and signed integer codes exactly. No floating tolerance applies to the returned data. Byte-prefix truncation is observed independently.",
+      "findings": [
+        {
+          "id": "srfs2c-signed-hash-boundary",
+          "status": "repaired",
+          "summary": "The N0067 integer surface hash computes signed abs before the modulus; INT32_MIN has no representable signed32 absolute value. Pool surface codes also enter this hash during table initialization.",
+          "repair": "The shared shim checks direct hashed surface codes and numeric pool values that round to INT32_MIN before translation under the existing serialized call. The independent oracle excludes the same unsafe domain. Defined numerical text parsing and safe neighboring IDs retain their canonical route.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/backend-node/test/surface-names-domain.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": ["ids-names-srfs2c-numeric-parser"]
+        },
+        {
+          "id": "srfs2c-failed-refresh-state",
+          "status": "repaired",
+          "summary": "After successful table initialization, replacing the numeric code column with character data consumes the watched update before BADVARIABLETYPE. Subsequent lookups can consult the previously built table until another watched mutation.",
+          "repair": "Retain actual cache behavior. The same-session focused test compares all four translation directions after the genuine refresh error and again after replacement, unload and reload. No caller-side replay, cache clearing or error fabrication.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfs2c.cases.json",
+            "packages/py-parity-checking/test/surface-names.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfs2c-pool-clear-reload",
+            "ids-names-srfs2c-wrong-type"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfs2c -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfs2c -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "srfscc_c",
+      "contract": "packages/backend-contract/src/domains/ids-names.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/srfscc_c.html",
+      "semantics": "Resolve a surface name by its normalized spelling in the body-specific mappings. If no association matches, CSPICE parses the surface as an integer. The mapped numeric-looking name takes precedence over integer parsing. Return found:true with the actual integer code or found:false without a code. Use the signed body ID directly.",
+      "scenarios": [
+        {
+          "caseId": "ids-names-srfscc-body-scoped-aliases",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
+        },
+        {
+          "caseId": "ids-names-srfscc-pool-clear-reload",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Compare before load, after replacement, after clear and after reloading the original."
+        },
+        {
+          "caseId": "ids-names-srfscc-numeric-parser",
+          "coverage": ["success", "edge", "state"],
+          "observes": "CSPICE parses numeric spellings after name lookup; compare overflow, decimal, exponent, signs, and missing name."
+        },
+        {
+          "caseId": "ids-names-srfscc-precedence-remap",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Distinguish normalized duplicate names, assigned numeric spellings, case, repeats, integer endpoints and trailing blanks."
+        },
+        {
+          "caseId": "ids-names-srfscc-empty-surface",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-length input must remain a toolkit error. Actual CSPICE diagnostic EMPTYSTRING."
+        },
+        {
+          "caseId": "ids-names-srfscc-missing-variables",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
+        },
+        {
+          "caseId": "ids-names-srfscc-wrong-type",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
+        },
+        {
+          "caseId": "ids-names-srfscc-unequal-lengths",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
+        },
+        {
+          "caseId": "ids-names-srfscc-blank-name",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
+        }
+      ],
+      "edgeAssessment": "Exercise normalized aliases and repeated blanks, name collisions scoped by body, a numeric-looking name that maps to a different code, signed integer spellings and integer bounds, replacement/clear/reload, and genuine unresolved names.",
+      "errorAssessment": "An empty surface C string signals SPICE(EMPTYSTRING). An unmapped nonnumeric string returns found:false. The wrapper preserves this distinction without invoking Python\u2019s default found decorator. Malformed pool associations have independent genuine errors BADSURFACEMAP, BADVARIABLETYPE, ARRAYSIZEMISMATCH and BLANKNAMEASSIGNED. Hash guards reject unrepresentable signed absolute values before the canonical lookup.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/surface-translation.tpc",
+          "provenance": "Project-authored synthetic text kernel assigns aliases for test body IDs 399 and 499, including repeated codes and a numeric-looking surface name. It contains no external measurements or mission material.",
+          "distribution": "Checked into the project under its MIT license. Its test-only origin and use are documented in the parity fixture README."
+        }
+      ],
+      "fixtureRationale": "The authored kernel supplies duplicate codes, names differing by body, and a numeric-looking mapped string. Dynamic pool assignments exercise precedence, cache invalidation and the actual retained hash state after a malformed-table diagnostic.",
+      "cleanup": "The workflow lifecycle tracks loaded kernels and clears session pool state. Read back translations before and after mutation, clear and reload. Shared shim collects and resets CSPICE errors. Native uses owned bounded strings and WASM releases temporary inputs, outputs and diagnostic buffers across failures.",
+      "tolerance": "Compare complete text, discriminated found/name flags and signed integer codes exactly. No floating tolerance applies to the returned data. Byte-prefix truncation is observed independently.",
+      "findings": [
+        {
+          "id": "srfscc-signed-hash-boundary",
+          "status": "repaired",
+          "summary": "The N0067 integer surface hash computes signed abs before the modulus; INT32_MIN has no representable signed32 absolute value. Pool surface codes also enter this hash during table initialization.",
+          "repair": "The shared shim checks direct hashed surface codes and numeric pool values that round to INT32_MIN before translation under the existing serialized call. The independent oracle excludes the same unsafe domain. Defined numerical text parsing and safe neighboring IDs retain their canonical route.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/ids_names.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/surface_oracle.py",
+            "packages/backend-node/test/surface-names-domain.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": ["ids-names-srfscc-numeric-parser"]
+        },
+        {
+          "id": "srfscc-failed-refresh-state",
+          "status": "repaired",
+          "summary": "After successful table initialization, replacing the numeric code column with character data consumes the watched update before BADVARIABLETYPE. Subsequent lookups can consult the previously built table until another watched mutation.",
+          "repair": "Retain actual cache behavior. The same-session focused test compares all four translation directions after the genuine refresh error and again after replacement, unload and reload. No caller-side replay, cache clearing or error fabrication.",
+          "evidence": [
+            "packages/py-parity-checking/src/cases/ids-names/srfscc.cases.json",
+            "packages/py-parity-checking/test/surface-names.test.ts",
+            "docs/step8-surface-names.md"
+          ],
+          "caseIds": [
+            "ids-names-srfscc-pool-clear-reload",
+            "ids-names-srfscc-wrong-type"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfscc -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.srfscc -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Reviewed pinned CSPICE, typed outputs, independent byte/flag observation, kernel pool state, errors and protected hash boundaries. Inherited executions are historical. Record required local and observed CI for the actual source before verification."
+}

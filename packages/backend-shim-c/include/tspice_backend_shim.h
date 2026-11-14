@@ -553,6 +553,10 @@ int tspice_bodc2n(
     char *err,
     int errMaxBytes);
 
+int tspice_srfc2s(int code, int bodyId, int srflen, char *outText, int *outIsName, char *err, int errMaxBytes);
+int tspice_srfcss(int code, const char *body, int srflen, char *outText, int *outIsName, char *err, int errMaxBytes);
+int tspice_srfs2c(const char *surface, const char *body, int *outCode, int *outFound, char *err, int errMaxBytes);
+int tspice_srfscc(const char *surface, int bodyId, int *outCode, int *outFound, char *err, int errMaxBytes);
 // bodc2s_c: body code -> mapped name (or decimal string if unknown).
 int tspice_bodc2s(
     int code,

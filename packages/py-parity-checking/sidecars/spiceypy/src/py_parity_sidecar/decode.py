@@ -135,6 +135,10 @@ from .models import (
     StepIdsNamesBodc2s,
     StepIdsNamesBoddef,
     StepIdsNamesBodfnd,
+    StepIdsNamesSrfc2s,
+    StepIdsNamesSrfcss,
+    StepIdsNamesSrfs2c,
+    StepIdsNamesSrfscc,
     StepIdsNamesBodn2c,
     StepIdsNamesBods2c,
     StepIdsNamesBodvar,
@@ -462,6 +466,18 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 sc=_expect_int(step.get("sc"), label="time.sce2c.sc"),
                 et=_expect_number(step.get("et"), label="time.sce2c.et"),
             )
+
+        case "ids-names.srfc2s":
+            return StepIdsNamesSrfc2s(op=op, code=_expect_int(step.get("code"), label="ids-names.srfc2s.code"),bodyId=_expect_int(step.get("bodyId"), label="ids-names.srfc2s.bodyId"),srflen=_expect_int(step.get("srflen",37), label="ids-names.srfc2s.srflen"))
+
+        case "ids-names.srfcss":
+            return StepIdsNamesSrfcss(op=op, code=_expect_int(step.get("code"), label="ids-names.srfcss.code"),body=_expect_string(step.get("body"), label="ids-names.srfcss.body"),srflen=_expect_int(step.get("srflen",37), label="ids-names.srfcss.srflen"))
+
+        case "ids-names.srfs2c":
+            return StepIdsNamesSrfs2c(op=op, surface=_expect_string(step.get("surface"), label="ids-names.srfs2c.surface"),body=_expect_string(step.get("body"), label="ids-names.srfs2c.body"))
+
+        case "ids-names.srfscc":
+            return StepIdsNamesSrfscc(op=op, surface=_expect_string(step.get("surface"), label="ids-names.srfscc.surface"),bodyId=_expect_int(step.get("bodyId"), label="ids-names.srfscc.bodyId"))
 
         case "ids-names.bodn2c":
             return StepIdsNamesBodn2c(op=op, name=_expect_string(step.get("name"), label="ids-names.bodn2c.name"))

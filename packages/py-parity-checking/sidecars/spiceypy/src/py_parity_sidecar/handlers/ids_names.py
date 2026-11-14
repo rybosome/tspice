@@ -10,12 +10,17 @@ from ..models import (
     StepIdsNamesBodc2s,
     StepIdsNamesBoddef,
     StepIdsNamesBodfnd,
+    StepIdsNamesSrfc2s,
+    StepIdsNamesSrfcss,
+    StepIdsNamesSrfs2c,
+    StepIdsNamesSrfscc,
     StepIdsNamesBodn2c,
     StepIdsNamesBods2c,
     StepIdsNamesBodvar,
     StepOutput,
     WorkflowStep,
 )
+from ..surface_oracle import exact_surface_text, surface_code
 from ..runtime import SidecarRuntimeContext
 
 _MAX_BOD_ITEM_CHARS = 1024
@@ -137,6 +142,26 @@ def _normalize_numeric_values(value: Any, *, max_size: int) -> list[float]:
 
 
 def run_ids_names_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepIdsNamesSrfc2s):
+        # Preserve bytes and isName; the high-level decorator treats false as absence
+        # and its Python string conversion strips trailing non-space whitespace.
+        text, is_name = exact_surface_text(step.code, step.bodyId, step.srflen)
+        return StepOutput(op=step.op, value={"surface": text, "isName": is_name})
+
+    if isinstance(step, StepIdsNamesSrfcss):
+        # Preserve bytes and isName; the high-level decorator treats false as absence
+        # and its Python string conversion strips trailing non-space whitespace.
+        text, is_name = exact_surface_text(step.code, step.body, step.srflen)
+        return StepOutput(op=step.op, value={"surface": text, "isName": is_name})
+
+    if isinstance(step, StepIdsNamesSrfs2c):
+        code, found = surface_code(step.surface, step.body)
+        return StepOutput(op=step.op, value={"found": True, "code": code} if found else {"found": False})
+
+    if isinstance(step, StepIdsNamesSrfscc):
+        code, found = surface_code(step.surface, step.bodyId)
+        return StepOutput(op=step.op, value={"found": True, "code": code} if found else {"found": False})
+
     if isinstance(step, StepIdsNamesBodn2c):
         try:
             out = _normalize_found_code(sp.bodn2c(step.name), label="bodn2c")

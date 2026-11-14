@@ -163,3 +163,8 @@ Only the FK/SPK are loaded for GF; the DSK accompanies the reproducible generato
 Distance roots follow a quadratic norm; point separation follows an arctangent.
 Fresh-process tests compare actual reporter stdout and persistent GF settings
 against locked SpiceyPy, with no scientific operation replaced by a formula.
+
+`kernels/surface-translation.tpc` is an authored test fixture under the
+repository license. Its surface IDs and names are artificial. Two body IDs
+exercise independent namespaces, alternate spellings and numeric-name precedence;
+it contains no shape or observational data.

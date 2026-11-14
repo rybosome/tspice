@@ -122,6 +122,23 @@ Notes:
 
 ## Domain: `ids-names` (`IdsNamesApi`)
 
+Surface translations use the current body-specific kernel pool mappings.
+The optional output byte capacity includes the NUL terminator. It defaults
+to 37. Both string-returning methods retain the name flag even when the
+observable text is a truncated prefix or the decimal fallback.
+
+| Raw call                        | Canonical routine | Observable output                                                               |
+| ------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `srfc2s(code, bodyId, srflen?)` | `srfc2s_c`        | `{surface, isName}` for a signed body ID.                                       |
+| `srfcss(code, body, srflen?)`   | `srfcss_c`        | `{surface, isName}` for a body string.                                          |
+| `srfs2c(surface, body)`         | `srfs2c_c`        | Discriminated found result with a code on success after body-string resolution. |
+| `srfscc(surface, bodyId)`       | `srfscc_c`        | Discriminated found result with a code on success for a signed body ID.         |
+
+The pinned surface hash imposes a bound on direct and pool-supplied surface
+IDs. The parity workflows independently check the defined lookup results,
+state changes, exact bytes and genuine malformed-map errors.
+[Surface translations and signed hash limits](step8-surface-names.md)
+
 | domain.method            | CSPICE entrypoint(s) | Args (TS shape)                           | Returns (TS shape)        | Comparison notes (tolerance/normalization) | Statefulness / required kernels                                                                                                     |
 | ------------------------ | -------------------- | ----------------------------------------- | ------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `ids-names.bodn2c(name)` | `bodn2c_c`           | `(name: string): Found<{ code: number }>` | `Found<{ code: number }>` | exact integer match                        | requires kernels defining body names/IDs (commonly PCK/SPK and/or mission kernels); “not found” is reported via `found` output flag |

@@ -38,6 +38,10 @@ export function dispatchStep(
     case "time.sce2c":
       return runTimeStep(context, step);
 
+    case "ids-names.srfc2s":
+    case "ids-names.srfcss":
+    case "ids-names.srfs2c":
+    case "ids-names.srfscc":
     case "ids-names.bodn2c":
     case "ids-names.bodc2n":
     case "ids-names.bodc2s":

@@ -1,0 +1,13 @@
+KPL/PCK
+
+Synthetic name/code associations for tests, authored for this repository.
+These IDs and names do not describe physical surfaces.
+
+\begindata
+
+NAIF_SURFACE_NAME = ( 'Alias', '  Different  Name', 'Shared',
+                      'Shared', '00091' )
+NAIF_SURFACE_CODE = ( 91, 91, 92, 91, 765 )
+NAIF_SURFACE_BODY = ( 399, 399, 399, 499, 399 )
+
+\begintext

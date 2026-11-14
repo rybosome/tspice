@@ -106,6 +106,10 @@ import idsNamesBodc2nCasesRaw from "./ids-names/bodc2n.cases.json" with { type: 
 import idsNamesBodc2sCasesRaw from "./ids-names/bodc2s.cases.json" with { type: "json" };
 import idsNamesBoddefCasesRaw from "./ids-names/boddef.cases.json" with { type: "json" };
 import idsNamesBodfndCasesRaw from "./ids-names/bodfnd.cases.json" with { type: "json" };
+import idsNamesSrfc2sCasesRaw from "./ids-names/srfc2s.cases.json" with { type: "json" };
+import idsNamesSrfcssCasesRaw from "./ids-names/srfcss.cases.json" with { type: "json" };
+import idsNamesSrfs2cCasesRaw from "./ids-names/srfs2c.cases.json" with { type: "json" };
+import idsNamesSrfsccCasesRaw from "./ids-names/srfscc.cases.json" with { type: "json" };
 import idsNamesBodn2cCasesRaw from "./ids-names/bodn2c.cases.json" with { type: "json" };
 import idsNamesBods2cCasesRaw from "./ids-names/bods2c.cases.json" with { type: "json" };
 import idsNamesBodvarCasesRaw from "./ids-names/bodvar.cases.json" with { type: "json" };
@@ -146,6 +150,10 @@ export const timeCases: ParityCase[] = [
 ];
 
 export const idsNamesCases: ParityCase[] = [
+  ...(idsNamesSrfc2sCasesRaw as ParityCase[]),
+  ...(idsNamesSrfcssCasesRaw as ParityCase[]),
+  ...(idsNamesSrfs2cCasesRaw as ParityCase[]),
+  ...(idsNamesSrfsccCasesRaw as ParityCase[]),
   ...(idsNamesBodn2cCasesRaw as ParityCase[]),
   ...(idsNamesBodc2nCasesRaw as ParityCase[]),
   ...(idsNamesBodc2sCasesRaw as ParityCase[]),
