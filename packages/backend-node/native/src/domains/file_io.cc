@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <limits>
 #include <vector>
+#include <memory>
+#include <new>
 
 #include "../addon_common.h"
 #include "../napi_helpers.h"
@@ -174,6 +176,107 @@ static bool DafCounts(const Napi::CallbackInfo &info, size_t index, int32_t &nd,
   n = std::clamp<int>(nd, 0, 125);
   m = std::clamp<int>(ni, 0, 250 - 2 * n);
   return true;
+}
+
+static bool DafInputBytes(Napi::Env env, const Napi::Value &value, int limit, Napi::Uint8Array *view) {
+  if (!value.IsTypedArray() || value.As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array ||
+      value.As<Napi::Uint8Array>().ByteLength() > static_cast<size_t>(limit)) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected bounded Uint8Array DAF storage"));
+    return false;
+  }
+  *view = value.As<Napi::Uint8Array>();
+  return true;
+}
+
+static Napi::Value Dafac(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0, rows = 0, width = 0;
+  Napi::Uint8Array view;
+  if (!DafArgs(info, 4) || !ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "rows", &rows) || !ReadInt32Checked(env, info[2], "width", &width) ||
+      !DafInputBytes(env, info[3], TSPICE_DAF_PAGE_BYTES, &view))
+    return env.Undefined();
+  unsigned char sentinel = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  // JS has already produced a private fixed-row table. Take a native snapshot
+  // so a direct addon caller with shared backing storage cannot change a row.
+  const size_t length = view.ByteLength();
+  if (rows < 0 || width < 2 || static_cast<int64_t>(rows) * width > static_cast<int64_t>(length)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "Invalid DAF input row table"));
+    return env.Undefined();
+  }
+  std::unique_ptr<unsigned char[]> data(length ? new (std::nothrow) unsigned char[length] : nullptr);
+  if (length && !data) {
+    ThrowSpiceError(Napi::Error::New(env, "Cannot allocate DAF input storage"));
+    return env.Undefined();
+  }
+  if (length)
+    std::memcpy(data.get(), view.Data(), length);
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  DafSuccess(env,
+             tspice_dafac(handle, rows, width, length ? data.get() : &sentinel, static_cast<int>(length), err,
+                          sizeof(err)),
+             "dafac", err);
+  return env.Undefined();
+}
+
+static Napi::Value Dafdc(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0;
+  if (!DafArgs(info, 1) || !ReadInt32Checked(env, info[0], "handle", &handle))
+    return env.Undefined();
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  DafSuccess(env, tspice_dafdc(handle, err, sizeof(err)), "dafdc", err);
+  return env.Undefined();
+}
+
+static Napi::Value Dafec(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0, rows = 0, width = 0;
+  if (!DafArgs(info, 3) || !ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !ReadInt32Checked(env, info[1], "bufsiz", &rows) || !ReadInt32Checked(env, info[2], "buffln", &width))
+    return env.Undefined();
+  const int64_t size = rows > 0 && width >= 2 ? static_cast<int64_t>(rows) * width : 1;
+  if (size > TSPICE_DAF_PAGE_BYTES) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAF comment page exceeds 256 MiB"));
+    return env.Undefined();
+  }
+  std::unique_ptr<unsigned char[]> data(new (std::nothrow) unsigned char[size]);
+  if (!data) {
+    ThrowSpiceError(Napi::Error::New(env, "Cannot allocate DAF output storage"));
+    return env.Undefined();
+  }
+  int n = 0, done = 0;
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (!DafSuccess(
+          env,
+          tspice_dafec(handle, rows, width, data.get(), static_cast<int>(size), &n, &done, err, sizeof(err)),
+          "dafec", err))
+    return env.Undefined();
+  auto result = Napi::Object::New(env);
+  result.Set("n", n);
+  result.Set("done", done != 0);
+  result.Set("bytes", DafBytes(env, data.get(), static_cast<size_t>(n) * width));
+  return result;
+}
+
+static Napi::Value Dafrs(const Napi::CallbackInfo &info) {
+  auto env = info.Env();
+  int32_t handle = 0;
+  Napi::Uint8Array view;
+  if (!DafArgs(info, 2) || !ReadInt32Checked(env, info[0], "handle", &handle) ||
+      !DafInputBytes(env, info[1], TSPICE_DAF_SUMMARY_BYTES, &view))
+    return env.Undefined();
+  unsigned char bytes[TSPICE_DAF_SUMMARY_BYTES] = {};
+  const size_t n = view.ByteLength();
+  if (n)
+    std::memcpy(bytes, view.Data(), n);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  DafSuccess(env, tspice_dafrs(handle, bytes, static_cast<int>(n), err, sizeof(err)), "dafrs", err);
+  return env.Undefined();
 }
 
 static Napi::Value Dafps(const Napi::CallbackInfo &info) {
@@ -1190,6 +1293,10 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "exists", Napi::Function::New(env, Exists), __func__)) return;
   if (!SetExportChecked(env, exports, "getfat", Napi::Function::New(env, Getfat), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "dafac", Napi::Function::New(env, Dafac), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafdc", Napi::Function::New(env, Dafdc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafec", Napi::Function::New(env, Dafec), __func__)) return;
+  if (!SetExportChecked(env, exports, "dafrs", Napi::Function::New(env, Dafrs), __func__)) return;
   if (!SetExportChecked(env, exports, "dafps", Napi::Function::New(env, Dafps), __func__)) return;
   if (!SetExportChecked(env, exports, "dafus", Napi::Function::New(env, Dafus), __func__)) return;
   if (!SetExportChecked(env, exports, "dafgsr", Napi::Function::New(env, Dafgsr), __func__)) return;

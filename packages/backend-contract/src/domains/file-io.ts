@@ -55,6 +55,30 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
+  /** Append the supplied comment lines to a writable DAF. Printable ASCII is accepted by CSPICE.
+   * Trailing spaces are removed and leading/embedded spaces and empty rows are retained.
+   * The rectangular UTF-8 input table must fit 256 MiB. Finish any partial extraction before mutation.
+   * Adding comment records can relocate arrays and reposition this file's search.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafac_c.html */
+  dafac(handle: SpiceHandle, lines: readonly string[]): void;
+  /** Delete the entire comment area of a writable DAF. Finish any partial extraction first.
+   * N0067 may relocate array addresses when freeing reserved records.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafdc_c.html */
+  dafdc(handle: SpiceHandle): void;
+  /** Extract up to bufsiz lines from this DAF. buffln defaults to 1024 bytes and includes the NUL.
+   * A positive rectangular output must fit 256 MiB. Returned lines own their text. Open aliases
+   * share one per-file cursor. Reading after done restarts at the beginning. Closing the final
+   * local DAF link finishes any partial extraction so the native reader releases its cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafec_c.html */
+  dafec(
+    handle: SpiceHandle,
+    bufsiz: number,
+    buffln?: number,
+  ): { n: number; lines: string[]; done: boolean };
+  /** Select a writable DAF's current array and replace its packed summary. Supply exactly the file's
+   * native-order 8*(ND+ceil(NI/2)) bytes. CSPICE retains the final two integer address fields.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrs_c.html */
+  dafrs(handle: SpiceHandle, summary: Uint8Array): void;
   /** Pack the effective prefixes of double and signed 32-bit integer components into owned native-order bytes. Double components may include signed zero and IEEE nonfinite values. Negative counts consume zero components; at most 125 words are packed, doubles first. Extra input entries are ignored. An unused odd integer half-word is zeroed before publication.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafps_c.html */
   dafps(

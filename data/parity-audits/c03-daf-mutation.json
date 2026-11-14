@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "batch": "c03-daf-mutation",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-daf-mutation.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/daf-mutation-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/index.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/test/daf-mutation-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/shared/daf.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/core/src/spice-runtime/shared/types.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-daf.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_mutation_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/fixtures.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/run-tspice/post-case.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/test/daf-mutation-public.test.ts",
+    "packages/tspice/src/transport/rpc/valueCodec.ts",
+    "packages/tspice/src/worker/transport/createWorkerTransport.ts",
+    "packages/tspice/src/worker/transport/exposeTransportToWorker.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "dafac_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafac_c.html",
+      "semantics": "Append a read-once, fixed-row UTF-8 table to a writable DAF. CSPICE accepts printable ASCII, drops trailing blanks, keeps blank rows and leading spaces. Adding comment records can relocate array addresses.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafac-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Observe every leading and internal space, right blank, empty row and ASCII punctuation after reopening."
+        },
+        {
+          "caseId": "file-io-dafac-all-blank",
+          "coverage": ["success", "edge"],
+          "observes": "A nonempty batch of empty and blank lines survives as actual distinct empty comments."
+        },
+        {
+          "caseId": "file-io-dafac-single",
+          "coverage": ["success", "edge"],
+          "observes": "Read back one line from a file whose comment area was initially absent."
+        },
+        {
+          "caseId": "file-io-dafac-pre-reserved",
+          "coverage": ["success", "edge"],
+          "observes": "Append using already reserved comment records and compare the before/after file header."
+        },
+        {
+          "caseId": "file-io-dafac-multi-record",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a long line and its neighbors across two physical comment records."
+        },
+        {
+          "caseId": "file-io-dafac-record-ends",
+          "coverage": ["success", "edge"],
+          "observes": "An end-of-line or an end-of-comments marker at a physical record boundary preserves every byte."
+        },
+        {
+          "caseId": "file-io-dafac-append-twice",
+          "coverage": ["success", "edge"],
+          "observes": "Append across batches while preserving previous contents and repeated identical rows."
+        },
+        {
+          "caseId": "file-io-dafac-relocated-summaries",
+          "coverage": ["success", "edge"],
+          "observes": "Compare the two summaries and array names before and after adding comment records to an unreserved file."
+        },
+        {
+          "caseId": "file-io-dafac-no-rows",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
+        },
+        {
+          "caseId": "file-io-dafac-tab",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
+        },
+        {
+          "caseId": "file-io-dafac-unicode",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
+        },
+        {
+          "caseId": "file-io-dafac-del",
+          "coverage": ["error"],
+          "observes": "Observe the original toolkit error for this comment input on a writable scratch DAF."
+        },
+        {
+          "caseId": "file-io-dafac-read-only",
+          "coverage": ["error"],
+          "observes": "A file opened for read cannot accept new comments."
+        }
+      ],
+      "edgeAssessment": "Single and all-blank batches, multiple batches, reserved records, spanning lines and exact physical-record boundaries are reopened and independently extracted.",
+      "errorAssessment": "Canonical INVALIDARGUMENT on zero rows, ILLEGALCHARACTER on tab, DEL and non-ASCII, and DAFINVALIDACCESS on a read claim. The rectangular byte cap, malformed JavaScript strings and active writable extraction are separate representation checks.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "The repository Step 7 generator creates this two-segment SPK with small explicit synthetic states and IDs. The focused tests copy its bytes to private storage before mutation.",
+          "distribution": "Project-authored under the repository MIT license. No external kernel or network acquisition."
+        }
+      ],
+      "fixtureRationale": "Registered cases write private SPKs with two synthetic type-8 arrays. Public and backend tests also copy the project-authored Step 7 fixture. No checked-in DAF is opened for write.",
+      "cleanup": "Handles are client-owned, serialized under the native process mutex or confined to the WASM instance. Explicit final close drains any active comment cursor. Tests clean up handles, temporary files and clients in finally. WASM fault tests check all allocation positions and genuine diagnostic cleanup.",
+      "tolerance": "Compare actual page counts, strings, flags, packed bytes, file-header pointers, and the data words read from newly written files. Supplementary output-file assertions compare every returned field exactly.",
+      "findings": [
+        {
+          "id": "dafac-mutation-boundary",
+          "status": "repaired",
+          "summary": "Input conversion and comment storage. A zero-width string table for an all-empty batch interacts with the pinned C-to-Fortran string allocation.",
+          "repair": "Represent a blank input row by one Fortran space. Pull each caller-supplied entry once, enforce bounded row extents, preserve original illegal-character errors and compare each persisted row.",
+          "caseIds": [
+            "file-io-dafac-all-blank",
+            "file-io-dafac-whitespace",
+            "file-io-dafac-read-only"
+          ],
+          "evidence": [
+            "docs/step8-daf-mutation.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_mutation_oracle.py",
+            "packages/py-parity-checking/test/daf-mutation-public.test.ts",
+            "packages/backend-node/test/daf-mutation-domain.test.ts",
+            "packages/backend-wasm/test/daf-mutation-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafac -> serialized Node addon -> tspice_dafac -> dafac_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafac -> compiled WASM export with bounded temporary allocations -> tspice_dafac -> dafac_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dafdc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafdc_c.html",
+      "semantics": "Delete all allocated comment records on the named writable DAF. Remaining array data can move to lower addresses. Further deletion is valid when the comment area is empty.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafdc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
+        },
+        {
+          "caseId": "file-io-dafdc-populated",
+          "coverage": ["success", "edge"],
+          "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
+        },
+        {
+          "caseId": "file-io-dafdc-reserved-only",
+          "coverage": ["success", "edge"],
+          "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
+        },
+        {
+          "caseId": "file-io-dafdc-spanning",
+          "coverage": ["success", "edge"],
+          "observes": "Delete this entire comment area and read a fresh page after reopening. Check the DAF header and surviving arrays."
+        },
+        {
+          "caseId": "file-io-dafdc-repeat-and-append",
+          "coverage": ["success", "edge"],
+          "observes": "Delete twice, append again, and observe only the new lines on the independent read claim."
+        },
+        {
+          "caseId": "file-io-dafdc-independent-files",
+          "coverage": ["success", "edge"],
+          "observes": "Delete one of two writable files and observe both comment areas after reopening."
+        },
+        {
+          "caseId": "file-io-dafdc-read-only",
+          "coverage": ["error"],
+          "observes": "Deletion requires a writable file even when its comment area is empty."
+        }
+      ],
+      "edgeAssessment": "Empty and populated areas, reserved-only files, spanning lines, repeated deletion, subsequent append, independent files and fresh summary navigation.",
+      "errorAssessment": "DAFINVALIDACCESS on a read claim. Mutation of an active write-side extraction is separately guarded because the extractor retains its previous file position and record cache.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "The repository Step 7 generator creates this two-segment SPK with small explicit synthetic states and IDs. The focused tests copy its bytes to private storage before mutation.",
+          "distribution": "Project-authored under the repository MIT license. No external kernel or network acquisition."
+        }
+      ],
+      "fixtureRationale": "Registered cases write private SPKs with two synthetic type-8 arrays. Public and backend tests also copy the project-authored Step 7 fixture. No checked-in DAF is opened for write.",
+      "cleanup": "Handles are client-owned, serialized under the native process mutex or confined to the WASM instance. Explicit final close drains any active comment cursor. Tests clean up handles, temporary files and clients in finally. WASM fault tests check all allocation positions and genuine diagnostic cleanup.",
+      "tolerance": "Compare actual page counts, strings, flags, packed bytes, file-header pointers, and the data words read from newly written files. Supplementary output-file assertions compare every returned field exactly.",
+      "findings": [
+        {
+          "id": "dafdc-mutation-boundary",
+          "status": "repaired",
+          "summary": "Mutating an active comment area. Upstream saved positions are based on the original physical comment area.",
+          "repair": "Reject a real area-changing call on a partially read writable DAF, preserve canonical access errors on read-only claims, and permit ordinary mutations after EOF or last close.",
+          "caseIds": [
+            "file-io-dafdc-repeat-and-append",
+            "file-io-dafdc-independent-files",
+            "file-io-dafdc-read-only"
+          ],
+          "evidence": [
+            "docs/step8-daf-mutation.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_mutation_oracle.py",
+            "packages/py-parity-checking/test/daf-mutation-public.test.ts",
+            "packages/backend-node/test/daf-mutation-domain.test.ts",
+            "packages/backend-wasm/test/daf-mutation-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafdc -> serialized Node addon -> tspice_dafdc -> dafdc_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafdc -> compiled WASM export with bounded temporary allocations -> tspice_dafdc -> dafdc_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dafec_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafec_c.html",
+      "semantics": "Read only the n defined rows in the current per-file page and preserve the original done flag. After completion the next extraction starts from row one. Open aliases share the original cursor.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafec-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated empty pages have zero count and done true."
+        },
+        {
+          "caseId": "file-io-dafec-single-default-width",
+          "coverage": ["success", "edge"],
+          "observes": "Read one line using the default row width and restart after exact EOF."
+        },
+        {
+          "caseId": "file-io-dafec-exact-final-page",
+          "coverage": ["success", "edge"],
+          "observes": "A page exactly full can already have done true; the next call restarts."
+        },
+        {
+          "caseId": "file-io-dafec-short-final-page",
+          "coverage": ["success", "edge"],
+          "observes": "Return only defined rows from an oversized final page, preserving empty lines."
+        },
+        {
+          "caseId": "file-io-dafec-changing-page-size",
+          "coverage": ["success", "edge"],
+          "observes": "Change page counts and widths across the same cursor, including exact NUL-inclusive fits."
+        },
+        {
+          "caseId": "file-io-dafec-cross-record",
+          "coverage": ["success", "edge"],
+          "observes": "Extract an authored line crossing the physical record boundary with a complete subsequent page."
+        },
+        {
+          "caseId": "file-io-dafec-blank-pages",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve complete blank rows and leading spaces while clipping only trailing spaces."
+        },
+        {
+          "caseId": "file-io-dafec-aliases",
+          "coverage": ["success", "edge"],
+          "observes": "Alias opens share one actual DAFEC cursor. Closing the first token leaves the remaining cursor in place."
+        },
+        {
+          "caseId": "file-io-dafec-interleaved-files",
+          "coverage": ["success", "edge"],
+          "observes": "Alternate genuine pages across two files, complete both, then restart each at row one."
+        },
+        {
+          "caseId": "file-io-dafec-close-incomplete",
+          "coverage": ["success", "edge"],
+          "observes": "Close after a partial page, reopen independently, edit after finishing, and check fresh content."
+        },
+        {
+          "caseId": "file-io-dafec-zero-count",
+          "coverage": ["error"],
+          "observes": "Observe the documented native count/width error with valid storage and a live read handle."
+        },
+        {
+          "caseId": "file-io-dafec-negative-count",
+          "coverage": ["error"],
+          "observes": "Observe the documented native count/width error with valid storage and a live read handle."
+        },
+        {
+          "caseId": "file-io-dafec-width-one",
+          "coverage": ["error"],
+          "observes": "Observe the documented native count/width error with valid storage and a live read handle."
+        },
+        {
+          "caseId": "file-io-dafec-negative-width",
+          "coverage": ["error"],
+          "observes": "Observe the documented native count/width error with valid storage and a live read handle."
+        },
+        {
+          "caseId": "file-io-dafec-width-precedes-count",
+          "coverage": ["error"],
+          "observes": "Observe the documented native count/width error with valid storage and a live read handle."
+        },
+        {
+          "caseId": "file-io-dafec-row-too-long",
+          "coverage": ["error"],
+          "observes": "An exact three-character row needs four bytes including NUL. Capture the true line number on row two."
+        }
+      ],
+      "edgeAssessment": "Page widths/counts change, exact/short final pages, blank rows, multiple physical records, repeated EOF, interleaving files, alias close and final close; 5,001 repeated abandoned extracts per real backend.",
+      "errorAssessment": "Genuine INVALIDARGUMENT and STRINGTOOSHORT preserve native order. COMMENTTOOLONG reports the page-relative line number and available payload capacity. Narrow-page errors preserve the actual cursor and the public short/long/trace.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "The repository Step 7 generator creates this two-segment SPK with small explicit synthetic states and IDs. The focused tests copy its bytes to private storage before mutation.",
+          "distribution": "Project-authored under the repository MIT license. No external kernel or network acquisition."
+        }
+      ],
+      "fixtureRationale": "Registered cases write private SPKs with two synthetic type-8 arrays. Public and backend tests also copy the project-authored Step 7 fixture. No checked-in DAF is opened for write.",
+      "cleanup": "Handles are client-owned, serialized under the native process mutex or confined to the WASM instance. Explicit final close drains any active comment cursor. Tests clean up handles, temporary files and clients in finally. WASM fault tests check all allocation positions and genuine diagnostic cleanup.",
+      "tolerance": "Compare actual page counts, strings, flags, packed bytes, file-header pointers, and the data words read from newly written files. Supplementary output-file assertions compare every returned field exactly.",
+      "findings": [
+        {
+          "id": "dafec-mutation-boundary",
+          "status": "repaired",
+          "summary": "Original extraction outputs and persistent reader lifecycle. N0067 copies a private completion flag on early errors. Its static reader table releases entries at EOF, and a failed later-record width check can overwrite its cached physical record.",
+          "repair": "Use linked DAFEC with initialized logical and original row conversion. Inspect independent comment records before a short-width call, preserve its diagnostic, and drain the actual saved cursor in bounded pages only on final local close.",
+          "caseIds": [
+            "file-io-dafec-row-too-long",
+            "file-io-dafec-close-incomplete",
+            "file-io-dafec-aliases",
+            "file-io-dafec-interleaved-files"
+          ],
+          "evidence": [
+            "docs/step8-daf-mutation.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_mutation_oracle.py",
+            "packages/py-parity-checking/test/daf-mutation-public.test.ts",
+            "packages/backend-node/test/daf-mutation-domain.test.ts",
+            "packages/backend-wasm/test/daf-mutation-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "composed",
+          "trace": "raw.dafec -> serialized Node addon -> tspice_dafec -> initialized dafec_ with original trace and F2C_ConvertTrStrArr converter. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "composed",
+          "trace": "raw.dafec -> compiled WASM export with bounded temporary allocations -> tspice_dafec -> initialized dafec_ with original trace and F2C_ConvertTrStrArr converter. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dafrs_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrs_c.html",
+      "semantics": "Select this handle’s current search and replace exactly the ND/NI packed summary bytes, leaving the final two integer addresses unchanged through original CSPICE semantics.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dafrs-first",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader."
+        },
+        {
+          "caseId": "file-io-dafrs-last",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader."
+        },
+        {
+          "caseId": "file-io-dafrs-preserve-addresses",
+          "coverage": ["success", "edge"],
+          "observes": "Alternate supplied address extrema, signed IDs, and nonintegral double components; original array data and field order survive."
+        },
+        {
+          "caseId": "file-io-dafrs-first-vs-second",
+          "coverage": ["success", "edge"],
+          "observes": "Replace two distinct summaries with distinguishing signed IDs, then reopen and inspect both positions."
+        },
+        {
+          "caseId": "file-io-dafrs-select-file",
+          "coverage": ["success", "edge"],
+          "observes": "An unrelated current search cannot redirect this explicit writable token. Reopen both files and compare all summary bytes."
+        },
+        {
+          "caseId": "file-io-dafrs-after-relocation",
+          "coverage": ["success", "edge"],
+          "observes": "Use actual new addresses after DAFAC moves the segment. Replacement preserves the relocated pair."
+        },
+        {
+          "caseId": "file-io-dafrs-no-search",
+          "coverage": ["error"],
+          "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
+        },
+        {
+          "caseId": "file-io-dafrs-before-first",
+          "coverage": ["error"],
+          "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
+        },
+        {
+          "caseId": "file-io-dafrs-after-last",
+          "coverage": ["error"],
+          "observes": "Observe original DAF search/position failure using a correctly sized packed summary."
+        },
+        {
+          "caseId": "file-io-dafrs-read-only",
+          "coverage": ["error"],
+          "observes": "Replacing an actual current array in a read-only file yields the toolkit write-access error."
+        }
+      ],
+      "edgeAssessment": "Signed identifiers, fractional double components, supplied address extrema, first and last arrays, two competing active searches, shifted records and reopened bytes are all checked.",
+      "errorAssessment": "DAFNOSEARCH, NOCURRENTARRAY before the first and after the last array, DAFINVALIDACCESS when the selected array is read-only. Structural/format byte extents are checked before replacement.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-two-segment.bsp",
+          "provenance": "The repository Step 7 generator creates this two-segment SPK with small explicit synthetic states and IDs. The focused tests copy its bytes to private storage before mutation.",
+          "distribution": "Project-authored under the repository MIT license. No external kernel or network acquisition."
+        }
+      ],
+      "fixtureRationale": "Registered cases write private SPKs with two synthetic type-8 arrays. Public and backend tests also copy the project-authored Step 7 fixture. No checked-in DAF is opened for write.",
+      "cleanup": "Handles are client-owned, serialized under the native process mutex or confined to the WASM instance. Explicit final close drains any active comment cursor. Tests clean up handles, temporary files and clients in finally. WASM fault tests check all allocation positions and genuine diagnostic cleanup.",
+      "tolerance": "Compare actual page counts, strings, flags, packed bytes, file-header pointers, and the data words read from newly written files. Supplementary output-file assertions compare every returned field exactly.",
+      "findings": [
+        {
+          "id": "dafrs-mutation-boundary",
+          "status": "repaired",
+          "summary": "Packed replacement format and ownership. DAFRS receives no descriptor length and operates on the global current DAF array.",
+          "repair": "Explicitly select the owner-bound handle, query the actual file layout, require exact byte extent and copy into aligned private storage. Independently read complete descriptor and unchanged segment data after reopening.",
+          "caseIds": [
+            "file-io-dafrs-preserve-addresses",
+            "file-io-dafrs-select-file",
+            "file-io-dafrs-after-relocation"
+          ],
+          "evidence": [
+            "docs/step8-daf-mutation.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/daf_mutation_oracle.py",
+            "packages/py-parity-checking/test/daf-mutation-public.test.ts",
+            "packages/backend-node/test/daf-mutation-domain.test.ts",
+            "packages/backend-wasm/test/daf-mutation-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafrs -> serialized Node addon -> tspice_dafrs -> dafrs_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dafrs -> compiled WASM export with bounded temporary allocations -> tspice_dafrs -> dafrs_c. Locked SpiceyPy independently creates the scratch DAF and observes the actual mutation.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Individual compiled, independent scientific and real browser observations are recorded in docs/step8-daf-mutation.md. Fresh combined-source full local and canonical execution evidence remains outstanding."
+}

@@ -448,7 +448,15 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const definition = shim.resolve(symbol, fromFile);
       // N0067's daffpa_c calls this SPICELIB symbol. A real external call in
       // the shim graph is required by the per-backend daffpa mapping policy.
-      if (symbol.endsWith("_c") || (symbol === "daffpa_" && !definition)) {
+      const dafExtraction =
+        symbols.includes("tspice_dafec") &&
+        !definition &&
+        (symbol === "dafec_" || symbol === "F2C_ConvertTrStrArr");
+      if (
+        symbol.endsWith("_c") ||
+        (symbol === "daffpa_" && !definition) ||
+        dafExtraction
+      ) {
         result.add(symbol);
         return;
       }

@@ -952,7 +952,8 @@
         "frames-sxform-identity-success",
         "frames-sxform-unknown-frame-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c02-0138a1b3-wasm",
@@ -1005,7 +1006,8 @@
         "frames-sxform-identity-success",
         "frames-sxform-unknown-frame-error"
       ],
-      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 0138a1b32249200c301121aa481eff92c40b2e42. JavaScript: 2,611 parity tests and one expected guard skip. Native-required: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-node",
@@ -1060,7 +1062,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c02-0138a1b3-wasm",
@@ -1115,7 +1118,8 @@
       ],
       "commit": "0138a1b32249200c301121aa481eff92c40b2e42",
       "url": "https://github.com/rybosome/tspice/actions/runs/43567982959/job/132365925960",
-      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132365925960 on 0138a1b32249200c301121aa481eff92c40b2e42: 2,392 registered Node/WASM live comparisons; 2,612 parity-package tests with no skips, including the native-required guard; 87 native wrapper, 654 WASM, 28 core and 152 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1196,11 +1200,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1215,11 +1220,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> WASM typed helper -> configured actual compiled _tspice_namfrm export -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1312,11 +1318,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1331,11 +1338,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> WASM typed helper -> configured actual compiled _tspice_frmnam export -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1436,11 +1444,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1455,11 +1464,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> WASM typed helper -> configured actual compiled _tspice_cidfrm export -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1566,11 +1576,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1585,11 +1596,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> WASM typed helper -> configured actual compiled _tspice_cnmfrm export -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1704,11 +1716,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1723,11 +1736,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> WASM typed helper -> configured actual compiled _tspice_frinfo export -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1842,11 +1856,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1861,11 +1876,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> WASM typed helper -> configured actual compiled _tspice_ccifrm export -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -1969,11 +1985,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1988,11 +2005,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pxform -> WASM typed helper -> configured actual compiled _tspice_pxform export -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     },
@@ -2096,11 +2114,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-node", "ci-c02-0138a1b3-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2115,14 +2134,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sxform -> WASM typed helper -> configured actual compiled _tspice_sxform export -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": ["local-c02-0138a1b3-wasm", "ci-c02-0138a1b3-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Previous executions are historical and remain bound to their original source. Validate the combined DAF navigation, record and mutation surface in fresh complete local and canonical CI runs."
 }

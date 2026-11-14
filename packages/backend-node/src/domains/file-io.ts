@@ -9,6 +9,10 @@ import type {
 import {
   invariant,
   assertSpiceInt32,
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
   dafComponentLayout,
   dafComponents,
   dafBytes,
@@ -136,6 +140,27 @@ export function createFileIoApi(
       return { arch: obj.arch, type: obj.type };
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      // Array accessors can close the original handle. Look it up after snapshotting.
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      native.dafac(h, n, width, table);
+    },
+    dafdc: (handle) =>
+      native.dafdc(handles.lookup(handle, ["DAF"], "dafdc").nativeHandle),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      dafCommentPageBytes(bufsiz, buffln);
+      const { n, done, bytes } = native.dafec(h, bufsiz, buffln);
+      return dafCommentPage(n, done, bytes, bufsiz, buffln);
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      native.dafrs(
+        handles.lookup(handle, ["DAF"], "dafrs").nativeHandle,
+        bytes,
+      );
+    },
     dafps: (nd, ni, dc, ic) => {
       const { n, m, bytes } = dafComponentLayout(nd, ni);
       const result = native.dafps(

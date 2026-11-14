@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 176,
-    planned: 473,
+    implemented: 180,
+    planned: 469,
     excluded: 3,
-    caseFiles: 176,
-    scenarios: 1196,
+    caseFiles: 180,
+    scenarios: 1242,
     wasmRawUnsupported: 0,
   });
   for (const name of [
@@ -346,6 +346,31 @@ test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   assert.throws(f.build, /Unexplained non-direct node mapping for bodvar/);
 });
 
+test("DAFEC requires the linked extractor and its original defined-row converter", (t) => {
+  const f = fixture(t);
+  const routine = f.build().routines.find((r) => r.routine === "dafec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(routine.mapping[backend].classification, "alias-or-composed");
+    assert.ok(routine.mapping[backend].cspiceEntrypoints.includes("dafec_"));
+    assert.ok(
+      routine.mapping[backend].cspiceEntrypoints.includes(
+        "F2C_ConvertTrStrArr",
+      ),
+    );
+    assert.ok(!routine.mapping[backend].cspiceEntrypoints.includes("dafec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const call of [
+    "dafec_(&handle, &rows, n, out, &finished, width - 1)",
+    "F2C_ConvertTrStrArr(*n, width, out)",
+  ]) {
+    const replacement = "0 /* " + call + " */";
+    f.edit(source, call, replacement);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dafec/);
+    f.edit(source, replacement, call);
+  }
+});
+
 test("the DAFFPA alias requires its linked SPICELIB call and outer trace", (t) => {
   const f = fixture(t);
   const routine = f
@@ -521,7 +546,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 14);
+  assert.equal(ledger.audit.expansionRoutines, 18);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

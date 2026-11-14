@@ -386,6 +386,15 @@ The audit retains the real cookbook fixture and adds a repository-authored two-p
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw call                       | CSPICE entry                                                                      | Observable effect                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `dafac(handle,lines)`          | `dafac_c`                                                                         | Append printable comment lines to a writable DAF.                   |
+| `dafdc(handle)`                | `dafdc_c`                                                                         | Remove its complete comment area.                                   |
+| `dafec(handle,bufsiz,buffln?)` | Traced N0067 `dafec_` with initialized outputs and original `F2C_ConvertTrStrArr` | Return `{n,lines,done}` for the shared file cursor.                 |
+| `dafrs(handle,summary)`        | `dafcs_c`, `dafhsf_c`, `dafrs_c`                                                  | Replace the selected packed summary and retain the array addresses. |
+
+Read aliases share page position. Finishing or closing the final DAF read link releases the original extractor cursor. [DAF comment and descriptor semantics](step8-daf-mutation.md)
+
 | Raw call                         | CSPICE entry | Result                                                           |
 | -------------------------------- | ------------ | ---------------------------------------------------------------- |
 | `dafps(nd,ni,dc,ic)`             | `dafps_c`    | Native-order packed `Uint8Array`                                 |

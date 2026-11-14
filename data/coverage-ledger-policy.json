@@ -102,6 +102,26 @@
         "reason": "Select the owned DAF search first. N0067 daffpa_c unconditionally copies a private logical, even on a pre-existing toolkit failure. Call its exact linked SPICELIB operation with initialized output and preserve its outer trace frame.",
         "expectedEntrypoints": ["dafcs_c", "daffpa_", "chkin_c", "chkout_c"]
       }
+    },
+    "dafec": {
+      "node": {
+        "reason": "The pinned C adapter reads its private completion logical after errors. Use the same linked DAFEC SPICELIB entry with initialized output and the same F2C_ConvertTrStrArr conversion for successful pages. Preserve its outer trace and output-width check.",
+        "expectedEntrypoints": [
+          "dafec_",
+          "F2C_ConvertTrStrArr",
+          "chkin_c",
+          "chkout_c"
+        ]
+      },
+      "wasm": {
+        "reason": "The pinned C adapter reads its private completion logical after errors. Use the same linked DAFEC SPICELIB entry with initialized output and the same F2C_ConvertTrStrArr conversion for successful pages. Preserve its outer trace and output-width check.",
+        "expectedEntrypoints": [
+          "dafec_",
+          "F2C_ConvertTrStrArr",
+          "chkin_c",
+          "chkout_c"
+        ]
+      }
     }
   }
 }

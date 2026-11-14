@@ -78,3 +78,7 @@ reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
 ## DAF records
 
 C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
+
+## DAF mutation
+
+C03 adds comment appending, deletion and paging, plus packed summary replacement against a selected writable array. The workflows use separately created scratch DAFs. Independent readers inspect both backends’ completed output files. [Mutation semantics and measurements](step8-daf-mutation.md) [Routine audit](../data/parity-audits/c03-daf-mutation.json)

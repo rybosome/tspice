@@ -149,6 +149,22 @@ export function getNodeBinding(): NativeAddon {
   );
 
   invariant(
+    typeof native.dafac === "function",
+    "Expected native addon to export dafac",
+  );
+  invariant(
+    typeof native.dafdc === "function",
+    "Expected native addon to export dafdc",
+  );
+  invariant(
+    typeof native.dafec === "function",
+    "Expected native addon to export dafec",
+  );
+  invariant(
+    typeof native.dafrs === "function",
+    "Expected native addon to export dafrs",
+  );
+  invariant(
     typeof native.dafps === "function",
     "Expected native addon to export dafps",
   );

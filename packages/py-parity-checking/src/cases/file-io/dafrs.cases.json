@@ -1,0 +1,1126 @@
+[
+  {
+    "caseId": "file-io-dafrs-first",
+    "description": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-last",
+    "description": "Observe complete packed bytes and original addresses before replacement, immediately afterward and via a reopened reader.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-preserve-addresses",
+    "description": "Alternate supplied address extrema, signed IDs, and nonintegral double components; original array data and field order survive.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 224, 191, 0, 0, 0, 0, 0, 0, 228, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 128, 255,
+          255, 255, 127
+        ]
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgda",
+        "handleId": "a",
+        "begin": 385,
+        "end": 396
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-first-vs-second",
+    "description": "Replace two distinct summaries with distinguishing signed IDs, then reopen and inspect both positions.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 161, 137, 255,
+          255, 188, 99, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-select-file",
+    "description": "An unrelated current search cannot redirect this explicit writable token. Reopen both files and compare all summary bytes.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-b.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-after-relocation",
+    "description": "Use actual new addresses after DAFAC moves the segment. Replacement preserves the relocated pair.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafac",
+        "handleId": "a",
+        "lines": [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-no-search",
+    "description": "Observe original DAF search/position failure using a correctly sized packed summary.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFNOSEARCH"]
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-before-first",
+    "description": "Observe original DAF search/position failure using a correctly sized packed summary.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOCURRENTARRAY"]
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-after-last",
+    "description": "Observe original DAF search/position failure using a correctly sized packed summary.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOCURRENTARRAY"]
+    }
+  },
+  {
+    "caseId": "file-io-dafrs-read-only",
+    "description": "Replacing an actual current array in a read-only file yields the toolkit write-access error.",
+    "workflow": [
+      {
+        "op": "ephemeris.spkopn",
+        "handleId": "creator",
+        "file": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        },
+        "ifname": "C03 AUTHOR",
+        "ncomch": 0
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -777777,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -777777",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkw08",
+        "handleId": "creator",
+        "body": -888888,
+        "center": -99,
+        "frame": "J2000",
+        "first": -1,
+        "last": 1,
+        "segid": "C03 -888888",
+        "degree": 1,
+        "states": [1, 2, 3, 4, 5, 6, 2, 3, 4, 5, 6, 7],
+        "epoch1": -1,
+        "step": 2
+      },
+      {
+        "op": "ephemeris.spkcls",
+        "handleId": "creator"
+      },
+      {
+        "op": "file-io.dafopw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c03-a.bsp"
+        }
+      },
+      {
+        "op": "file-io.dafbfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffna",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafrs",
+        "handleId": "a",
+        "summary": [
+          0, 0, 0, 0, 0, 0, 232, 191, 0, 0, 0, 0, 0, 0, 236, 63, 139, 216, 255,
+          255, 222, 177, 255, 255, 1, 0, 0, 0, 8, 0, 0, 0, 133, 255, 255, 255,
+          102, 86, 1, 0
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DAFINVALIDACCESS"]
+    }
+  }
+]

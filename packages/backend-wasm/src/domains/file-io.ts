@@ -7,6 +7,10 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
   dafComponentLayout,
   dafComponents,
   dafBytes,
@@ -293,6 +297,82 @@ export function createFileIoApi(
       }
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, table.byteLength],
+        (err, data) => {
+          module.HEAPU8.set(table, data >>> 0);
+          const rc = module._tspice_dafac(
+            h,
+            n,
+            width,
+            data,
+            table.byteLength,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+        },
+      );
+    },
+    dafdc: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafdc,
+        handles.lookup(handle, ["DAF"], "dafdc").nativeHandle,
+      ),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      const size = dafCommentPageBytes(bufsiz, buffln);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4, 4],
+        (err, data, nPtr, donePtr) => {
+          const rc = module._tspice_dafec(
+            h,
+            bufsiz,
+            buffln,
+            data,
+            size,
+            nPtr,
+            donePtr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+          const n = readHeapI32(module, nPtr >>> 2, "dafec(n)"),
+            done = readHeapI32(module, donePtr >>> 2, "dafec(done)");
+          if (n < 0 || n > bufsiz || (done !== 0 && done !== 1))
+            throw new TypeError("Invalid DAF comment page");
+          const start = data >>> 0;
+          return dafCommentPage(
+            n,
+            done === 1,
+            module.HEAPU8.subarray(start, start + n * buffln),
+            bufsiz,
+            buffln,
+          );
+        },
+      );
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      const h = handles.lookup(handle, ["DAF"], "dafrs").nativeHandle;
+      withAllocs(module, [WASM_ERR_MAX_BYTES, bytes.byteLength], (err, p) => {
+        module.HEAPU8.set(bytes, p >>> 0);
+        const rc = module._tspice_dafrs(
+          h,
+          p,
+          bytes.byteLength,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+      });
+    },
     dafps: (nd, ni, dc, ic) => {
       const { n, m, bytes } = dafComponentLayout(nd, ni);
       const doubles = dafComponents(dc, n, false),
