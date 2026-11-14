@@ -33,6 +33,17 @@ const calls: {
   count: number;
   invoke(api: StringsApi): unknown;
 }[] = [
+  { name: "cpos", count: 4, invoke: (api) => api.cpos("ıé abc", "é ", 2) },
+  { name: "cposr", count: 4, invoke: (api) => api.cposr("ıé abc", "é ", 2) },
+  { name: "ncpos", count: 4, invoke: (api) => api.ncpos("ıé abc", "é ", 2) },
+  { name: "ncposr", count: 4, invoke: (api) => api.ncposr("ıé abc", "é ", 2) },
+  { name: "pos", count: 4, invoke: (api) => api.pos("ıé abc", "é ", 2) },
+  { name: "posr", count: 4, invoke: (api) => api.posr("ıé abc", "é ", 2) },
+  {
+    name: "esrchc",
+    count: 4,
+    invoke: (api) => api.esrchc("é A", ["", "ÉA", "éa"]),
+  },
   { name: "cmprss", count: 3, invoke: (api) => api.cmprss(":", 1, "é::::A  ") },
   { name: "eqstr", count: 4, invoke: (api) => api.eqstr("éa b", "éAB") },
   { name: "iswhsp", count: 3, invoke: (api) => api.iswhsp(" \t\r\n") },
@@ -222,4 +233,109 @@ it("rejects malformed text, invalid single-byte arguments and out-of-range integ
     module._malloc = malloc;
   }
   expect(api.ucase("ok")).toBe("OK");
+});
+
+it("preserves UTF-8 search bytes and the pinned directional bounds on compiled WASM", async () => {
+  const module = await actualModule(),
+    api = createStringsApi(module);
+  for (const name of [
+    "cpos",
+    "cposr",
+    "ncpos",
+    "ncposr",
+    "pos",
+    "posr",
+  ] as const) {
+    const expected = {
+      cpos: -1,
+      cposr: 4,
+      ncpos: -1,
+      ncposr: 3,
+      pos: -1,
+      posr: 4,
+    };
+    expect(api[name]("ababa", "a", 2147483647)).toBe(expected[name]);
+    expect(api[name]("ababa", "a", 2147483646)).toBe(expected[name]);
+    expect(api[name]("abc", "", 0)).toBe(-1);
+    expect(api[name]("", "a", 0)).toBe(-1);
+    for (const args of [
+      ["abc", "a", 0.5],
+      ["abc", "a", 2147483648],
+      ["", "\0", 0],
+      ["\ud800", "a", 0],
+    ]) {
+      expect(() => Reflect.apply(api[name], undefined, args)).toThrow();
+    }
+  }
+  expect(api.cpos("ı", "ñ", 0)).toBe(1);
+  expect(api.ncposr("é", "ê", 1)).toBe(1);
+  expect(api.posr("ababa", "aba", 1)).toBe(0);
+  expect(api.esrchc("", [" ", "", ""])).toBe(1);
+  expect(api.esrchc("\t", ["", " ", "\t"])).toBe(1);
+  expect(api.esrchc("é A", ["ÉA", "éa", "é A"])).toBe(1);
+  expect(api.esrchc("x", [])).toBe(-1);
+});
+
+it("packs esrchc into byte-sized NUL-terminated rows while reading each caller property once", async () => {
+  const module = await actualModule(),
+    api = createStringsApi(module);
+  const rows = Object.freeze(["", "  ", "😀", "é "]);
+  const seen: PropertyKey[] = [];
+  const input = new Proxy(rows, {
+    get(target, key, receiver) {
+      if (seen.includes(key)) throw Error("repeated row property");
+      seen.push(key);
+      return Reflect.get(target, key, receiver);
+    },
+  });
+  // Prime the Emscripten alias before observing the actual call.
+  expect(api.esrchc("x", [])).toBe(-1);
+  const original = module._tspice_esrchc;
+  let observed: number[] = [];
+  module._tspice_esrchc = (key, count, width, table, out, err, errMaxBytes) => {
+    expect(count).toBe(4);
+    expect(width).toBe(5);
+    const begin = table >>> 0;
+    observed = Array.from(module.HEAPU8.subarray(begin, begin + count * width));
+    return original(key, count, width, table, out, err, errMaxBytes);
+  };
+  try {
+    expect(api.esrchc("é", input)).toBe(3);
+    expect(observed).toEqual([
+      0, 0, 0, 0, 0, 32, 32, 0, 0, 0, 240, 159, 152, 128, 0, 195, 169, 32, 0, 0,
+    ]);
+    expect(seen).toEqual(["length", "0", "1", "2", "3"]);
+  } finally {
+    module._tspice_esrchc = original;
+  }
+});
+
+it("rejects out-of-bounds esrchc layouts and malformed rows before WASM allocation", async () => {
+  const module = await actualModule(),
+    api = createStringsApi(module);
+  const malloc = module._malloc;
+  module._malloc = () => {
+    throw Error("unexpected allocation");
+  };
+  try {
+    const tooMany = new Proxy([], {
+      get(_, key) {
+        if (key === "length") return 134217729;
+        throw Error("unexpected entry read");
+      },
+    });
+    expect(() => api.esrchc("x", tooMany)).toThrow(/byte limit/);
+    const tooWide = new Proxy(["é"], {
+      get(target, key, receiver) {
+        return key === "length"
+          ? 134217728
+          : Reflect.get(target, key, receiver);
+      },
+    });
+    expect(() => api.esrchc("x", tooWide)).toThrow(/byte limit/);
+    expect(() => api.esrchc("x", ["a\0b"])).toThrow(/NUL/);
+    expect(() => api.esrchc("x", ["\udc00"])).toThrow(/surrogate/);
+  } finally {
+    module._malloc = malloc;
+  }
 });

@@ -25,6 +25,13 @@ import stringLastnbCases from "./strings/lastnb.cases.json" with { type: "json" 
 import stringLcaseCases from "./strings/lcase.cases.json" with { type: "json" };
 import stringUcaseCases from "./strings/ucase.cases.json" with { type: "json" };
 import stringMatchiCases from "./strings/matchi.cases.json" with { type: "json" };
+import stringCposCases from "./strings/cpos.cases.json" with { type: "json" };
+import stringCposrCases from "./strings/cposr.cases.json" with { type: "json" };
+import stringNcposCases from "./strings/ncpos.cases.json" with { type: "json" };
+import stringNcposrCases from "./strings/ncposr.cases.json" with { type: "json" };
+import stringPosCases from "./strings/pos.cases.json" with { type: "json" };
+import stringPosrCases from "./strings/posr.cases.json" with { type: "json" };
+import stringEsrchcCases from "./strings/esrchc.cases.json" with { type: "json" };
 import stringMatchwCases from "./strings/matchw.cases.json" with { type: "json" };
 import coordsVectorsReclatCasesRaw from "./coords-vectors/reclat.cases.json" with { type: "json" };
 import coordsVectorsRecgeoCasesRaw from "./coords-vectors/recgeo.cases.json" with { type: "json" };
@@ -301,6 +308,13 @@ export const stringsCases: ParityCase[] = [
   ...(stringLcaseCases as ParityCase[]),
   ...(stringUcaseCases as ParityCase[]),
   ...(stringMatchiCases as ParityCase[]),
+  ...(stringCposCases as ParityCase[]),
+  ...(stringCposrCases as ParityCase[]),
+  ...(stringNcposCases as ParityCase[]),
+  ...(stringNcposrCases as ParityCase[]),
+  ...(stringPosCases as ParityCase[]),
+  ...(stringPosrCases as ParityCase[]),
+  ...(stringEsrchcCases as ParityCase[]),
   ...(stringMatchwCases as ParityCase[]),
 ];
 

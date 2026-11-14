@@ -56,3 +56,28 @@ export async function stringConsumer(
     asyncSensitive,
   ];
 }
+
+/** Check UTF-8 search positions and readonly search arrays for sync and async callers. */
+export async function searchConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+): Promise<void> {
+  const values: readonly string[] = ["Earth", "Moon"];
+  const indices: number[] = [
+    spice.raw.cpos("Earth", "r", 0),
+    spice.raw.cposr("Earth", "t", 4),
+    spice.raw.ncpos("Earth", "a", 0),
+    spice.raw.ncposr("Earth", "h", 4),
+    spice.raw.pos("Earth", "ar", 0),
+    spice.raw.posr("Earth", "th", 4),
+    spice.raw.esrchc("moon", values),
+    await asyncSpice.raw.cpos("Earth", "r", 0),
+    await asyncSpice.raw.cposr("Earth", "t", 4),
+    await asyncSpice.raw.ncpos("Earth", "a", 0),
+    await asyncSpice.raw.ncposr("Earth", "h", 4),
+    await asyncSpice.raw.pos("Earth", "ar", 0),
+    await asyncSpice.raw.posr("Earth", "th", 4),
+    await asyncSpice.raw.esrchc("moon", values),
+  ];
+  void indices;
+}

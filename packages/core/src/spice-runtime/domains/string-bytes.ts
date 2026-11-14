@@ -51,3 +51,34 @@ export function spiceStringOutputCapacity(
   assertSpiceInt32(lenout, "lenout");
   return Math.min(full, lenout);
 }
+
+/** Snapshot esrchc rows and bound their NUL-terminated rectangular UTF-8 table. */
+export function snapshotSearchRows(
+  values: readonly string[],
+  maxBytes = 2147483647,
+): {
+  rows: string[];
+  width: number;
+} {
+  if (!Array.isArray(values))
+    throw new TypeError("esrchc(values) must be an array");
+  const count = values.length;
+  if (!Number.isInteger(count) || count < 0 || count > Math.floor(maxBytes / 2))
+    throw new RangeError("esrchc row table exceeds its byte limit");
+  const maxTextBytes = Math.floor(maxBytes / Math.max(1, count)) - 1;
+  const rows: string[] = [];
+  let width = 2;
+  for (let i = 0; i < count; i++) {
+    const row: unknown = values[i];
+    if (typeof row !== "string")
+      throw new TypeError(`esrchc(values[${i}]) must be a string`);
+    const bytes = spiceStringByteLength(
+      row,
+      `esrchc(values[${i}])`,
+      maxTextBytes,
+    );
+    width = Math.max(width, bytes + 1);
+    rows.push(row);
+  }
+  return { rows, width };
+}

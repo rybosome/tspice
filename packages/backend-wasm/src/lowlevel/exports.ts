@@ -895,6 +895,63 @@ export type EmscriptenModule = {
   ): number;
 
   // Coordinate conversions + small vector/matrix helpers
+  _tspice_cpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pos(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_posr(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_esrchc(
+    valuePtr: number,
+    count: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cmprss(
     delim: number,
     n: number,
@@ -1904,6 +1961,63 @@ export type EmscriptenModule = {
   ): number;
 
   // --- coordinate conversions + small vector/matrix helpers ---
+  _tspice_cpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pos(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_posr(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_esrchc(
+    valuePtr: number,
+    count: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_cmprss(
     delim: number,
     n: number,
@@ -2384,6 +2498,13 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",
+  "_tspice_cpos",
+  "_tspice_cposr",
+  "_tspice_ncpos",
+  "_tspice_ncposr",
+  "_tspice_pos",
+  "_tspice_posr",
+  "_tspice_esrchc",
   "_tspice_cmprss",
   "_tspice_eqstr",
   "_tspice_iswhsp",

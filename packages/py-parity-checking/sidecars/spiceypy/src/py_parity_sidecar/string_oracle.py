@@ -6,6 +6,7 @@ in all three string-result wrappers. Read the canonical C outputs directly.
 from __future__ import annotations
 
 import ctypes
+from collections.abc import Callable, Sequence
 
 import spiceypy as sp
 from spiceypy.utils.libspicehelper import libspice
@@ -90,3 +91,43 @@ def lcase(text: str, lenout: int | None) -> str:
 
 def ucase(text: str, lenout: int | None) -> str:
     return case_bytes(text, lenout, upper=True).decode("utf-8", errors="strict")
+
+
+def search(routine: Callable[[str, str, int], int], text: str, needle: str, start: int) -> int:
+    validate_text(text, needle)
+    _signed32(start)
+    # All six C wrappers add one to start before entering SPICELIB. The
+    # raw adapter's INT_MAX compatibility case is tested separately using
+    # the equivalent safe canonical INT_MAX-1 result.
+    if start == 2147483647:
+        raise ValueError("Canonical one-based start must fit a signed 32-bit integer")
+    return routine(text, needle, start)
+
+
+_esrchc = _library.esrchc_c
+_esrchc.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_void_p]
+_esrchc.restype = ctypes.c_int
+
+
+def esrchc(value: str, values: Sequence[str]) -> int:
+    key = _text_bytes(value)
+    count = len(values)
+    if count > 2147483647 // 2:
+        raise ValueError("C row table exceeds signed 32-bit offsets")
+    rows = [_text_bytes(row) for row in values]
+    width = max(2, max(map(len, rows), default=0) + 1)
+    if count * width > 2147483647:
+        raise ValueError("C row table exceeds signed 32-bit offsets")
+    # SpiceyPy 6.0.3 computes max() on empty input, stride 1 for all-empty
+    # input, and character counts for UTF-8 rows. Supply actual terminated
+    # byte rows through the pinned library, including storage at count zero.
+    storage = ctypes.create_string_buffer(max(1, count * width))
+    for i, row in enumerate(rows):
+        storage[i * width : i * width + len(row)] = row
+    found = _esrchc(key, count, width, storage)
+    sp.check_for_spice_error(None)
+    if rows and all(row.isascii() for row in rows) and any(rows):
+        ordinary = sp.esrchc(value, values)
+        if ordinary != found:
+            raise AssertionError("Locked ESRCHC wrapper and C row lookup disagree")
+    return found

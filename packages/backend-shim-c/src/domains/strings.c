@@ -111,3 +111,86 @@ int tspice_matchw(const char *input, const char *templ, int wstr, int wchr, int 
   }
   return 0;
 }
+
+// Each N0067 position wrapper converts start to Fortran indexing by adding
+// one. Both INT_MAX and INT_MAX-1 are past every possible last candidate
+// (the payload and NUL together must fit SpiceInt). Use the latter carrier
+// only for INT_MAX, retaining the canonical forward and reverse searches.
+static int search_start(int start) {
+  return start == INT_MAX ? INT_MAX - 1 : start;
+}
+
+static int search_result(int result, int *out, char *err, int errMaxBytes) {
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = result;
+  return 0;
+}
+
+int tspice_cpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(chars))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = cpos_c(text, chars, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_cposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(chars))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = cposr_c(text, chars, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_ncpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(chars))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = ncpos_c(text, chars, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_ncposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(chars))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = ncposr_c(text, chars, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_pos(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(substr))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = pos_c(text, substr, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_posr(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(text) || !tspice_string_valid(substr))
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  const int result = posr_c(text, substr, search_start(start));
+  return search_result(result, out, err, errMaxBytes);
+}
+
+int tspice_esrchc(const char *value, int count, int width, const char *rows, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!out || !tspice_string_valid(value) || !rows || count < 0 || width < 2 || count > INT_MAX / width)
+    return tspice_string_invalid_arg(err, errMaxBytes);
+  // ESRCHC uses signed row offsets and EQSTR reads each row as a C string.
+  for (int i = 0; i < count; i++)
+    if (!memchr(rows + i * width, 0, (size_t)width))
+      return tspice_string_invalid_arg(err, errMaxBytes);
+  return search_result(esrchc_c(value, count, width, rows), out, err, errMaxBytes);
+}

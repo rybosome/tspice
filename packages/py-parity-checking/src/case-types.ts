@@ -21,6 +21,54 @@ export type PathRef = {
 /** Preferred path contract (`PathRef`) with string fixture compatibility for existing case JSON. */
 export type PathRefLike = PathRef | string;
 
+export type StepStringsCpos = {
+  op: "strings.cpos";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsCposr = {
+  op: "strings.cposr";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsNcpos = {
+  op: "strings.ncpos";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsNcposr = {
+  op: "strings.ncposr";
+  text: string;
+  chars: string;
+  start: number;
+};
+
+export type StepStringsPos = {
+  op: "strings.pos";
+  text: string;
+  substr: string;
+  start: number;
+};
+
+export type StepStringsPosr = {
+  op: "strings.posr";
+  text: string;
+  substr: string;
+  start: number;
+};
+
+export type StepStringsEsrchc = {
+  op: "strings.esrchc";
+  value: string;
+  values: readonly string[];
+};
+
 export type StepStringsCmprss = {
   op: "strings.cmprss";
   delim: string;
@@ -1342,6 +1390,13 @@ export type StepDskDskb02 = {
 };
 
 export type WorkflowStep =
+  | StepStringsCpos
+  | StepStringsCposr
+  | StepStringsNcpos
+  | StepStringsNcposr
+  | StepStringsPos
+  | StepStringsPosr
+  | StepStringsEsrchc
   | StepStringsCmprss
   | StepStringsEqstr
   | StepStringsIswhsp
@@ -1544,6 +1599,13 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "strings.cpos"; value: number }
+  | { op: "strings.cposr"; value: number }
+  | { op: "strings.ncpos"; value: number }
+  | { op: "strings.ncposr"; value: number }
+  | { op: "strings.pos"; value: number }
+  | { op: "strings.posr"; value: number }
+  | { op: "strings.esrchc"; value: number }
   | { op: "strings.cmprss"; value: string }
   | { op: "strings.eqstr"; value: boolean }
   | { op: "strings.iswhsp"; value: boolean }

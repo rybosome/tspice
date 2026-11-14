@@ -424,7 +424,22 @@
       ],
       "dependsOn": [],
       "prs": ["https://github.com/rybosome/tspice/pull/719"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "nextAction": "Revalidate the established A18 proof on this combined A18/A19 source. Historical evidence retains its original #719 source fingerprint."
+    },
+    {
+      "id": "a19-string-search",
+      "routines": [
+        "cpos_c",
+        "cposr_c",
+        "ncpos_c",
+        "ncposr_c",
+        "pos_c",
+        "posr_c",
+        "esrchc_c"
+      ],
+      "dependsOn": ["a18-string-transform"],
+      "prs": [],
+      "nextAction": "Validate the combined A18/A19 source with both required local lanes and observed canonical CI. Record the exact PR, source fingerprints and job references."
     }
   ]
 }

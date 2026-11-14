@@ -2,6 +2,7 @@ import type { StringsApi } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
   spiceAsciiChar,
+  snapshotSearchRows,
   spiceStringByteLength,
   spiceStringOutputCapacity,
 } from "@rybosome/tspice-core";
@@ -44,9 +45,98 @@ function readString(
   }
 }
 
+function searchPosition(
+  module: EmscriptenModule,
+  text: string,
+  needle: string,
+  start: number,
+  call: EmscriptenModule["_tspice_cpos"],
+): number {
+  const textBytes = spiceStringByteLength(
+    text,
+    "search text",
+    WASM_MAX_ALLOC_BYTES - 1,
+  );
+  const needleBytes = spiceStringByteLength(
+    needle,
+    "search argument",
+    WASM_MAX_ALLOC_BYTES - 1,
+  );
+  assertSpiceInt32(start, "search start");
+  return withAllocs(
+    module,
+    [WASM_ERR_MAX_BYTES, textBytes + 1, needleBytes + 1, 4],
+    (err, textPtr, needlePtr, out) => {
+      writeString(module, textPtr, text, textBytes);
+      writeString(module, needlePtr, needle, needleBytes);
+      const status = call(
+        textPtr,
+        needlePtr,
+        start,
+        out,
+        err,
+        WASM_ERR_MAX_BYTES,
+      );
+      if (status !== 0)
+        throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      return module.HEAP32[out >>> 2]!;
+    },
+  );
+}
+
 /** Create the raw string API backed by the WASM CSPICE module. */
 export function createStringsApi(module: EmscriptenModule): StringsApi {
   return {
+    cpos: (text, chars, start) =>
+      searchPosition(module, text, chars, start, module._tspice_cpos),
+    cposr: (text, chars, start) =>
+      searchPosition(module, text, chars, start, module._tspice_cposr),
+    ncpos: (text, chars, start) =>
+      searchPosition(module, text, chars, start, module._tspice_ncpos),
+    ncposr: (text, chars, start) =>
+      searchPosition(module, text, chars, start, module._tspice_ncposr),
+    pos: (text, substr, start) =>
+      searchPosition(module, text, substr, start, module._tspice_pos),
+    posr: (text, substr, start) =>
+      searchPosition(module, text, substr, start, module._tspice_posr),
+    esrchc: (value, values) => {
+      const bytes = spiceStringByteLength(
+        value,
+        "esrchc(value)",
+        WASM_MAX_ALLOC_BYTES - 1,
+      );
+      const { rows, width } = snapshotSearchRows(values, WASM_MAX_ALLOC_BYTES);
+      const size = Math.max(1, rows.length * width);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, bytes + 1, size, 4],
+        (err, key, table, out) => {
+          writeString(module, key, value, bytes);
+          const offset = table >>> 0;
+          const buffer = module.HEAPU8.subarray(offset, offset + size);
+          buffer.fill(0);
+          for (let i = 0; i < rows.length; i++) {
+            const begin = i * width;
+            encoder.encodeInto(
+              rows[i]!,
+              buffer.subarray(begin, begin + width - 1),
+            );
+          }
+          const status = module._tspice_esrchc(
+            key,
+            rows.length,
+            width,
+            table,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return module.HEAP32[out >>> 2]!;
+        },
+      );
+    },
     cmprss: (delim, n, input, lenout) => {
       const delimByte = spiceAsciiChar(delim, "cmprss(delim)");
       assertSpiceInt32(n, "cmprss(n)");

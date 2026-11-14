@@ -244,6 +244,18 @@ accept ASCII including the NUL scalar. All rows use authored text fixtures.
 | `ucase(input: string, lenout?: number)`                            | `ucase_c`         | ASCII-uppercased string. Capacity includes the terminator, minimum 2.      |
 | `matchi(input: string, templ: string, wstr: string, wchr: string)` | `matchi_c`        | Exact boolean for an ASCII case-insensitive, byte-oriented wildcard match. |
 | `matchw(input: string, templ: string, wstr: string, wchr: string)` | `matchw_c`        | Exact boolean for a case-sensitive, byte-oriented wildcard match.          |
+| `cpos(text, chars, start)`                                         | `cpos_c`          | First matching byte from the inclusive start, or −1.                       |
+| `cposr(text, chars, start)`                                        | `cposr_c`         | Last matching byte through the inclusive start, or −1.                     |
+| `ncpos(text, chars, start)`                                        | `ncpos_c`         | First byte outside the set from the inclusive start, or −1.                |
+| `ncposr(text, chars, start)`                                       | `ncposr_c`        | Last byte outside the set through the inclusive start, or −1.              |
+| `pos(text, substr, start)`                                         | `pos_c`           | First exact substring start, or −1.                                        |
+| `posr(text, substr, start)`                                        | `posr_c`          | Last exact substring start, or −1.                                         |
+| `esrchc(value, values)`                                            | `esrchc_c`        | First equivalent row, or −1.                                               |
+
+All six position results use UTF-8 byte indices. ESRCHC returns an array index
+and applies the whitespace and ASCII-case rules of EQSTR to each terminated
+row. The independent oracle exercises empty, all-empty, ASCII and multibyte rows.
+[Byte positions, signed bounds and row ABI](step8-string-search.md)
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 

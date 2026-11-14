@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 170,
-    planned: 479,
+    implemented: 177,
+    planned: 472,
     excluded: 3,
-    caseFiles: 170,
-    scenarios: 1173,
+    caseFiles: 177,
+    scenarios: 1229,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -446,7 +446,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 8);
+  assert.equal(ledger.audit.expansionRoutines, 15);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

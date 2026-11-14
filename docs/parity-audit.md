@@ -76,3 +76,12 @@ and exposing incomplete UTF-8 prefixes. Boolean results and byte indices use
 the installed SpiceyPy wrappers. Each backend judgment progresses from source
 review to verification after fresh required local lanes and observed CI.
 [Primary semantics, byte evidence and boundaries](step8-string-transforms.md)
+
+## String search positions and equivalent rows
+
+A19 adds seven routines on the A18 StringsApi. Its 56 workflows compare 407
+full byte or row indices, including misses, reverse substring start bounds
+and empty versus blank rows. The guarded maximum start and the locked
+ESRCHC row ABI have separate tests. The original A18 and Step 7 executions
+remain historical until the composite source passes the source-bound gates.
+[String search semantics, row layout and oracle](step8-string-search.md)

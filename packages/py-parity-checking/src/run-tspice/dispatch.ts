@@ -22,6 +22,13 @@ export function dispatchStep(
   step: WorkflowStep,
 ): StepOutput {
   switch (step.op) {
+    case "strings.cpos":
+    case "strings.cposr":
+    case "strings.ncpos":
+    case "strings.ncposr":
+    case "strings.pos":
+    case "strings.posr":
+    case "strings.esrchc":
     case "strings.cmprss":
     case "strings.eqstr":
     case "strings.iswhsp":

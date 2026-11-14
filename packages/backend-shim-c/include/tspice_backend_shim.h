@@ -1079,6 +1079,13 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+int tspice_cpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_cposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_pos(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_posr(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_esrchc(const char *value, int count, int width, const char *rows, int *out, char *err, int errMaxBytes);
 int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
 int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
 int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);
