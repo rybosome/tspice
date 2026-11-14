@@ -2633,7 +2633,8 @@
         "geometry-subslr-happy-path-success",
         "geometry-subslr-invalid-method-error"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "local-a05-02aa05d9-wasm",
@@ -2832,7 +2833,8 @@
         "geometry-subslr-happy-path-success",
         "geometry-subslr-invalid-method-error"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-node",
@@ -3033,7 +3035,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-wasm",
@@ -3234,7 +3237,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     }
   ],
   "routines": [
@@ -3461,11 +3465,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.subpnt -> typed node adapter -> actual registered N-API subpnt binding -> shared tspice_subpnt -> subpnt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subpnt. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3478,11 +3483,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.subpnt -> typed wasm adapter -> actual compiled _tspice_subpnt export -> shared tspice_subpnt -> subpnt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subpnt. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -3709,11 +3715,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.subslr -> typed node adapter -> actual registered N-API subslr binding -> shared tspice_subslr -> subslr_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subslr. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -3726,11 +3733,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.subslr -> typed wasm adapter -> actual compiled _tspice_subslr export -> shared tspice_subslr -> subslr_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual subslr. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -3986,11 +3994,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sincpt -> typed node adapter -> actual registered N-API sincpt binding -> shared tspice_sincpt -> sincpt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual sincpt. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4003,11 +4012,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sincpt -> typed wasm adapter -> actual compiled _tspice_sincpt export -> shared tspice_sincpt -> sincpt_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual sincpt. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -4222,11 +4232,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ilumin -> typed node adapter -> actual registered N-API ilumin binding -> shared tspice_ilumin -> ilumin_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual ilumin. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4239,11 +4250,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ilumin -> typed wasm adapter -> actual compiled _tspice_ilumin export -> shared tspice_ilumin -> ilumin_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual ilumin. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -4476,11 +4488,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.illumg -> typed node adapter -> actual registered N-API illumg binding -> shared tspice_illumg -> illumg_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumg. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4493,11 +4506,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.illumg -> typed wasm adapter -> actual compiled _tspice_illumg export -> shared tspice_illumg -> illumg_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumg. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -4769,11 +4783,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.illumf -> typed node adapter -> actual registered N-API illumf binding -> shared tspice_illumf -> illumf_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumf. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4786,11 +4801,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.illumf -> typed wasm adapter -> actual compiled _tspice_illumf export -> shared tspice_illumf -> illumf_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual illumf. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -5077,11 +5093,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.occult -> typed node adapter -> actual registered N-API occult binding -> shared tspice_occult -> occult_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual occult. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5094,11 +5111,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.occult -> typed wasm adapter -> actual compiled _tspice_occult export -> shared tspice_occult -> occult_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual occult. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -5204,11 +5222,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nvc2pl -> typed node adapter -> actual registered N-API nvc2pl binding -> shared tspice_nvc2pl -> nvc2pl_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual nvc2pl. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5221,11 +5240,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nvc2pl -> typed wasm adapter -> actual compiled _tspice_nvc2pl export -> shared tspice_nvc2pl -> nvc2pl_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual nvc2pl. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -5320,11 +5340,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pl2nvc -> typed node adapter -> actual registered N-API pl2nvc binding -> shared tspice_pl2nvc -> pl2nvc_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual pl2nvc. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5337,14 +5358,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pl2nvc -> typed wasm adapter -> actual compiled _tspice_pl2nvc export -> shared tspice_pl2nvc -> pl2nvc_c. Registered dispatcher calls the actual raw method; locked SpiceyPy calls actual pl2nvc. Independent formulas are assertions, never harness replacements.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

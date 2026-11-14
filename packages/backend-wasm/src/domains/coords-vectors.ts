@@ -783,16 +783,19 @@ function assertCoordinateNumber(
   }
 }
 
-function assertCoordinateVector(
-  value: unknown,
-): asserts value is Readonly<SpiceVector3> {
-  if (!Array.isArray(value) || value.length !== 3) {
+function copyCoordinateVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(
       "reccyl(rect) must contain exactly three finite numbers",
     );
-  }
-  for (let i = 0; i < 3; i++)
-    assertCoordinateNumber(value[i], `reccyl(rect[${i}])`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`reccyl(rect[${i}]) must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
 }
 
 function readCoordinateTriple(
@@ -867,12 +870,12 @@ export function createCoordsVectorsApi(
       return { radius: out[0], colat: out[1], lon: out[2] };
     },
     reccyl: (rect) => {
-      assertCoordinateVector(rect);
+      const rectCopy = copyCoordinateVector(rect);
       return withAllocs(
         module,
         [ERR_MAX_BYTES, 24, 24],
         (errPtr, rectPtr, outPtr) => {
-          module.HEAPF64.set(rect, rectPtr >> 3);
+          module.HEAPF64.set(rectCopy, rectPtr >> 3);
           const status = module._tspice_reccyl(
             rectPtr,
             outPtr,

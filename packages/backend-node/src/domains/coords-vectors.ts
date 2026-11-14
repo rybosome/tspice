@@ -24,16 +24,19 @@ function assertCoordinateNumber(
   }
 }
 
-function assertCoordinateVector(
-  value: unknown,
-): asserts value is Readonly<SpiceVector3> {
-  if (!Array.isArray(value) || value.length !== 3) {
+function copyCoordinateVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
     throw new TypeError(
       "reccyl(rect) must contain exactly three finite numbers",
     );
-  }
-  for (let i = 0; i < 3; i++)
-    assertCoordinateNumber(value[i], `reccyl(rect[${i}])`);
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`reccyl(rect[${i}]) must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
 }
 
 function coordinateOutputNumber(value: unknown, label: string): number {
@@ -112,8 +115,8 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
       };
     },
     reccyl: (rect) => {
-      assertCoordinateVector(rect);
-      const out = native.reccyl(rect);
+      const rectCopy = copyCoordinateVector(rect);
+      const out = native.reccyl(rectCopy);
       if (!isPlainObject(out))
         throw new TypeError("reccyl result must be an object");
       return {

@@ -1509,7 +1509,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "local-a05-02aa05d9-wasm",
@@ -1535,7 +1536,8 @@
         "cells-windows-wnvald-negative-n-error",
         "cells-windows-wnvald-normalizes-window-success"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-node",
@@ -1563,7 +1565,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-wasm",
@@ -1591,7 +1594,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1702,11 +1706,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1721,11 +1726,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -1883,11 +1889,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1902,11 +1909,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -2053,11 +2061,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -2072,14 +2081,15 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }

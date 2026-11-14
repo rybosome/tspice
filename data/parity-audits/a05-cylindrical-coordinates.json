@@ -18,7 +18,10 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
-    "packages/py-parity-checking/test/cylindrical-overflow.test.ts"
+    "packages/py-parity-checking/test/cylindrical-overflow.test.ts",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
   ],
   "executions": [
     {
@@ -71,7 +74,8 @@
         "coords-vectors-sphlat-unwrapped-angles",
         "coords-vectors-sphlat-zero-and-poles"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "local-a05-02aa05d9-wasm",
@@ -123,7 +127,8 @@
         "coords-vectors-sphlat-unwrapped-angles",
         "coords-vectors-sphlat-zero-and-poles"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-node",
@@ -177,7 +182,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     },
     {
       "id": "ci-a05-02aa05d9-wasm",
@@ -231,7 +237,8 @@
       ],
       "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
       "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
-      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised.",
+      "historical": true
     }
   ],
   "routines": [
@@ -276,16 +283,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cyllat -> Node typed adapter -> registered native handler under global mutex -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cyllat -> WASM typed adapter -> configured/binary _tspice_cyllat -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -330,16 +337,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cylrec -> Node typed adapter -> registered native handler under global mutex -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cylrec -> WASM typed adapter -> configured/binary _tspice_cylrec -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -384,16 +391,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cylsph -> Node typed adapter -> registered native handler under global mutex -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.cylsph -> WASM typed adapter -> configured/binary _tspice_cylsph -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -438,16 +445,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.latcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.latcyl -> WASM typed adapter -> configured/binary _tspice_latcyl -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -492,16 +499,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.latsph -> Node typed adapter -> registered native handler under global mutex -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.latsph -> WASM typed adapter -> configured/binary _tspice_latsph -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -543,19 +550,44 @@
       "fixtureRationale": "Authored mathematical coordinates only; no kernel data, file formats, distribution or external-fixture dependency.",
       "cleanup": "Shared shim writes local results into caller output only after checking SPICE status, uses standard capture/reset on errors and no heap ownership. WASM withAllocs frees two buffers per scalar conversion or three for reccyl on success and every allocation failure; returned triples/objects are copies. Native uses stack arrays and existing global mutex. Actual fault tests prove cleanup and recovery; backend tests dispose in finally.",
       "tolerance": "Existing 1e-12 absolute-or-relative live comparator remains unchanged. All ordinary nonzero asymmetric outputs distinguish swapped fields. Focused scaled-radius assertions divide tiny/huge actual magnitudes by their known scale to avoid the absolute tolerance hiding zero; roundtrips and numeric invariants supplement the independent oracle, not replace it. JavaScript/libm angle assertions allow documented small floating differences.",
-      "findings": [],
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Copy the three validated rectangular components once into an owned tuple; dispatch the tuple to native or WASM. Scalar-input coordinate routines are unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-reccyl-four-quadrants"]
+        }
+      ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.reccyl -> Node typed adapter -> registered native handler under global mutex -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.reccyl -> WASM typed adapter -> configured/binary _tspice_reccyl -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -600,16 +632,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sphcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sphcyl -> WASM typed adapter -> configured/binary _tspice_sphcyl -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     },
@@ -654,19 +686,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sphlat -> Node typed adapter -> registered native handler under global mutex -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.sphlat -> WASM typed adapter -> configured/binary _tspice_sphlat -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
-          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Earlier executions remain historical on their original source fingerprints. Current source review is complete; fresh required local and observed canonical CI records for both backends are pending following the input snapshot correction."
 }
