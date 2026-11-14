@@ -42,3 +42,21 @@ export function generalVectorTypes(sync: Spice, async: SpiceAsync): void {
     unitAndNorm,
   ];
 }
+
+function generalMatrices(
+  raw: Awaited<ReturnType<typeof spiceClients.toSync>>["spice"]["raw"],
+) {
+  const matrix = [1, 2, 3, 4, 5, 6] as const,
+    vector = [2, 1] as const;
+  const copy: number[] = raw.mequg(matrix, 2, 3);
+  const transposed = raw.xposeg(copy, 2, 3);
+  const mv = raw.mtxvg(matrix, vector, 3, 2);
+  const product = raw.mxmg(matrix, transposed, 2, 3, 2);
+  return [
+    raw.mxmtg(matrix, matrix, 2, 3, 2),
+    raw.mtxmg(matrix, matrix, 3, 2, 3),
+    raw.mxvg(product, vector, 2, 2),
+    raw.vtmvg(vector, matrix, mv, 2, 3),
+  ];
+}
+void generalMatrices;

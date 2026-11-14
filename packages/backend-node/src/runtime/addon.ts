@@ -529,6 +529,48 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  mequg(m1: readonly number[], nr: number, nc: number): unknown;
+  mtxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+    nc2: number,
+  ): unknown;
+  mtxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nc1: number,
+    nr1r2: number,
+  ): unknown;
+  mxmg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+    nc2: number,
+  ): unknown;
+  mxmtg(
+    m1: readonly number[],
+    m2: readonly number[],
+    nr1: number,
+    nc1c2: number,
+    nr2: number,
+  ): unknown;
+  mxvg(
+    m1: readonly number[],
+    v2: readonly number[],
+    nr1: number,
+    nc1r2: number,
+  ): unknown;
+  vtmvg(
+    v1: readonly number[],
+    matrix: readonly number[],
+    v2: readonly number[],
+    nrow: number,
+    ncol: number,
+  ): unknown;
+  xposeg(matrix: readonly number[], nrow: number, ncol: number): unknown;
   vaddg(a: readonly number[], b: readonly number[]): number[];
   vdistg(a: readonly number[], b: readonly number[]): number;
   vdotg(a: readonly number[], b: readonly number[]): number;

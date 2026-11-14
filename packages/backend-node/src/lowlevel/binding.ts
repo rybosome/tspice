@@ -669,5 +669,37 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
   );
 
+  invariant(
+    typeof native.mequg === "function",
+    "Expected native addon to export mequg",
+  );
+  invariant(
+    typeof native.mtxmg === "function",
+    "Expected native addon to export mtxmg",
+  );
+  invariant(
+    typeof native.mtxvg === "function",
+    "Expected native addon to export mtxvg",
+  );
+  invariant(
+    typeof native.mxmg === "function",
+    "Expected native addon to export mxmg",
+  );
+  invariant(
+    typeof native.mxmtg === "function",
+    "Expected native addon to export mxmtg",
+  );
+  invariant(
+    typeof native.mxvg === "function",
+    "Expected native addon to export mxvg",
+  );
+  invariant(
+    typeof native.vtmvg === "function",
+    "Expected native addon to export vtmvg",
+  );
+  invariant(
+    typeof native.xposeg === "function",
+    "Expected native addon to export xposeg",
+  );
   return native;
 }

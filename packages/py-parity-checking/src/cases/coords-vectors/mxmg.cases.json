@@ -1,0 +1,230 @@
+[
+  {
+    "caseId": "coords-vectors-mxmg-unequal-rectangles",
+    "description": "Observe all outputs from asymmetric unequal extents, including different signs, unequal left/right factors and row-major strides.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [3, -5, 11, 7, 2, -17],
+        "m2": [3, -2, 5, 7, 11, -13, 17, 19, -23, 29, 31, -37],
+        "nr1": 2,
+        "nc1r2": 3,
+        "nc2": 4
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [3, -5, 11, 7, 2, -17],
+        "m2": [19, 17, -13, 11, 7, 5, -2, 3],
+        "nr1": 3,
+        "nc1r2": 2,
+        "nc2": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-scalar-row-and-column",
+    "description": "Exercise a scalar product, a single output row and a length-one contraction with differing magnitudes and signs.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [-3],
+        "m2": [7],
+        "nr1": 1,
+        "nc1r2": 1,
+        "nc2": 1
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [2, -3, 5, 7],
+        "m2": [11, -13, 17, -19, 23, -29, 31, 37],
+        "nr1": 1,
+        "nc1r2": 4,
+        "nc2": 2
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [-1, 0, 3],
+        "m2": [4, -7],
+        "nr1": 3,
+        "nc1r2": 1,
+        "nc2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-row-selection",
+    "description": "Sparse and permuted basis rows isolate two indices of the input independently.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [0, 0, 1, -1, 0, 0],
+        "m2": [2, -3, 7, 13, -11, 17, -23, 31, -29],
+        "nr1": 2,
+        "nc1r2": 3,
+        "nc2": 3
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [1, 0, 0, -1, 0, 0],
+        "m2": [-7, 11, 13, 17],
+        "nr1": 3,
+        "nc1r2": 2,
+        "nc2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-ordered-cancellation",
+    "description": "A unit term beside 2⁵³ rounds away before cancellation, distinguishing the ordered dot product from a reordered sum.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [
+          9007199254740992, 1, -9007199254740992, 3, -1125899906842624,
+          1125899906842624, 8, -3
+        ],
+        "m2": [1, 1, 1, 1, 1, 1, 1, 1],
+        "nr1": 2,
+        "nc1r2": 4,
+        "nc2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-scaled-fractions",
+    "description": "Mixed dyadic and small-magnitude factors exercise every contracted component without rounding-sensitive cancellation.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [0.125, -0.5, 2, 0.25, 1.5, -4],
+        "m2": [8, -2, 0.5, 4, 32, -1],
+        "nr1": 2,
+        "nc1r2": 3,
+        "nc2": 2
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [1e-180, 2e-180, -1e-180, 3e-180, -2e-180, 4e-180],
+        "m2": [7, 2, -3, 5, 11, -13],
+        "nr1": 2,
+        "nc1r2": 3,
+        "nc2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-zero-contraction",
+    "description": "Zero inner extent with nonzero outer dimensions produces a complete zero output; the independent canonical call receives allocated input sentinels.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 2,
+        "nc1r2": 0,
+        "nc2": 3
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 1,
+        "nc1r2": 0,
+        "nc2": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-zero-outer",
+    "description": "Zero output rows and both zero dimensions retain the explicit shape in the actual toolkit call.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [1, 2, 3, 4, 5, 6],
+        "nr1": 0,
+        "nc1r2": 3,
+        "nc2": 2
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 0,
+        "nc1r2": 0,
+        "nc2": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-zero-columns",
+    "description": "Zero right-hand output width has an empty result even with nonempty left storage and inner extent.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [3, -5, 11, 7, 2, -17],
+        "m2": [],
+        "nr1": 2,
+        "nc1r2": 3,
+        "nc2": 0
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 3,
+        "nc1r2": 0,
+        "nc2": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-mxmg-negative-inner",
+    "description": "The pinned routine performs an empty contraction for a negative inner dimension, writing exact zeros for all output rows and columns.",
+    "workflow": [
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 2,
+        "nc1r2": -3,
+        "nc2": 3
+      },
+      {
+        "op": "coords-vectors.mxmg",
+        "m1": [],
+        "m2": [],
+        "nr1": 1,
+        "nc1r2": -2147483648,
+        "nc2": 2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

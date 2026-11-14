@@ -12,6 +12,14 @@ import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with 
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
+import coordsVectorsMequgCasesRaw from "./coords-vectors/mequg.cases.json" with { type: "json" };
+import coordsVectorsMtxmgCasesRaw from "./coords-vectors/mtxmg.cases.json" with { type: "json" };
+import coordsVectorsMtxvgCasesRaw from "./coords-vectors/mtxvg.cases.json" with { type: "json" };
+import coordsVectorsMxmgCasesRaw from "./coords-vectors/mxmg.cases.json" with { type: "json" };
+import coordsVectorsMxmtgCasesRaw from "./coords-vectors/mxmtg.cases.json" with { type: "json" };
+import coordsVectorsMxvgCasesRaw from "./coords-vectors/mxvg.cases.json" with { type: "json" };
+import coordsVectorsVtmvgCasesRaw from "./coords-vectors/vtmvg.cases.json" with { type: "json" };
+import coordsVectorsXposegCasesRaw from "./coords-vectors/xposeg.cases.json" with { type: "json" };
 import coordsVectorsVaddgCasesRaw from "./coords-vectors/vaddg.cases.json" with { type: "json" };
 import coordsVectorsVdistgCasesRaw from "./coords-vectors/vdistg.cases.json" with { type: "json" };
 import coordsVectorsVdotgCasesRaw from "./coords-vectors/vdotg.cases.json" with { type: "json" };
@@ -170,6 +178,14 @@ export const idsNamesCases: ParityCase[] = [
   ...(idsNamesBodvarCasesRaw as ParityCase[]),
 ];
 export const coordsVectorsCases: ParityCase[] = [
+  ...(coordsVectorsMequgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMtxmgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMtxvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxmgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxmtgCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsVtmvgCasesRaw as ParityCase[]),
+  ...(coordsVectorsXposegCasesRaw as ParityCase[]),
   ...(coordsVectorsVaddgCasesRaw as ParityCase[]),
   ...(coordsVectorsVdistgCasesRaw as ParityCase[]),
   ...(coordsVectorsVdotgCasesRaw as ParityCase[]),

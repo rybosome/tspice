@@ -1,3 +1,9 @@
+import {
+  matrixDimension,
+  matrixElementCount,
+  checkMatrixProductRows,
+  checkMatrixInputLength,
+} from "@rybosome/tspice-core";
 import type {
   CoordsVectorsApi,
   SpiceVector3,
@@ -74,6 +80,122 @@ function generalVectorOutput(
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    mequg: (m1, nr, nc) => {
+      matrixDimension(nr, "mequg(nr)");
+      matrixDimension(nc, "mequg(nc)");
+      const m1Count = matrixElementCount(nr, nc);
+      checkMatrixInputLength(m1, m1Count, "mequg(m1)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mequg(m1)");
+      const out = native.mequg(m1Copy, nr, nc);
+      return generalVectorOutput(out, m1Count, "mequg result");
+    },
+    mtxmg: (m1, m2, nc1, nr1r2, nc2) => {
+      matrixDimension(nc1, "mtxmg(nc1)");
+      matrixDimension(nr1r2, "mtxmg(nr1r2)", true);
+      matrixDimension(nc2, "mtxmg(nc2)");
+      const k = Math.max(0, nr1r2);
+      checkMatrixProductRows(nc1);
+      const m1Count = matrixElementCount(k, nc1);
+      const m2Count = matrixElementCount(k, nc2);
+      const outCount = matrixElementCount(nc1, nc2);
+      checkMatrixInputLength(m1, m1Count, "mtxmg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mtxmg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mtxmg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mtxmg(m2)");
+      const out = native.mtxmg(m1Copy, m2Copy, nc1, nr1r2, nc2);
+      return generalVectorOutput(out, outCount, "mtxmg result");
+    },
+    mtxvg: (m1, v2, nc1, nr1r2) => {
+      matrixDimension(nc1, "mtxvg(nc1)");
+      matrixDimension(nr1r2, "mtxvg(nr1r2)");
+      const m1Count = matrixElementCount(nr1r2, nc1);
+      const v2Count = matrixElementCount(nr1r2, 1);
+      const outCount = matrixElementCount(nc1, 1);
+      checkMatrixInputLength(m1, m1Count, "mtxvg(m1)");
+      checkMatrixInputLength(v2, v2Count, "mtxvg(v2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mtxvg(m1)");
+      const v2Copy = copyGeneralVector(v2, v2Count, "mtxvg(v2)");
+      const out = native.mtxvg(m1Copy, v2Copy, nc1, nr1r2);
+      return generalVectorOutput(out, outCount, "mtxvg result");
+    },
+    mxmg: (m1, m2, nr1, nc1r2, nc2) => {
+      matrixDimension(nr1, "mxmg(nr1)");
+      matrixDimension(nc1r2, "mxmg(nc1r2)", true);
+      matrixDimension(nc2, "mxmg(nc2)");
+      const k = Math.max(0, nc1r2);
+      checkMatrixProductRows(nr1);
+      const m1Count = matrixElementCount(nr1, k);
+      const m2Count = matrixElementCount(k, nc2);
+      const outCount = matrixElementCount(nr1, nc2);
+      checkMatrixInputLength(m1, m1Count, "mxmg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mxmg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxmg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mxmg(m2)");
+      const out = native.mxmg(m1Copy, m2Copy, nr1, nc1r2, nc2);
+      return generalVectorOutput(out, outCount, "mxmg result");
+    },
+    mxmtg: (m1, m2, nr1, nc1c2, nr2) => {
+      matrixDimension(nr1, "mxmtg(nr1)");
+      matrixDimension(nc1c2, "mxmtg(nc1c2)");
+      matrixDimension(nr2, "mxmtg(nr2)");
+      checkMatrixProductRows(nr1);
+      const m1Count = matrixElementCount(nr1, nc1c2);
+      const m2Count = matrixElementCount(nr2, nc1c2);
+      const outCount = matrixElementCount(nr1, nr2);
+      checkMatrixInputLength(m1, m1Count, "mxmtg(m1)");
+      checkMatrixInputLength(m2, m2Count, "mxmtg(m2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxmtg(m1)");
+      const m2Copy = copyGeneralVector(m2, m2Count, "mxmtg(m2)");
+      const out = native.mxmtg(m1Copy, m2Copy, nr1, nc1c2, nr2);
+      return generalVectorOutput(out, outCount, "mxmtg result");
+    },
+    mxvg: (m1, v2, nr1, nc1r2) => {
+      matrixDimension(nr1, "mxvg(nr1)");
+      matrixDimension(nc1r2, "mxvg(nc1r2)");
+      const m1Count = matrixElementCount(nr1, nc1r2);
+      const v2Count = matrixElementCount(nc1r2, 1);
+      const outCount = matrixElementCount(nr1, 1);
+      checkMatrixInputLength(m1, m1Count, "mxvg(m1)");
+      checkMatrixInputLength(v2, v2Count, "mxvg(v2)");
+      const m1Copy = copyGeneralVector(m1, m1Count, "mxvg(m1)");
+      const v2Copy = copyGeneralVector(v2, v2Count, "mxvg(v2)");
+      const out = native.mxvg(m1Copy, v2Copy, nr1, nc1r2);
+      return generalVectorOutput(out, outCount, "mxvg result");
+    },
+    vtmvg: (v1, matrix, v2, nrow, ncol) => {
+      matrixDimension(nrow, "vtmvg(nrow)");
+      matrixDimension(ncol, "vtmvg(ncol)");
+      const v1Count = matrixElementCount(nrow, 1);
+      const matrixCount = matrixElementCount(nrow, ncol);
+      const v2Count = matrixElementCount(ncol, 1);
+      checkMatrixInputLength(v1, v1Count, "vtmvg(v1)");
+      checkMatrixInputLength(matrix, matrixCount, "vtmvg(matrix)");
+      checkMatrixInputLength(v2, v2Count, "vtmvg(v2)");
+      const v1Copy = copyGeneralVector(v1, v1Count, "vtmvg(v1)");
+      const matrixCopy = copyGeneralVector(
+        matrix,
+        matrixCount,
+        "vtmvg(matrix)",
+      );
+      const v2Copy = copyGeneralVector(v2, v2Count, "vtmvg(v2)");
+      const out = native.vtmvg(v1Copy, matrixCopy, v2Copy, nrow, ncol);
+      return generalVectorOutputNumber(out, "vtmvg result");
+    },
+    xposeg: (matrix, nrow, ncol) => {
+      matrixDimension(nrow, "xposeg(nrow)", true);
+      matrixDimension(ncol, "xposeg(ncol)", true);
+      const r = Math.max(0, nrow),
+        c = Math.max(0, ncol);
+      const matrixCount = matrixElementCount(r, c);
+      checkMatrixInputLength(matrix, matrixCount, "xposeg(matrix)");
+      const matrixCopy = copyGeneralVector(
+        matrix,
+        matrixCount,
+        "xposeg(matrix)",
+      );
+      const out = native.xposeg(matrixCopy, nrow, ncol);
+      return generalVectorOutput(out, matrixCount, "xposeg result");
+    },
     vaddg: (a, b) => {
       const aLength = generalVectorDimension(a, "vaddg(a)", 2147483647);
       const bLength = generalVectorDimension(b, "vaddg(b)", 2147483647);

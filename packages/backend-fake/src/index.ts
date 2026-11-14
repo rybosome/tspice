@@ -2406,6 +2406,30 @@ export function createFakeBackend(
     },
 
     // Toy general-vector operations; real backends call each CSPICE routine.
+    mequg: () => {
+      throw new Error("Fake backend: mequg() is not implemented");
+    },
+    mtxmg: () => {
+      throw new Error("Fake backend: mtxmg() is not implemented");
+    },
+    mtxvg: () => {
+      throw new Error("Fake backend: mtxvg() is not implemented");
+    },
+    mxmg: () => {
+      throw new Error("Fake backend: mxmg() is not implemented");
+    },
+    mxmtg: () => {
+      throw new Error("Fake backend: mxmtg() is not implemented");
+    },
+    mxvg: () => {
+      throw new Error("Fake backend: mxvg() is not implemented");
+    },
+    vtmvg: () => {
+      throw new Error("Fake backend: vtmvg() is not implemented");
+    },
+    xposeg: () => {
+      throw new Error("Fake backend: xposeg() is not implemented");
+    },
     vaddg: (a, b) => {
       fakeGeneralDimensions(a, b);
       return a.map((value, i) => value + b[i]!);

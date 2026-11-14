@@ -1079,6 +1079,73 @@ int tspice_gfdist(
 
 // --- coordinate conversions + small vector/matrix helpers ---
 
+// General matrices use flat row-major inputs and explicit signed dimensions.
+int tspice_mequg(
+    const double *m1,
+    int nr,
+    int nc,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxmg(
+    const double *m1,
+    const double *m2,
+    int nc1,
+    int nr1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mtxvg(
+    const double *m1,
+    const double *v2,
+    int nc1,
+    int nr1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1r2,
+    int nc2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxmtg(
+    const double *m1,
+    const double *m2,
+    int nr1,
+    int nc1c2,
+    int nr2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_mxvg(
+    const double *m1,
+    const double *v2,
+    int nr1,
+    int nc1r2,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_vtmvg(
+    const double *v1,
+    const double *matrix,
+    const double *v2,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
+int tspice_xposeg(
+    const double *matrix,
+    int nrow,
+    int ncol,
+    double *out,
+    char *err,
+    int errMaxBytes);
 // vaddg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
 int tspice_vaddg(const double *a, const double *b, int ndim, double *out, char *err, int errMaxBytes);
 // vdistg_c: dimension is inferred by adapters; empty buffers remain non-NULL.

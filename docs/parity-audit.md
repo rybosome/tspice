@@ -99,3 +99,11 @@ Regression evidence: [general-vectors-domain.test.ts](../packages/backend-node/t
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
+
+## General matrices
+
+Eight row-major operations add 60 registered workflows and 132 explicit calls.
+The independent oracle preserves rectangular, empty and supported signed
+dimensions. Public tests compare every element, owned output, transpose and
+product composition, and exceptional floating-point results.
+[Matrix contracts and numerical observations](step8-general-matrices.md)

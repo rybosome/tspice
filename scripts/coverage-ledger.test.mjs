@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 177,
-    planned: 472,
+    implemented: 185,
+    planned: 464,
     excluded: 3,
-    caseFiles: 177,
-    scenarios: 1191,
+    caseFiles: 185,
+    scenarios: 1251,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -197,6 +197,47 @@ test("a constant Node stub does not count as a native route", (t) => {
     "return 0;",
   );
   assert.throws(f.build, /No traced Node native\/shared-shim route for str2et/);
+});
+
+test("a directly included inline shape check cannot substitute for a matrix ABI call", (t) => {
+  const f = fixture(t);
+  const matrices = [
+    "mequg",
+    "mtxmg",
+    "mtxvg",
+    "mxmg",
+    "mxmtg",
+    "mxvg",
+    "vtmvg",
+    "xposeg",
+  ];
+  const ledger = f.build();
+  for (const name of matrices) {
+    const row = ledger.routines.find((r) => r.routine === name + "_c");
+    for (const backend of ["node", "wasm"]) {
+      assert.deepEqual(row.backends[backend].shimSymbols, ["tspice_" + name]);
+      assert.ok(row.backends[backend].cspiceEntrypoints.includes(name + "_c"));
+    }
+  }
+  f.edit(
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    "if (tspice_mtxmg(m1.get(),",
+    "if (NoMatrixCall(m1.get(),",
+  );
+  assert.throws(f.build, /No traced Node native\/shared-shim route for mtxmg/);
+});
+
+test("an inline shape check in an unrelated header cannot resolve a call", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-node/native/src/domains/coords_vectors.cc",
+    '#include "tspice_matrix_shapes.h"',
+    "// no local helper definition",
+  );
+  assert.throws(
+    f.build,
+    /Missing shared shim declaration\/definition: tspice_matrix_count/,
+  );
 });
 
 test("removing raw factory composition fails despite dormant domain code", (t) => {
@@ -446,7 +487,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 15);
+  assert.equal(ledger.audit.expansionRoutines, 23);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

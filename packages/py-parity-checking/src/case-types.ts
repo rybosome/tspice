@@ -172,6 +172,72 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsMequg = {
+  op: "coords-vectors.mequg";
+  m1: number[];
+  nr: number;
+  nc: number;
+};
+
+export type StepCoordsVectorsMtxmg = {
+  op: "coords-vectors.mtxmg";
+  m1: number[];
+  m2: number[];
+  nc1: number;
+  nr1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMtxvg = {
+  op: "coords-vectors.mtxvg";
+  m1: number[];
+  v2: number[];
+  nc1: number;
+  nr1r2: number;
+};
+
+export type StepCoordsVectorsMxmg = {
+  op: "coords-vectors.mxmg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1r2: number;
+  nc2: number;
+};
+
+export type StepCoordsVectorsMxmtg = {
+  op: "coords-vectors.mxmtg";
+  m1: number[];
+  m2: number[];
+  nr1: number;
+  nc1c2: number;
+  nr2: number;
+};
+
+export type StepCoordsVectorsMxvg = {
+  op: "coords-vectors.mxvg";
+  m1: number[];
+  v2: number[];
+  nr1: number;
+  nc1r2: number;
+};
+
+export type StepCoordsVectorsVtmvg = {
+  op: "coords-vectors.vtmvg";
+  v1: number[];
+  matrix: number[];
+  v2: number[];
+  nrow: number;
+  ncol: number;
+};
+
+export type StepCoordsVectorsXposeg = {
+  op: "coords-vectors.xposeg";
+  matrix: number[];
+  nrow: number;
+  ncol: number;
+};
+
 export type StepCoordsVectorsVaddg = {
   op: "coords-vectors.vaddg";
   a: number[];
@@ -1399,6 +1465,14 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsMequg
+  | StepCoordsVectorsMtxmg
+  | StepCoordsVectorsMtxvg
+  | StepCoordsVectorsMxmg
+  | StepCoordsVectorsMxmtg
+  | StepCoordsVectorsMxvg
+  | StepCoordsVectorsVtmvg
+  | StepCoordsVectorsXposeg
   | StepCoordsVectorsVaddg
   | StepCoordsVectorsVdistg
   | StepCoordsVectorsVdotg
@@ -1585,6 +1659,14 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.mequg"; value: number[] }
+  | { op: "coords-vectors.mtxmg"; value: number[] }
+  | { op: "coords-vectors.mtxvg"; value: number[] }
+  | { op: "coords-vectors.mxmg"; value: number[] }
+  | { op: "coords-vectors.mxmtg"; value: number[] }
+  | { op: "coords-vectors.mxvg"; value: number[] }
+  | { op: "coords-vectors.vtmvg"; value: number }
+  | { op: "coords-vectors.xposeg"; value: number[] }
   | { op: "coords-vectors.vaddg"; value: number[] }
   | { op: "coords-vectors.vdistg"; value: number }
   | { op: "coords-vectors.vdotg"; value: number }
