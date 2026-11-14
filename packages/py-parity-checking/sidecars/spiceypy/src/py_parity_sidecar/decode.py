@@ -22,6 +22,14 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsCyllat,
+    StepCoordsVectorsCylrec,
+    StepCoordsVectorsCylsph,
+    StepCoordsVectorsLatcyl,
+    StepCoordsVectorsLatsph,
+    StepCoordsVectorsReccyl,
+    StepCoordsVectorsSphcyl,
+    StepCoordsVectorsSphlat,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +502,68 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.cyllat":
+            return StepCoordsVectorsCyllat(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.cyllat.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.cyllat.lon"),
+                z=_expect_number(step.get("z"), label="coords-vectors.cyllat.z"),
+            )
+
+        case "coords-vectors.cylrec":
+            return StepCoordsVectorsCylrec(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.cylrec.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.cylrec.lon"),
+                z=_expect_number(step.get("z"), label="coords-vectors.cylrec.z"),
+            )
+
+        case "coords-vectors.cylsph":
+            return StepCoordsVectorsCylsph(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.cylsph.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.cylsph.lon"),
+                z=_expect_number(step.get("z"), label="coords-vectors.cylsph.z"),
+            )
+
+        case "coords-vectors.latcyl":
+            return StepCoordsVectorsLatcyl(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.latcyl.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.latcyl.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.latcyl.lat"),
+            )
+
+        case "coords-vectors.latsph":
+            return StepCoordsVectorsLatsph(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.latsph.radius"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.latsph.lon"),
+                lat=_expect_number(step.get("lat"), label="coords-vectors.latsph.lat"),
+            )
+
+        case "coords-vectors.reccyl":
+            return StepCoordsVectorsReccyl(
+                op=op,
+                rectan=_expect_vec3(step.get("rectan"), label="coords-vectors.reccyl.rectan"),
+            )
+
+        case "coords-vectors.sphcyl":
+            return StepCoordsVectorsSphcyl(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.sphcyl.radius"),
+                colat=_expect_number(step.get("colat"), label="coords-vectors.sphcyl.colat"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.sphcyl.lon"),
+            )
+
+        case "coords-vectors.sphlat":
+            return StepCoordsVectorsSphlat(
+                op=op,
+                radius=_expect_number(step.get("radius"), label="coords-vectors.sphlat.radius"),
+                colat=_expect_number(step.get("colat"), label="coords-vectors.sphlat.colat"),
+                lon=_expect_number(step.get("lon"), label="coords-vectors.sphlat.lon"),
             )
 
         case "coords-vectors.reclat":

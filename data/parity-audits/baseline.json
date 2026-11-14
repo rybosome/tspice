@@ -408,5 +408,23 @@
       ],
       "nextAction": "Verified on both backends with fresh uncached local execution and all 15 observed canonical source CI jobs. Review and merge only consolidated PR #706 on current main; retain original domain PRs as review records until that separately authorized merge."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a05-cylindrical-coordinates",
+      "routines": [
+        "cyllat_c",
+        "cylrec_c",
+        "cylsph_c",
+        "latcyl_c",
+        "latsph_c",
+        "reccyl_c",
+        "sphcyl_c",
+        "sphlat_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/709"],
+      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310653323 verified corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
+    }
   ]
 }

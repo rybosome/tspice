@@ -11,6 +11,16 @@
 extern "C" {
 #endif
 
+// Coordinate conversions: output is an independent triple in CSPICE argument order.
+int tspice_cyllat(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_cylrec(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_cylsph(double radius, double lon, double z, double *out3, char *err, int errMaxBytes);
+int tspice_latcyl(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes);
+int tspice_latsph(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes);
+int tspice_reccyl(const double *rect3, double *out3, char *err, int errMaxBytes);
+int tspice_sphcyl(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes);
+int tspice_sphlat(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes);
+
 // --- CSPICE error handling helpers ---
 //
 // These helpers are a stable ABI surface. Callers should treat them as part of

@@ -4,6 +4,151 @@
 
 #include <string.h>
 
+static int tspice_coordinate_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "coordinate conversion requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_cyllat(double radius, double lon, double z, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  cyllat_c(radius, lon, z, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_cylrec(double radius, double lon, double z, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  cylrec_c(radius, lon, z, result);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_cylsph(double radius, double lon, double z, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  cylsph_c(radius, lon, z, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_latcyl(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  latcyl_c(radius, lon, lat, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_latsph(double radius, double lon, double lat, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  latsph_c(radius, lon, lat, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_reccyl(const double *rect3, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3 || !rect3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  reccyl_c(rect3, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_sphcyl(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  sphcyl_c(radius, colat, lon, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
+int tspice_sphlat(double radius, double colat, double lon, double *out3, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out3) return tspice_coordinate_invalid_arg(err, errMaxBytes);
+  out3[0] = out3[1] = out3[2] = 0.0;
+  SpiceDouble result[3] = {0.0, 0.0, 0.0};
+  sphlat_c(radius, colat, lon, &result[0], &result[1], &result[2]);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  out3[0] = (double)result[0];
+  out3[1] = (double)result[1];
+  out3[2] = (double)result[2];
+  return 0;
+}
+
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
   int i;
   int j;

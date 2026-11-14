@@ -1,0 +1,113 @@
+[
+  {
+    "caseId": "coords-vectors-latcyl-mixed-signs",
+    "description": "latcyl: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 5,
+        "lon": 1.234,
+        "lat": -0.61
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 2.5,
+        "lon": -2.25,
+        "lat": 0.83
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-latcyl-zero-and-poles",
+    "description": "latcyl: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 0,
+        "lon": 2.3,
+        "lat": -0.4
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 5,
+        "lon": -0.2,
+        "lat": 1.5707963267948966
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 5,
+        "lon": 4.2,
+        "lat": -1.5707963267948966
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-latcyl-negative-radius",
+    "description": "latcyl: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": -5,
+        "lon": -0.7,
+        "lat": 0.6
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": -4,
+        "lon": 7.3,
+        "lat": -1.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-latcyl-unwrapped-angles",
+    "description": "latcyl: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 3,
+        "lon": -15.3,
+        "lat": 2.2
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 3,
+        "lon": 20.2,
+        "lat": -4.5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-latcyl-scaled-magnitudes",
+    "description": "latcyl: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 5e200,
+        "lon": -1.2,
+        "lat": 0.7
+      },
+      {
+        "op": "coords-vectors.latcyl",
+        "radius": 5e-200,
+        "lon": 1.2,
+        "lat": -0.7
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

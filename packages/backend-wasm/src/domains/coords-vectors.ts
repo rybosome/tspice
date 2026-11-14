@@ -11,6 +11,8 @@ import {
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
+import { withAllocs } from "../codec/alloc.js";
+
 import { throwWasmSpiceError } from "../codec/errors.js";
 
 const ERR_MAX_BYTES = 2048;
@@ -772,11 +774,153 @@ function tspiceCallRecgeo(
   }
 }
 
+function assertCoordinateNumber(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new TypeError(`${label} must be a finite number`);
+  }
+}
+
+function copyCoordinateVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(
+      "reccyl(rect) must contain exactly three finite numbers",
+    );
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`reccyl(rect[${i}]) must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
+}
+
+function readCoordinateTriple(
+  module: EmscriptenModule,
+  ptr: number,
+): SpiceVector3 {
+  const i = ptr >> 3;
+  const h = module.HEAPF64;
+  return [h[i]!, h[i + 1]!, h[i + 2]!];
+}
+
+function callCoordinateTriple(
+  module: EmscriptenModule,
+  invoke: (outPtr: number, errPtr: number) => number,
+): SpiceVector3 {
+  return withAllocs(module, [ERR_MAX_BYTES, 24], (errPtr, outPtr) => {
+    const status = invoke(outPtr, errPtr);
+    if (status !== 0)
+      throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+    return readCoordinateTriple(module, outPtr);
+  });
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by a WASM Emscripten module. */
 export function createCoordsVectorsApi(
   module: EmscriptenModule,
 ): CoordsVectorsApi {
   return {
+    cyllat: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cyllat(radius)");
+      assertCoordinateNumber(lon, "cyllat(lon)");
+      assertCoordinateNumber(z, "cyllat(z)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_cyllat(radius, lon, z, outPtr, errPtr, ERR_MAX_BYTES),
+      );
+      return { radius: out[0], lon: out[1], lat: out[2] };
+    },
+    cylrec: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cylrec(radius)");
+      assertCoordinateNumber(lon, "cylrec(lon)");
+      assertCoordinateNumber(z, "cylrec(z)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_cylrec(radius, lon, z, outPtr, errPtr, ERR_MAX_BYTES),
+      );
+      return out;
+    },
+    cylsph: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cylsph(radius)");
+      assertCoordinateNumber(lon, "cylsph(lon)");
+      assertCoordinateNumber(z, "cylsph(z)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_cylsph(radius, lon, z, outPtr, errPtr, ERR_MAX_BYTES),
+      );
+      return { radius: out[0], colat: out[1], lon: out[2] };
+    },
+    latcyl: (radius, lon, lat) => {
+      assertCoordinateNumber(radius, "latcyl(radius)");
+      assertCoordinateNumber(lon, "latcyl(lon)");
+      assertCoordinateNumber(lat, "latcyl(lat)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_latcyl(radius, lon, lat, outPtr, errPtr, ERR_MAX_BYTES),
+      );
+      return { radius: out[0], lon: out[1], z: out[2] };
+    },
+    latsph: (radius, lon, lat) => {
+      assertCoordinateNumber(radius, "latsph(radius)");
+      assertCoordinateNumber(lon, "latsph(lon)");
+      assertCoordinateNumber(lat, "latsph(lat)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_latsph(radius, lon, lat, outPtr, errPtr, ERR_MAX_BYTES),
+      );
+      return { radius: out[0], colat: out[1], lon: out[2] };
+    },
+    reccyl: (rect) => {
+      const rectCopy = copyCoordinateVector(rect);
+      return withAllocs(
+        module,
+        [ERR_MAX_BYTES, 24, 24],
+        (errPtr, rectPtr, outPtr) => {
+          module.HEAPF64.set(rectCopy, rectPtr >> 3);
+          const status = module._tspice_reccyl(
+            rectPtr,
+            outPtr,
+            errPtr,
+            ERR_MAX_BYTES,
+          );
+          if (status !== 0)
+            throwWasmSpiceError(module, errPtr, ERR_MAX_BYTES, status);
+          const out = readCoordinateTriple(module, outPtr);
+          return { radius: out[0], lon: out[1], z: out[2] };
+        },
+      );
+    },
+    sphcyl: (radius, colat, lon) => {
+      assertCoordinateNumber(radius, "sphcyl(radius)");
+      assertCoordinateNumber(colat, "sphcyl(colat)");
+      assertCoordinateNumber(lon, "sphcyl(lon)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_sphcyl(
+          radius,
+          colat,
+          lon,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        ),
+      );
+      return { radius: out[0], lon: out[1], z: out[2] };
+    },
+    sphlat: (radius, colat, lon) => {
+      assertCoordinateNumber(radius, "sphlat(radius)");
+      assertCoordinateNumber(colat, "sphlat(colat)");
+      assertCoordinateNumber(lon, "sphlat(lon)");
+      const out = callCoordinateTriple(module, (outPtr, errPtr) =>
+        module._tspice_sphlat(
+          radius,
+          colat,
+          lon,
+          outPtr,
+          errPtr,
+          ERR_MAX_BYTES,
+        ),
+      );
+      return { radius: out[0], lon: out[1], lat: out[2] };
+    },
     reclat: (rect) => tspiceCallReclat(module, rect),
     latrec: (radius, lon, lat) => tspiceCallLatrec(module, radius, lon, lat),
     recsph: (rect) => tspiceCallRecsph(module, rect),

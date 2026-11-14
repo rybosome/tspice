@@ -5,6 +5,14 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsCyllat,
+  StepCoordsVectorsCylrec,
+  StepCoordsVectorsCylsph,
+  StepCoordsVectorsLatcyl,
+  StepCoordsVectorsLatsph,
+  StepCoordsVectorsReccyl,
+  StepCoordsVectorsSphcyl,
+  StepCoordsVectorsSphlat,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -26,6 +34,14 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsCyllat
+  | StepCoordsVectorsCylrec
+  | StepCoordsVectorsCylsph
+  | StepCoordsVectorsLatcyl
+  | StepCoordsVectorsLatsph
+  | StepCoordsVectorsReccyl
+  | StepCoordsVectorsSphcyl
+  | StepCoordsVectorsSphlat
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -71,6 +87,46 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.cyllat": {
+      const out = context.spice.raw.cyllat(step.radius, step.lon, step.z);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.cylrec": {
+      const out = context.spice.raw.cylrec(step.radius, step.lon, step.z);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.cylsph": {
+      const out = context.spice.raw.cylsph(step.radius, step.lon, step.z);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.latcyl": {
+      const out = context.spice.raw.latcyl(step.radius, step.lon, step.lat);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.latsph": {
+      const out = context.spice.raw.latsph(step.radius, step.lon, step.lat);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.reccyl": {
+      const out = context.spice.raw.reccyl(step.rectan);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.sphcyl": {
+      const out = context.spice.raw.sphcyl(step.radius, step.colat, step.lon);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.sphlat": {
+      const out = context.spice.raw.sphlat(step.radius, step.colat, step.lon);
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

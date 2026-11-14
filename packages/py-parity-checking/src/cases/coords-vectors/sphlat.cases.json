@@ -1,0 +1,113 @@
+[
+  {
+    "caseId": "coords-vectors-sphlat-mixed-signs",
+    "description": "sphlat: mixed-signs; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 5,
+        "colat": 0.61,
+        "lon": -1.234
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 2.5,
+        "colat": 2.3,
+        "lon": 2.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sphlat-zero-and-poles",
+    "description": "sphlat: zero-and-poles; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 0,
+        "colat": 1.2,
+        "lon": -0.4
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 5,
+        "colat": 0,
+        "lon": -0.2
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 5,
+        "colat": 3.141592653589793,
+        "lon": 4.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sphlat-negative-radius",
+    "description": "sphlat: negative-radius; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": -5,
+        "colat": 0.7,
+        "lon": -0.6
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": -4,
+        "colat": 2.3,
+        "lon": 7.3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sphlat-unwrapped-angles",
+    "description": "sphlat: unwrapped-angles; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 3,
+        "colat": -2.2,
+        "lon": -15.3
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 3,
+        "colat": 4.5,
+        "lon": 20.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sphlat-scaled-magnitudes",
+    "description": "sphlat: scaled-magnitudes; compare all three raw output components with the corresponding live SpiceyPy routine.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 5e200,
+        "colat": 0.7,
+        "lon": -1.2
+      },
+      {
+        "op": "coords-vectors.sphlat",
+        "radius": 5e-200,
+        "colat": 2.3,
+        "lon": 1.2
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

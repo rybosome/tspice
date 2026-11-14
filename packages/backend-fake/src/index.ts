@@ -2392,6 +2392,44 @@ export function createFakeBackend(
       throw new Error(spiceCellUnsupported);
     },
 
+    // Toy coordinate conversions; these do not execute CSPICE.
+    cyllat: (radius, lon, z) => ({
+      radius: Math.hypot(radius, z),
+      lon,
+      lat: radius === 0 && z === 0 ? 0 : Math.atan2(z, radius),
+    }),
+    cylrec: (radius, lon, z) => [
+      radius * Math.cos(lon),
+      radius * Math.sin(lon),
+      z,
+    ],
+    cylsph: (radius, lon, z) => ({
+      radius: Math.hypot(radius, z),
+      colat: radius === 0 && z === 0 ? 0 : Math.atan2(radius, z),
+      lon,
+    }),
+    latcyl: (radius, lon, lat) => ({
+      radius: radius * Math.cos(lat),
+      lon,
+      z: radius * Math.sin(lat),
+    }),
+    latsph: (radius, lon, lat) => ({ radius, colat: Math.PI / 2 - lat, lon }),
+    reccyl: (rect) => {
+      const lon =
+        rect[0] === 0 && rect[1] === 0 ? 0 : Math.atan2(rect[1], rect[0]);
+      return {
+        radius: Math.hypot(rect[0], rect[1]),
+        lon: lon < 0 ? lon + TWO_PI : lon,
+        z: rect[2],
+      };
+    },
+    sphcyl: (radius, colat, lon) => ({
+      radius: radius * Math.sin(colat),
+      lon,
+      z: radius * Math.cos(colat),
+    }),
+    sphlat: (radius, colat, lon) => ({ radius, lon, lat: Math.PI / 2 - colat }),
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

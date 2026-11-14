@@ -10,6 +10,39 @@ export function getNodeBinding(): NativeAddon {
   const native = getNativeAddon();
 
   invariant(
+    typeof native.cyllat === "function",
+    "Expected native addon to export cyllat()",
+  );
+  invariant(
+    typeof native.cylrec === "function",
+    "Expected native addon to export cylrec()",
+  );
+  invariant(
+    typeof native.cylsph === "function",
+    "Expected native addon to export cylsph()",
+  );
+  invariant(
+    typeof native.latcyl === "function",
+    "Expected native addon to export latcyl()",
+  );
+  invariant(
+    typeof native.latsph === "function",
+    "Expected native addon to export latsph()",
+  );
+  invariant(
+    typeof native.reccyl === "function",
+    "Expected native addon to export reccyl()",
+  );
+  invariant(
+    typeof native.sphcyl === "function",
+    "Expected native addon to export sphcyl()",
+  );
+  invariant(
+    typeof native.sphlat === "function",
+    "Expected native addon to export sphlat()",
+  );
+
+  invariant(
     typeof native.furnsh === "function",
     "Expected native addon to export furnsh(path)",
   );

@@ -15,9 +15,142 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function assertCoordinateNumber(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new TypeError(`${label} must be a finite number`);
+  }
+}
+
+function copyCoordinateVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError(
+      "reccyl(rect) must contain exactly three finite numbers",
+    );
+  // Validate the exact values passed to the backend, even for accessor arrays.
+  const component = (i: number): number => {
+    const entry: unknown = value[i];
+    if (typeof entry !== "number" || !Number.isFinite(entry))
+      throw new TypeError(`reccyl(rect[${i}]) must be a finite number`);
+    return entry;
+  };
+  return [component(0), component(1), component(2)];
+}
+
+function coordinateOutputNumber(value: unknown, label: string): number {
+  // Finite inputs can overflow a CSPICE norm. Preserve its numerical result.
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    cyllat: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cyllat(radius)");
+      assertCoordinateNumber(lon, "cyllat(lon)");
+      assertCoordinateNumber(z, "cyllat(z)");
+      const out = native.cyllat(radius, lon, z);
+      if (!isPlainObject(out))
+        throw new TypeError("cyllat result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "cyllat result.radius"),
+        lon: coordinateOutputNumber(out.lon, "cyllat result.lon"),
+        lat: coordinateOutputNumber(out.lat, "cyllat result.lat"),
+      };
+    },
+    cylrec: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cylrec(radius)");
+      assertCoordinateNumber(lon, "cylrec(lon)");
+      assertCoordinateNumber(z, "cylrec(z)");
+      const out = native.cylrec(radius, lon, z);
+      if (!Array.isArray(out) || out.length !== 3)
+        throw new TypeError("cylrec result must have length 3");
+      return [
+        coordinateOutputNumber(out[0], "cylrec result[0]"),
+        coordinateOutputNumber(out[1], "cylrec result[1]"),
+        coordinateOutputNumber(out[2], "cylrec result[2]"),
+      ];
+    },
+    cylsph: (radius, lon, z) => {
+      assertCoordinateNumber(radius, "cylsph(radius)");
+      assertCoordinateNumber(lon, "cylsph(lon)");
+      assertCoordinateNumber(z, "cylsph(z)");
+      const out = native.cylsph(radius, lon, z);
+      if (!isPlainObject(out))
+        throw new TypeError("cylsph result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "cylsph result.radius"),
+        colat: coordinateOutputNumber(out.colat, "cylsph result.colat"),
+        lon: coordinateOutputNumber(out.lon, "cylsph result.lon"),
+      };
+    },
+    latcyl: (radius, lon, lat) => {
+      assertCoordinateNumber(radius, "latcyl(radius)");
+      assertCoordinateNumber(lon, "latcyl(lon)");
+      assertCoordinateNumber(lat, "latcyl(lat)");
+      const out = native.latcyl(radius, lon, lat);
+      if (!isPlainObject(out))
+        throw new TypeError("latcyl result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "latcyl result.radius"),
+        lon: coordinateOutputNumber(out.lon, "latcyl result.lon"),
+        z: coordinateOutputNumber(out.z, "latcyl result.z"),
+      };
+    },
+    latsph: (radius, lon, lat) => {
+      assertCoordinateNumber(radius, "latsph(radius)");
+      assertCoordinateNumber(lon, "latsph(lon)");
+      assertCoordinateNumber(lat, "latsph(lat)");
+      const out = native.latsph(radius, lon, lat);
+      if (!isPlainObject(out))
+        throw new TypeError("latsph result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "latsph result.radius"),
+        colat: coordinateOutputNumber(out.colat, "latsph result.colat"),
+        lon: coordinateOutputNumber(out.lon, "latsph result.lon"),
+      };
+    },
+    reccyl: (rect) => {
+      const rectCopy = copyCoordinateVector(rect);
+      const out = native.reccyl(rectCopy);
+      if (!isPlainObject(out))
+        throw new TypeError("reccyl result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "reccyl result.radius"),
+        lon: coordinateOutputNumber(out.lon, "reccyl result.lon"),
+        z: coordinateOutputNumber(out.z, "reccyl result.z"),
+      };
+    },
+    sphcyl: (radius, colat, lon) => {
+      assertCoordinateNumber(radius, "sphcyl(radius)");
+      assertCoordinateNumber(colat, "sphcyl(colat)");
+      assertCoordinateNumber(lon, "sphcyl(lon)");
+      const out = native.sphcyl(radius, colat, lon);
+      if (!isPlainObject(out))
+        throw new TypeError("sphcyl result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "sphcyl result.radius"),
+        lon: coordinateOutputNumber(out.lon, "sphcyl result.lon"),
+        z: coordinateOutputNumber(out.z, "sphcyl result.z"),
+      };
+    },
+    sphlat: (radius, colat, lon) => {
+      assertCoordinateNumber(radius, "sphlat(radius)");
+      assertCoordinateNumber(colat, "sphlat(colat)");
+      assertCoordinateNumber(lon, "sphlat(lon)");
+      const out = native.sphlat(radius, colat, lon);
+      if (!isPlainObject(out))
+        throw new TypeError("sphlat result must be an object");
+      return {
+        radius: coordinateOutputNumber(out.radius, "sphlat result.radius"),
+        lon: coordinateOutputNumber(out.lon, "sphlat result.lon"),
+        lat: coordinateOutputNumber(out.lat, "sphlat result.lat"),
+      };
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(
