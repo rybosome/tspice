@@ -1830,18 +1830,25 @@
         "missingTopLevelWrappers": [],
         "assessment": "All four installed wrappers were inspected. SCE2T successful public values are compared to initialized linked SPICELIB output; early failures use the independently loaded ABI with matching trace. SCFMT uses a guarded canonical buffer call for nonpositive lengths and otherwise the locked wrapper. SCPART and SCTIKS use the locked wrappers."
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/724"],
       "validationEvidence": [
         {
           "kind": "focused-runtime",
           "result": "Corrected source passed 98 registered actual Node/WASM comparisons, 7 public/oracle, 22 native and 17 WASM allocation/boundary tests."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "09d17ed130821551b86d2e1df7a01137af37b49f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43556126707/job/132329262471",
+          "result": "Both complete required lanes passed locally on 09d17ed130821551b86d2e1df7a01137af37b49f. JavaScript: 2,535 parity tests and one expected guard skip. Native-required: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132329262471 on 09d17ed130821551b86d2e1df7a01137af37b49f: 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Validate the sce2t_ symbol/ABI and exact source path, separate safe locked public success from independent defined error probes, and review formatted field and partition capacities before verification.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "branch": "codex/expand-sclk-additions",
       "worktree": "/private/tmp/tspice-step8-sclk",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Four methods, 49 workflows / 195 steps / 120 target invocations, 26 genuine error workflows reviewed. Corrected focused suites passed 98 registered Node/WASM comparisons, 7 public/oracle, 22 native and 17 WASM tests. Formatter cache and SPICELIB alias behaviors are recorded. Full required local lanes and observed source CI pending."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 09d17ed1. 2,316 registered Node/WASM live comparisons; 2,536 parity-package tests with no skips, including the native-required guard; 88 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Four methods, 49 workflows / 195 steps / 120 target invocations, 26 genuine error workflows reviewed. Corrected focused suites passed 98 registered Node/WASM comparisons, 7 public/oracle, 22 native and 17 WASM tests. Formatter cache and SPICELIB alias behaviors are recorded. Full required local lanes and observed source CI pending."
     },
     {
       "id": "D03-frame-additions",

@@ -414,8 +414,8 @@
       "id": "d02-sclk-additions",
       "routines": ["sce2t_c", "scfmt_c", "scpart_c", "sctiks_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Review the pinned SPICELIB alias, defined-error oracle, partition capacities and field bounds. Record both required local lanes and actual source CI before verification."
+      "prs": ["https://github.com/rybosome/tspice/pull/724"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
