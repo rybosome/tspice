@@ -423,7 +423,7 @@
         "sphlat_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/709"],
       "nextAction": "Run focused wrapper/allocation/live parity, both required lanes and canonical CI before verified status. Independent Step 8 batch; no merge authorized."
     }
   ]

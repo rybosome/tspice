@@ -133,3 +133,7 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
+
+## A05 source validation checkpoint
+
+Both required local lanes passed on source `02aa05d93ca5b98a06e762d50f0f3afac04c145a`: 2,298 live Node/WASM comparisons and 2,519 parity-package tests in the native-required lane, with the production-native guard executed and zero skips. All 15 jobs in [source CI](https://github.com/rybosome/tspice/actions/runs/43537749949) completed successfully without retries. The [inspected Linux Node 22 native job](https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254) confirms uncached execution. Current audit fingerprints now have fresh local and CI observations; original Step 7 executions remain historical. This evidence commit still needs final-head CI and explicit rebaseability before PR #709 is ready. No Step 8 routine is landed.

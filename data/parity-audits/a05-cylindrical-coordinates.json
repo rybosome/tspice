@@ -20,7 +20,220 @@
     "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
     "packages/py-parity-checking/test/cylindrical-overflow.test.ts"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a05-02aa05d9-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "536a51733988e5196f9ae70d23926a00a5319a50c80038605e48680b3ffb0ef7",
+      "caseIds": [
+        "coords-vectors-cyllat-axis-and-origin",
+        "coords-vectors-cyllat-mixed-signs",
+        "coords-vectors-cyllat-negative-radius",
+        "coords-vectors-cyllat-scaled-magnitudes",
+        "coords-vectors-cyllat-unwrapped-longitude",
+        "coords-vectors-cylrec-axis-and-origin",
+        "coords-vectors-cylrec-mixed-signs",
+        "coords-vectors-cylrec-negative-radius",
+        "coords-vectors-cylrec-scaled-magnitudes",
+        "coords-vectors-cylrec-unwrapped-longitude",
+        "coords-vectors-cylsph-axis-and-origin",
+        "coords-vectors-cylsph-mixed-signs",
+        "coords-vectors-cylsph-negative-radius",
+        "coords-vectors-cylsph-scaled-magnitudes",
+        "coords-vectors-cylsph-unwrapped-longitude",
+        "coords-vectors-latcyl-mixed-signs",
+        "coords-vectors-latcyl-negative-radius",
+        "coords-vectors-latcyl-scaled-magnitudes",
+        "coords-vectors-latcyl-unwrapped-angles",
+        "coords-vectors-latcyl-zero-and-poles",
+        "coords-vectors-latsph-mixed-signs",
+        "coords-vectors-latsph-negative-radius",
+        "coords-vectors-latsph-scaled-magnitudes",
+        "coords-vectors-latsph-unwrapped-angles",
+        "coords-vectors-latsph-zero-and-poles",
+        "coords-vectors-reccyl-asymmetric-components",
+        "coords-vectors-reccyl-axis-and-origin",
+        "coords-vectors-reccyl-four-quadrants",
+        "coords-vectors-reccyl-longitude-boundaries",
+        "coords-vectors-reccyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-mixed-signs",
+        "coords-vectors-sphcyl-negative-radius",
+        "coords-vectors-sphcyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-unwrapped-angles",
+        "coords-vectors-sphcyl-zero-and-poles",
+        "coords-vectors-sphlat-mixed-signs",
+        "coords-vectors-sphlat-negative-radius",
+        "coords-vectors-sphlat-scaled-magnitudes",
+        "coords-vectors-sphlat-unwrapped-angles",
+        "coords-vectors-sphlat-zero-and-poles"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+    },
+    {
+      "id": "local-a05-02aa05d9-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "536a51733988e5196f9ae70d23926a00a5319a50c80038605e48680b3ffb0ef7",
+      "caseIds": [
+        "coords-vectors-cyllat-axis-and-origin",
+        "coords-vectors-cyllat-mixed-signs",
+        "coords-vectors-cyllat-negative-radius",
+        "coords-vectors-cyllat-scaled-magnitudes",
+        "coords-vectors-cyllat-unwrapped-longitude",
+        "coords-vectors-cylrec-axis-and-origin",
+        "coords-vectors-cylrec-mixed-signs",
+        "coords-vectors-cylrec-negative-radius",
+        "coords-vectors-cylrec-scaled-magnitudes",
+        "coords-vectors-cylrec-unwrapped-longitude",
+        "coords-vectors-cylsph-axis-and-origin",
+        "coords-vectors-cylsph-mixed-signs",
+        "coords-vectors-cylsph-negative-radius",
+        "coords-vectors-cylsph-scaled-magnitudes",
+        "coords-vectors-cylsph-unwrapped-longitude",
+        "coords-vectors-latcyl-mixed-signs",
+        "coords-vectors-latcyl-negative-radius",
+        "coords-vectors-latcyl-scaled-magnitudes",
+        "coords-vectors-latcyl-unwrapped-angles",
+        "coords-vectors-latcyl-zero-and-poles",
+        "coords-vectors-latsph-mixed-signs",
+        "coords-vectors-latsph-negative-radius",
+        "coords-vectors-latsph-scaled-magnitudes",
+        "coords-vectors-latsph-unwrapped-angles",
+        "coords-vectors-latsph-zero-and-poles",
+        "coords-vectors-reccyl-asymmetric-components",
+        "coords-vectors-reccyl-axis-and-origin",
+        "coords-vectors-reccyl-four-quadrants",
+        "coords-vectors-reccyl-longitude-boundaries",
+        "coords-vectors-reccyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-mixed-signs",
+        "coords-vectors-sphcyl-negative-radius",
+        "coords-vectors-sphcyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-unwrapped-angles",
+        "coords-vectors-sphcyl-zero-and-poles",
+        "coords-vectors-sphlat-mixed-signs",
+        "coords-vectors-sphlat-negative-radius",
+        "coords-vectors-sphlat-scaled-magnitudes",
+        "coords-vectors-sphlat-unwrapped-angles",
+        "coords-vectors-sphlat-zero-and-poles"
+      ],
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required rebuilt/loaded production addon, executed native-presence guard and all 2298 live comparisons (1149 scenarios per actual backend). All 2519 parity-package tests passed without skips, including true Node/WASM finite-input overflow observations, plus 91 Node / 625 WASM / 28 core / 150 facade tests. Local lint and readonly-input typecheck findings were corrected before the passing complete lanes. No tolerance or native guard weakened."
+    },
+    {
+      "id": "ci-a05-02aa05d9-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "536a51733988e5196f9ae70d23926a00a5319a50c80038605e48680b3ffb0ef7",
+      "caseIds": [
+        "coords-vectors-cyllat-axis-and-origin",
+        "coords-vectors-cyllat-mixed-signs",
+        "coords-vectors-cyllat-negative-radius",
+        "coords-vectors-cyllat-scaled-magnitudes",
+        "coords-vectors-cyllat-unwrapped-longitude",
+        "coords-vectors-cylrec-axis-and-origin",
+        "coords-vectors-cylrec-mixed-signs",
+        "coords-vectors-cylrec-negative-radius",
+        "coords-vectors-cylrec-scaled-magnitudes",
+        "coords-vectors-cylrec-unwrapped-longitude",
+        "coords-vectors-cylsph-axis-and-origin",
+        "coords-vectors-cylsph-mixed-signs",
+        "coords-vectors-cylsph-negative-radius",
+        "coords-vectors-cylsph-scaled-magnitudes",
+        "coords-vectors-cylsph-unwrapped-longitude",
+        "coords-vectors-latcyl-mixed-signs",
+        "coords-vectors-latcyl-negative-radius",
+        "coords-vectors-latcyl-scaled-magnitudes",
+        "coords-vectors-latcyl-unwrapped-angles",
+        "coords-vectors-latcyl-zero-and-poles",
+        "coords-vectors-latsph-mixed-signs",
+        "coords-vectors-latsph-negative-radius",
+        "coords-vectors-latsph-scaled-magnitudes",
+        "coords-vectors-latsph-unwrapped-angles",
+        "coords-vectors-latsph-zero-and-poles",
+        "coords-vectors-reccyl-asymmetric-components",
+        "coords-vectors-reccyl-axis-and-origin",
+        "coords-vectors-reccyl-four-quadrants",
+        "coords-vectors-reccyl-longitude-boundaries",
+        "coords-vectors-reccyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-mixed-signs",
+        "coords-vectors-sphcyl-negative-radius",
+        "coords-vectors-sphcyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-unwrapped-angles",
+        "coords-vectors-sphcyl-zero-and-poles",
+        "coords-vectors-sphlat-mixed-signs",
+        "coords-vectors-sphlat-negative-radius",
+        "coords-vectors-sphlat-scaled-magnitudes",
+        "coords-vectors-sphlat-unwrapped-angles",
+        "coords-vectors-sphlat-zero-and-poles"
+      ],
+      "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+    },
+    {
+      "id": "ci-a05-02aa05d9-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "536a51733988e5196f9ae70d23926a00a5319a50c80038605e48680b3ffb0ef7",
+      "caseIds": [
+        "coords-vectors-cyllat-axis-and-origin",
+        "coords-vectors-cyllat-mixed-signs",
+        "coords-vectors-cyllat-negative-radius",
+        "coords-vectors-cyllat-scaled-magnitudes",
+        "coords-vectors-cyllat-unwrapped-longitude",
+        "coords-vectors-cylrec-axis-and-origin",
+        "coords-vectors-cylrec-mixed-signs",
+        "coords-vectors-cylrec-negative-radius",
+        "coords-vectors-cylrec-scaled-magnitudes",
+        "coords-vectors-cylrec-unwrapped-longitude",
+        "coords-vectors-cylsph-axis-and-origin",
+        "coords-vectors-cylsph-mixed-signs",
+        "coords-vectors-cylsph-negative-radius",
+        "coords-vectors-cylsph-scaled-magnitudes",
+        "coords-vectors-cylsph-unwrapped-longitude",
+        "coords-vectors-latcyl-mixed-signs",
+        "coords-vectors-latcyl-negative-radius",
+        "coords-vectors-latcyl-scaled-magnitudes",
+        "coords-vectors-latcyl-unwrapped-angles",
+        "coords-vectors-latcyl-zero-and-poles",
+        "coords-vectors-latsph-mixed-signs",
+        "coords-vectors-latsph-negative-radius",
+        "coords-vectors-latsph-scaled-magnitudes",
+        "coords-vectors-latsph-unwrapped-angles",
+        "coords-vectors-latsph-zero-and-poles",
+        "coords-vectors-reccyl-asymmetric-components",
+        "coords-vectors-reccyl-axis-and-origin",
+        "coords-vectors-reccyl-four-quadrants",
+        "coords-vectors-reccyl-longitude-boundaries",
+        "coords-vectors-reccyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-mixed-signs",
+        "coords-vectors-sphcyl-negative-radius",
+        "coords-vectors-sphcyl-scaled-magnitudes",
+        "coords-vectors-sphcyl-unwrapped-angles",
+        "coords-vectors-sphcyl-zero-and-poles",
+        "coords-vectors-sphlat-mixed-signs",
+        "coords-vectors-sphlat-negative-radius",
+        "coords-vectors-sphlat-scaled-magnitudes",
+        "coords-vectors-sphlat-unwrapped-angles",
+        "coords-vectors-sphlat-zero-and-poles"
+      ],
+      "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43537749949/job/132270763254",
+      "observation": "Observed successful uncached Linux Node 22 native-required CI: 2298 live comparisons, 2519 parity-package tests, production native guard executed, zero skips; generated WASM and production addon both exercised."
+    }
+  ],
   "routines": [
     {
       "routine": "cyllat_c",
@@ -63,16 +276,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cyllat -> Node typed adapter -> registered native handler under global mutex -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cyllat -> WASM typed adapter -> configured/binary _tspice_cyllat -> tspice_cyllat shared C shim -> cyllat_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -117,16 +330,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cylrec -> Node typed adapter -> registered native handler under global mutex -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cylrec -> WASM typed adapter -> configured/binary _tspice_cylrec -> tspice_cylrec shared C shim -> cylrec_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -171,16 +384,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cylsph -> Node typed adapter -> registered native handler under global mutex -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cylsph -> WASM typed adapter -> configured/binary _tspice_cylsph -> tspice_cylsph shared C shim -> cylsph_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -225,16 +438,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.latcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.latcyl -> WASM typed adapter -> configured/binary _tspice_latcyl -> tspice_latcyl shared C shim -> latcyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -279,16 +492,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.latsph -> Node typed adapter -> registered native handler under global mutex -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.latsph -> WASM typed adapter -> configured/binary _tspice_latsph -> tspice_latsph shared C shim -> latsph_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -333,16 +546,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reccyl -> Node typed adapter -> registered native handler under global mutex -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reccyl -> WASM typed adapter -> configured/binary _tspice_reccyl -> tspice_reccyl shared C shim -> reccyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -387,16 +600,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sphcyl -> Node typed adapter -> registered native handler under global mutex -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sphcyl -> WASM typed adapter -> configured/binary _tspice_sphcyl -> tspice_sphcyl shared C shim -> sphcyl_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     },
@@ -441,19 +654,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sphlat -> Node typed adapter -> registered native handler under global mutex -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-node", "ci-a05-02aa05d9-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.sphlat -> WASM typed adapter -> configured/binary _tspice_sphlat -> tspice_sphlat shared C shim -> sphlat_c; all output fields copied and propagated.",
-          "executions": []
+          "executions": ["local-a05-02aa05d9-wasm", "ci-a05-02aa05d9-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Complete implementation and semantic review; current source-bound local and canonical CI verification pending."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

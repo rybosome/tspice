@@ -237,13 +237,29 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Finish required local lanes and open draft implementation PR; inspect actual scientific boundary/overflow assertions and record canonical CI before marking PR-ready.",
+      "prs": ["https://github.com/rybosome/tspice/pull/709"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
+          "observation": "Both required local lanes passed; native lane executed 2298 live Node/WASM comparisons and 2519 parity-package tests with zero skips; production native guard executed. Source fingerprints are in per-batch audits."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "02aa05d93ca5b98a06e762d50f0f3afac04c145a",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43537749949",
+          "observation": "All 15 source-commit jobs passed without retries. Inspected uncached Linux Node 22 native job 132270763254: 2298 live comparisons and 2519 parity-package tests, production native guard executed, zero skips."
+        }
+      ],
+      "nextAction": "Run final evidence metadata commit through required CI; verify final-head GitHub rebaseability explicitly and only then mark PR #709 ready.",
       "worktree": "/private/tmp/tspice-step8-cylindrical",
       "branch": "codex/expand-cylindrical-coordinates",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Compiled implementation and focused local run reported by integration owner: 80 live Node/WASM comparisons and 6 public-path tests passed. Full required lanes and CI remain pending; this note is not a source-bound verification record."
+      "progressNote": "Compiled implementation and focused local run reported by integration owner: 80 live Node/WASM comparisons and 6 public-path tests passed. Full required lanes and CI remain pending; this note is not a source-bound verification record.",
+      "deliveryNote": "Both complete required local lanes and all 15 source CI jobs passed. All current Node/WASM audit fingerprints verified; final metadata CI and rebaseability pending. Not landed."
     },
     {
       "id": "A06-coordinate-conventions",
