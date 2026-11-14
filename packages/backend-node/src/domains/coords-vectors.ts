@@ -3,6 +3,9 @@ import type {
   SpiceVector3,
 } from "@rybosome/tspice-backend-contract";
 import {
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
@@ -18,6 +21,48 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    lstlec: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstlec(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstled: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstled(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlei: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlei(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstltc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstltc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstltd: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstltd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlti: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlti(input.key, input.values),
+        input.values.length,
+      );
+    },
     reclat: (rect) => {
       const out = native.reclat(rect);
       invariant(

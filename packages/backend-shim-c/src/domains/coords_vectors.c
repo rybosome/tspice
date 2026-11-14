@@ -2,6 +2,7 @@
 
 #include "SpiceUsr.h"
 
+#include <stdint.h>
 #include <string.h>
 
 static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
@@ -20,6 +21,105 @@ static void FillMat33(SpiceDouble out[3][3], const double *m3x3) {
       out[i][j] = (SpiceDouble)m3x3[i * 3 + j];
     }
   }
+}
+
+static int InvalidSortedBound(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "Invalid sorted search buffer or count", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_lstlec(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!key || !rows || !out || n < 0 || width < 2 || n > INT32_MAX / width) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstlec_c(key, n, width, rows);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lstled(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || (size_t)n > SIZE_MAX / sizeof(double)) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstled_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lstlei(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || (size_t)n > SIZE_MAX / sizeof(int)) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstlei_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lstltc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!key || !rows || !out || n < 0 || width < 2 || n > INT32_MAX / width) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstltc_c(key, n, width, rows);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lstltd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || (size_t)n > SIZE_MAX / sizeof(double)) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstltd_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
+}
+
+int tspice_lstlti(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!values || !out || n < 0 || (size_t)n > SIZE_MAX / sizeof(int)) {
+    return InvalidSortedBound(err, errMaxBytes);
+  }
+  *out = lstlti_c(key, n, values);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  return 0;
 }
 
 int tspice_reclat(

@@ -22,6 +22,12 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -494,6 +500,48 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.lstlec":
+            return StepCoordsVectorsLstlec(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstlec.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstlec.values"),
+            )
+
+        case "coords-vectors.lstled":
+            return StepCoordsVectorsLstled(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstled.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstled.values"),
+            )
+
+        case "coords-vectors.lstlei":
+            return StepCoordsVectorsLstlei(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlei.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlei.values"),
+            )
+
+        case "coords-vectors.lstltc":
+            return StepCoordsVectorsLstltc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstltc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstltc.values"),
+            )
+
+        case "coords-vectors.lstltd":
+            return StepCoordsVectorsLstltd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstltd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstltd.values"),
+            )
+
+        case "coords-vectors.lstlti":
+            return StepCoordsVectorsLstlti(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlti.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlti.values"),
             )
 
         case "coords-vectors.reclat":

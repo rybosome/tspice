@@ -227,6 +227,20 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+Each sorted-boundary method accepts a key and a readonly array of the same
+element type. It returns the zero-based index of the last qualifying entry
+or −1. The caller supplies the values in nondecreasing order.
+[Character layout and exact index semantics](step8-sorted-bounds.md)
+
+| Raw method                                       | Canonical routine | Qualifying relation                                 |
+| ------------------------------------------------ | ----------------- | --------------------------------------------------- |
+| `lstlec(key: string, values: readonly string[])` | `lstlec_c`        | Blank-extended byte comparison, less than or equal. |
+| `lstled(key: number, values: readonly number[])` | `lstled_c`        | Ordered double, less than or equal.                 |
+| `lstlei(key: number, values: readonly number[])` | `lstlei_c`        | Signed 32-bit integer, less than or equal.          |
+| `lstltc(key: string, values: readonly string[])` | `lstltc_c`        | Blank-extended byte comparison, strictly less than. |
+| `lstltd(key: number, values: readonly number[])` | `lstltd_c`        | Ordered double, strictly less than.                 |
+| `lstlti(key: number, values: readonly number[])` | `lstlti_c`        | Signed 32-bit integer, strictly less than.          |
+
 `rotate` and `rotmat` preserve CSPICE's modulo-three axis mapping (including zero/negative integers); their typed adapters reject fractional, non-finite, or overflowing JS axes before conversion. Matrices are row-major. `rotate`/`rotmat` use passive coordinate rotation, while `axisar` returns an active vector rotation. The audit includes noncommuting matrix products, both vector multiplication directions, coordinate poles/zero inputs, and oblate/prolate geodetic conversions.
 
 Most routines in this domain are **pure math** and require no kernels.

@@ -5,6 +5,12 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsLstlec,
+  StepCoordsVectorsLstled,
+  StepCoordsVectorsLstlei,
+  StepCoordsVectorsLstltc,
+  StepCoordsVectorsLstltd,
+  StepCoordsVectorsLstlti,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -26,6 +32,12 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsLstlec
+  | StepCoordsVectorsLstled
+  | StepCoordsVectorsLstlei
+  | StepCoordsVectorsLstltc
+  | StepCoordsVectorsLstltd
+  | StepCoordsVectorsLstlti
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -71,6 +83,36 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.lstlec": {
+      const out = context.spice.raw.lstlec(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstled": {
+      const out = context.spice.raw.lstled(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstlei": {
+      const out = context.spice.raw.lstlei(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstltc": {
+      const out = context.spice.raw.lstltc(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstltd": {
+      const out = context.spice.raw.lstltd(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstlti": {
+      const out = context.spice.raw.lstlti(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
     case "coords-vectors.reclat": {
       const out = context.spice.raw.reclat(step.rectan);
       return { op: step.op, value: out };

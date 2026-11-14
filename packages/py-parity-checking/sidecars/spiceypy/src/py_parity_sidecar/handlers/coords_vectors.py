@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import spiceypy as sp
 
+from .. import sorted_bounds_oracle
+
 from ..models import (
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -9,6 +11,12 @@ from ..models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -51,6 +59,30 @@ def _to_matrix3x3(values: object) -> list[list[float]]:
 
 
 def run_coords_vectors_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepCoordsVectorsLstlec):
+        width, rows = sorted_bounds_oracle.character_rows(step.key, step.values)
+        return StepOutput(op=step.op, value=sp.lstlec(step.key, len(rows), width, rows))
+
+    if isinstance(step, StepCoordsVectorsLstled):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=False)
+        return StepOutput(op=step.op, value=sp.lstled(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstlei):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=True)
+        return StepOutput(op=step.op, value=sp.lstlei(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstltc):
+        width, rows = sorted_bounds_oracle.character_rows(step.key, step.values)
+        return StepOutput(op=step.op, value=sp.lstltc(step.key, len(rows), width, rows))
+
+    if isinstance(step, StepCoordsVectorsLstltd):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=False)
+        return StepOutput(op=step.op, value=sp.lstltd(step.key, len(step.values), step.values))
+
+    if isinstance(step, StepCoordsVectorsLstlti):
+        sorted_bounds_oracle.numeric(step.key, step.values, integer=True)
+        return StepOutput(op=step.op, value=sp.lstlti(step.key, len(step.values), step.values))
+
     if isinstance(step, StepCoordsVectorsReclat):
         radius, lon, lat = sp.reclat(step.rectan)
         return StepOutput(op=step.op, value={"radius": float(radius), "lon": float(lon), "lat": float(lat)})

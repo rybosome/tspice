@@ -172,6 +172,42 @@ export type Matrix6x6 = [
 
 export type Vector3 = [number, number, number];
 
+export type StepCoordsVectorsLstlec = {
+  op: "coords-vectors.lstlec";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstled = {
+  op: "coords-vectors.lstled";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlei = {
+  op: "coords-vectors.lstlei";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstltc = {
+  op: "coords-vectors.lstltc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstltd = {
+  op: "coords-vectors.lstltd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlti = {
+  op: "coords-vectors.lstlti";
+  key: number;
+  values: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -1313,6 +1349,12 @@ export type WorkflowStep =
   | StepIdsNamesBodfnd
   | StepIdsNamesBods2c
   | StepIdsNamesBodvar
+  | StepCoordsVectorsLstlec
+  | StepCoordsVectorsLstled
+  | StepCoordsVectorsLstlei
+  | StepCoordsVectorsLstltc
+  | StepCoordsVectorsLstltd
+  | StepCoordsVectorsLstlti
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1484,6 +1526,12 @@ export type GfSearchWindowPayload = {
 };
 
 export type StepOutput =
+  | { op: "coords-vectors.lstlec"; value: number }
+  | { op: "coords-vectors.lstled"; value: number }
+  | { op: "coords-vectors.lstlei"; value: number }
+  | { op: "coords-vectors.lstltc"; value: number }
+  | { op: "coords-vectors.lstltd"; value: number }
+  | { op: "coords-vectors.lstlti"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.tkvrsn"; value: string }
