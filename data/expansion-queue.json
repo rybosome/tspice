@@ -3650,13 +3650,21 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Record source-bound local and canonical results, wait for the final matrix and confirm explicit rebaseability.",
+      "prs": ["https://github.com/rybosome/tspice/pull/771"],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "732e84696b0e73f514913ea0ccfbefd9007225bd",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43586658342/job/132422526101",
+          "result": "Both complete required lanes passed locally on 732e84696b0e73f514913ea0ccfbefd9007225bd. JavaScript: 2,490 parity tests and one expected guard skip. Native-required: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132422526101 on 732e84696b0e73f514913ea0ccfbefd9007225bd: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-gf-progress",
       "branch": "codex/expand-gf-progress",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "27 live workflows, independent exact reporter stdout, isolated delivered SIGINT/restoration, cached polling, direct native and actual WASM allocation tests and real Chrome observations passed."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 732e8469. 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "27 live workflows, independent exact reporter stdout, isolated delivered SIGINT/restoration, cached polling, direct native and actual WASM allocation tests and real Chrome observations passed."
     }
   ]
 }

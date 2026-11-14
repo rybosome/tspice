@@ -414,8 +414,8 @@
       "id": "e26-gf-signals-progress",
       "routines": ["gfbail_c", "gfclrh_c", "gfinth_c", "gfrepu_c"],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Capture full current-source local and canonical CI evidence, then check rebaseability and the final required matrix."
+      "prs": ["https://github.com/rybosome/tspice/pull/771"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

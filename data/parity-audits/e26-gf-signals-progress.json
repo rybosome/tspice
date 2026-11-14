@@ -49,7 +49,168 @@
     "scripts/fetch-cspice.mjs",
     "scripts/stage-gf-signal-flag.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-e26-732e8469-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1d928e6c3d846771d5af96320bffa5e4cf7cd30e1600c9a58c5d912dca41268b",
+      "caseIds": [
+        "geometry-gf-gfbail-bad-signal",
+        "geometry-gf-gfbail-initial",
+        "geometry-gf-gfbail-kclear",
+        "geometry-gf-gfbail-reset",
+        "geometry-gf-gfbail-sticky",
+        "geometry-gf-gfclrh-bad-after-clear",
+        "geometry-gf-gfclrh-clear",
+        "geometry-gf-gfclrh-cycles",
+        "geometry-gf-gfclrh-independent-error",
+        "geometry-gf-gfclrh-received",
+        "geometry-gf-gfinth-max-code",
+        "geometry-gf-gfinth-negative",
+        "geometry-gf-gfinth-other",
+        "geometry-gf-gfinth-rearm",
+        "geometry-gf-gfinth-resets",
+        "geometry-gf-gfinth-zero",
+        "geometry-gf-gfrepu-disjoint",
+        "geometry-gf-gfrepu-early",
+        "geometry-gf-gfrepu-endpoints",
+        "geometry-gf-gfrepu-interrupt",
+        "geometry-gf-gfrepu-late",
+        "geometry-gf-gfrepu-prior-no-init",
+        "geometry-gf-gfrepu-reinitialize",
+        "geometry-gf-gfrepu-reverse-time",
+        "geometry-gf-gfrepu-reversed",
+        "geometry-gf-gfrepu-singleton",
+        "geometry-gf-gfrepu-wrong-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 732e84696b0e73f514913ea0ccfbefd9007225bd. JavaScript: 2,490 parity tests and one expected guard skip. Native-required: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e26-732e8469-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1d928e6c3d846771d5af96320bffa5e4cf7cd30e1600c9a58c5d912dca41268b",
+      "caseIds": [
+        "geometry-gf-gfbail-bad-signal",
+        "geometry-gf-gfbail-initial",
+        "geometry-gf-gfbail-kclear",
+        "geometry-gf-gfbail-reset",
+        "geometry-gf-gfbail-sticky",
+        "geometry-gf-gfclrh-bad-after-clear",
+        "geometry-gf-gfclrh-clear",
+        "geometry-gf-gfclrh-cycles",
+        "geometry-gf-gfclrh-independent-error",
+        "geometry-gf-gfclrh-received",
+        "geometry-gf-gfinth-max-code",
+        "geometry-gf-gfinth-negative",
+        "geometry-gf-gfinth-other",
+        "geometry-gf-gfinth-rearm",
+        "geometry-gf-gfinth-resets",
+        "geometry-gf-gfinth-zero",
+        "geometry-gf-gfrepu-disjoint",
+        "geometry-gf-gfrepu-early",
+        "geometry-gf-gfrepu-endpoints",
+        "geometry-gf-gfrepu-interrupt",
+        "geometry-gf-gfrepu-late",
+        "geometry-gf-gfrepu-prior-no-init",
+        "geometry-gf-gfrepu-reinitialize",
+        "geometry-gf-gfrepu-reverse-time",
+        "geometry-gf-gfrepu-reversed",
+        "geometry-gf-gfrepu-singleton",
+        "geometry-gf-gfrepu-wrong-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 732e84696b0e73f514913ea0ccfbefd9007225bd. JavaScript: 2,490 parity tests and one expected guard skip. Native-required: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e26-732e8469-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1d928e6c3d846771d5af96320bffa5e4cf7cd30e1600c9a58c5d912dca41268b",
+      "caseIds": [
+        "geometry-gf-gfbail-bad-signal",
+        "geometry-gf-gfbail-initial",
+        "geometry-gf-gfbail-kclear",
+        "geometry-gf-gfbail-reset",
+        "geometry-gf-gfbail-sticky",
+        "geometry-gf-gfclrh-bad-after-clear",
+        "geometry-gf-gfclrh-clear",
+        "geometry-gf-gfclrh-cycles",
+        "geometry-gf-gfclrh-independent-error",
+        "geometry-gf-gfclrh-received",
+        "geometry-gf-gfinth-max-code",
+        "geometry-gf-gfinth-negative",
+        "geometry-gf-gfinth-other",
+        "geometry-gf-gfinth-rearm",
+        "geometry-gf-gfinth-resets",
+        "geometry-gf-gfinth-zero",
+        "geometry-gf-gfrepu-disjoint",
+        "geometry-gf-gfrepu-early",
+        "geometry-gf-gfrepu-endpoints",
+        "geometry-gf-gfrepu-interrupt",
+        "geometry-gf-gfrepu-late",
+        "geometry-gf-gfrepu-prior-no-init",
+        "geometry-gf-gfrepu-reinitialize",
+        "geometry-gf-gfrepu-reverse-time",
+        "geometry-gf-gfrepu-reversed",
+        "geometry-gf-gfrepu-singleton",
+        "geometry-gf-gfrepu-wrong-singleton"
+      ],
+      "commit": "732e84696b0e73f514913ea0ccfbefd9007225bd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43586658342/job/132422526101",
+      "observation": "Inspected successful Linux Node 22 native-required job 132422526101 on 732e84696b0e73f514913ea0ccfbefd9007225bd: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e26-732e8469-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "1d928e6c3d846771d5af96320bffa5e4cf7cd30e1600c9a58c5d912dca41268b",
+      "caseIds": [
+        "geometry-gf-gfbail-bad-signal",
+        "geometry-gf-gfbail-initial",
+        "geometry-gf-gfbail-kclear",
+        "geometry-gf-gfbail-reset",
+        "geometry-gf-gfbail-sticky",
+        "geometry-gf-gfclrh-bad-after-clear",
+        "geometry-gf-gfclrh-clear",
+        "geometry-gf-gfclrh-cycles",
+        "geometry-gf-gfclrh-independent-error",
+        "geometry-gf-gfclrh-received",
+        "geometry-gf-gfinth-max-code",
+        "geometry-gf-gfinth-negative",
+        "geometry-gf-gfinth-other",
+        "geometry-gf-gfinth-rearm",
+        "geometry-gf-gfinth-resets",
+        "geometry-gf-gfinth-zero",
+        "geometry-gf-gfrepu-disjoint",
+        "geometry-gf-gfrepu-early",
+        "geometry-gf-gfrepu-endpoints",
+        "geometry-gf-gfrepu-interrupt",
+        "geometry-gf-gfrepu-late",
+        "geometry-gf-gfrepu-prior-no-init",
+        "geometry-gf-gfrepu-reinitialize",
+        "geometry-gf-gfrepu-reverse-time",
+        "geometry-gf-gfrepu-reversed",
+        "geometry-gf-gfrepu-singleton",
+        "geometry-gf-gfrepu-wrong-singleton"
+      ],
+      "commit": "732e84696b0e73f514913ea0ccfbefd9007225bd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43586658342/job/132422526101",
+      "observation": "Inspected successful Linux Node 22 native-required job 132422526101 on 732e84696b0e73f514913ea0ccfbefd9007225bd: 2,272 registered Node/WASM live comparisons; 2,491 parity-package tests with no skips, including the native-required guard; 67 native wrapper, 605 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "gfbail_c",
@@ -108,16 +269,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfbail -> serialized native handler -> tspice_gfbail -> gfbail_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-node", "ci-e26-732e8469-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfbail -> compiled WASM export -> tspice_gfbail -> gfbail_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-wasm", "ci-e26-732e8469-wasm"]
         }
       }
     },
@@ -178,16 +339,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfclrh -> serialized native handler -> tspice_gfclrh -> gfclrh_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-node", "ci-e26-732e8469-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfclrh -> compiled WASM export -> tspice_gfclrh -> gfclrh_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-wasm", "ci-e26-732e8469-wasm"]
         }
       }
     },
@@ -253,16 +414,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfinth -> serialized native handler -> tspice_gfinth -> gfinth_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-node", "ci-e26-732e8469-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfinth -> compiled WASM export -> tspice_gfinth -> gfinth_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-wasm", "ci-e26-732e8469-wasm"]
         }
       }
     },
@@ -353,19 +514,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfrepu -> serialized native handler -> tspice_gfrepu -> gfrepu_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-node", "ci-e26-732e8469-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.gfrepu -> compiled WASM export -> tspice_gfrepu -> gfrepu_c",
-          "executions": []
+          "executions": ["local-e26-732e8469-wasm", "ci-e26-732e8469-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused native, WASM, independent output and real Chrome observations passed. Full required and canonical evidence follows."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
