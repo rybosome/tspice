@@ -3452,18 +3452,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/769"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "47 registered workflows, 220 steps, 132 target calls and 26 terminal scientific errors. Both runtimes passed 94 registered comparisons, 6 supplementary public checks, 2 native validations and 26 actual WASM allocation tests; all five methods passed public Chrome."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "48efd0ee2d3114e631e98b252cf57421fe23d170",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43584851570/job/132417025178",
+          "result": "Both complete required lanes passed locally on 48efd0ee2d3114e631e98b252cf57421fe23d170. JavaScript: 2,639 parity tests and one expected guard skip. Native-required: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132417025178 on 48efd0ee2d3114e631e98b252cf57421fe23d170: 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run full uncached local and canonical CI validation on the combined source and check final-head jobs and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-dsk-intersections",
       "branch": "codex/expand-dsk-intersections",
       "baseCommit": "89c6a772201fc487a16ef63adada13cdb23eb146",
-      "progressNote": "Five N0067 DSK ray and tolerance operations. One initialized linked source alias; four direct C calls. Physical source and all descriptor words independently verified."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 48efd0ee. 2,406 registered Node/WASM live comparisons; 2,640 parity-package tests with no skips, including the native-required guard; 82 native wrapper, 657 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Five N0067 DSK ray and tolerance operations. One initialized linked source alias; four direct C calls. Physical source and all descriptor words independently verified."
     },
     {
       "id": "E20-extended-surfaces",

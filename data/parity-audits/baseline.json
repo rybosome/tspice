@@ -429,8 +429,8 @@
       "id": "e19-dsk-intersections",
       "routines": ["dskx02_c", "dskxsi_c", "dskxv_c", "dskgtl_c", "dskstl_c"],
       "dependsOn": ["e18-dsk-data"],
-      "prs": [],
-      "nextAction": "Run full uncached local and canonical CI validation on the combined source and check final-head jobs and rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/769"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
