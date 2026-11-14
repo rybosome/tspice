@@ -29,3 +29,34 @@ export async function sortedBoundsConsumer(
   ]);
   void [sync, asyncResults];
 }
+
+/** Ordering returns owned indices or typed values on both the sync and transported raw API. */
+export async function orderConsumer(
+  spice: Spice,
+  remote: SpiceAsync,
+): Promise<void> {
+  const rows = ["b", "a"] as const,
+    ints = [2, 1] as const;
+  const order: number[] = spice.raw.orderc(rows);
+  const valid: boolean = spice.raw.isordv(order);
+  const texts: string[] = spice.raw.reordc(order, rows);
+  const logicals: boolean[] = spice.raw.reordl(order, [true, false] as const);
+  const integers: number[] = spice.raw.reordi(spice.raw.orderi(ints), ints);
+  const doubles: number[] = await remote.raw.reordd(
+    await remote.raw.orderd(ints),
+    ints,
+  );
+  const sortedTexts: string[] = await remote.raw.shellc(rows);
+  const sortedIntegers: number[] = spice.raw.shelli(ints);
+  const sortedDoubles: number[] = spice.raw.shelld(ints);
+  void [
+    valid,
+    texts,
+    logicals,
+    integers,
+    doubles,
+    sortedTexts,
+    sortedIntegers,
+    sortedDoubles,
+  ];
+}

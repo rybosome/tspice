@@ -22,6 +22,17 @@ from .models import (
     StepCoordsVectorsMtxv,
     StepCoordsVectorsMxm,
     StepCoordsVectorsMxv,
+    StepCoordsVectorsIsordv,
+    StepCoordsVectorsOrderc,
+    StepCoordsVectorsOrderd,
+    StepCoordsVectorsOrderi,
+    StepCoordsVectorsReordc,
+    StepCoordsVectorsReordd,
+    StepCoordsVectorsReordi,
+    StepCoordsVectorsReordl,
+    StepCoordsVectorsShellc,
+    StepCoordsVectorsShelld,
+    StepCoordsVectorsShelli,
     StepCoordsVectorsLstlec,
     StepCoordsVectorsLstled,
     StepCoordsVectorsLstlei,
@@ -502,6 +513,54 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
             )
 
+        case "coords-vectors.isordv":
+            return StepCoordsVectorsIsordv(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.isordv.order"),
+            )
+        case "coords-vectors.orderc":
+            return StepCoordsVectorsOrderc(op=op,
+                values=_expect_string_list(step.get("values"), label="coords-vectors.orderc.values"),
+            )
+        case "coords-vectors.orderd":
+            return StepCoordsVectorsOrderd(op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.orderd.values"),
+            )
+        case "coords-vectors.orderi":
+            return StepCoordsVectorsOrderi(op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.orderi.values"),
+            )
+        case "coords-vectors.reordc":
+            return StepCoordsVectorsReordc(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordc.order"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.reordc.values"),
+            )
+        case "coords-vectors.reordd":
+            return StepCoordsVectorsReordd(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordd.order"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.reordd.values"),
+            )
+        case "coords-vectors.reordi":
+            return StepCoordsVectorsReordi(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordi.order"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.reordi.values"),
+            )
+        case "coords-vectors.reordl":
+            return StepCoordsVectorsReordl(op=op,
+                order=_expect_int_list(step.get("order"), label="coords-vectors.reordl.order"),
+                values=_expect_bool_list(step.get("values"), label="coords-vectors.reordl.values"),
+            )
+        case "coords-vectors.shellc":
+            return StepCoordsVectorsShellc(op=op,
+                values=_expect_string_list(step.get("values"), label="coords-vectors.shellc.values"),
+            )
+        case "coords-vectors.shelld":
+            return StepCoordsVectorsShelld(op=op,
+                values=_expect_number_list(step.get("values"), label="coords-vectors.shelld.values"),
+            )
+        case "coords-vectors.shelli":
+            return StepCoordsVectorsShelli(op=op,
+                values=_expect_int_list(step.get("values"), label="coords-vectors.shelli.values"),
+            )
         case "coords-vectors.lstlec":
             return StepCoordsVectorsLstlec(
                 op=op,

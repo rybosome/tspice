@@ -927,3 +927,179 @@ int tspice_recgeo(
 
   return 0;
 }
+
+static int array_order_invalid(char *err, int errMaxBytes, const char *message) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, message, (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = 0;
+  }
+  return 1;
+}
+
+static int array_order_status(char *err, int errMaxBytes) {
+  if (!failed_c())
+    return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// Keep ISORDV_C's +1 in range. INT_MAX is already outside every
+// representable order vector of the supported length; -1 tests the same
+// invalidity without narrowing or bypassing the canonical predicate.
+static void normalize_order_candidate(int n, int *candidate) {
+  for (int i = 0; i < n; ++i)
+    if (candidate[i] == INT32_MAX)
+      candidate[i] = -1;
+}
+
+static int validate_reorder(int n, int *order, char *err, int cap) {
+  if (!n)
+    return 0;
+  // ISORDV_C internally adds one to all elements, even impossible ones.
+  for (int i = 0; i < n; ++i)
+    if (order[i] < 0 || order[i] >= n)
+      return array_order_invalid(err, cap, "Invalid zero-based permutation");
+  SpiceBoolean valid = isordv_c(order, n);
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (!valid)
+    return array_order_invalid(err, cap, "Invalid zero-based permutation");
+  return 0;
+}
+
+static int array_order_rows(int n, int width, const char *data) {
+  if (width < 2 || n > INT32_MAX / width)
+    return 0;
+  for (int i = 0; i < n; ++i) {
+    const char *row = data + (size_t)i * width;
+    if (!memchr(row, 0, (size_t)width))
+      return 0;
+  }
+  return 1;
+}
+
+int tspice_isordv(int n, int *values, int *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !out)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  normalize_order_candidate(n, values);
+  *out = isordv_c(values, n);
+  return array_order_status(err, cap);
+}
+
+int tspice_orderc(int n, int width, char *values, int *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !out)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (!array_order_rows(n, width, values))
+    return array_order_invalid(err, cap, "Invalid fixed-width character rows");
+  orderc_c(width, values, n, out);
+  return array_order_status(err, cap);
+}
+
+int tspice_orderd(int n, double *values, int *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(double) || !values || !out)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  orderd_c(values, n, out);
+  return array_order_status(err, cap);
+}
+
+int tspice_orderi(int n, int *values, int *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !out)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  orderi_c(values, n, out);
+  return array_order_status(err, cap);
+}
+
+int tspice_reordc(int n, int *order, int width, char *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !order)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (!array_order_rows(n, width, values))
+    return array_order_invalid(err, cap, "Invalid fixed-width character rows");
+  if (validate_reorder(n, order, err, cap))
+    return 1;
+  reordc_c(order, n, width, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_reordd(int n, int *order, double *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(double) || !values || !order)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (validate_reorder(n, order, err, cap))
+    return 1;
+  reordd_c(order, n, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_reordi(int n, int *order, int *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !order)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (validate_reorder(n, order, err, cap))
+    return 1;
+  reordi_c(order, n, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_reordl(int n, int *order, int *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values || !order)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (validate_reorder(n, order, err, cap))
+    return 1;
+  reordl_c(order, n, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_shellc(int n, int width, char *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  if (!array_order_rows(n, width, values))
+    return array_order_invalid(err, cap, "Invalid fixed-width character rows");
+  shellc_c(n, width, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_shelld(int n, double *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(double) || !values)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  shelld_c(n, values);
+  return array_order_status(err, cap);
+}
+
+int tspice_shelli(int n, int *values, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c())
+    return array_order_status(err, cap);
+  if (n < 0 || n > INT32_MAX / (int)sizeof(int) || !values)
+    return array_order_invalid(err, cap, "Invalid array storage or count");
+  shelli_c(n, values);
+  return array_order_status(err, cap);
+}

@@ -5,6 +5,17 @@ import type {
   StepCoordsVectorsMtxv,
   StepCoordsVectorsMxm,
   StepCoordsVectorsMxv,
+  StepCoordsVectorsIsordv,
+  StepCoordsVectorsOrderc,
+  StepCoordsVectorsOrderd,
+  StepCoordsVectorsOrderi,
+  StepCoordsVectorsReordc,
+  StepCoordsVectorsReordd,
+  StepCoordsVectorsReordi,
+  StepCoordsVectorsReordl,
+  StepCoordsVectorsShellc,
+  StepCoordsVectorsShelld,
+  StepCoordsVectorsShelli,
   StepCoordsVectorsLstlec,
   StepCoordsVectorsLstled,
   StepCoordsVectorsLstlei,
@@ -32,6 +43,17 @@ import type { RunTspiceContext } from "../context.js";
 import { flattenMatrix, unflattenMatrix } from "../utils/matrix.js";
 
 type CoordsVectorsStep =
+  | StepCoordsVectorsIsordv
+  | StepCoordsVectorsOrderc
+  | StepCoordsVectorsOrderd
+  | StepCoordsVectorsOrderi
+  | StepCoordsVectorsReordc
+  | StepCoordsVectorsReordd
+  | StepCoordsVectorsReordi
+  | StepCoordsVectorsReordl
+  | StepCoordsVectorsShellc
+  | StepCoordsVectorsShelld
+  | StepCoordsVectorsShelli
   | StepCoordsVectorsLstlec
   | StepCoordsVectorsLstled
   | StepCoordsVectorsLstlei
@@ -83,6 +105,40 @@ export function runCoordsVectorsStep(
   step: CoordsVectorsStep,
 ): StepOutput {
   switch (step.op) {
+    case "coords-vectors.isordv":
+      return { op: step.op, value: context.spice.raw.isordv(step.order) };
+    case "coords-vectors.orderc":
+      return { op: step.op, value: context.spice.raw.orderc(step.values) };
+    case "coords-vectors.orderd":
+      return { op: step.op, value: context.spice.raw.orderd(step.values) };
+    case "coords-vectors.orderi":
+      return { op: step.op, value: context.spice.raw.orderi(step.values) };
+    case "coords-vectors.reordc":
+      return {
+        op: step.op,
+        value: context.spice.raw.reordc(step.order, step.values),
+      };
+    case "coords-vectors.reordd":
+      return {
+        op: step.op,
+        value: context.spice.raw.reordd(step.order, step.values),
+      };
+    case "coords-vectors.reordi":
+      return {
+        op: step.op,
+        value: context.spice.raw.reordi(step.order, step.values),
+      };
+    case "coords-vectors.reordl":
+      return {
+        op: step.op,
+        value: context.spice.raw.reordl(step.order, step.values),
+      };
+    case "coords-vectors.shellc":
+      return { op: step.op, value: context.spice.raw.shellc(step.values) };
+    case "coords-vectors.shelld":
+      return { op: step.op, value: context.spice.raw.shelld(step.values) };
+    case "coords-vectors.shelli":
+      return { op: step.op, value: context.spice.raw.shelli(step.values) };
     case "coords-vectors.lstlec": {
       const out = context.spice.raw.lstlec(step.key, step.values);
       return { op: step.op, value: out };

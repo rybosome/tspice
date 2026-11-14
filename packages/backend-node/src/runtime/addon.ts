@@ -529,6 +529,17 @@ export type NativeAddon = {
   pxform(from: string, to: string, et: number): number[];
   sxform(from: string, to: string, et: number): number[];
 
+  isordv(values: Int32Array): boolean;
+  orderc(width: number, values: Uint8Array): Int32Array;
+  orderd(values: Float64Array): Int32Array;
+  orderi(values: Int32Array): Int32Array;
+  reordc(order: Int32Array, width: number, values: Uint8Array): Uint8Array;
+  reordd(order: Int32Array, values: Float64Array): Float64Array;
+  reordi(order: Int32Array, values: Int32Array): Int32Array;
+  reordl(order: Int32Array, values: Int32Array): Int32Array;
+  shellc(width: number, values: Uint8Array): Uint8Array;
+  shelld(values: Float64Array): Float64Array;
+  shelli(values: Int32Array): Int32Array;
   lstlec(key: string, values: readonly string[]): number;
   lstled(key: number, values: readonly number[]): number;
   lstlei(key: number, values: readonly number[]): number;

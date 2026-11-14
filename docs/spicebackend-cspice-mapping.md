@@ -227,6 +227,22 @@ Notes:
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 
+All eleven array-ordering methods use the canonical routine in both backends. The public arrays are readonly inputs and each returned array is owned. [Ordering and permutation details](step8-array-order.md)
+
+| Raw method              | Canonical routine | Returned result                             |
+| ----------------------- | ----------------- | ------------------------------------------- |
+| `isordv(order)`         | `isordv_c`        | Boolean permutation predicate.              |
+| `orderc(values)`        | `orderc_c`        | Array of zero-based source indices.         |
+| `orderd(values)`        | `orderd_c`        | Array of zero-based source indices.         |
+| `orderi(values)`        | `orderi_c`        | Array of zero-based source indices.         |
+| `reordc(order, values)` | `reordc_c`        | Values in the specified source-index order. |
+| `reordd(order, values)` | `reordd_c`        | Values in the specified source-index order. |
+| `reordi(order, values)` | `reordi_c`        | Values in the specified source-index order. |
+| `reordl(order, values)` | `reordl_c`        | Values in the specified source-index order. |
+| `shellc(values)`        | `shellc_c`        | Sorted values.                              |
+| `shelld(values)`        | `shelld_c`        | Sorted values.                              |
+| `shelli(values)`        | `shelli_c`        | Sorted values.                              |
+
 Each sorted-boundary method accepts a key and a readonly array of the same
 element type. It returns the zero-based index of the last qualifying entry
 or −1. The caller supplies the values in nondecreasing order.

@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 168
-- Planned (not yet implemented): 481
+- Implemented now (SpiceRawBackend): 179
+- Planned (not yet implemented): 470
 - Excluded: 3
 
 ## Implemented now
@@ -105,6 +105,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `isordv_c` | Is array an order vector? |
 | `kclear_c` | Keeper clear |
 | `kdata_c` | Kernel Data |
 | `kinfo_c` | Kernel Information |
@@ -124,6 +125,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `namfrm_c` | Name to frame |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
+| `orderc_c` | Order of a character array |
+| `orderd_c` | Order of a double precision array |
+| `orderi_c` | Order of an integer array |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pipool_c` | Put integers into the kernel pool |
@@ -132,6 +136,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `recgeo_c` | Rectangular to geodetic |
 | `reclat_c` | Rectangular to latitudinal coordinates |
 | `recsph_c` | Rectangular to spherical coordinates |
+| `reordc_c` | Reorder a character array |
+| `reordd_c` | Reorder a double precision array |
+| `reordi_c` | Reorder an integer array |
+| `reordl_c` | Reorder a logical array |
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
@@ -143,6 +151,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `scs2e_c` | SCLK string to ET |
 | `sct2e_c` | SCLK ticks to ET |
 | `setmsg_c` | Set Long Error Message |
+| `shellc_c` | Shell sort a character array |
+| `shelld_c` | Shell sort a double precision array |
+| `shelli_c` | Shell sort an integer array |
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
@@ -413,7 +424,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `invert_c` | Invert a 3x3 matrix |
 | `invort_c` | Invert nearly orthogonal matrices |
 | `invstm_c` | Inverse of state transformation matrix |
-| `isordv_c` | Is array an order vector? |
 | `isrchc_c` | Search in a character array |
 | `isrchd_c` | Search in a double precision array |
 | `isrchi_c` | Search in an integer array |
@@ -476,9 +486,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `nvp2pl_c` | Normal vector and point to plane |
 | `ordc_c` | The ordinal position of an element in a set |
 | `ordd_c` | The ordinal position of an element in a set |
-| `orderc_c` | Order of a character array |
-| `orderd_c` | Order of a double precision array |
-| `orderi_c` | Order of an integer array |
 | `ordi_c` | The ordinal position of an element in a set |
 | `oscelt_c` | Determine conic elements from state |
 | `oscltx_c` | Extended osculating elements from state |
@@ -525,10 +532,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `removc_c` | Remove an item from a character set |
 | `removd_c` | Remove an item from a double precision set |
 | `removi_c` | Remove an item from an integer set |
-| `reordc_c` | Reorder a character array |
-| `reordd_c` | Reorder a double precision array |
-| `reordi_c` | Reorder an integer array |
-| `reordl_c` | Reorder a logical array |
 | `repmc_c` | Replace marker with character string |
 | `repmct_c` | Replace marker with cardinal text |
 | `repmd_c` | Replace marker with double precision number |
@@ -547,9 +550,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sctiks_c` | Convert spacecraft clock string to ticks. |
 | `sdiff_c` | Symmetric difference of two sets |
 | `set_c` | Compare sets |
-| `shellc_c` | Shell sort a character array |
-| `shelld_c` | Shell sort a double precision array |
-| `shelli_c` | Shell sort an integer array |
 | `spd_c` | Seconds per day |
 | `sphcyl_c` | Spherical to cylindrical coordinates |
 | `sphlat_c` | Spherical to latitudinal coordinates |
