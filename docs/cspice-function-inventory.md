@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 165
-- Planned (not yet implemented): 484
+- Implemented now (SpiceRawBackend): 169
+- Planned (not yet implemented): 480
 - Excluded: 3
 
 ## Implemented now
@@ -81,6 +81,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
 | `failed_c` | Error Status Indicator |
+| `fovray_c` | Is ray in FOV at time? |
+| `fovtrg_c` | Is target in FOV at time? |
 | `frinfo_c` | Frame Information |
 | `frmnam_c` | Frame to Name |
 | `furnsh_c` | Furnish a program with SPICE kernels |
@@ -88,6 +90,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gdpool_c` | Get d.p. values from the kernel pool |
 | `georec_c` | Geodetic to rectangular coordinates |
 | `getfat_c` | Get file architecture and type |
+| `getfov_c` | Get instrument FOV parameters |
+| `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `getmsg_c` | Get Error Message |
 | `gfdist_c` | GF, distance search |
 | `gfrefn_c` | GF, default refinement estimator |
@@ -369,12 +373,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `evsgp4_c` | Evaluate "two-line" element data |
 | `filld_c` | Fill a double precision array |
 | `filli_c` | Fill an integer array |
-| `fovray_c` | Is ray in FOV at time? |
-| `fovtrg_c` | Is target in FOV at time? |
 | `frame_c` | Build a right handed coordinate frame |
 | `getelm_c` | Get the components from two-line elements |
-| `getfov_c` | Get instrument FOV parameters |
-| `getfvn_c` | Get instrument FOV parameters, by instrument name |
 | `gfbail_c` | GF, interrupt signal indicator |
 | `gfclrh_c` | GF, clear interrupt signal handler status |
 | `gfevnt_c` | GF, geometric event finder |

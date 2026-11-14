@@ -118,6 +118,10 @@ from .models import (
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryGetfov,
+    StepGeometryGetfvn,
+    StepGeometryFovray,
+    StepGeometryFovtrg,
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
@@ -1596,6 +1600,47 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 abcorr=_expect_string(step.get("abcorr"), label="geometry.illumf.abcorr"),
                 observer=_expect_string(step.get("observer"), label="geometry.illumf.observer"),
                 spoint=_expect_vec3(step.get("spoint"), label="geometry.illumf.spoint"),
+            )
+
+        case "geometry.getfov":
+            return StepGeometryGetfov(
+                op=op,
+                instid=_expect_int(step.get("instid"), label="geometry.getfov.instid"),
+                room=_expect_int(step.get("room"), label="geometry.getfov.room"),
+                shapelen=_expect_int(step.get("shapelen"), label="geometry.getfov.shapelen"),
+                framelen=_expect_int(step.get("framelen"), label="geometry.getfov.framelen"),
+            )
+
+        case "geometry.getfvn":
+            return StepGeometryGetfvn(
+                op=op,
+                inst=_expect_string(step.get("inst"), label="geometry.getfvn.inst"),
+                room=_expect_int(step.get("room"), label="geometry.getfvn.room"),
+                shapelen=_expect_int(step.get("shapelen"), label="geometry.getfvn.shapelen"),
+                framelen=_expect_int(step.get("framelen"), label="geometry.getfvn.framelen"),
+            )
+
+        case "geometry.fovray":
+            return StepGeometryFovray(
+                op=op,
+                inst=_expect_string(step.get("inst"), label="geometry.fovray.inst"),
+                raydir=_expect_vec3(step.get("raydir"), label="geometry.fovray.raydir"),
+                rframe=_expect_string(step.get("rframe"), label="geometry.fovray.rframe"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.fovray.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.fovray.observer"),
+                et=_expect_number(step.get("et"), label="geometry.fovray.et"),
+            )
+
+        case "geometry.fovtrg":
+            return StepGeometryFovtrg(
+                op=op,
+                inst=_expect_string(step.get("inst"), label="geometry.fovtrg.inst"),
+                target=_expect_string(step.get("target"), label="geometry.fovtrg.target"),
+                tshape=_expect_string(step.get("tshape"), label="geometry.fovtrg.tshape"),
+                tframe=_expect_string(step.get("tframe"), label="geometry.fovtrg.tframe"),
+                abcorr=_expect_string(step.get("abcorr"), label="geometry.fovtrg.abcorr"),
+                observer=_expect_string(step.get("observer"), label="geometry.fovtrg.observer"),
+                et=_expect_number(step.get("et"), label="geometry.fovtrg.et"),
             )
 
         case "geometry.phaseq":

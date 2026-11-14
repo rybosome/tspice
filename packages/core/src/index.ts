@@ -162,4 +162,8 @@ export {
 
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
+export {
+  fovRayDirection,
+  fovWorkspace,
+} from "./spice-runtime/domains/field-of-view.js";
 export { spiceStringByteLength } from "./spice-runtime/domains/string-bytes.js";

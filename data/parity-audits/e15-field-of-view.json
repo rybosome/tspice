@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "batch": "e15-field-of-view",
+  "traceFiles": [
+    "docs/spicebackend-cspice-mapping.md",
+    "docs/step8-field-of-view.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/geometry.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/geometry.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/geometry.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/field-of-view-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/geometry.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/geometry.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/field-of-view-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/field-of-view.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-geometry.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/field_of_view_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/geometry_quantities_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/geometry.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/test/field-of-view.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "getfov_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfov_c.html",
+      "semantics": "Read shape, frame, full boresight, returned count and ordered corner vectors by instrument ID; preserve supplied magnitudes and caller byte fields.",
+      "edgeAssessment": "Numeric IDs, CORNERS and ANGLES, changed pole/reference, units, exact fit, truncated frames, large capacity and pool reload.",
+      "errorAssessment": "Registered terminal diagnostics include SPICE(BADBORESIGHTSPEC), SPICE(BADBOUNDARY), SPICE(BADREFVECTORSPEC), SPICE(BOUNDARYTOOBIG), SPICE(FRAMEMISSING), SPICE(SHAPENOTSUPPORTED), SPICE(STRINGTOOSHORT). Public tests exercise continued use and clear failure state after exceptions.",
+      "scenarios": [
+        {
+          "caseId": "geometry-getfov-corners",
+          "coverage": ["success", "edge"],
+          "observes": "Read complete explicitly ordered and scaled boresights and corners for all four shapes, including the angle-defined rectangle."
+        },
+        {
+          "caseId": "geometry-getfov-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact-fit and excess capacities; empty spare rows must never enter the result."
+        },
+        {
+          "caseId": "geometry-getfov-text-width",
+          "coverage": ["success", "edge"],
+          "observes": "Observe shortened nonempty frame prefixes including a single byte while preserving complete numeric results."
+        },
+        {
+          "caseId": "geometry-getfov-pool-change",
+          "coverage": ["success", "edge"],
+          "observes": "Change boresight and boundary components and read fresh values in their original magnitudes."
+        },
+        {
+          "caseId": "geometry-getfov-angle-units",
+          "coverage": ["success", "edge"],
+          "observes": "Check ordered rectangular axes with unequal angles and a changed reference direction, then use radians."
+        },
+        {
+          "caseId": "geometry-getfov-alternate-keyword",
+          "coverage": ["success", "edge"],
+          "observes": "Read the supported alternate corner pool keyword and its exact components."
+        },
+        {
+          "caseId": "geometry-getfov-clear-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Read, clear the kernel pool, reload and read again."
+        },
+        {
+          "caseId": "geometry-getfov-short-shape",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for short-shape."
+        },
+        {
+          "caseId": "geometry-getfov-small-shape-buffer",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-shape-buffer."
+        },
+        {
+          "caseId": "geometry-getfov-small-frame-buffer",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-frame-buffer."
+        },
+        {
+          "caseId": "geometry-getfov-room-zero",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for room-zero."
+        },
+        {
+          "caseId": "geometry-getfov-small-polygon",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-polygon."
+        },
+        {
+          "caseId": "geometry-getfov-small-angle-rectangle",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-angle-rectangle."
+        },
+        {
+          "caseId": "geometry-getfov-unknown-shape",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for unknown-shape."
+        },
+        {
+          "caseId": "geometry-getfov-partial-vector",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for partial-vector."
+        },
+        {
+          "caseId": "geometry-getfov-bad-boresight",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for bad-boresight."
+        },
+        {
+          "caseId": "geometry-getfov-missing-ik",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for missing-ik."
+        },
+        {
+          "caseId": "geometry-getfov-parallel-reference",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for parallel-reference."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Hand-authored numeric IK for four invented instruments. No mission observations.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Four asymmetric synthetic fields distinguish capacity, ordering and magnitude. Visibility cases additionally load only the orientation, radii and/or moving-body SPK that the call needs.",
+      "cleanup": "Isolated parity clients clear kernel state and dispose. Public tests explicitly clear kernels on exit, verify recovery after diagnostics and independently owned output; WASM tests track pointers on acquisition and diagnostic failure.",
+      "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getfov -> serialized N-API handler -> tspice_getfov -> getfov_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getfov -> scoped WASM adapter and real module export -> tspice_getfov -> getfov_c.",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "getfov-surface",
+          "status": "repaired",
+          "summary": "Honor byte widths during shape interpretation; allocate at most the physical pool limit and read only the returned prefix.",
+          "repair": "Honor byte widths during shape interpretation; allocate at most the physical pool limit and read only the returned prefix.",
+          "evidence": [
+            "docs/step8-field-of-view.md",
+            "packages/py-parity-checking/test/field-of-view.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/field_of_view_oracle.py",
+            "packages/backend-wasm/test/field-of-view-allocations.test.ts",
+            "packages/backend-node/test/field-of-view-domain.test.ts"
+          ],
+          "caseIds": ["geometry-getfov-capacity"]
+        }
+      ]
+    },
+    {
+      "routine": "getfvn_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/getfvn_c.html",
+      "semantics": "Resolve an instrument name or numeric string and return all five FOV fields with byte-sized shape/frame outputs.",
+      "edgeAssessment": "Named, mixed-case and numeric forms, a name miss, shape lengths, owned rows, angle and corner definitions, clear/reload.",
+      "errorAssessment": "Registered terminal diagnostics include SPICE(BADBORESIGHTSPEC), SPICE(BADBOUNDARY), SPICE(BADREFVECTORSPEC), SPICE(BOUNDARYTOOBIG), SPICE(EMPTYSTRING), SPICE(FRAMEMISSING), SPICE(IDCODENOTFOUND), SPICE(SHAPENOTSUPPORTED), SPICE(STRINGTOOSHORT). Public tests exercise continued use and clear failure state after exceptions.",
+      "scenarios": [
+        {
+          "caseId": "geometry-getfvn-corners",
+          "coverage": ["success", "edge"],
+          "observes": "Read complete explicitly ordered and scaled boresights and corners for all four shapes, including the angle-defined rectangle."
+        },
+        {
+          "caseId": "geometry-getfvn-capacity",
+          "coverage": ["success", "edge"],
+          "observes": "Compare exact-fit and excess capacities; empty spare rows must never enter the result."
+        },
+        {
+          "caseId": "geometry-getfvn-text-width",
+          "coverage": ["success", "edge"],
+          "observes": "Observe shortened nonempty frame prefixes including a single byte while preserving complete numeric results."
+        },
+        {
+          "caseId": "geometry-getfvn-pool-change",
+          "coverage": ["success", "edge"],
+          "observes": "Change boresight and boundary components and read fresh values in their original magnitudes."
+        },
+        {
+          "caseId": "geometry-getfvn-angle-units",
+          "coverage": ["success", "edge"],
+          "observes": "Check ordered rectangular axes with unequal angles and a changed reference direction, then use radians."
+        },
+        {
+          "caseId": "geometry-getfvn-alternate-keyword",
+          "coverage": ["success", "edge"],
+          "observes": "Read the supported alternate corner pool keyword and its exact components."
+        },
+        {
+          "caseId": "geometry-getfvn-clear-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Read, clear the kernel pool, reload and read again."
+        },
+        {
+          "caseId": "geometry-getfvn-short-shape",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for short-shape."
+        },
+        {
+          "caseId": "geometry-getfvn-small-shape-buffer",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-shape-buffer."
+        },
+        {
+          "caseId": "geometry-getfvn-small-frame-buffer",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-frame-buffer."
+        },
+        {
+          "caseId": "geometry-getfvn-room-zero",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for room-zero."
+        },
+        {
+          "caseId": "geometry-getfvn-small-polygon",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-polygon."
+        },
+        {
+          "caseId": "geometry-getfvn-small-angle-rectangle",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for small-angle-rectangle."
+        },
+        {
+          "caseId": "geometry-getfvn-unknown-shape",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for unknown-shape."
+        },
+        {
+          "caseId": "geometry-getfvn-partial-vector",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for partial-vector."
+        },
+        {
+          "caseId": "geometry-getfvn-bad-boresight",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for bad-boresight."
+        },
+        {
+          "caseId": "geometry-getfvn-missing-ik",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for missing-ik."
+        },
+        {
+          "caseId": "geometry-getfvn-parallel-reference",
+          "coverage": ["error"],
+          "observes": "Observe the pinned toolkit diagnostic for parallel-reference."
+        },
+        {
+          "caseId": "geometry-getfvn-named-and-numeric",
+          "coverage": ["success", "edge"],
+          "observes": "Resolve instrument names case-insensitively and also resolve signed numeric strings."
+        },
+        {
+          "caseId": "geometry-getfvn-unknown-name",
+          "coverage": ["error"],
+          "observes": "Observe the instrument translation diagnostic."
+        },
+        {
+          "caseId": "geometry-getfvn-empty-name",
+          "coverage": ["error"],
+          "observes": "Observe the instrument translation diagnostic."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Hand-authored numeric IK for four invented instruments. No mission observations.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Four asymmetric synthetic fields distinguish capacity, ordering and magnitude. Visibility cases additionally load only the orientation, radii and/or moving-body SPK that the call needs.",
+      "cleanup": "Isolated parity clients clear kernel state and dispose. Public tests explicitly clear kernels on exit, verify recovery after diagnostics and independently owned output; WASM tests track pointers on acquisition and diagnostic failure.",
+      "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getfvn -> serialized N-API handler -> tspice_getfvn -> getfvn_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.getfvn -> scoped WASM adapter and real module export -> tspice_getfvn -> getfvn_c.",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "getfvn-surface",
+          "status": "repaired",
+          "summary": "Resolve missing names into initialized storage before GETFVN caches its local code. Preserve the native error message, trace and direct success path.",
+          "repair": "Resolve missing names into initialized storage before GETFVN caches its local code. Preserve the native error message, trace and direct success path.",
+          "evidence": [
+            "docs/step8-field-of-view.md",
+            "packages/py-parity-checking/test/field-of-view.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/field_of_view_oracle.py",
+            "packages/backend-wasm/test/field-of-view-allocations.test.ts",
+            "packages/backend-node/test/field-of-view-domain.test.ts"
+          ],
+          "caseIds": ["geometry-getfvn-unknown-name"]
+        }
+      ]
+    },
+    {
+      "routine": "fovray_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/fovray_c.html",
+      "semantics": "Test a ray in its supplied frame at ET against the loaded instrument cone. Return the actual toolkit boolean.",
+      "edgeAssessment": "Both sides of circular, rectangular, elliptic and polygonal boundaries, normalization, frame rotation, stellar reception and transmission.",
+      "errorAssessment": "Registered terminal diagnostics include SPICE(EMPTYSTRING), SPICE(FRAMEMISSING), SPICE(IDCODENOTFOUND), SPICE(INVALIDFRAME), SPICE(INVALIDOPTION), SPICE(ZEROVECTOR). Public tests exercise continued use and clear failure state after exceptions.",
+      "scenarios": [
+        {
+          "caseId": "geometry-fovray-shape-audit_circle",
+          "coverage": ["success", "edge"],
+          "observes": "Compare inside, outside and near-edge rays using this instrument shape."
+        },
+        {
+          "caseId": "geometry-fovray-shape-audit_ellipse",
+          "coverage": ["success", "edge"],
+          "observes": "Compare inside, outside and near-edge rays using this instrument shape."
+        },
+        {
+          "caseId": "geometry-fovray-shape-audit_rect",
+          "coverage": ["success", "edge"],
+          "observes": "Compare inside, outside and near-edge rays using this instrument shape."
+        },
+        {
+          "caseId": "geometry-fovray-shape-audit_polygon",
+          "coverage": ["success", "edge"],
+          "observes": "Compare inside, outside and near-edge rays using this instrument shape."
+        },
+        {
+          "caseId": "geometry-fovray-frames",
+          "coverage": ["success", "edge"],
+          "observes": "Transform the same physical ray between inertial and rotated frames."
+        },
+        {
+          "caseId": "geometry-fovray-stellar",
+          "coverage": ["success", "edge"],
+          "observes": "Compare allowed reception and transmission stellar corrections on both sides of the field."
+        },
+        {
+          "caseId": "geometry-fovray-numeric-instrument",
+          "coverage": ["success", "edge"],
+          "observes": "Padded numeric ID and named instrument observe the same ray."
+        },
+        {
+          "caseId": "geometry-fovray-missing-ik",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for missing-ik."
+        },
+        {
+          "caseId": "geometry-fovray-missing-frame",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for missing-frame."
+        },
+        {
+          "caseId": "geometry-fovray-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for bad-correction."
+        },
+        {
+          "caseId": "geometry-fovray-empty-correction",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for empty-correction."
+        },
+        {
+          "caseId": "geometry-fovray-unknown-observer",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for unknown-observer."
+        },
+        {
+          "caseId": "geometry-fovray-zero-ray",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for zero-ray."
+        },
+        {
+          "caseId": "geometry-fovray-unknown-instrument",
+          "coverage": ["error"],
+          "observes": "Observe the actual ray-visibility diagnostic for unknown-instrument."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Hand-authored numeric IK for four invented instruments. No mission observations.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Repository-generated independent linear SPK trajectories for arbitrary test bodies.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored fixed and rotated orientations and triaxial radii.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Four asymmetric synthetic fields distinguish capacity, ordering and magnitude. Visibility cases additionally load only the orientation, radii and/or moving-body SPK that the call needs.",
+      "cleanup": "Isolated parity clients clear kernel state and dispose. Public tests explicitly clear kernels on exit, verify recovery after diagnostics and independently owned output; WASM tests track pointers on acquisition and diagnostic failure.",
+      "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.fovray -> serialized N-API handler -> tspice_fovray -> fovray_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.fovray -> scoped WASM adapter and real module export -> tspice_fovray -> fovray_c.",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "fovray-surface",
+          "status": "repaired",
+          "summary": "Snapshot and validate exactly three finite components once, pass the original frame, correction, observer and epoch to the matching C routine.",
+          "repair": "Snapshot and validate exactly three finite components once, pass the original frame, correction, observer and epoch to the matching C routine.",
+          "evidence": [
+            "docs/step8-field-of-view.md",
+            "packages/py-parity-checking/test/field-of-view.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/field_of_view_oracle.py",
+            "packages/backend-wasm/test/field-of-view-allocations.test.ts",
+            "packages/backend-node/test/field-of-view-domain.test.ts"
+          ],
+          "caseIds": ["geometry-fovray-frames"]
+        }
+      ]
+    },
+    {
+      "routine": "fovtrg_c",
+      "contract": "packages/backend-contract/src/domains/geometry.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/fovtrg_c.html",
+      "semantics": "Test point-center or extended ellipsoid visibility with the target, shape, body-fixed frame, observer, correction and ET.",
+      "edgeAssessment": "Moving observer, center and limb contact at different epochs, changing semiaxes, reversed bodies, all four FOVs, reception and transmission corrections.",
+      "errorAssessment": "Registered terminal diagnostics include SPICE(BODIESNOTDISTINCT), SPICE(IDCODENOTFOUND), SPICE(INVALIDFRAME), SPICE(INVALIDOPTION), SPICE(INVALIDSHAPE), SPICE(NOLOADEDFILES), SPICE(SPKINSUFFDATA). Public tests exercise continued use and clear failure state after exceptions.",
+      "scenarios": [
+        {
+          "caseId": "geometry-fovtrg-limb-contact",
+          "coverage": ["success", "edge"],
+          "observes": "The ellipsoid remains visible after its center has left the field. Sample both sides of center and limb transitions."
+        },
+        {
+          "caseId": "geometry-fovtrg-corrections",
+          "coverage": ["success", "edge"],
+          "observes": "Compare geometric, light-time, stellar and transmission modes at the time-dependent visibility boundary."
+        },
+        {
+          "caseId": "geometry-fovtrg-apparent-size",
+          "coverage": ["success", "edge"],
+          "observes": "Increasing the ellipsoid semiaxes changes limb visibility with a fixed center and sightline."
+        },
+        {
+          "caseId": "geometry-fovtrg-shapes-and-frame",
+          "coverage": ["success", "edge"],
+          "observes": "Use all four FOVs, with the last defined in a rotated frame, and reverse observer and target."
+        },
+        {
+          "caseId": "geometry-fovtrg-point-frame",
+          "coverage": ["success", "edge"],
+          "observes": "A point accepts an empty or unused target frame."
+        },
+        {
+          "caseId": "geometry-fovtrg-clear-reload",
+          "coverage": ["success", "edge"],
+          "observes": "Read before and after clearing and reloading the participating kernels."
+        },
+        {
+          "caseId": "geometry-fovtrg-missing-spk",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for missing-spk."
+        },
+        {
+          "caseId": "geometry-fovtrg-unknown-target",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for unknown-target."
+        },
+        {
+          "caseId": "geometry-fovtrg-unknown-observer",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for unknown-observer."
+        },
+        {
+          "caseId": "geometry-fovtrg-same-body",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for same-body."
+        },
+        {
+          "caseId": "geometry-fovtrg-invalid-shape",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for invalid-shape."
+        },
+        {
+          "caseId": "geometry-fovtrg-ray-shape",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for ray-shape."
+        },
+        {
+          "caseId": "geometry-fovtrg-bad-correction",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for bad-correction."
+        },
+        {
+          "caseId": "geometry-fovtrg-ellipsoid-frame",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for ellipsoid-frame."
+        },
+        {
+          "caseId": "geometry-fovtrg-outside-coverage",
+          "coverage": ["error"],
+          "observes": "Observe the actual target-visibility diagnostic for outside-coverage."
+        }
+      ],
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-fov.ti",
+          "provenance": "Hand-authored numeric IK for four invented instruments. No mission observations.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.bsp",
+          "provenance": "Repository-generated independent linear SPK trajectories for arbitrary test bodies.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-geometry.tf",
+          "provenance": "Repository-authored fixed and rotated orientations and triaxial radii.",
+          "distribution": "Project-authored fixture, distributed under the repository MIT license."
+        }
+      ],
+      "fixtureRationale": "Four asymmetric synthetic fields distinguish capacity, ordering and magnitude. Visibility cases additionally load only the orientation, radii and/or moving-body SPK that the call needs.",
+      "cleanup": "Isolated parity clients clear kernel state and dispose. Public tests explicitly clear kernels on exit, verify recovery after diagnostics and independently owned output; WASM tests track pointers on acquisition and diagnostic failure.",
+      "tolerance": "Shared per-component absolute or relative 1e-12 comparison for numeric vectors. Booleans, text and counts are exact. Public rectangle tangent-ratio checks use absolute 3e-15 on dimensionless values.",
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.fovtrg -> serialized N-API handler -> tspice_fovtrg -> fovtrg_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.fovtrg -> scoped WASM adapter and real module export -> tspice_fovtrg -> fovtrg_c.",
+          "executions": []
+        }
+      },
+      "findings": [
+        {
+          "id": "fovtrg-surface",
+          "status": "repaired",
+          "summary": "Pass all six strings through independently and allow the supported empty target frame for a point. Compare center and extended limb with distinct inputs.",
+          "repair": "Pass all six strings through independently and allow the supported empty target frame for a point. Compare center and extended limb with distinct inputs.",
+          "evidence": [
+            "docs/step8-field-of-view.md",
+            "packages/py-parity-checking/test/field-of-view.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/field_of_view_oracle.py",
+            "packages/backend-wasm/test/field-of-view-allocations.test.ts",
+            "packages/backend-node/test/field-of-view-domain.test.ts"
+          ],
+          "caseIds": ["geometry-fovtrg-limb-contact"]
+        }
+      ]
+    }
+  ],
+  "verificationNote": "Focused registered, direct and Chrome worker tests passed. Source-bound required local and canonical CI execution are recorded separately."
+}

@@ -5,12 +5,17 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
+from .. import field_of_view_oracle
 from .. import geometry_quantities_oracle
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryGetfov,
+    StepGeometryGetfvn,
+    StepGeometryFovray,
+    StepGeometryFovtrg,
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
@@ -158,6 +163,18 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
                 "lit": bool(lit),
             },
         )
+
+    if isinstance(step, StepGeometryGetfov):
+        return StepOutput(op=step.op, value=field_of_view_oracle.getfov(step.instid, step.room, step.shapelen, step.framelen))
+
+    if isinstance(step, StepGeometryGetfvn):
+        return StepOutput(op=step.op, value=field_of_view_oracle.getfvn(step.inst, step.room, step.shapelen, step.framelen))
+
+    if isinstance(step, StepGeometryFovray):
+        return StepOutput(op=step.op, value=field_of_view_oracle.fovray(step.inst, step.raydir, step.rframe, step.abcorr, step.observer, step.et))
+
+    if isinstance(step, StepGeometryFovtrg):
+        return StepOutput(op=step.op, value=field_of_view_oracle.fovtrg(step.inst, step.target, step.tshape, step.tframe, step.abcorr, step.observer, step.et))
 
     if isinstance(step, StepGeometryPhaseq):
         return StepOutput(op=step.op, value=geometry_quantities_oracle.phaseq(step.et, step.target, step.illmn, step.observer, step.abcorr))

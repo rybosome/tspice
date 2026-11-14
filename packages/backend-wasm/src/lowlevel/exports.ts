@@ -760,6 +760,55 @@ export type EmscriptenModule = {
   ): number;
 
   // Derived geometry primitives
+  _tspice_getfov(
+    instid: number,
+    room: number,
+    shapelen: number,
+    framelen: number,
+    shape: number,
+    frame: number,
+    bsight: number,
+    n: number,
+    bounds: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_getfvn(
+    inst: number,
+    room: number,
+    shapelen: number,
+    framelen: number,
+    shape: number,
+    frame: number,
+    bsight: number,
+    n: number,
+    bounds: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_fovray(
+    inst: number,
+    dir: number,
+    rframe: number,
+    abcorr: number,
+    observer: number,
+    et: number,
+    visible: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_fovtrg(
+    inst: number,
+    target: number,
+    tshape: number,
+    tframe: number,
+    abcorr: number,
+    observer: number,
+    et: number,
+    visible: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_phaseq(
     et: number,
     targetPtr: number,
@@ -2313,6 +2362,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_spkw08",
   "_tspice_spkw08_v2",
   "_tspice_spkcls",
+  "_tspice_getfov",
+  "_tspice_getfvn",
+  "_tspice_fovray",
+  "_tspice_fovtrg",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",

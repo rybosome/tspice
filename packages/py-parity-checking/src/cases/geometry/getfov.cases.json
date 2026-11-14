@@ -1,0 +1,522 @@
+[
+  {
+    "caseId": "geometry-getfov-corners",
+    "description": "Read complete explicitly ordered and scaled boresights and corners for all four shapes, including the angle-defined rectangle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 1,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 2,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817102
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 4,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 4,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817104
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-capacity",
+    "description": "Compare exact-fit and excess capacities; empty spare rows must never enter the result.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 4,
+        "shapelen": 10,
+        "framelen": 6,
+        "instid": -817103
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 10,
+        "framelen": 6,
+        "instid": -817103
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 2147483647,
+        "shapelen": 2147483647,
+        "framelen": 2147483647,
+        "instid": -817103
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-text-width",
+    "description": "Observe shortened nonempty frame prefixes including a single byte while preserving complete numeric results.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 2,
+        "instid": -817104
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 5,
+        "instid": -817104
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 19,
+        "instid": -817104
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 80,
+        "instid": -817104
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 81,
+        "instid": -817104
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-pool-change",
+    "description": "Change boresight and boundary components and read fresh values in their original magnitudes.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_BORESIGHT",
+        "values": [5, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY_CORNERS",
+        "values": [9, -2, 1]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-angle-units",
+    "description": "Check ordered rectangular axes with unequal angles and a changed reference direction, then use radians.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_VECTOR",
+        "values": [0, 0, 1]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "INS-817103_FOV_ANGLE_UNITS",
+        "values": ["RADIANS"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_ANGLE",
+        "values": [0.24]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_CROSS_ANGLE",
+        "values": [0.03]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-alternate-keyword",
+    "description": "Read the supported alternate corner pool keyword and its exact components.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY",
+        "values": [4, 1, 2]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-clear-reload",
+    "description": "Read, clear the kernel pool, reload and read again.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfov-short-shape",
+    "description": "Observe the pinned toolkit diagnostic for short-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 3,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SHAPENOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-small-shape-buffer",
+    "description": "Observe the pinned toolkit diagnostic for small-shape-buffer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 1,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-small-frame-buffer",
+    "description": "Observe the pinned toolkit diagnostic for small-frame-buffer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 0,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-room-zero",
+    "description": "Observe the pinned toolkit diagnostic for room-zero.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 0,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-small-polygon",
+    "description": "Observe the pinned toolkit diagnostic for small-polygon.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 3,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817104
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-small-angle-rectangle",
+    "description": "Observe the pinned toolkit diagnostic for small-angle-rectangle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 3,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-unknown-shape",
+    "description": "Observe the pinned toolkit diagnostic for unknown-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "INS-817101_FOV_SHAPE",
+        "values": ["OVAL"]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SHAPENOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-partial-vector",
+    "description": "Observe the pinned toolkit diagnostic for partial-vector.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY_CORNERS",
+        "values": [1, 2]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADBOUNDARY)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-bad-boresight",
+    "description": "Observe the pinned toolkit diagnostic for bad-boresight.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_BORESIGHT",
+        "values": [1, 0]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADBORESIGHTSPEC)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-missing-ik",
+    "description": "Observe the pinned toolkit diagnostic for missing-ik.",
+    "workflow": [
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817101
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(FRAMEMISSING)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfov-parallel-reference",
+    "description": "Observe the pinned toolkit diagnostic for parallel-reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_VECTOR",
+        "values": [1, 0, 0]
+      },
+      {
+        "op": "geometry.getfov",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "instid": -817103
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADREFVECTORSPEC)"]
+    }
+  }
+]

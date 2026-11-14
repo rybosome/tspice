@@ -1,8 +1,14 @@
-import { spiceStringByteLength } from "@rybosome/tspice-core";
+import {
+  assertSpiceInt32,
+  fovRayDirection,
+  fovWorkspace,
+  spiceStringByteLength,
+} from "@rybosome/tspice-core";
 import type {
   AbCorr,
   Found,
   GeometryApi,
+  FieldOfView,
   IllumfResult,
   IllumgResult,
   IluminResult,
@@ -715,9 +721,171 @@ function assertFiniteNumberArrayFixed(
   }
 }
 
+const fovDecoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+function readFovText(
+  module: EmscriptenModule,
+  ptr: number,
+  capacity: number,
+): string {
+  const start = ptr >>> 0;
+  const view = module.HEAPU8.subarray(start, start + capacity),
+    end = view.indexOf(0);
+  if (end < 0) throw new Error("FOV text has no NUL terminator");
+  return fovDecoder.decode(view.subarray(0, end));
+}
+
+function readFovVector(module: EmscriptenModule, ptr: number): SpiceVector3 {
+  const i = ptr >>> 3;
+  return [module.HEAPF64[i]!, module.HEAPF64[i + 1]!, module.HEAPF64[i + 2]!];
+}
+
+function getFov(
+  module: EmscriptenModule,
+  inst: string | number,
+  room: number,
+  shapelen: number,
+  framelen: number,
+): FieldOfView {
+  const w = fovWorkspace(room, shapelen, framelen);
+  if (typeof inst === "number") assertSpiceInt32(inst, "instid");
+  const nameBytes =
+    typeof inst === "string" ? spiceStringByteLength(inst, "inst") : 0;
+  const sizes = [
+    Math.max(1, w.shapelen),
+    Math.max(1, w.framelen),
+    24,
+    4,
+    24 * Math.max(1, w.room),
+    WASM_ERR_MAX_BYTES,
+  ];
+  if (typeof inst === "string") sizes.push(nameBytes + 1);
+  return withAllocs(
+    module,
+    sizes,
+    (shape, frame, bsight, nPtr, bounds, err, namePtr) => {
+      let status: number;
+      if (typeof inst === "number")
+        status = module._tspice_getfov(
+          inst,
+          w.room,
+          w.shapelen,
+          w.framelen,
+          shape,
+          frame,
+          bsight,
+          nPtr,
+          bounds,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+      else {
+        writeGeometryText(module, namePtr, nameBytes, inst);
+        status = module._tspice_getfvn(
+          namePtr,
+          w.room,
+          w.shapelen,
+          w.framelen,
+          shape,
+          frame,
+          bsight,
+          nPtr,
+          bounds,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+      }
+      if (status) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+      const n = module.HEAP32[nPtr >>> 2]!;
+      if (n < 0 || n > w.room)
+        throw new Error("Invalid instrument boundary count");
+      return {
+        shape: readFovText(module, shape, w.shapelen),
+        frame: readFovText(module, frame, w.framelen),
+        bsight: readFovVector(module, bsight),
+        n,
+        bounds: Array.from({ length: n }, (_, i) =>
+          readFovVector(module, bounds + 24 * i),
+        ),
+      };
+    },
+  );
+}
+
 /** Create a {@link GeometryApi} implementation backed by a WASM Emscripten module. */
 export function createGeometryApi(module: EmscriptenModule): GeometryApi {
   return {
+    getfov: (id, room, shapelen = 81, framelen = 81) => {
+      assertSpiceInt32(id, "instid");
+      return getFov(module, id, room, shapelen, framelen);
+    },
+    getfvn: (inst, room, shapelen = 81, framelen = 81) => {
+      if (typeof inst !== "string")
+        throw new TypeError("inst must be a string");
+      return getFov(module, inst, room, shapelen, framelen);
+    },
+    fovray: (inst, raydir, rframe, abcorr, observer, et) => {
+      geometryNumber(et, "et");
+      const texts = [inst, rframe, abcorr, observer];
+      const sizes = texts.map(
+        (t) => spiceStringByteLength(t, "fovray argument") + 1,
+      );
+      const dir = fovRayDirection(raydir);
+      return withAllocs(
+        module,
+        [...sizes, 24, 4, WASM_ERR_MAX_BYTES],
+        (name, frame, cor, obs, ray, out, err) => {
+          [name, frame, cor, obs].forEach((p, i) =>
+            writeGeometryText(module, p, sizes[i]! - 1, texts[i]!),
+          );
+          module.HEAPF64.set(dir, ray >>> 3);
+          const status = module._tspice_fovray(
+            name,
+            ray,
+            frame,
+            cor,
+            obs,
+            et,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return module.HEAP32[out >>> 2] !== 0;
+        },
+      );
+    },
+    fovtrg: (inst, target, tshape, tframe, abcorr, observer, et) => {
+      geometryNumber(et, "et");
+      const texts = [inst, target, tshape, tframe, abcorr, observer];
+      const sizes = texts.map(
+        (t) => spiceStringByteLength(t, "fovtrg argument") + 1,
+      );
+      return withAllocs(
+        module,
+        [...sizes, 4, WASM_ERR_MAX_BYTES],
+        (name, tgt, shape, frame, cor, obs, out, err) => {
+          [name, tgt, shape, frame, cor, obs].forEach((p, i) =>
+            writeGeometryText(module, p, sizes[i]! - 1, texts[i]!),
+          );
+          const status = module._tspice_fovtrg(
+            name,
+            tgt,
+            shape,
+            frame,
+            cor,
+            obs,
+            et,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+          return module.HEAP32[out >>> 2] !== 0;
+        },
+      );
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       const targetBytes = spiceStringByteLength(

@@ -496,6 +496,10 @@ const exportedFunctions = [
   "_tspice_spkcls",
 
   // --- derived geometry ---
+  "_tspice_getfov",
+  "_tspice_getfvn",
+  "_tspice_fovray",
+  "_tspice_fovtrg",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",

@@ -173,3 +173,7 @@ Its prime meridian starts at 11° and advances by 300° per day. This
 repository-authored text PCK is distributed under the repository MIT license.
 The tests project the pole onto the fixture's heliocentric orbital plane and
 derive limb contact directly from the authored linear tracks and radii.
+
+### Instrument field of view
+
+`kernels/audit-fov.ti` is a repository-authored, MIT-licensed synthetic IK. Its four arbitrary instruments define a circle, ellipse, angle-defined rectangle and rotated polygon. No mission or external observations are included. Its SHA-256 is `03d07f7b5c7dc19f359811f245d6a147b15879d685da1f2838f11d11cf70b64c`. Visibility cases reuse the manufactured linear tracks, frame definitions and semiaxes in `audit-geometry.bsp` and `audit-geometry.tf`.

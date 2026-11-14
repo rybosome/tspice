@@ -4,6 +4,10 @@ import type {
   StepGeometryIllumf,
   StepGeometryIllumg,
   StepGeometryNvc2pl,
+  StepGeometryGetfov,
+  StepGeometryGetfvn,
+  StepGeometryFovray,
+  StepGeometryFovtrg,
   StepGeometryPhaseq,
   StepGeometryLspcn,
   StepGeometryTrgsep,
@@ -24,6 +28,10 @@ type GeometryStep =
   | StepGeometryIlumin
   | StepGeometryIllumg
   | StepGeometryIllumf
+  | StepGeometryGetfov
+  | StepGeometryGetfvn
+  | StepGeometryFovray
+  | StepGeometryFovtrg
   | StepGeometryPhaseq
   | StepGeometryLspcn
   | StepGeometryTrgsep
@@ -184,6 +192,51 @@ export function runGeometryStep(
       };
     }
 
+    case "geometry.getfov":
+      return {
+        op: step.op,
+        value: context.spice.raw.getfov(
+          step.instid,
+          step.room,
+          step.shapelen,
+          step.framelen,
+        ),
+      };
+    case "geometry.getfvn":
+      return {
+        op: step.op,
+        value: context.spice.raw.getfvn(
+          step.inst,
+          step.room,
+          step.shapelen,
+          step.framelen,
+        ),
+      };
+    case "geometry.fovray":
+      return {
+        op: step.op,
+        value: context.spice.raw.fovray(
+          step.inst,
+          step.raydir,
+          step.rframe,
+          step.abcorr,
+          step.observer,
+          step.et,
+        ),
+      };
+    case "geometry.fovtrg":
+      return {
+        op: step.op,
+        value: context.spice.raw.fovtrg(
+          step.inst,
+          step.target,
+          step.tshape,
+          step.tframe,
+          step.abcorr,
+          step.observer,
+          step.et,
+        ),
+      };
     case "geometry.phaseq":
       return {
         op: step.op,

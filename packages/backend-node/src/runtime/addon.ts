@@ -5,6 +5,8 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import type {
+  FieldOfView,
+  SpiceVector3,
   SpiceIntCell,
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
@@ -430,6 +432,35 @@ export type NativeAddon = {
     step: number,
   ): void;
 
+  getfov(
+    instid: number,
+    room: number,
+    shapelen: number,
+    framelen: number,
+  ): FieldOfView;
+  getfvn(
+    inst: string,
+    room: number,
+    shapelen: number,
+    framelen: number,
+  ): FieldOfView;
+  fovray(
+    inst: string,
+    raydir: Readonly<SpiceVector3>,
+    rframe: string,
+    abcorr: string,
+    observer: string,
+    et: number,
+  ): boolean;
+  fovtrg(
+    inst: string,
+    target: string,
+    tshape: string,
+    tframe: string,
+    abcorr: string,
+    observer: string,
+    et: number,
+  ): boolean;
   phaseq(
     et: number,
     target: string,

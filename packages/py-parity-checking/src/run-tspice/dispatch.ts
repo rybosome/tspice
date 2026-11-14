@@ -202,6 +202,10 @@ export function dispatchStep(
     case "geometry.ilumin":
     case "geometry.illumg":
     case "geometry.illumf":
+    case "geometry.getfov":
+    case "geometry.getfvn":
+    case "geometry.fovray":
+    case "geometry.fovtrg":
     case "geometry.phaseq":
     case "geometry.lspcn":
     case "geometry.trgsep":

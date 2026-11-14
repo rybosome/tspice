@@ -1,0 +1,591 @@
+[
+  {
+    "caseId": "geometry-getfvn-corners",
+    "description": "Read complete explicitly ordered and scaled boresights and corners for all four shapes, including the angle-defined rectangle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 1,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 2,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_ELLIPSE"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 4,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 4,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_POLYGON"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-capacity",
+    "description": "Compare exact-fit and excess capacities; empty spare rows must never enter the result.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 4,
+        "shapelen": 10,
+        "framelen": 6,
+        "inst": "AUDIT_RECT"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 10,
+        "framelen": 6,
+        "inst": "AUDIT_RECT"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 2147483647,
+        "shapelen": 2147483647,
+        "framelen": 2147483647,
+        "inst": "AUDIT_RECT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-text-width",
+    "description": "Observe shortened nonempty frame prefixes including a single byte while preserving complete numeric results.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 2,
+        "inst": "AUDIT_POLYGON"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 5,
+        "inst": "AUDIT_POLYGON"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 19,
+        "inst": "AUDIT_POLYGON"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 80,
+        "inst": "AUDIT_POLYGON"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 8,
+        "framelen": 81,
+        "inst": "AUDIT_POLYGON"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-pool-change",
+    "description": "Change boresight and boundary components and read fresh values in their original magnitudes.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_BORESIGHT",
+        "values": [5, 0, 0]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY_CORNERS",
+        "values": [9, -2, 1]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-angle-units",
+    "description": "Check ordered rectangular axes with unequal angles and a changed reference direction, then use radians.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_VECTOR",
+        "values": [0, 0, 1]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "INS-817103_FOV_ANGLE_UNITS",
+        "values": ["RADIANS"]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_ANGLE",
+        "values": [0.24]
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_CROSS_ANGLE",
+        "values": [0.03]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-alternate-keyword",
+    "description": "Read the supported alternate corner pool keyword and its exact components.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY",
+        "values": [4, 1, 2]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-clear-reload",
+    "description": "Read, clear the kernel pool, reload and read again.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-short-shape",
+    "description": "Observe the pinned toolkit diagnostic for short-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 3,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SHAPENOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-small-shape-buffer",
+    "description": "Observe the pinned toolkit diagnostic for small-shape-buffer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 1,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-small-frame-buffer",
+    "description": "Observe the pinned toolkit diagnostic for small-frame-buffer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 0,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-room-zero",
+    "description": "Observe the pinned toolkit diagnostic for room-zero.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 0,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-small-polygon",
+    "description": "Observe the pinned toolkit diagnostic for small-polygon.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 3,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_POLYGON"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-small-angle-rectangle",
+    "description": "Observe the pinned toolkit diagnostic for small-angle-rectangle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 3,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BOUNDARYTOOBIG)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-unknown-shape",
+    "description": "Observe the pinned toolkit diagnostic for unknown-shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "INS-817101_FOV_SHAPE",
+        "values": ["OVAL"]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SHAPENOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-partial-vector",
+    "description": "Observe the pinned toolkit diagnostic for partial-vector.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_FOV_BOUNDARY_CORNERS",
+        "values": [1, 2]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADBOUNDARY)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-bad-boresight",
+    "description": "Observe the pinned toolkit diagnostic for bad-boresight.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817101_BORESIGHT",
+        "values": [1, 0]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_CIRCLE"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADBORESIGHTSPEC)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-missing-ik",
+    "description": "Observe the pinned toolkit diagnostic for missing-ik.",
+    "workflow": [
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "-817101"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(FRAMEMISSING)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-parallel-reference",
+    "description": "Observe the pinned toolkit diagnostic for parallel-reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "INS-817103_FOV_REF_VECTOR",
+        "values": [1, 0, 0]
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "AUDIT_RECT"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADREFVECTORSPEC)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-named-and-numeric",
+    "description": "Resolve instrument names case-insensitively and also resolve signed numeric strings.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "  audit_circle  "
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "-817101"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-unknown-name",
+    "description": "Observe the instrument translation diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": "MISSING CAMERA"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-getfvn-empty-name",
+    "description": "Observe the instrument translation diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.getfvn",
+        "room": 8,
+        "shapelen": 81,
+        "framelen": 81,
+        "inst": ""
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  }
+]

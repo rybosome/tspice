@@ -60,3 +60,30 @@ export async function geometryQuantitiesConsumer(
     asyncSpicetrgsep,
   ];
 }
+
+/** Check sync and asynchronous field-of-view types with the ES-only library. */
+export async function fieldOfViewConsumer(
+  spice: Spice,
+  asyncSpice: SpiceAsync,
+) {
+  const bore = spice.raw.getfov(-817101, 4).bsight;
+  const shape = (await asyncSpice.raw.getfvn("AUDIT_CIRCLE", 1)).shape;
+  const ray: boolean = spice.raw.fovray(
+    "AUDIT_CIRCLE",
+    bore,
+    "J2000",
+    "NONE",
+    "100103",
+    0,
+  );
+  const target: boolean = await asyncSpice.raw.fovtrg(
+    "AUDIT_CIRCLE",
+    "100101",
+    "POINT",
+    "",
+    "NONE",
+    "100103",
+    0,
+  );
+  return { shape, ray, target };
+}

@@ -1,0 +1,578 @@
+[
+  {
+    "caseId": "geometry-fovray-shape-audit_circle",
+    "description": "Compare inside, outside and near-edge rays using this instrument shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [2, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.2499, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.2501, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [-1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-shape-audit_ellipse",
+    "description": "Compare inside, outside and near-edge rays using this instrument shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0, 0, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0.14, 0, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0.16, 0, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0, 0.34, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_ELLIPSE",
+        "raydir": [0, 0.36, 1],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-shape-audit_rect",
+    "description": "Compare inside, outside and near-edge rays using this instrument shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0.17, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0.18, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0, 0.085],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_RECT",
+        "raydir": [1, 0, 0.09],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-shape-audit_polygon",
+    "description": "Compare inside, outside and near-edge rays using this instrument shape.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_POLYGON",
+        "raydir": [-1, 0, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_POLYGON",
+        "raydir": [-1, 0.13, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_POLYGON",
+        "raydir": [-1, 1, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-frames",
+    "description": "Transform the same physical ray between inertial and rotated frames.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [0.8660254037844386, -0.5, 0],
+        "rframe": "AUDIT_GEOMETRY_ROT",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-stellar",
+    "description": "Compare allowed reception and transmission stellar corrections on both sides of the field.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.24, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 3500
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.26, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 3500
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.24, 0],
+        "rframe": "J2000",
+        "abcorr": "S",
+        "observer": "100103",
+        "et": 3500
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.26, 0],
+        "rframe": "J2000",
+        "abcorr": "S",
+        "observer": "100103",
+        "et": 3500
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.24, 0],
+        "rframe": "J2000",
+        "abcorr": "XS",
+        "observer": "100103",
+        "et": 3500
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0.26, 0],
+        "rframe": "J2000",
+        "abcorr": "XS",
+        "observer": "100103",
+        "et": 3500
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-numeric-instrument",
+    "description": "Padded numeric ID and named instrument observe the same ray.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "-817101",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": " audit_circle ",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-fovray-missing-ik",
+    "description": "Observe the actual ray-visibility diagnostic for missing-ik.",
+    "workflow": [
+      {
+        "op": "geometry.fovray",
+        "inst": "-817101",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(FRAMEMISSING)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-missing-frame",
+    "description": "Observe the actual ray-visibility diagnostic for missing-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "UNKNOWN FRAME",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-bad-correction",
+    "description": "Observe the actual ray-visibility diagnostic for bad-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "LT+S",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-empty-correction",
+    "description": "Observe the actual ray-visibility diagnostic for empty-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(EMPTYSTRING)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-unknown-observer",
+    "description": "Observe the actual ray-visibility diagnostic for unknown-observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "UNKNOWN BODY",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-zero-ray",
+    "description": "Observe the actual ray-visibility diagnostic for zero-ray.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "AUDIT_CIRCLE",
+        "raydir": [0, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-fovray-unknown-instrument",
+    "description": "Observe the actual ray-visibility diagnostic for unknown-instrument.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.fovray",
+        "inst": "UNKNOWN CAMERA",
+        "raydir": [1, 0, 0],
+        "rframe": "J2000",
+        "abcorr": "NONE",
+        "observer": "100103",
+        "et": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  }
+]

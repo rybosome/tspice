@@ -1951,6 +1951,18 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: spkw08() is not implemented");
     },
+    getfov: () => {
+      throw new Error("Fake backend: getfov is not implemented");
+    },
+    getfvn: () => {
+      throw new Error("Fake backend: getfvn is not implemented");
+    },
+    fovray: () => {
+      throw new Error("Fake backend: fovray is not implemented");
+    },
+    fovtrg: () => {
+      throw new Error("Fake backend: fovtrg is not implemented");
+    },
     phaseq: () => {
       throw new Error("phaseq requires a CSPICE geometry backend");
     },

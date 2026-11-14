@@ -117,6 +117,10 @@ from .geometry import (
     StepGeometryIllumf,
     StepGeometryIllumg,
     StepGeometryNvc2pl,
+    StepGeometryGetfov,
+    StepGeometryGetfvn,
+    StepGeometryFovray,
+    StepGeometryFovtrg,
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
@@ -362,6 +366,10 @@ WorkflowStep: TypeAlias = (
     | StepGeometryIlumin
     | StepGeometryIllumg
     | StepGeometryIllumf
+    | StepGeometryGetfov
+    | StepGeometryGetfvn
+    | StepGeometryFovray
+    | StepGeometryFovtrg
     | StepGeometryPhaseq
     | StepGeometryLspcn
     | StepGeometryTrgsep
