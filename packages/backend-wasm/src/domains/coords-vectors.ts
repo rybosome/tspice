@@ -783,7 +783,9 @@ function assertCoordinateNumber(
   }
 }
 
-function assertCoordinateVector(value: unknown): asserts value is SpiceVector3 {
+function assertCoordinateVector(
+  value: unknown,
+): asserts value is Readonly<SpiceVector3> {
   if (!Array.isArray(value) || value.length !== 3) {
     throw new TypeError(
       "reccyl(rect) must contain exactly three finite numbers",

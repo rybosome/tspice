@@ -2571,7 +2571,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 201
+          "line": 205
         }
       },
       "mapping": {
@@ -2631,7 +2631,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 327
+            "line": 329
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -2672,7 +2672,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 948
+            "line": 950
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9197,7 +9197,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 47
+            "line": 49
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9238,7 +9238,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 822
+            "line": 824
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9450,7 +9450,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 60
+            "line": 62
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9491,7 +9491,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 831
+            "line": 833
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9703,7 +9703,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 73
+            "line": 75
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -9744,7 +9744,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 840
+            "line": 842
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24146,7 +24146,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 204
+          "line": 208
         }
       },
       "mapping": {
@@ -24206,7 +24206,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 336
+            "line": 338
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -24247,7 +24247,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 950
+            "line": 952
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -35646,7 +35646,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 86
+            "line": 88
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -35687,7 +35687,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 849
+            "line": 851
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -35839,7 +35839,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 139
+          "line": 143
         }
       },
       "mapping": {
@@ -35899,7 +35899,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 170
+            "line": 172
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -35940,7 +35940,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 920
+            "line": 922
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36140,7 +36140,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 99
+            "line": 101
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36181,7 +36181,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 858
+            "line": 860
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36606,7 +36606,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 221
+          "line": 225
         }
       },
       "mapping": {
@@ -36666,7 +36666,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 249
+            "line": 251
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36707,7 +36707,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 938
+            "line": 940
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36838,7 +36838,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 173
+          "line": 177
         }
       },
       "mapping": {
@@ -36898,7 +36898,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 295
+            "line": 297
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -36939,7 +36939,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 935
+            "line": 937
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -37100,7 +37100,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 219
+          "line": 223
         }
       },
       "mapping": {
@@ -37160,7 +37160,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 239
+            "line": 241
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -37201,7 +37201,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 937
+            "line": 939
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -40966,7 +40966,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 112
+            "line": 114
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41007,7 +41007,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 867
+            "line": 869
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41159,7 +41159,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 212
+          "line": 216
         }
       },
       "mapping": {
@@ -41219,7 +41219,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 345
+            "line": 347
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41260,7 +41260,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 952
+            "line": 954
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41450,7 +41450,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 137
+          "line": 141
         }
       },
       "mapping": {
@@ -41510,7 +41510,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 149
+            "line": 151
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41551,7 +41551,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 919
+            "line": 921
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41705,7 +41705,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 142
+          "line": 146
         }
       },
       "mapping": {
@@ -41765,7 +41765,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 179
+            "line": 181
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -41806,7 +41806,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 921
+            "line": 923
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -42268,7 +42268,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 183
+          "line": 187
         }
       },
       "mapping": {
@@ -42328,7 +42328,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 306
+            "line": 308
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -42369,7 +42369,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 940
+            "line": 942
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -42509,7 +42509,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 193
+          "line": 197
         }
       },
       "mapping": {
@@ -42569,7 +42569,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 316
+            "line": 318
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -42610,7 +42610,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 944
+            "line": 946
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -46813,7 +46813,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 114
+          "line": 118
         }
       },
       "mapping": {
@@ -46873,7 +46873,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 123
+            "line": 125
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -46914,7 +46914,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 887
+            "line": 889
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -47066,7 +47066,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 130
+          "line": 134
         }
       },
       "mapping": {
@@ -47126,7 +47126,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 136
+            "line": 138
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -47167,7 +47167,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 903
+            "line": 905
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -47319,7 +47319,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 144
+          "line": 148
         }
       },
       "mapping": {
@@ -47379,7 +47379,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 200
+            "line": 202
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -47420,7 +47420,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 922
+            "line": 924
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -61151,7 +61151,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 164
+          "line": 168
         }
       },
       "mapping": {
@@ -61211,7 +61211,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 259
+            "line": 261
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -61252,7 +61252,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 930
+            "line": 932
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -61700,7 +61700,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 161
+          "line": 165
         }
       },
       "mapping": {
@@ -61760,7 +61760,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 230
+            "line": 232
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -61801,7 +61801,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 928
+            "line": 930
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -61964,7 +61964,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 159
+          "line": 163
         }
       },
       "mapping": {
@@ -62024,7 +62024,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 224
+            "line": 226
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62065,7 +62065,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 927
+            "line": 929
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62218,7 +62218,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 157
+          "line": 161
         }
       },
       "mapping": {
@@ -62278,7 +62278,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 215
+            "line": 217
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62319,7 +62319,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 926
+            "line": 928
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62504,7 +62504,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 168
+          "line": 172
         }
       },
       "mapping": {
@@ -62564,7 +62564,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 277
+            "line": 279
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62605,7 +62605,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 932
+            "line": 934
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62737,7 +62737,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 147
+          "line": 151
         }
       },
       "mapping": {
@@ -62797,7 +62797,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 209
+            "line": 211
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -62838,7 +62838,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 925
+            "line": 927
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -63057,7 +63057,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 170
+          "line": 174
         }
       },
       "mapping": {
@@ -63117,7 +63117,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 286
+            "line": 288
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -63158,7 +63158,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 933
+            "line": 935
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -63311,7 +63311,7 @@
         "domain": "coords-vectors",
         "evidence": {
           "file": "packages/backend-contract/src/domains/coords-vectors.ts",
-          "line": 166
+          "line": 170
         }
       },
       "mapping": {
@@ -63371,7 +63371,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/coords-vectors.ts",
-            "line": 268
+            "line": 270
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,
@@ -63412,7 +63412,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/coords-vectors.ts",
-            "line": 931
+            "line": 933
           },
           "factory": "createCoordsVectorsApi",
           "delegation": null,

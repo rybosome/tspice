@@ -129,6 +129,24 @@ describe("raw cylindrical coordinate boundaries and ownership", () => {
             expect(
               raw.reccyl([3 * scale, -4 * scale, 2 * scale]).radius / scale,
             ).toBeCloseTo(5, 14);
+            expectVectorClose(
+              raw
+                .cylrec(3 * scale, 0.7, -4 * scale)
+                .map((value) => value / scale),
+              [3 * Math.cos(0.7), 3 * Math.sin(0.7), -4],
+            );
+            const cylindricalLat = raw.latcyl(5 * scale, -0.7, 0.4);
+            expectVectorClose(
+              [cylindricalLat.radius / scale, cylindricalLat.z / scale],
+              [5 * Math.cos(0.4), 5 * Math.sin(0.4)],
+            );
+            const cylindricalSph = raw.sphcyl(5 * scale, 0.4, -0.7);
+            expectVectorClose(
+              [cylindricalSph.radius / scale, cylindricalSph.z / scale],
+              [5 * Math.sin(0.4), 5 * Math.cos(0.4)],
+            );
+            expect(raw.latsph(-5 * scale, 7.5, 0.4).radius).toBe(-5 * scale);
+            expect(raw.sphlat(-5 * scale, 0.4, 7.5).radius).toBe(-5 * scale);
           }
         } finally {
           await dispose();

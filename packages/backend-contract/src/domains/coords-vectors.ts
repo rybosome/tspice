@@ -98,7 +98,11 @@ export interface CoordsVectorsApi {
    * overflow. No kernels are needed, and no angles are normalized unless stated.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/reccyl_c.html
    */
-  reccyl(rect: SpiceVector3): { radius: number; lon: number; z: number };
+  reccyl(rect: Readonly<SpiceVector3>): {
+    radius: number;
+    lon: number;
+    z: number;
+  };
 
   /**
    * Convert spherical coordinates to cylindrical coordinates.
