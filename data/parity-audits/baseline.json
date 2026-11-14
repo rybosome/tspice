@@ -440,8 +440,8 @@
         "shelli_c"
       ],
       "dependsOn": ["a24-sorted-bounds"],
-      "prs": [],
-      "nextAction": "Record both full local lanes and source-bound canonical CI for the combined A24/A23 source, then inspect the final-head matrix and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/744"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

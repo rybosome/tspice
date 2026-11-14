@@ -40,7 +40,312 @@
     "packages/py-parity-checking/test/sorted-bounds.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a23-628f7b8d-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6624b2f9302ce2e279f226ff4cfc04f66506ecf3221b7e78639ae1b721b9ed6c",
+      "caseIds": [
+        "coords-vectors-isordv-cycles",
+        "coords-vectors-isordv-duplicate",
+        "coords-vectors-isordv-empty-singleton",
+        "coords-vectors-isordv-larger",
+        "coords-vectors-isordv-out-of-range",
+        "coords-vectors-orderc-blank-text",
+        "coords-vectors-orderc-empty-singleton",
+        "coords-vectors-orderc-ordered-reverse",
+        "coords-vectors-orderc-shell-ties",
+        "coords-vectors-orderc-utf8-controls",
+        "coords-vectors-orderd-empty-singleton",
+        "coords-vectors-orderd-extrema",
+        "coords-vectors-orderd-nontrivial-gaps",
+        "coords-vectors-orderd-ordered-reverse",
+        "coords-vectors-orderd-shell-ties",
+        "coords-vectors-orderi-empty-singleton",
+        "coords-vectors-orderi-extrema",
+        "coords-vectors-orderi-nontrivial-gaps",
+        "coords-vectors-orderi-ordered-reverse",
+        "coords-vectors-orderi-shell-ties",
+        "coords-vectors-reordc-cycles",
+        "coords-vectors-reordc-duplicate-order",
+        "coords-vectors-reordc-empty-singleton",
+        "coords-vectors-reordc-fixed-and-disjoint",
+        "coords-vectors-reordc-order-length",
+        "coords-vectors-reordc-order-out-of-range",
+        "coords-vectors-reordc-reverse-identity",
+        "coords-vectors-reordd-cycles",
+        "coords-vectors-reordd-duplicate-order",
+        "coords-vectors-reordd-empty-singleton",
+        "coords-vectors-reordd-fixed-and-disjoint",
+        "coords-vectors-reordd-order-length",
+        "coords-vectors-reordd-order-out-of-range",
+        "coords-vectors-reordd-reverse-identity",
+        "coords-vectors-reordi-cycles",
+        "coords-vectors-reordi-duplicate-order",
+        "coords-vectors-reordi-empty-singleton",
+        "coords-vectors-reordi-fixed-and-disjoint",
+        "coords-vectors-reordi-order-length",
+        "coords-vectors-reordi-order-out-of-range",
+        "coords-vectors-reordi-reverse-identity",
+        "coords-vectors-reordl-cycles",
+        "coords-vectors-reordl-duplicate-order",
+        "coords-vectors-reordl-empty-singleton",
+        "coords-vectors-reordl-fixed-and-disjoint",
+        "coords-vectors-reordl-order-length",
+        "coords-vectors-reordl-order-out-of-range",
+        "coords-vectors-reordl-reverse-identity",
+        "coords-vectors-shellc-blank-text",
+        "coords-vectors-shellc-empty-singleton",
+        "coords-vectors-shellc-ordered-reverse",
+        "coords-vectors-shellc-shell-ties",
+        "coords-vectors-shellc-utf8-controls",
+        "coords-vectors-shelld-empty-singleton",
+        "coords-vectors-shelld-extrema",
+        "coords-vectors-shelld-nontrivial-gaps",
+        "coords-vectors-shelld-ordered-reverse",
+        "coords-vectors-shelld-shell-ties",
+        "coords-vectors-shelli-empty-singleton",
+        "coords-vectors-shelli-extrema",
+        "coords-vectors-shelli-nontrivial-gaps",
+        "coords-vectors-shelli-ordered-reverse",
+        "coords-vectors-shelli-shell-ties"
+      ],
+      "observation": "Both complete required lanes passed locally on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a. JavaScript: 2,660 parity tests and one expected guard skip. Native-required: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a23-628f7b8d-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6624b2f9302ce2e279f226ff4cfc04f66506ecf3221b7e78639ae1b721b9ed6c",
+      "caseIds": [
+        "coords-vectors-isordv-cycles",
+        "coords-vectors-isordv-duplicate",
+        "coords-vectors-isordv-empty-singleton",
+        "coords-vectors-isordv-larger",
+        "coords-vectors-isordv-out-of-range",
+        "coords-vectors-orderc-blank-text",
+        "coords-vectors-orderc-empty-singleton",
+        "coords-vectors-orderc-ordered-reverse",
+        "coords-vectors-orderc-shell-ties",
+        "coords-vectors-orderc-utf8-controls",
+        "coords-vectors-orderd-empty-singleton",
+        "coords-vectors-orderd-extrema",
+        "coords-vectors-orderd-nontrivial-gaps",
+        "coords-vectors-orderd-ordered-reverse",
+        "coords-vectors-orderd-shell-ties",
+        "coords-vectors-orderi-empty-singleton",
+        "coords-vectors-orderi-extrema",
+        "coords-vectors-orderi-nontrivial-gaps",
+        "coords-vectors-orderi-ordered-reverse",
+        "coords-vectors-orderi-shell-ties",
+        "coords-vectors-reordc-cycles",
+        "coords-vectors-reordc-duplicate-order",
+        "coords-vectors-reordc-empty-singleton",
+        "coords-vectors-reordc-fixed-and-disjoint",
+        "coords-vectors-reordc-order-length",
+        "coords-vectors-reordc-order-out-of-range",
+        "coords-vectors-reordc-reverse-identity",
+        "coords-vectors-reordd-cycles",
+        "coords-vectors-reordd-duplicate-order",
+        "coords-vectors-reordd-empty-singleton",
+        "coords-vectors-reordd-fixed-and-disjoint",
+        "coords-vectors-reordd-order-length",
+        "coords-vectors-reordd-order-out-of-range",
+        "coords-vectors-reordd-reverse-identity",
+        "coords-vectors-reordi-cycles",
+        "coords-vectors-reordi-duplicate-order",
+        "coords-vectors-reordi-empty-singleton",
+        "coords-vectors-reordi-fixed-and-disjoint",
+        "coords-vectors-reordi-order-length",
+        "coords-vectors-reordi-order-out-of-range",
+        "coords-vectors-reordi-reverse-identity",
+        "coords-vectors-reordl-cycles",
+        "coords-vectors-reordl-duplicate-order",
+        "coords-vectors-reordl-empty-singleton",
+        "coords-vectors-reordl-fixed-and-disjoint",
+        "coords-vectors-reordl-order-length",
+        "coords-vectors-reordl-order-out-of-range",
+        "coords-vectors-reordl-reverse-identity",
+        "coords-vectors-shellc-blank-text",
+        "coords-vectors-shellc-empty-singleton",
+        "coords-vectors-shellc-ordered-reverse",
+        "coords-vectors-shellc-shell-ties",
+        "coords-vectors-shellc-utf8-controls",
+        "coords-vectors-shelld-empty-singleton",
+        "coords-vectors-shelld-extrema",
+        "coords-vectors-shelld-nontrivial-gaps",
+        "coords-vectors-shelld-ordered-reverse",
+        "coords-vectors-shelld-shell-ties",
+        "coords-vectors-shelli-empty-singleton",
+        "coords-vectors-shelli-extrema",
+        "coords-vectors-shelli-nontrivial-gaps",
+        "coords-vectors-shelli-ordered-reverse",
+        "coords-vectors-shelli-shell-ties"
+      ],
+      "observation": "Both complete required lanes passed locally on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a. JavaScript: 2,660 parity tests and one expected guard skip. Native-required: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a23-628f7b8d-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6624b2f9302ce2e279f226ff4cfc04f66506ecf3221b7e78639ae1b721b9ed6c",
+      "caseIds": [
+        "coords-vectors-isordv-cycles",
+        "coords-vectors-isordv-duplicate",
+        "coords-vectors-isordv-empty-singleton",
+        "coords-vectors-isordv-larger",
+        "coords-vectors-isordv-out-of-range",
+        "coords-vectors-orderc-blank-text",
+        "coords-vectors-orderc-empty-singleton",
+        "coords-vectors-orderc-ordered-reverse",
+        "coords-vectors-orderc-shell-ties",
+        "coords-vectors-orderc-utf8-controls",
+        "coords-vectors-orderd-empty-singleton",
+        "coords-vectors-orderd-extrema",
+        "coords-vectors-orderd-nontrivial-gaps",
+        "coords-vectors-orderd-ordered-reverse",
+        "coords-vectors-orderd-shell-ties",
+        "coords-vectors-orderi-empty-singleton",
+        "coords-vectors-orderi-extrema",
+        "coords-vectors-orderi-nontrivial-gaps",
+        "coords-vectors-orderi-ordered-reverse",
+        "coords-vectors-orderi-shell-ties",
+        "coords-vectors-reordc-cycles",
+        "coords-vectors-reordc-duplicate-order",
+        "coords-vectors-reordc-empty-singleton",
+        "coords-vectors-reordc-fixed-and-disjoint",
+        "coords-vectors-reordc-order-length",
+        "coords-vectors-reordc-order-out-of-range",
+        "coords-vectors-reordc-reverse-identity",
+        "coords-vectors-reordd-cycles",
+        "coords-vectors-reordd-duplicate-order",
+        "coords-vectors-reordd-empty-singleton",
+        "coords-vectors-reordd-fixed-and-disjoint",
+        "coords-vectors-reordd-order-length",
+        "coords-vectors-reordd-order-out-of-range",
+        "coords-vectors-reordd-reverse-identity",
+        "coords-vectors-reordi-cycles",
+        "coords-vectors-reordi-duplicate-order",
+        "coords-vectors-reordi-empty-singleton",
+        "coords-vectors-reordi-fixed-and-disjoint",
+        "coords-vectors-reordi-order-length",
+        "coords-vectors-reordi-order-out-of-range",
+        "coords-vectors-reordi-reverse-identity",
+        "coords-vectors-reordl-cycles",
+        "coords-vectors-reordl-duplicate-order",
+        "coords-vectors-reordl-empty-singleton",
+        "coords-vectors-reordl-fixed-and-disjoint",
+        "coords-vectors-reordl-order-length",
+        "coords-vectors-reordl-order-out-of-range",
+        "coords-vectors-reordl-reverse-identity",
+        "coords-vectors-shellc-blank-text",
+        "coords-vectors-shellc-empty-singleton",
+        "coords-vectors-shellc-ordered-reverse",
+        "coords-vectors-shellc-shell-ties",
+        "coords-vectors-shellc-utf8-controls",
+        "coords-vectors-shelld-empty-singleton",
+        "coords-vectors-shelld-extrema",
+        "coords-vectors-shelld-nontrivial-gaps",
+        "coords-vectors-shelld-ordered-reverse",
+        "coords-vectors-shelld-shell-ties",
+        "coords-vectors-shelli-empty-singleton",
+        "coords-vectors-shelli-extrema",
+        "coords-vectors-shelli-nontrivial-gaps",
+        "coords-vectors-shelli-ordered-reverse",
+        "coords-vectors-shelli-shell-ties"
+      ],
+      "commit": "628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43571469197/job/132376590102",
+      "observation": "Inspected successful Linux Node 22 native-required job 132376590102 on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a23-628f7b8d-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6624b2f9302ce2e279f226ff4cfc04f66506ecf3221b7e78639ae1b721b9ed6c",
+      "caseIds": [
+        "coords-vectors-isordv-cycles",
+        "coords-vectors-isordv-duplicate",
+        "coords-vectors-isordv-empty-singleton",
+        "coords-vectors-isordv-larger",
+        "coords-vectors-isordv-out-of-range",
+        "coords-vectors-orderc-blank-text",
+        "coords-vectors-orderc-empty-singleton",
+        "coords-vectors-orderc-ordered-reverse",
+        "coords-vectors-orderc-shell-ties",
+        "coords-vectors-orderc-utf8-controls",
+        "coords-vectors-orderd-empty-singleton",
+        "coords-vectors-orderd-extrema",
+        "coords-vectors-orderd-nontrivial-gaps",
+        "coords-vectors-orderd-ordered-reverse",
+        "coords-vectors-orderd-shell-ties",
+        "coords-vectors-orderi-empty-singleton",
+        "coords-vectors-orderi-extrema",
+        "coords-vectors-orderi-nontrivial-gaps",
+        "coords-vectors-orderi-ordered-reverse",
+        "coords-vectors-orderi-shell-ties",
+        "coords-vectors-reordc-cycles",
+        "coords-vectors-reordc-duplicate-order",
+        "coords-vectors-reordc-empty-singleton",
+        "coords-vectors-reordc-fixed-and-disjoint",
+        "coords-vectors-reordc-order-length",
+        "coords-vectors-reordc-order-out-of-range",
+        "coords-vectors-reordc-reverse-identity",
+        "coords-vectors-reordd-cycles",
+        "coords-vectors-reordd-duplicate-order",
+        "coords-vectors-reordd-empty-singleton",
+        "coords-vectors-reordd-fixed-and-disjoint",
+        "coords-vectors-reordd-order-length",
+        "coords-vectors-reordd-order-out-of-range",
+        "coords-vectors-reordd-reverse-identity",
+        "coords-vectors-reordi-cycles",
+        "coords-vectors-reordi-duplicate-order",
+        "coords-vectors-reordi-empty-singleton",
+        "coords-vectors-reordi-fixed-and-disjoint",
+        "coords-vectors-reordi-order-length",
+        "coords-vectors-reordi-order-out-of-range",
+        "coords-vectors-reordi-reverse-identity",
+        "coords-vectors-reordl-cycles",
+        "coords-vectors-reordl-duplicate-order",
+        "coords-vectors-reordl-empty-singleton",
+        "coords-vectors-reordl-fixed-and-disjoint",
+        "coords-vectors-reordl-order-length",
+        "coords-vectors-reordl-order-out-of-range",
+        "coords-vectors-reordl-reverse-identity",
+        "coords-vectors-shellc-blank-text",
+        "coords-vectors-shellc-empty-singleton",
+        "coords-vectors-shellc-ordered-reverse",
+        "coords-vectors-shellc-shell-ties",
+        "coords-vectors-shellc-utf8-controls",
+        "coords-vectors-shelld-empty-singleton",
+        "coords-vectors-shelld-extrema",
+        "coords-vectors-shelld-nontrivial-gaps",
+        "coords-vectors-shelld-ordered-reverse",
+        "coords-vectors-shelld-shell-ties",
+        "coords-vectors-shelli-empty-singleton",
+        "coords-vectors-shelli-extrema",
+        "coords-vectors-shelli-nontrivial-gaps",
+        "coords-vectors-shelli-ordered-reverse",
+        "coords-vectors-shelli-shell-ties"
+      ],
+      "commit": "628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43571469197/job/132376590102",
+      "observation": "Inspected successful Linux Node 22 native-required job 132376590102 on 628f7b8db5b0c09eb9ab5da6a67fa08376d03c2a: 2,432 registered Node/WASM live comparisons; 2,661 parity-package tests with no skips, including the native-required guard; 116 native wrapper, 671 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "isordv_c",
@@ -97,16 +402,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isordv -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_isordv -> isordv_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isordv -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_isordv -> isordv_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -164,16 +469,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderc -> orderc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderc -> orderc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -218,16 +523,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -272,16 +577,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.orderi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -349,16 +654,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordc -> reordc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordc -> reordc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -413,16 +718,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -477,16 +782,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -541,16 +846,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordl -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.reordl -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -595,16 +900,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shellc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shellc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -649,16 +954,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shelld -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shelld -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     },
@@ -703,19 +1008,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shelli -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-node", "ci-a23-628f7b8d-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.shelli -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
-          "executions": []
+          "executions": ["local-a23-628f7b8d-wasm", "ci-a23-628f7b8d-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Source, independent library, compiled focused and Chrome observations reviewed. Record full required local and canonical CI executions for the combined A24/A23 source before verification."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
