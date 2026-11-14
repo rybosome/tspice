@@ -28,23 +28,252 @@
     "packages/core/src/index.ts",
     "packages/core/src/spice-runtime/domains/sorted-bounds.ts"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a24-6c475685-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d398060c891ab3628b099a7a469309183f495463685071619352babd8454f3d8",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a24-6c475685-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d398060c891ab3628b099a7a469309183f495463685071619352babd8454f3d8",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a24-6c475685-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d398060c891ab3628b099a7a469309183f495463685071619352babd8454f3d8",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "commit": "6c47568546269a4648e9d9784a7da548beda00fd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
+      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a24-6c475685-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d398060c891ab3628b099a7a469309183f495463685071619352babd8454f3d8",
+      "caseIds": [
+        "coords-vectors-lstlec-all-equal-with-trailing-blanks",
+        "coords-vectors-lstlec-control-byte-before-padding",
+        "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlec-empty-array",
+        "coords-vectors-lstlec-empty-rows-and-blank-keys",
+        "coords-vectors-lstlec-long-keys-and-prefixes",
+        "coords-vectors-lstlec-punctuation-and-case",
+        "coords-vectors-lstlec-singleton",
+        "coords-vectors-lstlec-utf8-byte-order",
+        "coords-vectors-lstled-all-equal",
+        "coords-vectors-lstled-binary64-neighbors",
+        "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstled-empty-array",
+        "coords-vectors-lstled-finite-extremes-and-subnormals",
+        "coords-vectors-lstled-odd-even-and-inner-gaps",
+        "coords-vectors-lstled-singleton",
+        "coords-vectors-lstlei-all-equal",
+        "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlei-empty-array",
+        "coords-vectors-lstlei-odd-even-and-inner-gaps",
+        "coords-vectors-lstlei-signed-int32-extremes",
+        "coords-vectors-lstlei-singleton",
+        "coords-vectors-lstltc-all-equal-with-trailing-blanks",
+        "coords-vectors-lstltc-control-byte-before-padding",
+        "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltc-empty-array",
+        "coords-vectors-lstltc-empty-rows-and-blank-keys",
+        "coords-vectors-lstltc-long-keys-and-prefixes",
+        "coords-vectors-lstltc-punctuation-and-case",
+        "coords-vectors-lstltc-singleton",
+        "coords-vectors-lstltc-utf8-byte-order",
+        "coords-vectors-lstltd-all-equal",
+        "coords-vectors-lstltd-binary64-neighbors",
+        "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstltd-empty-array",
+        "coords-vectors-lstltd-finite-extremes-and-subnormals",
+        "coords-vectors-lstltd-odd-even-and-inner-gaps",
+        "coords-vectors-lstltd-singleton",
+        "coords-vectors-lstlti-all-equal",
+        "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
+        "coords-vectors-lstlti-empty-array",
+        "coords-vectors-lstlti-odd-even-and-inner-gaps",
+        "coords-vectors-lstlti-signed-int32-extremes",
+        "coords-vectors-lstlti-singleton"
+      ],
+      "commit": "6c47568546269a4648e9d9784a7da548beda00fd",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
+      "observation": "Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "lstlec_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlec_c.html",
-      "semantics": "Return the zero-based index of the last character array element less than or equal to the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Well-formed UTF-8 keys/rows reject embedded NUL. Compare unsigned bytes under ASCII blank extension, with equivalent trailing spaces. Each rectangular row has width max(2,longest encoded row+1), blank-filled through its character area and terminated by NUL in the last byte. Key and table fit signed 32-bit byte counts.",
+      "semantics": "Return the zero-based index of the last character array element less than or equal to the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Well-formed UTF-8 keys/rows reject embedded NUL. Compare unsigned bytes under ASCII blank extension, with equivalent trailing spaces. Each rectangular row has width max(2,longest encoded row+1), blank-filled through its character area and terminated by NUL in the last byte. Key and table fit signed 32-bit byte counts.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlec-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlec-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlec-duplicates-at-beginning-interior-and-end",
@@ -82,17 +311,17 @@
           "observes": "Compare longer keys with rows that are common prefixes, retaining blank-extension comparison and exact index."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. All-equal trailing blanks, empty strings/blank keys, controls, punctuation, case, unsigned UTF-8 ordering and long common prefixes distinguish the fixed-width representation.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. All-equal trailing blanks, empty strings/blank keys, controls, punctuation, case, unsigned UTF-8 ordering and long common prefixes distinguish the fixed-width representation.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "inclusive-mid-row-padding",
           "status": "repaired",
-          "summary": "The pinned inclusive character routine compares endpoints with strlen but compares an interior row with arrlen\u22121 bytes. Ordinary zero-filled rectangular row padding can alter the ordering against a low control byte.",
+          "summary": "The pinned inclusive character routine compares endpoints with strlen but compares an interior row with arrlen−1 bytes. Ordinary zero-filled rectangular row padding can alter the ordering against a low control byte.",
           "repair": "Both adapters and the independent SpiceyPy caller encode the same fixed-width row, pad with ASCII spaces and add the terminating NUL in its last byte. The probe inspects exact bytes and runs both canonical inclusive and strict calls with ordinary and space-filled rows.",
           "evidence": [
             "packages/core/src/spice-runtime/domains/sorted-bounds.ts",
@@ -123,16 +352,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlec -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlec -> canonical lstlec_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlec wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlec -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlec -> shared tspice_lstlec -> canonical lstlec_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlec wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     },
@@ -140,17 +369,17 @@
       "routine": "lstled_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstled_c.html",
-      "semantics": "Return the zero-based index of the last double array element less than or equal to the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept ordered doubles including infinities, signed zeros and subnormals. Reject NaN before the call. Numeric comparison is the exact pinned binary-search predicate, not approximate floating equality.",
+      "semantics": "Return the zero-based index of the last double array element less than or equal to the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept ordered doubles including infinities, signed zeros and subnormals. Reject NaN before the call. Numeric comparison is the exact pinned binary-search predicate, not approximate floating equality.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstled-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstled-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstled-duplicates-at-beginning-interior-and-end",
@@ -178,12 +407,12 @@
           "observes": "Compare exact indices at finite extrema, subnormals and signed zero neighborhoods."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. Adjacent representable doubles, infinities, signed zeros, subnormals, finite extrema and queries inside gaps make strict versus inclusive comparisons observable.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. Adjacent representable doubles, infinities, signed zeros, subnormals, finite extrema and queries inside gaps make strict versus inclusive comparisons observable.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "single-read-ownership-assertion",
@@ -201,16 +430,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstled -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstled -> canonical lstled_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstled wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstled -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstled -> shared tspice_lstled -> canonical lstled_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstled wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     },
@@ -218,17 +447,17 @@
       "routine": "lstlei_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlei_c.html",
-      "semantics": "Return the zero-based index of the last signed32 integer array element less than or equal to the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept only signed32 integer keys and entries. Preserve negative values, extrema and exact integer comparisons.",
+      "semantics": "Return the zero-based index of the last signed32 integer array element less than or equal to the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept only signed32 integer keys and entries. Preserve negative values, extrema and exact integer comparisons.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlei-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlei-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlei-duplicates-at-beginning-interior-and-end",
@@ -251,12 +480,12 @@
           "observes": "Compare exact indices around signed32 minimum and maximum and locations between extreme entries."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. Signed32 extrema, all-equal values, even/odd search regions and queries inside gaps make the exact predecessor index observable.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. Signed32 extrema, all-equal values, even/odd search regions and queries inside gaps make the exact predecessor index observable.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "single-read-ownership-assertion",
@@ -274,16 +503,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlei -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlei -> canonical lstlei_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlei wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlei -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlei -> shared tspice_lstlei -> canonical lstlei_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlei wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     },
@@ -291,17 +520,17 @@
       "routine": "lstltc_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltc_c.html",
-      "semantics": "Return the zero-based index of the last character array element strictly less than the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Well-formed UTF-8 keys/rows reject embedded NUL. Compare unsigned bytes under ASCII blank extension, with equivalent trailing spaces. Each rectangular row has width max(2,longest encoded row+1), blank-filled through its character area and terminated by NUL in the last byte. Key and table fit signed 32-bit byte counts.",
+      "semantics": "Return the zero-based index of the last character array element strictly less than the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Well-formed UTF-8 keys/rows reject embedded NUL. Compare unsigned bytes under ASCII blank extension, with equivalent trailing spaces. Each rectangular row has width max(2,longest encoded row+1), blank-filled through its character area and terminated by NUL in the last byte. Key and table fit signed 32-bit byte counts.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstltc-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstltc-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstltc-duplicates-at-beginning-interior-and-end",
@@ -339,12 +568,12 @@
           "observes": "Compare longer keys with rows that are common prefixes, retaining blank-extension comparison and exact index."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. All-equal trailing blanks, empty strings/blank keys, controls, punctuation, case, unsigned UTF-8 ordering and long common prefixes distinguish the fixed-width representation.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. All-equal trailing blanks, empty strings/blank keys, controls, punctuation, case, unsigned UTF-8 ordering and long common prefixes distinguish the fixed-width representation.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "single-read-ownership-assertion",
@@ -362,16 +591,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstltc -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstltc -> canonical lstltc_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltc wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstltc -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstltc -> shared tspice_lstltc -> canonical lstltc_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltc wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     },
@@ -379,17 +608,17 @@
       "routine": "lstltd_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltd_c.html",
-      "semantics": "Return the zero-based index of the last double array element strictly less than the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept ordered doubles including infinities, signed zeros and subnormals. Reject NaN before the call. Numeric comparison is the exact pinned binary-search predicate, not approximate floating equality.",
+      "semantics": "Return the zero-based index of the last double array element strictly less than the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept ordered doubles including infinities, signed zeros and subnormals. Reject NaN before the call. Numeric comparison is the exact pinned binary-search predicate, not approximate floating equality.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstltd-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstltd-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstltd-duplicates-at-beginning-interior-and-end",
@@ -417,12 +646,12 @@
           "observes": "Compare exact indices at finite extrema, subnormals and signed zero neighborhoods."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. Adjacent representable doubles, infinities, signed zeros, subnormals, finite extrema and queries inside gaps make strict versus inclusive comparisons observable.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. Adjacent representable doubles, infinities, signed zeros, subnormals, finite extrema and queries inside gaps make strict versus inclusive comparisons observable.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "single-read-ownership-assertion",
@@ -440,16 +669,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstltd -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstltd -> canonical lstltd_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltd wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstltd -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstltd -> shared tspice_lstltd -> canonical lstltd_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstltd wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     },
@@ -457,17 +686,17 @@
       "routine": "lstlti_c",
       "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
       "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlti_c.html",
-      "semantics": "Return the zero-based index of the last signed32 integer array element strictly less than the key, or \u22121 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept only signed32 integer keys and entries. Preserve negative values, extrema and exact integer comparisons.",
+      "semantics": "Return the zero-based index of the last signed32 integer array element strictly less than the key, or −1 for empty input or no qualifying element. Nondecreasing order is a caller precondition. Preserve supplied order and duplicates. Accept only signed32 integer keys and entries. Preserve negative values, extrema and exact integer comparisons.",
       "scenarios": [
         {
           "caseId": "coords-vectors-lstlti-empty-array",
           "coverage": ["success", "edge"],
-          "observes": "Pass an inferred count of zero using actual valid storage and compare exact \u22121 at several keys."
+          "observes": "Pass an inferred count of zero using actual valid storage and compare exact −1 at several keys."
         },
         {
           "caseId": "coords-vectors-lstlti-singleton",
           "coverage": ["success", "edge"],
-          "observes": "Query below, equal to and above the single entry. Distinguish \u22121 from valid index zero."
+          "observes": "Query below, equal to and above the single entry. Distinguish −1 from valid index zero."
         },
         {
           "caseId": "coords-vectors-lstlti-duplicates-at-beginning-interior-and-end",
@@ -490,12 +719,12 @@
           "observes": "Compare exact indices around signed32 minimum and maximum and locations between extreme entries."
         }
       ],
-      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact \u22121 and index zero through the highest qualifying index. Signed32 extrema, all-equal values, even/odd search regions and queries inside gaps make the exact predecessor index observable.",
-      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns \u22121. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
+      "edgeAssessment": "Empty arrays, singleton keys and duplicate runs at each end and internally compare exact −1 and index zero through the highest qualifying index. Signed32 extrema, all-equal values, even/odd search regions and queries inside gaps make the exact predecessor index observable.",
+      "errorAssessment": "No scientific error is fabricated for valid sorted inputs, and an empty array genuinely returns −1. Unsorted input violates the documented caller precondition. Test-side validation rejects unsorted fixtures before independent calls. Malformed types and unsafe count/byte sizes are separate wrapper checks.",
       "fixtures": [],
       "fixtureRationale": "Project-authored sorted arrays and keys with discriminating duplicate/control-byte/ordering cases. No kernel or dataset resources.",
       "cleanup": "Capture array lengths, copy validated entries once and check storage before calls. Native owns storage during serialized calls. WASM uses transactional allocations and reads the scalar only after successful status. Valid non-null dummy storage supports zero count. Focused public clients dispose cleanly.",
-      "tolerance": "Compare exact integer indices, including \u22121. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
+      "tolerance": "Compare exact integer indices, including −1. No tolerance is meaningful for an index. Public comparisons also distinguish adjacent doubles and correctly padded byte rows using independently observed integral outputs.",
       "findings": [
         {
           "id": "single-read-ownership-assertion",
@@ -513,19 +742,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlti -> typed Node adapter -> registered addon with owned input snapshot under global SPICE mutex -> shared tspice_lstlti -> canonical lstlti_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlti wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-node", "ci-a24-6c475685-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.lstlti -> typed WASM adapter -> transactional bounded allocations -> exported _tspice_lstlti -> shared tspice_lstlti -> canonical lstlti_c. Independent sidecar validates its fixtures and calls the installed SpiceyPy lstlti wrapper for the actual integer result.",
-          "executions": []
+          "executions": ["local-a24-6c475685-wasm", "ci-a24-6c475685-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Reviewed pinned C searches, data layout, typed preconditions and all locked wrapper calls. Earlier Step 7 executions are historical. Fresh source-bound local and canonical CI evidence is required for final verification."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

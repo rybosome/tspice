@@ -421,8 +421,8 @@
         "lstlti_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Record fresh required local lanes and inspected canonical CI for the reviewed typed sorted bounds. Confirm final-head CI and explicit rebaseability before delivery."
+      "prs": ["https://github.com/rybosome/tspice/pull/721"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }
