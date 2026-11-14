@@ -70,3 +70,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## Type 2 DSK data access
 
 Seven direct operations expose geometry data and physical closure. Each page comparison uses the count reported by the locked library. Scratch writers verify both close modes through independent readback. [DSK data and closure](step8-dsk-data.md) [Routine audits](../data/parity-audits/e18-dsk-data.json)
+
+## DSK ray intersections and tolerances
+
+E19 compares type 2 plate intercepts, loaded surface search and source metadata, and global tolerance changes through separate real N0067 runtimes. [Scientific checks and source adapter](step8-dsk-intersections.md) [Per-routine judgments](../data/parity-audits/e19-dsk-intersections.json)

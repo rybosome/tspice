@@ -230,6 +230,42 @@ export type NativeAddon = {
 
   dskobj(dsk: string, bodidsCellHandle: number): void;
   dsksrf(dsk: string, bodyid: number, srfidsCellHandle: number): void;
+  dskx02(
+    handle: number,
+    dladsc: DlaDescriptor,
+    vertex: Float64Array,
+    dir: Float64Array,
+  ): { found: false } | { found: true; plid: number; xpt: number[] };
+  dskxsi(
+    pri: boolean,
+    target: string,
+    srflst: Int32Array,
+    et: number,
+    fixref: string,
+    vertex: Float64Array,
+    dir: Float64Array,
+    maxd: number,
+    maxi: number,
+  ):
+    | { found: false }
+    | {
+        found: true;
+        handle: number;
+        plate: number;
+        dla: number[];
+        words: number[];
+      };
+  dskxv(
+    pri: boolean,
+    target: string,
+    srflst: Int32Array,
+    et: number,
+    fixref: string,
+    vertices: Float64Array,
+    dirs: Float64Array,
+  ): (number[] | null)[];
+  dskgtl(key: number): number;
+  dskstl(key: number, value: number): void;
   dskgd(
     handle: number,
     dladsc: Record<string, unknown>,

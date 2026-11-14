@@ -178,6 +178,11 @@ export function dispatchStep(
     case "dsk.dlabfs":
     case "dsk.dskd02":
     case "dsk.dski02":
+    case "dsk.dskx02":
+    case "dsk.dskxsi":
+    case "dsk.dskxv":
+    case "dsk.dskgtl":
+    case "dsk.dskstl":
     case "dsk.dskn02":
     case "dsk.dskp02":
     case "dsk.dskv02":

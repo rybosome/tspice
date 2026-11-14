@@ -2309,6 +2309,21 @@ export function createFakeBackend(
 
     // -- DSK ----------------------------------------------------------------
 
+    dskx02: () => {
+      throw new Error("Fake backend: dskx02 is not implemented");
+    },
+    dskxsi: () => {
+      throw new Error("Fake backend: dskxsi is not implemented");
+    },
+    dskxv: () => {
+      throw new Error("Fake backend: dskxv is not implemented");
+    },
+    dskgtl: () => {
+      throw new Error("Fake backend: dskgtl is not implemented");
+    },
+    dskstl: () => {
+      throw new Error("Fake backend: dskstl is not implemented");
+    },
     dskobj: (_dsk: string, _bodids: SpiceIntCell) => {
       throw new Error("Fake backend: dskobj() is not implemented");
     },

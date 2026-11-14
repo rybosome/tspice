@@ -116,6 +116,54 @@ class StepDskDski02:
 
 
 @dataclass(frozen=True)
+class StepDskDskx02:
+    op: Literal["dsk.dskx02"]
+    handleId: str
+    dladscId: str
+    vertex: tuple[float,float,float]
+    raydir: tuple[float,float,float]
+
+
+@dataclass(frozen=True)
+class StepDskDskxsi:
+    op: Literal["dsk.dskxsi"]
+    pri: bool
+    target: str
+    srflst: list[int]
+    et: float
+    fixref: str
+    vertex: tuple[float,float,float]
+    raydir: tuple[float,float,float]
+    maxd: int
+    maxi: int
+
+
+@dataclass(frozen=True)
+class StepDskDskxv:
+    op: Literal["dsk.dskxv"]
+    pri: bool
+    target: str
+    srflst: list[int]
+    et: float
+    fixref: str
+    vertices: list[tuple[float,float,float]]
+    dirs: list[tuple[float,float,float]]
+
+
+@dataclass(frozen=True)
+class StepDskDskgtl:
+    op: Literal["dsk.dskgtl"]
+    key: int
+
+
+@dataclass(frozen=True)
+class StepDskDskstl:
+    op: Literal["dsk.dskstl"]
+    key: int
+    value: float
+
+
+@dataclass(frozen=True)
 class StepDskDskn02:
     op: Literal["dsk.dskn02"]
     handleId: str

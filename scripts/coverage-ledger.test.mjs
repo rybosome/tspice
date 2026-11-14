@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 169,
-    planned: 480,
+    implemented: 174,
+    planned: 475,
     excluded: 3,
-    caseFiles: 169,
-    scenarios: 1156,
+    caseFiles: 174,
+    scenarios: 1203,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -305,6 +305,31 @@ test("an existing but disconnected harness fallback does not count", (t) => {
   assert.throws(f.build, /Stale harness fallback dispatch for kplfrm/);
 });
 
+test("DSKXSI requires the external SPICELIB operation and both outer trace calls", (t) => {
+  const f = fixture(t);
+  const routine = f.build().routines.find((row) => row.routine === "dskxsi_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    for (const name of ["dskxsi_", "chkin_c", "chkout_c"])
+      assert.ok(mapping.cspiceEntrypoints.includes(name));
+    assert.ok(!mapping.cspiceEntrypoints.includes("dskxsi_c"));
+  }
+  const file = "packages/backend-shim-c/src/domains/dsk.c";
+  for (const [call, replacement] of [
+    ["else dskxsi_(&priority", "else undocumented_stub(&priority"],
+    ['chkin_c("dskxsi_c");', '/* chkin_c("dskxsi_c"); */'],
+    ['chkout_c("dskxsi_c");', '/* chkout_c("dskxsi_c"); */'],
+  ]) {
+    const mutation = fixture(t);
+    mutation.edit(file, call, replacement);
+    assert.throws(
+      mutation.build,
+      /Stale non-direct mapping policy for (node|wasm).dskxsi/,
+    );
+  }
+});
+
 test("non-direct mappings require an explicit evidence-backed policy", (t) => {
   const f = fixture(t);
   const file = path.join(f.root, "data/coverage-ledger-policy.json");
@@ -446,7 +471,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 7);
+  assert.equal(ledger.audit.expansionRoutines, 12);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,

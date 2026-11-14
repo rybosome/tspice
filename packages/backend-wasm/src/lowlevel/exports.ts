@@ -376,6 +376,50 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dskx02(
+    handle: number,
+    descr: number,
+    vertex: number,
+    dir: number,
+    plid: number,
+    xpt: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskxsi(
+    pri: number,
+    target: number,
+    nsurf: number,
+    surfaces: number,
+    et: number,
+    fixref: number,
+    vertex: number,
+    dir: number,
+    maxd: number,
+    maxi: number,
+    out: number,
+    ints: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskxv(
+    pri: number,
+    target: number,
+    nsurf: number,
+    surfaces: number,
+    et: number,
+    fixref: number,
+    nrays: number,
+    vertices: number,
+    dirs: number,
+    out: number,
+    found: number,
+    err: number,
+    cap: number,
+  ): number;
+  _tspice_dskgtl(key: number, out: number, err: number, cap: number): number;
+  _tspice_dskstl(key: number, value: number, err: number, cap: number): number;
   _tspice_dskgd(
     handle: number,
     dladscInts8Ptr: number,
@@ -2374,6 +2418,11 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dskw02",
   "_tspice_dskobj",
   "_tspice_dsksrf",
+  "_tspice_dskx02",
+  "_tspice_dskxsi",
+  "_tspice_dskxv",
+  "_tspice_dskgtl",
+  "_tspice_dskstl",
   "_tspice_dskgd",
   "_tspice_dskd02",
   "_tspice_dski02",

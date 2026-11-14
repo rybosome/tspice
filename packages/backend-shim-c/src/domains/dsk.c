@@ -8,6 +8,9 @@
 
 #include "tspice_error.h"
 
+#include "SpiceZfc.h"
+#include <limits.h>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -409,6 +412,106 @@ int tspice_dski02(int handle, const int32_t* descr, int item, int start, int roo
   if (!failed_c() && (*count < 0 || (int64_t)*count * 1 > storage))
     return tspice_return_error(err, cap, "Invalid returned DSK page count");
   return data_status(err, cap);
+}
+
+_Static_assert(sizeof(logical)==sizeof(SpiceBoolean) && sizeof(integer)==sizeof(int) &&
+               sizeof(doublereal)==sizeof(double) && SPICE_DSK_DSCSIZ==24,
+               "Unexpected pinned DSK SPICELIB ABI");
+
+static int finite_ray(const double *v) {
+  return v && isfinite(v[0]) && isfinite(v[1]) && isfinite(v[2]);
+}
+
+static int intersection_inputs(int pri, const char *target, int nsurf, const int *surfaces,
+                               double et, const char *fixref) {
+  return (pri == 0 || pri == 1) && target && fixref && strlen(target) < INT_MAX &&
+         strlen(fixref) < INT_MAX && nsurf >= 0 && nsurf <= 67108864 && surfaces && isfinite(et);
+}
+
+// Match CHKFSTR(CHK_STANDARD) for non-null string inputs in the outer C frame.
+static void dsk_empty_string(const char *argument) {
+  setmsg_c("String \"#\" has length zero.");
+  errch_c("#",argument);
+  sigerr_c("SPICE(EMPTYSTRING)");
+}
+
+int tspice_dskx02(int handle, const int *descr, const double *vertex, const double *dir, int *plid, double *xpt, int *found, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err,cap);
+  if (!finite_ray(vertex) || !finite_ray(dir) || !plid || !xpt || !found)
+    return tspice_return_error(err,cap,"Invalid DSKX02 ray or output");
+  DskDataSegment segment;
+  if (data_segment(handle,descr,&segment,err,cap)) return 1;
+  *found = SPICEFALSE;
+  dskx02_c(handle,&segment.descriptor,vertex,dir,plid,xpt,found);
+  return data_status(err,cap);
+}
+
+int tspice_dskxsi(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, const double *vertex, const double *dir, int maxd, int maxi, double *out, int *ints, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err,cap);
+  if (!intersection_inputs(pri,target,nsurf,surfaces,et,fixref) ||
+      !finite_ray(vertex) || !finite_ray(dir) || !out || !ints)
+    return tspice_return_error(err,cap,"Invalid DSKXSI ray, selection or output");
+  // Slots: ints[0]=found, [1]=borrowed DAS handle, [2..9]=DLA, [10]=plate.
+  // out[0..2]=point, [3..26]=full native-order SPICELIB DSK descriptor.
+  logical priority = pri, found = SPICEFALSE;
+  integer handle = 0, dla[8] = {0}, plate = 0;
+  double point[3] = {0}, dsk[24] = {0}, unused = 0;
+  // In N0067 dskxsi_c converts unwritten descriptor doubles to integers on
+  // absence and errors. Use its exact callee and outer tracing with owned,
+  // initialized outputs. Only one IC word is defined for type 2; DC is unused.
+  int dcap = maxd < 1 ? maxd : 1, icap = maxi < 1 ? maxi : 1;
+  chkin_c("dskxsi_c");
+  if (!*target) dsk_empty_string("target");
+  else if (!*fixref) dsk_empty_string("fixref");
+  else dskxsi_(&priority,(char *)target,&nsurf,(int *)surfaces,&et,(char *)fixref,
+               (double *)vertex,(double *)dir,&dcap,&icap,point,&handle,dla,dsk,
+               &unused,&plate,&found,(ftnlen)strlen(target),(ftnlen)strlen(fixref));
+  chkout_c("dskxsi_c");
+  if (failed_c()) return data_status(err,cap);
+  ints[0] = found != SPICEFALSE;
+  if (found) {
+    if (dsk[SPICE_DSK_TYPIDX] != 2) return tspice_return_error(err,cap,"Unsupported DSK source metadata");
+    for (int i=0;i<6;++i) {
+      if (!(dsk[i]>=INT_MIN && dsk[i]<=INT_MAX && trunc(dsk[i])==dsk[i]))
+        return tspice_return_error(err,cap,"Invalid DSK integer descriptor field");
+    }
+    ints[1] = handle;
+    memcpy(ints+2,dla,sizeof(dla));
+    ints[10] = plate;
+    memcpy(out,point,sizeof(point));
+    memcpy(out+3,dsk,sizeof(dsk));
+  }
+  return data_status(err,cap);
+}
+
+int tspice_dskxv(int pri, const char *target, int nsurf, const int *surfaces, double et, const char *fixref, int nrays, const double *vertices, const double *dirs, double *out, int *found, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err,cap);
+  if (!intersection_inputs(pri,target,nsurf,surfaces,et,fixref) || nrays<0 || nrays>11184810 ||
+      !vertices || !dirs || !out || !found) return tspice_return_error(err,cap,"Invalid DSKXV array bounds");
+  for (int i=0;i<nrays;++i) if (!finite_ray(vertices+3*i) || !finite_ray(dirs+3*i))
+    return tspice_return_error(err,cap,"Expected finite DSK ray components");
+  dskxv_c(pri,target,nsurf,surfaces,et,fixref,nrays,(const double (*)[3])vertices,
+          (const double (*)[3])dirs,(double (*)[3])out,found);
+  return data_status(err,cap);
+}
+
+int tspice_dskgtl(int key, double *out, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err,cap);
+  if (!out) return tspice_return_error(err,cap,"Missing tolerance output");
+  dskgtl_c(key,out);
+  return data_status(err,cap);
+}
+
+int tspice_dskstl(int key, double value, char *err, int cap) {
+  tspice_init_cspice_error_handling_once();
+  if (failed_c()) return data_status(err,cap);
+  if (!isfinite(value)) return tspice_return_error(err,cap,"Expected finite DSK tolerance");
+  dskstl_c(key,value);
+  return data_status(err,cap);
 }
 
 int tspice_dskn02(int handle, const int32_t* descr, int plid, double* out, char* err, int cap) {

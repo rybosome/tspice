@@ -1,4 +1,9 @@
 import {
+  dskRay,
+  dskRayBatch,
+  dskRaySelection,
+  dskPoint,
+  dskRaySource,
   snapshotDskDataDescriptor,
   dskPageStorage,
   dskDataRows,
@@ -199,6 +204,66 @@ export function createDskApi(
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   return {
+    dskx02(handle, dladsc, vertex, raydir) {
+      const h = handles.lookup(handle, DAS_BACKED, "dskx02").nativeHandle,
+        desc = snapshotDskDataDescriptor(dladsc),
+        v = dskRay(vertex),
+        d = dskRay(raydir);
+      const out = native.dskx02(h, desc, v, d);
+      if (!out.found) return { found: false };
+      assertI32(out.plid, "plate ID");
+      return { found: true, plid: out.plid, xpt: dskPoint(out.xpt) };
+    },
+    dskxsi(
+      pri,
+      target,
+      srflst,
+      et,
+      fixref,
+      vertex,
+      raydir,
+      maxd = 1,
+      maxi = 1,
+    ) {
+      const surfaces = dskRaySelection(pri, target, srflst, et, fixref);
+      assertI32(maxd, "maxd");
+      assertI32(maxi, "maxi");
+      const v = dskRay(vertex),
+        d = dskRay(raydir);
+      const out = native.dskxsi(
+        pri,
+        target,
+        surfaces,
+        et,
+        fixref,
+        v,
+        d,
+        maxd,
+        maxi,
+      );
+      return out.found
+        ? dskRaySource(out.handle, out.plate, out.dla, out.words)
+        : { found: false };
+    },
+    dskxv(pri, target, srflst, et, fixref, vertices, dirs) {
+      const surfaces = dskRaySelection(pri, target, srflst, et, fixref);
+      const { v, d, n } = dskRayBatch(vertices, dirs);
+      const out = native.dskxv(pri, target, surfaces, et, fixref, v, d);
+      if (out.length !== n) throw new Error("Incorrect DSK ray result count");
+      return out.map((x) =>
+        x === null ? { found: false } : { found: true, xpt: dskPoint(x) },
+      );
+    },
+    dskgtl(key) {
+      assertI32(key, "DSK tolerance key");
+      return native.dskgtl(key);
+    },
+    dskstl(key, value) {
+      assertI32(key, "DSK tolerance key");
+      if (!Number.isFinite(value))
+        throw new TypeError("Expected finite DSK tolerance");
+      return native.dskstl(key, value);
+    },
     dskd02(handle, dladsc, item, start, room) {
       const actual = handles.lookup(handle, DAS_BACKED, "dskd02").nativeHandle;
       const descriptor = snapshotDskDataDescriptor(dladsc);

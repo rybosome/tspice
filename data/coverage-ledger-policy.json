@@ -92,6 +92,16 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "dskxsi": {
+      "node": {
+        "reason": "N0067 dskxsi_c converts private uninitialized DSK descriptor fields after misses and errors. Preserve its trace, input string diagnostics and linked SPICELIB implementation with initialized output and found-only copies.",
+        "expectedEntrypoints": ["dskxsi_", "chkin_c", "chkout_c"]
+      },
+      "wasm": {
+        "reason": "N0067 dskxsi_c converts private uninitialized DSK descriptor fields after misses and errors. Preserve its trace, input string diagnostics and linked SPICELIB implementation with initialized output and found-only copies.",
+        "expectedEntrypoints": ["dskxsi_", "chkin_c", "chkout_c"]
+      }
     }
   }
 }

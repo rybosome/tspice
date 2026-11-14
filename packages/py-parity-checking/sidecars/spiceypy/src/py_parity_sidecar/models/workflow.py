@@ -63,6 +63,11 @@ from .dsk import (
     StepDskDskb02,
     StepDskDskd02,
     StepDskDski02,
+    StepDskDskx02,
+    StepDskDskxsi,
+    StepDskDskxv,
+    StepDskDskgtl,
+    StepDskDskstl,
     StepDskDskn02,
     StepDskDskp02,
     StepDskDskv02,
@@ -361,6 +366,11 @@ WorkflowStep: TypeAlias = (
     | StepDskDlabfs
     | StepDskDskd02
     | StepDskDski02
+    | StepDskDskx02
+    | StepDskDskxsi
+    | StepDskDskxv
+    | StepDskDskgtl
+    | StepDskDskstl
     | StepDskDskn02
     | StepDskDskp02
     | StepDskDskv02

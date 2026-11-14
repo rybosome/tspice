@@ -35,6 +35,7 @@ export type FileIoState = {
 };
 
 export type DskState = {
+  savedTolerances: Map<number, number>;
   loadedSegments: number;
   handles: Map<string, { handle: SpiceHandle; isOpen: boolean }>;
   dlaDescriptors: Map<string, DlaDescriptor>;
@@ -127,6 +128,7 @@ export function createRunTspiceContext(
         >(),
       },
       dsk: {
+        savedTolerances: new Map(),
         loadedSegments: 0,
         handles: new Map<string, { handle: SpiceHandle; isOpen: boolean }>(),
         dlaDescriptors: new Map<string, DlaDescriptor>(),

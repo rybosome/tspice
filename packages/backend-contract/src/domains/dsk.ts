@@ -1,4 +1,4 @@
-import type { SpiceHandle, SpiceVector3 } from "../shared/types.js";
+import type { Found, SpiceHandle, SpiceVector3 } from "../shared/types.js";
 
 import type { SpiceIntCell } from "./cells-windows.js";
 import type { DlaDescriptor } from "./file-io.js";
@@ -46,6 +46,51 @@ export type DskType2Bookkeeping = {
 
 /** Backend contract for DSK (Digital Shape Kernel) segment queries. */
 export interface DskApi {
+  /** Return the nearest intercept (km) and one-based plate ID for a ray in the selected type 2 segment frame. Supply the traversed descriptor from the owning open DAS; a zero direction signals RAYISZEROVECTOR.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskx02_c.html */
+  dskx02(
+    handle: SpiceHandle,
+    dladsc: DlaDescriptor,
+    vertex: Readonly<SpiceVector3>,
+    raydir: Readonly<SpiceVector3>,
+  ): Found<{ plid: number; xpt: SpiceVector3 }>;
+  /** Search loaded DSK surfaces for the nearest hit in the target-centered fixref frame at ET (TDB seconds). With pri=false an empty surface list searches all surfaces; pri=true signals BADPRIORITYSPEC. The hit contains the borrowed KEEPER DAS number (comparable to kdata), eight DLA and 24 DSK descriptor components, and defined type 2 source data dc=[] and ic=[plate ID]. Open an owned DAS claim separately to read the source; unload or kclear manages the loaded kernel. Signed maxd and maxi default to 1; smaller capacities reach the toolkit error, and larger capacities retain only defined source words. Uses the linked N0067 DSKXSI implementation with initialized output and the original outer error trace.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskxsi_c.html */
+  dskxsi(
+    pri: boolean,
+    target: string,
+    srflst: readonly number[],
+    et: number,
+    fixref: string,
+    vertex: Readonly<SpiceVector3>,
+    raydir: Readonly<SpiceVector3>,
+    maxd?: number,
+    maxi?: number,
+  ): Found<{
+    xpt: SpiceVector3;
+    handle: number;
+    dladsc: DlaDescriptor;
+    dskdsc: DskDescriptor;
+    dc: number[];
+    ic: number[];
+  }>;
+  /** Intersect paired arrays of ray vertices (km) and directions in the target-centered frame at ET. Return one found result per input ray in its original order. Empty ray arrays reach INVALIDCOUNT. A ray with no intercept has no coordinates. Searches are unprioritized and an empty surface list allows all loaded surfaces.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskxv_c.html */
+  dskxv(
+    pri: boolean,
+    target: string,
+    srflst: readonly number[],
+    et: number,
+    fixref: string,
+    vertices: readonly Readonly<SpiceVector3>[],
+    dirs: readonly Readonly<SpiceVector3>[],
+  ): Found<{ xpt: SpiceVector3 }>[];
+  /** Read the process/runtime-wide DSK tolerance or margin by its signed integer keyword (1–6). Invalid keys signal INDEXOUTOFRANGE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskgtl_c.html */
+  dskgtl(key: number): number;
+  /** Set one of the four mutable DSK tolerances or margins. Keys 5 and 6 signal IMMUTABLEVALUE. Values are finite and N0067 applies no additional magnitude or sign checks. Save the old value with dskgtl and restore it explicitly when finished; kclear does not reset these parameters.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskstl_c.html */
+  dskstl(key: number, value: number): void;
   /** Read up to room double components of a type-2 item. The scalar offset start is zero-based. Return only initialized values reported by CSPICE, including a shorter final page. Keywords 15 through 19 select the descriptor, vertex bounds, voxel origin, voxel size and flattened xyz vertices.
    * Use a DLA descriptor for this segment obtained by traversal of the open file.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dskd02_c.html

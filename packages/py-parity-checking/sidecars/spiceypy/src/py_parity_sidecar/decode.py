@@ -58,6 +58,11 @@ from .models import (
     StepDskDskb02,
     StepDskDskd02,
     StepDskDski02,
+    StepDskDskx02,
+    StepDskDskxsi,
+    StepDskDskxv,
+    StepDskDskgtl,
+    StepDskDskstl,
     StepDskDskn02,
     StepDskDskp02,
     StepDskDskv02,
@@ -1534,6 +1539,54 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 item=_expect_int(step.get("item"), label="dsk.dski02.item"),
                 start=_expect_int(step.get("start"), label="dsk.dski02.start"),
                 room=_expect_int(step.get("room"), label="dsk.dski02.room"),
+            )
+
+        case "dsk.dskx02":
+            return StepDskDskx02(
+                op=op,
+                handleId=_expect_string(step.get("handleId"),label="dsk.dskx02.handleId"),
+                dladscId=_expect_string(step.get("dladscId"),label="dsk.dskx02.dladscId"),
+                vertex=_expect_vec3(step.get("vertex"),label="dsk.dskx02.vertex"),
+                raydir=_expect_vec3(step.get("raydir"),label="dsk.dskx02.raydir"),
+            )
+
+        case "dsk.dskxsi":
+            return StepDskDskxsi(
+                op=op,
+                pri=_expect_bool(step.get("pri"),label="dsk.dskxsi.pri"),
+                target=_expect_string(step.get("target"),label="dsk.dskxsi.target"),
+                srflst=_expect_int_list(step.get("srflst"),label="dsk.dskxsi.srflst"),
+                et=_expect_number(step.get("et"),label="dsk.dskxsi.et"),
+                fixref=_expect_string(step.get("fixref"),label="dsk.dskxsi.fixref"),
+                vertex=_expect_vec3(step.get("vertex"),label="dsk.dskxsi.vertex"),
+                raydir=_expect_vec3(step.get("raydir"),label="dsk.dskxsi.raydir"),
+                maxd=_expect_int(step.get("maxd"),label="dsk.dskxsi.maxd"),
+                maxi=_expect_int(step.get("maxi"),label="dsk.dskxsi.maxi"),
+            )
+
+        case "dsk.dskxv":
+            return StepDskDskxv(
+                op=op,
+                pri=_expect_bool(step.get("pri"),label="dsk.dskxv.pri"),
+                target=_expect_string(step.get("target"),label="dsk.dskxv.target"),
+                srflst=_expect_int_list(step.get("srflst"),label="dsk.dskxv.srflst"),
+                et=_expect_number(step.get("et"),label="dsk.dskxv.et"),
+                fixref=_expect_string(step.get("fixref"),label="dsk.dskxv.fixref"),
+                vertices=_expect_vec3_rows(step.get("vertices"),label="dsk.dskxv.vertices"),
+                dirs=_expect_vec3_rows(step.get("dirs"),label="dsk.dskxv.dirs"),
+            )
+
+        case "dsk.dskgtl":
+            return StepDskDskgtl(
+                op=op,
+                key=_expect_int(step.get("key"),label="dsk.dskgtl.key"),
+            )
+
+        case "dsk.dskstl":
+            return StepDskDskstl(
+                op=op,
+                key=_expect_int(step.get("key"),label="dsk.dskstl.key"),
+                value=_expect_number(step.get("value"),label="dsk.dskstl.value"),
             )
 
         case "dsk.dskn02":
