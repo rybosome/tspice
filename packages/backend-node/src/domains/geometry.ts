@@ -1,3 +1,8 @@
+import {
+  legacySurfaceInput,
+  legacySurfaceVector,
+  edtermStorage,
+} from "@rybosome/tspice-core";
 import { spiceStringByteLength } from "@rybosome/tspice-core";
 import type {
   Found,
@@ -69,6 +74,89 @@ function geometryInputs(
 /** Create a {@link GeometryApi} implementation backed by the native Node addon. */
 export function createGeometryApi(native: NativeAddon): GeometryApi {
   return {
+    illum: (target, et, abcorr, observer, spoint) => {
+      geometryNumber(et, "et");
+      spiceStringByteLength(target, "target");
+      spiceStringByteLength(abcorr, "abcorr");
+      spiceStringByteLength(observer, "observer");
+      const input = legacySurfaceInput(spoint);
+      const count = 3;
+      const out = new Float64Array(count);
+      native.illum(target, et, abcorr, observer, input, out);
+      return { phase: out[0]!, solar: out[1]!, emissn: out[2]! };
+    },
+    srfxpt: (method, target, et, abcorr, observer, dref, dvec) => {
+      geometryNumber(et, "et");
+      spiceStringByteLength(method, "method");
+      spiceStringByteLength(target, "target");
+      spiceStringByteLength(abcorr, "abcorr");
+      spiceStringByteLength(observer, "observer");
+      spiceStringByteLength(dref, "dref");
+      const input = legacySurfaceInput(dvec);
+      const count = 9;
+      const out = new Float64Array(count);
+      native.srfxpt(method, target, et, abcorr, observer, dref, input, out);
+      if (out[0] === 0) return { found: false };
+      if (out[0] !== 1) throw new TypeError("Invalid SRFXPT found flag");
+      return {
+        found: true,
+        spoint: legacySurfaceVector(out, 1),
+        dist: out[4]!,
+        trgepc: out[5]!,
+        obspos: legacySurfaceVector(out, 6),
+      };
+    },
+    subpt: (method, target, et, abcorr, observer) => {
+      geometryNumber(et, "et");
+      spiceStringByteLength(method, "method");
+      spiceStringByteLength(target, "target");
+      spiceStringByteLength(abcorr, "abcorr");
+      spiceStringByteLength(observer, "observer");
+      const count = 4;
+      const out = new Float64Array(count);
+      native.subpt(method, target, et, abcorr, observer, out);
+      return { spoint: legacySurfaceVector(out, 0), alt: out[3]! };
+    },
+    subsol: (method, target, et, abcorr, observer) => {
+      geometryNumber(et, "et");
+      spiceStringByteLength(method, "method");
+      spiceStringByteLength(target, "target");
+      spiceStringByteLength(abcorr, "abcorr");
+      spiceStringByteLength(observer, "observer");
+      const count = 3;
+      const out = new Float64Array(count);
+      native.subsol(method, target, et, abcorr, observer, out);
+      return legacySurfaceVector(out, 0);
+    },
+    edterm: (trmtyp, source, target, et, fixref, abcorr, observer, npts) => {
+      geometryNumber(et, "et");
+      spiceStringByteLength(trmtyp, "trmtyp");
+      spiceStringByteLength(source, "source");
+      spiceStringByteLength(target, "target");
+      spiceStringByteLength(fixref, "fixref");
+      spiceStringByteLength(abcorr, "abcorr");
+      spiceStringByteLength(observer, "observer");
+      const count = edtermStorage(npts);
+      const out = new Float64Array(count);
+      native.edterm(
+        trmtyp,
+        source,
+        target,
+        et,
+        fixref,
+        abcorr,
+        observer,
+        npts,
+        out,
+      );
+      return {
+        trgepc: out[0]!,
+        obspos: legacySurfaceVector(out, 1),
+        trmpts: Array.from({ length: npts }, (_, i) =>
+          legacySurfaceVector(out, 4 + 3 * i),
+        ),
+      };
+    },
     phaseq: (et, target, illmn, observer, abcorr) => {
       geometryNumber(et, "phaseq(et)");
       spiceStringByteLength(target, "phaseq(target)");

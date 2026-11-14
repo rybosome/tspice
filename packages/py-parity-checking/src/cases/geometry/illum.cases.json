@@ -1,0 +1,439 @@
+[
+  {
+    "caseId": "geometry-illum-geometric-epochs",
+    "description": "Compare every returned field at two observation epochs with moving synthetic bodies.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 327.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illum-reception",
+    "description": "Compare geometric, light-time and converged stellar-aberration results with a moving observer.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "LT",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "CN+S",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illum-unknown-body",
+    "description": "A nonnumeric, unregistered target should return its original lookup diagnostic.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "UNKNOWN_LEGACY_BODY",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["IDCODENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-missing-spk",
+    "description": "Missing ephemerides propagate from the scientific lookup, with no publication of partial or absent outputs.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOLOADEDFILES"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-invalid-correction",
+    "description": "Reject an unsupported aberration option on otherwise valid geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "INVALID",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDOPTION"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-empty-text",
+    "description": "The original outer C entry signals on a zero-length target string.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-outside-coverage",
+    "description": "The authored SPK ends at ET 10000. Require the actual scientific ephemeris diagnostic beyond that interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 12000.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPKINSUFFDATA"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-no-associated-frame",
+    "description": "The named target-centered frame exists, but the kernel pool does not associate it with the target by default.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOFRAME"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-same-body",
+    "description": "The target and observer resolve to the same body code.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100101",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BODIESNOTDISTINCT"]
+    }
+  },
+  {
+    "caseId": "geometry-illum-surface-axes",
+    "description": "Compare sun and observer angles on opposing cardinal surface axes. Preserve lit and dark-side incidence quadrants.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3, 0, 0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [-3, 0, 0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [0, 2, 0]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [0, 0, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illum-non-radial-gradient",
+    "description": "A mixed point on the triaxial ellipsoid distinguishes the outward gradient from the radial direction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [1.8, 1.6, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illum-zero-normal",
+    "description": "On the origin the N0067 normal has zero length. Compare all three actual VSEP results with the independent toolkit.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-illum-rotated-default",
+    "description": "Reassign the default frame to the same target\u2019s rotated frame. Compare the ordered results across the change, while inertial direction coordinates retain their reference.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-legacy-frame.tf"
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "OBJECT_100101_FRAME",
+        "values": ["AUDIT_GEOMETRY_ROT"]
+      },
+      {
+        "op": "geometry.illum",
+        "target": "100101",
+        "et": 11.0,
+        "abcorr": "NONE",
+        "observer": "100102",
+        "spoint": [3.0, 0.0, 0.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

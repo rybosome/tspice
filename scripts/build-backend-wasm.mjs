@@ -1,3 +1,4 @@
+import { stageLegacyGeometry } from "./stage-legacy-geometry.mjs";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -230,6 +231,11 @@ for (const shimPath of shimSources) {
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
+
+stageLegacyGeometry(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
 
 function patchReturnInt(filePath, symbol, indentation = "") {
   if (!fs.existsSync(filePath)) {
@@ -496,6 +502,11 @@ const exportedFunctions = [
   "_tspice_spkcls",
 
   // --- derived geometry ---
+  "_tspice_illum",
+  "_tspice_srfxpt",
+  "_tspice_subpt",
+  "_tspice_subsol",
+  "_tspice_edterm",
   "_tspice_phaseq",
   "_tspice_lspcn",
   "_tspice_trgsep",

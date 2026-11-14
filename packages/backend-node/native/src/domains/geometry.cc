@@ -45,6 +45,149 @@ static bool ReadGeometryString(Napi::Env env, const Napi::Value& value, std::str
   return true;
 }
 
+static bool LegacyStorage(const Napi::Value& value, size_t words) {
+  if (!value.IsTypedArray()) return false;
+  const auto array = value.As<Napi::TypedArray>();
+  return array.TypedArrayType() == napi_float64_array && array.ElementLength() == words;
+}
+
+static Napi::Value LegacyInputError(Napi::Env env) {
+  ThrowSpiceError(Napi::TypeError::New(env, "Invalid legacy geometry arguments or output storage"));
+  return env.Undefined();
+}
+
+static Napi::Value Illum(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 6) return LegacyInputError(env);
+  std::string target;
+  if (!ReadGeometryString(env, info[0], &target)) return env.Undefined();
+  if (!info[1].IsNumber()) return LegacyInputError(env);
+  const double et = info[1].As<Napi::Number>().DoubleValue();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[2], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[3], &observer)) return env.Undefined();
+  if (!LegacyStorage(info[4], 3)) return LegacyInputError(env);
+  const double *spoint = info[4].As<Napi::Float64Array>().Data();
+  if (!LegacyStorage(info[5], 3)) return LegacyInputError(env);
+  double *out = info[5].As<Napi::Float64Array>().Data();
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_illum(
+      target.c_str(), et, abcorr.c_str(), observer.c_str(), spoint, out, error, sizeof(error))) {
+    ThrowSpiceError(env, "CSPICE failed while calling illum", error);
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Srfxpt(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 8) return LegacyInputError(env);
+  std::string method;
+  if (!ReadGeometryString(env, info[0], &method)) return env.Undefined();
+  std::string target;
+  if (!ReadGeometryString(env, info[1], &target)) return env.Undefined();
+  if (!info[2].IsNumber()) return LegacyInputError(env);
+  const double et = info[2].As<Napi::Number>().DoubleValue();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[3], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[4], &observer)) return env.Undefined();
+  std::string dref;
+  if (!ReadGeometryString(env, info[5], &dref)) return env.Undefined();
+  if (!LegacyStorage(info[6], 3)) return LegacyInputError(env);
+  const double *dvec = info[6].As<Napi::Float64Array>().Data();
+  if (!LegacyStorage(info[7], 9)) return LegacyInputError(env);
+  double *out = info[7].As<Napi::Float64Array>().Data();
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_srfxpt(
+      method.c_str(), target.c_str(), et, abcorr.c_str(), observer.c_str(), dref.c_str(), dvec, out, error, sizeof(error))) {
+    ThrowSpiceError(env, "CSPICE failed while calling srfxpt", error);
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Subpt(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 6) return LegacyInputError(env);
+  std::string method;
+  if (!ReadGeometryString(env, info[0], &method)) return env.Undefined();
+  std::string target;
+  if (!ReadGeometryString(env, info[1], &target)) return env.Undefined();
+  if (!info[2].IsNumber()) return LegacyInputError(env);
+  const double et = info[2].As<Napi::Number>().DoubleValue();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[3], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[4], &observer)) return env.Undefined();
+  if (!LegacyStorage(info[5], 4)) return LegacyInputError(env);
+  double *out = info[5].As<Napi::Float64Array>().Data();
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_subpt(
+      method.c_str(), target.c_str(), et, abcorr.c_str(), observer.c_str(), out, error, sizeof(error))) {
+    ThrowSpiceError(env, "CSPICE failed while calling subpt", error);
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Subsol(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 6) return LegacyInputError(env);
+  std::string method;
+  if (!ReadGeometryString(env, info[0], &method)) return env.Undefined();
+  std::string target;
+  if (!ReadGeometryString(env, info[1], &target)) return env.Undefined();
+  if (!info[2].IsNumber()) return LegacyInputError(env);
+  const double et = info[2].As<Napi::Number>().DoubleValue();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[3], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[4], &observer)) return env.Undefined();
+  if (!LegacyStorage(info[5], 3)) return LegacyInputError(env);
+  double *out = info[5].As<Napi::Float64Array>().Data();
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_subsol(
+      method.c_str(), target.c_str(), et, abcorr.c_str(), observer.c_str(), out, error, sizeof(error))) {
+    ThrowSpiceError(env, "CSPICE failed while calling subsol", error);
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Edterm(const Napi::CallbackInfo& info) {
+  const auto env = info.Env();
+  if (info.Length() != 9) return LegacyInputError(env);
+  std::string trmtyp;
+  if (!ReadGeometryString(env, info[0], &trmtyp)) return env.Undefined();
+  std::string source;
+  if (!ReadGeometryString(env, info[1], &source)) return env.Undefined();
+  std::string target;
+  if (!ReadGeometryString(env, info[2], &target)) return env.Undefined();
+  if (!info[3].IsNumber()) return LegacyInputError(env);
+  const double et = info[3].As<Napi::Number>().DoubleValue();
+  std::string fixref;
+  if (!ReadGeometryString(env, info[4], &fixref)) return env.Undefined();
+  std::string abcorr;
+  if (!ReadGeometryString(env, info[5], &abcorr)) return env.Undefined();
+  std::string observer;
+  if (!ReadGeometryString(env, info[6], &observer)) return env.Undefined();
+  if (!info[7].IsNumber()) return LegacyInputError(env);
+  const double count = info[7].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(count) || std::trunc(count) != count || count < std::numeric_limits<int>::min() || count > 11184809) return LegacyInputError(env);
+  const int npts = static_cast<int>(count);
+  if (!LegacyStorage(info[8], 4 + 3 * static_cast<size_t>(npts > 0 ? npts : 1))) return LegacyInputError(env);
+  double *out = info[8].As<Napi::Float64Array>().Data();
+  char error[tspice_backend_node::kErrMaxBytes] = {};
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_edterm(
+      trmtyp.c_str(), source.c_str(), target.c_str(), et, fixref.c_str(), abcorr.c_str(), observer.c_str(), npts, out, error, sizeof(error))) {
+    ThrowSpiceError(env, "CSPICE failed while calling edterm", error);
+  }
+  return env.Undefined();
+}
+
 static Napi::Value Phaseq(const Napi::CallbackInfo& info) {
   const Napi::Env env = info.Env();
   if (info.Length() != 5 || !info[0].IsNumber()) {
@@ -586,6 +729,11 @@ static Napi::Number Occult(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterGeometry(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "illum", Napi::Function::New(env, Illum), __func__)) return;
+  if (!SetExportChecked(env, exports, "srfxpt", Napi::Function::New(env, Srfxpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "subpt", Napi::Function::New(env, Subpt), __func__)) return;
+  if (!SetExportChecked(env, exports, "subsol", Napi::Function::New(env, Subsol), __func__)) return;
+  if (!SetExportChecked(env, exports, "edterm", Napi::Function::New(env, Edterm), __func__)) return;
   if (!SetExportChecked(env, exports, "phaseq", Napi::Function::New(env, Phaseq), __func__)) return;
   if (!SetExportChecked(env, exports, "lspcn", Napi::Function::New(env, Lspcn), __func__)) return;
   if (!SetExportChecked(env, exports, "trgsep", Napi::Function::New(env, Trgsep), __func__)) return;

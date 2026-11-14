@@ -5,7 +5,7 @@ from ctypes import c_double
 import spiceypy as sp
 import spiceypy.utils.support_types as stypes
 
-from .. import geometry_quantities_oracle
+from .. import geometry_quantities_oracle, legacy_surface_oracle
 from ..models import (
     StepGeometryIlumin,
     StepGeometryIllumf,
@@ -14,6 +14,11 @@ from ..models import (
     StepGeometryPhaseq,
     StepGeometryLspcn,
     StepGeometryTrgsep,
+    StepGeometryIllum,
+    StepGeometrySrfxpt,
+    StepGeometrySubpt,
+    StepGeometrySubsol,
+    StepGeometryEdterm,
     StepGeometryOccult,
     StepGeometryPl2nvc,
     StepGeometrySincpt,
@@ -167,6 +172,21 @@ def run_geometry_step(step: WorkflowStep) -> StepOutput | None:
 
     if isinstance(step, StepGeometryTrgsep):
         return StepOutput(op=step.op, value=geometry_quantities_oracle.trgsep(step.et, step.targ1, step.shape1, step.frame1, step.targ2, step.shape2, step.frame2, step.observer, step.abcorr))
+
+    if isinstance(step, StepGeometryIllum):
+        return StepOutput(op=step.op, value=legacy_surface_oracle.illum(step.target, step.et, step.abcorr, step.observer, step.spoint))
+
+    if isinstance(step, StepGeometrySrfxpt):
+        return StepOutput(op=step.op, value=legacy_surface_oracle.srfxpt(step.method, step.target, step.et, step.abcorr, step.observer, step.dref, step.dvec))
+
+    if isinstance(step, StepGeometrySubpt):
+        return StepOutput(op=step.op, value=legacy_surface_oracle.subpt(step.method, step.target, step.et, step.abcorr, step.observer))
+
+    if isinstance(step, StepGeometrySubsol):
+        return StepOutput(op=step.op, value=legacy_surface_oracle.subsol(step.method, step.target, step.et, step.abcorr, step.observer))
+
+    if isinstance(step, StepGeometryEdterm):
+        return StepOutput(op=step.op, value=legacy_surface_oracle.edterm(step.trmtyp, step.source, step.target, step.et, step.fixref, step.abcorr, step.observer, step.npts))
 
     if isinstance(step, StepGeometryOccult):
         value = int(

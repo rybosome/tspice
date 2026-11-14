@@ -7,6 +7,10 @@
     {
       "target_name": "tspice_backend_node",
       "sources": [
+        "generated/illum.c",
+        "generated/subpt.c",
+        "generated/subsol.c",
+        "generated/srfxpt.c",
         "src/addon.cc",
         "src/addon_common.cc",
         "src/cell_handles.cc",

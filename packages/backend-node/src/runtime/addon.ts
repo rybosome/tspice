@@ -430,6 +430,51 @@ export type NativeAddon = {
     step: number,
   ): void;
 
+  illum(
+    target: string,
+    et: number,
+    abcorr: string,
+    observer: string,
+    spoint: Float64Array,
+    out: Float64Array,
+  ): void;
+  srfxpt(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    observer: string,
+    dref: string,
+    dvec: Float64Array,
+    out: Float64Array,
+  ): void;
+  subpt(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    observer: string,
+    out: Float64Array,
+  ): void;
+  subsol(
+    method: string,
+    target: string,
+    et: number,
+    abcorr: string,
+    observer: string,
+    out: Float64Array,
+  ): void;
+  edterm(
+    trmtyp: string,
+    source: string,
+    target: string,
+    et: number,
+    fixref: string,
+    abcorr: string,
+    observer: string,
+    npts: number,
+    out: Float64Array,
+  ): void;
   phaseq(
     et: number,
     target: string,

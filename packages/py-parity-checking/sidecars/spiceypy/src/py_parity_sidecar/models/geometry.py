@@ -110,6 +110,61 @@ class StepGeometryTrgsep:
 
 
 @dataclass(frozen=True)
+class StepGeometryIllum:
+    op: Literal["geometry.illum"]
+    target: str
+    et: float
+    abcorr: str
+    observer: str
+    spoint: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometrySrfxpt:
+    op: Literal["geometry.srfxpt"]
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    observer: str
+    dref: str
+    dvec: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepGeometrySubpt:
+    op: Literal["geometry.subpt"]
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    observer: str
+
+
+@dataclass(frozen=True)
+class StepGeometrySubsol:
+    op: Literal["geometry.subsol"]
+    method: str
+    target: str
+    et: float
+    abcorr: str
+    observer: str
+
+
+@dataclass(frozen=True)
+class StepGeometryEdterm:
+    op: Literal["geometry.edterm"]
+    trmtyp: str
+    source: str
+    target: str
+    et: float
+    fixref: str
+    abcorr: str
+    observer: str
+    npts: int
+
+
+@dataclass(frozen=True)
 class StepGeometryOccult:
     op: Literal["geometry.occult"]
     targ1: str

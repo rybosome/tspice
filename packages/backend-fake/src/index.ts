@@ -1951,6 +1951,21 @@ export function createFakeBackend(
     ) => {
       throw new Error("Fake backend: spkw08() is not implemented");
     },
+    illum: () => {
+      throw new Error("illum requires a CSPICE geometry backend");
+    },
+    srfxpt: () => {
+      throw new Error("srfxpt requires a CSPICE geometry backend");
+    },
+    subpt: () => {
+      throw new Error("subpt requires a CSPICE geometry backend");
+    },
+    subsol: () => {
+      throw new Error("subsol requires a CSPICE geometry backend");
+    },
+    edterm: () => {
+      throw new Error("edterm requires a CSPICE geometry backend");
+    },
     phaseq: () => {
       throw new Error("phaseq requires a CSPICE geometry backend");
     },

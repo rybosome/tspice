@@ -173,3 +173,7 @@ Its prime meridian starts at 11° and advances by 300° per day. This
 repository-authored text PCK is distributed under the repository MIT license.
 The tests project the pole onto the fixture's heliocentric orbital plane and
 derive limb contact directly from the authored linear tracks and radii.
+
+### Legacy target frame association
+
+`audit-legacy-frame.tf` associates synthetic body 100101 with the already defined `AUDIT_GEOMETRY_FIXED` frame. The original geometry frame and ephemeris fixtures supply its orientation, triaxial radii, observer, Sun and illuminator tracks. EDTERM uses its explicit frame without this assignment. [Geometry and fixture checks](../../../docs/step8-legacy-surface-geometry.md)

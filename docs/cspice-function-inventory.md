@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 165
-- Planned (not yet implemented): 484
+- Implemented now (SpiceRawBackend): 170
+- Planned (not yet implemented): 479
 - Excluded: 3
 
 ## Implemented now
@@ -61,6 +61,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `edterm_c` | Ellipsoid terminator |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
@@ -99,6 +100,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gfstol_c` | GF, set a tolerance value for GF |
 | `gipool_c` | Get integers from the kernel pool |
 | `gnpool_c` | Get names of kernel pool variables |
+| `illum_c` | Illumination angles |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
 | `ilumin_c` | Illumination angles |
@@ -159,10 +161,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkssb_c` | S/P Kernel, solar system barycenter |
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
+| `srfxpt_c` | Surface intercept point |
 | `ssize_c` | Set the size of a cell |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
+| `subpt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
+| `subsol_c` | Sub-solar point |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
 | `timdef_c` | Time Software Defaults |
@@ -327,7 +332,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `edlimb_c` | Ellipsoid Limb |
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
 | `edpnt_c` | Ellipsoid point |
-| `edterm_c` | Ellipsoid terminator |
 | `ekacec_c` | EK, add character data to column |
 | `ekaced_c` | EK, add d.p. data to column |
 | `ekacei_c` | EK, add integer data to column |
@@ -398,7 +402,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `hrmint_c` | Hermite polynomial interpolation |
 | `hx2dp_c` | Hexadecimal string to d.p. number |
 | `ident_c` | Return the 3x3 identity matrix |
-| `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
 | `inedpl_c` | Intersection of ellipsoid and plane |
@@ -587,13 +590,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `srfrec_c` | Surface to rectangular coordinates |
 | `srfs2c_c` | Surface and body strings to surface ID code |
 | `srfscc_c` | Surface string and body ID code to surface ID code |
-| `srfxpt_c` | Surface intercept point |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |
 | `stpool_c` | String from pool |
-| `subpt_c` | Sub-observer point |
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
-| `subsol_c` | Sub-solar point |
 | `subsol_pl02` | Sub-solar point using DSK type 2 plate model |
 | `sumad_c` | Sum of a double precision array |
 | `sumai_c` | Sum of an integer array |
