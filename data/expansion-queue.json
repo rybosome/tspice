@@ -2381,18 +2381,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/765"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "51 registered workflows, 350 ordered steps, 130 target calls and 17 terminal scientific errors. Both backends passed 102 registered comparisons, 8 supplementary public checks, 2 native validations and 24 real WASM allocation rollback tests. Actual public Chrome validated all seven and complete transforms."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+          "result": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
         }
       ],
-      "nextAction": "Run full uncached local and canonical CI validation on the combined source and check final-head jobs and rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-ck-records",
       "branch": "codex/expand-ck-records",
       "baseCommit": "a44387fd58874de62a4a5e5b0852ac186ba54727",
-      "progressNote": "Seven direct compiled CK frame/record read operations, complete descriptor/cursor ownership and independently checked state derivative and storage."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 567cf58f. 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed.",
+      "priorCheckpoint": "Seven direct compiled CK frame/record read operations, complete descriptor/cursor ownership and independently checked state derivative and storage."
     },
     {
       "id": "C14-text-command-state",

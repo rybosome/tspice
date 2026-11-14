@@ -72,3 +72,7 @@ This checkpoint has 87 routines ready for review, 338 in progress and 62 planned
 | E23-gf-visibility            | `gfoclt_c`, `gfrfov_c`, `gftfov_c`                                                                                                                                         | E15-field-of-view                   | in-progress                                                     |
 
 After a parent lands, restack its dependent PRs on the merged history, regenerate combined WASM and generated evidence, and rerun the required checks. Scientific findings and source-bound verification for the routines present on this branch are in the [per-routine ledger](coverage-ledger.md).
+
+## C13 source validation checkpoint
+
+[PR #765](https://github.com/rybosome/tspice/pull/765) remains in progress. Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed. The [canonical native-required job](https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346) confirms the same results. The complete final-head matrix and explicit GitHub rebaseability remain separate handoff requirements.

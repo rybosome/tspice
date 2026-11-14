@@ -57,7 +57,264 @@
     "packages/py-parity-checking/test/ck-record-science.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-c13-567cf58f-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "local-c13-567cf58f-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "observation": "Both complete required lanes passed locally on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5. JavaScript: 2,721 parity tests and one expected guard skip. Native-required: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    },
+    {
+      "id": "ci-c13-567cf58f-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "46ca5bd2fdf97d7d2632bec38ba43226a16efd9ab5363006eca75df1a76e1832",
+      "caseIds": [
+        "frames-ckfrot-av-eligibility",
+        "frames-ckfrot-b1950",
+        "frames-ckfrot-bad-clock-value",
+        "frames-ckfrot-clock-override",
+        "frames-ckfrot-empty-state",
+        "frames-ckfrot-et-interval-gap",
+        "frames-ckfrot-file-priority",
+        "frames-ckfrot-missing-clock",
+        "frames-ckfxfm-av-eligibility",
+        "frames-ckfxfm-b1950",
+        "frames-ckfxfm-bad-clock-value",
+        "frames-ckfxfm-clock-override",
+        "frames-ckfxfm-empty-state",
+        "frames-ckfxfm-et-interval-gap",
+        "frames-ckfxfm-file-priority",
+        "frames-ckfxfm-missing-clock",
+        "frames-ckgr02-all-packets",
+        "frames-ckgr02-cursor-independent",
+        "frames-ckgr02-ordinal-0",
+        "frames-ckgr02-ordinal-2147483647",
+        "frames-ckgr02-ordinal-4",
+        "frames-ckgr02-ordinal-negative1",
+        "frames-ckgr02-second-summary-directory",
+        "frames-ckgr02-wrong-segment-type",
+        "frames-ckgr03-all-packets",
+        "frames-ckgr03-cursor-independent",
+        "frames-ckgr03-missing-av",
+        "frames-ckgr03-ordinal-0",
+        "frames-ckgr03-ordinal-2147483647",
+        "frames-ckgr03-ordinal-5",
+        "frames-ckgr03-ordinal-negative1",
+        "frames-ckgr03-second-summary-directory",
+        "frames-ckgr03-separate-segments",
+        "frames-ckgr03-wrong-segment-type",
+        "frames-ckmeta-conversion-error",
+        "frames-ckmeta-division",
+        "frames-ckmeta-empty",
+        "frames-ckmeta-independent-overrides",
+        "frames-ckmeta-selectors",
+        "frames-ckmeta-unknown",
+        "frames-ckmeta-watchers",
+        "frames-cknr02-all-packets",
+        "frames-cknr02-cursor-independent",
+        "frames-cknr02-second-summary-directory",
+        "frames-cknr02-wrong-segment-type",
+        "frames-cknr03-all-packets",
+        "frames-cknr03-cursor-independent",
+        "frames-cknr03-missing-av",
+        "frames-cknr03-second-summary-directory",
+        "frames-cknr03-separate-segments",
+        "frames-cknr03-wrong-segment-type"
+      ],
+      "commit": "567cf58f4e25faf1f6ba268229bc417cb38dc8e5",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43582482585/job/132409964346",
+      "observation": "Inspected successful Linux Node 22 native-required job 132409964346 on 567cf58f4e25faf1f6ba268229bc417cb38dc8e5: 2,494 registered Node/WASM live comparisons; 2,722 parity-package tests with no skips, including the native-required guard; 89 native wrapper, 678 WASM, 28 core and 152 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "ckfrot_c",
@@ -157,16 +414,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckfrot -> native adapter and mutex-protected N-API handler -> tspice_ckfrot -> ckfrot_c. Independent comparison uses SpiceyPy 6.0.3 ckfrot.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckfrot -> validated WASM heap adapter and required compiled export -> tspice_ckfrot -> ckfrot_c. Independent comparison uses SpiceyPy 6.0.3 ckfrot.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -268,16 +525,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckfxfm -> native adapter and mutex-protected N-API handler -> tspice_ckfxfm -> ckfxfm_c. Independent comparison uses SpiceyPy 6.0.3 ckfxfm.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckfxfm -> validated WASM heap adapter and required compiled export -> tspice_ckfxfm -> ckfxfm_c. Independent comparison uses SpiceyPy 6.0.3 ckfxfm.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -366,16 +623,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckgr02 -> native adapter and mutex-protected N-API handler -> tspice_ckgr02 -> ckgr02_c. Independent comparison uses SpiceyPy 6.0.3 ckgr02.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckgr02 -> validated WASM heap adapter and required compiled export -> tspice_ckgr02 -> ckgr02_c. Independent comparison uses SpiceyPy 6.0.3 ckgr02.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -474,16 +731,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckgr03 -> native adapter and mutex-protected N-API handler -> tspice_ckgr03 -> ckgr03_c. Independent comparison uses SpiceyPy 6.0.3 ckgr03.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckgr03 -> validated WASM heap adapter and required compiled export -> tspice_ckgr03 -> ckgr03_c. Independent comparison uses SpiceyPy 6.0.3 ckgr03.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -538,16 +795,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckmeta -> native adapter and mutex-protected N-API handler -> tspice_ckmeta -> ckmeta_c. Independent comparison uses SpiceyPy 6.0.3 ckmeta.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.ckmeta -> validated WASM heap adapter and required compiled export -> tspice_ckmeta -> ckmeta_c. Independent comparison uses SpiceyPy 6.0.3 ckmeta.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -616,16 +873,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.cknr02 -> native adapter and mutex-protected N-API handler -> tspice_cknr02 -> cknr02_c. Independent comparison uses SpiceyPy 6.0.3 cknr02.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.cknr02 -> validated WASM heap adapter and required compiled export -> tspice_cknr02 -> cknr02_c. Independent comparison uses SpiceyPy 6.0.3 cknr02.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     },
@@ -704,19 +961,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.cknr03 -> native adapter and mutex-protected N-API handler -> tspice_cknr03 -> cknr03_c. Independent comparison uses SpiceyPy 6.0.3 cknr03.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-node", "ci-c13-567cf58f-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "FramesApi.cknr03 -> validated WASM heap adapter and required compiled export -> tspice_cknr03 -> cknr03_c. Independent comparison uses SpiceyPy 6.0.3 cknr03.",
-          "executions": []
+          "executions": ["local-c13-567cf58f-wasm", "ci-c13-567cf58f-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Run full uncached local and canonical CI validation on the combined source and check final-head jobs and rebaseability."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }
