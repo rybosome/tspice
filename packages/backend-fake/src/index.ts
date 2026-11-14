@@ -1117,6 +1117,33 @@ export function createFakeBackend(
       } satisfies Found<KernelData>;
     },
 
+    badkpv: () => {
+      throw new Error("Fake backend: badkpv() is not implemented");
+    },
+    bodvcd: () => {
+      throw new Error("Fake backend: bodvcd() is not implemented");
+    },
+    bodvrd: () => {
+      throw new Error("Fake backend: bodvrd() is not implemented");
+    },
+    clpool: () => {
+      throw new Error("Fake backend: clpool() is not implemented");
+    },
+    dvpool: () => {
+      throw new Error("Fake backend: dvpool() is not implemented");
+    },
+    ldpool: () => {
+      throw new Error("Fake backend: ldpool() is not implemented");
+    },
+    lmpool: () => {
+      throw new Error("Fake backend: lmpool() is not implemented");
+    },
+    stpool: () => {
+      throw new Error("Fake backend: stpool() is not implemented");
+    },
+    szpool: () => {
+      throw new Error("Fake backend: szpool() is not implemented");
+    },
     gdpool: (name, start, room) => {
       assertNonEmptyString("gdpool", "name", name);
       assertPoolRange("gdpool", start, room);

@@ -83,6 +83,15 @@ export function dispatchStep(
     case "cells-windows.wnvald":
       return runCellsWindowsStep(context, step);
 
+    case "kernel-pool.badkpv":
+    case "kernel-pool.bodvcd":
+    case "kernel-pool.bodvrd":
+    case "kernel-pool.clpool":
+    case "kernel-pool.dvpool":
+    case "kernel-pool.ldpool":
+    case "kernel-pool.lmpool":
+    case "kernel-pool.stpool":
+    case "kernel-pool.szpool":
     case "kernel-pool.gdpool":
     case "kernel-pool.gipool":
     case "kernel-pool.gcpool":

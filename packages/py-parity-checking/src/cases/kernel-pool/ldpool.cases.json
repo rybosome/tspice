@@ -1,0 +1,198 @@
+[
+  {
+    "caseId": "kernel-pool-ldpool-load-without-keeper",
+    "description": "Load authored rows directly and compare complete values, types and absent KEEPER record.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "BODY399_B05",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_JOIN",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-ldpool-repeat-append",
+    "description": "Repeated loads append to += variables while replacing ordinary assignments.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_TRACK",
+        "values": [-8]
+      },
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_TRACK",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_APPEND",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernels.ktotal"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-ldpool-watch-and-delete",
+    "description": "Direct file load notifies the monitored agent, deletion and reload independently re-arm it.",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "B05_LD",
+        "names": ["B05_TRACK"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LD"
+      },
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LD"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LD"
+      },
+      {
+        "op": "kernel-pool.dvpool",
+        "name": "B05_TRACK"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LD"
+      },
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LD"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_TRACK",
+        "start": 0,
+        "room": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-ldpool-keeper-furnsh-composition",
+    "description": "Distinguish a direct text load, a subsequent furnsh, and explicit KEEPER reset.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernels.ktotal"
+      },
+      {
+        "op": "kernels.kinfo",
+        "path": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_APPEND",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "B05_APPEND"
+      },
+      {
+        "op": "kernels.ktotal"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-ldpool-partial-syntax-error",
+    "description": "The malformed existing authored fixture reaches the file parser.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-partial-error.tpc"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMBEREXPECTED"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-ldpool-missing-file",
+    "description": "A missing fixture is passed to the actual loader with an existing parent directory.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/b05-file-absent.tpc"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAILED"]
+    }
+  }
+]

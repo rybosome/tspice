@@ -163,6 +163,15 @@ from .kernel_pool import (
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolBadkpv,
+    StepKernelPoolBodvcd,
+    StepKernelPoolBodvrd,
+    StepKernelPoolClpool,
+    StepKernelPoolDvpool,
+    StepKernelPoolLdpool,
+    StepKernelPoolLmpool,
+    StepKernelPoolStpool,
+    StepKernelPoolSzpool,
     StepKernelPoolGdpool,
     StepKernelPoolGipool,
     StepKernelPoolGnpool,
@@ -256,6 +265,15 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
     | StepCellsWindowsWnvald
+    | StepKernelPoolBadkpv
+    | StepKernelPoolBodvcd
+    | StepKernelPoolBodvrd
+    | StepKernelPoolClpool
+    | StepKernelPoolDvpool
+    | StepKernelPoolLdpool
+    | StepKernelPoolLmpool
+    | StepKernelPoolStpool
+    | StepKernelPoolSzpool
     | StepKernelPoolGdpool
     | StepKernelPoolGipool
     | StepKernelPoolGcpool

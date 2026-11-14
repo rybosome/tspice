@@ -1,0 +1,732 @@
+{
+  "schemaVersion": 1,
+  "batch": "b05-kernel-pool",
+  "traceFiles": [
+    "docs/step8-kernel-pool.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/kernel-pool.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/kernel_pool.cc",
+    "packages/backend-node/native/src/napi_helpers.h",
+    "packages/backend-node/src/domains/kernel-pool.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/kernel-staging.ts",
+    "packages/backend-node/test/kernel-pool-operations.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/kernel_pool.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/kernel-pool.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/test/kernel-pool-operations.test.ts",
+    "packages/backend-wasm/test/pool-allocation-cleanup.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/pool-inputs.ts",
+    "packages/core/src/spice-runtime/domains/string-bytes.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/kernel_pool.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/kernel_pool_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/kernel_pool.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/kernel-pool/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/kernel-pool.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/kernel-pool-operations.test.ts",
+    "packages/tspice/test/kernel-pool-boundaries.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "badkpv_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/badkpv_c.html",
+      "semantics": "Validate a pool variable’s type, comparison with expected dimension and dimension divisibility. A valid variable returns false. A failed check signals a toolkit error naming the caller.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-badkpv-comparison-operators",
+          "coverage": ["success", "edge"],
+          "observes": "Test all five canonical dimension comparisons, case-insensitive type and signed divisors. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-changing-pool-type",
+          "coverage": ["success", "edge"],
+          "observes": "Validate successive independent numeric and character definitions of the same variable. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-missing",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-operator",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-wrong-size",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-indivisible",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-zero-divisor",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-unknown-type",
+          "coverage": ["error", "edge"],
+          "observes": "Observe the diagnostic on real pool metadata after a successful validation. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-badkpv-empty-caller",
+          "coverage": ["error", "edge"],
+          "observes": "Empty caller is checked at the C wrapper before the variable lookup. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "All five actual comparison tokens, case-insensitive accepted types, changing types and positive/negative divisors. Return and error are distinct.",
+      "errorAssessment": "Missing variables, unknown comparison, mismatch, indivisibility including zero divisor, wrong/unknown type and an empty caller all have explicit registered errors.",
+      "fixtures": [],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.badkpv → KernelPoolApi native addon handler → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.badkpv → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_badkpv → matching badkpv_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodvcd_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodvcd_c.html",
+      "semantics": "Find the numeric pool constant BODY<id>_<item> by signed body ID, reporting its exact dimension and stored units.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-bodvcd-exact-and-oversized",
+          "coverage": ["success", "edge"],
+          "observes": "Read actual cardinality and every numeric value at exact and larger caller capacity. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-replacement-and-ownership",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a numeric item with a shorter item and drain the active dimensions again. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-signed-body",
+          "coverage": ["success", "edge"],
+          "observes": "Fetch the authored item for a negative object code through direct ID or translated body name. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-empty-item",
+          "coverage": ["error", "edge"],
+          "observes": "An empty item reaches the canonical input string check. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-zero-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-negative-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-character-item",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-case-sensitive-miss",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvcd-signed-id-limits",
+          "coverage": ["success", "edge"],
+          "observes": "INTSTR resolves exact minimum and maximum signed identifiers to distinct numeric pool variables. Compare complete returned values and observed effects against the locked toolkit."
+        }
+      ],
+      "edgeAssessment": "Read all returned ordered values across exact, oversized, nonpositive and changed capacities. Direct ID formatting covers both signed boundaries.",
+      "errorAssessment": "Missing, wrong type, nonpositive/insufficient room and empty strings preserve the canonical errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bodvcd → KernelPoolApi native addon handler → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bodvcd → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_bodvcd → matching bodvcd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "bodvrd_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bodvrd_c.html",
+      "semantics": "Resolve a body name or decimal ID string, then return owned ordered body-constant values and their actual dimension.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-bodvrd-exact-and-oversized",
+          "coverage": ["success", "edge"],
+          "observes": "Read actual cardinality and every numeric value at exact and larger caller capacity. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-replacement-and-ownership",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a numeric item with a shorter item and drain the active dimensions again. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-signed-body",
+          "coverage": ["success", "edge"],
+          "observes": "Fetch the authored item for a negative object code through direct ID or translated body name. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-empty-item",
+          "coverage": ["error", "edge"],
+          "observes": "An empty item reaches the canonical input string check. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-zero-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-negative-capacity",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-character-item",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-case-sensitive-miss",
+          "coverage": ["error", "edge"],
+          "observes": "Retain the actual toolkit error for this capacity or pool item. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-unknown-body",
+          "coverage": ["error", "edge"],
+          "observes": "An untranslatable body name is diagnosed before item lookup. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-bodvrd-missing-body-pair",
+          "coverage": ["error", "edge"],
+          "observes": "An incomplete name/code table reports the canonical mapping error. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Check case handling of body versus item, registered body aliases, replacement and caller room. Supplemental checks preserve conversion and blank-name diagnostics before body hash construction.",
+      "errorAssessment": "Unknown bodies, missing/incomplete mapping, missing or nonnumeric items and insufficient room signal actual errors. Valid paired mappings with codes rounding to INT32_MIN are excluded before the N0067 hash.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [
+        {
+          "id": "bodvrd-invalid-hash-domain",
+          "status": "repaired",
+          "summary": "N0067 ZZBODKER may construct a signed absolute-value hash of INT32_MIN from an otherwise valid external body map.",
+          "repair": "Check paired table type, lengths, rounding and earlier genuine integer-conversion and blank-name errors. Reject an unhashable minimum before entering the resolver; ordinary supported calls still use bodvrd_c.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/kernel_pool.c",
+            "packages/backend-node/test/kernel-pool-operations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/kernel_pool_oracle.py",
+            "docs/step8-kernel-pool.md"
+          ],
+          "caseIds": [
+            "kernel-pool-bodvrd-exact-and-oversized",
+            "kernel-pool-bodvrd-replacement-and-ownership"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bodvrd → KernelPoolApi native addon handler → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.bodvrd → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_bodvrd → matching bodvrd_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "clpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/clpool_c.html",
+      "semantics": "Clear all kernel-pool variables and signal registered watchers while retaining KEEPER inventory.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-clpool-clear-all-types",
+          "coverage": ["success", "edge"],
+          "observes": "Observe numeric and character membership before and after clearing, twice. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-clpool-retained-watches",
+          "coverage": ["success", "edge"],
+          "observes": "Each watcher drains its clear notification independently and remains subscribed on insertion. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-clpool-keeper-and-pool",
+          "coverage": ["success", "edge"],
+          "observes": "Observe loaded kernel metadata, cleared contents, then explicit KEEPER cleanup. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-clpool-reload-and-replace",
+          "coverage": ["success", "edge"],
+          "observes": "Direct file load after clear starts the appended item anew and repopulates other items. Compare complete returned values and observed effects against the locked toolkit."
+        }
+      ],
+      "edgeAssessment": "Read removed values, independent watch flags, kernel inventory, reloading and redefinition.",
+      "errorAssessment": "No input-specific CSPICE error. Follow-up lookups and notification consumption observe the effect across a valid controlled lifecycle.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clpool → KernelPoolApi native addon handler → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.clpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_clpool → matching clpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "dvpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dvpool_c.html",
+      "semantics": "Delete a named variable and notify its watchers when an existing variable is deleted.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-dvpool-delete-and-reinsert",
+          "coverage": ["success", "edge"],
+          "observes": "Remove exactly the named variable, retain sibling types, then reinsert a different type. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-dvpool-missing-and-case",
+          "coverage": ["success", "edge"],
+          "observes": "Delete a case-distinct pool variable and repeat deletion of an absent name. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-dvpool-watch-only-real-deletion",
+          "coverage": ["success", "edge"],
+          "observes": "A watch observes real removal and subsequent insertion. Repeat the missing deletion and drain flags. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-dvpool-keeper-metadata",
+          "coverage": ["success", "edge"],
+          "observes": "Deleting a loaded text variable leaves other data and its KEEPER listing available. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-dvpool-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "The C wrapper signals on an empty deletion name. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Case-sensitive missing names, genuinely deleted/reinserted numeric and character variables, KEEPER inventory and watcher consumption are observed.",
+      "errorAssessment": "Empty name signals a CSPICE error. Missing variables are ordinary no-ops.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dvpool → KernelPoolApi native addon handler → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.dvpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_dvpool → matching dvpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ldpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ldpool_c.html",
+      "semantics": "Load file-based text-kernel assignments directly into the pool, without KEEPER registration.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-ldpool-load-without-keeper",
+          "coverage": ["success", "edge"],
+          "observes": "Load authored rows directly and compare complete values, types and absent KEEPER record. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-ldpool-repeat-append",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated loads append to += variables while replacing ordinary assignments. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-ldpool-watch-and-delete",
+          "coverage": ["success", "edge"],
+          "observes": "Direct file load notifies the monitored agent, deletion and reload independently re-arm it. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-ldpool-keeper-furnsh-composition",
+          "coverage": ["success", "edge"],
+          "observes": "Distinguish a direct text load, a subsequent furnsh, and explicit KEEPER reset. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-ldpool-partial-syntax-error",
+          "coverage": ["error", "edge"],
+          "observes": "The malformed existing authored fixture reaches the file parser. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-ldpool-missing-file",
+          "coverage": ["error", "edge"],
+          "observes": "A missing fixture is passed to the actual loader with an existing parent directory. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Read values and updates after repeated loads, replacement and additive assignments, interoperation with furnsh and partial parsing. Both backends stage byte inputs privately and release the file at the end of the call.",
+      "errorAssessment": "Missing files and malformed assignments have actual terminal errors. Supplemental tests query the successful prefix of a malformed file and verify cleanup/recovery.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        },
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-partial-error.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ldpool → KernelPoolApi native addon handler → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.ldpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_ldpool → matching ldpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "lmpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lmpool_c.html",
+      "semantics": "Load ordered text-kernel records through the canonical rectangular C buffer.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-lmpool-multiline-numeric",
+          "coverage": ["success", "edge"],
+          "observes": "The text parser reads continuation rows, signed exponents, dates and incremental assignment. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-empty-and-blank-rows",
+          "coverage": ["success", "edge"],
+          "observes": "Valid storage for an empty internal file and all-blank rows leaves an existing variable intact. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-quoted-and-utf8",
+          "coverage": ["success", "edge"],
+          "observes": "Preserve quoted apostrophes, spaces and UTF-8 bytes within physical row stride. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-overwrite-and-change-type",
+          "coverage": ["success", "edge"],
+          "observes": "Observe complete assignment replacement, then a numeric-to-character update. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-watches-and-bookkeeping",
+          "coverage": ["success", "edge"],
+          "observes": "Watch notifications are selective for in-memory assignments. No file entry appears. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-fixed-source-column",
+          "coverage": ["success", "edge"],
+          "observes": "Observe an assignment in the first 132 source bytes and ignored data beyond that column. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-malformed-number",
+          "coverage": ["error", "edge"],
+          "observes": "A valid preceding assignment is followed by a malformed numeric token. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-lmpool-malformed-assignment",
+          "coverage": ["error", "edge"],
+          "observes": "Actual parser rejects an expression without a variable assignment. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Quoted UTF-8, empty and blank rows, multiline arrays, 132-byte source boundary, watches and KEEPER checks. Rectangular row and allocation bounds are validated before the scientific call.",
+      "errorAssessment": "Malformed numbers and assignments signal actual errors. Earlier successfully parsed records can remain in the pool after a later failure.",
+      "fixtures": [],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lmpool → KernelPoolApi native addon handler → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.lmpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_lmpool → matching lmpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "stpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/stpool_c.html",
+      "semantics": "Fetch a continued logical string by zero-based ordinal, carrying the exact C text and pre-truncation size in bytes, or found false.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-stpool-logical-ordinal",
+          "coverage": ["success", "edge"],
+          "observes": "Retrieve the concatenated logical string, next string, and absent third string. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-truncated-full-size",
+          "coverage": ["success", "edge"],
+          "observes": "Vary output byte capacity across separators and the terminating NUL. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-markers-and-final-continuation",
+          "coverage": ["success", "edge"],
+          "observes": "Compare two continuation conventions, marker-only components and a final dangling marker. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-literal-whitespace",
+          "coverage": ["success", "edge"],
+          "observes": "Observe the CSPICE single-blank result, a final tab and leading spaces. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-missing-type-and-index",
+          "coverage": ["success", "edge"],
+          "observes": "Missing variables, numeric values and out-of-range positive/negative ordinals have distinct setup and normal absence. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-longer-marker-safe",
+          "coverage": ["success", "edge"],
+          "observes": "A marker several bytes longer than all values cannot continue this sequence. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-maximum-components",
+          "coverage": ["success", "edge"],
+          "observes": "Compare full length and boundary substrings across two 80-byte character components. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-stpool-empty-item",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE validates the input strings and available output space. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-stpool-empty-marker",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE validates the input strings and available output space. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-stpool-short-output",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE validates the input strings and available output space. Require the registered SPICE diagnostic."
+        },
+        {
+          "caseId": "kernel-pool-stpool-negative-output",
+          "coverage": ["error", "edge"],
+          "observes": "CSPICE validates the input strings and available output space. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "Check continuation marking, blank parts and trailing whitespace, short buffers, all referenced components, negative/out-of-range indices and wrong type. Direct caller-owned oracle bytes preserve whitespace and strict UTF-8 behavior.",
+      "errorAssessment": "Empty item or marker and undersized output buffers signal CSPICE errors. Exactly one byte of excess marker length at a visited trimmed component invokes only the preflight guard. Partial UTF-8 outputs raise representation errors.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-pool-operations.tpc",
+          "provenance": "Project-authored minimal text-kernel fixture with synthetic kernel-pool variables.",
+          "distribution": "Tracked fixture in this repository, with purpose and provenance in the adjacent README."
+        }
+      ],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [
+        {
+          "id": "stpool-visited-component-bounds",
+          "status": "repaired",
+          "summary": "N0067 STPOOL can form an invalid component comparison address when the trimmed marker is one byte longer than a visited component. Its public C adapter also adds one to the signed ordinal.",
+          "repair": "Check only visited components with safe paged GCPool queries for markers of 2–81 significant bytes. Keep blank rows at significant length one, preserve valid earlier logical strings, and map the single unrepresentable internal ordinal to an equivalent absent index before the actual stpool_c call.",
+          "evidence": [
+            "packages/backend-shim-c/src/domains/kernel_pool.c",
+            "packages/backend-node/test/kernel-pool-operations.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/kernel_pool_oracle.py",
+            "docs/step8-kernel-pool.md"
+          ],
+          "caseIds": [
+            "kernel-pool-stpool-logical-ordinal",
+            "kernel-pool-stpool-truncated-full-size"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.stpool → KernelPoolApi native addon handler → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "route": "direct",
+          "trace": "raw.stpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_stpool → matching stpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "szpool_c",
+      "contract": "packages/backend-contract/src/domains/kernel-pool.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/szpool_c.html",
+      "semantics": "Read a named implementation limit as a found integer, preserving legitimate absent names.",
+      "scenarios": [
+        {
+          "caseId": "kernel-pool-szpool-all-named-limits",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all seven configurable pool constants through their actual found/value fields. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-szpool-name-comparison",
+          "coverage": ["success", "edge"],
+          "observes": "Compare mixed case, embedded blanks, leading/trailing blanks and distinct unknown names. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-szpool-pool-independent",
+          "coverage": ["success", "edge"],
+          "observes": "Pool variables and clearing do not change the compiled toolkit limits. Compare complete returned values and observed effects against the locked toolkit."
+        },
+        {
+          "caseId": "kernel-pool-szpool-empty-name",
+          "coverage": ["error", "edge"],
+          "observes": "An empty name is diagnosed before parameter lookup. Require the registered SPICE diagnostic."
+        }
+      ],
+      "edgeAssessment": "All seven supported parameters, case and blank normalization, absence, and independence from current pool contents.",
+      "errorAssessment": "Empty names take the toolkit error path. Unknown nonempty names are legitimate misses.",
+      "fixtures": [],
+      "fixtureRationale": "Synthetic in-memory pool assignments or project-authored small text kernels provide the exact variable names, input records and state transitions under test.",
+      "cleanup": "The shared shim captures and resets genuine SPICE errors. Native and WASM own all returned values. WASM frees caller buffers on every exit; byte-backed LDPOOL removes its private staged file. Independent workflows isolate and clear pool state between runs.",
+      "tolerance": "The common numeric comparator is unchanged. Dimensions, booleans, found flags, strings, counts and SPICE short diagnostics compare exactly. Supplemental tests compare exact dyadic values and owned vectors.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.szpool → KernelPoolApi native addon handler → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "raw.szpool → KernelPoolApi WASM adapter with call-scoped buffers → shared tspice_szpool → matching szpool_c. Independent locked library calls and complete observable results are specified in the batch note.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Focused compiled Node and WASM, independent SpiceyPy and Chrome runs passed. Full source-local and canonical CI observations are required for each backend."
+}

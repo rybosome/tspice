@@ -1188,6 +1188,63 @@ export type EmscriptenModule = {
   ): number;
 
   // --- kernel pool ---
+  _tspice_badkpv(
+    caller: number,
+    name: number,
+    comp: number,
+    size: number,
+    divby: number,
+    type: number,
+    bad: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bodvcd(
+    body: number,
+    item: number,
+    maxn: number,
+    dim: number,
+    values: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_bodvrd(
+    body: number,
+    item: number,
+    maxn: number,
+    dim: number,
+    values: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_clpool(err: number, errMaxBytes: number): number;
+  _tspice_dvpool(name: number, err: number, errMaxBytes: number): number;
+  _tspice_ldpool(path: number, err: number, errMaxBytes: number): number;
+  _tspice_lmpool(
+    rows: number,
+    stride: number,
+    count: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_stpool(
+    item: number,
+    nth: number,
+    contin: number,
+    lenout: number,
+    text: number,
+    size: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_szpool(
+    name: number,
+    n: number,
+    found: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_gdpool(
     namePtr: number,
     start: number,
@@ -2136,6 +2193,7 @@ export type EmscriptenModule = {
   ): number;
 
   FS: {
+    create(path: string, mode: number): unknown;
     mkdirTree(path: string): void;
     writeFile(path: string, data: Uint8Array): void;
     readFile(path: string, options: { encoding: "binary" }): Uint8Array;
@@ -2180,6 +2238,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dlacls",
 
   // Kernel pool
+  "_tspice_badkpv",
+  "_tspice_bodvcd",
+  "_tspice_bodvrd",
+  "_tspice_clpool",
+  "_tspice_dvpool",
+  "_tspice_ldpool",
+  "_tspice_lmpool",
+  "_tspice_stpool",
+  "_tspice_szpool",
   "_tspice_gdpool",
   "_tspice_gipool",
   "_tspice_gcpool",

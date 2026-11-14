@@ -142,6 +142,15 @@ from .models import (
     StepKernelPoolDtpool,
     StepKernelPoolExpool,
     StepKernelPoolGcpool,
+    StepKernelPoolBadkpv,
+    StepKernelPoolBodvcd,
+    StepKernelPoolBodvrd,
+    StepKernelPoolClpool,
+    StepKernelPoolDvpool,
+    StepKernelPoolLdpool,
+    StepKernelPoolLmpool,
+    StepKernelPoolStpool,
+    StepKernelPoolSzpool,
     StepKernelPoolGdpool,
     StepKernelPoolGipool,
     StepKernelPoolGnpool,
@@ -756,6 +765,60 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 windowId=_expect_string(step.get("windowId"), label="cells-windows.wnvald.windowId"),
             )
 
+        case "kernel-pool.badkpv":
+            return StepKernelPoolBadkpv(
+                op=op,
+                caller=_expect_string(step.get("caller"), label="kernel-pool.badkpv.caller"),
+                name=_expect_string(step.get("name"), label="kernel-pool.badkpv.name"),
+                comp=_expect_string(step.get("comp"), label="kernel-pool.badkpv.comp"),
+                size=_expect_int(step.get("size"), label="kernel-pool.badkpv.size"),
+                divby=_expect_int(step.get("divby"), label="kernel-pool.badkpv.divby"),
+                type=_expect_string(step.get("type"), label="kernel-pool.badkpv.type"),
+            )
+        case "kernel-pool.bodvcd":
+            return StepKernelPoolBodvcd(
+                op=op,
+                body=_expect_int(step.get("body"), label="kernel-pool.bodvcd.body"),
+                item=_expect_string(step.get("item"), label="kernel-pool.bodvcd.item"),
+                maxn=_expect_int(step.get("maxn"), label="kernel-pool.bodvcd.maxn"),
+            )
+        case "kernel-pool.bodvrd":
+            return StepKernelPoolBodvrd(
+                op=op,
+                body=_expect_string(step.get("body"), label="kernel-pool.bodvrd.body"),
+                item=_expect_string(step.get("item"), label="kernel-pool.bodvrd.item"),
+                maxn=_expect_int(step.get("maxn"), label="kernel-pool.bodvrd.maxn"),
+            )
+        case "kernel-pool.clpool":
+            return StepKernelPoolClpool(op=op)
+        case "kernel-pool.dvpool":
+            return StepKernelPoolDvpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.dvpool.name"),
+            )
+        case "kernel-pool.ldpool":
+            return StepKernelPoolLdpool(
+                op=op,
+                file=_decode_path_ref(step.get("file"), label="kernel-pool.ldpool.file"),
+            )
+        case "kernel-pool.lmpool":
+            return StepKernelPoolLmpool(
+                op=op,
+                lines=_expect_string_list(step.get("lines"), label="kernel-pool.lmpool.lines"),
+            )
+        case "kernel-pool.stpool":
+            return StepKernelPoolStpool(
+                op=op,
+                item=_expect_string(step.get("item"), label="kernel-pool.stpool.item"),
+                nth=_expect_int(step.get("nth"), label="kernel-pool.stpool.nth"),
+                contin=_expect_string(step.get("contin"), label="kernel-pool.stpool.contin"),
+                lenout=_expect_int(step.get("lenout"), label="kernel-pool.stpool.lenout"),
+            )
+        case "kernel-pool.szpool":
+            return StepKernelPoolSzpool(
+                op=op,
+                name=_expect_string(step.get("name"), label="kernel-pool.szpool.name"),
+            )
         case "kernel-pool.gdpool":
             return StepKernelPoolGdpool(
                 op=op,

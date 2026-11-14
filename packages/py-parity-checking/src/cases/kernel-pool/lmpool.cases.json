@@ -1,0 +1,252 @@
+[
+  {
+    "caseId": "kernel-pool-lmpool-multiline-numeric",
+    "description": "The text parser reads continuation rows, signed exponents, dates and incremental assignment.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": [
+          "B05_NUMBER = ( -2.5D-2 2.25",
+          " 4 )",
+          "B05_NUMBER += 7",
+          "B05_EPOCH = @2000-JAN-01/12:00:00"
+        ]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_NUMBER",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_EPOCH",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernels.ktotal"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-empty-and-blank-rows",
+    "description": "Valid storage for an empty internal file and all-blank rows leaves an existing variable intact.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_NUM",
+        "values": [3, -2.25, 4.125, 0]
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": []
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_NUM",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["", "", ""]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_NUM",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": [" ", "B05_NEW = 13", ""]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_NEW",
+        "start": 0,
+        "room": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-quoted-and-utf8",
+    "description": "Preserve quoted apostrophes, spaces and UTF-8 bytes within physical row stride.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": [
+          "B05_QUOTES = ( 'O''Brien' 'two words' )",
+          "B05_UTF = ( 'café' 'délai' )"
+        ]
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_QUOTES",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_UTF",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 32
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_UTF",
+        "nth": 1,
+        "contin": "+",
+        "lenout": 32
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-overwrite-and-change-type",
+    "description": "Observe complete assignment replacement, then a numeric-to-character update.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_REPEAT = ( 1 2 )"]
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_REPEAT += ( 3 4 )"]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_REPEAT",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_REPEAT = ( 'later' )"]
+      },
+      {
+        "op": "kernel-pool.dtpool",
+        "name": "B05_REPEAT"
+      },
+      {
+        "op": "kernel-pool.gcpool",
+        "name": "B05_REPEAT",
+        "start": 0,
+        "room": 20
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-watches-and-bookkeeping",
+    "description": "Watch notifications are selective for in-memory assignments. No file entry appears.",
+    "workflow": [
+      {
+        "op": "kernel-pool.swpool",
+        "agent": "B05_LM",
+        "names": ["B05_TRACK"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LM"
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_OTHER = 3"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LM"
+      },
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_TRACK = 11"]
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LM"
+      },
+      {
+        "op": "kernel-pool.cvpool",
+        "agent": "B05_LM"
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_TRACK",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernels.ktotal"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-fixed-source-column",
+    "description": "Observe an assignment in the first 132 source bytes and ignored data beyond that column.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": [
+          "B05_COLUMN = ( 9 )                                                                                                                   B05_NEVER = 19"
+        ]
+      },
+      {
+        "op": "kernel-pool.gdpool",
+        "name": "B05_COLUMN",
+        "start": 0,
+        "room": 20
+      },
+      {
+        "op": "kernel-pool.expool",
+        "name": "B05_NEVER"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-malformed-number",
+    "description": "A valid preceding assignment is followed by a malformed numeric token.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["B05_GOOD = ( 11 12 )", "B05_BAD = ( 20 ZZZ )"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NUMBEREXPECTED"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-lmpool-malformed-assignment",
+    "description": "Actual parser rejects an expression without a variable assignment.",
+    "workflow": [
+      {
+        "op": "kernel-pool.lmpool",
+        "lines": ["1"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARASSIGN"]
+    }
+  }
+]

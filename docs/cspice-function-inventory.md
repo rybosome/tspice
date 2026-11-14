@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 162
-- Planned (not yet implemented): 487
+- Implemented now (SpiceRawBackend): 171
+- Planned (not yet implemented): 478
 - Excluded: 3
 
 ## Implemented now
@@ -22,6 +22,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | Routine | Purpose (1 line) |
 | --- | --- |
 | `axisar_c` | Axis and angle to rotation |
+| `badkpv_c` | Bad Kernel Pool Variable |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -29,6 +30,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodn2c_c` | Body name to ID code translation |
 | `bods2c_c` | Body string to ID code translation |
 | `bodvar_c` | Return values from the kernel pool |
+| `bodvcd_c` | Return d.p. values from the kernel pool |
+| `bodvrd_c` | Return d.p. values from the kernel pool |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
 | `chkin_c` | module Check In |
@@ -40,6 +43,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cklpf_c` | CK, load pointing file |
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
+| `clpool_c` | Clear the pool of kernel variables |
 | `cnmfrm_c` | Center name to associated frame |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
@@ -61,6 +65,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `dvpool_c` | Delete a variable from the kernel pool |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
@@ -112,6 +117,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `ldpool_c` | Load variables from a kernel file into the pool |
+| `lmpool_c` | Load variables from memory into the pool |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -158,11 +165,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkuds_c` | SPK - unpack segment descriptor |
 | `spkw08_c` | Write SPK segment, type 8 |
 | `ssize_c` | Set the size of a cell |
+| `stpool_c` | String from pool |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `szpool_c` | Get size limitations of the kernel pool |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
@@ -195,10 +204,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
-| `badkpv_c` | Bad Kernel Pool Variable |
 | `bltfrm_c` | Built-in frame IDs |
-| `bodvcd_c` | Return d.p. values from the kernel pool |
-| `bodvrd_c` | Return d.p. values from the kernel pool |
 | `brcktd_c` | Bracket a d.p. value within an interval |
 | `brckti_c` | Bracket an integer value within an interval |
 | `bschoc_c` | Binary search with order vector, character |
@@ -228,7 +234,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cleard_c` | Clear a double precision array |
 | `cleari_c` | Clear an integer array |
 | `clight_c` | C, Speed of light in a vacuum |
-| `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
 | `convrt_c` | Convert Units |
@@ -319,7 +324,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dvdot_c` | Derivative of Vector Dot Product, 3-D |
 | `dvhat_c` | Derivative and unit vector "V-hat" of a state |
 | `dvnorm_c` | Derivative of vector norm |
-| `dvpool_c` | Delete a variable from the kernel pool |
 | `dvsep_c` | Time derivative of separation angle |
 | `edlimb_c` | Ellipsoid Limb |
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
@@ -423,14 +427,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `latsph_c` | Latitudinal to spherical coordinates |
 | `latsrf_c` | Latitudinal grid to surface points |
 | `lcase_c` | Convert to lowercase |
-| `ldpool_c` | Load variables from a kernel file into the pool |
 | `lgresp_c` | Lagrange interpolation on equally spaced points |
 | `lgrind_c` | Lagrange polynomial interpolation with derivative |
 | `lgrint_c` | Lagrange polynomial interpolation |
 | `limb_pl02` | Limb using DSK type 2 plate model |
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
-| `lmpool_c` | Load variables from memory into the pool |
 | `lparse_c` | Parse items from a list |
 | `lparsm_c` | Parse a list of items having multiple delimiters |
 | `lparss_c` | Parse a list of items; return a set |
@@ -589,7 +591,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `srfxpt_c` | Surface intercept point |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |
-| `stpool_c` | String from pool |
 | `subpt_c` | Sub-observer point |
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subsol_c` | Sub-solar point |
@@ -599,7 +600,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `surfnm_c` | Surface normal vector on an ellipsoid |
 | `surfpt_c` | Surface point on an ellipsoid |
 | `surfpv_c` | Surface point and velocity |
-| `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
