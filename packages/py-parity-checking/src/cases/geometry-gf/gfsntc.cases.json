@@ -1,0 +1,1032 @@
+[
+  {
+    "caseId": "geometry-gf-gfsntc-relations",
+    "description": "Compare equality and inequality crossings and both local extrema in the authored moving geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": ">",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "<",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "LOCMIN",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "LOCMAX",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-absolute-adjust",
+    "description": "Compare absolute extrema with and without a physical-unit adjustment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "ABSMIN",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "ABSMIN",
+        "refval": 0.30000000000018545,
+        "adjust": 0.13,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "ABSMAX",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "ABSMAX",
+        "refval": 0.30000000000018545,
+        "adjust": 0.13,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-disjoint",
+    "description": "Discard prior result contents and preserve separate confinement intervals and active search step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": -3,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 1,
+        "right": 9,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 70,
+        "right": 71,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": ">",
+        "refval": 0.2831700000003572,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "<",
+        "refval": 0.2831700000003572,
+        "adjust": 0,
+        "step": 0.2,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-corrections",
+    "description": "Compare geometric and corrected boundaries in the synthetic ephemeris.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "LT",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "CN+S",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-resolution",
+    "description": "Repeat the search with different time tolerance and step, comparing all returned boundaries.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 0.0001
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.7,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.3,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-rays",
+    "description": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [2, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0.01, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "LATITUDINAL",
+        "coord": "LATITUDE",
+        "relate": ">",
+        "refval": -0.1,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-invalid-step",
+    "description": "Compare the canonical diagnostic for invalid-step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-invalid-relation",
+    "description": "Compare the canonical diagnostic for invalid-relation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "BAD",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-negative-adjust",
+    "description": "Compare the canonical diagnostic for negative-adjust.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "ABSMIN",
+        "refval": 0.30000000000018545,
+        "adjust": -1,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-unknown-target",
+    "description": "Compare the canonical diagnostic for unknown-target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "UNKNOWN TARGET",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-invalid-correction",
+    "description": "Compare the canonical diagnostic for invalid-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NO OPTION",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-workspace",
+    "description": "Compare the canonical diagnostic for workspace.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-bad-frame",
+    "description": "Compare the canonical diagnostic for bad-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "NO FRAME",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-coordinate",
+    "description": "Compare the canonical diagnostic for coordinate.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "NOT A COORDINATE",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-zero-direction",
+    "description": "Compare the canonical diagnostic for zero-direction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [0, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(ZEROVECTOR)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-ephemeris",
+    "description": "A real search outside the ephemeris coverage signals a toolkit error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 18000,
+        "right": 18004,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": "=",
+        "refval": 0.30000000000018545,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfsntc-short-result",
+    "description": "Three disjoint matching intervals exceed the one-interval result capacity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -9,
+        "right": -7,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 1,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 5,
+        "right": 8,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfsntc",
+        "target": "100101",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "method": "ELLIPSOID",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "dref": "J2000",
+        "dvec": [1, 0, 0],
+        "crdsys": "RECTANGULAR",
+        "coord": "Y",
+        "relate": ">",
+        "refval": -2.0,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CELLTOOSMALL)"]
+    }
+  }
+]

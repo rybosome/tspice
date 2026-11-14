@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 172,
-    planned: 477,
+    implemented: 178,
+    planned: 471,
     excluded: 3,
-    caseFiles: 172,
-    scenarios: 1287,
+    caseFiles: 178,
+    scenarios: 1382,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -472,7 +472,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 10);
+  assert.equal(ledger.audit.expansionRoutines, 16);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -757,9 +757,19 @@ test("historical executions remain visible but cannot establish current verifica
   assert.throws(f.build, /missing local live verification/);
 });
 
-test("each visibility search has a compiled export and two same-named CSPICE routes", (t) => {
+test("each visibility and scalar search has a compiled export and two same-named CSPICE routes", (t) => {
   const { routines } = fixture(t).build();
-  for (const method of ["gfoclt", "gfrfov", "gftfov"]) {
+  for (const method of [
+    "gfoclt",
+    "gfrfov",
+    "gftfov",
+    "gfpa",
+    "gfposc",
+    "gfrr",
+    "gfsntc",
+    "gfsubc",
+    "gfilum",
+  ]) {
     const row = routines.find((entry) => entry.routine === method + "_c");
     assert.equal(
       row.mapping.node.classification,

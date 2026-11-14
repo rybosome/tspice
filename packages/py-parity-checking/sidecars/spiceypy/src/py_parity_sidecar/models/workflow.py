@@ -138,6 +138,12 @@ from .geometry_gf import (
     StepGeometryGfGfoclt,
     StepGeometryGfGfrfov,
     StepGeometryGfGftfov,
+    StepGeometryGfGfpa,
+    StepGeometryGfGfposc,
+    StepGeometryGfGfrr,
+    StepGeometryGfGfsntc,
+    StepGeometryGfGfsubc,
+    StepGeometryGfGfilum,
     StepGeometryGfGfsep,
     StepGeometryGfGfsstp,
     StepGeometryGfGfstep,
@@ -388,6 +394,12 @@ WorkflowStep: TypeAlias = (
     | StepGeometryGfGfoclt
     | StepGeometryGfGfrfov
     | StepGeometryGfGftfov
+    | StepGeometryGfGfpa
+    | StepGeometryGfGfposc
+    | StepGeometryGfGfrr
+    | StepGeometryGfGfsntc
+    | StepGeometryGfGfsubc
+    | StepGeometryGfGfilum
     | StepGeometryGfGfsep
     | StepGeometryGfGfdist
 )

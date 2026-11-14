@@ -1492,7 +1492,8 @@
         "ephemeris-spkw08-invalid-states-length-error",
         "ephemeris-spkw08-write-segment-success"
       ],
-      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-e23-616bbf8a-wasm",
@@ -1560,7 +1561,8 @@
         "ephemeris-spkw08-invalid-states-length-error",
         "ephemeris-spkw08-write-segment-success"
       ],
-      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45. JavaScript: 2,814 parity tests and one expected guard skip. Native-required: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e23-616bbf8a-node",
@@ -1630,7 +1632,8 @@
       ],
       "commit": "616bbf8a8cbb4484ff4e3051d1da7f95d453ff45",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584847943/job/132417014295",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-e23-616bbf8a-wasm",
@@ -1700,7 +1703,284 @@
       ],
       "commit": "616bbf8a8cbb4484ff4e3051d1da7f95d453ff45",
       "url": "https://github.com/rybosome/tspice/actions/runs/43584847943/job/132417014295",
-      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132417014295 on 616bbf8a8cbb4484ff4e3051d1da7f95d453ff45: 2,574 registered Node/WASM live comparisons; 2,815 parity-package tests with no skips, including the native-required guard; 75 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-e22-26fc2200-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "944c38a5be4b596f66f0c5330ad02b487700c8189e308df7e5dff855415e2d9b",
+      "caseIds": [
+        "ephemeris-spkcls-audit-close-reopen-append",
+        "ephemeris-spkcls-audit-empty-error-and-recovery",
+        "ephemeris-spkcls-close-writer-success",
+        "ephemeris-spkcls-missing-handle-error",
+        "ephemeris-spkcov-audit-absent-object",
+        "ephemeris-spkcov-audit-disjoint-intervals",
+        "ephemeris-spkcov-audit-empty-zero-capacity",
+        "ephemeris-spkcov-audit-insufficient-capacity",
+        "ephemeris-spkcov-audit-union-merges-gap",
+        "ephemeris-spkcov-audit-wrong-daf-type",
+        "ephemeris-spkcov-generated-file-success",
+        "ephemeris-spkcov-missing-file-error",
+        "ephemeris-spkobj-audit-all-objects-and-deduplication",
+        "ephemeris-spkobj-audit-empty-zero-capacity",
+        "ephemeris-spkobj-audit-insufficient-capacity",
+        "ephemeris-spkobj-audit-populated-zero-capacity",
+        "ephemeris-spkobj-audit-union-across-files",
+        "ephemeris-spkobj-audit-wrong-daf-type",
+        "ephemeris-spkobj-generated-file-success",
+        "ephemeris-spkobj-missing-file-error",
+        "ephemeris-spkopa-append-segment-success",
+        "ephemeris-spkopa-audit-append-complete-second-segment",
+        "ephemeris-spkopa-audit-loaded-file-conflict",
+        "ephemeris-spkopa-audit-missing-file",
+        "ephemeris-spkopa-audit-wrong-daf-type",
+        "ephemeris-spkopa-missing-file-error",
+        "ephemeris-spkopn-audit-blank-internal-name",
+        "ephemeris-spkopn-audit-empty-internal-name",
+        "ephemeris-spkopn-audit-full-internal-name",
+        "ephemeris-spkopn-audit-negative-comments",
+        "ephemeris-spkopn-audit-reserved-comments",
+        "ephemeris-spkopn-create-file-success",
+        "ephemeris-spkopn-existing-file-error",
+        "ephemeris-spkw08-audit-empty-frame",
+        "ephemeris-spkw08-audit-empty-segment-id",
+        "ephemeris-spkw08-audit-equal-body-center",
+        "ephemeris-spkw08-audit-equal-epochs",
+        "ephemeris-spkw08-audit-first-coverage-gap",
+        "ephemeris-spkw08-audit-forty-character-id",
+        "ephemeris-spkw08-audit-forty-id-trailing-blank",
+        "ephemeris-spkw08-audit-large-degree",
+        "ephemeris-spkw08-audit-last-coverage-gap",
+        "ephemeris-spkw08-audit-long-segment-id",
+        "ephemeris-spkw08-audit-maximum-degree",
+        "ephemeris-spkw08-audit-minimum-degree-linear",
+        "ephemeris-spkw08-audit-negative-step",
+        "ephemeris-spkw08-audit-nonprintable-segment-id",
+        "ephemeris-spkw08-audit-quadratic-all-components",
+        "ephemeris-spkw08-audit-reversed-epochs",
+        "ephemeris-spkw08-audit-too-few-states",
+        "ephemeris-spkw08-audit-unknown-frame",
+        "ephemeris-spkw08-audit-zero-body",
+        "ephemeris-spkw08-audit-zero-degree",
+        "ephemeris-spkw08-audit-zero-step",
+        "ephemeris-spkw08-invalid-states-length-error",
+        "ephemeris-spkw08-write-segment-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611. JavaScript: 3,012 parity tests and one expected guard skip. Native-required: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e22-26fc2200-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "944c38a5be4b596f66f0c5330ad02b487700c8189e308df7e5dff855415e2d9b",
+      "caseIds": [
+        "ephemeris-spkcls-audit-close-reopen-append",
+        "ephemeris-spkcls-audit-empty-error-and-recovery",
+        "ephemeris-spkcls-close-writer-success",
+        "ephemeris-spkcls-missing-handle-error",
+        "ephemeris-spkcov-audit-absent-object",
+        "ephemeris-spkcov-audit-disjoint-intervals",
+        "ephemeris-spkcov-audit-empty-zero-capacity",
+        "ephemeris-spkcov-audit-insufficient-capacity",
+        "ephemeris-spkcov-audit-union-merges-gap",
+        "ephemeris-spkcov-audit-wrong-daf-type",
+        "ephemeris-spkcov-generated-file-success",
+        "ephemeris-spkcov-missing-file-error",
+        "ephemeris-spkobj-audit-all-objects-and-deduplication",
+        "ephemeris-spkobj-audit-empty-zero-capacity",
+        "ephemeris-spkobj-audit-insufficient-capacity",
+        "ephemeris-spkobj-audit-populated-zero-capacity",
+        "ephemeris-spkobj-audit-union-across-files",
+        "ephemeris-spkobj-audit-wrong-daf-type",
+        "ephemeris-spkobj-generated-file-success",
+        "ephemeris-spkobj-missing-file-error",
+        "ephemeris-spkopa-append-segment-success",
+        "ephemeris-spkopa-audit-append-complete-second-segment",
+        "ephemeris-spkopa-audit-loaded-file-conflict",
+        "ephemeris-spkopa-audit-missing-file",
+        "ephemeris-spkopa-audit-wrong-daf-type",
+        "ephemeris-spkopa-missing-file-error",
+        "ephemeris-spkopn-audit-blank-internal-name",
+        "ephemeris-spkopn-audit-empty-internal-name",
+        "ephemeris-spkopn-audit-full-internal-name",
+        "ephemeris-spkopn-audit-negative-comments",
+        "ephemeris-spkopn-audit-reserved-comments",
+        "ephemeris-spkopn-create-file-success",
+        "ephemeris-spkopn-existing-file-error",
+        "ephemeris-spkw08-audit-empty-frame",
+        "ephemeris-spkw08-audit-empty-segment-id",
+        "ephemeris-spkw08-audit-equal-body-center",
+        "ephemeris-spkw08-audit-equal-epochs",
+        "ephemeris-spkw08-audit-first-coverage-gap",
+        "ephemeris-spkw08-audit-forty-character-id",
+        "ephemeris-spkw08-audit-forty-id-trailing-blank",
+        "ephemeris-spkw08-audit-large-degree",
+        "ephemeris-spkw08-audit-last-coverage-gap",
+        "ephemeris-spkw08-audit-long-segment-id",
+        "ephemeris-spkw08-audit-maximum-degree",
+        "ephemeris-spkw08-audit-minimum-degree-linear",
+        "ephemeris-spkw08-audit-negative-step",
+        "ephemeris-spkw08-audit-nonprintable-segment-id",
+        "ephemeris-spkw08-audit-quadratic-all-components",
+        "ephemeris-spkw08-audit-reversed-epochs",
+        "ephemeris-spkw08-audit-too-few-states",
+        "ephemeris-spkw08-audit-unknown-frame",
+        "ephemeris-spkw08-audit-zero-body",
+        "ephemeris-spkw08-audit-zero-degree",
+        "ephemeris-spkw08-audit-zero-step",
+        "ephemeris-spkw08-invalid-states-length-error",
+        "ephemeris-spkw08-write-segment-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611. JavaScript: 3,012 parity tests and one expected guard skip. Native-required: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e22-26fc2200-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "944c38a5be4b596f66f0c5330ad02b487700c8189e308df7e5dff855415e2d9b",
+      "caseIds": [
+        "ephemeris-spkcls-audit-close-reopen-append",
+        "ephemeris-spkcls-audit-empty-error-and-recovery",
+        "ephemeris-spkcls-close-writer-success",
+        "ephemeris-spkcls-missing-handle-error",
+        "ephemeris-spkcov-audit-absent-object",
+        "ephemeris-spkcov-audit-disjoint-intervals",
+        "ephemeris-spkcov-audit-empty-zero-capacity",
+        "ephemeris-spkcov-audit-insufficient-capacity",
+        "ephemeris-spkcov-audit-union-merges-gap",
+        "ephemeris-spkcov-audit-wrong-daf-type",
+        "ephemeris-spkcov-generated-file-success",
+        "ephemeris-spkcov-missing-file-error",
+        "ephemeris-spkobj-audit-all-objects-and-deduplication",
+        "ephemeris-spkobj-audit-empty-zero-capacity",
+        "ephemeris-spkobj-audit-insufficient-capacity",
+        "ephemeris-spkobj-audit-populated-zero-capacity",
+        "ephemeris-spkobj-audit-union-across-files",
+        "ephemeris-spkobj-audit-wrong-daf-type",
+        "ephemeris-spkobj-generated-file-success",
+        "ephemeris-spkobj-missing-file-error",
+        "ephemeris-spkopa-append-segment-success",
+        "ephemeris-spkopa-audit-append-complete-second-segment",
+        "ephemeris-spkopa-audit-loaded-file-conflict",
+        "ephemeris-spkopa-audit-missing-file",
+        "ephemeris-spkopa-audit-wrong-daf-type",
+        "ephemeris-spkopa-missing-file-error",
+        "ephemeris-spkopn-audit-blank-internal-name",
+        "ephemeris-spkopn-audit-empty-internal-name",
+        "ephemeris-spkopn-audit-full-internal-name",
+        "ephemeris-spkopn-audit-negative-comments",
+        "ephemeris-spkopn-audit-reserved-comments",
+        "ephemeris-spkopn-create-file-success",
+        "ephemeris-spkopn-existing-file-error",
+        "ephemeris-spkw08-audit-empty-frame",
+        "ephemeris-spkw08-audit-empty-segment-id",
+        "ephemeris-spkw08-audit-equal-body-center",
+        "ephemeris-spkw08-audit-equal-epochs",
+        "ephemeris-spkw08-audit-first-coverage-gap",
+        "ephemeris-spkw08-audit-forty-character-id",
+        "ephemeris-spkw08-audit-forty-id-trailing-blank",
+        "ephemeris-spkw08-audit-large-degree",
+        "ephemeris-spkw08-audit-last-coverage-gap",
+        "ephemeris-spkw08-audit-long-segment-id",
+        "ephemeris-spkw08-audit-maximum-degree",
+        "ephemeris-spkw08-audit-minimum-degree-linear",
+        "ephemeris-spkw08-audit-negative-step",
+        "ephemeris-spkw08-audit-nonprintable-segment-id",
+        "ephemeris-spkw08-audit-quadratic-all-components",
+        "ephemeris-spkw08-audit-reversed-epochs",
+        "ephemeris-spkw08-audit-too-few-states",
+        "ephemeris-spkw08-audit-unknown-frame",
+        "ephemeris-spkw08-audit-zero-body",
+        "ephemeris-spkw08-audit-zero-degree",
+        "ephemeris-spkw08-audit-zero-step",
+        "ephemeris-spkw08-invalid-states-length-error",
+        "ephemeris-spkw08-write-segment-success"
+      ],
+      "commit": "26fc22007aaedd69cc3a9ef73fb0fea6894ed611",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588989390/job/132429481563",
+      "observation": "Inspected successful Linux Node 22 native-required job 132429481563 on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e22-26fc2200-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "944c38a5be4b596f66f0c5330ad02b487700c8189e308df7e5dff855415e2d9b",
+      "caseIds": [
+        "ephemeris-spkcls-audit-close-reopen-append",
+        "ephemeris-spkcls-audit-empty-error-and-recovery",
+        "ephemeris-spkcls-close-writer-success",
+        "ephemeris-spkcls-missing-handle-error",
+        "ephemeris-spkcov-audit-absent-object",
+        "ephemeris-spkcov-audit-disjoint-intervals",
+        "ephemeris-spkcov-audit-empty-zero-capacity",
+        "ephemeris-spkcov-audit-insufficient-capacity",
+        "ephemeris-spkcov-audit-union-merges-gap",
+        "ephemeris-spkcov-audit-wrong-daf-type",
+        "ephemeris-spkcov-generated-file-success",
+        "ephemeris-spkcov-missing-file-error",
+        "ephemeris-spkobj-audit-all-objects-and-deduplication",
+        "ephemeris-spkobj-audit-empty-zero-capacity",
+        "ephemeris-spkobj-audit-insufficient-capacity",
+        "ephemeris-spkobj-audit-populated-zero-capacity",
+        "ephemeris-spkobj-audit-union-across-files",
+        "ephemeris-spkobj-audit-wrong-daf-type",
+        "ephemeris-spkobj-generated-file-success",
+        "ephemeris-spkobj-missing-file-error",
+        "ephemeris-spkopa-append-segment-success",
+        "ephemeris-spkopa-audit-append-complete-second-segment",
+        "ephemeris-spkopa-audit-loaded-file-conflict",
+        "ephemeris-spkopa-audit-missing-file",
+        "ephemeris-spkopa-audit-wrong-daf-type",
+        "ephemeris-spkopa-missing-file-error",
+        "ephemeris-spkopn-audit-blank-internal-name",
+        "ephemeris-spkopn-audit-empty-internal-name",
+        "ephemeris-spkopn-audit-full-internal-name",
+        "ephemeris-spkopn-audit-negative-comments",
+        "ephemeris-spkopn-audit-reserved-comments",
+        "ephemeris-spkopn-create-file-success",
+        "ephemeris-spkopn-existing-file-error",
+        "ephemeris-spkw08-audit-empty-frame",
+        "ephemeris-spkw08-audit-empty-segment-id",
+        "ephemeris-spkw08-audit-equal-body-center",
+        "ephemeris-spkw08-audit-equal-epochs",
+        "ephemeris-spkw08-audit-first-coverage-gap",
+        "ephemeris-spkw08-audit-forty-character-id",
+        "ephemeris-spkw08-audit-forty-id-trailing-blank",
+        "ephemeris-spkw08-audit-large-degree",
+        "ephemeris-spkw08-audit-last-coverage-gap",
+        "ephemeris-spkw08-audit-long-segment-id",
+        "ephemeris-spkw08-audit-maximum-degree",
+        "ephemeris-spkw08-audit-minimum-degree-linear",
+        "ephemeris-spkw08-audit-negative-step",
+        "ephemeris-spkw08-audit-nonprintable-segment-id",
+        "ephemeris-spkw08-audit-quadratic-all-components",
+        "ephemeris-spkw08-audit-reversed-epochs",
+        "ephemeris-spkw08-audit-too-few-states",
+        "ephemeris-spkw08-audit-unknown-frame",
+        "ephemeris-spkw08-audit-zero-body",
+        "ephemeris-spkw08-audit-zero-degree",
+        "ephemeris-spkw08-audit-zero-step",
+        "ephemeris-spkw08-invalid-states-length-error",
+        "ephemeris-spkw08-write-segment-success"
+      ],
+      "commit": "26fc22007aaedd69cc3a9ef73fb0fea6894ed611",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43588989390/job/132429481563",
+      "observation": "Inspected successful Linux Node 22 native-required job 132429481563 on 26fc22007aaedd69cc3a9ef73fb0fea6894ed611: 2,764 registered Node/WASM live comparisons; 3,013 parity-package tests with no skips, including the native-required guard; 76 native wrapper, 639 WASM, 28 core and 150 facade tests passed."
     }
   ],
   "routines": [
@@ -1826,11 +2106,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopn -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -1847,11 +2129,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopn -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopn export -> shared tspice_spkopn -> spkopn_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     },
@@ -1965,11 +2249,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopa -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -1986,11 +2272,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkopa -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkopa export -> shared tspice_spkopa -> spkopa_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     },
@@ -2100,11 +2388,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcls -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -2121,11 +2411,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcls -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcls export -> shared tspice_spkcls -> spkcls_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     },
@@ -2347,11 +2639,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkw08 -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -2368,11 +2662,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkw08 -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkw08 _v2 export -> shared tspice_spkw08 _v2 -> spkw08_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     },
@@ -2501,11 +2797,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkobj -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -2522,11 +2820,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkobj -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkobj export -> shared tspice_spkobj -> spkobj_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     },
@@ -2652,11 +2952,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcov -> Node typed adapter and owned file/cell/window registry -> actual registered N-API ephemeris handler -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-node", "ci-e23-616bbf8a-node"]
+          "executions": ["local-e22-26fc2200-node", "ci-e22-26fc2200-node"]
         },
         "wasm": {
           "history": [
@@ -2673,11 +2975,13 @@
             "reviewed",
             "verified",
             "reviewed",
+            "verified",
+            "reviewed",
             "verified"
           ],
           "route": "direct",
           "trace": "raw.spkcov -> WASM typed adapter/owned handle resolution -> actual configured compiled _tspice_spkcov export -> shared tspice_spkcov -> spkcov_c. Registered workflow invokes actual raw operation, observes complete outputs/effects and compares with actual locked SpiceyPy. No harness substitute or numerical relaxation.",
-          "executions": ["local-e23-616bbf8a-wasm", "ci-e23-616bbf8a-wasm"]
+          "executions": ["local-e22-26fc2200-wasm", "ci-e22-26fc2200-wasm"]
         }
       }
     }

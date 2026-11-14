@@ -163,6 +163,7 @@ export {
 export { issueOpaqueSpiceHandle } from "./spice-runtime/shared/opaque-handles.js";
 
 export {
+  finiteGeometryVector,
   fovRayDirection,
   fovWorkspace,
 } from "./spice-runtime/domains/field-of-view.js";

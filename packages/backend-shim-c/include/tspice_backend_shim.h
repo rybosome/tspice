@@ -1060,6 +1060,12 @@ int tspice_gfrfov(const char *inst, const double raydir[3], const char *rframe, 
 
 int tspice_gftfov(const char *inst, const char *target, const char *tshape, const char *tframe, const char *abcorr, const char *obsrvr, double step, uintptr_t input, uintptr_t output, char *err, int cap);
 
+int tspice_gfpa(const char *target, const char *illmn, const char *abcorr, const char *obsrvr, const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfposc(const char *target, const char *frame, const char *abcorr, const char *obsrvr, const char *crdsys, const char *coord, const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfrr(const char *target, const char *abcorr, const char *obsrvr, const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfsntc(const char *target, const char *fixref, const char *method, const char *abcorr, const char *obsrvr, const char *dref, const double dvec[3], const char *crdsys, const char *coord, const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfsubc(const char *target, const char *fixref, const char *method, const char *abcorr, const char *obsrvr, const char *crdsys, const char *coord, const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfilum(const char *method, const char *angtyp, const char *target, const char *illmn, const char *fixref, const char *abcorr, const char *obsrvr, const double spoint[3], const char *relate, double refval, double adjust, double step, int nintvls, uintptr_t input, uintptr_t output, char *err, int cap);
 // gfsep_c: angular separation search.
 int tspice_gfsep(
     const char *targ1,

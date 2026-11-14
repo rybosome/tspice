@@ -1,0 +1,959 @@
+[
+  {
+    "caseId": "geometry-gf-gfilum-relations",
+    "description": "Compare equality and inequality crossings and both local extrema in the authored moving geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": ">",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "<",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "LOCMIN",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "LOCMAX",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-absolute-adjust",
+    "description": "Compare absolute extrema with and without a physical-unit adjustment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "ABSMIN",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "ABSMIN",
+        "refval": 0.017645227291133825,
+        "adjust": 0.008,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "ABSMAX",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "ABSMAX",
+        "refval": 0.017645227291133825,
+        "adjust": 0.008,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-disjoint",
+    "description": "Discard prior result contents and preserve separate confinement intervals and active search step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": -3,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 1,
+        "right": 9,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 70,
+        "right": 71,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": ">",
+        "refval": 0.01665551853739131,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "<",
+        "refval": 0.01665551853739131,
+        "adjust": 0,
+        "step": 0.2,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-corrections",
+    "description": "Compare geometric and corrected boundaries in the synthetic ephemeris.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "LT",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "CN+S",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-resolution",
+    "description": "Repeat the search with different time tolerance and step, comparing all returned boundaries.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 0.0001
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.7,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.3,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-angle-point",
+    "description": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "PHASE",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 2.67,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "INCIDENCE",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [0, 2, 0],
+        "relate": "=",
+        "refval": 1.1,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [0, 2, 0],
+        "relate": "=",
+        "refval": 1.67,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-invalid-step",
+    "description": "Compare the canonical diagnostic for invalid-step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-invalid-relation",
+    "description": "Compare the canonical diagnostic for invalid-relation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "BAD",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-negative-adjust",
+    "description": "Compare the canonical diagnostic for negative-adjust.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "ABSMIN",
+        "refval": 0.017645227291133825,
+        "adjust": -1,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-unknown-target",
+    "description": "Compare the canonical diagnostic for unknown-target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "UNKNOWN TARGET",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-invalid-correction",
+    "description": "Compare the canonical diagnostic for invalid-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NO OPTION",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-workspace",
+    "description": "Compare the canonical diagnostic for workspace.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-bad-frame",
+    "description": "Compare the canonical diagnostic for bad-frame.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "NO FRAME",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(UNKNOWNFRAME)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-angle-type",
+    "description": "Compare the canonical diagnostic for angle-type.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "INVALID",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTSUPPORTED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-ephemeris",
+    "description": "A real search outside the ephemeris coverage signals a toolkit error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 18000,
+        "right": 18004,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": "=",
+        "refval": 0.017645227291133825,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfilum-short-result",
+    "description": "Three disjoint matching intervals exceed the one-interval result capacity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -9,
+        "right": -7,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 1,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 5,
+        "right": 8,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfilum",
+        "method": "ELLIPSOID",
+        "angtyp": "EMISSION",
+        "target": "100101",
+        "illmn": "SUN",
+        "fixref": "AUDIT_GEOMETRY_FIXED",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "spoint": [-3, 0, 0],
+        "relate": ">",
+        "refval": -2.0,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CELLTOOSMALL)"]
+    }
+  }
+]

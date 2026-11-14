@@ -2,6 +2,7 @@ import type { GeometryGfApi } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
   invariant,
+  finiteGeometryVector,
   fovRayDirection,
   spiceStringByteLength,
 } from "@rybosome/tspice-core";
@@ -46,6 +47,18 @@ function assertGfStrings(values: readonly unknown[], context: string): void {
 function assertGfBoolean(value: unknown, context: string): void {
   if (typeof value !== "boolean")
     throw new TypeError(`${context}: expected boolean`);
+}
+
+function validateScalarSearch(
+  refval: number,
+  adjust: number,
+  step: number,
+  nintvls: number,
+): void {
+  assertFiniteNumber(refval, "refval");
+  assertFiniteNumber(adjust, "adjust");
+  assertFiniteNumber(step, "step");
+  assertSpiceInt32(nintvls, "nintvls");
 }
 
 function assertFiniteNumber(
@@ -103,6 +116,252 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
       native.gfrepf();
     },
 
+    gfpa: (
+      target,
+      illmn,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [target, illmn, abcorr, obsrvr, relate])
+        spiceStringByteLength(text, "gfpa");
+      assertOpaqueHandle(cnfine, "gfpa(cnfine)");
+      assertOpaqueHandle(result, "gfpa(result)");
+      native.gfpa(
+        target,
+        illmn,
+        abcorr,
+        obsrvr,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
+    gfposc: (
+      target,
+      frame,
+      abcorr,
+      obsrvr,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [target, frame, abcorr, obsrvr, crdsys, coord, relate])
+        spiceStringByteLength(text, "gfposc");
+      assertOpaqueHandle(cnfine, "gfposc(cnfine)");
+      assertOpaqueHandle(result, "gfposc(result)");
+      native.gfposc(
+        target,
+        frame,
+        abcorr,
+        obsrvr,
+        crdsys,
+        coord,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
+    gfrr: (
+      target,
+      abcorr,
+      obsrvr,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [target, abcorr, obsrvr, relate])
+        spiceStringByteLength(text, "gfrr");
+      assertOpaqueHandle(cnfine, "gfrr(cnfine)");
+      assertOpaqueHandle(result, "gfrr(result)");
+      native.gfrr(
+        target,
+        abcorr,
+        obsrvr,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
+    gfsntc: (
+      target,
+      fixref,
+      method,
+      abcorr,
+      obsrvr,
+      dref,
+      dvec,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [
+        target,
+        fixref,
+        method,
+        abcorr,
+        obsrvr,
+        dref,
+        crdsys,
+        coord,
+        relate,
+      ])
+        spiceStringByteLength(text, "gfsntc");
+      assertOpaqueHandle(cnfine, "gfsntc(cnfine)");
+      assertOpaqueHandle(result, "gfsntc(result)");
+      native.gfsntc(
+        target,
+        fixref,
+        method,
+        abcorr,
+        obsrvr,
+        dref,
+        finiteGeometryVector(dvec, "dvec"),
+        crdsys,
+        coord,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
+    gfsubc: (
+      target,
+      fixref,
+      method,
+      abcorr,
+      obsrvr,
+      crdsys,
+      coord,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [
+        target,
+        fixref,
+        method,
+        abcorr,
+        obsrvr,
+        crdsys,
+        coord,
+        relate,
+      ])
+        spiceStringByteLength(text, "gfsubc");
+      assertOpaqueHandle(cnfine, "gfsubc(cnfine)");
+      assertOpaqueHandle(result, "gfsubc(result)");
+      native.gfsubc(
+        target,
+        fixref,
+        method,
+        abcorr,
+        obsrvr,
+        crdsys,
+        coord,
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
+    gfilum: (
+      method,
+      angtyp,
+      target,
+      illmn,
+      fixref,
+      abcorr,
+      obsrvr,
+      spoint,
+      relate,
+      refval,
+      adjust,
+      step,
+      nintvls,
+      cnfine,
+      result,
+    ) => {
+      validateScalarSearch(refval, adjust, step, nintvls);
+      for (const text of [
+        method,
+        angtyp,
+        target,
+        illmn,
+        fixref,
+        abcorr,
+        obsrvr,
+        relate,
+      ])
+        spiceStringByteLength(text, "gfilum");
+      assertOpaqueHandle(cnfine, "gfilum(cnfine)");
+      assertOpaqueHandle(result, "gfilum(result)");
+      native.gfilum(
+        method,
+        angtyp,
+        target,
+        illmn,
+        fixref,
+        abcorr,
+        obsrvr,
+        finiteGeometryVector(spoint, "spoint"),
+        relate,
+        refval,
+        adjust,
+        step,
+        nintvls,
+        cnfine,
+        result,
+      );
+    },
     gfoclt: (
       occtyp,
       front,

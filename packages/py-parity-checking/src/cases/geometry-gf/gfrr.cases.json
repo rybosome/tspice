@@ -1,0 +1,763 @@
+[
+  {
+    "caseId": "geometry-gf-gfrr-relations",
+    "description": "Compare equality and inequality crossings and both local extrema in the authored moving geometry.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": ">",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "<",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "LOCMIN",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "LOCMAX",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-absolute-adjust",
+    "description": "Compare absolute extrema with and without a physical-unit adjustment.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "ABSMIN",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "ABSMIN",
+        "refval": 0.0014998312784721512,
+        "adjust": 0.001,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "ABSMAX",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "ABSMAX",
+        "refval": 0.0014998312784721512,
+        "adjust": 0.001,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-disjoint",
+    "description": "Discard prior result contents and preserve separate confinement intervals and active search step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": -3,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 1,
+        "right": 9,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 70,
+        "right": 71,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": ">",
+        "refval": 0.0014157081084786236,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "<",
+        "refval": 0.0014157081084786236,
+        "adjust": 0,
+        "step": 0.2,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstep",
+        "time": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-corrections",
+    "description": "Compare geometric and corrected boundaries in the synthetic ephemeris.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "LT",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "CN+S",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-resolution",
+    "description": "Repeat the search with different time tolerance and step, comparing all returned boundaries.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 0.0001
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.7,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfstol",
+        "value": 1e-6
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.3,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-relative-motion",
+    "description": "Distinguish the named bodies, coordinate components or observing geometry and compare every returned interval.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100104",
+        "relate": ">",
+        "refval": -0.01,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "SUN",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.001,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-invalid-step",
+    "description": "Compare the canonical diagnostic for invalid-step.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDSTEP)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-invalid-relation",
+    "description": "Compare the canonical diagnostic for invalid-relation.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "BAD",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NOTRECOGNIZED)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-negative-adjust",
+    "description": "Compare the canonical diagnostic for negative-adjust.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "ABSMIN",
+        "refval": 0.0014998312784721512,
+        "adjust": -1,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-unknown-target",
+    "description": "Compare the canonical diagnostic for unknown-target.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "UNKNOWN TARGET",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(IDCODENOTFOUND)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-invalid-correction",
+    "description": "Compare the canonical diagnostic for invalid-correction.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NO OPTION",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDOPTION)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-workspace",
+    "description": "Compare the canonical diagnostic for workspace.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 0,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(VALUEOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-same-body",
+    "description": "Compare the canonical diagnostic for same-body.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -10,
+        "right": 10,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100101",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BODIESNOTDISTINCT)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-ephemeris",
+    "description": "A real search outside the ephemeris coverage signals a toolkit error.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 18000,
+        "right": 18004,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": "=",
+        "refval": 0.0014998312784721512,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(SPKINSUFFDATA)"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfrr-short-result",
+    "description": "Three disjoint matching intervals exceed the one-interval result capacity.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -9,
+        "right": -7,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -2,
+        "right": 1,
+        "maxIntervals": 12
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": 5,
+        "right": 8,
+        "maxIntervals": 12
+      },
+      {
+        "op": "geometry-gf.gfrr",
+        "target": "100101",
+        "abcorr": "NONE",
+        "obsrvr": "100103",
+        "relate": ">",
+        "refval": -2.0,
+        "adjust": 0,
+        "step": 0.25,
+        "nintvls": 24,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "resultMaxIntervals": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(CELLTOOSMALL)"]
+    }
+  }
+]
