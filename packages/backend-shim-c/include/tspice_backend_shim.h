@@ -132,6 +132,18 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes);
 #define TSPICE_DAS_PATH_BYTES 256
 #define TSPICE_DAS_ID_BYTES 9
 #define TSPICE_DAS_IFNAME_BYTES 61
+// Same transfer ceiling on native and wasm32; actual allocation may fail earlier.
+#define TSPICE_DAS_DATA_MAX_BYTES (256 * 1024 * 1024)
+int tspice_dasadc(int handle, int n, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasadd(int handle, int n, const double *data, int length, char *err, int errMaxBytes);
+int tspice_dasadi(int handle, int n, const int *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdc(int handle, int first, int last, int bpos, int epos, int datlen, unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdd(int handle, int first, int last, double *data, int length, char *err, int errMaxBytes);
+int tspice_dasrdi(int handle, int first, int last, int *data, int length, char *err, int errMaxBytes);
+int tspice_dasudc(int handle, int first, int last, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes);
+int tspice_dasudd(int handle, int first, int last, const double *data, int length, char *err, int errMaxBytes);
+int tspice_dasudi(int handle, int first, int last, const int *data, int length, char *err, int errMaxBytes);
+
 int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes);
 int tspice_dasops(int *out, char *err, int errMaxBytes);
 int tspice_dasopw(const char *path, int *out, char *err, int errMaxBytes);

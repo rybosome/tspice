@@ -1,4 +1,7 @@
 import {
+  copyDasBytes,
+  copyDasValues,
+  dasReadCount,
   dasFileTarget,
   dasText,
   decodeDasSummary,
@@ -191,6 +194,116 @@ export function createFileIoApi(
       return found;
     },
 
+    dasadc: (
+      handle: SpiceHandle,
+      n: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasadc");
+      assertSpiceInt32(n, "dasadc(n)");
+      assertSpiceInt32(bpos, "dasadc(bpos)");
+      assertSpiceInt32(epos, "dasadc(epos)");
+      assertSpiceInt32(datlen, "dasadc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasadc(id, n, bpos, epos, datlen, owned);
+    },
+    dasadd: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadd");
+      assertSpiceInt32(n, "dasadd(n)");
+      const owned = copyDasValues(data, "double");
+      native.dasadd(id, n, owned);
+    },
+    dasadi: (handle: SpiceHandle, n: number, data: readonly number[]) => {
+      const id = dasHandle(handle, "dasadi");
+      assertSpiceInt32(n, "dasadi(n)");
+      const owned = copyDasValues(data, "integer");
+      native.dasadi(id, n, owned);
+    },
+    dasrdc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasrdc");
+      assertSpiceInt32(first, "dasrdc(first)");
+      assertSpiceInt32(last, "dasrdc(last)");
+      assertSpiceInt32(bpos, "dasrdc(bpos)");
+      assertSpiceInt32(epos, "dasrdc(epos)");
+      assertSpiceInt32(datlen, "dasrdc(datlen)");
+      const owned = copyDasBytes(data);
+      const count = owned.length;
+      const result = copyDasBytes(
+        native.dasrdc(id, first, last, bpos, epos, datlen, owned),
+      );
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdd: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdd");
+      const count = dasReadCount(first, last, 8);
+      const result = copyDasValues(native.dasrdd(id, first, last), "double");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasrdi: (handle: SpiceHandle, first: number, last: number) => {
+      const id = dasHandle(handle, "dasrdi");
+      const count = dasReadCount(first, last, 4);
+      const result = copyDasValues(native.dasrdi(id, first, last), "integer");
+      if (result.length !== count)
+        throw new TypeError("Invalid DAS result length");
+      return result;
+    },
+    dasudc: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      bpos: number,
+      epos: number,
+      datlen: number,
+      data: Uint8Array,
+    ) => {
+      const id = dasHandle(handle, "dasudc");
+      assertSpiceInt32(first, "dasudc(first)");
+      assertSpiceInt32(last, "dasudc(last)");
+      assertSpiceInt32(bpos, "dasudc(bpos)");
+      assertSpiceInt32(epos, "dasudc(epos)");
+      assertSpiceInt32(datlen, "dasudc(datlen)");
+      const owned = copyDasBytes(data);
+      native.dasudc(id, first, last, bpos, epos, datlen, owned);
+    },
+    dasudd: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudd");
+      assertSpiceInt32(first, "dasudd(first)");
+      assertSpiceInt32(last, "dasudd(last)");
+      const owned = copyDasValues(data, "double");
+      native.dasudd(id, first, last, owned);
+    },
+    dasudi: (
+      handle: SpiceHandle,
+      first: number,
+      last: number,
+      data: readonly number[],
+    ) => {
+      const id = dasHandle(handle, "dasudi");
+      assertSpiceInt32(first, "dasudi(first)");
+      assertSpiceInt32(last, "dasudi(last)");
+      const owned = copyDasValues(data, "integer");
+      native.dasudi(id, first, last, owned);
+    },
     dasonw: (
       file: string | VirtualOutput,
       ftype: string,

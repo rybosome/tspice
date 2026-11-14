@@ -1,6 +1,7 @@
 #include "tspice_backend_shim.h"
 #include "tspice_error.h"
 
+#include "SpiceZfc.h"
 #include "SpiceUsr.h"
 #include "SpiceDLA.h"
 #include "SpiceDSK.h"
@@ -184,6 +185,244 @@ static int finish_das_call(char *err, int errMaxBytes) {
   if (!failed_c()) return 0;
   tspice_get_spice_error_message_and_reset(err, errMaxBytes);
   return 1;
+}
+
+static int das_data_invalid(char *err, int errMaxBytes, const char *message) {
+  tspice_clear_last_error_buffers();
+  return tspice_return_error(err, errMaxBytes, message);
+}
+
+static int das_record_words(int type) {
+  return type == 1 ? 1024 : type == 2 ? 128 : 256;
+}
+
+static int das_data_summary(int handle, int type, int *high, int *freeRecord, char *err, int errMaxBytes) {
+  SpiceInt reserved, reservedChars, comments, commentChars, addresses[3], records[3], words[3];
+  dashfs_c(handle, &reserved, &reservedChars, &comments, &commentChars, freeRecord, addresses, records, words);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  const int width = das_record_words(type);
+  // DASA2L's high address includes every physical word in the last cluster.
+  if (addresses[type-1] < 0 || addresses[type-1] > INT_MAX / width * width ||
+      *freeRecord <= 0 || *freeRecord > LONG_MAX / 1024LL)
+    return das_data_invalid(err, errMaxBytes, "DAS data exceed N0067 signed record/address bounds");
+  *high = addresses[type-1];
+  return 0;
+}
+
+static int check_das_append(int handle, int type, int n, int *oldHigh, char *err, int errMaxBytes) {
+  int freeRecord;
+  if (das_data_summary(handle, type, oldHigh, &freeRecord, err, errMaxBytes)) return 1;
+  if (n <= 0) return 0;
+  const int width = das_record_words(type);
+  const int room = *oldHigh ? (width - *oldHigh % width) % width : 0;
+  const int64_t extra = (int64_t)n - room;
+  const int64_t records = extra > 0 ? (extra + width - 1) / width : 0;
+  // DASCUD rounds the logical cluster size up and can add a directory record.
+  if ((int64_t)*oldHigh + n > INT_MAX / width * width ||
+      (int64_t)freeRecord + records + (records ? 1 : 0) > INT_MAX ||
+      (int64_t)freeRecord + records > LONG_MAX / 1024LL || extra + width > INT_MAX)
+    return das_data_invalid(err, errMaxBytes, "DAS append exceeds N0067 signed record/address bounds");
+  return 0;
+}
+
+// DASAD* supplies its complete static record on a newly allocated record.
+// Clear only the unused tail of the new last record, in the same DAS buffer.
+// DASUR* updates an existing physical record without flushing or allocating.
+static int clear_new_das_tail(int handle, int type, int oldHigh, int n, char *err, int errMaxBytes) {
+  if (n <= 0) return 0;
+  const int width = das_record_words(type);
+  const int room = oldHigh ? (width - oldHigh % width) % width : 0;
+  int high = oldHigh + n;
+  if (n <= room || high % width == 0) return 0;
+  integer base, size, rec, word;
+  dasa2l_(&handle, &type, &high, &base, &size, &rec, &word);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  integer first = word + 1, last = width;
+  if (type == 1) {
+    char zero[1024] = {0};
+    dasurc_(&handle, &rec, &first, &last, zero, (ftnlen)(last - first + 1));
+  } else if (type == 2) {
+    doublereal zero[128] = {0};
+    dasurd_(&handle, &rec, &first, &last, zero);
+  } else {
+    integer zero[256] = {0};
+    dasuri_(&handle, &rec, &first, &last, zero);
+  }
+  return finish_das_call(err, errMaxBytes);
+}
+
+// A read validates only its first address. If last is outside the logical
+// stream but inside an allocated physical record, never hand out its padding.
+static int check_das_read(int handle, int type, int first, int last, const char *outer, char *err, int errMaxBytes) {
+  int high, freeRecord;
+  if (das_data_summary(handle, type, &high, &freeRecord, err, errMaxBytes)) return 1;
+  int invalid = first < 1 || first > high ? first : last;
+  if (invalid < 1 || invalid > high) {
+    integer base, size, rec, word;
+    chkin_c(outer);
+    dasa2l_(&handle, &type, &invalid, &base, &size, &rec, &word);
+    chkout_c(outer);
+    return finish_das_call(err, errMaxBytes);
+  }
+  return 0;
+}
+
+static int das_char_layout(int bpos, int epos, int datlen, char *err, int errMaxBytes) {
+  // The C adapter adds one to both indices; the Fortran loops can also
+  // advance the current character one beyond the one-based end position.
+  if (bpos == INT_MAX || epos == INT_MAX || (epos == INT_MAX-1 && epos < datlen))
+    return das_data_invalid(err, errMaxBytes, "DAS character positions exceed N0067 index bounds");
+  return 0;
+}
+
+static int das_valid_slice(int bpos, int epos, int datlen) {
+  return bpos >= 0 && epos >= bpos && epos < datlen;
+}
+
+static int check_das_rows(int64_t n, int bpos, int epos, int datlen, int length, char *err, int errMaxBytes) {
+  if (n <= 0 || !das_valid_slice(bpos, epos, datlen)) return 0;
+  int64_t width = (int64_t)epos - bpos + 1;
+  if (((n - 1) / width + 1) * datlen > length)
+    return das_data_invalid(err, errMaxBytes, "DAS character buffer lacks complete source or destination rows");
+  return 0;
+}
+
+// DASUDC compares the continuing source column with the substring width,
+// instead of its end position, after the first physical record. Track its
+// row cursor at record boundaries before allowing the actual update.
+static int check_das_update_rows(int first, int last, int bpos, int epos, int datlen, int length,
+                                 char *err, int errMaxBytes) {
+  int64_t remaining = (int64_t)last - first + 1;
+  if (remaining <= 0 || !das_valid_slice(bpos, epos, datlen)) return 0;
+  if (check_das_rows(remaining, bpos, epos, datlen, length, err, errMaxBytes)) return 1;
+  if (!bpos || first < 1) return 0;
+  int64_t width = (int64_t)epos - bpos + 1, row = 0, column = bpos;
+  int space = 1024 - (first-1) % 1024;
+  int initial = 1;
+  while (remaining > 0) {
+    int64_t chunk = remaining < space ? remaining : space;
+    if (column >= (initial ? (int64_t)epos + 1 : width)) {
+      ++row;
+      column = bpos;
+    }
+    int64_t advance = column - bpos + chunk;
+    row += (advance - 1) / width;
+    column = bpos + (advance - 1) % width + 1;
+    if ((row + 1) * datlen > length)
+      return das_data_invalid(err, errMaxBytes, "DASUDC needs an additional source row at a physical record boundary");
+    remaining -= chunk;
+    initial = 0;
+    space = 1024;
+  }
+  return 0;
+}
+
+int tspice_dasadc(int handle, int n, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  if (das_char_layout(bpos, epos, datlen, err, errMaxBytes)) return 1;
+  int oldHigh = 0;
+  if (check_das_rows(n, bpos, epos, datlen, length, err, errMaxBytes)) return 1;
+  if (das_valid_slice(bpos, epos, datlen) && check_das_append(handle, 1, n, &oldHigh, err, errMaxBytes)) return 1;
+  dasadc_c(handle, n, bpos, epos, datlen, data);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  return clear_new_das_tail(handle, 1, oldHigh, n, err, errMaxBytes);
+}
+
+int tspice_dasadd(int handle, int n, const double *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  int oldHigh = 0;
+  if (n > length) return das_data_invalid(err, errMaxBytes, "DAS append count exceeds input length");
+  if (check_das_append(handle, 2, n, &oldHigh, err, errMaxBytes)) return 1;
+  dasadd_c(handle, n, data);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  return clear_new_das_tail(handle, 2, oldHigh, n, err, errMaxBytes);
+}
+
+int tspice_dasadi(int handle, int n, const int *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  int oldHigh = 0;
+  if (n > length) return das_data_invalid(err, errMaxBytes, "DAS append count exceeds input length");
+  if (check_das_append(handle, 3, n, &oldHigh, err, errMaxBytes)) return 1;
+  dasadi_c(handle, n, data);
+  if (failed_c()) return finish_das_call(err, errMaxBytes);
+  return clear_new_das_tail(handle, 3, oldHigh, n, err, errMaxBytes);
+}
+
+int tspice_dasrdc(int handle, int first, int last, int bpos, int epos, int datlen, unsigned char *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  if (das_char_layout(bpos, epos, datlen, err, errMaxBytes)) return 1;
+  if (das_valid_slice(bpos, epos, datlen) && check_das_read(handle, 1, first, last, "dasrdc_c", err, errMaxBytes)) return 1;
+  if (check_das_rows((int64_t)last - first + 1, bpos, epos, datlen, length, err, errMaxBytes)) return 1;
+  dasrdc_c(handle, first, last, bpos, epos, datlen, data);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasrdd(int handle, int first, int last, double *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  if (check_das_read(handle, 2, first, last, "dasrdd_c", err, errMaxBytes)) return 1;
+  if ((int64_t)last - first + 1 > length) return das_data_invalid(err, errMaxBytes, "DAS read range exceeds output capacity");
+  dasrdd_c(handle, first, last, data);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasrdi(int handle, int first, int last, int *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  if (check_das_read(handle, 3, first, last, "dasrdi_c", err, errMaxBytes)) return 1;
+  if ((int64_t)last - first + 1 > length) return das_data_invalid(err, errMaxBytes, "DAS read range exceeds output capacity");
+  dasrdi_c(handle, first, last, data);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasudc(int handle, int first, int last, int bpos, int epos, int datlen, const unsigned char *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  if (das_char_layout(bpos, epos, datlen, err, errMaxBytes)) return 1;
+  int high, freeRecord;
+  if (das_data_summary(handle, 1, &high, &freeRecord, err, errMaxBytes)) return 1;
+  if (first >= 1 && first <= high && last >= 1 && last <= high) {
+    if (check_das_update_rows(first, last, bpos, epos, datlen, length, err, errMaxBytes)) return 1;
+  }
+  dasudc_c(handle, first, last, bpos, epos, datlen, data);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasudd(int handle, int first, int last, const double *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  int high, freeRecord;
+  if (das_data_summary(handle, 2, &high, &freeRecord, err, errMaxBytes)) return 1;
+  if (first >= 1 && first <= high && last >= 1 && last <= high) {
+    if ((int64_t)last - first + 1 > length) return das_data_invalid(err, errMaxBytes, "DAS update range exceeds input length");
+  }
+  dasudd_c(handle, first, last, data);
+  return finish_das_call(err, errMaxBytes);
+}
+
+int tspice_dasudi(int handle, int first, int last, const int *data, int length, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!data || length < 0 || (size_t)length > TSPICE_DAS_DATA_MAX_BYTES / sizeof(*data)) return das_data_invalid(err, errMaxBytes, "Invalid DAS transfer buffer");
+  int high, freeRecord;
+  if (das_data_summary(handle, 3, &high, &freeRecord, err, errMaxBytes)) return 1;
+  if (first >= 1 && first <= high && last >= 1 && last <= high) {
+    if ((int64_t)last - first + 1 > length) return das_data_invalid(err, errMaxBytes, "DAS update range exceeds input length");
+  }
+  dasudi_c(handle, first, last, data);
+  return finish_das_call(err, errMaxBytes);
 }
 
 int tspice_dasonw(const char *path, const char *ftype, const char *ifname, int ncomr, int *out, char *err, int errMaxBytes) {

@@ -271,6 +271,325 @@ static Napi::Array DasInts(Napi::Env env, const int* ints, size_t count) {
   return result;
 }
 
+// Read only ordinary snapshots at this native boundary. Own the exact vector
+// before taking the CSPICE lock so JS getters cannot re-enter a locked addon.
+template<typename T>
+static bool DasWords(Napi::Env env, const Napi::Value &arg, std::vector<T> *out, bool integer) {
+  if (!arg.IsArray()) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a DAS data array"));
+    return false;
+  }
+  auto a = arg.As<Napi::Array>();
+  const size_t n = a.Length();
+  if (n > TSPICE_DAS_DATA_MAX_BYTES / sizeof(T)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS data array exceeds the buffer limit"));
+    return false;
+  }
+  out->reserve(std::max<size_t>(1,n));
+  for (uint32_t i = 0; i < n; ++i) {
+    auto value = a.Get(i);
+    if (!value.IsNumber()) {
+      ThrowSpiceError(Napi::TypeError::New(env, "Expected a numeric DAS data element"));
+      return false;
+    }
+    const double v = value.As<Napi::Number>().DoubleValue();
+    if (integer && (!(v >= INT32_MIN && v <= INT32_MAX) || std::trunc(v) != v)) {
+      ThrowSpiceError(Napi::RangeError::New(env, "Expected a signed 32-bit DAS integer"));
+      return false;
+    }
+    out->push_back(static_cast<T>(v));
+  }
+  return true;
+}
+
+static Napi::Value Dasadc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 6) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasadc expects 6 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t n;
+  if (!ReadInt32Checked(env, info[1], "n", &n)) return env.Undefined();
+  int32_t bpos;
+  if (!ReadInt32Checked(env, info[2], "bpos", &bpos)) return env.Undefined();
+  int32_t epos;
+  if (!ReadInt32Checked(env, info[3], "epos", &epos)) return env.Undefined();
+  int32_t datlen;
+  if (!ReadInt32Checked(env, info[4], "datlen", &datlen)) return env.Undefined();
+  if (!info[5].IsTypedArray() || info[5].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a Uint8Array of DAS bytes"));
+    return env.Undefined();
+  }
+  auto input = info[5].As<Napi::Uint8Array>();
+  const size_t count = input.ElementLength();
+  if (count > TSPICE_DAS_DATA_MAX_BYTES) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS byte array exceeds the buffer limit"));
+    return env.Undefined();
+  }
+  auto storage = Napi::Uint8Array::New(env, std::max<size_t>(1, count));
+  if (count) std::memcpy(storage.Data(), input.Data(), count);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasadc(handle, n, bpos, epos, datlen, storage.Data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasadc", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasadd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasadd expects 3 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t n;
+  if (!ReadInt32Checked(env, info[1], "n", &n)) return env.Undefined();
+  std::vector<double> storage;
+  if (!DasWords(env, info[2], &storage, false)) return env.Undefined();
+  const size_t count = storage.size();
+  if (storage.empty()) storage.push_back(0);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasadd(handle, n, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasadd", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasadi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasadi expects 3 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t n;
+  if (!ReadInt32Checked(env, info[1], "n", &n)) return env.Undefined();
+  std::vector<int> storage;
+  if (!DasWords(env, info[2], &storage, true)) return env.Undefined();
+  const size_t count = storage.size();
+  if (storage.empty()) storage.push_back(0);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasadi(handle, n, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasadi", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasrdc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 7) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasrdc expects 7 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  int32_t bpos;
+  if (!ReadInt32Checked(env, info[3], "bpos", &bpos)) return env.Undefined();
+  int32_t epos;
+  if (!ReadInt32Checked(env, info[4], "epos", &epos)) return env.Undefined();
+  int32_t datlen;
+  if (!ReadInt32Checked(env, info[5], "datlen", &datlen)) return env.Undefined();
+  if (!info[6].IsTypedArray() || info[6].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a Uint8Array of DAS bytes"));
+    return env.Undefined();
+  }
+  auto input = info[6].As<Napi::Uint8Array>();
+  const size_t count = input.ElementLength();
+  if (count > TSPICE_DAS_DATA_MAX_BYTES) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS byte array exceeds the buffer limit"));
+    return env.Undefined();
+  }
+  auto storage = Napi::Uint8Array::New(env, std::max<size_t>(1, count));
+  if (count) std::memcpy(storage.Data(), input.Data(), count);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasrdc(handle, first, last, bpos, epos, datlen, storage.Data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasrdc", err);
+      return env.Undefined();
+    }
+  }
+  if (!count) return Napi::Uint8Array::New(env,0);
+  return storage;
+}
+
+static Napi::Value Dasrdd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasrdd expects 3 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  const int64_t span = std::max<int64_t>(0, (int64_t)last-first+1);
+  if (span > TSPICE_DAS_DATA_MAX_BYTES / (int)sizeof(double)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS read exceeds the buffer limit"));
+    return env.Undefined();
+  }
+  const size_t count = static_cast<size_t>(span);
+  std::vector<double> storage(std::max<size_t>(1,count));
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasrdd(handle, first, last, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasrdd", err);
+      return env.Undefined();
+    }
+  }
+  return tspice_napi::MakeNumberArray(env, storage.data(), count);
+}
+
+static Napi::Value Dasrdi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasrdi expects 3 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  const int64_t span = std::max<int64_t>(0, (int64_t)last-first+1);
+  if (span > TSPICE_DAS_DATA_MAX_BYTES / (int)sizeof(int)) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS read exceeds the buffer limit"));
+    return env.Undefined();
+  }
+  const size_t count = static_cast<size_t>(span);
+  std::vector<int> storage(std::max<size_t>(1,count));
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasrdi(handle, first, last, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasrdi", err);
+      return env.Undefined();
+    }
+  }
+  auto result = Napi::Array::New(env, count);
+  for (uint32_t i = 0; i < count; ++i) result.Set(i, Napi::Number::New(env, storage[i]));
+  return result;
+}
+
+static Napi::Value Dasudc(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 7) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasudc expects 7 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  int32_t bpos;
+  if (!ReadInt32Checked(env, info[3], "bpos", &bpos)) return env.Undefined();
+  int32_t epos;
+  if (!ReadInt32Checked(env, info[4], "epos", &epos)) return env.Undefined();
+  int32_t datlen;
+  if (!ReadInt32Checked(env, info[5], "datlen", &datlen)) return env.Undefined();
+  if (!info[6].IsTypedArray() || info[6].As<Napi::TypedArray>().TypedArrayType() != napi_uint8_array) {
+    ThrowSpiceError(Napi::TypeError::New(env, "Expected a Uint8Array of DAS bytes"));
+    return env.Undefined();
+  }
+  auto input = info[6].As<Napi::Uint8Array>();
+  const size_t count = input.ElementLength();
+  if (count > TSPICE_DAS_DATA_MAX_BYTES) {
+    ThrowSpiceError(Napi::RangeError::New(env, "DAS byte array exceeds the buffer limit"));
+    return env.Undefined();
+  }
+  auto storage = Napi::Uint8Array::New(env, std::max<size_t>(1, count));
+  if (count) std::memcpy(storage.Data(), input.Data(), count);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasudc(handle, first, last, bpos, epos, datlen, storage.Data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasudc", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasudd(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasudd expects 4 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  std::vector<double> storage;
+  if (!DasWords(env, info[3], &storage, false)) return env.Undefined();
+  const size_t count = storage.size();
+  if (storage.empty()) storage.push_back(0);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasudd(handle, first, last, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasudd", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
+static Napi::Value Dasudi(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 4) {
+    ThrowSpiceError(Napi::TypeError::New(env, "dasudi expects 4 arguments"));
+    return env.Undefined();
+  }
+  int32_t handle;
+  if (!ReadInt32Checked(env, info[0], "handle", &handle)) return env.Undefined();
+  int32_t first;
+  if (!ReadInt32Checked(env, info[1], "first", &first)) return env.Undefined();
+  int32_t last;
+  if (!ReadInt32Checked(env, info[2], "last", &last)) return env.Undefined();
+  std::vector<int> storage;
+  if (!DasWords(env, info[3], &storage, true)) return env.Undefined();
+  const size_t count = storage.size();
+  if (storage.empty()) storage.push_back(0);
+  char err[tspice_backend_node::kErrMaxBytes] = {0};
+  {
+    tspice_backend_node::CspiceLock lock;
+    if (tspice_dasudi(handle, first, last, storage.data(), static_cast<int>(count), err, sizeof(err))) {
+      ThrowSpiceError(env, "CSPICE failed while calling dasudi", err);
+      return env.Undefined();
+    }
+  }
+  return env.Undefined();
+}
+
 static Napi::Value Dasonw(const Napi::CallbackInfo& info) {
   const auto env = info.Env();
   if (info.Length() != 4) {
@@ -1095,6 +1414,15 @@ void RegisterFileIo(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "dafbfs", Napi::Function::New(env, Dafbfs), __func__)) return;
   if (!SetExportChecked(env, exports, "daffna", Napi::Function::New(env, Daffna), __func__)) return;
 
+  if (!SetExportChecked(env, exports, "dasadc", Napi::Function::New(env, Dasadc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasadd", Napi::Function::New(env, Dasadd), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasadi", Napi::Function::New(env, Dasadi), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasrdc", Napi::Function::New(env, Dasrdc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasrdd", Napi::Function::New(env, Dasrdd), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasrdi", Napi::Function::New(env, Dasrdi), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasudc", Napi::Function::New(env, Dasudc), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasudd", Napi::Function::New(env, Dasudd), __func__)) return;
+  if (!SetExportChecked(env, exports, "dasudi", Napi::Function::New(env, Dasudi), __func__)) return;
   if (!SetExportChecked(env, exports, "dasonw", Napi::Function::New(env, Dasonw), __func__)) return;
   if (!SetExportChecked(env, exports, "dasops", Napi::Function::New(env, Dasops), __func__)) return;
   if (!SetExportChecked(env, exports, "dasopw", Napi::Function::New(env, Dasopw), __func__)) return;

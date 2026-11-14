@@ -129,6 +129,116 @@ export interface FileIoApi {
   daffna(handle: SpiceHandle): boolean;
 
   /**
+   * Append n bytes to a DAS or DLA writer. Nonpositive n writes no logical data. The Uint8Array
+   * holds complete datlen-byte rows. bpos through epos select inclusive zero-based byte columns.
+   * NUL and high bytes are data. New partial physical records have zeroed unused words. Writes
+   * remain buffered until normal flush or close. Individual transfer buffers are limited to 256
+   * MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadc_c.html
+   */
+  dasadc(
+    handle: SpiceHandle,
+    n: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+
+  /**
+   * Append n doubles to a DAS or DLA writer. Nonpositive n writes no logical data. Doubles
+   * preserve IEEE values, including signed zero, infinity and NaN. New partial physical records
+   * have zeroed unused words. Writes remain buffered until normal flush or close. Individual
+   * transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadd_c.html
+   */
+  dasadd(handle: SpiceHandle, n: number, data: readonly number[]): void;
+
+  /**
+   * Append n integers to a DAS or DLA writer. Nonpositive n writes no logical data. Each integer
+   * is signed 32-bit. New partial physical records have zeroed unused words. Writes remain
+   * buffered until normal flush or close. Individual transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasadi_c.html
+   */
+  dasadi(handle: SpiceHandle, n: number, data: readonly number[]): void;
+
+  /**
+   * Read bytes from inclusive one-based DAS logical addresses first through last. The Uint8Array
+   * holds complete datlen-byte rows. bpos through epos select inclusive zero-based byte columns.
+   * NUL and high bytes are data. Returns an owned copy of the entire supplied destination,
+   * preserving every unselected byte. Individual transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdc_c.html
+   */
+  dasrdc(
+    handle: SpiceHandle,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): Uint8Array;
+
+  /**
+   * Read doubles from inclusive one-based DAS logical addresses first through last. Doubles
+   * preserve IEEE values, including signed zero, infinity and NaN. Returns an independent array.
+   * Individual transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdd_c.html
+   */
+  dasrdd(handle: SpiceHandle, first: number, last: number): number[];
+
+  /**
+   * Read integers from inclusive one-based DAS logical addresses first through last. Each
+   * integer is signed 32-bit. Returns an independent array. Individual transfer buffers are
+   * limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrdi_c.html
+   */
+  dasrdi(handle: SpiceHandle, first: number, last: number): number[];
+
+  /**
+   * Replace bytes at inclusive one-based DAS logical addresses first through last. The
+   * Uint8Array holds complete datlen-byte rows. bpos through epos select inclusive zero-based
+   * byte columns. NUL and high bytes are data. N0067 may advance the source row early at a
+   * physical record boundary with nonzero bpos. Supply complete rows for the actual cursor.
+   * Individual transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudc_c.html
+   */
+  dasudc(
+    handle: SpiceHandle,
+    first: number,
+    last: number,
+    bpos: number,
+    epos: number,
+    datlen: number,
+    data: Uint8Array,
+  ): void;
+
+  /**
+   * Replace doubles at inclusive one-based DAS logical addresses first through last. Doubles
+   * preserve IEEE values, including signed zero, infinity and NaN. Individual transfer buffers
+   * are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudd_c.html
+   */
+  dasudd(
+    handle: SpiceHandle,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+
+  /**
+   * Replace integers at inclusive one-based DAS logical addresses first through last. Each
+   * integer is signed 32-bit. Individual transfer buffers are limited to 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasudi_c.html
+   */
+  dasudi(
+    handle: SpiceHandle,
+    first: number,
+    last: number,
+    data: readonly number[],
+  ): void;
+
+  /**
    * Create a named DAS for writing and return an owned token. File type is
    * case-sensitive; the first four bytes starting at the first nonblank byte are
    * stored in the eight-byte ID word. Internal name has 60 bytes. ncomr counts

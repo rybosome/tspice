@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 171
-- Planned (not yet implemented): 478
+- Implemented now (SpiceRawBackend): 180
+- Planned (not yet implemented): 469
 - Excluded: 3
 
 ## Implemented now
@@ -46,6 +46,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafcls_c` | DAF, close |
 | `daffna_c` | DAF, find next array |
 | `dafopr_c` | DAF, open for read |
+| `dasadc_c` | DAS, add data, character |
+| `dasadd_c` | DAS, add data, double precision |
+| `dasadi_c` | DAS, add data, integer |
 | `dascls_c` | DAS, close file |
 | `dashfn_c` | DAS, handle to file name |
 | `dashfs_c` | DAS, handle to file summary |
@@ -55,7 +58,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dasopr_c` | DAS, open for read |
 | `dasops_c` | DAS, open scratch |
 | `dasopw_c` | DAS, open for write |
+| `dasrdc_c` | DAS, read data, character |
+| `dasrdd_c` | DAS, read data, double precision |
+| `dasrdi_c` | DAS, read data, integer |
 | `dasrfr_c` | DAS, read file record |
+| `dasudc_c` | DAS, update data, character |
+| `dasudd_c` | DAS, update data, double precision |
+| `dasudi_c` | DAS, update data, integer |
 | `daswbr_c` | DAS, write buffered records |
 | `deltet_c` | Delta ET, ET - UTC |
 | `dlabfs_c` | DLA, begin forward search |
@@ -266,17 +275,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dafrs_c` | DAF, replace summary |
 | `dafus_c` | DAF, unpack summary |
 | `dasac_c` | DAS add comments |
-| `dasadc_c` | DAS, add data, character |
-| `dasadd_c` | DAS, add data, double precision |
-| `dasadi_c` | DAS, add data, integer |
 | `dasdc_c` | DAS, delete comments |
 | `dasec_c` | DAS extract comments |
-| `dasrdc_c` | DAS, read data, character |
-| `dasrdd_c` | DAS, read data, double precision |
-| `dasrdi_c` | DAS, read data, integer |
-| `dasudc_c` | DAS, update data, character |
-| `dasudd_c` | DAS, update data, double precision |
-| `dasudi_c` | DAS, update data, integer |
 | `dazldr_c` | Derivative of AZ/EL w.r.t. rectangular |
 | `dcyldr_c` | Derivative of cylindrical w.r.t. rectangular |
 | `det_c` | Determinant of a double precision 3x3 matrix |

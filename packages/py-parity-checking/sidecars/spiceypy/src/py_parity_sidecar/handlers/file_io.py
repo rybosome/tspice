@@ -7,12 +7,22 @@ import numpy as np
 import spiceypy as sp
 from spiceypy.utils.exceptions import NotFoundError
 
+from .. import das_data_oracle
 from ..das_file_oracle import file_record, file_name
 from ..models import (
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
     StepFileIoDafopr,
+    StepFileIoDasadc,
+    StepFileIoDasadd,
+    StepFileIoDasadi,
+    StepFileIoDasrdc,
+    StepFileIoDasrdd,
+    StepFileIoDasrdi,
+    StepFileIoDasudc,
+    StepFileIoDasudd,
+    StepFileIoDasudi,
     StepFileIoDasonw,
     StepFileIoDasops,
     StepFileIoDasopw,
@@ -195,6 +205,42 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         sp.dafcs(handle_state.handle)
         found = bool(sp.daffna())
         return StepOutput(op=step.op, value=found)
+
+    if isinstance(step, StepFileIoDasadc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadc(h, step.n, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasadd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadd(h, step.n, step.data))
+
+    if isinstance(step, StepFileIoDasadi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasadi(h, step.n, step.data))
+
+    if isinstance(step, StepFileIoDasrdc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdc(h, step.first, step.last, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasrdd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdd(h, step.first, step.last))
+
+    if isinstance(step, StepFileIoDasrdi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasrdi(h, step.first, step.last))
+
+    if isinstance(step, StepFileIoDasudc):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudc(h, step.first, step.last, step.bpos, step.epos, step.datlen, step.data))
+
+    if isinstance(step, StepFileIoDasudd):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudd(h, step.first, step.last, step.data))
+
+    if isinstance(step, StepFileIoDasudi):
+        h = _require_handle(state, step.handleId, expected_kind=("DAS", "DLA"), require_open=True).handle
+        return StepOutput(op=step.op, value=das_data_oracle.dasudi(h, step.first, step.last, step.data))
 
     if isinstance(step, (StepFileIoDasonw, StepFileIoDasopw, StepFileIoDasops)):
         existing = state.handles.get(step.handleId)
