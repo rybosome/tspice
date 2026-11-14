@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import type {
   CaseExecutionFailure,
   CaseExecutionResult,
@@ -32,7 +34,23 @@ export function runCaseInTspice(
   try {
     clearKernelState(context);
 
-    const normalized = normalizeWorkflowDetailed(parityCase.workflow, "tspice");
+    // A live WASM module can run the same SPK Chebyshev writer case again. Its MEMFS
+    // retains created files until disposal, so scope generated SPKs to this run.
+    const generatedSpkDirectory =
+      spice.raw.kind === "wasm" &&
+      parityCase.workflow.some(
+        (step) =>
+          step.op === "ephemeris.spkw02" ||
+          step.op === "ephemeris.spkw03" ||
+          step.op === "ephemeris.spkw20",
+      )
+        ? path.basename(context.paths.scratchRoot)
+        : undefined;
+    const normalized = normalizeWorkflowDetailed(
+      parityCase.workflow,
+      "tspice",
+      generatedSpkDirectory,
+    );
     context.normalization.metadata = normalized.metadata;
 
     const outputs: StepOutput[] = [];

@@ -9,6 +9,8 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copySpkChebyshevData,
+  validateSpkChebyshevFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -338,6 +340,150 @@ export function createEphemerisApi(
       }
     },
 
+    spkw02: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw02",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(2, n, degree, cdata);
+      native.spkw02(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        btime,
+      );
+    },
+    spkw03: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw03",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(3, n, degree, cdata);
+      native.spkw03(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        btime,
+      );
+    },
+    spkw20: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      dscale,
+      tscale,
+      initjd,
+      initfr,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw20",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+      const data = copySpkChebyshevData(20, n, degree, cdata);
+      native.spkw20(
+        nativeHandle,
+        body,
+        center,
+        frame,
+        first,
+        last,
+        segid,
+        intlen,
+        n,
+        degree,
+        data,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,

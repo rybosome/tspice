@@ -660,6 +660,57 @@ export type StepEphemerisSpkuds = { op: "ephemeris.spkuds" } & (
   | { descr?: never; descrId: string }
 );
 
+export type StepEphemerisSpkw02 = {
+  op: "ephemeris.spkw02";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  btime: number;
+};
+
+export type StepEphemerisSpkw03 = {
+  op: "ephemeris.spkw03";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  btime: number;
+};
+
+export type StepEphemerisSpkw20 = {
+  op: "ephemeris.spkw20";
+  handleId: string;
+  body: number;
+  center: number;
+  frame: string;
+  first: number;
+  last: number;
+  segid: string;
+  intlen: number;
+  n: number;
+  degree: number;
+  cdata: number[];
+  dscale: number;
+  tscale: number;
+  initjd: number;
+  initfr: number;
+};
+
 export type StepEphemerisSpkw08 = {
   op: "ephemeris.spkw08";
   handleId: string;
@@ -1379,6 +1430,9 @@ export type WorkflowStep =
   | StepEphemerisSpksfs
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
+  | StepEphemerisSpkw02
+  | StepEphemerisSpkw03
+  | StepEphemerisSpkw20
   | StepEphemerisSpkw08
   | StepFileIoExists
   | StepFileIoGetfat
@@ -1675,6 +1729,9 @@ export type StepOutput =
         eaddr: number;
       };
     }
+  | { op: "ephemeris.spkw02"; value: null }
+  | { op: "ephemeris.spkw03"; value: null }
+  | { op: "ephemeris.spkw20"; value: null }
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }

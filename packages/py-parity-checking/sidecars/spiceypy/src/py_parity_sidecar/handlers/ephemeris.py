@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import math
 import struct
 from typing import Any
 
@@ -24,11 +25,42 @@ from ..models import (
     StepEphemerisSpksfs,
     StepEphemerisSpkssb,
     StepEphemerisSpkuds,
+    StepEphemerisSpkw02,
+    StepEphemerisSpkw03,
+    StepEphemerisSpkw20,
     StepEphemerisSpkw08,
     StepOutput,
     WorkflowStep,
 )
 from ..runtime import SidecarRuntimeContext, resolve_path_ref
+
+
+def _chebyshev_writer_data(step: StepEphemerisSpkw02 | StepEphemerisSpkw03 | StepEphemerisSpkw20) -> list[float]:
+    """Check physical storage before calling the independent signed-32-bit CSPICE ABI."""
+    for value in (step.body, step.center, step.n, step.degree):
+        if not -(2**31) <= value < 2**31:
+            raise ValueError("SPK integer exceeds the signed 32-bit ABI")
+    if "\0" in step.frame or "\0" in step.segid:
+        raise ValueError("Embedded NUL in SPK string")
+    scalars = [step.first, step.last, step.intlen]
+    if isinstance(step, StepEphemerisSpkw20):
+        scalars.extend([step.dscale, step.tscale, step.initjd, step.initfr])
+        max_degree, components, extra = 50, 3, 2
+    else:
+        scalars.append(step.btime)
+        max_degree = 27
+        components = 6 if isinstance(step, StepEphemerisSpkw03) else 3
+        extra = 1
+    if not all(math.isfinite(value) for value in scalars) or len(step.cdata) > 33554432:
+        raise ValueError("Invalid SPK numeric field or coefficient buffer size")
+    # CSPICE signals count and degree errors before accessing the first record.
+    if step.n <= 0 or not 0 <= step.degree <= max_degree:
+        return [0.0]
+    if step.n * components * (step.degree + extra) != len(step.cdata):
+        raise ValueError("Invalid physical Chebyshev record length")
+    if not all(math.isfinite(word) for word in step.cdata):
+        raise ValueError("Nonfinite Chebyshev coefficient")
+    return step.cdata
 
 
 def _to_float(value: Any, *, label: str) -> float:
@@ -316,6 +348,19 @@ def run_ephemeris_step(step: WorkflowStep, context: SidecarRuntimeContext) -> St
                 "eaddr": int(eaddr),
             },
         )
+
+    if isinstance(step, (StepEphemerisSpkw02, StepEphemerisSpkw03, StepEphemerisSpkw20)):
+        handle = _require_spk_handle(context, step.handleId)
+        data = _chebyshev_writer_data(step)
+        common = (handle, step.body, step.center, step.frame, step.first, step.last,
+                  step.segid, step.intlen, step.n, step.degree, data)
+        if isinstance(step, StepEphemerisSpkw20):
+            sp.spkw20(*common, step.dscale, step.tscale, step.initjd, step.initfr)
+        elif isinstance(step, StepEphemerisSpkw03):
+            sp.spkw03(*common, step.btime)
+        else:
+            sp.spkw02(*common, step.btime)
+        return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepEphemerisSpkw08):
         handle = _require_spk_handle(context, step.handleId)

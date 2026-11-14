@@ -1936,6 +1936,15 @@ export function createFakeBackend(
     spkcls: (_handle: SpiceHandle) => {
       throw new Error("Fake backend: spkcls() is not implemented");
     },
+    spkw02: () => {
+      throw new Error("Fake backend: spkw02() is not implemented");
+    },
+    spkw03: () => {
+      throw new Error("Fake backend: spkw03() is not implemented");
+    },
+    spkw20: () => {
+      throw new Error("Fake backend: spkw20() is not implemented");
+    },
     spkw08: (
       _handle: SpiceHandle,
       _body: number,

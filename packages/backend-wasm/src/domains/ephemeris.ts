@@ -15,6 +15,8 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  copySpkChebyshevData,
+  validateSpkChebyshevFields,
   assertSpiceInt32,
   copySpkPackedDescriptor,
   copySpkPackedDescriptorWords,
@@ -201,6 +203,40 @@ function tspiceCallSpkopa(module: EmscriptenModule, path: string): number {
     );
   } finally {
     module._free(pathPtr);
+  }
+}
+
+function writeChebyshevRecord(
+  module: EmscriptenModule,
+  frame: string,
+  segid: string,
+  data: Float64Array,
+  call: (
+    framePtr: number,
+    idPtr: number,
+    dataPtr: number,
+    err: number,
+  ) => number,
+): void {
+  const framePtr = writeUtf8CString(module, frame);
+  try {
+    const idPtr = writeUtf8CString(module, segid);
+    try {
+      withAllocs(
+        module,
+        [Math.max(8, data.byteLength), WASM_ERR_MAX_BYTES],
+        (ptr, err) => {
+          module.HEAPF64.set(data, ptr / 8);
+          const status = call(framePtr, idPtr, ptr, err);
+          if (status)
+            throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, status);
+        },
+      );
+    } finally {
+      module._free(idPtr);
+    }
+  } finally {
+    module._free(framePtr);
   }
 }
 
@@ -978,6 +1014,180 @@ export function createEphemerisApi(
       }
     },
 
+    spkw02: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw02",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(2, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw02(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw03: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      btime,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw03",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        btime,
+      );
+      const data = copySpkChebyshevData(3, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw03(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            btime,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
+    spkw20: (
+      handle,
+      body,
+      center,
+      frame,
+      first,
+      last,
+      segid,
+      intlen,
+      n,
+      degree,
+      cdata,
+      dscale,
+      tscale,
+      initjd,
+      initfr,
+    ) => {
+      const nativeHandle = handles.lookup(
+        handle,
+        ["SPK"],
+        "spkw20",
+      ).nativeHandle;
+      validateSpkChebyshevFields(
+        body,
+        center,
+        frame,
+        segid,
+        first,
+        last,
+        intlen,
+        dscale,
+        tscale,
+        initjd,
+        initfr,
+      );
+      const data = copySpkChebyshevData(20, n, degree, cdata);
+      writeChebyshevRecord(
+        module,
+        frame,
+        segid,
+        data,
+        (framePtr, idPtr, dataPtr, err) =>
+          module._tspice_spkw20(
+            nativeHandle,
+            body,
+            center,
+            framePtr,
+            first,
+            last,
+            idPtr,
+            intlen,
+            n,
+            degree,
+            dataPtr,
+            data.length,
+            dscale,
+            tscale,
+            initjd,
+            initfr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          ),
+      );
+    },
     spkw08: (
       handle: SpiceHandle,
       body: number,

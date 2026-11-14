@@ -1,0 +1,725 @@
+{
+  "schemaVersion": 1,
+  "batch": "e04-spk-chebyshev",
+  "traceFiles": [
+    "docs/step8-spk-chebyshev.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ephemeris.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/addon_common.cc",
+    "packages/backend-node/native/src/domains/ephemeris.cc",
+    "packages/backend-node/src/domains/ephemeris.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/spk-chebyshev-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ephemeris.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/codec/strings.ts",
+    "packages/backend-wasm/src/domains/ephemeris.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/spk-chebyshev-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/spk-chebyshev.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ephemeris.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ephemeris.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/kernels.ts",
+    "packages/py-parity-checking/src/workflow-normalization/index.ts",
+    "packages/py-parity-checking/src/workflow-normalization/types.ts",
+    "packages/py-parity-checking/test/_helpers/spk_chebyshev_oracle.py",
+    "packages/py-parity-checking/test/spk-chebyshev-files.test.ts",
+    "scripts/build-backend-wasm.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-e04-7bdb0441-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44f6e311d59ba2ac68161a7b163c26475b6588b7ae1bf71aff8b5883a1734790",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e04-7bdb0441-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44f6e311d59ba2ac68161a7b163c26475b6588b7ae1bf71aff8b5883a1734790",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "observation": "Both complete required lanes passed locally on 7bdb04414f982fde1d52f584cd7f150fcce7c71a. JavaScript: 2,541 parity tests and one expected guard skip. Native-required: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e04-7bdb0441-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44f6e311d59ba2ac68161a7b163c26475b6588b7ae1bf71aff8b5883a1734790",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "commit": "7bdb04414f982fde1d52f584cd7f150fcce7c71a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704714/job/132398570734",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e04-7bdb0441-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "44f6e311d59ba2ac68161a7b163c26475b6588b7ae1bf71aff8b5883a1734790",
+      "caseIds": [
+        "ephemeris-spkw02-above-max-degree",
+        "ephemeris-spkw02-append-priority",
+        "ephemeris-spkw02-constant-and-single-instant",
+        "ephemeris-spkw02-early-descriptor",
+        "ephemeris-spkw02-empty-frame",
+        "ephemeris-spkw02-late-descriptor",
+        "ephemeris-spkw02-long-identifier",
+        "ephemeris-spkw02-maximum-degree",
+        "ephemeris-spkw02-negative-degree",
+        "ephemeris-spkw02-no-records",
+        "ephemeris-spkw02-nonprinting-identifier",
+        "ephemeris-spkw02-reversed-descriptor",
+        "ephemeris-spkw02-subsecond-records",
+        "ephemeris-spkw02-trailing-blanks",
+        "ephemeris-spkw02-two-record-boundaries",
+        "ephemeris-spkw02-unknown-frame",
+        "ephemeris-spkw02-zero-interval",
+        "ephemeris-spkw03-above-max-degree",
+        "ephemeris-spkw03-append-priority",
+        "ephemeris-spkw03-constant-and-single-instant",
+        "ephemeris-spkw03-early-descriptor",
+        "ephemeris-spkw03-empty-frame",
+        "ephemeris-spkw03-late-descriptor",
+        "ephemeris-spkw03-long-identifier",
+        "ephemeris-spkw03-maximum-degree",
+        "ephemeris-spkw03-negative-degree",
+        "ephemeris-spkw03-no-records",
+        "ephemeris-spkw03-nonprinting-identifier",
+        "ephemeris-spkw03-reversed-descriptor",
+        "ephemeris-spkw03-subsecond-records",
+        "ephemeris-spkw03-trailing-blanks",
+        "ephemeris-spkw03-two-record-boundaries",
+        "ephemeris-spkw03-unknown-frame",
+        "ephemeris-spkw03-zero-interval",
+        "ephemeris-spkw20-above-max-degree",
+        "ephemeris-spkw20-append-priority",
+        "ephemeris-spkw20-constant-and-single-instant",
+        "ephemeris-spkw20-early-descriptor",
+        "ephemeris-spkw20-empty-frame",
+        "ephemeris-spkw20-late-descriptor",
+        "ephemeris-spkw20-long-identifier",
+        "ephemeris-spkw20-maximum-degree",
+        "ephemeris-spkw20-negative-degree",
+        "ephemeris-spkw20-negative-time-scale",
+        "ephemeris-spkw20-no-records",
+        "ephemeris-spkw20-nonprinting-identifier",
+        "ephemeris-spkw20-reversed-descriptor",
+        "ephemeris-spkw20-split-julian-epoch",
+        "ephemeris-spkw20-trailing-blanks",
+        "ephemeris-spkw20-two-record-boundaries",
+        "ephemeris-spkw20-unknown-frame",
+        "ephemeris-spkw20-zero-distance-scale",
+        "ephemeris-spkw20-zero-interval"
+      ],
+      "commit": "7bdb04414f982fde1d52f584cd7f150fcce7c71a",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43578704714/job/132398570734",
+      "observation": "Inspected successful Linux Node 22 native-required job 132398570734 on 7bdb04414f982fde1d52f584cd7f150fcce7c71a: 2,324 registered Node/WASM live comparisons; 2,542 parity-package tests with no skips, including the native-required guard; 72 native wrapper, 618 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "spkw02_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw02_c.html",
+      "semantics": "Type 2 writes three position polynomials per fixed-duration record in seconds. SPKE02 differentiates each with respect to physical TDB seconds; each record contributes a stored midpoint, radius and coefficients. Degree 0..27.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw02-two-record-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate every state component at both endpoints, each midpoint, off-center epochs and the shared record boundary; inspect full coverage, ID and segment descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw02-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the highest documented degree with distinct nonzero terms throughout each component, including an off-center epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw02-constant-and-single-instant",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Write a degree-zero expansion with a zero-duration descriptor contained in the record. Compare evaluated state and exact coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw02-append-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Close and reopen for append. The later segment overlapping the same body wins inside its trimmed descriptor and earlier data remains outside."
+        },
+        {
+          "caseId": "ephemeris-spkw02-trailing-blanks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Keep the full forty printable identifier characters before insignificant trailing blanks. Compare SPKSFS identifier and all six state values."
+        },
+        {
+          "caseId": "ephemeris-spkw02-subsecond-records",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate distinct subsecond records on both sides of their boundary; type 2 differentiates against the true radius while type 3 returns independent velocity coefficients."
+        },
+        {
+          "caseId": "ephemeris-spkw02-no-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NUMCOEFFSNOTPOS diagnosis for no records."
+        },
+        {
+          "caseId": "ephemeris-spkw02-negative-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for negative degree."
+        },
+        {
+          "caseId": "ephemeris-spkw02-above-max-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for above max degree."
+        },
+        {
+          "caseId": "ephemeris-spkw02-zero-interval",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INTLENNOTPOS diagnosis for zero interval."
+        },
+        {
+          "caseId": "ephemeris-spkw02-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDREFFRAME diagnosis for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw02-reversed-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical BADDESCRTIMES diagnosis for reversed descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw02-early-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for early descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw02-late-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for late descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw02-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical IDSTRINGTOOLONG diagnosis for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw02-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NONPRINTABLECHARS diagnosis for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw02-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical EMPTYSTRING diagnosis for empty frame."
+        }
+      ],
+      "edgeAssessment": "The subsecond two-record grids make the factor 1/radius observable in all three velocity components while exact shared-boundary and trimmed descriptors select the correct segment/record.",
+      "errorAssessment": "Nonpositive count gives NUMCOEFFSNOTPOS, invalid degree, interval, frame, bounds, coverage and identifier cases are terminal genuine SPICE errors. Wrong physical size, nonfinite input and closed/foreign token are separately checked as wrapper errors; same-writer recovery is exercised.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw02.cases.json",
+          "provenance": "Project-authored numerical Chebyshev records produce transient scratch SPKs with known coefficient layout.",
+          "distribution": "Project source under the repository MIT license. No distributed binary kernel is added."
+        }
+      ],
+      "fixtureRationale": "Each side writes real files, then independent implementations consume the other writer’s emitted bytes. Test inputs require the built-in J2000 frame only.",
+      "cleanup": "Registered case lifecycle closes writer references, unloads kernels and clears scratch paths. Each terminal-error case seeds a valid segment so the writer can close. Public tests dispose clients in finally and delete authored OS scratch files. WASM fault tests verify four allocation failure points and same-handle recovery.",
+      "tolerance": "Error codes, descriptor fields/addresses, stored coefficient and trailer words, and returned identifiers are exact. State components use the existing registered comparator plus an independent, per-component analytic check at seven epochs to nine decimal places; no global tolerances change.",
+      "findings": [
+        {
+          "id": "scope-generated-spk-per-wasm-run",
+          "status": "repaired",
+          "summary": "A persistent WASM MEMFS retains generated files until client disposal.",
+          "repair": "Publish and consume the same per-run scratch path, including scratch furnsh; repeat each original writer workflow twice on one live client.",
+          "caseIds": ["ephemeris-spkw02-two-record-boundaries"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-chebyshev-files.test.ts",
+            "docs/step8-spk-chebyshev.md",
+            "packages/py-parity-checking/src/run-tspice/index.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw02 -> spkw02_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkw03_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw03_c.html",
+      "semantics": "Type 3 writes independently supplied position and velocity polynomials (km and km/s). Each of the six components contributes degree+1 ascending terms; midpoint/radius and a four-word directory are stored. Degree 0..27.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw03-two-record-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate every state component at both endpoints, each midpoint, off-center epochs and the shared record boundary; inspect full coverage, ID and segment descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw03-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the highest documented degree with distinct nonzero terms throughout each component, including an off-center epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw03-constant-and-single-instant",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Write a degree-zero expansion with a zero-duration descriptor contained in the record. Compare evaluated state and exact coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw03-append-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Close and reopen for append. The later segment overlapping the same body wins inside its trimmed descriptor and earlier data remains outside."
+        },
+        {
+          "caseId": "ephemeris-spkw03-trailing-blanks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Keep the full forty printable identifier characters before insignificant trailing blanks. Compare SPKSFS identifier and all six state values."
+        },
+        {
+          "caseId": "ephemeris-spkw03-subsecond-records",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate distinct subsecond records on both sides of their boundary; type 2 differentiates against the true radius while type 3 returns independent velocity coefficients."
+        },
+        {
+          "caseId": "ephemeris-spkw03-no-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NUMCOEFFSNOTPOS diagnosis for no records."
+        },
+        {
+          "caseId": "ephemeris-spkw03-negative-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for negative degree."
+        },
+        {
+          "caseId": "ephemeris-spkw03-above-max-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for above max degree."
+        },
+        {
+          "caseId": "ephemeris-spkw03-zero-interval",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INTLENNOTPOS diagnosis for zero interval."
+        },
+        {
+          "caseId": "ephemeris-spkw03-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDREFFRAME diagnosis for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw03-reversed-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical BADDESCRTIMES diagnosis for reversed descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw03-early-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for early descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw03-late-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for late descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw03-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical IDSTRINGTOOLONG diagnosis for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw03-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NONPRINTABLECHARS diagnosis for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw03-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical EMPTYSTRING diagnosis for empty frame."
+        }
+      ],
+      "edgeAssessment": "Velocity polynomials are deliberately independent of position, including at an off-midpoint epoch, the exact internal boundary and after an overlapping append; all six outputs are checked.",
+      "errorAssessment": "Nonpositive count gives NUMCOEFFSNOTPOS, invalid degree, interval, frame, bounds, coverage and identifier cases are terminal genuine SPICE errors. Wrong physical size, nonfinite input and closed/foreign token are separately checked as wrapper errors; same-writer recovery is exercised.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw03.cases.json",
+          "provenance": "Project-authored numerical Chebyshev records produce transient scratch SPKs with known coefficient layout.",
+          "distribution": "Project source under the repository MIT license. No distributed binary kernel is added."
+        }
+      ],
+      "fixtureRationale": "Each side writes real files, then independent implementations consume the other writer’s emitted bytes. Test inputs require the built-in J2000 frame only.",
+      "cleanup": "Registered case lifecycle closes writer references, unloads kernels and clears scratch paths. Each terminal-error case seeds a valid segment so the writer can close. Public tests dispose clients in finally and delete authored OS scratch files. WASM fault tests verify four allocation failure points and same-handle recovery.",
+      "tolerance": "Error codes, descriptor fields/addresses, stored coefficient and trailer words, and returned identifiers are exact. State components use the existing registered comparator plus an independent, per-component analytic check at seven epochs to nine decimal places; no global tolerances change.",
+      "findings": [
+        {
+          "id": "scope-generated-spk-per-wasm-run",
+          "status": "repaired",
+          "summary": "A persistent WASM MEMFS retains generated files until client disposal.",
+          "repair": "Publish and consume the same per-run scratch path, including scratch furnsh; repeat each original writer workflow twice on one live client.",
+          "caseIds": ["ephemeris-spkw03-two-record-boundaries"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-chebyshev-files.test.ts",
+            "docs/step8-spk-chebyshev.md",
+            "packages/py-parity-checking/src/run-tspice/index.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw03 -> spkw03_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "spkw20_c",
+      "contract": "packages/backend-contract/src/domains/ephemeris.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/spkw20_c.html",
+      "semantics": "Type 20 writes velocity coefficients and midpoint position per axis, successive records in Julian days and a seven-word directory. Distance and time scales convert physical units, and integration from each midpoint recovers position. Degree 0..50.",
+      "scenarios": [
+        {
+          "caseId": "ephemeris-spkw20-two-record-boundaries",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate every state component at both endpoints, each midpoint, off-center epochs and the shared record boundary; inspect full coverage, ID and segment descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw20-maximum-degree",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Evaluate the highest documented degree with distinct nonzero terms throughout each component, including an off-center epoch."
+        },
+        {
+          "caseId": "ephemeris-spkw20-constant-and-single-instant",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Write a degree-zero expansion with a zero-duration descriptor contained in the record. Compare evaluated state and exact coverage."
+        },
+        {
+          "caseId": "ephemeris-spkw20-append-priority",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Close and reopen for append. The later segment overlapping the same body wins inside its trimmed descriptor and earlier data remains outside."
+        },
+        {
+          "caseId": "ephemeris-spkw20-trailing-blanks",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Keep the full forty printable identifier characters before insignificant trailing blanks. Compare SPKSFS identifier and all six state values."
+        },
+        {
+          "caseId": "ephemeris-spkw20-split-julian-epoch",
+          "coverage": ["success", "edge", "state"],
+          "observes": "Equivalent split Julian epoch representation (negative fractional day) and scaled distances/velocities. Check positions reconstructed on both sides of each midpoint."
+        },
+        {
+          "caseId": "ephemeris-spkw20-no-records",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDCOUNT diagnosis for no records."
+        },
+        {
+          "caseId": "ephemeris-spkw20-negative-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for negative degree."
+        },
+        {
+          "caseId": "ephemeris-spkw20-above-max-degree",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDDEGREE diagnosis for above max degree."
+        },
+        {
+          "caseId": "ephemeris-spkw20-zero-interval",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INTLENNOTPOS diagnosis for zero interval."
+        },
+        {
+          "caseId": "ephemeris-spkw20-unknown-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical INVALIDREFFRAME diagnosis for unknown frame."
+        },
+        {
+          "caseId": "ephemeris-spkw20-reversed-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical BADDESCRTIMES diagnosis for reversed descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw20-early-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for early descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw20-late-descriptor",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical COVERAGEGAP diagnosis for late descriptor."
+        },
+        {
+          "caseId": "ephemeris-spkw20-long-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical IDSTRINGTOOLONG diagnosis for long identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw20-nonprinting-identifier",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NONPRINTABLECHARS diagnosis for nonprinting identifier."
+        },
+        {
+          "caseId": "ephemeris-spkw20-empty-frame",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical EMPTYSTRING diagnosis for empty frame."
+        },
+        {
+          "caseId": "ephemeris-spkw20-zero-distance-scale",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NONPOSITIVESCALE diagnosis for zero distance scale."
+        },
+        {
+          "caseId": "ephemeris-spkw20-negative-time-scale",
+          "coverage": ["error", "edge", "state"],
+          "observes": "Seed the writer with a valid segment, then compare the canonical NONPOSITIVESCALE diagnosis for negative time scale."
+        }
+      ],
+      "edgeAssessment": "Nonunit distance/time scales, a fractional starting Julian date, positive and negative velocity slopes, independently stored midpoint positions and multiple intervals distinguish units, integration direction and record selection.",
+      "errorAssessment": "Nonpositive count gives INVALIDCOUNT, invalid degree, interval, frame, bounds, coverage and identifier cases are terminal genuine SPICE errors. Both nonpositive scale arguments independently yield NONPOSITIVESCALE. Wrong physical size, nonfinite input and closed/foreign token are separately checked as wrapper errors; same-writer recovery is exercised.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/src/cases/ephemeris/spkw20.cases.json",
+          "provenance": "Project-authored numerical Chebyshev records produce transient scratch SPKs with known coefficient layout.",
+          "distribution": "Project source under the repository MIT license. No distributed binary kernel is added."
+        }
+      ],
+      "fixtureRationale": "Each side writes real files, then independent implementations consume the other writer’s emitted bytes. Test inputs require the built-in J2000 frame only.",
+      "cleanup": "Registered case lifecycle closes writer references, unloads kernels and clears scratch paths. Each terminal-error case seeds a valid segment so the writer can close. Public tests dispose clients in finally and delete authored OS scratch files. WASM fault tests verify four allocation failure points and same-handle recovery.",
+      "tolerance": "Error codes, descriptor fields/addresses, stored coefficient and trailer words, and returned identifiers are exact. State components use the existing registered comparator plus an independent, per-component analytic check at seven epochs to nine decimal places; no global tolerances change.",
+      "findings": [
+        {
+          "id": "scope-generated-spk-per-wasm-run",
+          "status": "repaired",
+          "summary": "A persistent WASM MEMFS retains generated files until client disposal.",
+          "repair": "Publish and consume the same per-run scratch path, including scratch furnsh; repeat each original writer workflow twice on one live client.",
+          "caseIds": ["ephemeris-spkw20-two-record-boundaries"],
+          "evidence": [
+            "packages/py-parity-checking/test/spk-chebyshev-files.test.ts",
+            "docs/step8-spk-chebyshev.md",
+            "packages/py-parity-checking/src/run-tspice/index.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> native addon mutex -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-node", "ci-e04-7bdb0441-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "Client SPK handle lookup and owned typed coefficient snapshot -> WASM two string and two scoped buffer allocations -> tspice_spkw20 -> spkw20_c. Independent ordinary locked SpiceyPy 6.0.3 writer, SPKSFS/SPKUDS/DAFGDA and SPKGEO in a separate process.",
+          "executions": ["local-e04-7bdb0441-wasm", "ci-e04-7bdb0441-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}
