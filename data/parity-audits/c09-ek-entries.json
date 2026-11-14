@@ -1,0 +1,827 @@
+{
+  "schemaVersion": 1,
+  "batch": "c09-ek-entries",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-ek-entries.md",
+    "docs/step8-ek-records.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/ek.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/src/domains/ek.cc",
+    "packages/backend-node/src/domains/ek.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/test/ek-column-bounds.test.ts",
+    "packages/backend-node/test/ek-entry-domain.test.ts",
+    "packages/backend-node/test/ek-record-domain.test.ts",
+    "packages/backend-node/test/fixtures/ek-column-bounds.c",
+    "packages/backend-node/test/fixtures/ek-column-shim.c",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/ek.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/domains/ek.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/test/ek-column-query-allocations.test.ts",
+    "packages/backend-wasm/test/ek-entry-allocations.test.ts",
+    "packages/backend-wasm/test/ek-lifecycle-allocations.test.ts",
+    "packages/backend-wasm/test/ek-record-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/ek-records.ts",
+    "packages/core/src/spice-runtime/shared/opaque-handles.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/generate-audit-ek-query.py",
+    "packages/py-parity-checking/fixtures/generate-audit-ek.py",
+    "packages/py-parity-checking/fixtures/kernels/audit-query.ek",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_record_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/ek.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/context.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/context.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/ek.ts",
+    "packages/py-parity-checking/src/run-tspice/index.ts",
+    "packages/py-parity-checking/src/runtime/context.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/src/runtime/path-ref.ts",
+    "packages/py-parity-checking/src/workflow-normalization/domains/ek.ts",
+    "packages/py-parity-checking/test/ek-column-literals.test.ts",
+    "packages/py-parity-checking/test/ek-column-recovery.test.ts",
+    "packages/py-parity-checking/test/ek-entry-content.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-boundaries.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-column-bounds.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-content.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-oracle.test.ts",
+    "packages/py-parity-checking/test/ek-lifecycle-shapes.test.ts",
+    "packages/py-parity-checking/test/ek-record-content.test.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs",
+    "scripts/generate-coverage-ledger.mjs"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "ekacec_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacec_c.html",
+      "semantics": "Add the character entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekacec-persisted-vector",
+          "coverage": ["success", "edge"],
+          "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
+        },
+        {
+          "caseId": "ek-ekacec-fixed-null",
+          "coverage": ["success", "edge"],
+          "observes": "Write a fixed-size null with three placeholders and observe its actual count."
+        },
+        {
+          "caseId": "ek-ekacec-non-nullable",
+          "coverage": ["error", "edge"],
+          "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
+        },
+        {
+          "caseId": "ek-ekacec-bad-count",
+          "coverage": ["error", "edge"],
+          "observes": "Write the wrong number of elements into a newly created fixed-size vector."
+        },
+        {
+          "caseId": "ek-ekacec-empty-vector",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
+        },
+        {
+          "caseId": "ek-ekacec-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekacec-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekacec-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekacec-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags. Write a fixed-size null with three placeholders and observe its actual count.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BADATTRIBUTE), SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDCOUNT), SPICE(INVALIDINDEX), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekacec -> serialized native addon -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekacec -> required WASM export and scoped buffers -> tspice_ekacec -> ekacec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekaced_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekaced_c.html",
+      "semantics": "Add the double precision and TIME entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekaced-persisted-vector",
+          "coverage": ["success", "edge"],
+          "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
+        },
+        {
+          "caseId": "ek-ekaced-fixed-null",
+          "coverage": ["success", "edge"],
+          "observes": "Write a fixed-size null with three placeholders and observe its actual count."
+        },
+        {
+          "caseId": "ek-ekaced-non-nullable",
+          "coverage": ["error", "edge"],
+          "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
+        },
+        {
+          "caseId": "ek-ekaced-bad-count",
+          "coverage": ["error", "edge"],
+          "observes": "Write the wrong number of elements into a newly created fixed-size vector."
+        },
+        {
+          "caseId": "ek-ekaced-empty-vector",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
+        },
+        {
+          "caseId": "ek-ekaced-scalar-duplicate",
+          "coverage": ["error", "edge"],
+          "observes": "A second add to an assigned scalar reports NONEMPTYENTRY."
+        },
+        {
+          "caseId": "ek-ekaced-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekaced-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekaced-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekaced-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags. Write a fixed-size null with three placeholders and observe its actual count.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BADATTRIBUTE), SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDCOUNT), SPICE(INVALIDINDEX), SPICE(NONEMPTYENTRY), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekaced -> serialized native addon -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekaced -> required WASM export and scoped buffers -> tspice_ekaced -> ekaced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekacei_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacei_c.html",
+      "semantics": "Add the integer entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekacei-persisted-vector",
+          "coverage": ["success", "edge"],
+          "observes": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags."
+        },
+        {
+          "caseId": "ek-ekacei-fixed-null",
+          "coverage": ["success", "edge"],
+          "observes": "Write a fixed-size null with three placeholders and observe its actual count."
+        },
+        {
+          "caseId": "ek-ekacei-non-nullable",
+          "coverage": ["error", "edge"],
+          "observes": "Adding a null to a non-nullable variable entry diagnoses the attribute."
+        },
+        {
+          "caseId": "ek-ekacei-bad-count",
+          "coverage": ["error", "edge"],
+          "observes": "Write the wrong number of elements into a newly created fixed-size vector."
+        },
+        {
+          "caseId": "ek-ekacei-empty-vector",
+          "coverage": ["error", "edge"],
+          "observes": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel."
+        },
+        {
+          "caseId": "ek-ekacei-scalar-duplicate",
+          "coverage": ["error", "edge"],
+          "observes": "A second add to an assigned scalar reports NONEMPTYENTRY."
+        },
+        {
+          "caseId": "ek-ekacei-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekacei-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekacei-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekacei-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags. Write a fixed-size null with three placeholders and observe its actual count.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BADATTRIBUTE), SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDCOUNT), SPICE(INVALIDINDEX), SPICE(NONEMPTYENTRY), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekacei -> serialized native addon -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekacei -> required WASM export and scoped buffers -> tspice_ekacei -> ekacei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekrcec_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrcec_c.html",
+      "semantics": "Read the entire character entry by physical segment/record, preserving null flag, element count and owned payload.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekrcec-element-order",
+          "coverage": ["success", "edge"],
+          "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
+        },
+        {
+          "caseId": "ek-ekrcec-null-extents",
+          "coverage": ["success", "edge"],
+          "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
+        },
+        {
+          "caseId": "ek-ekrcec-uninitialized-scalar",
+          "coverage": ["error", "edge"],
+          "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
+        },
+        {
+          "caseId": "ek-ekrcec-past-row",
+          "coverage": ["error", "edge"],
+          "observes": "The default row tree diagnoses a row past the final valid ordinal."
+        },
+        {
+          "caseId": "ek-ekrcec-row-padding",
+          "coverage": ["success", "edge"],
+          "observes": "Read UTF-8, retained leading and trailing control characters, and all-blank values in individually padded output rows."
+        },
+        {
+          "caseId": "ek-ekrcec-short-row",
+          "coverage": ["success", "edge"],
+          "observes": "The pinned scalar reader returns the initial four bytes when supplied a five-byte row."
+        },
+        {
+          "caseId": "ek-ekrcec-short-vector-row",
+          "coverage": ["error", "edge"],
+          "observes": "The class-six vector reader requires enough output width for the entire declared character row."
+        },
+        {
+          "caseId": "ek-ekrcec-short-buffer",
+          "coverage": ["error", "edge"],
+          "observes": "The canonical C-level output width check precedes the entry read."
+        },
+        {
+          "caseId": "ek-ekrcec-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekrcec-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekrcec-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekrcec-fast-count-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
+        }
+      ],
+      "edgeAssessment": "Read two variable arrays by physical row in reverse order, then read the first again. Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one. Read UTF-8, retained leading and trailing control characters, and all-blank values in individually padded output rows. The pinned scalar reader returns the initial four bytes when supplied a five-byte row. Read both scalar records of a finalized fixed-count segment through its original class-specific reader.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(STRINGTOOSHORT), SPICE(STRINGTRUNCATED), SPICE(UNINITIALIZED), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [
+        {
+          "id": "ekrcec-oracle-route",
+          "status": "repaired",
+          "summary": "The private null output of the original C reader can remain unset after failure.",
+          "repair": "Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py",
+            "docs/step8-ek-entries.md",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekrcec.cases.json"
+          ],
+          "caseIds": ["ek-ekrcec-element-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrcec -> serialized native addon -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrcec -> required WASM export and scoped buffers -> tspice_ekrcec -> ekrcec_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekrced_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrced_c.html",
+      "semantics": "Read the entire double precision and TIME entry by physical segment/record, preserving null flag, element count and owned payload.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekrced-element-order",
+          "coverage": ["success", "edge"],
+          "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
+        },
+        {
+          "caseId": "ek-ekrced-null-extents",
+          "coverage": ["success", "edge"],
+          "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
+        },
+        {
+          "caseId": "ek-ekrced-uninitialized-scalar",
+          "coverage": ["error", "edge"],
+          "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
+        },
+        {
+          "caseId": "ek-ekrced-past-row",
+          "coverage": ["error", "edge"],
+          "observes": "The default row tree diagnoses a row past the final valid ordinal."
+        },
+        {
+          "caseId": "ek-ekrced-time",
+          "coverage": ["success", "edge"],
+          "observes": "Read a TIME column as double precision ET seconds under retained storage semantics."
+        },
+        {
+          "caseId": "ek-ekrced-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekrced-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekrced-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekrced-fast-count-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
+        }
+      ],
+      "edgeAssessment": "Read two variable arrays by physical row in reverse order, then read the first again. Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one. Read a TIME column as double precision ET seconds under retained storage semantics. Read both scalar records of a finalized fixed-count segment through its original class-specific reader.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(UNINITIALIZEDVALUE), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [
+        {
+          "id": "ekrced-oracle-route",
+          "status": "repaired",
+          "summary": "The private null output of the original C reader can remain unset after failure.",
+          "repair": "Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py",
+            "docs/step8-ek-entries.md",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekrced.cases.json"
+          ],
+          "caseIds": ["ek-ekrced-element-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrced -> serialized native addon -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrced -> required WASM export and scoped buffers -> tspice_ekrced -> ekrced_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekrcei_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrcei_c.html",
+      "semantics": "Read the entire integer entry by physical segment/record, preserving null flag, element count and owned payload.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekrcei-element-order",
+          "coverage": ["success", "edge"],
+          "observes": "Read two variable arrays by physical row in reverse order, then read the first again."
+        },
+        {
+          "caseId": "ek-ekrcei-null-extents",
+          "coverage": ["success", "edge"],
+          "observes": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one."
+        },
+        {
+          "caseId": "ek-ekrcei-uninitialized-scalar",
+          "coverage": ["error", "edge"],
+          "observes": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic."
+        },
+        {
+          "caseId": "ek-ekrcei-past-row",
+          "coverage": ["error", "edge"],
+          "observes": "The default row tree diagnoses a row past the final valid ordinal."
+        },
+        {
+          "caseId": "ek-ekrcei-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekrcei-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekrcei-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekrcei-fast-count-segment",
+          "coverage": ["success", "edge"],
+          "observes": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader."
+        }
+      ],
+      "edgeAssessment": "Read two variable arrays by physical row in reverse order, then read the first again. Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one. Read both scalar records of a finalized fixed-count segment through its original class-specific reader.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(UNINITIALIZEDVALUE), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [
+        {
+          "id": "ekrcei-oracle-route",
+          "status": "repaired",
+          "summary": "The private null output of the original C reader can remain unset after failure.",
+          "repair": "Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py",
+            "docs/step8-ek-entries.md",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekrcei.cases.json"
+          ],
+          "caseIds": ["ek-ekrcei-element-order"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrcei -> serialized native addon -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "composed",
+          "trace": "EkApi.ekrcei -> required WASM export and scoped buffers -> tspice_ekrcei -> ekrcei_ initialized SPICELIB reader; canonical C string checks and original physical file.Pinned C readers copy a private logical even after an inner error. Measure actual buffer capacity before invoking initialized, traced SPICELIB; preserve the early C-level checks.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekucec_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekucec_c.html",
+      "semantics": "Replace the character entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekucec-persisted-resize",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
+        },
+        {
+          "caseId": "ek-ekucec-scalar-update",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
+        },
+        {
+          "caseId": "ek-ekucec-fixed-size",
+          "coverage": ["success", "edge"],
+          "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
+        },
+        {
+          "caseId": "ek-ekucec-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "Attempt an update on an initialized entry reopened for reading."
+        },
+        {
+          "caseId": "ek-ekucec-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekucec-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekucec-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekucec-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen. Replace a populated scalar in the second of two independently addressed segments, retaining the first segment. Update all three ordered components of a fixed-size vector, and compare its reopened null transition.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(DASINVALIDACCESS), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekucec -> serialized native addon -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekucec -> required WASM export and scoped buffers -> tspice_ekucec -> ekucec_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekuced_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekuced_c.html",
+      "semantics": "Replace the double precision and TIME entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekuced-persisted-resize",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
+        },
+        {
+          "caseId": "ek-ekuced-scalar-update",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
+        },
+        {
+          "caseId": "ek-ekuced-fixed-size",
+          "coverage": ["success", "edge"],
+          "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
+        },
+        {
+          "caseId": "ek-ekuced-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "Attempt an update on an initialized entry reopened for reading."
+        },
+        {
+          "caseId": "ek-ekuced-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekuced-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekuced-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekuced-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen. Replace a populated scalar in the second of two independently addressed segments, retaining the first segment. Update all three ordered components of a fixed-size vector, and compare its reopened null transition.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(DASINVALIDACCESS), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [
+        {
+          "id": "ekuced-oracle-route",
+          "status": "repaired",
+          "summary": "SpiceyPy 6.0.3 calls ekaced_c instead of ekuced_c for double updates, producing NONEMPTYENTRY on a populated scalar.",
+          "repair": "Use the actual independently linked N0067 ekuced_c with typed double storage and compare rewritten scalar and vector entries.",
+          "evidence": [
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py",
+            "docs/step8-ek-entries.md",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/src/cases/ek/ekuced.cases.json"
+          ],
+          "caseIds": ["ek-ekuced-persisted-resize"]
+        },
+        {
+          "id": "ekuced-populated-nonnullable",
+          "status": "repaired",
+          "summary": "Pinned class 1 and 2 update routines can set an already populated numeric scalar null without enforcing the column’s NULLS_OK declaration.",
+          "repair": "Preflight the actual descriptor, access and existing record pointer before changing data or its index. The initial add uses the canonical BADATTRIBUTE path. The focused public test verifies the original value and recoverable state after wrapper rejection.",
+          "evidence": [
+            "docs/step8-ek-entries.md",
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py"
+          ],
+          "caseIds": ["ek-ekuced-scalar-update"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekuced -> serialized native addon -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekuced -> required WASM export and scoped buffers -> tspice_ekuced -> ekuced_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "ekucei_c",
+      "contract": "packages/backend-contract/src/domains/ek.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekucei_c.html",
+      "semantics": "Replace the integer entry of an owned writable EK using the observed array count and null flag.",
+      "scenarios": [
+        {
+          "caseId": "ek-ekucei-persisted-resize",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen."
+        },
+        {
+          "caseId": "ek-ekucei-scalar-update",
+          "coverage": ["success", "edge"],
+          "observes": "Replace a populated scalar in the second of two independently addressed segments, retaining the first segment."
+        },
+        {
+          "caseId": "ek-ekucei-fixed-size",
+          "coverage": ["success", "edge"],
+          "observes": "Update all three ordered components of a fixed-size vector, and compare its reopened null transition."
+        },
+        {
+          "caseId": "ek-ekucei-read-only",
+          "coverage": ["error", "edge"],
+          "observes": "Attempt an update on an initialized entry reopened for reading."
+        },
+        {
+          "caseId": "ek-ekucei-wrong-type",
+          "coverage": ["error", "edge"],
+          "observes": "Request a different storage type in an existing segment and row."
+        },
+        {
+          "caseId": "ek-ekucei-unknown-column",
+          "coverage": ["error", "edge"],
+          "observes": "Try a nonempty undeclared column and observe the pinned descriptor lookup error."
+        },
+        {
+          "caseId": "ek-ekucei-invalid-segment",
+          "coverage": ["error", "edge"],
+          "observes": "An out-of-range segment is diagnosed before any descriptor or entry access."
+        },
+        {
+          "caseId": "ek-ekucei-invalid-row",
+          "coverage": ["error", "edge"],
+          "observes": "A negative row is outside the segment record tree."
+        }
+      ],
+      "edgeAssessment": "Replace a variable entry, toggle its null flag, restore a different size and compare both rows after physical reopen. Replace a populated scalar in the second of two independently addressed segments, retaining the first segment. Update all three ordered components of a fixed-size vector, and compare its reopened null transition.",
+      "errorAssessment": "Expected independent terminal toolkit diagnostics: SPICE(BUG), SPICE(DASINVALIDACCESS), SPICE(INDEXOUTOFRANGE), SPICE(INVALIDINDEX), SPICE(WRONGDATATYPE). Separate adapter-only validation covers unsafe ordinal conversions, capacities, fixed-count writer eligibility, foreign ownership and malformed payloads.",
+      "fixtures": [],
+      "fixtureRationale": "Each backend and independent toolkit creates an original synthetic scratch or named EK with the authored schema and typed values. No external dataset is required. Persisted cross-writer reads use independently closed files.",
+      "cleanup": "Owner-scoped handles close in finally. Release all partial allocations; close files before independent reopening. Remove temporary directories and dispose public clients. Query staging is unloaded after inspection.",
+      "tolerance": "Integer, boolean, null cardinality and byte-padded strings are checked exactly. Floating values use the ordinary unchanged comparator; separate persisted direct reads compare all 137 binary-exact TIME values.",
+      "findings": [
+        {
+          "id": "ekucei-populated-nonnullable",
+          "status": "repaired",
+          "summary": "Pinned class 1 and 2 update routines can set an already populated numeric scalar null without enforcing the column’s NULLS_OK declaration.",
+          "repair": "Preflight the actual descriptor, access and existing record pointer before changing data or its index. The initial add uses the canonical BADATTRIBUTE path. The focused public test verifies the original value and recoverable state after wrapper rejection.",
+          "evidence": [
+            "docs/step8-ek-entries.md",
+            "packages/backend-shim-c/src/domains/ek.c",
+            "packages/py-parity-checking/test/ek-entry-content.test.ts",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/ek_entry_oracle.py"
+          ],
+          "caseIds": ["ek-ekucei-scalar-update"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekucei -> serialized native addon -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        },
+        "wasm": {
+          "history": ["unreviewed", "reviewed"],
+          "route": "direct",
+          "trace": "EkApi.ekucei -> required WASM export and scoped buffers -> tspice_ekucei -> ekucei_c on canonical writes; length, class and ownership guards. Recover from real type and ordinal errors, validate the physical input storage, and persist the actual mutation before an independent reader opens the file.",
+          "executions": []
+        }
+      }
+    }
+  ],
+  "verificationNote": "Capture the full local and canonical CI lanes on this combined source, then confirm final-head CI and rebaseability."
+}

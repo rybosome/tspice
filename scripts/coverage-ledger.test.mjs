@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 167,
-    planned: 482,
+    implemented: 176,
+    planned: 473,
     excluded: 3,
-    caseFiles: 167,
-    scenarios: 1147,
+    caseFiles: 176,
+    scenarios: 1229,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -446,7 +446,7 @@ function editAudit(f, mutate, file = "vectors-arithmetic.json") {
 test("maintained audit separates reviewed findings from verified backend execution", (t) => {
   const ledger = fixture(t).build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 5);
+  assert.equal(ledger.audit.expansionRoutines, 14);
   assert.equal(
     ledger.audit.baselineRoutines + ledger.audit.expansionRoutines,
     ledger.summary.implemented,
@@ -729,4 +729,17 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("an early C string check cannot stand in for the actual EK entry reader", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/ek.c",
+    "ekrced_(&handle",
+    "unrelated_reader_(&handle",
+  );
+  assert.throws(
+    f.build,
+    /Missing scientific SPICELIB reader for (node|wasm).ekrced/,
+  );
 });

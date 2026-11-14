@@ -107,7 +107,8 @@
         "ek-ekops-independent",
         "ek-ekops-scratch-vs-named"
       ],
-      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c08-502348fb-wasm",
@@ -157,7 +158,8 @@
         "ek-ekops-independent",
         "ek-ekops-scratch-vs-named"
       ],
-      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 502348fb69045a54fe2f92df301fb55f40f7912b. JavaScript: 2,510 parity tests and one expected guard skip. Native-required: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c08-502348fb-node",
@@ -209,7 +211,8 @@
       ],
       "commit": "502348fb69045a54fe2f92df301fb55f40f7912b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43576480828/job/132391716934",
-      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c08-502348fb-wasm",
@@ -261,7 +264,8 @@
       ],
       "commit": "502348fb69045a54fe2f92df301fb55f40f7912b",
       "url": "https://github.com/rybosome/tspice/actions/runs/43576480828/job/132391716934",
-      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132391716934 on 502348fb69045a54fe2f92df301fb55f40f7912b: 2,294 registered Node/WASM live comparisons; 2,511 parity-package tests with no skips, including the native-required guard; 69 native wrapper, 617 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -321,16 +325,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, serialized native addon -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekops -> owner registry, required WASM export and scoped buffers -> tspice_ekops -> ekops_c. Verified against locked SpiceyPy ekops.",
-          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
+          "executions": []
         }
       }
     },
@@ -443,16 +447,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, serialized native addon -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekbseg -> owner registry, required WASM export and scoped buffers -> tspice_ekbseg -> ekbseg_c. Verified against locked SpiceyPy ekbseg and correctly strided typed fallback.",
-          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
+          "executions": []
         }
       }
     },
@@ -522,16 +526,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, serialized native addon -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekappr -> owner registry, required WASM export and scoped buffers -> tspice_ekappr -> ekappr_c. Verified against locked SpiceyPy ekappr.",
-          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
+          "executions": []
         }
       }
     },
@@ -611,16 +615,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, serialized native addon -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekinsr -> owner registry, required WASM export and scoped buffers -> tspice_ekinsr -> ekinsr_c. Verified against locked SpiceyPy ekinsr.",
-          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
+          "executions": []
         }
       }
     },
@@ -700,19 +704,19 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, serialized native addon -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": ["local-c08-502348fb-node", "ci-c08-502348fb-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "EkApi.ekdelr -> owner registry, required WASM export and scoped buffers -> tspice_ekdelr -> ekdelr_c. Verified against locked SpiceyPy ekdelr.",
-          "executions": ["local-c08-502348fb-wasm", "ci-c08-502348fb-wasm"]
+          "executions": []
         }
       }
     }
   ],
-  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+  "verificationNote": "Previous source-bound evidence is historical. Rerun the original and additional EK scenarios on the combined C09 source."
 }

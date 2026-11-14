@@ -445,11 +445,17 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const key = `${fromFile}:${symbol}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (symbol.endsWith("_c")) {
+      const definition = shim.resolve(symbol, fromFile);
+      // The wrappers reach the initialized SPICELIB readers on every scientific
+      // read. Public C reader calls in the extent helper only perform early
+      // EMPTYSTRING / STRINGTOOSHORT checks. Keep those roles distinguishable.
+      if (
+        symbol.endsWith("_c") ||
+        (!definition && ["ekrcec_", "ekrced_", "ekrcei_"].includes(symbol))
+      ) {
         result.add(symbol);
         return;
       }
-      const definition = shim.resolve(symbol, fromFile);
       for (const call of definition?.calls ?? [])
         visit(call, definition.evidence.file);
     }
@@ -655,7 +661,12 @@ export function buildLedger(root = defaultRoot, options = {}) {
       function mappingFor(backend, symbols, status) {
         const targets = cspiceCalls(symbols);
         const note = policy.mappingNotes?.[name]?.[backend];
-        const sameNamed = targets.includes(routine.name);
+        const isEkEntryRead = ["ekrcec", "ekrced", "ekrcei"].includes(name);
+        const sameNamed = !isEkEntryRead && targets.includes(routine.name);
+        if (isEkEntryRead && !targets.includes(name + "_"))
+          errors.push(
+            `Missing scientific SPICELIB reader for ${backend}.${name}`,
+          );
         if (!sameNamed && status !== "unsupported" && !note)
           errors.push(`Unexplained non-direct ${backend} mapping for ${name}`);
         if (

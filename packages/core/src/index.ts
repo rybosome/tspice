@@ -1,4 +1,7 @@
 export {
+  ekEntryColumn,
+  packEkEntry,
+  unpackEkEntry,
   checkEkRecordIndex,
   packEkRecordSchema,
 } from "./spice-runtime/domains/ek-records.js";

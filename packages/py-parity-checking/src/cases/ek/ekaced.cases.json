@@ -1,0 +1,420 @@
+[
+  {
+    "caseId": "ek-ekaced-persisted-vector",
+    "description": "Fill two variable rows out of order, close and reopen, and compare the independent complete entries, order and null flags.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "values": [-4.25, 0.03125, 912.5],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaced-fixed-null",
+    "description": "Write a fixed-size null with three placeholders and observe its actual count.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=3, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-4.25, 0.03125, 912.5],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekaced-non-nullable",
+    "description": "Adding a null to a non-nullable variable entry diagnoses the attribute.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=VARIABLE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-4.25, 0.03125, 912.5],
+        "isNull": true
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BADATTRIBUTE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-bad-count",
+    "description": "Write the wrong number of elements into a newly created fixed-size vector.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=3, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDCOUNT)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-empty-vector",
+    "description": "A zero-element variable entry cannot be added, even with a non-null supplied storage sentinel.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDCOUNT)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-scalar-duplicate",
+    "description": "A second add to an assigned scalar reports NONEMPTYENTRY.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-4.25],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(NONEMPTYENTRY)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-wrong-type",
+    "description": "Request a different storage type in an existing segment and row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WRONGDATATYPE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-unknown-column",
+    "description": "Try a nonempty undeclared column and observe the pinned descriptor lookup error.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "MISSING",
+        "values": [12.125, -99.5],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BUG)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-invalid-segment",
+    "description": "An out-of-range segment is diagnosed before any descriptor or entry access.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekaced-invalid-row",
+    "description": "A negative row is outside the segment record tree.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": -1,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  }
+]

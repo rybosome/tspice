@@ -59,3 +59,7 @@ Both backends reset signaled errors before throwing. A persistent true failure f
 ## EK scratch files and record edits
 
 C08 compares the five added record routines through 38 workflows and reads independent completed EKs across the actual backends. [Scratch lifecycle, file schema and indexed deletion](step8-ek-records.md) [Per-routine audit](../data/parity-audits/c08-ek-records.json)
+
+## Physical EK entry values
+
+C09 compares nine typed record operations through independently created, updated and reopened EK files. [Entry semantics, canonical error handling and observed cross-file persistence](step8-ek-entries.md) [Per-routine evidence](../data/parity-audits/c09-ek-entries.json)

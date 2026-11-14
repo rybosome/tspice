@@ -86,6 +86,15 @@ from .ek import (
     StepEkEkappr,
     StepEkEkinsr,
     StepEkEkdelr,
+    StepEkEkacec,
+    StepEkEkaced,
+    StepEkEkacei,
+    StepEkEkrcec,
+    StepEkEkrced,
+    StepEkEkrcei,
+    StepEkEkucec,
+    StepEkEkuced,
+    StepEkEkucei,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -337,6 +346,15 @@ WorkflowStep: TypeAlias = (
     | StepEkEkappr
     | StepEkEkinsr
     | StepEkEkdelr
+    | StepEkEkacec
+    | StepEkEkaced
+    | StepEkEkacei
+    | StepEkEkrcec
+    | StepEkEkrced
+    | StepEkEkrcei
+    | StepEkEkucec
+    | StepEkEkuced
+    | StepEkEkucei
     | StepEkEkopn
     | StepEkEkopr
     | StepEkEkopw

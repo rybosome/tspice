@@ -984,6 +984,82 @@ export type StepEkEkdelr = {
   segno: number;
   recno: number;
 };
+export type StepEkEkacec = {
+  op: "ek.ekacec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: string[];
+  isNull: boolean;
+};
+export type StepEkEkaced = {
+  op: "ek.ekaced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkacei = {
+  op: "ek.ekacei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkrcec = {
+  op: "ek.ekrcec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  lenout: number;
+};
+export type StepEkEkrced = {
+  op: "ek.ekrced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+};
+export type StepEkEkrcei = {
+  op: "ek.ekrcei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+};
+export type StepEkEkucec = {
+  op: "ek.ekucec";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: string[];
+  isNull: boolean;
+};
+export type StepEkEkuced = {
+  op: "ek.ekuced";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
+export type StepEkEkucei = {
+  op: "ek.ekucei";
+  handleId: string;
+  segno: number;
+  recno: number;
+  column: string;
+  values: number[];
+  isNull: boolean;
+};
 export type StepEkEkopn = {
   op: "ek.ekopn";
   path: PathRefLike;
@@ -1449,6 +1525,15 @@ export type WorkflowStep =
   | StepEkEkappr
   | StepEkEkinsr
   | StepEkEkdelr
+  | StepEkEkacec
+  | StepEkEkaced
+  | StepEkEkacei
+  | StepEkEkrcec
+  | StepEkEkrced
+  | StepEkEkrcei
+  | StepEkEkucec
+  | StepEkEkuced
+  | StepEkEkucei
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -1805,6 +1890,24 @@ export type StepOutput =
   | { op: "ek.ekappr"; value: number }
   | { op: "ek.ekinsr"; value: null }
   | { op: "ek.ekdelr"; value: null }
+  | { op: "ek.ekacec"; value: null }
+  | { op: "ek.ekaced"; value: null }
+  | { op: "ek.ekacei"; value: null }
+  | {
+      op: "ek.ekrcec";
+      value: { nvals: number; isNull: boolean; values: string[] };
+    }
+  | {
+      op: "ek.ekrced";
+      value: { nvals: number; isNull: boolean; values: number[] };
+    }
+  | {
+      op: "ek.ekrcei";
+      value: { nvals: number; isNull: boolean; values: number[] };
+    }
+  | { op: "ek.ekucec"; value: null }
+  | { op: "ek.ekuced"; value: null }
+  | { op: "ek.ekucei"; value: null }
   | {
       op: "ek.ekopn";
       value: { handleId: string };

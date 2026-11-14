@@ -92,6 +92,36 @@
         "reason": "Keyword extraction is implemented in shared JavaScript rather than calling a WASM CSPICE export.",
         "expectedEntrypoints": []
       }
+    },
+    "ekrcec": {
+      "node": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrcec_", "chkin_c", "chkout_c", "ekrcec_c"]
+      },
+      "wasm": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrcec_", "chkin_c", "chkout_c", "ekrcec_c"]
+      }
+    },
+    "ekrced": {
+      "node": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrced_", "chkin_c", "chkout_c", "ekrced_c"]
+      },
+      "wasm": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrced_", "chkin_c", "chkout_c", "ekrced_c"]
+      }
+    },
+    "ekrcei": {
+      "node": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrcei_", "chkin_c", "chkout_c", "ekrcei_c"]
+      },
+      "wasm": {
+        "reason": "CSPICE N0067 copies a private uninitialized logical following a reader error. The shim measures the real entry extent, invokes the linked SPICELIB reader with initialized outputs and the canonical outer trace, and preserves the original C-level string checks.",
+        "expectedEntrypoints": ["ekrcei_", "chkin_c", "chkout_c", "ekrcei_c"]
+      }
     }
   }
 }

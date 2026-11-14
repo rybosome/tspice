@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 167
-- Planned (not yet implemented): 482
+- Implemented now (SpiceRawBackend): 176
+- Planned (not yet implemented): 473
 - Excluded: 3
 
 ## Implemented now
@@ -61,6 +61,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dsksrf_c` | DSK, get surface IDs for body |
 | `dskw02_c` | DSK, write type 2 segment |
 | `dtpool_c` | Data for a kernel pool variable |
+| `ekacec_c` | EK, add character data to column |
+| `ekaced_c` | EK, add d.p. data to column |
+| `ekacei_c` | EK, add integer data to column |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
 | `ekacli_c` | EK, add integer column to segment |
@@ -81,7 +84,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekops_c` | EK, open scratch file |
 | `ekopw_c` | EK, open file for writing |
+| `ekrcec_c` | EK, read column entry element, character |
+| `ekrced_c` | EK, read column entry element, d.p. |
+| `ekrcei_c` | EK, read column entry element, integer |
 | `ektnam_c` | EK, return name of loaded table |
+| `ekucec_c` | EK, update character column entry |
+| `ekuced_c` | EK, update d.p. column entry |
+| `ekucei_c` | EK, update integer column entry |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `exists_c` | Does the file exist? |
 | `expool_c` | Confirm the existence of a pooled kernel variable |
@@ -330,21 +339,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
 | `edpnt_c` | Ellipsoid point |
 | `edterm_c` | Ellipsoid terminator |
-| `ekacec_c` | EK, add character data to column |
-| `ekaced_c` | EK, add d.p. data to column |
-| `ekacei_c` | EK, add integer data to column |
 | `ekccnt_c` | EK, column count |
 | `ekcii_c` | EK, column info by index |
 | `eklef_c` | EK, load event file |
 | `eknelt_c` | EK, get number of elements in column entry |
 | `ekpsel_c` | EK, parse SELECT clause |
-| `ekrcec_c` | EK, read column entry element, character |
-| `ekrced_c` | EK, read column entry element, d.p. |
-| `ekrcei_c` | EK, read column entry element, integer |
 | `ekssum_c` | EK, return segment summary |
-| `ekucec_c` | EK, update character column entry |
-| `ekuced_c` | EK, update d.p. column entry |
-| `ekucei_c` | EK, update integer column entry |
 | `ekuef_c` | EK, unload event file |
 | `el2cgv_c` | Ellipse to center and generating vectors |
 | `elemc_c` | Element of a character set |

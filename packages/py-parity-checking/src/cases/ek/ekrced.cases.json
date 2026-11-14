@@ -1,0 +1,446 @@
+[
+  {
+    "caseId": "ek-ekrced-element-order",
+    "description": "Read two variable arrays by physical row in reverse order, then read the first again.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-4.25, 0.03125, 912.5],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrced-null-extents",
+    "description": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=3, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "VAR",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-4.25, 0.03125, 912.5],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": [12.125, -99.5],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrced-uninitialized-scalar",
+    "description": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(UNINITIALIZEDVALUE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrced-past-row",
+    "description": "The default row tree diagnoses a row past the final valid ordinal.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrced-time",
+    "description": "Read a TIME column as double precision ET seconds under retained storage semantics.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "CLOCK",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=TIME"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekaced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [-123.875],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrced-wrong-type",
+    "description": "Request a different storage type in an existing segment and row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WRONGDATATYPE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrced-unknown-column",
+    "description": "Try a nonempty undeclared column and observe the pinned descriptor lookup error.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "MISSING"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BUG)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrced-invalid-segment",
+    "description": "An out-of-range segment is diagnosed before any descriptor or entry access.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrced-fast-count-segment",
+    "description": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "h",
+        "tabnam": "FIXED",
+        "nrows": 2,
+        "cnames": ["V"],
+        "decls": ["DATATYPE=DOUBLE PRECISION,FIXED_COUNT=TRUE"],
+        "segmentId": "fast"
+      },
+      {
+        "op": "ek.ekacld",
+        "segmentId": "fast",
+        "column": "V",
+        "entszs": [1, 1],
+        "nlflgs": [false, false],
+        "dvals": [-4.25, 0.03125]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "fast"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekrced",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -18,6 +18,15 @@ import type {
   StepEkEkappr,
   StepEkEkinsr,
   StepEkEkdelr,
+  StepEkEkacec,
+  StepEkEkaced,
+  StepEkEkacei,
+  StepEkEkrcec,
+  StepEkEkrced,
+  StepEkEkrcei,
+  StepEkEkucec,
+  StepEkEkuced,
+  StepEkEkucei,
   StepEkEkopn,
   StepEkEkopr,
   StepEkEkopw,
@@ -42,6 +51,15 @@ type EkStep =
   | StepEkEkappr
   | StepEkEkinsr
   | StepEkEkdelr
+  | StepEkEkacec
+  | StepEkEkaced
+  | StepEkEkacei
+  | StepEkEkrcec
+  | StepEkEkrced
+  | StepEkEkrcei
+  | StepEkEkucec
+  | StepEkEkuced
+  | StepEkEkucei
   | StepEkEkopn
   | StepEkEkopr
   | StepEkEkopw
@@ -113,6 +131,106 @@ export function runEkStep(context: RunTspiceContext, step: EkStep): StepOutput {
         requireEkHandle(context, step.handleId),
         step.segno,
         step.recno,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekacec": {
+      context.spice.raw.ekacec(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekaced": {
+      context.spice.raw.ekaced(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekacei": {
+      context.spice.raw.ekacei(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekrcec": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrcec(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+          step.lenout,
+        ),
+      };
+    }
+    case "ek.ekrced": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrced(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+        ),
+      };
+    }
+    case "ek.ekrcei": {
+      return {
+        op: step.op,
+        value: context.spice.raw.ekrcei(
+          requireEkHandle(context, step.handleId),
+          step.segno,
+          step.recno,
+          step.column,
+        ),
+      };
+    }
+    case "ek.ekucec": {
+      context.spice.raw.ekucec(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekuced": {
+      context.spice.raw.ekuced(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
+      );
+      return { op: step.op, value: null };
+    }
+    case "ek.ekucei": {
+      context.spice.raw.ekucei(
+        requireEkHandle(context, step.handleId),
+        step.segno,
+        step.recno,
+        step.column,
+        step.values,
+        step.isNull,
       );
       return { op: step.op, value: null };
     }

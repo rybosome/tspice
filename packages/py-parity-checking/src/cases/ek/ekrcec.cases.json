@@ -1,0 +1,582 @@
+[
+  {
+    "caseId": "ek-ekrcec-element-order",
+    "description": "Read two variable arrays by physical row in reverse order, then read the first again.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [" alpha", "two", "X\t"],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "values": ["Ω", "z"],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-null-extents",
+    "description": "Read fixed and variable nulls from two segments; the fixed count survives and the variable null has count one.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), SIZE=3, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "VAR",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 1
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [" alpha", "two", "X\t"],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "values": ["Ω", "z"],
+        "isNull": true
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-uninitialized-scalar",
+    "description": "Reading the newly appended uninitialized scalar raises its real toolkit diagnostic.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(UNINITIALIZED)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-past-row",
+    "description": "The default row tree diagnoses a row past the final valid ordinal.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INDEXOUTOFRANGE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-row-padding",
+    "description": "Read UTF-8, retained leading and trailing control characters, and all-blank values in individually padded output rows.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": [" café", "A\t", ""],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 13
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-short-row",
+    "description": "The pinned scalar reader returns the initial four bytes when supplied a five-byte row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": ["abcdef"],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 5
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-short-vector-row",
+    "description": "The class-six vector reader requires enough output width for the entire declared character row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), SIZE=VARIABLE, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekacec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "values": ["abcdef"],
+        "isNull": false
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTRUNCATED)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-short-buffer",
+    "description": "The canonical C-level output width check precedes the entry read.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(STRINGTOOSHORT)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-wrong-type",
+    "description": "Request a different storage type in an existing segment and row.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=INTEGER, NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(WRONGDATATYPE)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-unknown-column",
+    "description": "Try a nonempty undeclared column and observe the pinned descriptor lookup error.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "MISSING",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(BUG)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-invalid-segment",
+    "description": "An out-of-range segment is diagnosed before any descriptor or entry access.",
+    "workflow": [
+      {
+        "op": "ek.ekops",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekbseg",
+        "handleId": "h",
+        "tabnam": "SAMPLES",
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9), NULLS_OK=TRUE"]
+      },
+      {
+        "op": "ek.ekappr",
+        "handleId": "h",
+        "segno": 0
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 1,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["SPICE(INVALIDINDEX)"]
+    }
+  },
+  {
+    "caseId": "ek-ekrcec-fast-count-segment",
+    "description": "Read both scalar records of a finalized fixed-count segment through its original class-specific reader.",
+    "workflow": [
+      {
+        "op": "ek.ekopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        },
+        "ifname": "ENTRY_TEST",
+        "ncomch": 0
+      },
+      {
+        "op": "ek.ekifld",
+        "handleId": "h",
+        "tabnam": "FIXED",
+        "nrows": 2,
+        "cnames": ["V"],
+        "decls": ["DATATYPE=CHARACTER*(9),FIXED_COUNT=TRUE"],
+        "segmentId": "fast"
+      },
+      {
+        "op": "ek.ekaclc",
+        "segmentId": "fast",
+        "column": "V",
+        "entszs": [1, 1],
+        "nlflgs": [false, false],
+        "cvals": ["123456789", " Z"]
+      },
+      {
+        "op": "ek.ekffld",
+        "segmentId": "fast"
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      },
+      {
+        "op": "ek.ekopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "c09.ek"
+        }
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 1,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekrcec",
+        "handleId": "h",
+        "segno": 0,
+        "recno": 0,
+        "column": "V",
+        "lenout": 10
+      },
+      {
+        "op": "ek.ekcls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
