@@ -133,3 +133,7 @@ can satisfy a batch.
 No PR may be merged without explicit authorization. Step 9 reconciliation and
 release decisions remain separate; this queue authorizes no version choice,
 publishing or deployment.
+
+## A08 source validation checkpoint
+
+Both complete required local lanes passed on source `6fe56303286e8ec567f3f5463a3df6cf5fb6418a`: 2,282 live comparisons and 2,505 parity-package tests in the native-required lane with zero skips and the production-addon guard executed. The [inspected source Linux Node 22 native CI job](https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410) passed with the same uncached execution counts. Nine source-matrix jobs had passed while remaining macOS jobs were queued when this evidence was recorded. Current source-bound local and CI judgments are verified, with the documented ucrss conditioning limitation and historical observations preserved. This evidence-only commit supersedes the incomplete source matrix; its full required matrix and explicit GitHub rebaseability must pass before PR #710 is marked ready. No Step 8 routines are landed.

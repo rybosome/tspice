@@ -343,13 +343,29 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Complete eight typed raw paths, live oracle scenarios and wrapper tests; regenerate compiled artifacts and run required local/CI lanes.",
+      "prs": ["https://github.com/rybosome/tspice/pull/710"],
+      "validationEvidence": [
+        {
+          "kind": "local",
+          "command": "pnpm run check:js:required; TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+          "result": "passed",
+          "sourceCommit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+          "observation": "Full required local lanes passed; native-required executed 2282 live Node/WASM comparisons and 2505 parity-package tests with zero skips. Production guard, 95 native,635 WASM,28 core,150 facade tests passed. Audit fingerprint records retain the documented ucrss compiler/conditioning limitation."
+        },
+        {
+          "kind": "ci",
+          "result": "passed",
+          "commit": "6fe56303286e8ec567f3f5463a3df6cf5fb6418a",
+          "url": "https://github.com/rybosome/tspice/actions/runs/43539759273/job/132277308410",
+          "observation": "Inspected uncached Linux Node 22 native-required success: 2282 live comparisons and 2505 parity-package tests, production native guard executed, zero skips. Source matrix9/15 green with remaining macOS jobs queued at observation; final metadata head must pass all15 before readiness."
+        }
+      ],
+      "nextAction": "Validate final evidence-only commit through every required CI job, verify final-head GitHub rebaseability explicitly, then mark PR #710 ready.",
       "worktree": "/private/tmp/tspice-step8-vector-basics",
       "branch": "codex/expand-vector-basics",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Bounded source implementation active; no verified or landed claim."
+      "progressNote": "Bounded source implementation active; no verified or landed claim.",
+      "deliveryNote": "Both full local lanes and inspected source native CI passed. Source-bound Node/WASM audit judgments verified; full final-head matrix pending. Not PR-ready or landed."
     },
     {
       "id": "A09-vector-combinations",

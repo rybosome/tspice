@@ -423,7 +423,7 @@
         "vsep_c"
       ],
       "dependsOn": [],
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/710"],
       "nextAction": "Run focused live/wrapper/allocation checks, both required lanes and canonical CI; record current source-bound evidence before verified status. Independent Step 8 batch; no merge authorized."
     }
   ]
