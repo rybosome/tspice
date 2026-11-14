@@ -424,8 +424,8 @@
         "mini_c"
       ],
       "dependsOn": [],
-      "prs": [],
-      "nextAction": "Complete primary-semantic and independent variadic-oracle review, registered defined-input live cases and focused wrapper-safety tests, then both required local lanes and observed canonical CI before current-source verification. Independent Step 8 batch; no merge authorized."
+      "prs": ["https://github.com/rybosome/tspice/pull/714"],
+      "nextAction": "Both full required local lanes and inspected Linux Node22 source CI passed at02544981; all171routine audits have current source-bound verification. Final metadata PR matrix and explicit rebaseability remain required; no merge authorized."
     }
   ]
 }
