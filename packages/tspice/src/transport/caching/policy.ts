@@ -9,6 +9,13 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "kit.kclear",
   "raw.furnsh",
   "raw.unload",
+  // GF interrupt state and progress reports are observable across calls.
+  "raw.gfbail",
+  "raw.gfclrh",
+  "raw.gfinth",
+  "raw.gfrepu",
+  "raw.gfrepi",
+  "raw.gfrepf",
   "raw.kclear",
 ]) satisfies readonly string[];
 

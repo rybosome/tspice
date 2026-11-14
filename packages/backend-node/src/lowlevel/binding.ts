@@ -597,6 +597,26 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfrepi(window, begmss, endmss)",
   );
   invariant(
+    typeof native.gfbail === "function",
+    "Expected native addon to export gfbail",
+  );
+  invariant(
+    typeof native.gfclrh === "function",
+    "Expected native addon to export gfclrh",
+  );
+  invariant(
+    typeof native.gfinth === "function",
+    "Expected native addon to export gfinth",
+  );
+  invariant(
+    typeof native.gfrepu === "function",
+    "Expected native addon to export gfrepu",
+  );
+  invariant(
+    typeof native.releaseGfInterrupt === "function",
+    "Expected native addon to export releaseGfInterrupt",
+  );
+  invariant(
     typeof native.gfrepf === "function",
     "Expected native addon to export gfrepf()",
   );

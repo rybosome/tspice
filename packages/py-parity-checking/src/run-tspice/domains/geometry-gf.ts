@@ -2,6 +2,10 @@ import type { SpiceWindow } from "@rybosome/tspice-backend-contract";
 import type {
   StepGeometryGfGfdist,
   StepGeometryGfGfrefn,
+  StepGeometryGfGfbail,
+  StepGeometryGfGfclrh,
+  StepGeometryGfGfinth,
+  StepGeometryGfGfrepu,
   StepGeometryGfGfrepf,
   StepGeometryGfGfrepi,
   StepGeometryGfGfsep,
@@ -20,6 +24,10 @@ import {
 type GeometryGfStep =
   | StepGeometryGfGfdist
   | StepGeometryGfGfrefn
+  | StepGeometryGfGfbail
+  | StepGeometryGfGfclrh
+  | StepGeometryGfGfinth
+  | StepGeometryGfGfrepu
   | StepGeometryGfGfrepf
   | StepGeometryGfGfrepi
   | StepGeometryGfGfsep
@@ -47,6 +55,17 @@ function windowIntervals(
     intervals.push([left, right]);
   }
   return intervals;
+}
+
+function preserveInterruptFlag(context: RunTspiceContext): void {
+  const label = "geometryGF.restoreInterrupt";
+  if (context.lifecycle.finalizers.some((entry) => entry.label === label))
+    return;
+  const before = context.spice.raw.gfbail();
+  registerFinalizer(context, label, () => {
+    if (before) context.spice.raw.gfinth(2);
+    else context.spice.raw.gfclrh();
+  });
 }
 
 /** Execute one `geometry-gf.*` workflow step in tspice. */
@@ -83,11 +102,35 @@ export function runGeometryGfStep(
     case "geometry-gf.gfrepi": {
       const window = requireWindow(context, step.windowId);
       context.spice.raw.gfrepi(window, step.begmss, step.endmss);
+      if (
+        !context.lifecycle.finalizers.some(
+          (x) => x.label === "geometryGF.endReport",
+        )
+      )
+        registerFinalizer(context, "geometryGF.endReport", () =>
+          context.spice.raw.gfrepf(),
+        );
       return { op: step.op, value: null };
     }
 
+    case "geometry-gf.gfbail":
+      return { op: step.op, value: context.spice.raw.gfbail() };
+    case "geometry-gf.gfclrh":
+      preserveInterruptFlag(context);
+      context.spice.raw.gfclrh();
+      return { op: step.op, value: null };
+    case "geometry-gf.gfinth":
+      preserveInterruptFlag(context);
+      context.spice.raw.gfinth(step.sigcode);
+      return { op: step.op, value: null };
+    case "geometry-gf.gfrepu":
+      context.spice.raw.gfrepu(step.ivbeg, step.ivend, step.time);
+      return { op: step.op, value: null };
     case "geometry-gf.gfrepf":
       context.spice.raw.gfrepf();
+      context.lifecycle.finalizers = context.lifecycle.finalizers.filter(
+        (x) => x.label !== "geometryGF.endReport",
+      );
       return { op: step.op, value: null };
 
     case "geometry-gf.gfsep": {

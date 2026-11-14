@@ -280,6 +280,39 @@ export function createGeometryGfApi(module: EmscriptenModule): GeometryGfApi {
       assertWasmOwnedWindowHandle(module, window, "gfrepi(window)");
       tspiceCallGfrepi(module, window, begmss, endmss);
     },
+    gfbail: () =>
+      withAllocs(module, [4, WASM_ERR_MAX_BYTES], (flag, err) => {
+        const code = module._tspice_gfbail(flag, err, WASM_ERR_MAX_BYTES);
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return module.HEAP32[flag >> 2] !== 0;
+      }),
+    gfclrh: () =>
+      withMalloc(module, WASM_ERR_MAX_BYTES, (err) => {
+        const code = module._tspice_gfclrh(err, WASM_ERR_MAX_BYTES);
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      }),
+    gfinth: (sigcode) => {
+      assertSpiceInt32(sigcode, "gfinth(sigcode)");
+      withMalloc(module, WASM_ERR_MAX_BYTES, (err) => {
+        const code = module._tspice_gfinth(sigcode, err, WASM_ERR_MAX_BYTES);
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
+    gfrepu: (ivbeg, ivend, time) => {
+      assertFiniteNumber(ivbeg, "gfrepu(ivbeg)");
+      assertFiniteNumber(ivend, "gfrepu(ivend)");
+      assertFiniteNumber(time, "gfrepu(time)");
+      withMalloc(module, WASM_ERR_MAX_BYTES, (err) => {
+        const code = module._tspice_gfrepu(
+          ivbeg,
+          ivend,
+          time,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+      });
+    },
     gfrepf: () => tspiceCallGfrepf(module),
 
     gfsep: (

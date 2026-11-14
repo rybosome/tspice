@@ -694,3 +694,7 @@ Callback-free GFDIST/GFSEP do not automatically drive a separate reporter.
 GFSEP preserves NAIF's documented POINT alignment limitation for equality to zero;
 LOCMIN/ABSMIN tests establish the corresponding nonempty extrema. POINT frame
 orientation is ignored, with nonempty C strings still required.
+
+### GF signal receipt and progress
+
+`gfbail`, `gfclrh`, `gfinth` and `gfrepu` use their same-named public N0067 entry points on Node and WASM. Signals and reports are shared within a toolkit runtime. Native handler installation retains the previous host disposition for client disposal. [Interrupt flag, ownership and reporter output](step8-gf-progress.md)

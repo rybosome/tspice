@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import { stageGfSignalFlag } from "./stage-gf-signal-flag.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -230,6 +231,11 @@ for (const shimPath of shimSources) {
 const cspiceSrcDir = path.join(patchedCspiceSourceRoot, "src");
 const cspiceCspiceDir = path.join(cspiceSrcDir, "cspice");
 const cspiceCsupportDir = path.join(cspiceSrcDir, "csupport");
+
+stageGfSignalFlag(
+  path.join(cspiceSourceRoot, "src", "cspice"),
+  cspiceCspiceDir,
+);
 
 function patchReturnInt(filePath, symbol, indentation = "") {
   if (!fs.existsSync(filePath)) {
@@ -506,6 +512,10 @@ const exportedFunctions = [
   "_tspice_gfstol",
   "_tspice_gfrefn",
   "_tspice_gfrepi",
+  "_tspice_gfbail",
+  "_tspice_gfclrh",
+  "_tspice_gfinth",
+  "_tspice_gfrepu",
   "_tspice_gfrepf",
   "_tspice_gfsep",
   "_tspice_gfdist",

@@ -12,6 +12,10 @@ from spiceypy.utils.support_types import SPICEDOUBLE_CELL
 from ..models import (
     StepGeometryGfGfdist,
     StepGeometryGfGfrefn,
+    StepGeometryGfGfbail,
+    StepGeometryGfGfclrh,
+    StepGeometryGfGfinth,
+    StepGeometryGfGfrepu,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
     StepGeometryGfGfsep,
@@ -102,6 +106,22 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
         window = _require_window(windows, step.windowId)
         with _suppress_native_stdout():
             sp.gfrepi(window, step.begmss, step.endmss)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepGeometryGfGfbail):
+        return StepOutput(op=step.op, value=bool(sp.gfbail()))
+
+    if isinstance(step, StepGeometryGfGfclrh):
+        sp.gfclrh()
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepGeometryGfGfinth):
+        sp.gfinth(step.sigcode)
+        return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepGeometryGfGfrepu):
+        with _suppress_native_stdout():
+            sp.gfrepu(step.ivbeg, step.ivend, step.time)
         return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepGeometryGfGfrepf):

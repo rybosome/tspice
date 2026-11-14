@@ -40,6 +40,30 @@ class StepGeometryGfGfrepi:
 
 
 @dataclass(frozen=True)
+class StepGeometryGfGfbail:
+    op: Literal["geometry-gf.gfbail"]
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfclrh:
+    op: Literal["geometry-gf.gfclrh"]
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfinth:
+    op: Literal["geometry-gf.gfinth"]
+    sigcode: int
+
+
+@dataclass(frozen=True)
+class StepGeometryGfGfrepu:
+    op: Literal["geometry-gf.gfrepu"]
+    ivbeg: float
+    ivend: float
+    time: float
+
+
+@dataclass(frozen=True)
 class StepGeometryGfGfrepf:
     op: Literal["geometry-gf.gfrepf"]
 

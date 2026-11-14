@@ -1,0 +1,118 @@
+[
+  {
+    "caseId": "geometry-gf-gfinth-rearm",
+    "description": "A repeated explicit SIGINT preserves the flag until cleared.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfinth-resets",
+    "description": "GF receipt survives both error and kernel resets.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      },
+      {
+        "op": "geometry-gf.gfclrh"
+      },
+      {
+        "op": "geometry-gf.gfbail"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfinth-zero",
+    "description": "Require the actual unsupported signal diagnostic for signed code 0.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfinth-other",
+    "description": "Require the actual unsupported signal diagnostic for signed code 15.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 15
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfinth-negative",
+    "description": "Require the actual unsupported signal diagnostic for signed code -2.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": -2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfinth-max-code",
+    "description": "Require the actual unsupported signal diagnostic for signed code 2147483647.",
+    "workflow": [
+      {
+        "op": "geometry-gf.gfinth",
+        "sigcode": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDSIGNAL"]
+    }
+  }
+]

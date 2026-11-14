@@ -1067,6 +1067,18 @@ export type StepGeometryGfGfrepi = {
   endmss: string;
 };
 
+export type StepGeometryGfGfbail = { op: "geometry-gf.gfbail" };
+export type StepGeometryGfGfclrh = { op: "geometry-gf.gfclrh" };
+export type StepGeometryGfGfinth = {
+  op: "geometry-gf.gfinth";
+  sigcode: number;
+};
+export type StepGeometryGfGfrepu = {
+  op: "geometry-gf.gfrepu";
+  ivbeg: number;
+  ivend: number;
+  time: number;
+};
 export type StepGeometryGfGfrepf = {
   op: "geometry-gf.gfrepf";
 };
@@ -1446,6 +1458,10 @@ export type WorkflowStep =
   | StepGeometryGfGfstol
   | StepGeometryGfGfrefn
   | StepGeometryGfGfrepi
+  | StepGeometryGfGfbail
+  | StepGeometryGfGfclrh
+  | StepGeometryGfGfinth
+  | StepGeometryGfGfrepu
   | StepGeometryGfGfrepf
   | StepGeometryGfGfsep
   | StepGeometryGfGfdist
@@ -1888,6 +1904,10 @@ export type StepOutput =
   | { op: "geometry-gf.gfstol"; value: null }
   | { op: "geometry-gf.gfrefn"; value: number }
   | { op: "geometry-gf.gfrepi"; value: null }
+  | { op: "geometry-gf.gfbail"; value: boolean }
+  | { op: "geometry-gf.gfclrh"; value: null }
+  | { op: "geometry-gf.gfinth"; value: null }
+  | { op: "geometry-gf.gfrepu"; value: null }
   | { op: "geometry-gf.gfrepf"; value: null }
   | { op: "geometry-gf.gfsep"; value: GfSearchWindowPayload }
   | { op: "geometry-gf.gfdist"; value: GfSearchWindowPayload }
