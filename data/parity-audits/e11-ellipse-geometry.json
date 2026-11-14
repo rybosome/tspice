@@ -89,16 +89,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cgv2el -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_cgv2el -> cgv2el_c. Independent sidecar calls installed SpiceyPy sp.cgv2el on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.cgv2el -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_cgv2el -> cgv2el_c. Independent sidecar calls installed SpiceyPy sp.cgv2el on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -133,16 +133,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.el2cgv -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_el2cgv -> el2cgv_c. Independent sidecar calls installed SpiceyPy sp.el2cgv on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.el2cgv -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_el2cgv -> el2cgv_c. Independent sidecar calls installed SpiceyPy sp.el2cgv on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -187,16 +187,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.saelgv -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_saelgv -> saelgv_c. Independent sidecar calls installed SpiceyPy sp.saelgv on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.saelgv -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_saelgv -> saelgv_c. Independent sidecar calls installed SpiceyPy sp.saelgv on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -236,16 +236,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pjelpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_pjelpl -> pjelpl_c. Independent sidecar calls installed SpiceyPy sp.pjelpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.pjelpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_pjelpl -> pjelpl_c. Independent sidecar calls installed SpiceyPy sp.pjelpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -323,16 +323,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.inedpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_inedpl -> inedpl_c. Independent sidecar calls installed SpiceyPy sp.inedpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.inedpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_inedpl -> inedpl_c. Independent sidecar calls installed SpiceyPy sp.inedpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -397,16 +397,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.inelpl -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_inelpl -> inelpl_c. Independent sidecar calls installed SpiceyPy sp.inelpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.inelpl -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_inelpl -> inelpl_c. Independent sidecar calls installed SpiceyPy sp.inelpl on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     },
@@ -451,20 +451,229 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.npelpt -> typed Node adapter, checked flat buffers, registered native method and mutex-serialized call -> tspice_npelpt -> npelpt_c. Independent sidecar calls installed SpiceyPy sp.npelpt on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-node", "ci-e11-c42a2170-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.npelpt -> typed WASM adapter, transactional fixed-size allocations and compiled module export -> tspice_npelpt -> npelpt_c. Independent sidecar calls installed SpiceyPy sp.npelpt on original finite vectors or exact stored components.",
-          "executions": []
+          "executions": ["local-e11-c42a2170-wasm", "ci-e11-c42a2170-wasm"]
         }
       }
     }
   ],
-  "executions": [],
-  "verificationNote": "Focused Node/WASM, public, primary-source, independent oracle and browser observations support review. Full required local and canonical CI execution records for this combined source are pending."
+  "executions": [
+    {
+      "id": "local-e11-c42a2170-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ffffe3ae0d2620e5ab76aa16f8c6f0f4616d395fe16ad0f3bbfe03916fd52968",
+      "caseIds": [
+        "geometry-cgv2el-circular",
+        "geometry-cgv2el-nonorthogonal",
+        "geometry-cgv2el-point-and-segment",
+        "geometry-cgv2el-principal-axes",
+        "geometry-cgv2el-scaling",
+        "geometry-el2cgv-degenerate",
+        "geometry-el2cgv-stored-components",
+        "geometry-el2cgv-stored-signed-scale",
+        "geometry-inedpl-bad-axis-0",
+        "geometry-inedpl-bad-axis-1",
+        "geometry-inedpl-bad-axis-2",
+        "geometry-inedpl-central-sections",
+        "geometry-inedpl-miss",
+        "geometry-inedpl-oblique",
+        "geometry-inedpl-parallel-sections",
+        "geometry-inedpl-spherical-section",
+        "geometry-inelpl-empty-or-contained",
+        "geometry-inelpl-invalid-stored-axes",
+        "geometry-inelpl-negative-constant",
+        "geometry-inelpl-oblique",
+        "geometry-inelpl-point-ellipse",
+        "geometry-inelpl-segment",
+        "geometry-inelpl-tangent",
+        "geometry-inelpl-two-points",
+        "geometry-inelpl-zero-normal",
+        "geometry-npelpt-degenerate-major-and-minor",
+        "geometry-npelpt-interior",
+        "geometry-npelpt-principal-nearest",
+        "geometry-npelpt-translated-and-rotated",
+        "geometry-npelpt-zero-minor",
+        "geometry-pjelpl-degenerate",
+        "geometry-pjelpl-edge-on",
+        "geometry-pjelpl-oblique",
+        "geometry-pjelpl-parallel-and-offset",
+        "geometry-saelgv-circular",
+        "geometry-saelgv-nonorthogonal",
+        "geometry-saelgv-point-and-segment",
+        "geometry-saelgv-principal-axes",
+        "geometry-saelgv-scaling"
+      ],
+      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-e11-c42a2170-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ffffe3ae0d2620e5ab76aa16f8c6f0f4616d395fe16ad0f3bbfe03916fd52968",
+      "caseIds": [
+        "geometry-cgv2el-circular",
+        "geometry-cgv2el-nonorthogonal",
+        "geometry-cgv2el-point-and-segment",
+        "geometry-cgv2el-principal-axes",
+        "geometry-cgv2el-scaling",
+        "geometry-el2cgv-degenerate",
+        "geometry-el2cgv-stored-components",
+        "geometry-el2cgv-stored-signed-scale",
+        "geometry-inedpl-bad-axis-0",
+        "geometry-inedpl-bad-axis-1",
+        "geometry-inedpl-bad-axis-2",
+        "geometry-inedpl-central-sections",
+        "geometry-inedpl-miss",
+        "geometry-inedpl-oblique",
+        "geometry-inedpl-parallel-sections",
+        "geometry-inedpl-spherical-section",
+        "geometry-inelpl-empty-or-contained",
+        "geometry-inelpl-invalid-stored-axes",
+        "geometry-inelpl-negative-constant",
+        "geometry-inelpl-oblique",
+        "geometry-inelpl-point-ellipse",
+        "geometry-inelpl-segment",
+        "geometry-inelpl-tangent",
+        "geometry-inelpl-two-points",
+        "geometry-inelpl-zero-normal",
+        "geometry-npelpt-degenerate-major-and-minor",
+        "geometry-npelpt-interior",
+        "geometry-npelpt-principal-nearest",
+        "geometry-npelpt-translated-and-rotated",
+        "geometry-npelpt-zero-minor",
+        "geometry-pjelpl-degenerate",
+        "geometry-pjelpl-edge-on",
+        "geometry-pjelpl-oblique",
+        "geometry-pjelpl-parallel-and-offset",
+        "geometry-saelgv-circular",
+        "geometry-saelgv-nonorthogonal",
+        "geometry-saelgv-point-and-segment",
+        "geometry-saelgv-principal-axes",
+        "geometry-saelgv-scaling"
+      ],
+      "observation": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e11-c42a2170-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ffffe3ae0d2620e5ab76aa16f8c6f0f4616d395fe16ad0f3bbfe03916fd52968",
+      "caseIds": [
+        "geometry-cgv2el-circular",
+        "geometry-cgv2el-nonorthogonal",
+        "geometry-cgv2el-point-and-segment",
+        "geometry-cgv2el-principal-axes",
+        "geometry-cgv2el-scaling",
+        "geometry-el2cgv-degenerate",
+        "geometry-el2cgv-stored-components",
+        "geometry-el2cgv-stored-signed-scale",
+        "geometry-inedpl-bad-axis-0",
+        "geometry-inedpl-bad-axis-1",
+        "geometry-inedpl-bad-axis-2",
+        "geometry-inedpl-central-sections",
+        "geometry-inedpl-miss",
+        "geometry-inedpl-oblique",
+        "geometry-inedpl-parallel-sections",
+        "geometry-inedpl-spherical-section",
+        "geometry-inelpl-empty-or-contained",
+        "geometry-inelpl-invalid-stored-axes",
+        "geometry-inelpl-negative-constant",
+        "geometry-inelpl-oblique",
+        "geometry-inelpl-point-ellipse",
+        "geometry-inelpl-segment",
+        "geometry-inelpl-tangent",
+        "geometry-inelpl-two-points",
+        "geometry-inelpl-zero-normal",
+        "geometry-npelpt-degenerate-major-and-minor",
+        "geometry-npelpt-interior",
+        "geometry-npelpt-principal-nearest",
+        "geometry-npelpt-translated-and-rotated",
+        "geometry-npelpt-zero-minor",
+        "geometry-pjelpl-degenerate",
+        "geometry-pjelpl-edge-on",
+        "geometry-pjelpl-oblique",
+        "geometry-pjelpl-parallel-and-offset",
+        "geometry-saelgv-circular",
+        "geometry-saelgv-nonorthogonal",
+        "geometry-saelgv-point-and-segment",
+        "geometry-saelgv-principal-axes",
+        "geometry-saelgv-scaling"
+      ],
+      "commit": "c42a217026abe7273b69195023f7808bf90f2279",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
+      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-e11-c42a2170-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ffffe3ae0d2620e5ab76aa16f8c6f0f4616d395fe16ad0f3bbfe03916fd52968",
+      "caseIds": [
+        "geometry-cgv2el-circular",
+        "geometry-cgv2el-nonorthogonal",
+        "geometry-cgv2el-point-and-segment",
+        "geometry-cgv2el-principal-axes",
+        "geometry-cgv2el-scaling",
+        "geometry-el2cgv-degenerate",
+        "geometry-el2cgv-stored-components",
+        "geometry-el2cgv-stored-signed-scale",
+        "geometry-inedpl-bad-axis-0",
+        "geometry-inedpl-bad-axis-1",
+        "geometry-inedpl-bad-axis-2",
+        "geometry-inedpl-central-sections",
+        "geometry-inedpl-miss",
+        "geometry-inedpl-oblique",
+        "geometry-inedpl-parallel-sections",
+        "geometry-inedpl-spherical-section",
+        "geometry-inelpl-empty-or-contained",
+        "geometry-inelpl-invalid-stored-axes",
+        "geometry-inelpl-negative-constant",
+        "geometry-inelpl-oblique",
+        "geometry-inelpl-point-ellipse",
+        "geometry-inelpl-segment",
+        "geometry-inelpl-tangent",
+        "geometry-inelpl-two-points",
+        "geometry-inelpl-zero-normal",
+        "geometry-npelpt-degenerate-major-and-minor",
+        "geometry-npelpt-interior",
+        "geometry-npelpt-principal-nearest",
+        "geometry-npelpt-translated-and-rotated",
+        "geometry-npelpt-zero-minor",
+        "geometry-pjelpl-degenerate",
+        "geometry-pjelpl-edge-on",
+        "geometry-pjelpl-oblique",
+        "geometry-pjelpl-parallel-and-offset",
+        "geometry-saelgv-circular",
+        "geometry-saelgv-nonorthogonal",
+        "geometry-saelgv-point-and-segment",
+        "geometry-saelgv-principal-axes",
+        "geometry-saelgv-scaling"
+      ],
+      "commit": "c42a217026abe7273b69195023f7808bf90f2279",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
+      "observation": "Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

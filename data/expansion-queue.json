@@ -2405,18 +2405,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/733"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "All 78 registered compiled comparisons, four public geometry checks, 19 native and 43 WASM tests passed, plus 69 inherited E10 tests and all seven methods in an actual Chrome inline worker."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "c42a217026abe7273b69195023f7808bf90f2279",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43564314880/job/132354685723",
+          "result": "Both complete required lanes passed locally on c42a217026abe7273b69195023f7808bf90f2279. JavaScript: 2,598 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132354685723 on c42a217026abe7273b69195023f7808bf90f2279: 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Record source-bound combined E10/E11 full local and inspected canonical CI executions, then inspect complete final-head CI and explicit rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-ellipse-geometry",
       "branch": "codex/expand-ellipse-geometry",
       "baseCommit": "e41e264b98646d6c96daf6f8e1893331f5cd8af7",
-      "progressNote": "All 78 registered compiled comparisons, four public geometry checks, 19 native and 43 WASM tests passed, plus 69 inherited E10 tests and all seven methods in an actual Chrome inline worker."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source c42a2170. 2,374 registered Node/WASM live comparisons; 2,599 parity-package tests with no skips, including the native-required guard; 105 native wrapper, 692 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All 78 registered compiled comparisons, four public geometry checks, 19 native and 43 WASM tests passed, plus 69 inherited E10 tests and all seven methods in an actual Chrome inline worker."
     },
     {
       "id": "E12-ellipsoid-geometry",
