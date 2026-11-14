@@ -437,8 +437,8 @@
         "isrchi_c"
       ],
       "dependsOn": ["a24-sorted-bounds"],
-      "prs": [],
-      "nextAction": "Record both full local lanes and a canonical source-bound CI observation on the combined source, then inspect the final-head matrix and explicit rebaseability."
+      "prs": ["https://github.com/rybosome/tspice/pull/732"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
   ]
 }

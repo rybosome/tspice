@@ -39,7 +39,280 @@
     "packages/py-parity-checking/test/sorted-bounds.test.ts",
     "scripts/build-backend-wasm.mjs"
   ],
-  "executions": [],
+  "executions": [
+    {
+      "id": "local-a22-faad4659-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a47f04c898e0d803b77fc6fc2b11c09498d4518589ab966f91048b6c979313c",
+      "caseIds": [
+        "coords-vectors-bschoc-character-order",
+        "coords-vectors-bschoc-duplicates",
+        "coords-vectors-bschoc-empty",
+        "coords-vectors-bschoc-even",
+        "coords-vectors-bschoc-odd",
+        "coords-vectors-bschoc-singleton",
+        "coords-vectors-bschoc-ties-ascending-indices",
+        "coords-vectors-bschoc-ties-descending-indices",
+        "coords-vectors-bschoc-unequal-width",
+        "coords-vectors-bschoi-duplicates",
+        "coords-vectors-bschoi-empty",
+        "coords-vectors-bschoi-even",
+        "coords-vectors-bschoi-odd",
+        "coords-vectors-bschoi-signed-limits",
+        "coords-vectors-bschoi-singleton",
+        "coords-vectors-bschoi-ties-ascending-indices",
+        "coords-vectors-bschoi-ties-descending-indices",
+        "coords-vectors-bsrchc-character-order",
+        "coords-vectors-bsrchc-duplicates",
+        "coords-vectors-bsrchc-empty",
+        "coords-vectors-bsrchc-even",
+        "coords-vectors-bsrchc-odd",
+        "coords-vectors-bsrchc-singleton",
+        "coords-vectors-bsrchc-unequal-width",
+        "coords-vectors-bsrchd-duplicates",
+        "coords-vectors-bsrchd-empty",
+        "coords-vectors-bsrchd-even",
+        "coords-vectors-bsrchd-odd",
+        "coords-vectors-bsrchd-singleton",
+        "coords-vectors-bsrchd-tiny-neighbors",
+        "coords-vectors-bsrchi-duplicates",
+        "coords-vectors-bsrchi-empty",
+        "coords-vectors-bsrchi-even",
+        "coords-vectors-bsrchi-odd",
+        "coords-vectors-bsrchi-signed-limits",
+        "coords-vectors-bsrchi-singleton",
+        "coords-vectors-isrchc-character-order",
+        "coords-vectors-isrchc-duplicates",
+        "coords-vectors-isrchc-empty",
+        "coords-vectors-isrchc-even",
+        "coords-vectors-isrchc-odd",
+        "coords-vectors-isrchc-singleton",
+        "coords-vectors-isrchc-unequal-width",
+        "coords-vectors-isrchd-duplicates",
+        "coords-vectors-isrchd-empty",
+        "coords-vectors-isrchd-even",
+        "coords-vectors-isrchd-odd",
+        "coords-vectors-isrchd-singleton",
+        "coords-vectors-isrchd-tiny-neighbors",
+        "coords-vectors-isrchi-duplicates",
+        "coords-vectors-isrchi-empty",
+        "coords-vectors-isrchi-even",
+        "coords-vectors-isrchi-odd",
+        "coords-vectors-isrchi-signed-limits",
+        "coords-vectors-isrchi-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on faad465966fe6254b6ed7c68672f834b86cba77d. JavaScript: 2,641 parity tests and one expected guard skip. Native-required: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a22-faad4659-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a47f04c898e0d803b77fc6fc2b11c09498d4518589ab966f91048b6c979313c",
+      "caseIds": [
+        "coords-vectors-bschoc-character-order",
+        "coords-vectors-bschoc-duplicates",
+        "coords-vectors-bschoc-empty",
+        "coords-vectors-bschoc-even",
+        "coords-vectors-bschoc-odd",
+        "coords-vectors-bschoc-singleton",
+        "coords-vectors-bschoc-ties-ascending-indices",
+        "coords-vectors-bschoc-ties-descending-indices",
+        "coords-vectors-bschoc-unequal-width",
+        "coords-vectors-bschoi-duplicates",
+        "coords-vectors-bschoi-empty",
+        "coords-vectors-bschoi-even",
+        "coords-vectors-bschoi-odd",
+        "coords-vectors-bschoi-signed-limits",
+        "coords-vectors-bschoi-singleton",
+        "coords-vectors-bschoi-ties-ascending-indices",
+        "coords-vectors-bschoi-ties-descending-indices",
+        "coords-vectors-bsrchc-character-order",
+        "coords-vectors-bsrchc-duplicates",
+        "coords-vectors-bsrchc-empty",
+        "coords-vectors-bsrchc-even",
+        "coords-vectors-bsrchc-odd",
+        "coords-vectors-bsrchc-singleton",
+        "coords-vectors-bsrchc-unequal-width",
+        "coords-vectors-bsrchd-duplicates",
+        "coords-vectors-bsrchd-empty",
+        "coords-vectors-bsrchd-even",
+        "coords-vectors-bsrchd-odd",
+        "coords-vectors-bsrchd-singleton",
+        "coords-vectors-bsrchd-tiny-neighbors",
+        "coords-vectors-bsrchi-duplicates",
+        "coords-vectors-bsrchi-empty",
+        "coords-vectors-bsrchi-even",
+        "coords-vectors-bsrchi-odd",
+        "coords-vectors-bsrchi-signed-limits",
+        "coords-vectors-bsrchi-singleton",
+        "coords-vectors-isrchc-character-order",
+        "coords-vectors-isrchc-duplicates",
+        "coords-vectors-isrchc-empty",
+        "coords-vectors-isrchc-even",
+        "coords-vectors-isrchc-odd",
+        "coords-vectors-isrchc-singleton",
+        "coords-vectors-isrchc-unequal-width",
+        "coords-vectors-isrchd-duplicates",
+        "coords-vectors-isrchd-empty",
+        "coords-vectors-isrchd-even",
+        "coords-vectors-isrchd-odd",
+        "coords-vectors-isrchd-singleton",
+        "coords-vectors-isrchd-tiny-neighbors",
+        "coords-vectors-isrchi-duplicates",
+        "coords-vectors-isrchi-empty",
+        "coords-vectors-isrchi-even",
+        "coords-vectors-isrchi-odd",
+        "coords-vectors-isrchi-signed-limits",
+        "coords-vectors-isrchi-singleton"
+      ],
+      "observation": "Both complete required lanes passed locally on faad465966fe6254b6ed7c68672f834b86cba77d. JavaScript: 2,641 parity tests and one expected guard skip. Native-required: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a22-faad4659-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a47f04c898e0d803b77fc6fc2b11c09498d4518589ab966f91048b6c979313c",
+      "caseIds": [
+        "coords-vectors-bschoc-character-order",
+        "coords-vectors-bschoc-duplicates",
+        "coords-vectors-bschoc-empty",
+        "coords-vectors-bschoc-even",
+        "coords-vectors-bschoc-odd",
+        "coords-vectors-bschoc-singleton",
+        "coords-vectors-bschoc-ties-ascending-indices",
+        "coords-vectors-bschoc-ties-descending-indices",
+        "coords-vectors-bschoc-unequal-width",
+        "coords-vectors-bschoi-duplicates",
+        "coords-vectors-bschoi-empty",
+        "coords-vectors-bschoi-even",
+        "coords-vectors-bschoi-odd",
+        "coords-vectors-bschoi-signed-limits",
+        "coords-vectors-bschoi-singleton",
+        "coords-vectors-bschoi-ties-ascending-indices",
+        "coords-vectors-bschoi-ties-descending-indices",
+        "coords-vectors-bsrchc-character-order",
+        "coords-vectors-bsrchc-duplicates",
+        "coords-vectors-bsrchc-empty",
+        "coords-vectors-bsrchc-even",
+        "coords-vectors-bsrchc-odd",
+        "coords-vectors-bsrchc-singleton",
+        "coords-vectors-bsrchc-unequal-width",
+        "coords-vectors-bsrchd-duplicates",
+        "coords-vectors-bsrchd-empty",
+        "coords-vectors-bsrchd-even",
+        "coords-vectors-bsrchd-odd",
+        "coords-vectors-bsrchd-singleton",
+        "coords-vectors-bsrchd-tiny-neighbors",
+        "coords-vectors-bsrchi-duplicates",
+        "coords-vectors-bsrchi-empty",
+        "coords-vectors-bsrchi-even",
+        "coords-vectors-bsrchi-odd",
+        "coords-vectors-bsrchi-signed-limits",
+        "coords-vectors-bsrchi-singleton",
+        "coords-vectors-isrchc-character-order",
+        "coords-vectors-isrchc-duplicates",
+        "coords-vectors-isrchc-empty",
+        "coords-vectors-isrchc-even",
+        "coords-vectors-isrchc-odd",
+        "coords-vectors-isrchc-singleton",
+        "coords-vectors-isrchc-unequal-width",
+        "coords-vectors-isrchd-duplicates",
+        "coords-vectors-isrchd-empty",
+        "coords-vectors-isrchd-even",
+        "coords-vectors-isrchd-odd",
+        "coords-vectors-isrchd-singleton",
+        "coords-vectors-isrchd-tiny-neighbors",
+        "coords-vectors-isrchi-duplicates",
+        "coords-vectors-isrchi-empty",
+        "coords-vectors-isrchi-even",
+        "coords-vectors-isrchi-odd",
+        "coords-vectors-isrchi-signed-limits",
+        "coords-vectors-isrchi-singleton"
+      ],
+      "commit": "faad465966fe6254b6ed7c68672f834b86cba77d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43563139285/job/132351042526",
+      "observation": "Inspected successful Linux Node 22 native-required job 132351042526 on faad465966fe6254b6ed7c68672f834b86cba77d: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a22-faad4659-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8a47f04c898e0d803b77fc6fc2b11c09498d4518589ab966f91048b6c979313c",
+      "caseIds": [
+        "coords-vectors-bschoc-character-order",
+        "coords-vectors-bschoc-duplicates",
+        "coords-vectors-bschoc-empty",
+        "coords-vectors-bschoc-even",
+        "coords-vectors-bschoc-odd",
+        "coords-vectors-bschoc-singleton",
+        "coords-vectors-bschoc-ties-ascending-indices",
+        "coords-vectors-bschoc-ties-descending-indices",
+        "coords-vectors-bschoc-unequal-width",
+        "coords-vectors-bschoi-duplicates",
+        "coords-vectors-bschoi-empty",
+        "coords-vectors-bschoi-even",
+        "coords-vectors-bschoi-odd",
+        "coords-vectors-bschoi-signed-limits",
+        "coords-vectors-bschoi-singleton",
+        "coords-vectors-bschoi-ties-ascending-indices",
+        "coords-vectors-bschoi-ties-descending-indices",
+        "coords-vectors-bsrchc-character-order",
+        "coords-vectors-bsrchc-duplicates",
+        "coords-vectors-bsrchc-empty",
+        "coords-vectors-bsrchc-even",
+        "coords-vectors-bsrchc-odd",
+        "coords-vectors-bsrchc-singleton",
+        "coords-vectors-bsrchc-unequal-width",
+        "coords-vectors-bsrchd-duplicates",
+        "coords-vectors-bsrchd-empty",
+        "coords-vectors-bsrchd-even",
+        "coords-vectors-bsrchd-odd",
+        "coords-vectors-bsrchd-singleton",
+        "coords-vectors-bsrchd-tiny-neighbors",
+        "coords-vectors-bsrchi-duplicates",
+        "coords-vectors-bsrchi-empty",
+        "coords-vectors-bsrchi-even",
+        "coords-vectors-bsrchi-odd",
+        "coords-vectors-bsrchi-signed-limits",
+        "coords-vectors-bsrchi-singleton",
+        "coords-vectors-isrchc-character-order",
+        "coords-vectors-isrchc-duplicates",
+        "coords-vectors-isrchc-empty",
+        "coords-vectors-isrchc-even",
+        "coords-vectors-isrchc-odd",
+        "coords-vectors-isrchc-singleton",
+        "coords-vectors-isrchc-unequal-width",
+        "coords-vectors-isrchd-duplicates",
+        "coords-vectors-isrchd-empty",
+        "coords-vectors-isrchd-even",
+        "coords-vectors-isrchd-odd",
+        "coords-vectors-isrchd-singleton",
+        "coords-vectors-isrchd-tiny-neighbors",
+        "coords-vectors-isrchi-duplicates",
+        "coords-vectors-isrchi-empty",
+        "coords-vectors-isrchi-even",
+        "coords-vectors-isrchi-odd",
+        "coords-vectors-isrchi-signed-limits",
+        "coords-vectors-isrchi-singleton"
+      ],
+      "commit": "faad465966fe6254b6ed7c68672f834b86cba77d",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43563139285/job/132351042526",
+      "observation": "Inspected successful Linux Node 22 native-required job 132351042526 on faad465966fe6254b6ed7c68672f834b86cba77d: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
   "routines": [
     {
       "routine": "bschoc_c",
@@ -102,16 +375,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bschoc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bschoc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -171,16 +444,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bschoi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bschoi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -248,16 +521,16 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed"],
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchc -> bsrchc_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchc with original physical inputs and explicit count, byte stride.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -307,16 +580,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -366,16 +639,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.bsrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -430,16 +703,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -489,16 +762,16 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     },
@@ -548,19 +821,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-node", "ci-a22-faad4659-node"]
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": ["unreviewed", "reviewed", "verified"],
           "route": "direct",
           "trace": "raw.isrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
-          "executions": []
+          "executions": ["local-a22-faad4659-wasm", "ci-a22-faad4659-wasm"]
         }
       }
     }
   ],
-  "verificationNote": "Focused public, independent, compiled-backend and Chrome observations describe reviewed source. Fresh required local and canonical CI executions will establish verification for the combined A24/A22 source."
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
 }

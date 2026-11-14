@@ -1113,18 +1113,25 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/732"],
       "validationEvidence": [
         {
           "kind": "local-focused",
           "result": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "faad465966fe6254b6ed7c68672f834b86cba77d",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43563139285/job/132351042526",
+          "result": "Both complete required lanes passed locally on faad465966fe6254b6ed7c68672f834b86cba77d. JavaScript: 2,641 parity tests and one expected guard skip. Native-required: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132351042526 on faad465966fe6254b6ed7c68672f834b86cba77d: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Record source-bound full local and canonical CI observations for both backends on the combined A24/A22 source, then inspect complete final-head CI and explicit rebaseability.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-array-search",
       "branch": "codex/expand-array-search",
       "baseCommit": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
-      "progressNote": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source faad4659. 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
     },
     {
       "id": "A23-array-order",
