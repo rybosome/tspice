@@ -2281,7 +2281,7 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/729"],
       "validationEvidence": [
         {
           "kind": "focused-public-and-browser",
@@ -2290,13 +2290,20 @@
         {
           "kind": "source-and-focused-runtime",
           "result": "Canonical N0067 C entry points; locked SpiceyPy 6.0.3 wrappers compared all flags and numbers. Twelve binary64 inverse threshold observations and ten complete finite/IEEE observations per backend. Generated WASM SHA-256 2c46f7825c4804f3a586fb01d55f8dda33f9b000651a1028dfb44caac4c1f0ca."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "111ab2996d6861bc90249f0868c89e1cc753c4b5",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561458721/job/132345850125",
+          "result": "Both complete required lanes passed locally on 111ab2996d6861bc90249f0868c89e1cc753c4b5. JavaScript: 2,516 parity tests and one expected guard skip. Native-required: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132345850125 on 111ab2996d6861bc90249f0868c89e1cc753c4b5: 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed."
         }
       ],
-      "nextAction": "Run the required local JavaScript and native lanes, preserve the tested source fingerprint, then check canonical source and final-head CI before readiness.",
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
       "worktree": "/private/tmp/tspice-step8-plane-geometry",
       "branch": "codex/expand-plane-geometry",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "All eight direct paths, scoped tests and source reviews complete on main 73f3fec8. Public evidence includes exact miss shape, actual contained-ray vertex and component-wise IEEE outcomes."
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 111ab299. 2,296 registered Node/WASM live comparisons; 2,517 parity-package tests with no skips, including the native-required guard; 86 native wrapper, 649 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "All eight direct paths, scoped tests and source reviews complete on main 73f3fec8. Public evidence includes exact miss shape, actual contained-ray vertex and component-wise IEEE outcomes."
     },
     {
       "id": "E11-ellipse-geometry",
