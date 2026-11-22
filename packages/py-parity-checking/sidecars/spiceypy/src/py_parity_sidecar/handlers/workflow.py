@@ -82,7 +82,7 @@ def _run_step(
 
 
 def run_workflow(req: CaseRequest, context: SidecarRuntimeContext) -> list[StepOutput]:
-    if any(step.op in {"error.errdev", "error.errprt", "error.trcoff"} for step in req.workflow):
+    if any(step.op in {"error.erract", "error.errdev", "error.errprt", "error.trcoff"} for step in req.workflow):
         initialize_policy_oracle()
     outputs: list[StepOutput] = []
     for step in req.workflow:

@@ -39,7 +39,7 @@ static int tspice_ek_invalid_arg(char *err, int errMaxBytes, const char *msg) {
 
 
 int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -67,7 +67,7 @@ int tspice_ekopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_ekopw(const char *path, int *outHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -101,7 +101,7 @@ int tspice_ekopn(
     int *outHandle,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -149,7 +149,7 @@ int tspice_ekcls(int handle, char *err, int errMaxBytes) {
 }
 
 int tspice_ekntab(int *outN, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -177,7 +177,7 @@ int tspice_ekntab(int *outN, char *err, int errMaxBytes) {
 }
 
 int tspice_ektnam(int n, char *outName, int outNameMaxBytes, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -208,7 +208,7 @@ int tspice_ektnam(int n, char *outName, int outNameMaxBytes, char *err, int errM
 }
 
 int tspice_eknseg(int handle, int *outNseg, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -244,7 +244,7 @@ int tspice_ekfind(
     char *outErrmsg,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -301,7 +301,7 @@ int tspice_ekgc(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -370,7 +370,7 @@ int tspice_ekgd(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -428,7 +428,7 @@ int tspice_ekgi(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -547,7 +547,7 @@ int tspice_ekifld(
     int *outRcptrs,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -717,7 +717,7 @@ int tspice_ekacli(
     int *rcptrs,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -801,7 +801,7 @@ int tspice_ekacld(
     int *rcptrs,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -887,7 +887,7 @@ int tspice_ekaclc(
     int *rcptrs,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -1026,7 +1026,7 @@ int tspice_ekaclc(
 }
 
 int tspice_ekffld(int handle, int segno, int nrows, int *rcptrs, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';

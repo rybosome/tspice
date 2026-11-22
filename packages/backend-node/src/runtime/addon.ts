@@ -13,6 +13,7 @@ export type NativeAddon = {
   spiceVersion(): string;
 
   // --- error/status utilities ---
+  erract(op: string, value: string, capacity: number): string;
   errdev(op: string, value: string, capacity: number): string;
   errprt(op: string, value: string, capacity: number): string;
   trcoff(): void;

@@ -48,7 +48,7 @@ static void tspice_read_dla_descr8(const int32_t *descr8, SpiceDLADescr *outDesc
 }
 
 int tspice_exists(const char *path, int *outExists, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outExists) *outExists = 0;
@@ -77,7 +77,7 @@ int tspice_getfat(
     int outTypeMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outArch && outArchMaxBytes > 0) outArch[0] = '\0';
@@ -104,7 +104,7 @@ int tspice_getfat(
 }
 
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
@@ -141,7 +141,7 @@ int tspice_dafcls(int handle, char *err, int errMaxBytes) {
 }
 
 int tspice_dafbfs(int handle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   dafbfs_c((SpiceInt)handle);
@@ -153,7 +153,7 @@ int tspice_dafbfs(int handle, char *err, int errMaxBytes) {
 }
 
 int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (!outFound) {
     return tspice_return_error(err, errMaxBytes, "tspice_daffna: outFound must be non-NULL");
@@ -180,7 +180,7 @@ int tspice_daffna(int handle, int *outFound, char *err, int errMaxBytes) {
 }
 
 int tspice_dasopr(const char *path, int *outHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
@@ -216,7 +216,7 @@ int tspice_dascls(int handle, char *err, int errMaxBytes) {
 }
 
 int tspice_dlacls(int handle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   // DLA segments are stored in DAS files; close via DAS close helper.
@@ -232,7 +232,7 @@ int tspice_dlaopn(
     int *outHandle,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
@@ -268,7 +268,7 @@ int tspice_dlaopn(
 }
 
 int tspice_dlabfs(int handle, int32_t *outDescr8, int32_t *outFound, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (!outDescr8) {
@@ -304,7 +304,7 @@ int tspice_dlafns(
     int32_t *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (!descr8) {
@@ -348,7 +348,7 @@ int tspice_dskopn(
     int *outHandle,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
   if (outHandle) *outHandle = 0;
 
@@ -397,7 +397,7 @@ int tspice_dskmi2(
     int outSpaixiLen,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (nv < 0) {
@@ -519,7 +519,7 @@ int tspice_dskw02(
     int spaixiLen,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) err[0] = '\0';
 
   if (!frame || frame[0] == '\0') {

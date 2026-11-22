@@ -3,6 +3,7 @@ export type {
   Mat3ColMajor,
   Mat3RowMajor,
   SpiceBackend,
+  SpiceErrorAction,
 } from "@rybosome/tspice-backend-contract";
 
 export type {

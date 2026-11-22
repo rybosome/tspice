@@ -5,6 +5,14 @@ from typing import Literal
 
 
 @dataclass(frozen=True)
+class StepErrorErract:
+    op: Literal["error.erract"]
+    operation: str
+    capacity: int | None = None
+    value: str = ""
+
+
+@dataclass(frozen=True)
 class StepErrorErrdev:
     op: Literal["error.errdev"]
     operation: str

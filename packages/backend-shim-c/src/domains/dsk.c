@@ -85,7 +85,7 @@ static int tspice_validate_int_cell(
 }
 
 int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   tspice_clear_error(err, errMaxBytes);
 
   if (tspice_validate_dsk_path(dsk, err, errMaxBytes) != 0) {
@@ -108,7 +108,7 @@ int tspice_dskobj(const char *dsk, uintptr_t bodidsCellHandle, char *err, int er
 
 int tspice_dsksrf(const char *dsk, int bodyid, uintptr_t srfidsCellHandle, char *err,
                   int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   tspice_clear_error(err, errMaxBytes);
 
   if (tspice_validate_dsk_path(dsk, err, errMaxBytes) != 0) {
@@ -142,7 +142,7 @@ static void tspice_write_dla_descr_from_ints(SpiceDLADescr *out, const int32_t *
 
 int tspice_dskgd(int handle, const int32_t *dladscInts8, int32_t *outInts6, double *outDoubles18,
                  char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   tspice_clear_error(err, errMaxBytes);
 
   if (dladscInts8 == NULL) {
@@ -199,7 +199,7 @@ int tspice_dskgd(int handle, const int32_t *dladscInts8, int32_t *outInts6, doub
 
 int tspice_dskb02(int handle, const int32_t *dladscInts8, int32_t *outInts10, double *outDoubles10,
                   char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   tspice_clear_error(err, errMaxBytes);
 
   if (dladscInts8 == NULL) {

@@ -35,7 +35,7 @@ static int tspice_time_invalid_arg(char *err, int errMaxBytes, const char *msg) 
 }
 
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -76,7 +76,7 @@ int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes
 }
 
 int tspice_str2et(const char *time, double *outEt, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -112,7 +112,7 @@ int tspice_et2utc(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (out && outMaxBytes > 0) {
     out[0] = '\0';
@@ -150,7 +150,7 @@ int tspice_timout(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (out && outMaxBytes > 0) {
     out[0] = '\0';
@@ -182,7 +182,7 @@ int tspice_timout(
 }
 
 int tspice_deltet(double epoch, const char *eptype, double *outDelta, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -216,7 +216,7 @@ int tspice_unitim(
     double *outEpoch,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -246,7 +246,7 @@ int tspice_unitim(
 }
 
 int tspice_tparse(const char *timstr, double *outEt, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -301,7 +301,7 @@ int tspice_tpictr(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (outPictur && outMaxBytes > 0) {
     outPictur[0] = '\0';
@@ -366,7 +366,7 @@ int tspice_timdef_get(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (out && outMaxBytes > 0) {
     out[0] = '\0';
@@ -404,7 +404,7 @@ int tspice_timdef_get(
 
 
 int tspice_timdef_set(const char *item, const char *value, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -448,7 +448,7 @@ int tspice_scs2e(
     double *outEt,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -482,7 +482,7 @@ int tspice_sce2s(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -516,7 +516,7 @@ int tspice_scencd(
     double *outSclkdp,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -550,7 +550,7 @@ int tspice_scdecd(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -579,7 +579,7 @@ int tspice_scdecd(
 }
 
 int tspice_sct2e(int sc, double sclkdp, double *outEt, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
@@ -603,7 +603,7 @@ int tspice_sct2e(int sc, double sclkdp, double *outEt, char *err, int errMaxByte
 }
 
 int tspice_sce2c(int sc, double et, double *outSclkdp, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';

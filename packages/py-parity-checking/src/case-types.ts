@@ -1,6 +1,7 @@
 import type {
   FoundDlaDescriptor,
   KernelKindInput,
+  SpiceErrorAction,
 } from "@rybosome/tspice-backend-contract";
 
 export type TimdefItem = string;
@@ -797,6 +798,11 @@ export type StepFileIoDskw02 = {
   spaixId: string;
 };
 
+export type StepErrorErract = { op: "error.erract" } & (
+  | { operation: "GET"; capacity?: number }
+  | { operation: "SET"; value: SpiceErrorAction }
+);
+
 export type StepErrorErrdev = { op: "error.errdev" } & (
   { operation: "GET"; capacity?: number } | { operation: "SET"; value: string }
 );
@@ -1442,6 +1448,7 @@ export type WorkflowStep =
   | StepFileIoDskopn
   | StepFileIoDskmi2
   | StepFileIoDskw02
+  | StepErrorErract
   | StepErrorErrdev
   | StepErrorErrprt
   | StepErrorTrcoff
@@ -1761,6 +1768,7 @@ export type StepOutput =
   | { op: "error.return"; value: boolean }
   | { op: "error.trcdep"; value: number }
   | { op: "error.trcnam"; value: string }
+  | { op: "error.erract"; value: string | null }
   | { op: "error.errdev"; value: string | null }
   | { op: "error.errprt"; value: string | null }
   | { op: "error.trcoff"; value: null }

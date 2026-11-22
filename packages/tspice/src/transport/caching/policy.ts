@@ -5,6 +5,7 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   // binary payloads, and caching them can break correctness by skipping
   // side-effects.
   // Error policy, diagnostics, and traceback share mutable toolkit state.
+  "raw.erract",
   "raw.errdev",
   "raw.errprt",
   "raw.trcoff",

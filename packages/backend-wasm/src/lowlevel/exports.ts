@@ -17,6 +17,14 @@ export type EmscriptenModule = {
   _tspice_get_last_error_long(outPtr: number, outMaxBytes: number): number;
   _tspice_get_last_error_trace(outPtr: number, outMaxBytes: number): number;
 
+  _tspice_erract(
+    op: number,
+    value: number,
+    capacity: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_errdev(
     op: number,
     value: number,
@@ -2200,6 +2208,7 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_get_last_error_short",
   "_tspice_get_last_error_long",
   "_tspice_get_last_error_trace",
+  "_tspice_erract",
   "_tspice_errdev",
   "_tspice_errprt",
   "_tspice_trcoff",
