@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import { expect, it } from "vitest";
-import { spiceClients, type GfControl, type GfFovSearch } from "@rybosome/tspice";
+import {
+  spiceClients,
+  type GfControl,
+  type GfFovSearch,
+} from "@rybosome/tspice";
 import { nodeBackendAvailable } from "./_helpers/nodeBackendAvailable.js";
 
 const configuration: GfFovSearch = {
@@ -15,10 +19,14 @@ const configuration: GfFovSearch = {
 };
 const control: GfControl = (event) => {
   switch (event.kind) {
-    case "step": return 2;
-    case "refine": return (event.first + event.second) / 2;
-    case "bail": return false;
-    default: return undefined;
+    case "step":
+      return 2;
+    case "refine":
+      return (event.first + event.second) / 2;
+    case "bail":
+      return false;
+    default:
+      return undefined;
   }
 };
 
@@ -31,8 +39,17 @@ for (const backend of ["node", "wasm"] as const) {
       const c = kit.newWindow(4);
       let r = kit.newWindow(4);
       try {
-        for (const path of ["audit-geometry.bsp", "audit-geometry.tf", "audit-fov.ti"])
-          raw.furnsh({ path, bytes: fs.readFileSync(new URL(`../fixtures/kernels/${path}`, import.meta.url)) });
+        for (const path of [
+          "audit-geometry.bsp",
+          "audit-geometry.tf",
+          "audit-fov.ti",
+        ])
+          raw.furnsh({
+            path,
+            bytes: fs.readFileSync(
+              new URL(`../fixtures/kernels/${path}`, import.meta.url),
+            ),
+          });
         raw.wninsd(-150, 150, c);
         raw.wninsd(1000, 1010, r);
         const marker = new Error("configured callback failed");
@@ -52,7 +69,9 @@ for (const backend of ["node", "wasm"] as const) {
           }
           return control(event);
         };
-        expect(() => raw.gffove(configuration, c, r, replace)).toThrow(/Result window expired/);
+        expect(() => raw.gffove(configuration, c, r, replace)).toThrow(
+          /Result window expired/,
+        );
         expect(raw.wnfetd(r, 0)).toEqual([2000, 2010]);
         raw.gffove(configuration, c, r, control);
         expect(raw.wncard(r)).toBe(1);

@@ -70,11 +70,26 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
     uddf: (scalar, x, dx) => native.uddf(scalar, x, dx),
     uddc: (scalar, x, dx) => native.uddc(scalar, x, dx),
     gfevnt: (search, cnfine, result, control) =>
-      native.gfevnt(search, cnfine, result, bindConfiguredGfControl(control, false)),
+      native.gfevnt(
+        search,
+        cnfine,
+        result,
+        bindConfiguredGfControl(control, false),
+      ),
     gffove: (search, cnfine, result, control) =>
-      native.gffove(search, cnfine, result, bindConfiguredGfControl(control, false)),
+      native.gffove(
+        search,
+        cnfine,
+        result,
+        bindConfiguredGfControl(control, false),
+      ),
     gfocce: (search, cnfine, result, control) =>
-      native.gfocce(search, cnfine, result, bindConfiguredGfControl(control, false)),
+      native.gfocce(
+        search,
+        cnfine,
+        result,
+        bindConfiguredGfControl(control, false),
+      ),
     gfudb: (scalar, predicate, step, cnfine, result) =>
       native.gfudb(scalar, predicate, step, cnfine, result),
     gfuds: (

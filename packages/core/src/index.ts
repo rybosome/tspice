@@ -169,4 +169,7 @@ export {
 export { spiceStringByteLength } from "./spice-runtime/domains/string-bytes.js";
 
 export { bindConfiguredGfControl } from "./spice-runtime/domains/configured-gf.js";
-export type { GfControl, GfControlEvent } from "./spice-runtime/domains/configured-gf.js";
+export type {
+  GfControl,
+  GfControlEvent,
+} from "./spice-runtime/domains/configured-gf.js";

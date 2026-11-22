@@ -34,7 +34,7 @@
           "backFrame": "AUDIT_OCCULT_LARGE",
           "aberration": "NONE",
           "observer": "100104",
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },
@@ -89,7 +89,7 @@
           "backFrame": "AUDIT_OCCULT_LARGE",
           "aberration": "NONE",
           "observer": "100104",
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },
