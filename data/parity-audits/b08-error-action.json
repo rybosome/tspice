@@ -22,27 +22,42 @@
       "scenarios": [
         {
           "caseId": "error-erract-roundtrip-return",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read the original error action, select RETURN, verify full and byte-truncated output, then restore RETURN."
         },
         {
           "caseId": "error-erract-roundtrip-ignore",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read the original error action, select IGNORE, verify full and byte-truncated output, then restore RETURN."
         },
         {
           "caseId": "error-erract-roundtrip-report",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read the original error action, select REPORT, verify full and byte-truncated output, then restore RETURN."
         },
         {
           "caseId": "error-erract-roundtrip-abort",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read the original error action, select ABORT, verify full and byte-truncated output, then restore RETURN."
         },
         {
           "caseId": "error-erract-roundtrip-default",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read the original error action, select DEFAULT, verify full and byte-truncated output, then restore RETURN."
         }
       ],
@@ -55,13 +70,19 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
           "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed"],
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
           "executions": []

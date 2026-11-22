@@ -49,10 +49,7 @@ export function runErrorStep(
   switch (step.op) {
     case "error.erract":
       if (step.operation === "GET")
-        return {
-          op: step.op,
-          value: context.spice.raw.erract("GET", step.capacity),
-        };
+        return { op: step.op, value: context.spice.raw.erract("GET", step.capacity) };
       context.spice.raw.erract("SET", step.value);
       return { op: step.op, value: null };
     case "error.errdev":
