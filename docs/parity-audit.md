@@ -1,6 +1,6 @@
 # Existing raw parity audit
 
-Step 7 covers the contract-present baseline recorded at `3f950ae22993aaf9a629263a12388bf56894879c`. The [generated ledger](coverage-ledger.md#maintained-semantic-audit) lists every routine, its batch, dependencies, PRs, next action, and per-backend progress. Expansion remains separate.
+Step 7 covers the contract-present baseline recorded at `3f950ae22993aaf9a629263a12388bf56894879c`. The [generated ledger](coverage-ledger.md#maintained-semantic-audit) lists every routine, its batch, dependencies, PRs, next action, and per-backend progress. The additive expansion table tracks Step 8 separately from the baseline.
 
 ## Maintained inputs
 
@@ -382,3 +382,7 @@ NULs. Numeric cases include ordered double boundaries and signed integers.
 ## Array search
 
 A22 depends on the six A24 sorted bounds and adds eight direct raw operations. The 55 registered workflows make 351 independent canonical calls and cover physical order, duplicate selection, binary and linear search, and numeric and UTF-8 comparison rules. Two additional public tests compare exact live indices for values outside JSON, including NaN and infinities. [Array search semantics and evidence](step8-array-search.md) [Per-routine audit](../data/parity-audits/a22-array-search.json)
+
+## Kernel-pool expansion
+
+B05 adds nine direct kernel-pool operations. The source review covers 69 workflows, 164 calls to the nine new methods and 32 terminal toolkit errors. The routine audit distinguishes two N0067 domain guards and follows KEEPER state, watches, logical continuation records, caller capacities and partial-load effects. [Kernel-pool review](step8-kernel-pool.md) [Per-routine audit](../data/parity-audits/b05-kernel-pool.json)

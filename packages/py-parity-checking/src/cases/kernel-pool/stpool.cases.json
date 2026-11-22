@@ -1,0 +1,379 @@
+[
+  {
+    "caseId": "kernel-pool-stpool-logical-ordinal",
+    "description": "Retrieve the concatenated logical string, next string, and absent third string.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 64
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 1,
+        "contin": "++",
+        "lenout": 64
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 2,
+        "contin": "++",
+        "lenout": 64
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-truncated-full-size",
+    "description": "Vary output byte capacity across separators and the terminating NUL.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 2
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 6
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 7
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 15
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 16
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "++",
+        "lenout": 17
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-markers-and-final-continuation",
+    "description": "Compare two continuation conventions, marker-only components and a final dangling marker.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_JOIN",
+        "values": ["A+", "+", " B", "TAIL+"]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 80
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 1,
+        "contin": "+",
+        "lenout": 80
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 2,
+        "contin": "+",
+        "lenout": 80
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "#",
+        "lenout": 80
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 3,
+        "contin": "#",
+        "lenout": 80
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-literal-whitespace",
+    "description": "Observe the CSPICE single-blank result, a final tab and leading spaces.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_JOIN",
+        "values": [" ", "abc\t", "  end"]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 10
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 1,
+        "contin": "+",
+        "lenout": 10
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 2,
+        "contin": "+",
+        "lenout": 10
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-missing-type-and-index",
+    "description": "Missing variables, numeric values and out-of-range positive/negative ordinals have distinct setup and normal absence.",
+    "workflow": [
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 9
+      },
+      {
+        "op": "kernel-pool.pdpool",
+        "name": "B05_JOIN",
+        "values": [2, 5]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 9
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_JOIN",
+        "values": ["a", "b"]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": -1,
+        "contin": "+",
+        "lenout": 9
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 2147483646,
+        "contin": "+",
+        "lenout": 9
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 1,
+        "contin": "+",
+        "lenout": 9
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-longer-marker-safe",
+    "description": "A marker several bytes longer than all values cannot continue this sequence.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_JOIN",
+        "values": ["ab", "efg"]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "XXXXXXXX",
+        "lenout": 64
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 1,
+        "contin": "XXXXXXXX",
+        "lenout": 64
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-maximum-components",
+    "description": "Compare full length and boundary substrings across two 80-byte character components.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "B05_JOIN",
+        "values": [
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+",
+          "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+        ]
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 80
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 160
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 5
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-empty-item",
+    "description": "CSPICE validates the input strings and available output space.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-empty-marker",
+    "description": "CSPICE validates the input strings and available output space.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "",
+        "lenout": 16
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-short-output",
+    "description": "CSPICE validates the input strings and available output space.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "kernel-pool-stpool-negative-output",
+    "description": "CSPICE validates the input strings and available output space.",
+    "workflow": [
+      {
+        "op": "kernel-pool.ldpool",
+        "file": "kernels/audit-pool-operations.tpc"
+      },
+      {
+        "op": "kernel-pool.stpool",
+        "item": "B05_JOIN",
+        "nth": 0,
+        "contin": "+",
+        "lenout": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

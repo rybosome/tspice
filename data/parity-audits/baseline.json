@@ -800,6 +800,25 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "b05-kernel-pool",
+      "routines": [
+        "badkpv_c",
+        "bodvcd_c",
+        "bodvrd_c",
+        "clpool_c",
+        "dvpool_c",
+        "ldpool_c",
+        "lmpool_c",
+        "stpool_c",
+        "szpool_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/734"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a15-frame-algebra",
       "routines": [
         "frame_c",

@@ -2,6 +2,7 @@
 
 #include "SpiceUsr.h"
 
+#include <limits.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -46,6 +47,172 @@ static int tspice_is_empty_or_ascii_whitespace_only(const char *s) {
   }
 
   return 1;
+}
+
+static int finish_pool_call(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// ZZBODKER builds the ID hash from paired name/code mappings. N0067
+// ZZHASHI takes signed abs(code), which has no representation for INT_MIN.
+static int check_body_mapping_codes(char *err, int errMaxBytes) {
+  SpiceBoolean found = SPICEFALSE;
+  SpiceInt names = 0, codes = 0;
+  SpiceChar type[2] = {0};
+  dtpool_c("NAIF_BODY_NAME", &found, &names, type);
+  if (failed_c()) return finish_pool_call(err, errMaxBytes);
+  if (!found || type[0] != 'C' || names > 14983) return 0;
+  dtpool_c("NAIF_BODY_CODE", &found, &codes, type);
+  if (failed_c()) return finish_pool_call(err, errMaxBytes);
+  if (!found || type[0] != 'N' || names != codes) return 0;
+  int unsafe = 0;
+  for (SpiceInt start = 0; start < codes; start += 64) {
+    SpiceDouble values[64];
+    SpiceInt used = 0;
+    gdpool_c("NAIF_BODY_CODE", start, 64, &used, values, &found);
+    if (failed_c()) return finish_pool_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      // GIPOOL validates and rounds all codes before any hashes are built.
+      // Let it report its own conversion error, including in a mixed table.
+      if (!(values[i] >= (double)INT_MIN && values[i] <= (double)INT_MAX)) return 0;
+      if (values[i] <= (double)INT_MIN + 0.5) unsafe = 1;
+    }
+  }
+  if (!unsafe) return 0;
+  // ZZBODKER also diagnoses blank names (in a 36-byte record) before
+  // entering ZZBODINI. Preserve that ordinary error and its traceback.
+  for (SpiceInt start = 0; start < names; start += 64) {
+    SpiceChar rows[64][37];
+    SpiceInt used = 0;
+    gcpool_c("NAIF_BODY_NAME", start, 64, 37, &used, rows, &found);
+    if (failed_c()) return finish_pool_call(err, errMaxBytes);
+    for (SpiceInt i = 0; i < used; ++i) {
+      if (!rows[i][0]) return 0;
+    }
+  }
+  return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "NAIF_BODY_CODE outside the safe N0067 body hash range");
+}
+
+// STPOOL's translated loop compares from one byte before the component
+// when its last significant byte is one position before the marker length.
+// Inspect only components visited for this logical string. Let stpool_c do
+// all concatenation, truncation, indexing and found/size reporting.
+static int check_stpool_components(const char *item, int nth, const char *contin,
+                                   int lenout, char *err, int errMaxBytes) {
+  if (!*item || !*contin || nth < 0 || lenout < 2) return 0;
+  size_t marker = strlen(contin);
+  while (marker > 1 && contin[marker - 1] == ' ') --marker;
+  if (marker < 2 || marker > 81) return 0;
+  SpiceInt logical = 0;
+  for (SpiceInt start = 0; start < TSPICE_POOL_MAX_CHAR_ROWS; start += 32) {
+    SpiceChar rows[32][81] = {{0}};
+    SpiceInt used = 0;
+    SpiceBoolean found = SPICEFALSE;
+    gcpool_c(item, start, 32, 81, &used, rows, &found);
+    if (failed_c()) return finish_pool_call(err, errMaxBytes);
+    if (!found || !used) return 0;
+    for (SpiceInt i = 0; i < used; ++i) {
+      // GCPool removes trailing blanks. RTRIM in STPOOL gives a blank row length one.
+      const size_t bytes = strlen(rows[i]);
+      const size_t last = bytes ? bytes : 1;
+      if (marker == last + 1)
+        return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Unsafe N0067 STPOOL continuation marker/component byte lengths");
+      if (last < marker || memcmp(rows[i] + last - marker, contin, marker) != 0) {
+        if (logical == nth) return 0;
+        ++logical;
+      }
+    }
+    if (used < 32) return 0;
+  }
+  return 0;
+}
+
+int tspice_badkpv(const char *caller, const char *name, const char *comp, int size, int divby, int type, int *bad, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!caller || !name || !comp || !bad || type < 0 || type > 127) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid badkpv storage or dimensions");
+  *bad = badkpv_c(caller, name, comp, size, divby, (SpiceChar)type);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_bodvcd(int body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!item || !dim || !values) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid bodvcd storage or dimensions");
+  if (maxn > TSPICE_POOL_MAX_VALUES) maxn = TSPICE_POOL_MAX_VALUES;
+  bodvcd_c(body, item, maxn, dim, values);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_bodvrd(const char *body, const char *item, int maxn, int *dim, double *values, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!body || !item || !dim || !values) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid bodvrd storage or dimensions");
+  if (*body && *item && check_body_mapping_codes(err, errMaxBytes)) return 1;
+  if (maxn > TSPICE_POOL_MAX_VALUES) maxn = TSPICE_POOL_MAX_VALUES;
+  bodvrd_c(body, item, maxn, dim, values);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_clpool(char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  clpool_c();
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_dvpool(const char *name, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!name) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid dvpool storage or dimensions");
+  dvpool_c(name);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_ldpool(const char *path, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!path) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid ldpool storage or dimensions");
+  ldpool_c(path);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_lmpool(const char *rows, int stride, int count, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!rows || count < 0 || stride < 2 || count > INT_MAX / stride) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid lmpool storage or dimensions");
+  for (int i = 0; i < count; ++i) {
+    if (!memchr(rows + (size_t)i * stride, 0, (size_t)stride))
+      return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Unterminated lmpool row");
+  }
+  lmpool_c(rows, stride, count);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_stpool(const char *item, int nth, const char *contin, int lenout, char *text, int *size, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  // The public C adapter reads its local Fortran found output after return.
+  if (failed_c()) return finish_pool_call(err, errMaxBytes);
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!item || !contin || !text || !size || !found) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid stpool storage or dimensions");
+  // stpool_c adds one to nth. Both large values necessarily miss.
+  if (nth == INT_MAX) --nth;
+  if (lenout > TSPICE_POOL_TEXT_CAPACITY) lenout = TSPICE_POOL_TEXT_CAPACITY;
+  if (check_stpool_components(item, nth, contin, lenout, err, errMaxBytes)) return 1;
+  stpool_c(item, nth, contin, lenout, text, size, found);
+  return finish_pool_call(err, errMaxBytes);
+}
+
+int tspice_szpool(const char *name, int *n, int *found, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  // The public C adapter reads its local Fortran found output after return.
+  if (failed_c()) return finish_pool_call(err, errMaxBytes);
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!name || !n || !found) return tspice_kernel_pool_invalid_arg(err, errMaxBytes, "Invalid szpool storage or dimensions");
+  szpool_c(name, n, found);
+  return finish_pool_call(err, errMaxBytes);
 }
 
 int tspice_gdpool(
