@@ -343,6 +343,16 @@ from .models import (
     StepFileIoGetfat,
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrdev,
+    StepErrorErrprt,
+    StepErrorTrcoff,
+    StepErrorErrch,
+    StepErrorErrdp,
+    StepErrorErrint,
+    StepErrorQcktrc,
+    StepErrorReturn,
+    StepErrorTrcdep,
+    StepErrorTrcnam,
     StepErrorFailed,
     StepErrorGetmsg,
     StepErrorReset,
@@ -3605,6 +3615,57 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 plates=_expect_int_list(step.get("plates"), label="file-io.dskw02.plates"),
                 spaixId=_expect_string(step.get("spaixId"), label="file-io.dskw02.spaixId"),
             )
+        case "error.errdev":
+            operation = _expect_string(step.get("operation"), label="errdev.operation")
+            if operation == "GET":
+                capacity = step.get("capacity")
+                return StepErrorErrdev(op=op, operation=operation, capacity=None if capacity is None else _expect_int(capacity,label="errdev.capacity"))
+            if operation == "SET":
+                return StepErrorErrdev(op=op, operation=operation, value=_expect_string(step.get("value"), label="errdev.value"))
+            raise ValueError("Expected GET or SET")
+
+        case "error.errprt":
+            operation = _expect_string(step.get("operation"), label="errprt.operation")
+            if operation == "GET":
+                capacity = step.get("capacity")
+                return StepErrorErrprt(op=op, operation=operation, capacity=None if capacity is None else _expect_int(capacity,label="errprt.capacity"))
+            if operation == "SET":
+                return StepErrorErrprt(op=op, operation=operation, value=_expect_string(step.get("value"), label="errprt.value"))
+            raise ValueError("Expected GET or SET")
+
+        case "error.trcoff":
+            return StepErrorTrcoff(op=op)
+
+        case "error.errch":
+            return StepErrorErrch(op=op,
+                marker=_expect_string(step.get("marker"), label="error.errch.marker"),
+                value=_expect_string(step.get("value"), label="error.errch.value"))
+
+        case "error.errdp":
+            return StepErrorErrdp(op=op,
+                marker=_expect_string(step.get("marker"), label="error.errdp.marker"),
+                value=_expect_number(step.get("value"), label="error.errdp.value"))
+
+        case "error.errint":
+            return StepErrorErrint(op=op,
+                marker=_expect_string(step.get("marker"), label="error.errint.marker"),
+                value=_expect_int(step.get("value"), label="error.errint.value"))
+
+        case "error.qcktrc":
+            return StepErrorQcktrc(op=op,
+                tracelen=None if step.get("tracelen") is None else _expect_int(step.get("tracelen"), label="error.qcktrc.tracelen"))
+
+        case "error.return":
+            return StepErrorReturn(op=op)
+
+        case "error.trcdep":
+            return StepErrorTrcdep(op=op)
+
+        case "error.trcnam":
+            return StepErrorTrcnam(op=op,
+                index=_expect_int(step.get("index"), label="error.trcnam.index"),
+                namlen=None if step.get("namlen") is None else _expect_int(step.get("namlen"), label="error.trcnam.namlen"))
+
         case "error.failed":
             return StepErrorFailed(op=op)
 

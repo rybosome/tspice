@@ -37,6 +37,16 @@ export type NativeAddon = {
   tyear(): number;
 
   // --- error/status utilities ---
+  errdev(op: string, value: string, capacity: number): string;
+  errprt(op: string, value: string, capacity: number): string;
+  trcoff(): void;
+  errch(marker: string, value: string): void;
+  errdp(marker: string, value: number): void;
+  errint(marker: string, value: number): void;
+  qcktrc(tracelen: number): string;
+  return(): boolean;
+  trcdep(): number;
+  trcnam(index: number, namlen: number): string;
   failed(): boolean;
   reset(): void;
   getmsg(which: "SHORT" | "LONG" | "EXPLAIN"): string;

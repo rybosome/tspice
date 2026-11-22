@@ -1123,6 +1123,32 @@ export function createFakeBackend(
     j2100: () => 2488070,
     jyear: () => 31557600,
     tyear: () => 31556925.9747,
+    errdev: () => {
+      throw new Error("Fake backend: errdev is not implemented");
+    },
+    errprt: () => {
+      throw new Error("Fake backend: errprt is not implemented");
+    },
+    trcoff: () => {
+      throw new Error("Fake backend: trcoff is not implemented");
+    },
+    errch: () => {
+      throw new Error("Fake backend: errch is not implemented");
+    },
+    errdp: () => {
+      throw new Error("Fake backend: errdp is not implemented");
+    },
+    errint: () => {
+      throw new Error("Fake backend: errint is not implemented");
+    },
+    qcktrc: () => {
+      throw new Error("Fake backend: qcktrc is not implemented");
+    },
+    return: () => spiceFailed,
+    trcdep: () => traceStack.length,
+    trcnam: () => {
+      throw new Error("Fake backend: trcnam is not implemented");
+    },
     failed: () => spiceFailed,
     reset: () => {
       spiceFailed = false;

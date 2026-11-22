@@ -1123,6 +1123,23 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "b06-error-observation",
+      "routines": [
+        "errch_c",
+        "errdp_c",
+        "errint_c",
+        "qcktrc_c",
+        "return_c",
+        "trcdep_c",
+        "trcnam_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/749"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "c05-das-data",
       "routines": [
         "dasadc_c",
@@ -1310,6 +1327,19 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/772"
       ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b07-error-devices",
+      "routines": [
+        "errdev_c",
+        "errprt_c",
+        "trcoff_c"
+      ],
+      "dependsOn": [
+        "b06-error-observation"
+      ],
+      "prs": [],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]

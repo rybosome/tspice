@@ -198,6 +198,7 @@ export {
 } from "./spice-runtime/shared/ck-writers.js";
 export { createSpiceHandleRegistry } from "./spice-runtime/shared/spice-handles.js";
 
+export { policyArguments } from "./spice-runtime/domains/error-policy.js";
 export type { GetmsgWhich } from "./spice-runtime/domains/error.js";
 export {
   GETMSG_WHICH_VALUES,

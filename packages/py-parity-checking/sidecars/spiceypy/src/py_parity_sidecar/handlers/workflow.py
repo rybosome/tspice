@@ -9,7 +9,7 @@ from .coords_vectors import run_coords_vectors_step
 from .dsk import run_dsk_step
 from .ek import run_ek_step
 from .ephemeris import run_ephemeris_step
-from .error import run_error_step
+from .error import initialize_policy_oracle, run_error_step
 from .file_io import run_file_io_step
 from .frames import run_frames_step
 from .geometry import run_geometry_step
@@ -91,6 +91,8 @@ def _run_step(
 def run_workflow(req: CaseRequest, context: SidecarRuntimeContext) -> list[StepOutput]:
     if any(step.op == "file-io.dasec" for step in req.workflow):
         das_comment_oracle.prepare()
+    if any(step.op in {"error.errdev", "error.errprt", "error.trcoff"} for step in req.workflow):
+        initialize_policy_oracle()
     outputs: list[StepOutput] = []
     for step in req.workflow:
         outputs.append(_run_step(step, context))

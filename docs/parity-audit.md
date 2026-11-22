@@ -512,3 +512,11 @@ C10 compares loaded tables, physical segment descriptors, SELECT projections, re
 ## Text readers and command initialization
 
 C14 checks physical record boundaries, errors, shared cursor cleanup and the once-per-runtime command state. [Source review and test observations](step8-text-command-state.md) [Per-routine audit](../data/parity-audits/c14-text-command-state.json)
+
+## Diagnostic substitution and traceback observation
+
+B06 adds seven routines with 33 workflows, 767 steps, 92 target calls and 10 expected diagnostics. Complete messages, current and frozen trace and the immediate-return indicator are compared. [State, cleanup and independent evidence](step8-error-observation.md)
+
+## Error devices, print masks and traceback lifetime
+
+Three canonical controls add 29 isolated workflows, 161 steps and 114 targeted calls, including 10 terminal diagnostics. Dedicated children compare byte-exact reports and irreversible trace behavior against the independent N0067 toolkit. [Policy evidence](step8-error-devices.md)

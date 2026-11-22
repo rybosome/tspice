@@ -353,6 +353,16 @@ from .file_io import (
 from .error import (
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErrdev,
+    StepErrorErrprt,
+    StepErrorTrcoff,
+    StepErrorErrch,
+    StepErrorErrdp,
+    StepErrorErrint,
+    StepErrorQcktrc,
+    StepErrorReturn,
+    StepErrorTrcdep,
+    StepErrorTrcnam,
     StepErrorFailed,
     StepErrorGetmsg,
     StepErrorReset,
@@ -948,6 +958,16 @@ WorkflowStep: TypeAlias = (
     | StepFileIoDskopn
     | StepFileIoDskmi2
     | StepFileIoDskw02
+    | StepErrorErrdev
+    | StepErrorErrprt
+    | StepErrorTrcoff
+    | StepErrorErrch
+    | StepErrorErrdp
+    | StepErrorErrint
+    | StepErrorQcktrc
+    | StepErrorReturn
+    | StepErrorTrcdep
+    | StepErrorTrcnam
     | StepErrorFailed
     | StepErrorReset
     | StepErrorGetmsg

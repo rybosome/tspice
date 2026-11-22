@@ -4,6 +4,24 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   // Kernel-loading / kernel pool mutation operations. These can contain large
   // binary payloads, and caching them can break correctness by skipping
   // side-effects.
+  // Error policy, diagnostics, and traceback share mutable toolkit state.
+  "raw.errdev",
+  "raw.errprt",
+  "raw.trcoff",
+  "raw.failed",
+  "raw.reset",
+  "raw.getmsg",
+  "raw.setmsg",
+  "raw.sigerr",
+  "raw.chkin",
+  "raw.chkout",
+  "raw.errch",
+  "raw.errdp",
+  "raw.errint",
+  "raw.qcktrc",
+  "raw.return",
+  "raw.trcdep",
+  "raw.trcnam",
   "kit.loadKernel",
   "kit.unloadKernel",
   "kit.kclear",
