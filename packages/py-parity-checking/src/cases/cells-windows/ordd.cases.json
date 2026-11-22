@@ -1,0 +1,233 @@
+[
+  {
+    "caseId": "cells-windows-ordd-empty",
+    "description": "Query or remove from a newly allocated empty cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1e180
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordd-ordered-members",
+    "description": "Visit interior and boundary members in different orders. Check every output and the shifted ordinal after removal.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 2.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordd-misses",
+    "description": "Search gaps, end ranges and independent live storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 2.125
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 1e180
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "B",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -33
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -1
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1e-300
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 3
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1e182
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "B",
+        "item": -0.25
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -0.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-ordd-unset",
+    "description": "A duplicate append makes the cell an invalid set; the actual toolkit reports NOTASET.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": -16.5
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": -16.5
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-ordd-adjacent-values",
+    "description": "Use adjacent distinct binary64 values and a subnormal member; exact matching is visible through ordinals and cardinality.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 5e-324
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.appndd",
+        "cellId": "A",
+        "item": 1.0000000000000002
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1.0000000000000002
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 1
+      },
+      {
+        "op": "cells-windows.ordd",
+        "cellId": "A",
+        "item": 5e-324
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1066,11 +1066,49 @@ export type NativeAddon = {
 
   insrti(item: number, cell: number): void;
   insrtd(item: number, cell: number): void;
+  appndc(item: string, cell: number): void;
+  appndd(item: number, cell: number): void;
+  appndi(item: number, cell: number): void;
+  elemc(item: string, cell: number): boolean;
+  elemd(item: number, cell: number): boolean;
+  elemi(item: number, cell: number): boolean;
+  diff(a: number, b: number, result: number): void;
+  inter(a: number, b: number, result: number): void;
+  sdiff(a: number, b: number, result: number): void;
+  union(a: number, b: number, result: number): void;
+  set(a: number, op: string, b: number): boolean;
+  removc(item: string, cell: number): void;
+  removd(item: number, cell: number): void;
+  removi(item: number, cell: number): void;
+  ordc(item: string, cell: number): number;
+  ordd(item: number, cell: number): number;
+  ordi(item: number, cell: number): number;
+  copy(source: number, destination: number): void;
   insrtc(item: string, cell: number): void;
 
   cellGeti(cell: number, index: number): number;
   cellGetd(cell: number, index: number): number;
   cellGetc(cell: number, index: number): string;
+
+  wncomd(left: number, right: number, window: number, result: number): void;
+  wncond(left: number, right: number, window: number): void;
+  wndifd(a: number, b: number, result: number): void;
+  wnelmd(point: number, window: number): boolean;
+  wnexpd(left: number, right: number, window: number): void;
+  wnextd(side: string, window: number): void;
+  wnfild(small: number, window: number): void;
+  wnfltd(small: number, window: number): void;
+  wnincd(left: number, right: number, window: number): boolean;
+  wnintd(a: number, b: number, result: number): void;
+  wnreld(a: number, op: string, b: number): boolean;
+  wnsumd(window: number): {
+    meas: number;
+    avg: number;
+    stddev: number;
+    shortest: number;
+    longest: number;
+  };
+  wnunid(a: number, b: number, result: number): void;
 
   wninsd(left: number, right: number, window: number): void;
   wncard(window: number): number;

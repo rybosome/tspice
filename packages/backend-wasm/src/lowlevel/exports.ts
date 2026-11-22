@@ -2505,6 +2505,126 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_appndc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diff(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inter(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sdiff(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_union(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_set(
+    a: number,
+    opPtr: number,
+    b: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_copy(
+    source: number,
+    destination: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -2531,6 +2651,101 @@ export type EmscriptenModule = {
     index: number,
     outPtr: number,
     outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_wncomd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wncond(
+    left: number,
+    right: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wndifd(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnelmd(
+    point: number,
+    windowPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnexpd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnextd(
+    side: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnfild(
+    small: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnfltd(
+    small: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnincd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnintd(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnreld(
+    aPtr: number,
+    opPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnsumd(
+    windowPtr: number,
+    measPtr: number,
+    avgPtr: number,
+    stddevPtr: number,
+    shortestPtr: number,
+    longestPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnunid(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -4593,6 +4808,126 @@ export type EmscriptenModule = {
     errPtr: number,
     errMaxBytes: number,
   ): number;
+  _tspice_appndc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_appndi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_elemi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diff(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_inter(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sdiff(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_union(
+    a: number,
+    b: number,
+    result: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_set(
+    a: number,
+    opPtr: number,
+    b: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removc(
+    itemPtr: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removd(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_removi(
+    item: number,
+    cell: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordc(
+    itemPtr: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordd(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ordi(
+    item: number,
+    cell: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_copy(
+    source: number,
+    destination: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_insrtc(
     itemPtr: number,
     cell: number,
@@ -4619,6 +4954,101 @@ export type EmscriptenModule = {
     index: number,
     outPtr: number,
     outMaxBytes: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
+  _tspice_wncomd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wncond(
+    left: number,
+    right: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wndifd(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnelmd(
+    point: number,
+    windowPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnexpd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnextd(
+    side: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnfild(
+    small: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnfltd(
+    small: number,
+    windowPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnincd(
+    left: number,
+    right: number,
+    windowPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnintd(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnreld(
+    aPtr: number,
+    opPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnsumd(
+    windowPtr: number,
+    measPtr: number,
+    avgPtr: number,
+    stddevPtr: number,
+    shortestPtr: number,
+    longestPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_wnunid(
+    aPtr: number,
+    bPtr: number,
+    resultPtr: number,
     errPtr: number,
     errMaxBytes: number,
   ): number;
@@ -5001,10 +5431,41 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_valid",
   "_tspice_insrti",
   "_tspice_insrtd",
+  "_tspice_appndc",
+  "_tspice_appndd",
+  "_tspice_appndi",
+  "_tspice_elemc",
+  "_tspice_elemd",
+  "_tspice_elemi",
+  "_tspice_diff",
+  "_tspice_inter",
+  "_tspice_sdiff",
+  "_tspice_union",
+  "_tspice_set",
+  "_tspice_removc",
+  "_tspice_removd",
+  "_tspice_removi",
+  "_tspice_ordc",
+  "_tspice_ordd",
+  "_tspice_ordi",
+  "_tspice_copy",
   "_tspice_insrtc",
   "_tspice_cell_geti",
   "_tspice_cell_getd",
   "_tspice_cell_getc",
+  "_tspice_wncomd",
+  "_tspice_wncond",
+  "_tspice_wndifd",
+  "_tspice_wnelmd",
+  "_tspice_wnexpd",
+  "_tspice_wnextd",
+  "_tspice_wnfild",
+  "_tspice_wnfltd",
+  "_tspice_wnincd",
+  "_tspice_wnintd",
+  "_tspice_wnreld",
+  "_tspice_wnsumd",
+  "_tspice_wnunid",
   "_tspice_wninsd",
   "_tspice_wncard",
   "_tspice_wnfetd",

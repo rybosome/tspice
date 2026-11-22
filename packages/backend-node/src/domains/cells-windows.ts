@@ -7,6 +7,11 @@ import type {
   SpiceWindow,
 } from "@rybosome/tspice-backend-contract";
 import {
+  spiceStringByteLength,
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
   invariant,
@@ -40,6 +45,117 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
       assertSpiceInt32NonNegative(n, "valid(n)");
       native.valid(size, n, cell);
     },
+    appndc: (item, cell) => {
+      spiceStringByteLength(item, "appndc(item)");
+      native.appndc(item, cell);
+    },
+    appndd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("appndd(item) must be an ordered number");
+      native.appndd(item, cell);
+    },
+    appndi: (item, cell) => {
+      assertSpiceInt32(item, "appndi(item)");
+      native.appndi(item, cell);
+    },
+    elemc: (item, cell) => {
+      spiceStringByteLength(item, "elemc(item)");
+      const result = native.elemc(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemc() to return a boolean",
+      );
+      return result;
+    },
+    elemd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("elemd(item) must be an ordered number");
+      const result = native.elemd(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemd() to return a boolean",
+      );
+      return result;
+    },
+    elemi: (item, cell) => {
+      assertSpiceInt32(item, "elemi(item)");
+      const result = native.elemi(item, cell);
+      invariant(
+        typeof result === "boolean",
+        "Expected elemi() to return a boolean",
+      );
+      return result;
+    },
+    diff: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.diff(a, b, result);
+    },
+    inter: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.inter(a, b, result);
+    },
+    sdiff: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.sdiff(a, b, result);
+    },
+    union: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result set must be distinct from each input");
+      native.union(a, b, result);
+    },
+    set: (a, op, b) => {
+      spiceStringByteLength(op, "set(op)");
+      const out = native.set(a, op, b);
+      invariant(typeof out === "boolean", "Expected set() to return a boolean");
+      return out;
+    },
+    removc: (item, cell) => {
+      spiceStringByteLength(item, "removc(item)");
+      native.removc(item, cell);
+    },
+    removd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("removd(item) must be an ordered number");
+      native.removd(item, cell);
+    },
+    removi: (item, cell) => {
+      assertSpiceInt32(item, "removi(item)");
+      native.removi(item, cell);
+    },
+    ordc: (item, cell) => {
+      spiceStringByteLength(item, "ordc(item)");
+      const result = native.ordc(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordc() to return a set ordinal",
+      );
+      return result;
+    },
+    ordd: (item, cell) => {
+      if (typeof item !== "number" || Number.isNaN(item))
+        throw new TypeError("ordd(item) must be an ordered number");
+      const result = native.ordd(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordd() to return a set ordinal",
+      );
+      return result;
+    },
+    ordi: (item, cell) => {
+      assertSpiceInt32(item, "ordi(item)");
+      const result = native.ordi(item, cell);
+      invariant(
+        Number.isInteger(result) && result >= -1 && result <= 0x7fffffff,
+        "Expected ordi() to return a set ordinal",
+      );
+      return result;
+    },
+    copy: (source, destination) => {
+      native.copy(source, destination);
+    },
     insrti: (item, cell) => {
       assertSpiceInt32(item, "insrti(item)");
       native.insrti(item, cell);
@@ -49,6 +165,99 @@ export function createCellsWindowsApi(native: NativeAddon): CellsWindowsApi {
     },
     insrtc: (item, cell) => {
       native.insrtc(item, cell);
+    },
+    wncomd: (left, right, window, result) => {
+      assertWindowScalar(left, "wncomd(left)");
+      assertWindowScalar(right, "wncomd(right)");
+      if (result === window)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wncomd(left, right, window, result);
+    },
+    wncond: (left, right, window) => {
+      assertWindowScalar(left, "wncond(left)");
+      assertWindowScalar(right, "wncond(right)");
+      native.wncond(left, right, window);
+    },
+    wndifd: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wndifd(a, b, result);
+    },
+    wnelmd: (point, window) => {
+      assertWindowScalar(point, "wnelmd(point)");
+      const out = native.wnelmd(point, window);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnelmd() to return a boolean",
+      );
+      return out;
+    },
+    wnexpd: (left, right, window) => {
+      assertWindowScalar(left, "wnexpd(left)");
+      assertWindowScalar(right, "wnexpd(right)");
+      native.wnexpd(left, right, window);
+    },
+    wnextd: (side, window) => {
+      windowSideByte(side);
+      native.wnextd(side, window);
+    },
+    wnfild: (small, window) => {
+      assertWindowScalar(small, "wnfild(small)");
+      native.wnfild(small, window);
+    },
+    wnfltd: (small, window) => {
+      assertWindowScalar(small, "wnfltd(small)");
+      native.wnfltd(small, window);
+    },
+    wnincd: (left, right, window) => {
+      assertWindowScalar(left, "wnincd(left)");
+      assertWindowScalar(right, "wnincd(right)");
+      const out = native.wnincd(left, right, window);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnincd() to return a boolean",
+      );
+      return out;
+    },
+    wnintd: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wnintd(a, b, result);
+    },
+    wnreld: (a, op, b) => {
+      windowOperatorBytes(op);
+      const out = native.wnreld(a, op, b);
+      invariant(
+        typeof out === "boolean",
+        "Expected wnreld() to return a boolean",
+      );
+      return out;
+    },
+    wnsumd: (window) => {
+      const out = native.wnsumd(window);
+      invariant(
+        out !== null && typeof out === "object",
+        "Expected wnsumd() to return a summary",
+      );
+      const { meas, avg, stddev, shortest, longest } = out;
+      invariant(
+        typeof meas === "number" &&
+          typeof avg === "number" &&
+          typeof stddev === "number",
+        "Expected numeric window summary measures",
+      );
+      return {
+        meas,
+        avg,
+        stddev,
+        shortest: windowSummaryIndex(shortest),
+        longest: windowSummaryIndex(longest),
+      };
+    },
+    wnunid: (a, b, result) => {
+      if (result === a || result === b)
+        throw new RangeError("Result window must be distinct from each input");
+      native.wnunid(a, b, result);
     },
     wninsd: (left, right, window) => {
       native.wninsd(left, right, window);

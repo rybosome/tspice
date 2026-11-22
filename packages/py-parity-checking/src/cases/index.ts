@@ -1,6 +1,24 @@
 import type { ParityCase } from "../case-types.js";
 
 import cellsWindowsCardCasesRaw from "./cells-windows/card.cases.json" with { type: "json" };
+import cellsWindowsAppndcCasesRaw from "./cells-windows/appndc.cases.json" with { type: "json" };
+import cellsWindowsAppnddCasesRaw from "./cells-windows/appndd.cases.json" with { type: "json" };
+import cellsWindowsAppndiCasesRaw from "./cells-windows/appndi.cases.json" with { type: "json" };
+import cellsWindowsDiffCasesRaw from "./cells-windows/diff.cases.json" with { type: "json" };
+import cellsWindowsInterCasesRaw from "./cells-windows/inter.cases.json" with { type: "json" };
+import cellsWindowsSdiffCasesRaw from "./cells-windows/sdiff.cases.json" with { type: "json" };
+import cellsWindowsUnionCasesRaw from "./cells-windows/union.cases.json" with { type: "json" };
+import cellsWindowsSetCasesRaw from "./cells-windows/set.cases.json" with { type: "json" };
+import cellsWindowsRemovcCasesRaw from "./cells-windows/removc.cases.json" with { type: "json" };
+import cellsWindowsRemovdCasesRaw from "./cells-windows/removd.cases.json" with { type: "json" };
+import cellsWindowsRemoviCasesRaw from "./cells-windows/removi.cases.json" with { type: "json" };
+import cellsWindowsOrdcCasesRaw from "./cells-windows/ordc.cases.json" with { type: "json" };
+import cellsWindowsOrddCasesRaw from "./cells-windows/ordd.cases.json" with { type: "json" };
+import cellsWindowsOrdiCasesRaw from "./cells-windows/ordi.cases.json" with { type: "json" };
+import cellsWindowsCopyCasesRaw from "./cells-windows/copy.cases.json" with { type: "json" };
+import cellsWindowsElemcCasesRaw from "./cells-windows/elemc.cases.json" with { type: "json" };
+import cellsWindowsElemdCasesRaw from "./cells-windows/elemd.cases.json" with { type: "json" };
+import cellsWindowsElemiCasesRaw from "./cells-windows/elemi.cases.json" with { type: "json" };
 import cellsWindowsInsrtcCasesRaw from "./cells-windows/insrtc.cases.json" with { type: "json" };
 import cellsWindowsInsrtdCasesRaw from "./cells-windows/insrtd.cases.json" with { type: "json" };
 import cellsWindowsInsrtiCasesRaw from "./cells-windows/insrti.cases.json" with { type: "json" };
@@ -11,6 +29,19 @@ import cellsWindowsValidCasesRaw from "./cells-windows/valid.cases.json" with { 
 import cellsWindowsWncardCasesRaw from "./cells-windows/wncard.cases.json" with { type: "json" };
 import cellsWindowsWnfetdCasesRaw from "./cells-windows/wnfetd.cases.json" with { type: "json" };
 import cellsWindowsWninsdCasesRaw from "./cells-windows/wninsd.cases.json" with { type: "json" };
+import cellsWindowsWncomdCasesRaw from "./cells-windows/wncomd.cases.json" with { type: "json" };
+import cellsWindowsWncondCasesRaw from "./cells-windows/wncond.cases.json" with { type: "json" };
+import cellsWindowsWndifdCasesRaw from "./cells-windows/wndifd.cases.json" with { type: "json" };
+import cellsWindowsWnelmdCasesRaw from "./cells-windows/wnelmd.cases.json" with { type: "json" };
+import cellsWindowsWnexpdCasesRaw from "./cells-windows/wnexpd.cases.json" with { type: "json" };
+import cellsWindowsWnextdCasesRaw from "./cells-windows/wnextd.cases.json" with { type: "json" };
+import cellsWindowsWnfildCasesRaw from "./cells-windows/wnfild.cases.json" with { type: "json" };
+import cellsWindowsWnfltdCasesRaw from "./cells-windows/wnfltd.cases.json" with { type: "json" };
+import cellsWindowsWnincdCasesRaw from "./cells-windows/wnincd.cases.json" with { type: "json" };
+import cellsWindowsWnintdCasesRaw from "./cells-windows/wnintd.cases.json" with { type: "json" };
+import cellsWindowsWnreldCasesRaw from "./cells-windows/wnreld.cases.json" with { type: "json" };
+import cellsWindowsWnsumdCasesRaw from "./cells-windows/wnsumd.cases.json" with { type: "json" };
+import cellsWindowsWnunidCasesRaw from "./cells-windows/wnunid.cases.json" with { type: "json" };
 import cellsWindowsWnvaldCasesRaw from "./cells-windows/wnvald.cases.json" with { type: "json" };
 import coordsVectorsPiCasesRaw from "./coords-vectors/pi.cases.json" with { type: "json" };
 import coordsVectorsTwopiCasesRaw from "./coords-vectors/twopi.cases.json" with { type: "json" };
@@ -522,6 +553,24 @@ export const coordsVectorsCases: ParityCase[] = [
 ];
 export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsCardCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndcCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppnddCasesRaw as ParityCase[]),
+  ...(cellsWindowsAppndiCasesRaw as ParityCase[]),
+  ...(cellsWindowsDiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsInterCasesRaw as ParityCase[]),
+  ...(cellsWindowsSdiffCasesRaw as ParityCase[]),
+  ...(cellsWindowsUnionCasesRaw as ParityCase[]),
+  ...(cellsWindowsSetCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovcCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemovdCasesRaw as ParityCase[]),
+  ...(cellsWindowsRemoviCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdcCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrddCasesRaw as ParityCase[]),
+  ...(cellsWindowsOrdiCasesRaw as ParityCase[]),
+  ...(cellsWindowsCopyCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemcCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemdCasesRaw as ParityCase[]),
+  ...(cellsWindowsElemiCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtcCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtdCasesRaw as ParityCase[]),
   ...(cellsWindowsInsrtiCasesRaw as ParityCase[]),
@@ -532,6 +581,19 @@ export const cellsWindowsCases: ParityCase[] = [
   ...(cellsWindowsWncardCasesRaw as ParityCase[]),
   ...(cellsWindowsWninsdCasesRaw as ParityCase[]),
   ...(cellsWindowsWnfetdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWncomdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWncondCasesRaw as ParityCase[]),
+  ...(cellsWindowsWndifdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnelmdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnexpdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnextdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnfildCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnfltdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnincdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnintdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnreldCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnsumdCasesRaw as ParityCase[]),
+  ...(cellsWindowsWnunidCasesRaw as ParityCase[]),
   ...(cellsWindowsWnvaldCasesRaw as ParityCase[]),
 ];
 

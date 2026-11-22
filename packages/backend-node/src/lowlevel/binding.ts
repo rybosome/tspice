@@ -1083,6 +1083,42 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export insrtd(item, cell)",
   );
   invariant(
+    typeof native.appndc === "function",
+    "Native addon missing appndc()",
+  );
+  invariant(
+    typeof native.appndd === "function",
+    "Native addon missing appndd()",
+  );
+  invariant(
+    typeof native.appndi === "function",
+    "Native addon missing appndi()",
+  );
+  invariant(typeof native.elemc === "function", "Native addon missing elemc()");
+  invariant(typeof native.elemd === "function", "Native addon missing elemd()");
+  invariant(typeof native.elemi === "function", "Native addon missing elemi()");
+  invariant(typeof native.diff === "function", "Native addon missing diff()");
+  invariant(typeof native.inter === "function", "Native addon missing inter()");
+  invariant(typeof native.sdiff === "function", "Native addon missing sdiff()");
+  invariant(typeof native.union === "function", "Native addon missing union()");
+  invariant(typeof native.set === "function", "Native addon missing set()");
+  invariant(
+    typeof native.removc === "function",
+    "Native addon missing removc()",
+  );
+  invariant(
+    typeof native.removd === "function",
+    "Native addon missing removd()",
+  );
+  invariant(
+    typeof native.removi === "function",
+    "Native addon missing removi()",
+  );
+  invariant(typeof native.ordc === "function", "Native addon missing ordc()");
+  invariant(typeof native.ordd === "function", "Native addon missing ordd()");
+  invariant(typeof native.ordi === "function", "Native addon missing ordi()");
+  invariant(typeof native.copy === "function", "Native addon missing copy()");
+  invariant(
     typeof native.insrtc === "function",
     "Expected native addon to export insrtc(item, cell)",
   );
@@ -1097,6 +1133,58 @@ export function getNodeBinding(): NativeAddon {
   invariant(
     typeof native.cellGetc === "function",
     "Expected native addon to export cellGetc(cell, index)",
+  );
+  invariant(
+    typeof native.wncomd === "function",
+    "Native addon missing wncomd()",
+  );
+  invariant(
+    typeof native.wncond === "function",
+    "Native addon missing wncond()",
+  );
+  invariant(
+    typeof native.wndifd === "function",
+    "Native addon missing wndifd()",
+  );
+  invariant(
+    typeof native.wnelmd === "function",
+    "Native addon missing wnelmd()",
+  );
+  invariant(
+    typeof native.wnexpd === "function",
+    "Native addon missing wnexpd()",
+  );
+  invariant(
+    typeof native.wnextd === "function",
+    "Native addon missing wnextd()",
+  );
+  invariant(
+    typeof native.wnfild === "function",
+    "Native addon missing wnfild()",
+  );
+  invariant(
+    typeof native.wnfltd === "function",
+    "Native addon missing wnfltd()",
+  );
+  invariant(
+    typeof native.wnincd === "function",
+    "Native addon missing wnincd()",
+  );
+  invariant(
+    typeof native.wnintd === "function",
+    "Native addon missing wnintd()",
+  );
+  invariant(
+    typeof native.wnreld === "function",
+    "Native addon missing wnreld()",
+  );
+  invariant(
+    typeof native.wnsumd === "function",
+    "Native addon missing wnsumd()",
+  );
+  invariant(
+    typeof native.wnunid === "function",
+    "Native addon missing wnunid()",
   );
   invariant(
     typeof native.wninsd === "function",

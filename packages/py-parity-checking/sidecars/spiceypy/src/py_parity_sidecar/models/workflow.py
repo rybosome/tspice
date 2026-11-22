@@ -4,6 +4,21 @@ from typing import TypeAlias
 
 from .cells_windows import (
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -14,6 +29,19 @@ from .cells_windows import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
 )
 from .coords_vectors import (
@@ -617,6 +645,21 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsMxv
     | StepCoordsVectorsMtxv
     | StepCellsWindowsCard
+    | StepCellsWindowsAppndc
+    | StepCellsWindowsAppndd
+    | StepCellsWindowsAppndi
+    | StepCellsWindowsSetResult
+    | StepCellsWindowsSet
+    | StepCellsWindowsRemovc
+    | StepCellsWindowsRemovd
+    | StepCellsWindowsRemovi
+    | StepCellsWindowsOrdc
+    | StepCellsWindowsOrdd
+    | StepCellsWindowsOrdi
+    | StepCellsWindowsCopy
+    | StepCellsWindowsElemc
+    | StepCellsWindowsElemd
+    | StepCellsWindowsElemi
     | StepCellsWindowsInsrtc
     | StepCellsWindowsInsrtd
     | StepCellsWindowsInsrti
@@ -627,6 +670,19 @@ WorkflowStep: TypeAlias = (
     | StepCellsWindowsWncard
     | StepCellsWindowsWninsd
     | StepCellsWindowsWnfetd
+    | StepCellsWindowsWncomd
+    | StepCellsWindowsWncond
+    | StepCellsWindowsWndifd
+    | StepCellsWindowsWnelmd
+    | StepCellsWindowsWnexpd
+    | StepCellsWindowsWnextd
+    | StepCellsWindowsWnfild
+    | StepCellsWindowsWnfltd
+    | StepCellsWindowsWnincd
+    | StepCellsWindowsWnintd
+    | StepCellsWindowsWnreld
+    | StepCellsWindowsWnsumd
+    | StepCellsWindowsWnunid
     | StepCellsWindowsWnvald
     | StepKernelPoolBadkpv
     | StepKernelPoolBodvcd

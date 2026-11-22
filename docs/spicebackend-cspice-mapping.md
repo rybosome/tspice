@@ -592,6 +592,50 @@ The unchanged live comparator remains 1e-12 absolute-or-relative.
 
 `card` and `size` count elements (window endpoints); `wncard` counts intervals and `wnfetd` uses zero-based interval indices. `scard` changes cardinality without clearing or initializing stored bytes. Set insertion compares complete ordered contents with live SpiceyPy, including duplicate insertion into a full set, explicit zero capacity, and character truncation/trailing-blank equivalence. `insrtc` requires a string at runtime on both backends. Window cases observe every selected endpoint after touching, contained, bridging and singleton insertions; named overflow/bounds errors and separate same-instance recovery tests preserve error distinctions and lifecycle behavior. Missing-target workflow errors remain harness preflight and do not establish raw CSPICE error parity.
 
+#### Window algebra
+
+These flat raw methods take existing `SpiceWindow` handles from the same
+backend. Each destination is caller-owned and distinct from every input.
+The double scalar arguments are finite. `kit.newWindow(maxIntervals)`
+allocates capacity in intervals, each of which occupies two endpoint slots.
+
+| Raw call                              | CSPICE     | Return and observable state                                                           |
+| ------------------------------------- | ---------- | ------------------------------------------------------------------------------------- |
+| `wncomd(left, right, window, result)` | `wncomd_c` | Write the closed complement within the supplied interval.                             |
+| `wncond(left, right, window)`         | `wncond_c` | Contract the window in place using signed left and right adjustments.                 |
+| `wndifd(a, b, result)`                | `wndifd_c` | Write the closure of A minus B.                                                       |
+| `wnelmd(point, window)`               | `wnelmd_c` | Boolean point membership, including closed endpoints.                                 |
+| `wnexpd(left, right, window)`         | `wnexpd_c` | Expand in place, with signed adjustments and coalescing.                              |
+| `wnextd(side, window)`                | `wnextd_c` | Replace intervals in place with selected endpoint singletons.                         |
+| `wnfild(small, window)`               | `wnfild_c` | Fill gaps of measure at most the threshold.                                           |
+| `wnfltd(small, window)`               | `wnfltd_c` | Remove intervals of measure at most the threshold.                                    |
+| `wnincd(left, right, window)`         | `wnincd_c` | Boolean inclusion of the supplied interval in one stored interval.                    |
+| `wnintd(a, b, result)`                | `wnintd_c` | Write the intersection, including touching singletons.                                |
+| `wnreld(a, op, b)`                    | `wnreld_c` | Boolean set comparison with the supplied relation.                                    |
+| `wnsumd(window)`                      | `wnsumd_c` | Owned object with `meas`, `avg`, `stddev`, `shortest` and `longest`.                  |
+| `wnunid(a, b, result)`                | `wnunid_c` | Write the union using the supplied capacity, including pinned full-capacity behavior. |
+
+Mutators and destination writers return void. Read their results with
+`wncard` and `wnfetd`. A capacity error can leave a visible partial
+interval. The complete status and readback checks include the actual
+N0067 full-capacity union, first-tie summary indices and empty sentinels.
+[Window algebra and failure state](step8-window-algebra.md)
+
+### Ordinary cell arrays
+
+| Raw method                  | Canonical routine | Behavior                                                           |
+| --------------------------- | ----------------- | ------------------------------------------------------------------ |
+| `appndc(item, cell)`        | `appndc_c`        | Append to a fixed-width character row, retaining significant tabs. |
+| `appndd(item, cell)`        | `appndd_c`        | Append a binary64 value, including infinity and signed zero.       |
+| `appndi(item, cell)`        | `appndi_c`        | Append a signed32 integer in caller order.                         |
+| `elemc(item, cell)`         | `elemc_c`         | Determine full-key membership, ignoring trailing ASCII spaces.     |
+| `elemd(item, cell)`         | `elemd_c`         | Test exact membership of an ordered binary64 value.                |
+| `elemi(item, cell)`         | `elemi_c`         | Test exact signed32 membership.                                    |
+| `copy(source, destination)` | `copy_c`          | Copy ordered rows into the caller's same-type ordinary cell.       |
+
+Append can clear the cell's set flag. Copy retains the destination flag and
+can leave a partial numeric prefix on capacity error. [State, errors and exact membership observations](step8-cell-arrays.md)
+
 ### Kernel-pool observations and boundaries
 
 Kernel-pool reads preserve zero-based paging, complete values, found flags and CSPICE name order (which is not generally sorted). Missing/wrong-type values differ from an empty page of an existing variable. `gipool` rounds halfway values away from zero and signals `INTOUTOFRANGE` for unrepresentable values. Paging arguments must fit signed SpiceInt on both backends before allocation or native conversion.
@@ -979,3 +1023,22 @@ Each public method uses the canonical spelling without `_c` and returns the owne
 | `repmot`   | `repmot_c` | Replace the first marker with English ordinal words for a signed integer, preserving hyphenation and case.                                                        |
 
 Caller buffer bounds, direct typed oracle signatures and binary64 saturation are described in the batch audit. [Numeric strings and marker replacement](step8-string-numbers.md)
+
+## Ordinary set algebra
+
+| Public raw method     | Direct toolkit entry point | Observation                                 |
+| --------------------- | -------------------------- | ------------------------------------------- |
+| `diff(a, b, result)`  | `diff_c`                   | Ordered difference in caller-owned storage. |
+| `inter(a, b, result)` | `inter_c`                  | Complete ordered intersection.              |
+| `sdiff(a, b, result)` | `sdiff_c`                  | Symmetric difference.                       |
+| `union(a, b, result)` | `union_c`                  | Ordered union.                              |
+| `set(a, op, b)`       | `set_c`                    | Boolean result for one of eight relations.  |
+| `removc(item, cell)`  | `removc_c`                 | Remove a character member in place.         |
+| `removd(item, cell)`  | `removd_c`                 | Remove an ordered double in place.          |
+| `removi(item, cell)`  | `removi_c`                 | Remove a signed integer in place.           |
+| `ordc(item, cell)`    | `ordc_c`                   | Character ordinal or −1.                    |
+| `ordd(item, cell)`    | `ordd_c`                   | Double ordinal or −1.                       |
+| `ordi(item, cell)`    | `ordi_c`                   | Integer ordinal or −1.                      |
+
+Typed ordinary cell handles remain caller-owned. Capacity failures can write
+a prefix while leaving the descriptor cardinality unchanged. [Cardinality, width and byte-level evidence](step8-set-algebra.md)

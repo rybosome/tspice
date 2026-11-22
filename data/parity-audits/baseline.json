@@ -722,6 +722,29 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "b03-window-algebra",
+      "routines": [
+        "wncomd_c",
+        "wncond_c",
+        "wndifd_c",
+        "wnelmd_c",
+        "wnexpd_c",
+        "wnextd_c",
+        "wnfild_c",
+        "wnfltd_c",
+        "wnincd_c",
+        "wnintd_c",
+        "wnreld_c",
+        "wnsumd_c",
+        "wnunid_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/722"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a14-rotation-representations",
       "routines": [
         "eul2m_c",
@@ -756,6 +779,25 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/726"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b01-cell-arrays",
+      "routines": [
+        "appndc_c",
+        "appndd_c",
+        "appndi_c",
+        "copy_c",
+        "elemc_c",
+        "elemd_c",
+        "elemi_c"
+      ],
+      "dependsOn": [
+        "b03-window-algebra"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/728"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
@@ -859,6 +901,29 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/737"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "b02-set-algebra",
+      "routines": [
+        "diff_c",
+        "inter_c",
+        "sdiff_c",
+        "set_c",
+        "union_c",
+        "removc_c",
+        "removd_c",
+        "removi_c",
+        "ordc_c",
+        "ordd_c",
+        "ordi_c"
+      ],
+      "dependsOn": [
+        "b01-cell-arrays"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/742"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },

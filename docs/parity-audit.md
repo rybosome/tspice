@@ -390,3 +390,26 @@ B05 adds nine direct kernel-pool operations. The source review covers 69 workflo
 ## Numeric strings and marker replacement
 
 A21 adds eleven direct methods on A18’s string contract. Its conversion flags, buffer truncation and full counts coexist with independently checked scientific errors. Source-derived limits on extreme hexadecimal scaling and minimum integer word conversion apply to the documented calls. [Numeric strings](step8-string-numbers.md) [Per-routine audit](../data/parity-audits/a21-string-numeric.json)
+
+## Window algebra
+
+The B03 audit covers 13 canonical double-window operations in 78 registered workflows, with 207 calls to the new methods and ten genuine CSPICE error outcomes. Mutations and
+result-window operations are compared by reading back the window cardinality
+and every interval through the public API and independent oracle. The audit
+also checks handle lifetimes, output capacity, closed boundaries, genuine
+errors and source-specific summary indices.
+[Window semantics and evidence](step8-window-algebra.md)
+
+## Ordinary cell arrays
+
+B01 extends the B03 cell registry with append and membership for three cell
+types and an order-preserving copy into an existing destination. The 68
+registered workflows compare actual contents, member booleans, recovered
+set state and errors. The supplemental public tests distinguish the C
+descriptor from translated control cardinality after a failed numeric copy.
+[Cell-array semantics and evidence](step8-cell-arrays.md)
+
+B02 exercises the eleven ordinary set-algebra entry points on real character,
+double and integer cells. Its locked oracle supplies existing destination
+storage and records post-error state before resetting and reusing each cell.
+[Set-algebra semantics and evidence](step8-set-algebra.md)

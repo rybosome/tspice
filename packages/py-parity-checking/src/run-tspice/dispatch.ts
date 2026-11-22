@@ -249,6 +249,24 @@ export function dispatchStep(
       return runCoordsVectorsStep(context, step);
 
     case "cells-windows.card":
+    case "cells-windows.appndc":
+    case "cells-windows.appndd":
+    case "cells-windows.appndi":
+    case "cells-windows.diff":
+    case "cells-windows.inter":
+    case "cells-windows.sdiff":
+    case "cells-windows.union":
+    case "cells-windows.set":
+    case "cells-windows.removc":
+    case "cells-windows.removd":
+    case "cells-windows.removi":
+    case "cells-windows.ordc":
+    case "cells-windows.ordd":
+    case "cells-windows.ordi":
+    case "cells-windows.copy":
+    case "cells-windows.elemc":
+    case "cells-windows.elemd":
+    case "cells-windows.elemi":
     case "cells-windows.insrtc":
     case "cells-windows.insrtd":
     case "cells-windows.insrti":
@@ -259,6 +277,19 @@ export function dispatchStep(
     case "cells-windows.wncard":
     case "cells-windows.wninsd":
     case "cells-windows.wnfetd":
+    case "cells-windows.wncomd":
+    case "cells-windows.wncond":
+    case "cells-windows.wndifd":
+    case "cells-windows.wnelmd":
+    case "cells-windows.wnexpd":
+    case "cells-windows.wnextd":
+    case "cells-windows.wnfild":
+    case "cells-windows.wnfltd":
+    case "cells-windows.wnincd":
+    case "cells-windows.wnintd":
+    case "cells-windows.wnreld":
+    case "cells-windows.wnsumd":
+    case "cells-windows.wnunid":
     case "cells-windows.wnvald":
       return runCellsWindowsStep(context, step);
 

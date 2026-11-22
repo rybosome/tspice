@@ -202,3 +202,10 @@ export {
   sortedCharacterInputs,
   sortedBoundResult,
 } from "./spice-runtime/domains/sorted-bounds.js";
+
+export {
+  assertWindowScalar,
+  windowSideByte,
+  windowOperatorBytes,
+  windowSummaryIndex,
+} from "./spice-runtime/domains/window-algebra.js";

@@ -1,0 +1,238 @@
+[
+  {
+    "caseId": "cells-windows-appndi-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 8
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "T",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "T",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -17
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "int",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 0
+      },
+      {
+        "op": "cells-windows.elemi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-exact-capacity",
+    "description": "Use every storage slot, inspect ordered and repeated physical values.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 0,
+        "maxCardinality": 2
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648
+      },
+      {
+        "op": "cells-windows.card",
+        "targetKind": "int",
+        "targetId": "S"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-full",
+    "description": "Overflow after successful mutation reports the toolkit capacity error.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -2147483648,
+        "maxCardinality": 1
+      },
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  },
+  {
+    "caseId": "cells-windows-appndi-zero-capacity",
+    "description": "An ordinary zero-capacity cell cannot accept an element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndi",
+        "cellId": "S",
+        "item": -17,
+        "maxCardinality": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["CELLTOOSMALL"]
+    }
+  }
+]

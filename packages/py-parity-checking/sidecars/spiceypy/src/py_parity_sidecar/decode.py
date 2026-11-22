@@ -6,6 +6,21 @@ from typing import Any, Mapping
 from .models import (
     CaseRequest,
     StepCellsWindowsCard,
+    StepCellsWindowsAppndc,
+    StepCellsWindowsAppndd,
+    StepCellsWindowsAppndi,
+    StepCellsWindowsSetResult,
+    StepCellsWindowsSet,
+    StepCellsWindowsRemovc,
+    StepCellsWindowsRemovd,
+    StepCellsWindowsRemovi,
+    StepCellsWindowsOrdc,
+    StepCellsWindowsOrdd,
+    StepCellsWindowsOrdi,
+    StepCellsWindowsCopy,
+    StepCellsWindowsElemc,
+    StepCellsWindowsElemd,
+    StepCellsWindowsElemi,
     StepCellsWindowsInsrtc,
     StepCellsWindowsInsrtd,
     StepCellsWindowsInsrti,
@@ -16,6 +31,19 @@ from .models import (
     StepCellsWindowsWncard,
     StepCellsWindowsWnfetd,
     StepCellsWindowsWninsd,
+    StepCellsWindowsWncomd,
+    StepCellsWindowsWncond,
+    StepCellsWindowsWndifd,
+    StepCellsWindowsWnelmd,
+    StepCellsWindowsWnexpd,
+    StepCellsWindowsWnextd,
+    StepCellsWindowsWnfild,
+    StepCellsWindowsWnfltd,
+    StepCellsWindowsWnincd,
+    StepCellsWindowsWnintd,
+    StepCellsWindowsWnreld,
+    StepCellsWindowsWnsumd,
+    StepCellsWindowsWnunid,
     StepCellsWindowsWnvald,
     StepCoordsVectorsAxisar,
     StepCoordsVectorsGeorec,
@@ -2097,6 +2125,145 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 targetId=_expect_string(step.get("targetId"), label="cells-windows.card.targetId"),
             )
 
+        case "cells-windows.appndc":
+            return StepCellsWindowsAppndc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndc.cellId"),
+                item=_expect_string(step.get("item"), label="cells-windows.appndc.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndc.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.appndc.length") if "length" in step else None,
+            )
+
+        case "cells-windows.appndd":
+            return StepCellsWindowsAppndd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndd.cellId"),
+                item=_expect_number(step.get("item"), label="cells-windows.appndd.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndd.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.appndi":
+            return StepCellsWindowsAppndi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.appndi.cellId"),
+                item=_expect_int(step.get("item"), label="cells-windows.appndi.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.appndi.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.diff" | "cells-windows.inter" | "cells-windows.sdiff" | "cells-windows.union":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSetResult(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+                resultId=_expect_string(step.get("resultId"), label=f"{op}.resultId"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.set":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("Expected an ordinary set kind")
+            return StepCellsWindowsSet(
+                op=op,
+                kind=kind,
+                aId=_expect_string(step.get("aId"), label=f"{op}.aId"),
+                relation=_expect_string(step.get("relation"), label=f"{op}.relation"),
+                bId=_expect_string(step.get("bId"), label=f"{op}.bId"),
+            )
+
+        case "cells-windows.removc":
+            return StepCellsWindowsRemovc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.removd":
+            return StepCellsWindowsRemovd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.removi":
+            return StepCellsWindowsRemovi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordc":
+            return StepCellsWindowsOrdc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_string(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label=f"{op}.length") if "length" in step else None,
+            )
+
+        case "cells-windows.ordd":
+            return StepCellsWindowsOrdd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_number(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.ordi":
+            return StepCellsWindowsOrdi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label=f"{op}.cellId"),
+                item=_expect_int(step.get("item"), label=f"{op}.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label=f"{op}.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.copy":
+            kind = step.get("kind")
+            if kind not in ("char", "double", "int"):
+                raise ValueError("copy requires an ordinary cell kind")
+            return StepCellsWindowsCopy(
+                op=op,
+                kind=kind,
+                sourceId=_expect_string(step.get("sourceId"), label="cells-windows.copy.sourceId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.copy.resultId"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.copy.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.copy.length") if "length" in step else None,
+            )
+
+        case "cells-windows.elemc":
+            return StepCellsWindowsElemc(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemc.cellId"),
+                item=_expect_string(step.get("item"), label="cells-windows.elemc.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemc.maxCardinality") if "maxCardinality" in step else None,
+                length=_expect_int(step.get("length"), label="cells-windows.elemc.length") if "length" in step else None,
+            )
+
+        case "cells-windows.elemd":
+            return StepCellsWindowsElemd(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemd.cellId"),
+                item=_expect_number(step.get("item"), label="cells-windows.elemd.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemd.maxCardinality") if "maxCardinality" in step else None,
+            )
+
+        case "cells-windows.elemi":
+            return StepCellsWindowsElemi(
+                op=op,
+                cellId=_expect_string(step.get("cellId"), label="cells-windows.elemi.cellId"),
+                item=_expect_int(step.get("item"), label="cells-windows.elemi.item"),
+                maxCardinality=_expect_int(step.get("maxCardinality"), label="cells-windows.elemi.maxCardinality") if "maxCardinality" in step else None,
+            )
+
         case "cells-windows.insrtc":
             max_cardinality_raw = step.get("maxCardinality")
             max_cardinality = None
@@ -2207,6 +2374,109 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfetd.windowId"),
                 index=_expect_int(step.get("index"), label="cells-windows.wnfetd.index"),
+            )
+
+        case "cells-windows.wncomd":
+            return StepCellsWindowsWncomd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncomd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncomd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncomd.windowId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wncomd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wncomd.maxIntervals"),
+            )
+
+        case "cells-windows.wncond":
+            return StepCellsWindowsWncond(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wncond.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wncond.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wncond.windowId"),
+            )
+
+        case "cells-windows.wndifd":
+            return StepCellsWindowsWndifd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wndifd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wndifd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wndifd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wndifd.maxIntervals"),
+            )
+
+        case "cells-windows.wnelmd":
+            return StepCellsWindowsWnelmd(
+                op=op,
+                point=_expect_number(step.get("point"), label="cells-windows.wnelmd.point"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnelmd.windowId"),
+            )
+
+        case "cells-windows.wnexpd":
+            return StepCellsWindowsWnexpd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnexpd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnexpd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnexpd.windowId"),
+            )
+
+        case "cells-windows.wnextd":
+            return StepCellsWindowsWnextd(
+                op=op,
+                side=_expect_string(step.get("side"), label="cells-windows.wnextd.side"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnextd.windowId"),
+            )
+
+        case "cells-windows.wnfild":
+            return StepCellsWindowsWnfild(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfild.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfild.windowId"),
+            )
+
+        case "cells-windows.wnfltd":
+            return StepCellsWindowsWnfltd(
+                op=op,
+                small=_expect_number(step.get("small"), label="cells-windows.wnfltd.small"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnfltd.windowId"),
+            )
+
+        case "cells-windows.wnincd":
+            return StepCellsWindowsWnincd(
+                op=op,
+                left=_expect_number(step.get("left"), label="cells-windows.wnincd.left"),
+                right=_expect_number(step.get("right"), label="cells-windows.wnincd.right"),
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnincd.windowId"),
+            )
+
+        case "cells-windows.wnintd":
+            return StepCellsWindowsWnintd(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnintd.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnintd.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnintd.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnintd.maxIntervals"),
+            )
+
+        case "cells-windows.wnreld":
+            return StepCellsWindowsWnreld(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnreld.aId"),
+                relation=_expect_string(step.get("relation"), label="cells-windows.wnreld.relation"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnreld.bId"),
+            )
+
+        case "cells-windows.wnsumd":
+            return StepCellsWindowsWnsumd(
+                op=op,
+                windowId=_expect_string(step.get("windowId"), label="cells-windows.wnsumd.windowId"),
+            )
+
+        case "cells-windows.wnunid":
+            return StepCellsWindowsWnunid(
+                op=op,
+                aId=_expect_string(step.get("aId"), label="cells-windows.wnunid.aId"),
+                bId=_expect_string(step.get("bId"), label="cells-windows.wnunid.bId"),
+                resultId=_expect_string(step.get("resultId"), label="cells-windows.wnunid.resultId"),
+                maxIntervals=_expect_int(step.get("maxIntervals"), label="cells-windows.wnunid.maxIntervals"),
             )
 
         case "cells-windows.wnvald":

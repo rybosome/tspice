@@ -1,0 +1,334 @@
+[
+  {
+    "caseId": "cells-windows-elemc-ordered-and-missing",
+    "description": "Ordered cell; inspect each new value and each membership result.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Az"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "Az"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "X"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-independent-handles",
+    "description": "Interleave two independent typed cells; queries must honor the addressed storage.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "T",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "T",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-equal-repeat",
+    "description": "Preserve duplicate data but signal NOTASET when membership requires a set.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-descending-then-valid",
+    "description": "Revalidate unsorted appended data and duplicates before testing membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.valid",
+        "size": 8,
+        "n": 3,
+        "targetKind": "char",
+        "targetId": "S"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": ""
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-empty",
+    "description": "Legitimate absence on an empty allocated cell with no insert.",
+    "workflow": [
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "",
+        "maxCardinality": 0
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-descending-reject",
+    "description": "Distinct out-of-order values clear the flag even without a duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-singleton",
+    "description": "Compare equal, smaller and greater values on a single element.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": " A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "z"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-complete-bytes",
+    "description": "Observe fitting multibyte scalar, truncation after whole scalar and exact stored byte membership.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "éZ12",
+        "length": 4
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "éZ"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "éZ12"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "ÉZ"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-terminal-tab",
+    "description": "Public kit snapshot normalizes trailing whitespace; compare tabbed and untabbed probes on the actual stored cell.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "A\t"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A\t"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A"
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "A "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "cells-windows-elemc-fortran-blanks",
+    "description": "A padded item compares equal in orderedness, clearing set status on duplicate.",
+    "workflow": [
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Z"
+      },
+      {
+        "op": "cells-windows.appndc",
+        "cellId": "S",
+        "item": "Z  "
+      },
+      {
+        "op": "cells-windows.elemc",
+        "cellId": "S",
+        "item": "Z"
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["NOTASET"]
+    }
+  }
+]

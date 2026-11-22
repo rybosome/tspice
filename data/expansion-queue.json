@@ -1591,11 +1591,13 @@
         "elemi_c"
       ],
       "domain": "cells-windows",
-      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "apiPlacement": "Existing CellsWindowsApi on the B03 owner registry, exposed on raw. Existing kit allocators own ordinary char, double and integer cells.",
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": [],
-      "prerequisiteReview": "Reuse Step 7 owner-local cell handles/capacity guards; verify character widths, cardinality, sorted-set flags, source/destination ownership and failed allocation cleanup.",
+      "dependsOn": [
+        "B03-window-algebra"
+      ],
+      "prerequisiteReview": "Reuse B03 ordinary-cell vs window identity and lifetime. Bind the pinned copy_c on existing caller-owned oracle cells to observe failure state, set flags and character widths.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "cells-windows",
@@ -1608,21 +1610,29 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/728"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 728,
-        "url": "https://github.com/rybosome/tspice/pull/728",
-        "head": "85fd07af39fb3cb2d11a80282e8f17adc75f04ff",
-        "base": "7d575af94f73a786eb514f489cdb70dc88825f23",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43562556413",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "Both compiled backends passed 136 registered live comparisons plus eight public tests. The 22 native and 21 WASM domain tests passed, with a real headless Chrome inline Web Worker run on all seven operations. Required source CI is separate."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "4ab87429d709c4d30eb90552ad95f98ddd8c9c0f",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43561148351",
+          "result": "Draft #728, source head 4ab87429 and CI 43561148351. Final-head matrix inspection and explicit rebaseability govern readiness."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "85fd07af39fb3cb2d11a80282e8f17adc75f04ff",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43562556413",
+          "result": "Final evidence head queued for final matrix and explicit rebaseability review."
+        }
+      ],
+      "nextAction": "Inspect the complete final-head matrix and explicit rebaseability before reporting PR readiness.",
+      "worktree": "/private/tmp/tspice-step8-cell-arrays",
+      "branch": "codex/expand-cell-arrays",
+      "baseCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
+      "progressNote": "Final evidence head 85fd07af on draft PR #728. Inspect the final matrix and explicit rebaseability."
     },
     {
       "id": "B02-set-algebra",
@@ -1642,12 +1652,14 @@
         "ordi_c"
       ],
       "domain": "cells-windows",
-      "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "apiPlacement": "Existing ordinary opaque char, int and double cell brands and CellsWindowsApi; B01 #728 (itself stacked on B03) supplies append, copy, membership and ownership support.",
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": [],
-      "prerequisiteReview": "Reuse actual Step 7 cell API. Lock set type/width matching, output capacity, order indices and mutation. SpiceyPy wrapper is set_c, not set.",
-      "fixtures": "None anticipated; authored scalar/array inputs.",
+      "dependsOn": [
+        "B01-cell-arrays"
+      ],
+      "prerequisiteReview": "Build on PR #728 to reuse the typed cell registry and real handle boundaries.",
+      "fixtures": "Kernel-free authored cells, capacity, widths, typed items and expected toolkit status names. All inputs and named results are owned by the workflow or public test.",
       "expectedChanges": {
         "domain": "cells-windows",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -1659,21 +1671,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/742"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 742,
-        "url": "https://github.com/rybosome/tspice/pull/742",
-        "head": "a945c35d6439a8954153ab07d7f7fda7b5aaa830",
-        "base": "85fd07af39fb3cb2d11a80282e8f17adc75f04ff",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43571485824",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "focused-compiled-runtime",
+          "result": "192 registered live comparisons, six independent public tests, 17 native and 30 WASM tests passed on the combined source. Real Chrome exercised all eleven methods, complete output storage and error recovery. The 96 new registered cases contain 1,049 steps, 553 B02 calls and 33 expected scientific errors."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1b3e4370ffaa1e32066df1195c0fb9853da2c56b",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43570201253/job/132372707159",
+          "result": "Both complete required lanes passed locally on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b. JavaScript: 2,939 parity tests and one expected guard skip. Native-required: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132372707159 on 1b3e4370ffaa1e32066df1195c0fb9853da2c56b: 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-set-algebra",
+      "worktree": "/private/tmp/tspice-step8-set-algebra",
+      "baseCommit": "85fd07af39fb3cb2d11a80282e8f17adc75f04ff",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1b3e4370. 2,702 registered Node/WASM live comparisons; 2,940 parity-package tests with no skips, including the native-required guard; 150 native wrapper, 688 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "192 registered live comparisons, six independent public tests, 17 native and 30 WASM tests passed on the combined source. Real Chrome exercised all eleven methods, complete output storage and error recovery."
     },
     {
       "id": "B03-window-algebra",
@@ -1696,7 +1711,7 @@
       ],
       "domain": "cells-windows",
       "apiPlacement": "packages/backend-contract/src/domains/cells-windows.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse window handles, capacity checks and complete endpoint observations. Verify closed endpoints, gaps, degenerate intervals, output aliasing and summary indices.",
@@ -1706,27 +1721,37 @@
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
-        "missingTopLevelWrappers": []
+        "status": "source-and-live-probes-reviewed",
+        "missingTopLevelWrappers": [],
+        "assessment": "SpiceyPy 6.0.3 provides all thirteen wrappers. The independent sidecar uses typed calls to the locked library for four explicit result-cell capacities and a single-byte selector when the high-level wnextd wrapper preempts canonical behavior. Ordinary remaining calls use the locked wrappers."
       },
       "prs": [
         "https://github.com/rybosome/tspice/pull/722"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 722,
-        "url": "https://github.com/rybosome/tspice/pull/722",
-        "head": "7d575af94f73a786eb514f489cdb70dc88825f23",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43555556784",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "focused-runtime",
+          "result": "156 registered actual Node/WASM comparisons, 45 native, 11 public/oracle and 37 WASM allocation/ownership tests passed.",
+          "scope": "Focused compiled window algebra only; the source-bound full required lanes and canonical CI must still be recorded."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "b664f15909c03adc55c4434523438742e1f3a5e7",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554222293/job/132323302416",
+          "result": "Both complete required lanes passed locally on b664f15909c03adc55c4434523438742e1f3a5e7. JavaScript: 2,597 parity tests and one expected guard skip. Native-required: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132323302416 on b664f15909c03adc55c4434523438742e1f3a5e7: 2,374 registered Node/WASM live comparisons; 2,598 parity-package tests with no skips, including the native-required guard; 111 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+        },
+        {
+          "kind": "github-checkpoint",
+          "testedCommit": "7d575af94f73a786eb514f489cdb70dc88825f23",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43555556784",
+          "result": "Draft PR #722, evidence 7d575af9; final matrix and explicit rebaseability required."
+        }
+      ],
+      "nextAction": "Record both required full local lanes and observed canonical source CI, then check the complete final-head matrix and explicit rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-window-algebra",
+      "branch": "codex/expand-window-algebra",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft PR #722, evidence 7d575af9; final matrix and explicit rebaseability required."
     },
     {
       "id": "B04-string-set",
