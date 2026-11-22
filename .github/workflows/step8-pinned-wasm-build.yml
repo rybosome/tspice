@@ -38,6 +38,15 @@ jobs:
           pnpm generate:coverage-ledger
           pnpm check:coverage-ledger
           git diff --check
+      - uses: astral-sh/setup-uv@v5
+      - name: Check error actions against the independent toolkit
+        run: |
+          pnpm run fetch:cspice
+          pnpm -C packages/backend-node run build:native
+          pnpm run stage:native-platform
+          pnpm run build
+          pnpm -C packages/py-parity-checking setup:sidecar
+          TSPICE_EXPECT_NATIVE=true pnpm -C packages/py-parity-checking exec vitest run test/parity.test.ts test/error-action-public.test.ts -t 'error-erract|unsafe scientific calls'
       - uses: actions/upload-artifact@v4
         with:
           name: step8-wasm-assets

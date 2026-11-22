@@ -13,8 +13,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 173
-- Planned (not yet implemented): 476
+- Implemented now (SpiceRawBackend): 172
+- Planned (not yet implemented): 477
 - Excluded: 3
 
 ## Implemented now
@@ -77,7 +77,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
-| `erract_c` | Get/Set Default Error Action |
 | `errch_c` | Insert String into Error Message Text |
 | `errdev_c` | Get/Set Error Output Device Name |
 | `errdp_c` | Insert D.P. Number into Error Message Text |
@@ -363,6 +362,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `elemi_c` | Element of an integer set |
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
 | `eqstr_c` | Equivalent strings |
+| `erract_c` | Get/Set Default Error Action |
 | `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
