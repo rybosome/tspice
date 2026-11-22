@@ -566,50 +566,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-ducrss-mixed-components-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all six normalized-cross components for mixed input and reversed operand order."
         },
         {
           "caseId": "coords-vectors-ducrss-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe either/both zero positions, distinct nonzero derivatives, zero entire states and static inputs; internal scaling leaves zero-position states unscaled."
         },
         {
           "caseId": "coords-vectors-ducrss-dyadic-collinear-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact axis and dyadic non-axis collinearity; all derivative components expose internal whole-state scaling, including [0,0,0,0,-1,-1] versus the unscaled cross derivative."
         },
         {
           "caseId": "coords-vectors-ducrss-orthogonal-basis-rates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe normalized cross direction and its nonzero derivative for differently scaled moving axes."
         },
         {
           "caseId": "coords-vectors-ducrss-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six normalized outputs retain direction/rate under common state scaling."
         },
         {
           "caseId": "coords-vectors-ducrss-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         }
       ],
@@ -645,9 +627,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-ducrss-mixed-components-and-order"
-          ]
+          "caseIds": ["coords-vectors-ducrss-mixed-components-and-order"]
         }
       ],
       "backends": {
@@ -693,50 +673,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dvcrss-mixed-components-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all six cross/derivative components and antisymmetric operand reversal."
         },
         {
           "caseId": "coords-vectors-dvcrss-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe either/both zero positions independently of velocities, distinguishing nonzero derivative terms from a zero cross position."
         },
         {
           "caseId": "coords-vectors-dvcrss-dyadic-collinear-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero cross positions but nonzero original-state derivative entries, distinct from ducrss scaled singular output."
         },
         {
           "caseId": "coords-vectors-dvcrss-orthogonal-basis-rates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe original cross scale and the two derivative cross terms on moving coordinate axes."
         },
         {
           "caseId": "coords-vectors-dvcrss-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. All six outputs have quadratic scale; focused comparison rescales by 1e±200."
         },
         {
           "caseId": "coords-vectors-dvcrss-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         }
       ],
@@ -757,9 +719,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dvcrss-mixed-components-and-order"
-          ]
+          "caseIds": ["coords-vectors-dvcrss-mixed-components-and-order"]
         }
       ],
       "backends": {
@@ -803,50 +763,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dvdot-mixed-components-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe both position/derivative contributions and symmetric operand reversal in the scalar rate."
         },
         {
           "caseId": "coords-vectors-dvdot-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe each cross-slot dot contribution with zero position or derivative; zero position alone need not force the total rate to zero."
         },
         {
           "caseId": "coords-vectors-dvdot-dyadic-collinear-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual position-dot derivative for parallel/opposed and dyadic non-axis states; this scalar has no cross-normalization singularity."
         },
         {
           "caseId": "coords-vectors-dvdot-orthogonal-basis-rates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe nonzero dot derivative even where the position dot is initially zero."
         },
         {
           "caseId": "coords-vectors-dvdot-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar has quadratic scale; focused comparison rescales by 1e±200."
         },
         {
           "caseId": "coords-vectors-dvdot-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         }
       ],
@@ -867,9 +809,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dvdot-mixed-components-and-order"
-          ]
+          "caseIds": ["coords-vectors-dvdot-mixed-components-and-order"]
         }
       ],
       "backends": {
@@ -913,50 +853,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dvhat-mixed-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe all six unit/derivative entries for three mixed states including a known length-13 position."
         },
         {
           "caseId": "coords-vectors-dvhat-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero norm copying the entire input derivative, all-zero state and static nonzero position."
         },
         {
           "caseId": "coords-vectors-dvhat-radial-and-transverse-motion",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe radial motion producing zero unit-direction derivative and transverse motion producing signed derivatives scaled by position length."
         },
         {
           "caseId": "coords-vectors-dvhat-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. Unit direction and its derivative retain the common-scale-invariant result."
         },
         {
           "caseId": "coords-vectors-dvhat-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         },
         {
           "caseId": "coords-vectors-dvhat-zero-position-exact-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero output position and exact copied derivative [MAX,-MAX,MIN], with a separate focused exact comparison so subnormal output cannot pass as zero."
         }
       ],
@@ -977,9 +899,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dvhat-mixed-components"
-          ]
+          "caseIds": ["coords-vectors-dvhat-mixed-components"]
         }
       ],
       "backends": {
@@ -1023,42 +943,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dvnorm-mixed-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe scalar rates for three mixed states including a known length-13 position."
         },
         {
           "caseId": "coords-vectors-dvnorm-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero position and static nonzero position returning zero, without inventing division errors."
         },
         {
           "caseId": "coords-vectors-dvnorm-radial-and-transverse-motion",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe outward/inward signed norm rates and transverse zero norm rates."
         },
         {
           "caseId": "coords-vectors-dvnorm-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The scalar derivative scales linearly and is rescaled in focused comparison."
         },
         {
           "caseId": "coords-vectors-dvnorm-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         }
       ],
@@ -1079,9 +984,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dvnorm-mixed-components"
-          ]
+          "caseIds": ["coords-vectors-dvnorm-mixed-components"]
         }
       ],
       "backends": {
@@ -1125,80 +1028,52 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dvsep-mixed-components-and-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe full angular rate and its symmetric operand reversal for well-conditioned mixed states."
         },
         {
           "caseId": "coords-vectors-dvsep-zero-position-and-velocity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe zero positions giving computed zero cross and static nonzero positions giving zero rate, including nonzero derivatives on zero positions."
         },
         {
           "caseId": "coords-vectors-dvsep-axis-collinear-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe exact normalized-cross zero and scalar zero for axis-aligned parallel/opposed positions. Non-axis singular normalization residuals are separately documented, not forced to this value."
         },
         {
           "caseId": "coords-vectors-dvsep-orthogonal-basis-rates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe signed separation rates at orthogonal positions and changing orientations."
         },
         {
           "caseId": "coords-vectors-dvsep-scaled-states",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe actual whole-state scaling by 1e100 and 1e-100. The angular rate retains its common-scale-invariant result."
         },
         {
           "caseId": "coords-vectors-dvsep-scaled-derivatives",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe unchanged positions with derivatives alone scaled by 1e100 and 1e-100. Focused live comparison independently rescales scalar rates or the final three vector entries while preserving the first three position outputs."
         },
         {
           "caseId": "coords-vectors-dvsep-near-parallel-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe nonzero signed rates for near-parallel and near-opposed positions with nonzero separation, retaining the actual quotient without clamping."
         },
         {
           "caseId": "coords-vectors-dvsep-division-underflow-and-finite-boundary",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe signed 1e-308 rates returning zero under ZZDIV, signed 1e-306 rates surviving and signed 1e308 finite rates accepted. Focused live scaling distinguishes tiny finite rates from zero."
         },
         {
           "caseId": "coords-vectors-dvsep-decimal-overflow-positive",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(NUMERICOVERFLOW) at finite positive input derivative 1.5e308; it is an error, not the C fallback scalar zero."
         },
         {
           "caseId": "coords-vectors-dvsep-decimal-overflow-negative",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Observe actual SPICE(NUMERICOVERFLOW) at finite negative input derivative -1.5e308, with explicit reset/recovery tests."
         }
       ],
@@ -1267,9 +1142,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-dvsep-mixed-components-and-order"
-          ]
+          "caseIds": ["coords-vectors-dvsep-mixed-components-and-order"]
         }
       ],
       "backends": {

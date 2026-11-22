@@ -4097,41 +4097,27 @@
       "scenarios": [
         {
           "caseId": "kernels-kplfrm-class-4-success",
-          "coverage": [
-            "success"
-          ],
+          "coverage": ["success"],
           "observes": "kplfrm returns frame IDs defined in the loaded frame kernel for class 4; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-invalid-class-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative kplfrm invalid frame-class error path; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-all-inertial-unload-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All classes (-1) includes the loaded pool frame; inertial class is empty, and unloading removes it; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-empty-pool-success",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "No loaded frame specifications yields empty sets across repeated calls; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-set-too-small-error",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A real integer cell with zero capacity cannot hold the loaded frame set; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         }
       ],

@@ -8,23 +8,27 @@ Sources:
 - CSPICE routine list + brief descriptions: https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html (NAIF official index)
 - tspice implemented routines: backend contract surface via `SpiceRawBackend` in `packages/backend-contract/src/index.ts`
 
-SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `GeometryGfApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
+SpiceRawBackend is composed from: `TimeApi`, `StringsApi`, `KernelsApi`, `KernelPoolApi`, `EkApi`, `IdsNamesApi`, `FramesApi`, `EphemerisApi`, `GeometryApi`, `GeometryGfApi`, `CoordsVectorsApi`, `FileIoApi`, `ErrorApi`, `CellsWindowsApi`, `DskApi`.
 
 ## Summary
 
 - Total routines (NAIF index): 652
-- Implemented now (SpiceRawBackend): 307
-- Planned (not yet implemented): 342
+- Implemented now (SpiceRawBackend): 408
+- Planned (not yet implemented): 241
 - Excluded: 3
 
 ## Implemented now
 
 | Routine | Purpose (1 line) |
 | --- | --- |
+| `appndc_c` | Append an item to a character cell |
+| `appndd_c` | Append an item to a double precision cell |
+| `appndi_c` | Append an item to an integer cell |
 | `axisar_c` | Axis and angle to rotation |
 | `azlrec_c` | AZ/EL to rectangular coordinates |
 | `b1900_c` | Besselian Date 1900.0 |
 | `b1950_c` | Besselian Date 1950.0 |
+| `badkpv_c` | Bad Kernel Pool Variable |
 | `bodc2n_c` | Body ID code to name translation |
 | `bodc2s_c` | Body ID code to string translation |
 | `boddef_c` | Body name/ID code definition |
@@ -32,8 +36,15 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodn2c_c` | Body name to ID code translation |
 | `bods2c_c` | Body string to ID code translation |
 | `bodvar_c` | Return values from the kernel pool |
+| `bodvcd_c` | Return d.p. values from the kernel pool |
+| `bodvrd_c` | Return d.p. values from the kernel pool |
 | `brcktd_c` | Bracket a d.p. value within an interval |
 | `brckti_c` | Bracket an integer value within an interval |
+| `bschoc_c` | Binary search with order vector, character |
+| `bschoi_c` | Binary search with order vector, integer |
+| `bsrchc_c` | Binary search for a character string |
+| `bsrchd_c` | Binary search for a double precision value |
+| `bsrchi_c` | Binary search for an integer value |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
 | `chbder_c` | Derivatives of a Chebyshev expansion |
@@ -53,8 +64,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `cleard_c` | Clear a double precision array |
 | `cleari_c` | Clear an integer array |
 | `clight_c` | C, Speed of light in a vacuum |
+| `clpool_c` | Clear the pool of kernel variables |
+| `cmprss_c` | Compress a character string |
 | `cnmfrm_c` | Center name to associated frame |
 | `convrt_c` | Convert Units |
+| `copy_c` | Copy a SPICE cell |
+| `cpos_c` | Character position |
+| `cposr_c` | Character position, reverse |
 | `cvpool_c` | Check variable in the pool for update |
 | `cyllat_c` | Cylindrical to latitudinal |
 | `cylrec_c` | Cylindrical to rectangular |
@@ -71,11 +87,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `det_c` | Determinant of a double precision 3x3 matrix |
 | `dgeodr_c` | Derivative of geodetic w.r.t. rectangular |
 | `diags2_c` | Diagonalize symmetric 2x2 matrix |
+| `diff_c` | Difference of two sets |
 | `dlabfs_c` | DLA, begin forward search |
 | `dlacls` | Close a DAS-backed DLA handle |
 | `dlafns_c` | DLA, find next segment |
 | `dlaopn_c` | DLA, open new file |
 | `dlatdr_c` | Derivative of latitudinal w.r.t. rectangular |
+| `dp2hx_c` | D.p. number to hexadecimal string |
 | `dpgrdr_c` | Derivative of planetographic w.r.t. rectangular |
 | `dpmax_c` | Largest DP number |
 | `dpmin_c` | Smallest DP number |
@@ -100,6 +118,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dvdot_c` | Derivative of Vector Dot Product, 3-D |
 | `dvhat_c` | Derivative and unit vector "V-hat" of a state |
 | `dvnorm_c` | Derivative of vector norm |
+| `dvpool_c` | Delete a variable from the kernel pool |
 | `dvsep_c` | Time derivative of separation angle |
 | `ekaclc_c` | EK, add character column to segment |
 | `ekacld_c` | EK, add double precision column to segment |
@@ -117,6 +136,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekopr_c` | EK, open file for reading |
 | `ekopw_c` | EK, open file for writing |
 | `ektnam_c` | EK, return name of loaded table |
+| `elemc_c` | Element of a character set |
+| `elemd_c` | Element of a double precision set |
+| `elemi_c` | Element of an integer set |
+| `eqstr_c` | Equivalent strings |
+| `esrchc_c` | Equivalence search, character |
 | `et2utc_c` | Ephemeris Time to UTC |
 | `eul2m_c` | Euler angles to matrix |
 | `eul2xf_c` | Euler angles and derivative to transformation |
@@ -147,6 +171,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `halfpi_c` | Half the value of pi |
 | `hrmesp_c` | Hermite polynomial interpolation, equal spacing |
 | `hrmint_c` | Hermite polynomial interpolation |
+| `hx2dp_c` | Hexadecimal string to d.p. number |
 | `ident_c` | Return the 3x3 identity matrix |
 | `illumf_c` | Illumination angles, general source, return flags |
 | `illumg_c` | Illumination angles, general source |
@@ -154,12 +179,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `insrtc_c` | Insert an item into a character set |
 | `insrtd_c` | Insert an item into a double precision set |
 | `insrti_c` | Insert an item into an integer set |
+| `inter_c` | Intersection of two sets |
 | `intmax_c` | Largest integer number |
 | `intmin_c` | Smallest integer number |
 | `invert_c` | Invert a 3x3 matrix |
 | `invort_c` | Invert nearly orthogonal matrices |
 | `invstm_c` | Inverse of state transformation matrix |
+| `isordv_c` | Is array an order vector? |
+| `isrchc_c` | Search in a character array |
+| `isrchd_c` | Search in a double precision array |
+| `isrchi_c` | Search in an integer array |
 | `isrot_c` | Indicate whether a matrix is a rotation matrix |
+| `iswhsp_c` | Determine whether a string is white space |
 | `j1900_c` | Julian Date of 1900.0 JAN 0.5 |
 | `j1950_c` | Julian Date of 1950.0 JAN 1.0 |
 | `j2000_c` | Julian Date of 2000 JAN 1.5 |
@@ -171,14 +202,34 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `kplfrm_c` | Kernel pool frame IDs |
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
+| `lastnb_c` | Last non-blank character |
 | `latcyl_c` | Latitudinal to cylindrical coordinates |
 | `latrec_c` | Latitudinal to rectangular coordinates |
 | `latsph_c` | Latitudinal to spherical coordinates |
+| `lcase_c` | Convert to lowercase |
+| `ldpool_c` | Load variables from a kernel file into the pool |
 | `lgresp_c` | Lagrange interpolation on equally spaced points |
 | `lgrind_c` | Lagrange polynomial interpolation with derivative |
 | `lgrint_c` | Lagrange polynomial interpolation |
+| `lmpool_c` | Load variables from memory into the pool |
+| `lparse_c` | Parse items from a list |
+| `lparsm_c` | Parse a list of items having multiple delimiters |
+| `lparss_c` | Parse a list of items; return a set |
+| `lstlec_c` | Last character element less than or equal to. |
+| `lstled_c` | Last double precision element less than or equal |
+| `lstlei_c` | Last integer element less than or equal to |
+| `lstltc_c` | Last character element less than |
+| `lstltd_c` | Last double precision element less than |
+| `lstlti_c` | Last integer element less than |
+| `lx4dec_c` | Scan for decimal number |
+| `lx4num_c` | Scan for number |
+| `lx4sgn_c` | Scan for signed integer |
+| `lx4uns_c` | Scan for unsigned integer |
+| `lxqstr_c` | Lex quoted string |
 | `m2eul_c` | Matrix to Euler angles |
 | `m2q_c` | Matrix to quaternion |
+| `matchi_c` | Match string against wildcard template |
+| `matchw_c` | Match string against wildcard template |
 | `maxd_c` | Maximum of a set of double precision values |
 | `maxi_c` | Maximum of a set of integers |
 | `mequ_c` | Matrix equal to another, 3x3 |
@@ -197,8 +248,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `mxv_c` | Matrix times vector, 3x3 |
 | `mxvg_c` | Matrix times vector, general dimension |
 | `namfrm_c` | Name to frame |
+| `ncpos_c` | NOT Character position |
+| `ncposr_c` | Character position, reverse |
+| `nextwd_c` | Next word in a character string |
+| `nthwd_c` | n'th word in a character string |
 | `nvc2pl_c` | Normal vector and constant to plane |
 | `occult_c` | find occultation type at time |
+| `ordc_c` | The ordinal position of an element in a set |
+| `ordd_c` | The ordinal position of an element in a set |
+| `orderc_c` | Order of a character array |
+| `orderd_c` | Order of a double precision array |
+| `orderi_c` | Order of an integer array |
+| `ordi_c` | The ordinal position of an element in a set |
 | `pcpool_c` | Put character strings into the kernel pool |
 | `pdpool_c` | Put d.p.'s into the kernel pool |
 | `pgrrec_c` | Planetographic to rectangular |
@@ -206,6 +267,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pipool_c` | Put integers into the kernel pool |
 | `pl2nvc_c` | Plane to normal vector and constant |
 | `polyds_c` | Compute a Polynomial and its Derivatives |
+| `pos_c` | Position of substring |
+| `posr_c` | Position of substring, reverse search |
+| `prsdp_c` | Parse d.p. number with error checking |
+| `prsint_c` | Parse integer with error checking |
 | `pxform_c` | Position Transformation Matrix |
 | `q2m_c` | Quaternion to matrix |
 | `qderiv_c` | Quadratic derivative |
@@ -221,6 +286,20 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `recpgr_c` | Rectangular to planetographic |
 | `recrad_c` | Rectangular coordinates to RA and DEC |
 | `recsph_c` | Rectangular to spherical coordinates |
+| `removc_c` | Remove an item from a character set |
+| `removd_c` | Remove an item from a double precision set |
+| `removi_c` | Remove an item from an integer set |
+| `reordc_c` | Reorder a character array |
+| `reordd_c` | Reorder a double precision array |
+| `reordi_c` | Reorder an integer array |
+| `reordl_c` | Reorder a logical array |
+| `repmc_c` | Replace marker with character string |
+| `repmct_c` | Replace marker with cardinal text |
+| `repmd_c` | Replace marker with double precision number |
+| `repmf_c` | Replace marker with formatted d.p. value |
+| `repmi_c` | Replace marker with integer |
+| `repml_c` | Replace marker with logical value text |
+| `repmot_c` | Replace marker with ordinal text |
 | `reset_c` | Reset Error Status |
 | `rotate_c` | Generate a rotation matrix |
 | `rotmat_c` | Rotate a matrix |
@@ -234,7 +313,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `scencd_c` | Encode spacecraft clock |
 | `scs2e_c` | SCLK string to ET |
 | `sct2e_c` | SCLK ticks to ET |
+| `sdiff_c` | Symmetric difference of two sets |
+| `set_c` | Compare sets |
 | `setmsg_c` | Set Long Error Message |
+| `shellc_c` | Shell sort a character array |
+| `shelld_c` | Shell sort a double precision array |
+| `shelli_c` | Shell sort an integer array |
 | `sigerr_c` | Signal Error Condition |
 | `sincpt_c` | Surface intercept |
 | `size_c` | Size of a cell |
@@ -260,6 +344,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `spkw08_c` | Write SPK segment, type 8 |
 | `srfrec_c` | Surface to rectangular coordinates |
 | `ssize_c` | Set the size of a cell |
+| `stpool_c` | String from pool |
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
@@ -267,6 +352,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `sumai_c` | Sum of an integer array |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
+| `szpool_c` | Get size limitations of the kernel pool |
 | `timdef_c` | Time Software Defaults |
 | `timout_c` | Time Output |
 | `tkvrsn_c` | Toolkit version strings |
@@ -277,7 +363,9 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `twovec_c` | Two vectors defining an orthonormal frame |
 | `twovxf_c` | Two states defining a frame transformation |
 | `tyear_c` | Seconds per tropical year |
+| `ucase_c` | Convert to uppercase |
 | `ucrss_c` | Unitized cross product, 3x3 |
+| `union_c` | Union of two sets |
 | `unitim_c` | Uniform time scale transformation |
 | `unload_c` | Unload a kernel |
 | `unorm_c` | Unit vector and norm, 3 dimensional |
@@ -320,8 +408,21 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `vzero_c` | Is a vector the zero vector? |
 | `vzerog_c` | Is a vector the zero vector? -- general dim. |
 | `wncard_c` | Cardinality of a double precision window |
+| `wncomd_c` | Complement a DP window |
+| `wncond_c` | Contract the intervals of a DP window |
+| `wndifd_c` | Difference two DP windows |
+| `wnelmd_c` | Element of a DP window |
+| `wnexpd_c` | Expand the intervals of a DP window |
+| `wnextd_c` | Extract the endpoints from a DP window |
 | `wnfetd_c` | Fetch an interval from a DP window |
+| `wnfild_c` | Fill small gaps in a DP window |
+| `wnfltd_c` | Filter small intervals from a DP window |
+| `wnincd_c` | Included in a double precision window |
 | `wninsd_c` | Insert an interval into a DP window |
+| `wnintd_c` | Intersect two DP windows |
+| `wnreld_c` | Compare two DP windows |
+| `wnsumd_c` | Summary of a double precision window |
+| `wnunid_c` | Union two DP windows |
 | `wnvald_c` | Validate a DP window |
 | `xf2eul_c` | State transformation to Euler angles |
 | `xf2rav_c` | Transform to rotation and angular velocity |
@@ -333,19 +434,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 
 | Routine | Purpose (1 line) |
 | --- | --- |
-| `appndc_c` | Append an item to a character cell |
-| `appndd_c` | Append an item to a double precision cell |
-| `appndi_c` | Append an item to an integer cell |
 | `azlcpo_c` | AZ/EL, constant position observer state |
-| `badkpv_c` | Bad Kernel Pool Variable |
 | `bltfrm_c` | Built-in frame IDs |
-| `bodvcd_c` | Return d.p. values from the kernel pool |
-| `bodvrd_c` | Return d.p. values from the kernel pool |
-| `bschoc_c` | Binary search with order vector, character |
-| `bschoi_c` | Binary search with order vector, integer |
-| `bsrchc_c` | Binary search for a character string |
-| `bsrchd_c` | Binary search for a double precision value |
-| `bsrchi_c` | Binary search for an integer value |
 | `cgv2el_c` | Center and generating vectors to ellipse |
 | `ckcls_c` | CK, Close file |
 | `ckfrot_c` | CK frame, find position rotation |
@@ -360,12 +450,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckw02_c` | C-Kernel, write segment to C-kernel, data type 2 |
 | `ckw03_c` | C-Kernel, write segment to C-kernel, data type 3 |
 | `ckw05_c` | Write CK segment, type 5 |
-| `clpool_c` | Clear the pool of kernel variables |
-| `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
-| `copy_c` | Copy a SPICE cell |
-| `cpos_c` | Character position |
-| `cposr_c` | Character position, reverse |
 | `dafac_c` | DAF add comments |
 | `dafbbs_c` | DAF, begin backward search |
 | `dafcs_c` | DAF, continue search |
@@ -405,13 +490,11 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dasudd_c` | DAS, update data, double precision |
 | `dasudi_c` | DAS, update data, integer |
 | `daswbr_c` | DAS, write buffered records |
-| `diff_c` | Difference of two sets |
 | `dlabbs_c` | DLA, begin backward search |
 | `dlabns_c` | DLA, begin new segment |
 | `dlaens_c` | DLA, end new segment |
 | `dlafps_c` | DLA, find previous segment |
 | `dnearp_c` | Derivative of near point |
-| `dp2hx_c` | D.p. number to hexadecimal string |
 | `dskcls_c` | DSK, close file |
 | `dskd02_c` | DSK, fetch d.p. type 2 data |
 | `dskgtl_c` | DSK, get tolerance |
@@ -425,7 +508,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `dskxsi_c` | DSK, ray-surface intercept with source information |
 | `dskxv_c` | DSK, ray-surface intercept, vectorized |
 | `dskz02_c` | DSK, fetch type 2 model size parameters |
-| `dvpool_c` | Delete a variable from the kernel pool |
 | `edlimb_c` | Ellipsoid Limb |
 | `ednmpt_c` | Ellipsoid normal vector to surface point |
 | `edpnt_c` | Ellipsoid point |
@@ -452,18 +534,13 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ekucei_c` | EK, update integer column entry |
 | `ekuef_c` | EK, unload event file |
 | `el2cgv_c` | Ellipse to center and generating vectors |
-| `elemc_c` | Element of a character set |
-| `elemd_c` | Element of a double precision set |
-| `elemi_c` | Element of an integer set |
 | `eqncpv_c` | Equinoctial Elements to position and velocity |
-| `eqstr_c` | Equivalent strings |
 | `erract_c` | Get/Set Default Error Action |
 | `errch_c` | Insert String into Error Message Text |
 | `errdev_c` | Get/Set Error Output Device Name |
 | `errdp_c` | Insert D.P. Number into Error Message Text |
 | `errint_c` | Insert Integer into Error Message Text |
 | `errprt_c` | Get/Set Error Output Items |
-| `esrchc_c` | Equivalence search, character |
 | `et2lst_c` | ET to Local Solar Time |
 | `etcal_c` | Convert ET to Calendar format |
 | `evsgp4_c` | Evaluate "two-line" element data |
@@ -490,60 +567,23 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `gftfov_c` | GF, is target in FOV? |
 | `gfudb_c` | GF, user defined boolean |
 | `gfuds_c` | GF, user defined scalar |
-| `hx2dp_c` | Hexadecimal string to d.p. number |
 | `illum_c` | Illumination angles |
 | `illum_pl02` | illumination angles using DSK type 2 plate model |
 | `illum_plid_pl02` | illumination angles using type 2 DSK |
 | `inedpl_c` | Intersection of ellipsoid and plane |
 | `inelpl_c` | Intersection of ellipse and plane |
 | `inrypl_c` | Intersection of ray and plane |
-| `inter_c` | Intersection of two sets |
-| `isordv_c` | Is array an order vector? |
-| `isrchc_c` | Search in a character array |
-| `isrchd_c` | Search in a double precision array |
-| `isrchi_c` | Search in an integer array |
-| `iswhsp_c` | Determine whether a string is white space |
-| `lastnb_c` | Last non-blank character |
 | `latsrf_c` | Latitudinal grid to surface points |
-| `lcase_c` | Convert to lowercase |
-| `ldpool_c` | Load variables from a kernel file into the pool |
 | `limb_pl02` | Limb using DSK type 2 plate model |
 | `limbpt_c` | Limb points on an extended object |
 | `llgrid_pl02` | Lon/lat grid using DSK type 2 plate model |
-| `lmpool_c` | Load variables from memory into the pool |
-| `lparse_c` | Parse items from a list |
-| `lparsm_c` | Parse a list of items having multiple delimiters |
-| `lparss_c` | Parse a list of items; return a set |
 | `lspcn_c` | Longitude of the sun, planetocentric |
-| `lstlec_c` | Last character element less than or equal to. |
-| `lstled_c` | Last double precision element less than or equal |
-| `lstlei_c` | Last integer element less than or equal to |
-| `lstltc_c` | Last character element less than |
-| `lstltd_c` | Last double precision element less than |
-| `lstlti_c` | Last integer element less than |
 | `ltime_c` | Light Time |
-| `lx4dec_c` | Scan for decimal number |
-| `lx4num_c` | Scan for number |
-| `lx4sgn_c` | Scan for signed integer |
-| `lx4uns_c` | Scan for unsigned integer |
-| `lxqstr_c` | Lex quoted string |
-| `matchi_c` | Match string against wildcard template |
-| `matchw_c` | Match string against wildcard template |
-| `ncpos_c` | NOT Character position |
-| `ncposr_c` | Character position, reverse |
 | `nearpt_c` | Nearest point on an ellipsoid |
-| `nextwd_c` | Next word in a character string |
 | `npedln_c` | Nearest point on ellipsoid to line |
 | `npelpt_c` | Nearest point on ellipse to point |
 | `nplnpt_c` | Nearest point on line to point |
-| `nthwd_c` | n'th word in a character string |
 | `nvp2pl_c` | Normal vector and point to plane |
-| `ordc_c` | The ordinal position of an element in a set |
-| `ordd_c` | The ordinal position of an element in a set |
-| `orderc_c` | Order of a character array |
-| `orderd_c` | Order of a double precision array |
-| `orderi_c` | Order of an integer array |
-| `ordi_c` | The ordinal position of an element in a set |
 | `oscelt_c` | Determine conic elements from state |
 | `oscltx_c` | Extended osculating elements from state |
 | `pckcls_c` | PCK, close file |
@@ -562,41 +602,18 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `pltnp_c` | Nearest point on triangular plate |
 | `pltnrm_c` | DSK, compute outward normal of plate |
 | `pltvol_c` | Compute volume of plate model |
-| `pos_c` | Position of substring |
-| `posr_c` | Position of substring, reverse search |
 | `prop2b_c` | Propagate a two-body solution |
-| `prsdp_c` | Parse d.p. number with error checking |
-| `prsint_c` | Parse integer with error checking |
 | `psv2pl_c` | Point and spanning vectors to plane |
 | `putcml_c` | Get the command line |
 | `pxfrm2_c` | Position Transform Matrix, Different Epochs |
 | `qcktrc_c` | Get Quick Traceback |
 | `rdtext_c` | Read a line from a text file |
-| `removc_c` | Remove an item from a character set |
-| `removd_c` | Remove an item from a double precision set |
-| `removi_c` | Remove an item from an integer set |
-| `reordc_c` | Reorder a character array |
-| `reordd_c` | Reorder a double precision array |
-| `reordi_c` | Reorder an integer array |
-| `reordl_c` | Reorder a logical array |
-| `repmc_c` | Replace marker with character string |
-| `repmct_c` | Replace marker with cardinal text |
-| `repmd_c` | Replace marker with double precision number |
-| `repmf_c` | Replace marker with formatted d.p. value |
-| `repmi_c` | Replace marker with integer |
-| `repml_c` | Replace marker with logical value text |
-| `repmot_c` | Replace marker with ordinal text |
 | `return_c` | Immediate Return Indicator |
 | `saelgv_c` | Semi-axes of ellipse from generating vectors |
 | `sce2t_c` | ET to SCLK ticks |
 | `scfmt_c` | Convert SCLK "ticks" to character clock format |
 | `scpart_c` | Spacecraft Clock Partition Information |
 | `sctiks_c` | Convert spacecraft clock string to ticks. |
-| `sdiff_c` | Symmetric difference of two sets |
-| `set_c` | Compare sets |
-| `shellc_c` | Shell sort a character array |
-| `shelld_c` | Shell sort a double precision array |
-| `shelli_c` | Shell sort an integer array |
 | `spk14a_c` | SPK, add data to a type 14 segment |
 | `spk14b_c` | SPK, begin a type 14 segment |
 | `spk14e_c` | SPK, end a type 14 segment |
@@ -632,7 +649,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `srfxpt_c` | Surface intercept point |
 | `stelab_c` | Stellar Aberration |
 | `stlabx_c` | Stellar aberration, transmission case |
-| `stpool_c` | String from pool |
 | `subpt_c` | Sub-observer point |
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subsol_c` | Sub-solar point |
@@ -640,7 +656,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `surfnm_c` | Surface normal vector on an ellipsoid |
 | `surfpt_c` | Surface point on an ellipsoid |
 | `surfpv_c` | Surface point and velocity |
-| `szpool_c` | Get size limitations of the kernel pool |
 | `tangpt_c` | Ray-ellipsoid tangent point |
 | `term_pl02` | Terminator using DSK type 2 plate model |
 | `termpt_c` | Terminator points on an extended object |
@@ -653,27 +668,12 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `trcoff_c` | Turn tracing off |
 | `trgsep_c` | Separation quantity from observer |
 | `tsetyr_c` | Time --- set year expansion boundaries |
-| `ucase_c` | Convert to uppercase |
 | `uddc_c` | Derivative of function less than zero, df(x)/dx < 0 |
 | `uddf_c` | First derivative of a function, df(x)/dx |
 | `udf_c` | GF, dummy function |
-| `union_c` | Union of two sets |
 | `utc2et_c` | UTC to Ephemeris Time |
 | `vprjp_c` | Vector projection onto plane |
 | `vprjpi_c` | Vector projection onto plane, inverted |
-| `wncomd_c` | Complement a DP window |
-| `wncond_c` | Contract the intervals of a DP window |
-| `wndifd_c` | Difference two DP windows |
-| `wnelmd_c` | Element of a DP window |
-| `wnexpd_c` | Expand the intervals of a DP window |
-| `wnextd_c` | Extract the endpoints from a DP window |
-| `wnfild_c` | Fill small gaps in a DP window |
-| `wnfltd_c` | Filter small intervals from a DP window |
-| `wnincd_c` | Included in a double precision window |
-| `wnintd_c` | Intersect two DP windows |
-| `wnreld_c` | Compare two DP windows |
-| `wnsumd_c` | Summary of a double precision window |
-| `wnunid_c` | Union two DP windows |
 | `xfmsta_c` | Transform state between coordinate systems |
 
 ## Excluded

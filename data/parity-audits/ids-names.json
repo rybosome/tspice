@@ -7666,36 +7666,22 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodc2n-found-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n resolves body code 399 to EARTH"
         },
         {
           "caseId": "ids-names-bodc2n-not-found-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n miss returns found=false"
         },
         {
           "caseId": "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodc2n-audit-malformed-pool-mapping",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
         }
       ],
@@ -7731,9 +7717,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
             "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json"
           ],
-          "caseIds": [
-            "ids-names-bodc2n-audit-malformed-pool-mapping"
-          ]
+          "caseIds": ["ids-names-bodc2n-audit-malformed-pool-mapping"]
         },
         {
           "id": "leading-name-blanks-trimmed",
@@ -7808,27 +7792,17 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodc2s-known-code-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s resolves body code 399 to EARTH"
         },
         {
           "caseId": "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodc2s-audit-malformed-pool-mapping",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
         }
       ],
@@ -7914,36 +7888,22 @@
       "scenarios": [
         {
           "caseId": "ids-names-boddef-round-trip-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef mapping can be resolved by bods2c and bodc2s in the same workflow"
         },
         {
           "caseId": "ids-names-boddef-empty-name-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Representative boddef validation error for empty body name"
         },
         {
           "caseId": "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef: name reassignment and pool precedence, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-boddef-audit-long-name-collision",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Names that differ only beyond NAIF maximum length select the latest definition; inspect both forward and reverse mappings."
         }
       ],
@@ -8030,43 +7990,27 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodfnd-presence-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd reports presence for numeric and character body constants"
         },
         {
           "caseId": "ids-names-bodfnd-item-too-long-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         },
         {
           "caseId": "ids-names-bodfnd-audit-normalized-items-types-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd: normalized items types and missing, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodfnd-audit-canonical-32-byte-key",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
         },
         {
           "caseId": "ids-names-bodfnd-audit-empty-normalized-item",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         }
       ],
@@ -8195,43 +8139,27 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodn2c-found-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c resolves EARTH code"
         },
         {
           "caseId": "ids-names-bodn2c-not-found-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c miss returns found=false"
         },
         {
           "caseId": "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: normalized names and numeric is not name, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodn2c-audit-malformed-pool-mapping",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodn2c-audit-empty-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: empty name, compare complete live SpiceyPy results/effects"
         }
       ],
@@ -8316,43 +8244,27 @@
       "scenarios": [
         {
           "caseId": "ids-names-bods2c-name-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c resolves EARTH to code 399"
         },
         {
           "caseId": "ids-names-bods2c-not-found-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c miss returns found=false"
         },
         {
           "caseId": "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: numeric strings and normalized names, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bods2c-audit-malformed-pool-mapping",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bods2c-audit-empty-name",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: empty name, compare complete live SpiceyPy results/effects"
         }
       ],
@@ -8437,52 +8349,32 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodvar-values-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar returns numeric values and normal misses for char/missing vars"
         },
         {
           "caseId": "ids-names-bodvar-item-too-long-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         },
         {
           "caseId": "ids-names-bodvar-audit-normalized-items-types-and-missing",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: normalized items types and missing, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodvar-audit-all-values-beyond-old-cap",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: all values beyond old cap, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodvar-audit-canonical-32-byte-key",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
         },
         {
           "caseId": "ids-names-bodvar-audit-empty-normalized-item",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         }
       ],
@@ -8549,9 +8441,7 @@
             "packages/backend-wasm/test/ids-allocation-cleanup.test.ts",
             "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json"
           ],
-          "caseIds": [
-            "ids-names-bodvar-audit-all-values-beyond-old-cap"
-          ]
+          "caseIds": ["ids-names-bodvar-audit-all-values-beyond-old-cap"]
         }
       ],
       "backends": {

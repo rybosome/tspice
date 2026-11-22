@@ -900,34 +900,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-azlrec-all-direction-flags",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all three components for all four flag combinations using nonzero azimuth and elevation, distinguishing independent sign choices."
         },
         {
           "caseId": "coords-vectors-azlrec-negative-range-unwrapped-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare negative range, positive/negative angles beyond one turn, and elevation outside the customary interval without imposing normalization."
         },
         {
           "caseId": "coords-vectors-azlrec-zero-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare zero range, both elevation poles and the positive X axis; retain actual trigonometric residuals."
         },
         {
           "caseId": "coords-vectors-azlrec-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every component at ranges 1e200 and 1e-200; focused live rescaling makes tiny nonzero outputs observable."
         }
       ],
@@ -979,34 +967,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recazl-all-direction-flags",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare range, azimuth and elevation for [3,4,-12] with all four flag combinations."
         },
         {
           "caseId": "coords-vectors-recazl-mixed-quadrants",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all outputs in four XY quadrants with both Z signs under clockwise/negative-Z conventions."
         },
         {
           "caseId": "coords-vectors-recazl-zero-and-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the origin and all six signed axes, including zero azimuth on the Z axis and both zero angles at the origin."
         },
         {
           "caseId": "coords-vectors-recazl-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare range and both angles for huge/tiny scaled copies of the same direction; focused tests rescale only range."
         }
       ],
@@ -1027,9 +1003,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-recazl-all-direction-flags"
-          ]
+          "caseIds": ["coords-vectors-recazl-all-direction-flags"]
         }
       ],
       "backends": {
@@ -1075,113 +1049,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-pgrrec-earth-name-and-numeric-id",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual outputs for EARTH, numeric ID 399, and a mixed-case/space-padded body name without client-side rewriting or a PM fixture."
         },
         {
           "caseId": "coords-vectors-pgrrec-spin-sense-and-body-alias",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Load authored positive/negative PM rates, compare both synthetic names and their numeric IDs, and observe the third body with an EAST override but no PM."
         },
         {
           "caseId": "coords-vectors-pgrrec-sun-moon-east-exceptions",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Load explicit positive PM coefficients for Sun and Moon, then observe their east-positive exception instead of the ordinary west-positive nonnegative-rate rule."
         },
         {
           "caseId": "coords-vectors-pgrrec-sphere-oblate-prolate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all outputs for f=0, f=0.2 and negative f=-0.25, distinguishing a permitted prolate spheroid from an invalid flattening."
         },
         {
           "caseId": "coords-vectors-pgrrec-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete results at 1e100 and 1e-100 physical scale. Focused live assertions rescale distance quantities while retaining unscaled angular comparisons."
         },
         {
           "caseId": "coords-vectors-pgrrec-override-and-clear-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the same body through default west-positive, a space/case-tolerant EAST override, WEST override, and clear/reload restoration on the same workflow."
         },
         {
           "caseId": "coords-vectors-pgrrec-earth-override-cleared",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe Earth default east, WEST override and restored east after kclear, without a PM dependency."
         },
         {
           "caseId": "coords-vectors-pgrrec-unknown-body-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an unrecognized body name and observe IDCODENOTFOUND from CSPICE."
         },
         {
           "caseId": "coords-vectors-pgrrec-missing-prime-meridian-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Use an unconfigured numeric body ID and observe MISSINGDATA."
         },
         {
           "caseId": "coords-vectors-pgrrec-moon-missing-prime-meridian-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Use Moon without PM/override and observe MISSINGDATA, distinguishing the pinned lookup prerequisite from an unconditional east-positive shortcut."
         },
         {
           "caseId": "coords-vectors-pgrrec-invalid-longitude-override-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install character NORTH as longitude sense and observe INVALIDOPTION."
         },
         {
           "caseId": "coords-vectors-pgrrec-invalid-equatorial-radius-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass re=0 and observe VALUEOUTOFRANGE from the actual scientific routine."
         },
         {
           "caseId": "coords-vectors-pgrrec-invalid-flattening-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass f=1 and observe VALUEOUTOFRANGE instead of a zero polar radius calculation."
         },
         {
           "caseId": "coords-vectors-pgrrec-negative-altitude-unrestricted-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare below-surface altitude, negative/unwrapped longitude, latitude beyond pi/2 and a pole without invented angle/altitude rejection."
         }
       ],
@@ -1239,120 +1172,77 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recpgr-earth-name-and-numeric-id",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare actual outputs for EARTH, numeric ID 399, and a mixed-case/space-padded body name without client-side rewriting or a PM fixture."
         },
         {
           "caseId": "coords-vectors-recpgr-spin-sense-and-body-alias",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Load authored positive/negative PM rates, compare both synthetic names and their numeric IDs, and observe the third body with an EAST override but no PM."
         },
         {
           "caseId": "coords-vectors-recpgr-sun-moon-east-exceptions",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Load explicit positive PM coefficients for Sun and Moon, then observe their east-positive exception instead of the ordinary west-positive nonnegative-rate rule."
         },
         {
           "caseId": "coords-vectors-recpgr-sphere-oblate-prolate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all outputs for f=0, f=0.2 and negative f=-0.25, distinguishing a permitted prolate spheroid from an invalid flattening."
         },
         {
           "caseId": "coords-vectors-recpgr-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare complete results at 1e100 and 1e-100 physical scale. Focused live assertions rescale distance quantities while retaining unscaled angular comparisons."
         },
         {
           "caseId": "coords-vectors-recpgr-override-and-clear-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe the same body through default west-positive, a space/case-tolerant EAST override, WEST override, and clear/reload restoration on the same workflow."
         },
         {
           "caseId": "coords-vectors-recpgr-earth-override-cleared",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Observe Earth default east, WEST override and restored east after kclear, without a PM dependency."
         },
         {
           "caseId": "coords-vectors-recpgr-unknown-body-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass an unrecognized body name and observe IDCODENOTFOUND from CSPICE."
         },
         {
           "caseId": "coords-vectors-recpgr-missing-prime-meridian-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Use an unconfigured numeric body ID and observe MISSINGDATA."
         },
         {
           "caseId": "coords-vectors-recpgr-moon-missing-prime-meridian-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Use Moon without PM/override and observe MISSINGDATA, distinguishing the pinned lookup prerequisite from an unconditional east-positive shortcut."
         },
         {
           "caseId": "coords-vectors-recpgr-invalid-longitude-override-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install character NORTH as longitude sense and observe INVALIDOPTION."
         },
         {
           "caseId": "coords-vectors-recpgr-invalid-equatorial-radius-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass re=0 and observe VALUEOUTOFRANGE from the actual scientific routine."
         },
         {
           "caseId": "coords-vectors-recpgr-invalid-flattening-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass f=1 and observe VALUEOUTOFRANGE instead of a zero polar radius calculation."
         },
         {
           "caseId": "coords-vectors-recpgr-origin-poles-and-quadrants",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare longitude, latitude and altitude for the origin, both poles and remaining quadrants, retaining CSPICE interior-point choice."
         },
         {
           "caseId": "coords-vectors-recpgr-finite-input-too-large-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Pass three maximum finite doubles to recpgr and observe INPUTSTOOLARGE; this is an actual error rather than an ordinary nonfinite result."
         }
       ],
@@ -1379,9 +1269,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-recpgr-earth-name-and-numeric-id"
-          ]
+          "caseIds": ["coords-vectors-recpgr-earth-name-and-numeric-id"]
         }
       ],
       "backends": {
@@ -1427,34 +1315,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-radrec-quadrants",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare every rectangular component for four distinct right-ascension quadrants."
         },
         {
           "caseId": "coords-vectors-radrec-zero-negative-range-and-poles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare zero range, negative range, north and south declination poles without normalizing away the signed-range behavior."
         },
         {
           "caseId": "coords-vectors-radrec-unrestricted-angles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare positive/negative RA beyond one turn and declination beyond pi/2 through the actual routine."
         },
         {
           "caseId": "coords-vectors-radrec-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare all components at 1e200 and 1e-200 range, supplemented by focused live rescaling."
         }
       ],
@@ -1506,34 +1382,22 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recrad-mixed-quadrants",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare range, RA and declination in all four XY quadrants with both Z signs."
         },
         {
           "caseId": "coords-vectors-recrad-zero-and-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the origin and six signed axes, observing the explicit zero-RA pole convention and zero origin angles."
         },
         {
           "caseId": "coords-vectors-recrad-near-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare directions just above/below +X: tiny positive RA versus a value near 2*pi. A separate actual-oracle comparison multiplies the positive RA by 1e15 to distinguish it from zero."
         },
         {
           "caseId": "coords-vectors-recrad-scaled-magnitudes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare range and angles for 1e200/1e-200 scaled directions; focused live checks rescale only range."
         }
       ],
@@ -1554,9 +1418,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": [
-            "coords-vectors-recrad-mixed-quadrants"
-          ]
+          "caseIds": ["coords-vectors-recrad-mixed-quadrants"]
         }
       ],
       "backends": {
@@ -1602,103 +1464,62 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-srfrec-triaxial-mixed-and-axes",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Load the authored [3,2,1] ellipsoid and compare every component for a mixed direction and signed axis/pole points."
         },
         {
           "caseId": "coords-vectors-srfrec-oblate-planetocentric-latitude",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Use [4,4,2] radii to compare positive/negative and pi/4 planetocentric latitudes; focused literal ray intersection distinguishes this from geodetic latitude."
         },
         {
           "caseId": "coords-vectors-srfrec-spherical-and-unrestricted-angles",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare the radius-2 sphere for positive/negative/unwrapped longitude and latitude beyond pi/2."
         },
         {
           "caseId": "coords-vectors-srfrec-pool-radii-overwrite-lifecycle",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare the point before and after doubling current pool radii, then clear and reload the fixture and observe restoration."
         },
         {
           "caseId": "coords-vectors-srfrec-missing-radii-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Call srfrec without radii and observe KERNELVARNOTFOUND."
         },
         {
           "caseId": "coords-vectors-srfrec-too-few-radii-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install two radii and observe INVALIDCOUNT."
         },
         {
           "caseId": "coords-vectors-srfrec-too-many-radii-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install four radii and observe ARRAYTOOSMALL."
         },
         {
           "caseId": "coords-vectors-srfrec-zero-axis-radii-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install a zero middle radius and observe BADAXISLENGTH."
         },
         {
           "caseId": "coords-vectors-srfrec-negative-axis-radii-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install a negative middle radius and observe BADAXISLENGTH."
         },
         {
           "caseId": "coords-vectors-srfrec-nonnumeric-radii-error",
-          "coverage": [
-            "error",
-            "state"
-          ],
+          "coverage": ["error", "state"],
           "observes": "Install three character radii and observe TYPEMISMATCH."
         },
         {
           "caseId": "coords-vectors-srfrec-scaled-radii",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Install radii at 1e100 and 1e-100 scales, compare every coordinate, and separately rescale live outputs to distinguish tiny values."
         },
         {
           "caseId": "coords-vectors-srfrec-signed32-body-boundaries",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Populate separate radius variables for -2147483648 and 2147483647 and compare actual outputs for both exact signed32 IDs."
         }
       ],
@@ -1726,9 +1547,7 @@
             "packages/backend-wasm/src/domains/kernels.ts",
             "docs/step8-coordinate-conventions.md"
           ],
-          "caseIds": [
-            "coords-vectors-srfrec-pool-radii-overwrite-lifecycle"
-          ]
+          "caseIds": ["coords-vectors-srfrec-pool-radii-overwrite-lifecycle"]
         }
       ],
       "backends": {

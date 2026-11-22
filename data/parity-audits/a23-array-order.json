@@ -359,42 +359,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-isordv-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the canonical empty false result and the only one-element permutation."
         },
         {
           "caseId": "coords-vectors-isordv-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Recognize identity, reverse order, multiple cycles and a long nonidentity cycle."
         },
         {
           "caseId": "coords-vectors-isordv-duplicate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reject even and odd multiplicities and repeated elements at either endpoint."
         },
         {
           "caseId": "coords-vectors-isordv-out-of-range",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe false for negative, exactly one past the last and both signed32 extremes."
         },
         {
           "caseId": "coords-vectors-isordv-larger",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise a nonconsecutive 31-element permutation, a missing index and restoration on the next call."
         }
       ],
@@ -410,9 +395,7 @@
           "status": "repaired",
           "summary": "The pinned wrapper increments each input entry in a signed integer. INT_MAX is outside the supported index set, but directly incrementing it would overflow.",
           "repair": "Replace that impossible value in private storage by an equivalent impossible sentinel before calling the real predicate. Independent code substitutes a different out-of-range index and checks the same false result.",
-          "caseIds": [
-            "coords-vectors-isordv-out-of-range"
-          ],
+          "caseIds": ["coords-vectors-isordv-out-of-range"],
           "evidence": [
             "docs/step8-array-order.md",
             "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -456,42 +439,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-orderc-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-orderc-blank-text",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sort empty strings, all-space rows, trailing spaces and genuine case-sensitive prefixes."
         },
         {
           "caseId": "coords-vectors-orderc-utf8-controls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare encoded byte payloads containing Unicode, a BOM and tab or newline without locale collation."
         },
         {
           "caseId": "coords-vectors-orderc-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the actual unstable tied permutation and the toolkit’s complete returned spelling."
         },
         {
           "caseId": "coords-vectors-orderc-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check odd and even cardinalities in sorted, reverse and interleaved order."
         }
       ],
@@ -507,9 +475,7 @@
           "status": "repaired",
           "summary": "N0067 C2F_MapStrArr uses the maximum strlen as its private width. All empty C strings leave a zero-byte allocation request whose return convention can vary.",
           "repair": "Supply blank-extended rows with at least one payload byte. A blank and an empty row are equivalent under the toolkit comparison. Keep all-empty and mixed blanks in the independent corpus.",
-          "caseIds": [
-            "coords-vectors-orderc-blank-text"
-          ],
+          "caseIds": ["coords-vectors-orderc-blank-text"],
           "evidence": [
             "docs/step8-array-order.md",
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/array_order_oracle.py",
@@ -552,42 +518,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-orderd-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-orderd-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the pinned Shell permutation of equal keys from a stable sort."
         },
         {
           "caseId": "coords-vectors-orderd-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check ascending, descending and mixed arrays for odd and even lengths."
         },
         {
           "caseId": "coords-vectors-orderd-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare extreme and adjacent representable numbers and repeated signs."
         },
         {
           "caseId": "coords-vectors-orderd-nontrivial-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise multiple Shell gap passes and a repeated-value longer prefix."
         }
       ],
@@ -600,23 +551,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.orderd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.orderd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderd -> orderd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -631,42 +572,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-orderi-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-orderi-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the pinned Shell permutation of equal keys from a stable sort."
         },
         {
           "caseId": "coords-vectors-orderi-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check ascending, descending and mixed arrays for odd and even lengths."
         },
         {
           "caseId": "coords-vectors-orderi-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare extreme and adjacent representable numbers and repeated signs."
         },
         {
           "caseId": "coords-vectors-orderi-nontrivial-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise multiple Shell gap passes and a repeated-value longer prefix."
         }
       ],
@@ -679,23 +605,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.orderi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.orderi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_orderi -> orderi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -710,58 +626,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reordc-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Copy empty storage and a single datum without dropping trailing bytes or logical values."
         },
         {
           "caseId": "coords-vectors-reordc-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Apply a non-self-inverse source-index cycle and its inverse, distinguishing scatter from gather."
         },
         {
           "caseId": "coords-vectors-reordc-fixed-and-disjoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reorder multiple disjoint cycles with fixed entries and every position occupied."
         },
         {
           "caseId": "coords-vectors-reordc-reverse-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Keep typed payloads, extrema and duplicates intact under reversed and unchanged permutations."
         },
         {
           "caseId": "coords-vectors-reordc-duplicate-order",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An invalid permutation is rejected before an unsafe N0067 gather or cycle traversal."
         },
         {
           "caseId": "coords-vectors-reordc-order-out-of-range",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range source index cannot address the input storage."
         },
         {
           "caseId": "coords-vectors-reordc-order-length",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reject a permutation with mismatched cardinality before entry."
         }
       ],
@@ -777,9 +672,7 @@
           "status": "repaired",
           "summary": "SpiceyPy high-level string conversion drops trailing whitespace that the canonical gather preserves.",
           "repair": "Read the actual null-terminated C rows from the independent library with strict UTF-8 decoding. Compare against the ordinary wrapper on shared inputs and prove the distinct result on trailing spaces and tabs.",
-          "caseIds": [
-            "coords-vectors-reordc-cycles"
-          ],
+          "caseIds": ["coords-vectors-reordc-cycles"],
           "evidence": [
             "docs/step8-array-order.md",
             "packages/py-parity-checking/test/array-order.test.ts",
@@ -822,58 +715,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reordd-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Copy empty storage and a single datum without dropping trailing bytes or logical values."
         },
         {
           "caseId": "coords-vectors-reordd-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Apply a non-self-inverse source-index cycle and its inverse, distinguishing scatter from gather."
         },
         {
           "caseId": "coords-vectors-reordd-fixed-and-disjoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reorder multiple disjoint cycles with fixed entries and every position occupied."
         },
         {
           "caseId": "coords-vectors-reordd-reverse-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Keep typed payloads, extrema and duplicates intact under reversed and unchanged permutations."
         },
         {
           "caseId": "coords-vectors-reordd-duplicate-order",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An invalid permutation is rejected before an unsafe N0067 gather or cycle traversal."
         },
         {
           "caseId": "coords-vectors-reordd-order-out-of-range",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range source index cannot address the input storage."
         },
         {
           "caseId": "coords-vectors-reordd-order-length",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reject a permutation with mismatched cardinality before entry."
         }
       ],
@@ -886,23 +758,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordd -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordd -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordd -> reordd_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -917,58 +779,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reordi-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Copy empty storage and a single datum without dropping trailing bytes or logical values."
         },
         {
           "caseId": "coords-vectors-reordi-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Apply a non-self-inverse source-index cycle and its inverse, distinguishing scatter from gather."
         },
         {
           "caseId": "coords-vectors-reordi-fixed-and-disjoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reorder multiple disjoint cycles with fixed entries and every position occupied."
         },
         {
           "caseId": "coords-vectors-reordi-reverse-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Keep typed payloads, extrema and duplicates intact under reversed and unchanged permutations."
         },
         {
           "caseId": "coords-vectors-reordi-duplicate-order",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An invalid permutation is rejected before an unsafe N0067 gather or cycle traversal."
         },
         {
           "caseId": "coords-vectors-reordi-order-out-of-range",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range source index cannot address the input storage."
         },
         {
           "caseId": "coords-vectors-reordi-order-length",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reject a permutation with mismatched cardinality before entry."
         }
       ],
@@ -981,23 +822,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordi -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordi -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordi -> reordi_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -1012,58 +843,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reordl-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Copy empty storage and a single datum without dropping trailing bytes or logical values."
         },
         {
           "caseId": "coords-vectors-reordl-cycles",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Apply a non-self-inverse source-index cycle and its inverse, distinguishing scatter from gather."
         },
         {
           "caseId": "coords-vectors-reordl-fixed-and-disjoint",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Reorder multiple disjoint cycles with fixed entries and every position occupied."
         },
         {
           "caseId": "coords-vectors-reordl-reverse-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Keep typed payloads, extrema and duplicates intact under reversed and unchanged permutations."
         },
         {
           "caseId": "coords-vectors-reordl-duplicate-order",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An invalid permutation is rejected before an unsafe N0067 gather or cycle traversal."
         },
         {
           "caseId": "coords-vectors-reordl-order-out-of-range",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "An out-of-range source index cannot address the input storage."
         },
         {
           "caseId": "coords-vectors-reordl-order-length",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Reject a permutation with mismatched cardinality before entry."
         }
       ],
@@ -1076,23 +886,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordl -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.reordl -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_reordl -> reordl_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -1107,42 +907,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-shellc-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-shellc-blank-text",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Sort empty strings, all-space rows, trailing spaces and genuine case-sensitive prefixes."
         },
         {
           "caseId": "coords-vectors-shellc-utf8-controls",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare encoded byte payloads containing Unicode, a BOM and tab or newline without locale collation."
         },
         {
           "caseId": "coords-vectors-shellc-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare the actual unstable tied permutation and the toolkit’s complete returned spelling."
         },
         {
           "caseId": "coords-vectors-shellc-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check odd and even cardinalities in sorted, reverse and interleaved order."
         }
       ],
@@ -1155,23 +940,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shellc -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shellc -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shellc -> shellc_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -1186,42 +961,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-shelld-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-shelld-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the pinned Shell permutation of equal keys from a stable sort."
         },
         {
           "caseId": "coords-vectors-shelld-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check ascending, descending and mixed arrays for odd and even lengths."
         },
         {
           "caseId": "coords-vectors-shelld-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare extreme and adjacent representable numbers and repeated signs."
         },
         {
           "caseId": "coords-vectors-shelld-nontrivial-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise multiple Shell gap passes and a repeated-value longer prefix."
         }
       ],
@@ -1234,23 +994,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shelld -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shelld -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelld -> shelld_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
@@ -1265,42 +1015,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-shelli-empty-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise zero elements and one element, including the no-sort path."
         },
         {
           "caseId": "coords-vectors-shelli-shell-ties",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish the pinned Shell permutation of equal keys from a stable sort."
         },
         {
           "caseId": "coords-vectors-shelli-ordered-reverse",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check ascending, descending and mixed arrays for odd and even lengths."
         },
         {
           "caseId": "coords-vectors-shelli-extrema",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Compare extreme and adjacent representable numbers and repeated signs."
         },
         {
           "caseId": "coords-vectors-shelli-nontrivial-gaps",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exercise multiple Shell gap passes and a repeated-value longer prefix."
         }
       ],
@@ -1313,23 +1048,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shelli -> Node adapter with owned typed arrays -> native binding and shared mutex -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.shelli -> WASM adapter -> owned bounded allocations, typed heap views and registered export -> tspice_shelli -> shelli_c. Independent locked SpiceyPy library exposes the same canonical C entry. Typed ctypes calls use private buffers and check toolkit status. An ordinary SpiceyPy wrapper control cross-checks this routine on compatible nonempty inputs.",
           "executions": []

@@ -326,74 +326,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-bschoc-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-bschoc-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-bschoc-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find left, right and middle entries and a missing key in an odd-length input."
         },
         {
           "caseId": "coords-vectors-bschoc-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinct even-length results map into the original array."
         },
         {
           "caseId": "coords-vectors-bschoc-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
         },
         {
           "caseId": "coords-vectors-bschoc-character-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
         },
         {
           "caseId": "coords-vectors-bschoc-unequal-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
         },
         {
           "caseId": "coords-vectors-bschoc-ties-ascending-indices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
         },
         {
           "caseId": "coords-vectors-bschoc-ties-descending-indices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
         }
       ],
@@ -406,23 +379,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bschoc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bschoc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoc -> bschoc_c. Independently invoke SpiceyPy 6.0.3 sp.bschoc with original physical inputs and explicit count, byte stride, order vector.",
           "executions": []
@@ -437,66 +400,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-bschoi-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-bschoi-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-bschoi-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find both endpoints, interior, and gaps among signed values."
         },
         {
           "caseId": "coords-vectors-bschoi-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check every match across an even-length input."
         },
         {
           "caseId": "coords-vectors-bschoi-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
         },
         {
           "caseId": "coords-vectors-bschoi-signed-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
         },
         {
           "caseId": "coords-vectors-bschoi-ties-ascending-indices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
         },
         {
           "caseId": "coords-vectors-bschoi-ties-descending-indices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A different valid order within ties distinguishes physical indices from logical search positions."
         }
       ],
@@ -509,23 +448,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bschoi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bschoi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bschoi -> bschoi_c. Independently invoke SpiceyPy 6.0.3 sp.bschoi with original physical inputs and explicit count, order vector.",
           "executions": []
@@ -540,58 +469,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-bsrchc-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-bsrchc-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-bsrchc-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find left, right and middle entries and a missing key in an odd-length input."
         },
         {
           "caseId": "coords-vectors-bsrchc-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinct even-length results map into the original array."
         },
         {
           "caseId": "coords-vectors-bsrchc-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
         },
         {
           "caseId": "coords-vectors-bsrchc-character-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
         },
         {
           "caseId": "coords-vectors-bsrchc-unequal-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
         }
       ],
@@ -607,9 +515,7 @@
           "status": "repaired",
           "summary": "The CSPICE and SpiceyPy descriptions can suggest the first physical duplicate. Pinned bsrchc_c returns immediately at an equal midpoint.",
           "repair": "Document midpoint selection, preserve the canonical integer without scanning for another duplicate, and compare distinguishing duplicate positions to the ordinary locked wrapper.",
-          "caseIds": [
-            "coords-vectors-bsrchc-duplicates"
-          ],
+          "caseIds": ["coords-vectors-bsrchc-duplicates"],
           "evidence": [
             "docs/step8-array-search.md",
             "packages/py-parity-checking/test/array-search-live.test.ts",
@@ -652,50 +558,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-bsrchd-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-bsrchd-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-bsrchd-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find both endpoints, interior, and gaps among signed values."
         },
         {
           "caseId": "coords-vectors-bsrchd-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check every match across an even-length input."
         },
         {
           "caseId": "coords-vectors-bsrchd-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
         },
         {
           "caseId": "coords-vectors-bsrchd-tiny-neighbors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exact equality distinguishes adjacent representable values and subnormals."
         }
       ],
@@ -708,23 +596,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bsrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bsrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchd -> bsrchd_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchd with original physical inputs and explicit count.",
           "executions": []
@@ -739,50 +617,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-bsrchi-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-bsrchi-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-bsrchi-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find both endpoints, interior, and gaps among signed values."
         },
         {
           "caseId": "coords-vectors-bsrchi-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check every match across an even-length input."
         },
         {
           "caseId": "coords-vectors-bsrchi-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
         },
         {
           "caseId": "coords-vectors-bsrchi-signed-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
         }
       ],
@@ -795,23 +655,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bsrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.bsrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_bsrchi -> bsrchi_c. Independently invoke SpiceyPy 6.0.3 sp.bsrchi with original physical inputs and explicit count.",
           "executions": []
@@ -826,58 +676,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-isrchc-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-isrchc-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-isrchc-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find left, right and middle entries and a missing key in an odd-length input."
         },
         {
           "caseId": "coords-vectors-isrchc-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinct even-length results map into the original array."
         },
         {
           "caseId": "coords-vectors-isrchc-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE."
         },
         {
           "caseId": "coords-vectors-isrchc-character-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding."
         },
         {
           "caseId": "coords-vectors-isrchc-unequal-width",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Variable UTF-8 byte lengths and a key longer than every stored row."
         }
       ],
@@ -890,23 +719,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchc -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchc -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchc -> isrchc_c. Independently invoke SpiceyPy 6.0.3 sp.isrchc with original physical inputs and explicit count, byte stride.",
           "executions": []
@@ -921,50 +740,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-isrchd-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-isrchd-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-isrchd-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find both endpoints, interior, and gaps among signed values."
         },
         {
           "caseId": "coords-vectors-isrchd-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check every match across an even-length input."
         },
         {
           "caseId": "coords-vectors-isrchd-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
         },
         {
           "caseId": "coords-vectors-isrchd-tiny-neighbors",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Exact equality distinguishes adjacent representable values and subnormals."
         }
       ],
@@ -977,23 +778,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchd -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchd -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchd -> isrchd_c. Independently invoke SpiceyPy 6.0.3 sp.isrchd with original physical inputs and explicit count.",
           "executions": []
@@ -1008,50 +799,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-isrchi-empty",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Return the canonical -1 sentinel for empty input."
         },
         {
           "caseId": "coords-vectors-isrchi-singleton",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Test below, at and above a single physical element."
         },
         {
           "caseId": "coords-vectors-isrchi-odd",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Find both endpoints, interior, and gaps among signed values."
         },
         {
           "caseId": "coords-vectors-isrchi-even",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check every match across an even-length input."
         },
         {
           "caseId": "coords-vectors-isrchi-duplicates",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check which occurrence the pinned algorithm selects, including a nonidentity physical ordering."
         },
         {
           "caseId": "coords-vectors-isrchi-signed-limits",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use both signed 32-bit endpoints, near neighbors and misses."
         }
       ],
@@ -1064,23 +837,13 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchi -> typed NativeAddon method -> registered C++ adapter, owned argument buffers and global SPICE mutex -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
           "executions": []
         },
         "wasm": {
-          "history": [
-            "unreviewed",
-            "reviewed",
-            "verified",
-            "reviewed"
-          ],
+          "history": ["unreviewed", "reviewed", "verified", "reviewed"],
           "route": "direct",
           "trace": "raw.isrchi -> typed WASM adapter -> bounded transactional allocations, typed heap views and compiled export -> tspice_isrchi -> isrchi_c. Independently invoke SpiceyPy 6.0.3 sp.isrchi with original physical inputs and explicit count.",
           "executions": []

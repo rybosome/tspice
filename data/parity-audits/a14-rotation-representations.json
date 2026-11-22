@@ -491,58 +491,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-eul2m-all-axis-families",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "All three distinct and proper Euler sequences, noncommuting angles."
         },
         {
           "caseId": "coords-vectors-eul2m-repeated-axes",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Adjacent repeated axes are legitimate for composition."
         },
         {
           "caseId": "coords-vectors-eul2m-signed-quarter-turns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Check signed axis direction, transposition and identity from exact zero angles."
         },
         {
           "caseId": "coords-vectors-eul2m-wrapped-and-small",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Large revolutions and small off-diagonal components."
         },
         {
           "caseId": "coords-vectors-eul2m-invalid-axis-0",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range signed integer axis must reach BADAXISNUMBERS. Observe SPICE(BADAXISNUMBERS)."
         },
         {
           "caseId": "coords-vectors-eul2m-invalid-axis-1",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range signed integer axis must reach BADAXISNUMBERS. Observe SPICE(BADAXISNUMBERS)."
         },
         {
           "caseId": "coords-vectors-eul2m-invalid-axis-2",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Out-of-range signed integer axis must reach BADAXISNUMBERS. Observe SPICE(BADAXISNUMBERS)."
         }
       ],
@@ -612,58 +591,37 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-m2eul-all-axis-families",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Decompose a non-symmetric rotation under every valid axis sequence."
         },
         {
           "caseId": "coords-vectors-m2eul-singular-angle-choices",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Canonical singular angle choice and radians on identity, coordinate half-turn and axes permutation."
         },
         {
           "caseId": "coords-vectors-m2eul-sign-of-rotation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Use rotation and transpose on separated axes."
         },
         {
           "caseId": "coords-vectors-m2eul-bad-axes-331",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Invalid decomposition axis configuration. Observe SPICE(BADAXISNUMBERS)."
         },
         {
           "caseId": "coords-vectors-m2eul-bad-axes-122",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Invalid decomposition axis configuration. Observe SPICE(BADAXISNUMBERS)."
         },
         {
           "caseId": "coords-vectors-m2eul-bad-axes-021",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Invalid decomposition axis configuration. Observe SPICE(BADAXISNUMBERS)."
         },
         {
           "caseId": "coords-vectors-m2eul-reflection",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "A reflection is not a proper rotation. Observe SPICE(NOTAROTATION)."
         }
       ],
@@ -711,50 +669,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-m2q-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe documented identity, including scalar or axis choice."
         },
         {
           "caseId": "coords-vectors-m2q-signed-quarter-turns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Opposite axis signs for a non-symmetric rotation and transpose."
         },
         {
           "caseId": "coords-vectors-m2q-half-turn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Principal-axis half-turns exercise branch selection at pi."
         },
         {
           "caseId": "coords-vectors-m2q-mixed-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Nontrivial axis permutation and a rotation with fractional components."
         },
         {
           "caseId": "coords-vectors-m2q-reflection",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Rejected nonrotation raises true CSPICE error. Observe SPICE(NOTAROTATION)."
         },
         {
           "caseId": "coords-vectors-m2q-zero",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Rejected nonrotation raises true CSPICE error. Observe SPICE(NOTAROTATION)."
         }
       ],
@@ -802,42 +742,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-q2m-identity-and-zero",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Both signed scalar identities and zero quaternion."
         },
         {
           "caseId": "coords-vectors-q2m-sign-and-scale",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "A quaternion, its negative and nonunit multiples represent the same rotation."
         },
         {
           "caseId": "coords-vectors-q2m-principal-half-turns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish scalar-first ordering and each independent axis."
         },
         {
           "caseId": "coords-vectors-q2m-off-diagonal-orientation",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Distinguish signs and row-major layout of non-symmetric matrices."
         },
         {
           "caseId": "coords-vectors-q2m-small-and-large-products",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe underflow to identity, normal tiny scale, and the transition to infinite squared length with finite products."
         }
       ],
@@ -860,9 +785,7 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "docs/step8-rotation-representations.md"
           ],
-          "caseIds": [
-            "coords-vectors-q2m-small-and-large-products"
-          ]
+          "caseIds": ["coords-vectors-q2m-small-and-large-products"]
         }
       ],
       "backends": {
@@ -904,42 +827,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-qxq-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiplication order and derivative frame distinguish vector cross terms."
         },
         {
           "caseId": "coords-vectors-qxq-degenerate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero quaternion, zero second argument, and purely scalar multiplication."
         },
         {
           "caseId": "coords-vectors-qxq-scale-and-sign",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independent signs and nonunit scale in each operand."
         },
         {
           "caseId": "coords-vectors-qxq-complex-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Nontrivial signs in all four components plus pure and mixed rotation rates."
         },
         {
           "caseId": "coords-vectors-qxq-scaled-products",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe small/large scientific inputs without treating zero as an absolute-tolerance-only result."
         }
       ],
@@ -987,42 +895,27 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-qdq2av-order",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Multiplication order and derivative frame distinguish vector cross terms."
         },
         {
           "caseId": "coords-vectors-qdq2av-degenerate",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Zero quaternion, zero second argument, and purely scalar multiplication."
         },
         {
           "caseId": "coords-vectors-qdq2av-scale-and-sign",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Independent signs and nonunit scale in each operand."
         },
         {
           "caseId": "coords-vectors-qdq2av-complex-components",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Nontrivial signs in all four components plus pure and mixed rotation rates."
         },
         {
           "caseId": "coords-vectors-qdq2av-scaled-products",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe small/large scientific inputs without treating zero as an absolute-tolerance-only result."
         }
       ],
@@ -1070,50 +963,32 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-raxisa-identity",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Observe documented identity, including scalar or axis choice."
         },
         {
           "caseId": "coords-vectors-raxisa-signed-quarter-turns",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Opposite axis signs for a non-symmetric rotation and transpose."
         },
         {
           "caseId": "coords-vectors-raxisa-half-turn",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Principal-axis half-turns exercise branch selection at pi."
         },
         {
           "caseId": "coords-vectors-raxisa-mixed-axis",
-          "coverage": [
-            "success",
-            "edge"
-          ],
+          "coverage": ["success", "edge"],
           "observes": "Nontrivial axis permutation and a rotation with fractional components."
         },
         {
           "caseId": "coords-vectors-raxisa-reflection",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Rejected nonrotation raises true CSPICE error. Observe SPICE(NOTAROTATION)."
         },
         {
           "caseId": "coords-vectors-raxisa-zero",
-          "coverage": [
-            "error",
-            "edge"
-          ],
+          "coverage": ["error", "edge"],
           "observes": "Rejected nonrotation raises true CSPICE error. Observe SPICE(NOTAROTATION)."
         }
       ],

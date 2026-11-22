@@ -5693,27 +5693,17 @@
       "scenarios": [
         {
           "caseId": "cells-windows-ssize-resizes-cell-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "ssize shrinks logical capacity within original storage and resets cardinality; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-ssize-negative-size-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative ssize argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-ssize-audit-shrink-restore-original",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Logical capacity shrinks/resets then returns to original allocation, including a temporary zero size.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],
@@ -5753,9 +5743,7 @@
             "packages/backend-node/test/cell-registry-rollback.test.ts",
             "packages/backend-node/test/fixtures/cell-registry-rollback.c"
           ],
-          "caseIds": [
-            "cells-windows-ssize-audit-shrink-restore-original"
-          ]
+          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
         },
         {
           "id": "signed-storage-size-overflow",
@@ -5768,9 +5756,7 @@
             "packages/backend-node/test/fixtures/cell-registry-rollback.c",
             "packages/backend-wasm/test/cell-allocation-size.test.ts"
           ],
-          "caseIds": [
-            "cells-windows-ssize-audit-shrink-restore-original"
-          ]
+          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
         },
         {
           "id": "wasm-handle-address-aliasing",
@@ -5855,52 +5841,32 @@
       "scenarios": [
         {
           "caseId": "cells-windows-valid-normalizes-set-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "valid runs against a populated int set cell; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-negative-n-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative valid argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-int",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-double",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-char",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-n-exceeds-size",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Set validation rejects too many input elements before accessing them.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],
@@ -6070,41 +6036,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnvald-normalizes-window-success",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "wnvald validates a tracked window and preserves interval access; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-negative-n-error",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Representative wnvald argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-unsorted-zero-pair",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Growing endpoint cardinality appends zero storage; validation sorts/merges the resulting out-of-order intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-odd-endpoint-count",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "An odd input count cannot form complete intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-n-exceeds-size",
-          "coverage": [
-            "error"
-          ],
+          "coverage": ["error"],
           "observes": "Too many endpoints are rejected before inspecting data.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],

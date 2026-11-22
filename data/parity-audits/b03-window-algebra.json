@@ -1163,65 +1163,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wncomd-closure-overwrites-result",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The interval-bounded complement overwrites a populated result; the original three intervals remain accessible."
         },
         {
           "caseId": "cells-windows-wncomd-clipped-and-disjoint",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Clip to interior endpoints, a disjoint range, a fully covered interval and a singleton."
         },
         {
           "caseId": "cells-windows-wncomd-empty-window",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An empty input leaves the whole bounding interval."
         },
         {
           "caseId": "cells-windows-wncomd-singleton-closure",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Closing the complement rejoins both sides of an isolated excluded point."
         },
         {
           "caseId": "cells-windows-wncomd-zero-capacity-empty-result",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A covered bounding interval needs no result endpoints and uses a logical zero-capacity cell."
         },
         {
           "caseId": "cells-windows-wncomd-undersized-result",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A one-interval destination cannot hold all complement intervals. Observe the actual toolkit error WINDOWEXCESS."
         },
         {
           "caseId": "cells-windows-wncomd-reversed-endpoints",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The left complement bound exceeds the right bound. Observe the actual toolkit error BADENDPOINTS."
         }
       ],
@@ -1291,47 +1263,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wncond-asymmetric-margins",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Distinct left and right amounts move the two ends independently."
         },
         {
           "caseId": "cells-windows-wncond-negative-and-mixed-margins",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Negative and opposite-signed amounts are forwarded in order on the evolving window."
         },
         {
           "caseId": "cells-windows-wncond-crossed-and-equal-endpoints",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An interval contracted to a point survives; one contracted past itself disappears."
         },
         {
           "caseId": "cells-windows-wncond-coalescing-at-boundary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Adjacent expansions that first touch coalesce into one closed interval."
         },
         {
           "caseId": "cells-windows-wncond-empty-and-zero",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty and singleton windows admit zero and signed margins."
         }
       ],
@@ -1383,65 +1335,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wndifd-interleaved-and-reversed",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
         },
         {
           "caseId": "cells-windows-wndifd-touching-and-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
         },
         {
           "caseId": "cells-windows-wndifd-empty-operands",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
         },
         {
           "caseId": "cells-windows-wndifd-same-input",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Input operands may share a live handle; the destination remains independently allocated."
         },
         {
           "caseId": "cells-windows-wndifd-nested-and-disjoint",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
         },
         {
           "caseId": "cells-windows-wndifd-undersized-result",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
         },
         {
           "caseId": "cells-windows-wndifd-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Removing an interior interval splits the minuend into exactly two closed pieces."
         }
       ],
@@ -1511,38 +1435,22 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnelmd-closed-boundaries-and-gaps",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Left and right boundaries are included, including isolated points; true gaps are excluded."
         },
         {
           "caseId": "cells-windows-wnelmd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Membership in an empty window is false."
         },
         {
           "caseId": "cells-windows-wnelmd-adjacent-representable-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Test successive representable values on either side of a singleton."
         },
         {
           "caseId": "cells-windows-wnelmd-signed-extrema",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Finite endpoints near the limits compare without computing interval lengths."
         }
       ],
@@ -1594,47 +1502,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnexpd-asymmetric-margins",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Distinct left and right amounts move the two ends independently."
         },
         {
           "caseId": "cells-windows-wnexpd-negative-and-mixed-margins",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Negative and opposite-signed amounts are forwarded in order on the evolving window."
         },
         {
           "caseId": "cells-windows-wnexpd-crossed-and-equal-endpoints",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An interval contracted to a point survives; one contracted past itself disappears."
         },
         {
           "caseId": "cells-windows-wnexpd-coalescing-at-boundary",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Adjacent expansions that first touch coalesce into one closed interval."
         },
         {
           "caseId": "cells-windows-wnexpd-empty-and-zero",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty and singleton windows admit zero and signed margins."
         }
       ],
@@ -1686,56 +1574,32 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnextd-left-endpoints",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Each left endpoint becomes a singleton."
         },
         {
           "caseId": "cells-windows-wnextd-right-endpoints",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Each right endpoint becomes a singleton."
         },
         {
           "caseId": "cells-windows-wnextd-lowercase-left",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The canonical selector accepts lowercase l."
         },
         {
           "caseId": "cells-windows-wnextd-lowercase-right",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The canonical selector accepts lowercase r."
         },
         {
           "caseId": "cells-windows-wnextd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Both valid endpoint selectors preserve an empty window."
         },
         {
           "caseId": "cells-windows-wnextd-unrecognized-selector",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A representable unknown byte receives the canonical endpoint error. Observe the actual toolkit error INVALIDENDPNTSPEC."
         }
       ],
@@ -1805,47 +1669,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnfild-threshold-equality",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Successive thresholds visit gaps or widths just below, exactly at, and above the bound."
         },
         {
           "caseId": "cells-windows-wnfild-negative-zero-and-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Negative and zero thresholds distinguish singletons from positive-duration intervals."
         },
         {
           "caseId": "cells-windows-wnfild-all-intervals",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A bound above every gap and interval width takes the filter to its extreme."
         },
         {
           "caseId": "cells-windows-wnfild-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An empty window remains accessible after filtering."
         },
         {
           "caseId": "cells-windows-wnfild-isolated-single",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A single interval has no interior gap and still has its own measurable width."
         }
       ],
@@ -1897,47 +1741,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnfltd-threshold-equality",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Successive thresholds visit gaps or widths just below, exactly at, and above the bound."
         },
         {
           "caseId": "cells-windows-wnfltd-negative-zero-and-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Negative and zero thresholds distinguish singletons from positive-duration intervals."
         },
         {
           "caseId": "cells-windows-wnfltd-all-intervals",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A bound above every gap and interval width takes the filter to its extreme."
         },
         {
           "caseId": "cells-windows-wnfltd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An empty window remains accessible after filtering."
         },
         {
           "caseId": "cells-windows-wnfltd-isolated-single",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "A single interval has no interior gap and still has its own measurable width."
         }
       ],
@@ -1989,38 +1813,22 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnincd-whole-and-contained",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare matching intervals, interior ranges, singletons, boundary overruns and gap-spanning ranges."
         },
         {
           "caseId": "cells-windows-wnincd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "No interval is included in an empty window."
         },
         {
           "caseId": "cells-windows-wnincd-reversed-endpoint-arguments",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "WNINCD tests its two inequalities with the supplied bounds, including reversed bounds."
         },
         {
           "caseId": "cells-windows-wnincd-isolated-point",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "An isolated member contains exactly its point among ordered enclosing test intervals."
         }
       ],
@@ -2072,65 +1880,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnintd-interleaved-and-reversed",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
         },
         {
           "caseId": "cells-windows-wnintd-touching-and-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
         },
         {
           "caseId": "cells-windows-wnintd-empty-operands",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
         },
         {
           "caseId": "cells-windows-wnintd-same-input",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Input operands may share a live handle; the destination remains independently allocated."
         },
         {
           "caseId": "cells-windows-wnintd-nested-and-disjoint",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
         },
         {
           "caseId": "cells-windows-wnintd-undersized-result",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
         },
         {
           "caseId": "cells-windows-wnintd-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Three intersections exactly fill the six available endpoint slots."
         }
       ],
@@ -2200,74 +1980,42 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnreld-proper-subset-and-superset",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Use all six operators in both directions on contained windows."
         },
         {
           "caseId": "cells-windows-wnreld-equal-handles-and-values",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Equal but independently owned windows and identical references distinguish strict from inclusive relations."
         },
         {
           "caseId": "cells-windows-wnreld-incomparable-overlap",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Overlapping windows with distinct outside endpoints are incomparable for inclusion."
         },
         {
           "caseId": "cells-windows-wnreld-empty-relations",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty windows are equal; the empty set is a proper subset of a nonempty window."
         },
         {
           "caseId": "cells-windows-wnreld-trailing-blanks",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Fortran character comparison accepts trailing blanks on a recognized relation."
         },
         {
           "caseId": "cells-windows-wnreld-unknown-operator",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "An unsupported inequality spelling is a genuine toolkit error. Observe the actual toolkit error INVALIDOPERATION."
         },
         {
           "caseId": "cells-windows-wnreld-leading-blank",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "A leading blank is significant to the relation parser. Observe the actual toolkit error INVALIDOPERATION."
         },
         {
           "caseId": "cells-windows-wnreld-empty-operator",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The C wrapper diagnoses an empty operator before the Fortran comparison. Observe the actual toolkit error EMPTYSTRING."
         }
       ],
@@ -2319,65 +2067,37 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnsumd-empty",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Empty statistics and both extrema-index sentinels."
         },
         {
           "caseId": "cells-windows-wnsumd-all-fields-and-ties",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "The first shortest and longest intervals occupy different nonzero flattened endpoint slots."
         },
         {
           "caseId": "cells-windows-wnsumd-equal-width-and-singleton",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "All widths equal, then add a zero-duration interval."
         },
         {
           "caseId": "cells-windows-wnsumd-mixed-width-population",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Widths one, three, and five have total nine and population variance 8/3."
         },
         {
           "caseId": "cells-windows-wnsumd-small-scale",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Finite tiny widths expose each moment and the first/last index independently."
         },
         {
           "caseId": "cells-windows-wnsumd-large-scale",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Large finite widths whose squares remain in range."
         },
         {
           "caseId": "cells-windows-wnsumd-odd-cardinality",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "WNSUMD checks odd cardinality before visiting endpoint storage. Observe the actual toolkit error INVALIDCARDINALITY."
         }
       ],
@@ -2448,74 +2168,42 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnunid-interleaved-and-reversed",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Evaluate both operand orders, overwriting the same result, and retain each input endpoint."
         },
         {
           "caseId": "cells-windows-wnunid-touching-and-singletons",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Touching boundaries and isolated points distinguish closed interval algebra."
         },
         {
           "caseId": "cells-windows-wnunid-empty-operands",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Read empty input in either operand position and overwrite a previously nonempty result."
         },
         {
           "caseId": "cells-windows-wnunid-same-input",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Input operands may share a live handle; the destination remains independently allocated."
         },
         {
           "caseId": "cells-windows-wnunid-nested-and-disjoint",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Compare a contained interval and a distant disjoint interval against both operand orders."
         },
         {
           "caseId": "cells-windows-wnunid-undersized-result",
-          "coverage": [
-            "error",
-            "edge",
-            "state"
-          ],
+          "coverage": ["error", "edge", "state"],
           "observes": "The explicit one-interval destination cannot hold this result. Observe the actual toolkit error WINDOWEXCESS."
         },
         {
           "caseId": "cells-windows-wnunid-exact-capacity",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "Two disjoint intervals exactly fill the caller-owned result."
         },
         {
           "caseId": "cells-windows-wnunid-full-capacity-overlap",
-          "coverage": [
-            "success",
-            "edge",
-            "state"
-          ],
+          "coverage": ["success", "edge", "state"],
           "observes": "N0067 extends only a local endpoint once storage is full. Observe the same overlapping union at capacities one, two and zero."
         }
       ],
@@ -2551,9 +2239,7 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/window_algebra_oracle.py",
             "docs/step8-window-algebra.md"
           ],
-          "caseIds": [
-            "cells-windows-wnunid-full-capacity-overlap"
-          ]
+          "caseIds": ["cells-windows-wnunid-full-capacity-overlap"]
         }
       ],
       "backends": {
