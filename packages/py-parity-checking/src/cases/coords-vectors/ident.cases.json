@@ -1,0 +1,32 @@
+[
+  {
+    "caseId": "coords-vectors-ident-exact",
+    "description": "ident: exact; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ident"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-ident-repeat-after-reset",
+    "description": "ident: repeat-after-reset; compare every actual raw scalar or matrix component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ident"
+      },
+      {
+        "op": "error.reset"
+      },
+      {
+        "op": "coords-vectors.ident"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -673,6 +673,50 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.filli === "function", "Native addon missing filli()");
   invariant(typeof native.moved === "function", "Native addon missing moved()");
   invariant(
+    typeof native.det === "function",
+    "Expected native addon to export det()",
+  );
+  invariant(
+    typeof native.diags2 === "function",
+    "Expected native addon to export diags2()",
+  );
+  invariant(
+    typeof native.ident === "function",
+    "Expected native addon to export ident()",
+  );
+  invariant(
+    typeof native.invert === "function",
+    "Expected native addon to export invert()",
+  );
+  invariant(
+    typeof native.invort === "function",
+    "Expected native addon to export invort()",
+  );
+  invariant(
+    typeof native.isrot === "function",
+    "Expected native addon to export isrot()",
+  );
+  invariant(
+    typeof native.mequ === "function",
+    "Expected native addon to export mequ()",
+  );
+  invariant(
+    typeof native.mtxm === "function",
+    "Expected native addon to export mtxm()",
+  );
+  invariant(
+    typeof native.mxmt === "function",
+    "Expected native addon to export mxmt()",
+  );
+  invariant(
+    typeof native.trace === "function",
+    "Expected native addon to export trace()",
+  );
+  invariant(
+    typeof native.xpose === "function",
+    "Expected native addon to export xpose()",
+  );
+  invariant(
     typeof native.reclat === "function",
     "Expected native addon to export reclat(rect)",
   );
@@ -933,5 +977,33 @@ export function getNodeBinding(): NativeAddon {
     "Expected native addon to export gfdist(target, abcorr, obsrvr, relate, refval, adjust, step, nintvls, cnfine, result)",
   );
 
+  invariant(
+    typeof native.eul2m === "function",
+    "Expected native addon to export eul2m",
+  );
+  invariant(
+    typeof native.m2eul === "function",
+    "Expected native addon to export m2eul",
+  );
+  invariant(
+    typeof native.m2q === "function",
+    "Expected native addon to export m2q",
+  );
+  invariant(
+    typeof native.q2m === "function",
+    "Expected native addon to export q2m",
+  );
+  invariant(
+    typeof native.qxq === "function",
+    "Expected native addon to export qxq",
+  );
+  invariant(
+    typeof native.qdq2av === "function",
+    "Expected native addon to export qdq2av",
+  );
+  invariant(
+    typeof native.raxisa === "function",
+    "Expected native addon to export raxisa",
+  );
   return native;
 }

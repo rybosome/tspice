@@ -10,6 +10,7 @@ import {
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
+  brandMat3RowMajorResult,
   invariant,
 } from "@rybosome/tspice-core";
 
@@ -458,6 +459,73 @@ function storageResult(
       `${label} must be an array of length ${expectedLength}`,
     );
   return copySpiceStorage(value, expectedLength, kind, label);
+}
+
+function assertFixedMatrixScalar(
+  value: unknown,
+  label: string,
+): asserts value is number {
+  if (typeof value !== "number" || !Number.isFinite(value))
+    throw new TypeError(`${label} must be a finite number`);
+}
+
+function copyFixedMatrix2(value: unknown): [number, number, number, number] {
+  const label = "diags2(symmat)";
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(`${label} must contain exactly four finite numbers`);
+  // The exact entries validated here are also the ones passed to the backend.
+  const entry = (i: number): number => {
+    const component: unknown = value[i];
+    assertFixedMatrixScalar(component, `${label}[${i}]`);
+    return component;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
+function fixedMatrixOutputNumber(value: unknown, label: string): number {
+  if (typeof value !== "number")
+    throw new TypeError(`${label} must be a number`);
+  return value;
+}
+
+function fixedMatrix2Output(
+  value: unknown,
+  label: string,
+): [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(`${label} must contain exactly four numbers`);
+  return [
+    fixedMatrixOutputNumber(value[0], label),
+    fixedMatrixOutputNumber(value[1], label),
+    fixedMatrixOutputNumber(value[2], label),
+    fixedMatrixOutputNumber(value[3], label),
+  ];
+}
+
+function rotationQuaternion(
+  value: unknown,
+  label: string,
+  requireFinite: boolean,
+): [number, number, number, number] {
+  if (!Array.isArray(value) || value.length !== 4)
+    throw new TypeError(label + " must contain four quaternion components");
+  const entry = (i: number) => {
+    const x: unknown = value[i];
+    if (typeof x !== "number" || (requireFinite && !Number.isFinite(x)))
+      throw new TypeError(label + " contains an invalid component");
+    return x;
+  };
+  return [entry(0), entry(1), entry(2), entry(3)];
+}
+
+function rotationVector(value: unknown): SpiceVector3 {
+  if (!Array.isArray(value) || value.length !== 3)
+    throw new TypeError("Expected three rotation vector components");
+  return [
+    fixedMatrixOutputNumber(value[0], "vector[0]"),
+    fixedMatrixOutputNumber(value[1], "vector[1]"),
+    fixedMatrixOutputNumber(value[2], "vector[2]"),
+  ];
 }
 
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
@@ -1221,6 +1289,123 @@ export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
         "double",
         "moved result",
       );
+    },
+    eul2m: (angle3, angle2, angle1, axis3, axis2, axis1) => {
+      assertFixedMatrixScalar(angle3, "eul2m(angle3)");
+      assertFixedMatrixScalar(angle2, "eul2m(angle2)");
+      assertFixedMatrixScalar(angle1, "eul2m(angle1)");
+      assertSpiceInt32(axis3, "eul2m(axis3)");
+      assertSpiceInt32(axis2, "eul2m(axis2)");
+      assertSpiceInt32(axis1, "eul2m(axis1)");
+      const result = native.eul2m(angle3, angle2, angle1, axis3, axis2, axis1);
+      return brandMat3RowMajorResult(result, { label: "eul2m result" });
+    },
+    m2eul: (m, axis3, axis2, axis1) => {
+      const mCopy = copyMatrixInput(m, "m2eul(m)");
+      assertSpiceInt32(axis3, "m2eul(axis3)");
+      assertSpiceInt32(axis2, "m2eul(axis2)");
+      assertSpiceInt32(axis1, "m2eul(axis1)");
+      const result = native.m2eul(mCopy, axis3, axis2, axis1);
+      return {
+        angle3: fixedMatrixOutputNumber(result.angle3, "m2eul(angle3)"),
+        angle2: fixedMatrixOutputNumber(result.angle2, "m2eul(angle2)"),
+        angle1: fixedMatrixOutputNumber(result.angle1, "m2eul(angle1)"),
+      };
+    },
+    m2q: (m) => {
+      const mCopy = copyMatrixInput(m, "m2q(m)");
+      const result = native.m2q(mCopy);
+      return rotationQuaternion(result, "m2q result", false);
+    },
+    q2m: (q) => {
+      const qCopy = rotationQuaternion(q, "q2m(q)", true);
+      const result = native.q2m(qCopy);
+      return brandMat3RowMajorResult(result, { label: "q2m result" });
+    },
+    qxq: (q1, q2) => {
+      const q1Copy = rotationQuaternion(q1, "qxq(q1)", true);
+      const q2Copy = rotationQuaternion(q2, "qxq(q2)", true);
+      const result = native.qxq(q1Copy, q2Copy);
+      return rotationQuaternion(result, "qxq result", false);
+    },
+    qdq2av: (q, dq) => {
+      const qCopy = rotationQuaternion(q, "qdq2av(q)", true);
+      const dqCopy = rotationQuaternion(dq, "qdq2av(dq)", true);
+      const result = native.qdq2av(qCopy, dqCopy);
+      return rotationVector(result);
+    },
+    raxisa: (m) => {
+      const mCopy = copyMatrixInput(m, "raxisa(m)");
+      const result = native.raxisa(mCopy);
+      return {
+        axis: rotationVector(result.axis),
+        angle: fixedMatrixOutputNumber(result.angle, "raxisa(angle)"),
+      };
+    },
+    det: (m) => {
+      const mCopy = copyMatrixInput(m, "det(m)");
+      const out = native.det(mCopy);
+      return fixedMatrixOutputNumber(out, "det result");
+    },
+    diags2: (symmat) => {
+      const symmatCopy = copyFixedMatrix2(symmat);
+      const out = native.diags2(symmatCopy);
+      if (!isPlainObject(out))
+        throw new TypeError("diags2 result must be an object");
+      return {
+        diag: fixedMatrix2Output(out.diag, "diags2 result.diag"),
+        rotate: fixedMatrix2Output(out.rotate, "diags2 result.rotate"),
+      };
+    },
+    ident: () => {
+      const out = native.ident();
+      return brandMat3RowMajorResult(out, { label: "ident result" });
+    },
+    invert: (m) => {
+      const mCopy = copyMatrixInput(m, "invert(m)");
+      const out = native.invert(mCopy);
+      return brandMat3RowMajorResult(out, { label: "invert result" });
+    },
+    invort: (m) => {
+      const mCopy = copyMatrixInput(m, "invort(m)");
+      const out = native.invort(mCopy);
+      return brandMat3RowMajorResult(out, { label: "invort result" });
+    },
+    isrot: (m, ntol, dtol) => {
+      const mCopy = copyMatrixInput(m, "isrot(m)");
+      assertFixedMatrixScalar(ntol, "isrot(ntol)");
+      assertFixedMatrixScalar(dtol, "isrot(dtol)");
+      const out = native.isrot(mCopy, ntol, dtol);
+      if (typeof out !== "boolean")
+        throw new TypeError("isrot result must be a boolean");
+      return out;
+    },
+    mequ: (m) => {
+      const mCopy = copyMatrixInput(m, "mequ(m)");
+      const out = native.mequ(mCopy);
+      return brandMat3RowMajorResult(out, { label: "mequ result" });
+    },
+    mtxm: (a, b) => {
+      const aCopy = copyMatrixInput(a, "mtxm(a)");
+      const bCopy = copyMatrixInput(b, "mtxm(b)");
+      const out = native.mtxm(aCopy, bCopy);
+      return brandMat3RowMajorResult(out, { label: "mtxm result" });
+    },
+    mxmt: (a, b) => {
+      const aCopy = copyMatrixInput(a, "mxmt(a)");
+      const bCopy = copyMatrixInput(b, "mxmt(b)");
+      const out = native.mxmt(aCopy, bCopy);
+      return brandMat3RowMajorResult(out, { label: "mxmt result" });
+    },
+    trace: (m) => {
+      const mCopy = copyMatrixInput(m, "trace(m)");
+      const out = native.trace(mCopy);
+      return fixedMatrixOutputNumber(out, "trace result");
+    },
+    xpose: (m) => {
+      const mCopy = copyMatrixInput(m, "xpose(m)");
+      const out = native.xpose(mCopy);
+      return brandMat3RowMajorResult(out, { label: "xpose result" });
     },
     reclat: (rect) => {
       const out = native.reclat(rect);

@@ -22,6 +22,8 @@
 #include <memory>
 #include <new>
 
+#include <cmath>
+
 #include "../addon_common.h"
 #include "../napi_helpers.h"
 #include "tspice_backend_shim.h"
@@ -2166,6 +2168,376 @@ static Napi::Array Moved(const Napi::CallbackInfo& info) {
   return StorageResult(env, destination.get(), destinationLength);
 }
 
+static bool ReadFixedMatrix(Napi::Env env, const Napi::Value& value, size_t length, double* out, const char* label) {
+  if (!tspice_backend_node::ReadNumberArrayFixed(env, value, length, out, label)) return false;
+  for (size_t i = 0; i < length; i++) {
+    if (!std::isfinite(out[i])) {
+      ThrowSpiceError(Napi::TypeError::New(env, std::string(label) + " must contain finite numbers"));
+      return false;
+    }
+  }
+  return true;
+}
+
+static Napi::Value Eul2m(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 6) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m: incorrect argument count")); return env.Undefined(); }
+  if (!info[0].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle3) must be numeric")); return env.Undefined(); }
+  const double angle3 = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle3)")); return env.Undefined(); }
+  if (!info[1].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle2) must be numeric")); return env.Undefined(); }
+  const double angle2 = info[1].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle2)")); return env.Undefined(); }
+  if (!info[2].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(angle1) must be numeric")); return env.Undefined(); }
+  const double angle1 = info[2].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(angle1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(angle1)")); return env.Undefined(); }
+  if (!info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis3) must be numeric")); return env.Undefined(); }
+  const double axis3 = info[3].As<Napi::Number>().DoubleValue();
+  if (!(axis3 >= INT32_MIN && axis3 <= INT32_MAX && std::trunc(axis3) == axis3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis3)")); return env.Undefined(); }
+  if (!info[4].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis2) must be numeric")); return env.Undefined(); }
+  const double axis2 = info[4].As<Napi::Number>().DoubleValue();
+  if (!(axis2 >= INT32_MIN && axis2 <= INT32_MAX && std::trunc(axis2) == axis2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis2)")); return env.Undefined(); }
+  if (!info[5].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"eul2m(axis1) must be numeric")); return env.Undefined(); }
+  const double axis1 = info[5].As<Napi::Number>().DoubleValue();
+  if (!(axis1 >= INT32_MIN && axis1 <= INT32_MAX && std::trunc(axis1) == axis1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid eul2m(axis1)")); return env.Undefined(); }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double r[9] = {};
+  if (tspice_eul2m(angle3, angle2, angle1, static_cast<int>(axis3), static_cast<int>(axis2), static_cast<int>(axis1), r, err, sizeof(err))) { ThrowSpiceError(env,"eul2m",err); return env.Undefined(); }
+  return MakeNumberArray(env,r,9);
+}
+
+static Napi::Value M2eul(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 4) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "m2eul(m)")) return env.Undefined();
+  if (!info[1].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis3) must be numeric")); return env.Undefined(); }
+  const double axis3 = info[1].As<Napi::Number>().DoubleValue();
+  if (!(axis3 >= INT32_MIN && axis3 <= INT32_MAX && std::trunc(axis3) == axis3)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis3)")); return env.Undefined(); }
+  if (!info[2].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis2) must be numeric")); return env.Undefined(); }
+  const double axis2 = info[2].As<Napi::Number>().DoubleValue();
+  if (!(axis2 >= INT32_MIN && axis2 <= INT32_MAX && std::trunc(axis2) == axis2)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis2)")); return env.Undefined(); }
+  if (!info[3].IsNumber()) { ThrowSpiceError(Napi::TypeError::New(env,"m2eul(axis1) must be numeric")); return env.Undefined(); }
+  const double axis1 = info[3].As<Napi::Number>().DoubleValue();
+  if (!(axis1 >= INT32_MIN && axis1 <= INT32_MAX && std::trunc(axis1) == axis1)) { ThrowSpiceError(Napi::RangeError::New(env,"Invalid m2eul(axis1)")); return env.Undefined(); }
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double angle3[1] = {};
+  double angle2[1] = {};
+  double angle1[1] = {};
+  if (tspice_m2eul(m, static_cast<int>(axis3), static_cast<int>(axis2), static_cast<int>(axis1), angle3, angle2, angle1, err, sizeof(err))) { ThrowSpiceError(env,"m2eul",err); return env.Undefined(); }
+  auto result=Napi::Object::New(env);
+  result.Set("angle3",Napi::Number::New(env,angle3[0]));
+  result.Set("angle2",Napi::Number::New(env,angle2[0]));
+  result.Set("angle1",Napi::Number::New(env,angle1[0]));
+  return result;
+}
+
+static Napi::Value M2q(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"m2q: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "m2q(m)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double q[4] = {};
+  if (tspice_m2q(m, q, err, sizeof(err))) { ThrowSpiceError(env,"m2q",err); return env.Undefined(); }
+  return MakeNumberArray(env,q,4);
+}
+
+static Napi::Value Q2m(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"q2m: incorrect argument count")); return env.Undefined(); }
+  double q[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q, "q2m(q)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double r[9] = {};
+  if (tspice_q2m(q, r, err, sizeof(err))) { ThrowSpiceError(env,"q2m",err); return env.Undefined(); }
+  return MakeNumberArray(env,r,9);
+}
+
+static Napi::Value Qxq(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 2) { ThrowSpiceError(Napi::TypeError::New(env,"qxq: incorrect argument count")); return env.Undefined(); }
+  double q1[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q1, "qxq(q1)")) return env.Undefined();
+  double q2[4];
+  if (!ReadFixedMatrix(env, info[1], 4, q2, "qxq(q2)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double qout[4] = {};
+  if (tspice_qxq(q1, q2, qout, err, sizeof(err))) { ThrowSpiceError(env,"qxq",err); return env.Undefined(); }
+  return MakeNumberArray(env,qout,4);
+}
+
+static Napi::Value Qdq2av(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 2) { ThrowSpiceError(Napi::TypeError::New(env,"qdq2av: incorrect argument count")); return env.Undefined(); }
+  double q[4];
+  if (!ReadFixedMatrix(env, info[0], 4, q, "qdq2av(q)")) return env.Undefined();
+  double dq[4];
+  if (!ReadFixedMatrix(env, info[1], 4, dq, "qdq2av(dq)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double av[3] = {};
+  if (tspice_qdq2av(q, dq, av, err, sizeof(err))) { ThrowSpiceError(env,"qdq2av",err); return env.Undefined(); }
+  return MakeNumberArray(env,av,3);
+}
+
+static Napi::Value Raxisa(const Napi::CallbackInfo& info) {
+  auto env=info.Env();
+  if (info.Length() != 1) { ThrowSpiceError(Napi::TypeError::New(env,"raxisa: incorrect argument count")); return env.Undefined(); }
+  double m[9];
+  if (!ReadFixedMatrix(env, info[0], 9, m, "raxisa(m)")) return env.Undefined();
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes] = {};
+  double axis[3] = {};
+  double angle[1] = {};
+  if (tspice_raxisa(m, axis, angle, err, sizeof(err))) { ThrowSpiceError(env,"raxisa",err); return env.Undefined(); }
+  auto result=Napi::Object::New(env);
+  result.Set("axis",MakeNumberArray(env,axis,3));
+  result.Set("angle",Napi::Number::New(env,angle[0]));
+  return result;
+}
+
+static Napi::Number Det(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "det() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "det(m)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_det(m, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling det", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Object Diags2(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "diags2() expects 1 argument(s)"));
+    return Napi::Object::New(env);
+  }
+  double symmat[4] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 4, symmat, "diags2(symmat)")) return Napi::Object::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double diag[4] = {0.0};
+  double rotate[4] = {0.0};
+  const int status = tspice_diags2(symmat, diag, rotate, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling diags2", err);
+    return Napi::Object::New(env);
+  }
+  Napi::Object result = Napi::Object::New(env);
+  result.Set("diag", MakeNumberArray(env, diag, 4));
+  result.Set("rotate", MakeNumberArray(env, rotate, 4));
+  return result;
+}
+
+static Napi::Array Ident(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 0) {
+    ThrowSpiceError(Napi::TypeError::New(env, "ident() expects 0 argument(s)"));
+    return Napi::Array::New(env);
+  }
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_ident(out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling ident", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Array Invert(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "invert() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "invert(m)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_invert(m, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling invert", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Array Invort(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "invort() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "invort(m)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_invort(m, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling invort", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Boolean Isrot(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 3) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrot() expects 3 argument(s)"));
+    return Napi::Boolean::New(env, 0);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "isrot(m)")) return Napi::Boolean::New(env, 0);
+  if (!info[1].IsNumber() || !std::isfinite(info[1].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrot(ntol) must be a finite number"));
+    return Napi::Boolean::New(env, 0);
+  }
+  const double ntol = info[1].As<Napi::Number>().DoubleValue();
+  if (!info[2].IsNumber() || !std::isfinite(info[2].As<Napi::Number>().DoubleValue())) {
+    ThrowSpiceError(Napi::TypeError::New(env, "isrot(dtol) must be a finite number"));
+    return Napi::Boolean::New(env, 0);
+  }
+  const double dtol = info[2].As<Napi::Number>().DoubleValue();
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  int out = 0;
+  const int status = tspice_isrot(m, ntol, dtol, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling isrot", err);
+    return Napi::Boolean::New(env, 0);
+  }
+  return Napi::Boolean::New(env, out != 0);
+}
+
+static Napi::Array Mequ(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mequ() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "mequ(m)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_mequ(m, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling mequ", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Array Mtxm(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mtxm() expects 2 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double a[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, a, "mtxm(a)")) return Napi::Array::New(env);
+  double b[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[1], 9, b, "mtxm(b)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_mtxm(a, b, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling mtxm", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Array Mxmt(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 2) {
+    ThrowSpiceError(Napi::TypeError::New(env, "mxmt() expects 2 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double a[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, a, "mxmt(a)")) return Napi::Array::New(env);
+  double b[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[1], 9, b, "mxmt(b)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_mxmt(a, b, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling mxmt", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
+static Napi::Number Trace(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "trace() expects 1 argument(s)"));
+    return Napi::Number::New(env, 0);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "trace(m)")) return Napi::Number::New(env, 0);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out = 0.0;
+  const int status = tspice_trace(m, &out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling trace", err);
+    return Napi::Number::New(env, 0);
+  }
+  return Napi::Number::New(env, out);
+}
+
+static Napi::Array Xpose(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+  if (info.Length() != 1) {
+    ThrowSpiceError(Napi::TypeError::New(env, "xpose() expects 1 argument(s)"));
+    return Napi::Array::New(env);
+  }
+  double m[9] = {0.0};
+  if (!ReadFixedMatrix(env, info[0], 9, m, "xpose(m)")) return Napi::Array::New(env);
+
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  char err[tspice_backend_node::kErrMaxBytes];
+  double out[9] = {0.0};
+  const int status = tspice_xpose(m, out, err, (int)sizeof(err));
+  if (status != 0) {
+    ThrowSpiceError(env, "CSPICE failed while calling xpose", err);
+    return Napi::Array::New(env);
+  }
+  return MakeNumberArray(env, out, 9);
+}
+
 static Napi::Object Reclat(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
 
@@ -2804,6 +3176,24 @@ void RegisterCoordsVectors(Napi::Env env, Napi::Object exports) {
   if (!SetExportChecked(env, exports, "filld", Napi::Function::New(env, Filld), __func__)) return;
   if (!SetExportChecked(env, exports, "filli", Napi::Function::New(env, Filli), __func__)) return;
   if (!SetExportChecked(env, exports, "moved", Napi::Function::New(env, Moved), __func__)) return;
+  if (!SetExportChecked(env, exports, "eul2m", Napi::Function::New(env,Eul2m), __func__)) return;
+  if (!SetExportChecked(env, exports, "m2eul", Napi::Function::New(env,M2eul), __func__)) return;
+  if (!SetExportChecked(env, exports, "m2q", Napi::Function::New(env,M2q), __func__)) return;
+  if (!SetExportChecked(env, exports, "q2m", Napi::Function::New(env,Q2m), __func__)) return;
+  if (!SetExportChecked(env, exports, "qxq", Napi::Function::New(env,Qxq), __func__)) return;
+  if (!SetExportChecked(env, exports, "qdq2av", Napi::Function::New(env,Qdq2av), __func__)) return;
+  if (!SetExportChecked(env, exports, "raxisa", Napi::Function::New(env,Raxisa), __func__)) return;
+  if (!SetExportChecked(env, exports, "det", Napi::Function::New(env, Det), __func__)) return;
+  if (!SetExportChecked(env, exports, "diags2", Napi::Function::New(env, Diags2), __func__)) return;
+  if (!SetExportChecked(env, exports, "ident", Napi::Function::New(env, Ident), __func__)) return;
+  if (!SetExportChecked(env, exports, "invert", Napi::Function::New(env, Invert), __func__)) return;
+  if (!SetExportChecked(env, exports, "invort", Napi::Function::New(env, Invort), __func__)) return;
+  if (!SetExportChecked(env, exports, "isrot", Napi::Function::New(env, Isrot), __func__)) return;
+  if (!SetExportChecked(env, exports, "mequ", Napi::Function::New(env, Mequ), __func__)) return;
+  if (!SetExportChecked(env, exports, "mtxm", Napi::Function::New(env, Mtxm), __func__)) return;
+  if (!SetExportChecked(env, exports, "mxmt", Napi::Function::New(env, Mxmt), __func__)) return;
+  if (!SetExportChecked(env, exports, "trace", Napi::Function::New(env, Trace), __func__)) return;
+  if (!SetExportChecked(env, exports, "xpose", Napi::Function::New(env, Xpose), __func__)) return;
   if (!SetExportChecked(env, exports, "reclat", Napi::Function::New(env, Reclat), __func__)) return;
   if (!SetExportChecked(env, exports, "latrec", Napi::Function::New(env, Latrec), __func__)) return;
   if (!SetExportChecked(env, exports, "recsph", Napi::Function::New(env, Recsph), __func__)) return;

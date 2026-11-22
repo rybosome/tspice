@@ -1440,6 +1440,128 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+    rPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_m2eul(
+    mPtr: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+    angle3Ptr: number,
+    angle2Ptr: number,
+    angle1Ptr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_m2q(
+    mPtr: number,
+    qPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_q2m(
+    qPtr: number,
+    rPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qxq(
+    q1Ptr: number,
+    q2Ptr: number,
+    qoutPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_qdq2av(
+    qPtr: number,
+    dqPtr: number,
+    avPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_raxisa(
+    mPtr: number,
+    axisPtr: number,
+    anglePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_det(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diags2(
+    symmatPtr: number,
+    diagPtr: number,
+    rotatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ident(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_invert(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invort(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrot(
+    mPtr: number,
+    ntol: number,
+    dtol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mequ(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxm(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmt(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trace(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2792,6 +2914,73 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_det(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_diags2(
+    symmatPtr: number,
+    diagPtr: number,
+    rotatePtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ident(outPtr: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_invert(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_invort(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_isrot(
+    mPtr: number,
+    ntol: number,
+    dtol: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mequ(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mtxm(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mxmt(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_trace(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_xpose(
+    mPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -3259,6 +3448,24 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_filld",
   "_tspice_filli",
   "_tspice_moved",
+  "_tspice_eul2m",
+  "_tspice_m2eul",
+  "_tspice_m2q",
+  "_tspice_q2m",
+  "_tspice_qxq",
+  "_tspice_qdq2av",
+  "_tspice_raxisa",
+  "_tspice_det",
+  "_tspice_diags2",
+  "_tspice_ident",
+  "_tspice_invert",
+  "_tspice_invort",
+  "_tspice_isrot",
+  "_tspice_mequ",
+  "_tspice_mtxm",
+  "_tspice_mxmt",
+  "_tspice_trace",
+  "_tspice_xpose",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

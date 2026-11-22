@@ -641,5 +641,41 @@
       "prs": ["https://github.com/rybosome/tspice/pull/720"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a12-fixed-matrices",
+      "routines": [
+        "det_c",
+        "diags2_c",
+        "ident_c",
+        "invert_c",
+        "invort_c",
+        "isrot_c",
+        "mequ_c",
+        "mtxm_c",
+        "mxmt_c",
+        "trace_c",
+        "xpose_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/712"],
+      "nextAction": "A12 evidence on its original source is retained historically. Revalidate the composite A12/A14 source fingerprint in full required local runs and observed canonical CI before verification."
+    },
+    {
+      "id": "a14-rotation-representations",
+      "routines": [
+        "eul2m_c",
+        "m2eul_c",
+        "m2q_c",
+        "q2m_c",
+        "qxq_c",
+        "qdq2av_c",
+        "raxisa_c"
+      ],
+      "dependsOn": ["a12-fixed-matrices"],
+      "prs": ["https://github.com/rybosome/tspice/pull/725"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

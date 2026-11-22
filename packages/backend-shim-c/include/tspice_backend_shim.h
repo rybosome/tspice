@@ -1226,6 +1226,36 @@ int tspice_filli(
 int tspice_moved(
     const double *source, int sourceLength, int ndim, double *destination, int destinationLength, char *err, int errMaxBytes);
 
+// det_c: flat row-major matrix buffers.
+int tspice_eul2m(double angle3, double angle2, double angle1, int axis3, int axis2, int axis1, double *r, char *err, int errMaxBytes);
+int tspice_m2eul(const double * m, int axis3, int axis2, int axis1, double *angle3, double *angle2, double *angle1, char *err, int errMaxBytes);
+int tspice_m2q(const double * m, double *q, char *err, int errMaxBytes);
+int tspice_q2m(const double * q, double *r, char *err, int errMaxBytes);
+int tspice_qxq(const double * q1, const double * q2, double *qout, char *err, int errMaxBytes);
+int tspice_qdq2av(const double * q, const double * dq, double *av, char *err, int errMaxBytes);
+int tspice_raxisa(const double * m, double *axis, double *angle, char *err, int errMaxBytes);
+int tspice_det(const double *m, double *out, char *err, int errMaxBytes);
+// diags2_c: flat row-major matrix buffers.
+int tspice_diags2(const double *symmat, double *diag, double *rotate, char *err, int errMaxBytes);
+// ident_c: flat row-major matrix buffers.
+int tspice_ident(double *out, char *err, int errMaxBytes);
+// invert_c: flat row-major matrix buffers.
+int tspice_invert(const double *m, double *out, char *err, int errMaxBytes);
+// invort_c: flat row-major matrix buffers.
+int tspice_invort(const double *m, double *out, char *err, int errMaxBytes);
+// isrot_c: flat row-major matrix buffers.
+int tspice_isrot(const double *m, double ntol, double dtol, int *out, char *err, int errMaxBytes);
+// mequ_c: flat row-major matrix buffers.
+int tspice_mequ(const double *m, double *out, char *err, int errMaxBytes);
+// mtxm_c: flat row-major matrix buffers.
+int tspice_mtxm(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// mxmt_c: flat row-major matrix buffers.
+int tspice_mxmt(const double *a, const double *b, double *out, char *err, int errMaxBytes);
+// trace_c: flat row-major matrix buffers.
+int tspice_trace(const double *m, double *out, char *err, int errMaxBytes);
+// xpose_c: flat row-major matrix buffers.
+int tspice_xpose(const double *m, double *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

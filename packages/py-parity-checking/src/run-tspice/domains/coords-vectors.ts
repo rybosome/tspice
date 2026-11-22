@@ -69,6 +69,24 @@ import type {
   StepCoordsVectorsFilld,
   StepCoordsVectorsFilli,
   StepCoordsVectorsMoved,
+  StepCoordsVectorsEul2m,
+  StepCoordsVectorsM2eul,
+  StepCoordsVectorsM2q,
+  StepCoordsVectorsQ2m,
+  StepCoordsVectorsQxq,
+  StepCoordsVectorsQdq2av,
+  StepCoordsVectorsRaxisa,
+  StepCoordsVectorsDet,
+  StepCoordsVectorsDiags2,
+  StepCoordsVectorsIdent,
+  StepCoordsVectorsInvert,
+  StepCoordsVectorsInvort,
+  StepCoordsVectorsIsrot,
+  StepCoordsVectorsMequ,
+  StepCoordsVectorsMtxm,
+  StepCoordsVectorsMxmt,
+  StepCoordsVectorsTrace,
+  StepCoordsVectorsXpose,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -164,6 +182,24 @@ type CoordsVectorsStep =
   | StepCoordsVectorsFilld
   | StepCoordsVectorsFilli
   | StepCoordsVectorsMoved
+  | StepCoordsVectorsEul2m
+  | StepCoordsVectorsM2eul
+  | StepCoordsVectorsM2q
+  | StepCoordsVectorsQ2m
+  | StepCoordsVectorsQxq
+  | StepCoordsVectorsQdq2av
+  | StepCoordsVectorsRaxisa
+  | StepCoordsVectorsDet
+  | StepCoordsVectorsDiags2
+  | StepCoordsVectorsIdent
+  | StepCoordsVectorsInvert
+  | StepCoordsVectorsInvort
+  | StepCoordsVectorsIsrot
+  | StepCoordsVectorsMequ
+  | StepCoordsVectorsMtxm
+  | StepCoordsVectorsMxmt
+  | StepCoordsVectorsTrace
+  | StepCoordsVectorsXpose
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -622,6 +658,114 @@ export function runCoordsVectorsStep(
         step.destination,
       );
       return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.eul2m":
+      return {
+        op: step.op,
+        value: unflattenMatrix(
+          context.spice.raw.eul2m(
+            step.angle3,
+            step.angle2,
+            step.angle1,
+            step.axis3,
+            step.axis2,
+            step.axis1,
+          ),
+        ),
+      };
+    case "coords-vectors.m2eul":
+      return {
+        op: step.op,
+        value: context.spice.raw.m2eul(
+          flattenMatrix(step.m),
+          step.axis3,
+          step.axis2,
+          step.axis1,
+        ),
+      };
+    case "coords-vectors.m2q":
+      return {
+        op: step.op,
+        value: context.spice.raw.m2q(flattenMatrix(step.m)),
+      };
+    case "coords-vectors.q2m":
+      return {
+        op: step.op,
+        value: unflattenMatrix(context.spice.raw.q2m(step.q)),
+      };
+    case "coords-vectors.qxq":
+      return { op: step.op, value: context.spice.raw.qxq(step.q1, step.q2) };
+    case "coords-vectors.qdq2av":
+      return { op: step.op, value: context.spice.raw.qdq2av(step.q, step.dq) };
+    case "coords-vectors.raxisa":
+      return {
+        op: step.op,
+        value: context.spice.raw.raxisa(flattenMatrix(step.m)),
+      };
+    case "coords-vectors.det": {
+      const out = context.spice.raw.det(flattenMatrix(step.m));
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.diags2": {
+      const out = context.spice.raw.diags2(step.symmat);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.ident": {
+      const out = context.spice.raw.ident();
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.invert": {
+      const out = context.spice.raw.invert(flattenMatrix(step.m));
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.invort": {
+      const out = context.spice.raw.invort(flattenMatrix(step.m));
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.isrot": {
+      const out = context.spice.raw.isrot(
+        flattenMatrix(step.m),
+        step.ntol,
+        step.dtol,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mequ": {
+      const out = context.spice.raw.mequ(flattenMatrix(step.m));
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.mtxm": {
+      const out = context.spice.raw.mtxm(
+        flattenMatrix(step.a),
+        flattenMatrix(step.b),
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.mxmt": {
+      const out = context.spice.raw.mxmt(
+        flattenMatrix(step.a),
+        flattenMatrix(step.b),
+      );
+      return { op: step.op, value: unflattenMatrix(out) };
+    }
+
+    case "coords-vectors.trace": {
+      const out = context.spice.raw.trace(flattenMatrix(step.m));
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.xpose": {
+      const out = context.spice.raw.xpose(flattenMatrix(step.m));
+      return { op: step.op, value: unflattenMatrix(out) };
     }
 
     case "coords-vectors.reclat": {

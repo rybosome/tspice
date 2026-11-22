@@ -254,6 +254,32 @@ destination, including the untouched suffix. All array inputs are readonly
 
 Most routines in this domain are **pure math** and require no kernels.
 
+The seven rotation conversions use finite row-major `Mat3RowMajor`
+inputs, radian angles, numbered axes and scalar-first SPICE quaternions.
+
+| Raw call                                             | Scientific route                                  | Result                                                      |
+| ---------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------- |
+| `eul2m(angle3, angle2, angle1, axis3, axis2, axis1)` | Traced SPICELIB `eul2m_` with initialized storage | Owned row-major matrix.                                     |
+| `m2eul(m, axis3, axis2, axis1)`                      | `m2eul_c`                                         | `{angle3, angle2, angle1}`.                                 |
+| `m2q(m)`                                             | `m2q_c`                                           | Owned scalar-first quaternion.                              |
+| `q2m(q)`                                             | `q2m_c`                                           | Owned row-major matrix, including exceptional IEEE entries. |
+| `qxq(q1, q2)`                                        | `qxq_c`                                           | Owned Hamilton product in input order.                      |
+| `qdq2av(q, dq)`                                      | `qdq2av_c`                                        | Angular velocity vector.                                    |
+| `raxisa(m)`                                          | `raxisa_c`                                        | `{axis, angle}` with radians.                               |
+
+The lower-level Euler entrypoint preserves the original scientific
+implementation and public trace on success and error. See the source
+review for orientation, singular angle selection and exceptional values.
+[Rotation representation review](step8-rotation-representations.md)
+
+The fixed-matrix additions use the existing flat, readonly `Mat3RowMajor`
+input shape. `diags2` directly consumes flat 2x2 tuples in
+`[m00,m01,m10,m11]` order and returns both matrices in that order. Every returned
+matrix owns its storage. Backend results retain numeric `NaN` and infinities;
+the finite-only matrix input validators still reject those values if reused as
+input. `invert`, `invort`, and `isrot` preserve their distinct CSPICE threshold,
+column-scaling, and tolerance semantics.
+
 | domain.method                                 | CSPICE entrypoint(s) | Args (TS shape)                                                  | Returns (TS shape)                               | Comparison notes (tolerance/normalization)         | Statefulness / required kernels                                                       |
 | --------------------------------------------- | -------------------- | ---------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `coords-vectors.pi()`                         | `pi_c`               | `()`                                                             | `number`                                         | pi radians; exact live constant comparison         | none; error-free                                                                      |
@@ -344,6 +370,17 @@ Most routines in this domain are **pure math** and require no kernels.
 | `coords-vectors.lgrind`                       | `lgrind_c`           | `(xvals:readonly number[], yvals:readonly number[], x:number)`   | `{p:number,dp:number}`                           | Equal-length increasing distinct nodes/values; both value and abscissa derivative; repeated nodes actual DIVIDEBYZERO.                          | Kernel-free authored samples; no retained scientific resources.                       |
 | `coords-vectors.lgrint`                       | `lgrint_c`           | `(xvals:readonly number[], yvals:readonly number[], x:number)`   | `number`                                         | Equal-length increasing distinct nodes/values; preserve actual scalar recurrence; repeated nodes actual DIVIDEBYZERO.                           | Kernel-free authored samples; no retained scientific resources.                       |
 | `coords-vectors.qderiv`                       | `qderiv_c`           | `(f0:readonly number[], f2:readonly number[], delta:number)`     | `number[]`                                       | Equal positive dimensions; delta is half endpoint separation; zero actual DIVIDEBYZERO, empty rejected by documented domain; owned full vector. | Kernel-free authored samples; no retained scientific resources.                       |
+| `coords-vectors.det(m)`                       | `det_c`              | `(m: Mat3RowMajor)`                                              | `number`                                                                               | determinant with CSPICE overflow/underflow behavior                                                     | none                                                                                  |
+| `coords-vectors.diags2(symmat)`               | `diags2_c`           | `(symmat: readonly [number, number, number, number])`            | `{ diag: [number, number, number, number]; rotate: [number, number, number, number] }` | all eight output entries; lower-left input ignored; preserve chosen eigenvalue order and rotation signs | none                                                                                  |
+| `coords-vectors.ident()`                      | `ident_c`            | `()`                                                             | `Mat3RowMajor`                                                                         | exact 3x3 identity; independent storage                                                                 | none                                                                                  |
+| `coords-vectors.invert(m)`                    | `invert_c`           | `(m: Mat3RowMajor)`                                              | `Mat3RowMajor`                                                                         | pinned `abs(det(m)) < 1e-16` returns zeros; other numeric results preserved                             | none; small determinant is a success, not a SPICE error                               |
+| `coords-vectors.invort(m)`                    | `invort_c`           | `(m: Mat3RowMajor)`                                              | `Mat3RowMajor`                                                                         | transpose, then divide each row by the original column's squared norm; orthogonality is not checked     | none; `ZEROLENGTHCOLUMN` / `COLUMNTOOSMALL` are SPICE errors                          |
+| `coords-vectors.isrot(m, ntol, dtol)`         | `isrot_c`            | `(m: Mat3RowMajor, ntol: number, dtol: number)`                  | `boolean`                                                                              | exact boolean; inclusive column-norm and unitized-determinant tolerances                                | none; negative tolerance signals `VALUEOUTOFRANGE`                                    |
+| `coords-vectors.mequ(m)`                      | `mequ_c`             | `(m: Mat3RowMajor)`                                              | `Mat3RowMajor`                                                                         | exact component copy; signed zero checked separately                                                    | none                                                                                  |
+| `coords-vectors.mtxm(a, b)`                   | `mtxm_c`             | `(a: Mat3RowMajor, b: Mat3RowMajor)`                             | `Mat3RowMajor`                                                                         | all nine entries of `transpose(a) * b`; nonsymmetric operands distinguish order                         | none                                                                                  |
+| `coords-vectors.mxmt(a, b)`                   | `mxmt_c`             | `(a: Mat3RowMajor, b: Mat3RowMajor)`                             | `Mat3RowMajor`                                                                         | all nine entries of `a * transpose(b)`; nonsymmetric operands distinguish order                         | none                                                                                  |
+| `coords-vectors.trace(m)`                     | `trace_c`            | `(m: Mat3RowMajor)`                                              | `number`                                                                               | sum of diagonal entries; preserve numeric overflow and cancellation                                     | none                                                                                  |
+| `coords-vectors.xpose(m)`                     | `xpose_c`            | `(m: Mat3RowMajor)`                                              | `Mat3RowMajor`                                                                         | all nine entries in transposed positions; owned output                                                  | none                                                                                  |
 
 ### Cell backing bounds
 

@@ -445,11 +445,13 @@ export function buildLedger(root = defaultRoot, options = {}) {
       const key = `${fromFile}:${symbol}`;
       if (seen.has(key)) return;
       seen.add(key);
-      if (symbol.endsWith("_c")) {
+      const definition = shim.resolve(symbol, fromFile);
+      // The pinned eul2m_c wrapper uses this declared SPICELIB function.
+      // Only a real call to the external symbol qualifies as alias evidence.
+      if (symbol.endsWith("_c") || (symbol === "eul2m_" && !definition)) {
         result.add(symbol);
         return;
       }
-      const definition = shim.resolve(symbol, fromFile);
       for (const call of definition?.calls ?? [])
         visit(call, definition.evidence.file);
     }

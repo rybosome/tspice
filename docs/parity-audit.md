@@ -161,6 +161,38 @@ are added on this branch. Earlier executions remain historical and all judgments
 remain `reviewed` until fresh required local and observed canonical CI evidence
 is recorded against the final source digest.
 
+## Fixed matrices expansion
+
+The A12 record reviews `det_c`, `diags2_c`, `ident_c`, `invert_c`, `invort_c`,
+`isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, and `xpose_c`. Its 50
+registered scenarios make 95 new-routine calls plus one `error.reset` control per
+backend. Eight calls exercise genuine column or tolerance errors; every matrix
+entry and both `diags2` outputs remain observable. Nonsymmetric operands,
+threshold signs/boundaries, ignored lower-triangle entries and independent
+tolerance parameters distinguish the underlying scientific contracts.
+
+Focused tests compare exact identity/copy/transpose outputs to the live oracle
+and rescale tiny determinants, traces, eigenvalues and inverse entries. A scoped
+14-observation live test retains every nonfinite output alongside finite
+controls. The narrow `brandMat3RowMajorResult` helper owns and brands nine numeric
+result entries while leaving existing finite input validation unchanged. Its
+six source tests cover nonfinite values, signed zero, ownership, malformed data,
+freezing and the unchanged input boundary. Native boundary tests and 46 WASM
+allocation failure/success checks cover the compiled adapters.
+
+A focused regression takes actual Node/WASM `invert`, `mtxm`, `mequ` and
+`diags2` results through the existing RPC codec and `structuredClone` on a
+connected test worker pair. It observes complete NaN/infinity, signed-zero and
+multi-matrix outputs. This tests the transport representation boundary; it does
+not claim browser worker startup or asset delivery.
+
+The [numerical review](step8-fixed-matrix-numerics.md) records the pinned-source
+semantics, independent oracle observations and the signed-zero recovery
+assertion repair. These descriptions and local progress do not establish final
+verification: A12 remains `reviewed` until fresh source-bound local and observed
+canonical CI evidence is recorded. The original Step 7 observations remain
+historical on this branch.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -233,7 +265,12 @@ Capture the input count, copy each finite or signed32 entry once, validate the s
 `ducrss_c`, `dvcrss_c`, `dvdot_c`, `dvhat_c`, `dvnorm_c`, `dvsep_c` now marshal the same entries that the typed adapters validated.
 Copy each of the six finite state components once into an owned position/velocity tuple before dispatch. Preserve the original state layout and scientific derivative algorithms. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
 
-Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
+Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts).
+
+`det_c`, `diags2_c`, `invert_c`, `invort_c`, `isrot_c`, `mequ_c`, `mtxm_c`, `mxmt_c`, `trace_c`, `xpose_c` now marshal the same entries that the typed adapters validated.
+Capture each four- or nine-entry row-major matrix into an owned input. Keep the existing structural input acceptance, result branding and IEEE output behavior. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [fixed-matrices-domain.test.ts](../packages/backend-node/test/fixed-matrices-domain.test.ts), [fixed-matrices-allocations.test.ts](../packages/backend-wasm/test/fixed-matrices-allocations.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
@@ -262,3 +299,11 @@ including three expected character-row size errors. The audit covers the
 complete returned destination, unchanged storage outside the written prefix,
 typed memory, scoped IEEE comparisons and the caller precondition on the
 pinned move implementation. [Array-storage evidence](step8-array-storage.md)
+
+## Rotation representations
+
+A14 adds seven scientific methods on the exact A12 matrix branch. The
+two expansion assignments remain separate. The combined source requires
+new full validation records for each backend. The Euler constructor uses
+the actual linked SPICELIB implementation with defined error handling.
+[Matrix, quaternion, Euler and axis conventions](step8-rotation-representations.md)

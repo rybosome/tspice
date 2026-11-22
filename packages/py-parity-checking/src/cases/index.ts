@@ -86,6 +86,24 @@ import coordsVectorsCleariCasesRaw from "./coords-vectors/cleari.cases.json" wit
 import coordsVectorsFilldCasesRaw from "./coords-vectors/filld.cases.json" with { type: "json" };
 import coordsVectorsFilliCasesRaw from "./coords-vectors/filli.cases.json" with { type: "json" };
 import coordsVectorsMovedCasesRaw from "./coords-vectors/moved.cases.json" with { type: "json" };
+import coordsVectorsEul2mCasesRaw from "./coords-vectors/eul2m.cases.json" with { type: "json" };
+import coordsVectorsM2eulCasesRaw from "./coords-vectors/m2eul.cases.json" with { type: "json" };
+import coordsVectorsM2qCasesRaw from "./coords-vectors/m2q.cases.json" with { type: "json" };
+import coordsVectorsQ2mCasesRaw from "./coords-vectors/q2m.cases.json" with { type: "json" };
+import coordsVectorsQxqCasesRaw from "./coords-vectors/qxq.cases.json" with { type: "json" };
+import coordsVectorsQdq2avCasesRaw from "./coords-vectors/qdq2av.cases.json" with { type: "json" };
+import coordsVectorsRaxisaCasesRaw from "./coords-vectors/raxisa.cases.json" with { type: "json" };
+import coordsVectorsDetCasesRaw from "./coords-vectors/det.cases.json" with { type: "json" };
+import coordsVectorsDiags2CasesRaw from "./coords-vectors/diags2.cases.json" with { type: "json" };
+import coordsVectorsIdentCasesRaw from "./coords-vectors/ident.cases.json" with { type: "json" };
+import coordsVectorsInvertCasesRaw from "./coords-vectors/invert.cases.json" with { type: "json" };
+import coordsVectorsInvortCasesRaw from "./coords-vectors/invort.cases.json" with { type: "json" };
+import coordsVectorsIsrotCasesRaw from "./coords-vectors/isrot.cases.json" with { type: "json" };
+import coordsVectorsMequCasesRaw from "./coords-vectors/mequ.cases.json" with { type: "json" };
+import coordsVectorsMtxmCasesRaw from "./coords-vectors/mtxm.cases.json" with { type: "json" };
+import coordsVectorsMxmtCasesRaw from "./coords-vectors/mxmt.cases.json" with { type: "json" };
+import coordsVectorsTraceCasesRaw from "./coords-vectors/trace.cases.json" with { type: "json" };
+import coordsVectorsXposeCasesRaw from "./coords-vectors/xpose.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -334,6 +352,25 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsFilldCasesRaw as ParityCase[]),
   ...(coordsVectorsFilliCasesRaw as ParityCase[]),
   ...(coordsVectorsMovedCasesRaw as ParityCase[]),
+
+  ...(coordsVectorsEul2mCasesRaw as ParityCase[]),
+  ...(coordsVectorsM2eulCasesRaw as ParityCase[]),
+  ...(coordsVectorsM2qCasesRaw as ParityCase[]),
+  ...(coordsVectorsQ2mCasesRaw as ParityCase[]),
+  ...(coordsVectorsQxqCasesRaw as ParityCase[]),
+  ...(coordsVectorsQdq2avCasesRaw as ParityCase[]),
+  ...(coordsVectorsRaxisaCasesRaw as ParityCase[]),
+  ...(coordsVectorsDetCasesRaw as ParityCase[]),
+  ...(coordsVectorsDiags2CasesRaw as ParityCase[]),
+  ...(coordsVectorsIdentCasesRaw as ParityCase[]),
+  ...(coordsVectorsInvertCasesRaw as ParityCase[]),
+  ...(coordsVectorsInvortCasesRaw as ParityCase[]),
+  ...(coordsVectorsIsrotCasesRaw as ParityCase[]),
+  ...(coordsVectorsMequCasesRaw as ParityCase[]),
+  ...(coordsVectorsMtxmCasesRaw as ParityCase[]),
+  ...(coordsVectorsMxmtCasesRaw as ParityCase[]),
+  ...(coordsVectorsTraceCasesRaw as ParityCase[]),
+  ...(coordsVectorsXposeCasesRaw as ParityCase[]),
 
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),

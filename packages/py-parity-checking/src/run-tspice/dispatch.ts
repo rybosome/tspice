@@ -120,6 +120,24 @@ export function dispatchStep(
     case "coords-vectors.filld":
     case "coords-vectors.filli":
     case "coords-vectors.moved":
+    case "coords-vectors.eul2m":
+    case "coords-vectors.m2eul":
+    case "coords-vectors.m2q":
+    case "coords-vectors.q2m":
+    case "coords-vectors.qxq":
+    case "coords-vectors.qdq2av":
+    case "coords-vectors.raxisa":
+    case "coords-vectors.det":
+    case "coords-vectors.diags2":
+    case "coords-vectors.ident":
+    case "coords-vectors.invert":
+    case "coords-vectors.invort":
+    case "coords-vectors.isrot":
+    case "coords-vectors.mequ":
+    case "coords-vectors.mtxm":
+    case "coords-vectors.mxmt":
+    case "coords-vectors.trace":
+    case "coords-vectors.xpose":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

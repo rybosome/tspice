@@ -730,6 +730,37 @@ export type NativeAddon = {
     destination: readonly number[],
   ): number[];
 
+  eul2m(
+    angle3: number,
+    angle2: number,
+    angle1: number,
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): unknown;
+  m2eul(
+    m: readonly number[],
+    axis3: number,
+    axis2: number,
+    axis1: number,
+  ): { angle3: unknown; angle2: unknown; angle1: unknown };
+  m2q(m: readonly number[]): unknown;
+  q2m(q: readonly number[]): unknown;
+  qxq(q1: readonly number[], q2: readonly number[]): unknown;
+  qdq2av(q: readonly number[], dq: readonly number[]): unknown;
+  raxisa(m: readonly number[]): { axis: unknown; angle: unknown };
+  det(m: readonly number[]): number;
+  diags2(symmat: readonly number[]): { diag: number[]; rotate: number[] };
+  ident(): number[];
+  invert(m: readonly number[]): number[];
+  invort(m: readonly number[]): number[];
+  isrot(m: readonly number[], ntol: number, dtol: number): boolean;
+  mequ(m: readonly number[]): number[];
+  mtxm(a: readonly number[], b: readonly number[]): number[];
+  mxmt(a: readonly number[], b: readonly number[]): number[];
+  trace(m: readonly number[]): number;
+  xpose(m: readonly number[]): number[];
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

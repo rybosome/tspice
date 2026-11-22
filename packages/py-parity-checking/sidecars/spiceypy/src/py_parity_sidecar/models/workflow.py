@@ -87,6 +87,24 @@ from .coords_vectors import (
     StepCoordsVectorsFilld,
     StepCoordsVectorsFilli,
     StepCoordsVectorsMoved,
+    StepCoordsVectorsEul2m,
+    StepCoordsVectorsM2eul,
+    StepCoordsVectorsM2q,
+    StepCoordsVectorsQ2m,
+    StepCoordsVectorsQxq,
+    StepCoordsVectorsQdq2av,
+    StepCoordsVectorsRaxisa,
+    StepCoordsVectorsDet,
+    StepCoordsVectorsDiags2,
+    StepCoordsVectorsIdent,
+    StepCoordsVectorsInvert,
+    StepCoordsVectorsInvort,
+    StepCoordsVectorsIsrot,
+    StepCoordsVectorsMequ,
+    StepCoordsVectorsMtxm,
+    StepCoordsVectorsMxmt,
+    StepCoordsVectorsTrace,
+    StepCoordsVectorsXpose,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -380,6 +398,24 @@ WorkflowStep: TypeAlias = (
     | StepCoordsVectorsFilld
     | StepCoordsVectorsFilli
     | StepCoordsVectorsMoved
+    | StepCoordsVectorsEul2m
+    | StepCoordsVectorsM2eul
+    | StepCoordsVectorsM2q
+    | StepCoordsVectorsQ2m
+    | StepCoordsVectorsQxq
+    | StepCoordsVectorsQdq2av
+    | StepCoordsVectorsRaxisa
+    | StepCoordsVectorsDet
+    | StepCoordsVectorsDiags2
+    | StepCoordsVectorsIdent
+    | StepCoordsVectorsInvert
+    | StepCoordsVectorsInvort
+    | StepCoordsVectorsIsrot
+    | StepCoordsVectorsMequ
+    | StepCoordsVectorsMtxm
+    | StepCoordsVectorsMxmt
+    | StepCoordsVectorsTrace
+    | StepCoordsVectorsXpose
     | StepCoordsVectorsReclat
     | StepCoordsVectorsLatrec
     | StepCoordsVectorsRecsph

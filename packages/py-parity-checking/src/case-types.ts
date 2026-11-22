@@ -191,6 +191,7 @@ export type StepIdsNamesBodvar = {
   item: string;
 };
 
+export type Quaternion = readonly [number, number, number, number];
 export type Matrix3x3 = [
   [number, number, number],
   [number, number, number],
@@ -631,6 +632,98 @@ export type StepCoordsVectorsMoved = {
   source: number[];
   ndim: number;
   destination: number[];
+};
+
+export type Matrix2RowMajor = [number, number, number, number];
+
+export type StepCoordsVectorsEul2m = {
+  op: "coords-vectors.eul2m";
+  angle3: number;
+  angle2: number;
+  angle1: number;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2eul = {
+  op: "coords-vectors.m2eul";
+  m: Matrix3x3;
+  axis3: number;
+  axis2: number;
+  axis1: number;
+};
+export type StepCoordsVectorsM2q = { op: "coords-vectors.m2q"; m: Matrix3x3 };
+export type StepCoordsVectorsQ2m = { op: "coords-vectors.q2m"; q: Quaternion };
+export type StepCoordsVectorsQxq = {
+  op: "coords-vectors.qxq";
+  q1: Quaternion;
+  q2: Quaternion;
+};
+export type StepCoordsVectorsQdq2av = {
+  op: "coords-vectors.qdq2av";
+  q: Quaternion;
+  dq: Quaternion;
+};
+export type StepCoordsVectorsRaxisa = {
+  op: "coords-vectors.raxisa";
+  m: Matrix3x3;
+};
+export type StepCoordsVectorsDet = {
+  op: "coords-vectors.det";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsDiags2 = {
+  op: "coords-vectors.diags2";
+  symmat: Matrix2RowMajor;
+};
+
+export type StepCoordsVectorsIdent = {
+  op: "coords-vectors.ident";
+};
+
+export type StepCoordsVectorsInvert = {
+  op: "coords-vectors.invert";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsInvort = {
+  op: "coords-vectors.invort";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsIsrot = {
+  op: "coords-vectors.isrot";
+  m: Matrix3x3;
+  ntol: number;
+  dtol: number;
+};
+
+export type StepCoordsVectorsMequ = {
+  op: "coords-vectors.mequ";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsMtxm = {
+  op: "coords-vectors.mtxm";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsMxmt = {
+  op: "coords-vectors.mxmt";
+  a: Matrix3x3;
+  b: Matrix3x3;
+};
+
+export type StepCoordsVectorsTrace = {
+  op: "coords-vectors.trace";
+  m: Matrix3x3;
+};
+
+export type StepCoordsVectorsXpose = {
+  op: "coords-vectors.xpose";
+  m: Matrix3x3;
 };
 
 export type StepCoordsVectorsReclat = {
@@ -1887,6 +1980,24 @@ export type WorkflowStep =
   | StepCoordsVectorsFilld
   | StepCoordsVectorsFilli
   | StepCoordsVectorsMoved
+  | StepCoordsVectorsEul2m
+  | StepCoordsVectorsM2eul
+  | StepCoordsVectorsM2q
+  | StepCoordsVectorsQ2m
+  | StepCoordsVectorsQxq
+  | StepCoordsVectorsQdq2av
+  | StepCoordsVectorsRaxisa
+  | StepCoordsVectorsDet
+  | StepCoordsVectorsDiags2
+  | StepCoordsVectorsIdent
+  | StepCoordsVectorsInvert
+  | StepCoordsVectorsInvort
+  | StepCoordsVectorsIsrot
+  | StepCoordsVectorsMequ
+  | StepCoordsVectorsMtxm
+  | StepCoordsVectorsMxmt
+  | StepCoordsVectorsTrace
+  | StepCoordsVectorsXpose
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -2162,6 +2273,30 @@ export type StepOutput =
   | { op: "coords-vectors.filld"; value: number[] }
   | { op: "coords-vectors.filli"; value: number[] }
   | { op: "coords-vectors.moved"; value: number[] }
+  | { op: "coords-vectors.eul2m"; value: Matrix3x3 }
+  | {
+      op: "coords-vectors.m2eul";
+      value: { angle3: number; angle2: number; angle1: number };
+    }
+  | { op: "coords-vectors.m2q"; value: Quaternion }
+  | { op: "coords-vectors.q2m"; value: Matrix3x3 }
+  | { op: "coords-vectors.qxq"; value: Quaternion }
+  | { op: "coords-vectors.qdq2av"; value: Vector3 }
+  | { op: "coords-vectors.raxisa"; value: { axis: Vector3; angle: number } }
+  | { op: "coords-vectors.det"; value: number }
+  | {
+      op: "coords-vectors.diags2";
+      value: { diag: Matrix2RowMajor; rotate: Matrix2RowMajor };
+    }
+  | { op: "coords-vectors.ident"; value: Matrix3x3 }
+  | { op: "coords-vectors.invert"; value: Matrix3x3 }
+  | { op: "coords-vectors.invort"; value: Matrix3x3 }
+  | { op: "coords-vectors.isrot"; value: boolean }
+  | { op: "coords-vectors.mequ"; value: Matrix3x3 }
+  | { op: "coords-vectors.mtxm"; value: Matrix3x3 }
+  | { op: "coords-vectors.mxmt"; value: Matrix3x3 }
+  | { op: "coords-vectors.trace"; value: number }
+  | { op: "coords-vectors.xpose"; value: Matrix3x3 }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }

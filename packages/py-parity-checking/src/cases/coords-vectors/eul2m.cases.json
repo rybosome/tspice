@@ -1,0 +1,329 @@
+[
+  {
+    "caseId": "coords-vectors-eul2m-all-axis-families",
+    "description": "All three distinct and proper Euler sequences, noncommuting angles.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 1,
+        "axis2": 3,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 1,
+        "axis2": 3,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 2,
+        "axis2": 1,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 2,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 2,
+        "axis2": 3,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 2,
+        "axis2": 3,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 2
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.27,
+        "angle2": -0.42,
+        "angle1": 1.17,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-repeated-axes",
+    "description": "Adjacent repeated axes are legitimate for composition.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.4,
+        "angle2": -0.7,
+        "angle1": 0.1,
+        "axis3": 1,
+        "axis2": 1,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.4,
+        "angle2": -0.7,
+        "angle1": 0.1,
+        "axis3": 2,
+        "axis2": 2,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.4,
+        "angle2": -0.7,
+        "angle1": 0.1,
+        "axis3": 3,
+        "axis2": 1,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-signed-quarter-turns",
+    "description": "Check signed axis direction, transposition and identity from exact zero angles.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": -1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 2,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 2,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": -1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 2,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": -1.5707963267948966,
+        "angle2": 0,
+        "angle1": 0,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-wrapped-and-small",
+    "description": "Large revolutions and small off-diagonal components.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 12.5,
+        "angle2": -22.5,
+        "angle1": 38.062,
+        "axis3": 1,
+        "axis2": 2,
+        "axis1": 3
+      },
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 1e-7,
+        "angle2": -2e-7,
+        "angle1": 3e-7,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-invalid-axis-0",
+    "description": "Out-of-range signed integer axis must reach BADAXISNUMBERS.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.1,
+        "angle2": 0.2,
+        "angle1": 0.3,
+        "axis3": 0,
+        "axis2": 2,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-invalid-axis-1",
+    "description": "Out-of-range signed integer axis must reach BADAXISNUMBERS.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.1,
+        "angle2": 0.2,
+        "angle1": 0.3,
+        "axis3": 3,
+        "axis2": -4,
+        "axis1": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "coords-vectors-eul2m-invalid-axis-2",
+    "description": "Out-of-range signed integer axis must reach BADAXISNUMBERS.",
+    "workflow": [
+      {
+        "op": "coords-vectors.eul2m",
+        "angle3": 0.1,
+        "angle2": 0.2,
+        "angle1": 0.3,
+        "axis3": 3,
+        "axis2": 2,
+        "axis1": 9
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  }
+]

@@ -1,6 +1,7 @@
 #include "tspice_backend_shim.h"
 
 #include "SpiceUsr.h"
+#include "SpiceZfc.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -1265,6 +1266,289 @@ int tspice_moved(
   if (failed_c()) {
     tspice_get_spice_error_message_and_reset(err, errMaxBytes);
     return 1;
+  }
+  return 0;
+}
+
+static int tspice_fixed_matrix_invalid_arg(char *err, int errMaxBytes) {
+  tspice_clear_last_error_buffers();
+  if (err && errMaxBytes > 0) {
+    strncpy(err, "matrix operation requires non-NULL input/output buffers", (size_t)errMaxBytes - 1);
+    err[errMaxBytes - 1] = '\0';
+  }
+  return 1;
+}
+
+int tspice_eul2m(double angle3, double angle2, double angle1, int axis3, int axis2, int axis1, double *r, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!r) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  /* N0067 eul2m_c transposes a private matrix even when EUL2M fails
+     before writing it. Use its exact traced SPICELIB operation; only read
+     the initialized column-major matrix after the toolkit reports success. */
+  doublereal angles[3] = {angle3, angle2, angle1}, result[9] = {0};
+  integer axes[3] = {axis3, axis2, axis1};
+  chkin_c("eul2m_c");
+  eul2m_(&angles[0], &angles[1], &angles[2], &axes[0], &axes[1], &axes[2], result);
+  chkout_c("eul2m_c");
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  for (int row = 0; row < 3; ++row)
+    for (int col = 0; col < 3; ++col) r[3*row+col] = result[3*col+row];
+  return 0;
+}
+
+int tspice_m2eul(const double * m, int axis3, int axis2, int axis1, double *angle3, double *angle2, double *angle1, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!m || !angle3 || !angle2 || !angle1) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble matrix[3][3];
+  FillMat33(matrix,m);
+  m2eul_c(matrix, axis3, axis2, axis1, angle3, angle2, angle1);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_m2q(const double * m, double *q, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!m || !q) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble matrix[3][3];
+  FillMat33(matrix,m);
+  m2q_c(matrix, q);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_q2m(const double * q, double *r, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!q || !r) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble result[3][3] = {{0}};
+  q2m_c(q, result);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) r[3*i+j] = result[i][j];
+  return 0;
+}
+
+int tspice_qxq(const double * q1, const double * q2, double *qout, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!q1 || !q2 || !qout) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  qxq_c(q1, q2, qout);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_qdq2av(const double * q, const double * dq, double *av, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!q || !dq || !av) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  qdq2av_c(q, dq, av);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_raxisa(const double * m, double *axis, double *angle, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = 0;
+  if (!m || !axis || !angle) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble matrix[3][3];
+  FillMat33(matrix,m);
+  raxisa_c(matrix, axis, angle);
+  if (failed_c()) { tspice_get_spice_error_message_and_reset(err,errMaxBytes); return 1; }
+  return 0;
+}
+
+int tspice_det(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  const SpiceDouble value = det_c(mLocal);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
+int tspice_diags2(const double *symmat, double *diag, double *rotate, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!symmat || !diag || !rotate) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble symmatLocal[2][2] = {{symmat[0], symmat[1]}, {symmat[2], symmat[3]}};
+  SpiceDouble diagLocal[2][2] = {{0.0}};
+  SpiceDouble rotateLocal[2][2] = {{0.0}};
+  diags2_c(symmatLocal, diagLocal, rotateLocal);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      diag[i * 2 + j] = diagLocal[i][j];
+      rotate[i * 2 + j] = rotateLocal[i][j];
+    }
+  }
+  return 0;
+}
+
+int tspice_ident(double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble value[3][3] = {{0.0}};
+  ident_c(value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_invert(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  SpiceDouble value[3][3] = {{0.0}};
+  invert_c(mLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_invort(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  SpiceDouble value[3][3] = {{0.0}};
+  invort_c(mLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_isrot(const double *m, double ntol, double dtol, int *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  const SpiceBoolean value = isrot_c(mLocal, ntol, dtol);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = value ? 1 : 0;
+  return 0;
+}
+
+int tspice_mequ(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  SpiceDouble value[3][3] = {{0.0}};
+  mequ_c(mLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_mtxm(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble aLocal[3][3];
+  FillMat33(aLocal, a);
+  SpiceDouble bLocal[3][3];
+  FillMat33(bLocal, b);
+  SpiceDouble value[3][3] = {{0.0}};
+  mtxm_c(aLocal, bLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_mxmt(const double *a, const double *b, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!a || !b || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble aLocal[3][3];
+  FillMat33(aLocal, a);
+  SpiceDouble bLocal[3][3];
+  FillMat33(bLocal, b);
+  SpiceDouble value[3][3] = {{0.0}};
+  mxmt_c(aLocal, bLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
+  }
+  return 0;
+}
+
+int tspice_trace(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  const SpiceDouble value = trace_c(mLocal);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  *out = (double)value;
+  return 0;
+}
+
+int tspice_xpose(const double *m, double *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (!m || !out) return tspice_fixed_matrix_invalid_arg(err, errMaxBytes);
+  SpiceDouble mLocal[3][3];
+  FillMat33(mLocal, m);
+  SpiceDouble value[3][3] = {{0.0}};
+  xpose_c(mLocal, value);
+  if (failed_c()) {
+    tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+    return 1;
+  }
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) out[i * 3 + j] = value[i][j];
   }
   return 0;
 }

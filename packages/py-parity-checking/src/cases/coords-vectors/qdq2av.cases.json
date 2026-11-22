@@ -1,0 +1,132 @@
+[
+  {
+    "caseId": "coords-vectors-qdq2av-order",
+    "description": "Multiplication order and derivative frame distinguish vector cross terms.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [3, -1, 2, -4],
+        "dq": [2, 5, -7, 1]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [2, 5, -7, 1],
+        "dq": [3, -1, 2, -4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [0, 1, 0, 0],
+        "dq": [0, 0, 1, 0]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [0, 0, 1, 0],
+        "dq": [0, 1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qdq2av-degenerate",
+    "description": "Zero quaternion, zero second argument, and purely scalar multiplication.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [0, 0, 0, 0],
+        "dq": [1, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 2, -3, 4],
+        "dq": [0, 0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 0, 0, 0],
+        "dq": [1, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 2, -3, 4],
+        "dq": [1, 0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qdq2av-scale-and-sign",
+    "description": "Independent signs and nonunit scale in each operand.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 2, -3, 4],
+        "dq": [3, -1, 2, -4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [-1, -2, 3, -4],
+        "dq": [3, -1, 2, -4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [3, 6, -9, 12],
+        "dq": [3, -1, 2, -4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 2, -3, 4],
+        "dq": [-9, 3, -6, 12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qdq2av-complex-components",
+    "description": "Nontrivial signs in all four components plus pure and mixed rotation rates.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1, 2, -3, 4],
+        "dq": [2, 5, -7, 1]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [3, -1, 2, -4],
+        "dq": [1, 2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [0, 1, 0, 0],
+        "dq": [0.5, 0, 0, -0.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-qdq2av-scaled-products",
+    "description": "Observe small/large scientific inputs without treating zero as an absolute-tolerance-only result.",
+    "workflow": [
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1e50, 3e50, -2e50, 4e50],
+        "dq": [2e-20, -3e-20, 4e-20, 7e-20]
+      },
+      {
+        "op": "coords-vectors.qdq2av",
+        "q": [1e-70, 0, 1e-70, 0],
+        "dq": [1e60, -1e60, 0, 1e60]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]
