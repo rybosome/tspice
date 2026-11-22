@@ -4,6 +4,7 @@ export {
   poolSourceBytes,
 } from "./spice-runtime/domains/pool-inputs.js";
 
+
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {

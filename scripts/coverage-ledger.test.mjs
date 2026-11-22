@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 408,
-    planned: 241,
+    implemented: 412,
+    planned: 237,
     excluded: 3,
-    caseFiles: 408,
-    scenarios: 2632,
+    caseFiles: 412,
+    scenarios: 2678,
     wasmRawUnsupported: 0,
   });
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
@@ -521,7 +521,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 246);
+  assert.equal(ledger.audit.expansionRoutines, 250);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [

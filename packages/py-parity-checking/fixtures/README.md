@@ -182,3 +182,8 @@ arrays, continued string components, append assignment and invented negative
 body/name pair distinguish pool updates and lookup conventions. The locked
 sidecar reads this file directly. Node and WASM receive the same bytes through
 the public loader; KEEPER registration is queried independently.
+
+`kernels/surface-translation.tpc` is an authored test fixture under the
+repository license. Its surface IDs and names are artificial. Two body IDs
+exercise independent namespaces, alternate spellings and numeric-name precedence;
+it contains no shape or observational data.

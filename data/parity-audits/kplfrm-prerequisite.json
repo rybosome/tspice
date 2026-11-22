@@ -4102,7 +4102,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -4121,7 +4122,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -4138,7 +4140,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -4157,7 +4160,84 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8696c1aecf3f6f954b037ae1e26f87f1cb51878aefabcffd119fe997db9bf98b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8696c1aecf3f6f954b037ae1e26f87f1cb51878aefabcffd119fe997db9bf98b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8696c1aecf3f6f954b037ae1e26f87f1cb51878aefabcffd119fe997db9bf98b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "8696c1aecf3f6f954b037ae1e26f87f1cb51878aefabcffd119fe997db9bf98b",
+      "caseIds": [
+        "kernels-kplfrm-all-inertial-unload-success",
+        "kernels-kplfrm-class-4-success",
+        "kernels-kplfrm-empty-pool-success",
+        "kernels-kplfrm-invalid-class-error",
+        "kernels-kplfrm-set-too-small-error"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -4169,27 +4249,41 @@
       "scenarios": [
         {
           "caseId": "kernels-kplfrm-class-4-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "kplfrm returns frame IDs defined in the loaded frame kernel for class 4; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-invalid-class-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative kplfrm invalid frame-class error path; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-all-inertial-unload-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "All classes (-1) includes the loaded pool frame; inertial class is empty, and unloading removes it; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-empty-pool-success",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "No loaded frame specifications yields empty sets across repeated calls; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         },
         {
           "caseId": "kernels-kplfrm-set-too-small-error",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A real integer cell with zero capacity cannot hold the loaded frame set; real raw.kplfrm mutates an allocated integer cell, and every extracted ID/cardinality reaches StepOutput.value.ids. Python calls sp.kplfrm with the same capacity. Error cases require the named SPICE diagnostic from both executions."
         }
       ],
@@ -4310,14 +4404,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> Node typed adapter -> registered native Kplfrm -> validated cell registry -> tspice_kplfrm -> kplfrm_c.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -4344,14 +4436,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.kplfrm -> per-module ownership check -> withMalloc error buffer -> typed/required _tspice_kplfrm in regenerated web/Node WASM -> existing shared shim -> kplfrm_c. No harness substitute remains.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

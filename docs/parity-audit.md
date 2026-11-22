@@ -430,3 +430,10 @@ Parent A18 executions remain historical on their original source.
 ## Character list parsing
 
 B04 adds LPARSS on the A20 string parsing prerequisite. The reference shares one independent cell across steps so both replacement and empty-list insertion are observable. [Semantics and evidence](step8-string-set.md)
+
+## Surface-name translations
+
+D04 covers four surface-name and code translations in 46 registered workflows.
+The audit checks complete output text, separate name and found flags, pool
+precedence and refresh, byte capacities and genuine malformed-table errors.
+[Surface translation semantics and supported bounds](step8-surface-names.md)

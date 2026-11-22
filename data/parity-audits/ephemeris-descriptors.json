@@ -5398,7 +5398,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -5431,7 +5432,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5462,7 +5464,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5495,7 +5498,140 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06f9f194a78c27a6271468e8cace8b918e7388acef196b6cd77f2ffa27ff64d1",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06f9f194a78c27a6271468e8cace8b918e7388acef196b6cd77f2ffa27ff64d1",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06f9f194a78c27a6271468e8cace8b918e7388acef196b6cd77f2ffa27ff64d1",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "06f9f194a78c27a6271468e8cace8b918e7388acef196b6cd77f2ffa27ff64d1",
+      "caseIds": [
+        "ephemeris-spkpds-audit-barycenter-body",
+        "ephemeris-spkpds-audit-empty-frame",
+        "ephemeris-spkpds-audit-equal-epochs",
+        "ephemeris-spkpds-audit-fractional-epochs-and-frame",
+        "ephemeris-spkpds-audit-large-type",
+        "ephemeris-spkpds-audit-reversed-epochs",
+        "ephemeris-spkpds-audit-same-body-center",
+        "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
+        "ephemeris-spkpds-audit-signed-negative-center",
+        "ephemeris-spkpds-audit-zero-type",
+        "ephemeris-spkpds-invalid-frame-error",
+        "ephemeris-spkpds-pack-descriptor-success",
+        "ephemeris-spkuds-arbitrary-packed-input-success",
+        "ephemeris-spkuds-audit-actual-packed-frame-code",
+        "ephemeris-spkuds-audit-actual-packed-id-limits",
+        "ephemeris-spkuds-audit-actual-packed-negative-payload",
+        "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
+        "ephemeris-spkuds-audit-full-addresses-and-negative-body",
+        "ephemeris-spkuds-unpack-descriptor-success"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -5507,62 +5643,96 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkpds-pack-descriptor-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "spkpds packs a segment descriptor for type-8 metadata The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-invalid-frame-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "spkpds errors when the frame name is unknown The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-signed-negative-center",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Signed instrument/negative center produce a legitimate NaN packed word. Compare all six integer fields rather than subnormal doubles. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-signed-limits-and-type-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Valid descriptor type1000 is allowed without claiming an implementation of that planned segment routine; signed ID bounds and negative epochs retain exact fields. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-fractional-epochs-and-frame",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Fractional negative/positive endpoints and frame code must survive packing; all six embedded integers are compared. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-barycenter-body",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual BARYCENTEREPHEM from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-same-body-center",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual BODYANDCENTERSAME from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-equal-epochs",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-reversed-epochs",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual BADDESCRTIMES from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-zero-type",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-large-type",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual UNKNOWNSPKTYPE from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkpds-audit-empty-frame",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Require actual EMPTYSTRING from the raw descriptor constructor, not a success, miss or unrelated exception. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         }
       ],
@@ -5625,14 +5795,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5653,14 +5821,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkpds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkpds export -> shared tspice_spkpds -> spkpds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5672,37 +5838,56 @@
       "scenarios": [
         {
           "caseId": "ephemeris-spkuds-unpack-descriptor-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "spkuds unpacks a representative packed descriptor The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-arbitrary-packed-input-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "spkuds accepts arbitrary packed-descriptor bit patterns The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-audit-actual-packed-negative-payload",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-audit-actual-packed-id-limits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-audit-actual-packed-frame-code",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Consume the unchanged actual raw SPKPDS result, not an independently typed constant, and compare all eight unpacked fields including zero addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-audit-full-addresses-and-negative-body",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Unpack a literal native DAF summary with independently encoded signed IDs/frame/type and nonzero first/last DAF addresses. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         },
         {
           "caseId": "ephemeris-spkuds-audit-all-zero-arbitrary-pattern",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Error-free SPKUDS unpacks arbitrary bits without inventing scientific validity errors; zero fields/addresses are compared exactly. The actual raw operation reaches the comparison. Packing exposes both time bounds and all six signed integer fields independently of the numeric tolerance; unpacking exposes all eight fields. Dynamic descrId consumes the actual unchanged packed result rather than a matching independently constructed constant."
         }
       ],
@@ -5760,14 +5945,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> Node adapter with exact descriptor storage -> actual registered N-API ephemeris handler using typed packed buffers -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5788,14 +5971,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.spkuds -> WASM adapter with exact descriptor byte copies -> actual configured compiled _tspice_spkuds export -> shared tspice_spkuds -> spkuds_c. Actual dispatcher/oracle results reach complete integer/field assertions. Python invokes the actual locked SpiceyPy method without a fallback.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

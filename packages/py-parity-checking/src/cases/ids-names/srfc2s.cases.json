@@ -1,0 +1,364 @@
+[
+  {
+    "caseId": "ids-names-srfc2s-body-scoped-aliases",
+    "description": "Observe both body-scoped duplicates, preferred spelling and old aliases.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 499
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 92,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-pool-clear-reload",
+    "description": "Compare before load, after replacement, after clear and after reloading the original.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["Replacement"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [91]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      },
+      {
+        "op": "kernels.kclear"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-decimal-fallback",
+    "description": "Observe decimal text and false isName, independently from a pool name with numeric spelling.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": -2147483647,
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 0,
+        "bodyId": 499
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 765,
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 2147483647,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-capacity-prefix",
+    "description": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/surface-translation.tpc"
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 2
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 5
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 7
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 37
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 2147483647
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": -2147483647,
+        "bodyId": 399,
+        "srflen": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-maximum-name",
+    "description": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Tab\t"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [777, 888]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399, 399]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 777,
+        "bodyId": 399
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 888,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-short-capacity-1",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-short-capacity-0",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-short-capacity-neg3",
+    "description": "Real toolkit size error with physical storage even for nonpositive requested length.",
+    "workflow": [
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399,
+        "srflen": -3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-missing-variables",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADSURFACEMAP"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-wrong-type",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["name"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": ["399"]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADVARIABLETYPE"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-unequal-lengths",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["one", "two"]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [9]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399, 399]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ARRAYSIZEMISMATCH"]
+    }
+  },
+  {
+    "caseId": "ids-names-srfc2s-blank-name",
+    "description": "Observe actual malformed surface mapping diagnosis on a recognized body.",
+    "workflow": [
+      {
+        "op": "kernel-pool.pcpool",
+        "name": "NAIF_SURFACE_NAME",
+        "values": ["   "]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_CODE",
+        "values": [8]
+      },
+      {
+        "op": "kernel-pool.pipool",
+        "name": "NAIF_SURFACE_BODY",
+        "values": [399]
+      },
+      {
+        "op": "ids-names.srfc2s",
+        "code": 91,
+        "bodyId": 399
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BLANKNAMEASSIGNED"]
+    }
+  }
+]

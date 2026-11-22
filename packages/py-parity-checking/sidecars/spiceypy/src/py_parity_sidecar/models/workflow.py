@@ -344,6 +344,10 @@ from .ids_names import (
     StepIdsNamesBodc2s,
     StepIdsNamesBoddef,
     StepIdsNamesBodfnd,
+    StepIdsNamesSrfc2s,
+    StepIdsNamesSrfcss,
+    StepIdsNamesSrfs2c,
+    StepIdsNamesSrfscc,
     StepIdsNamesBodn2c,
     StepIdsNamesBods2c,
     StepIdsNamesBodvar,
@@ -506,6 +510,10 @@ WorkflowStep: TypeAlias = (
     | StepTimeScdecd
     | StepTimeSct2e
     | StepTimeSce2c
+    | StepIdsNamesSrfc2s
+    | StepIdsNamesSrfcss
+    | StepIdsNamesSrfs2c
+    | StepIdsNamesSrfscc
     | StepIdsNamesBodn2c
     | StepIdsNamesBodc2n
     | StepIdsNamesBodc2s

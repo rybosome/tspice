@@ -6492,7 +6492,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -6529,7 +6530,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6564,7 +6566,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6601,7 +6604,156 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e12f79733175b3092763a5117de9273bea07d9611393d334b041afce7d4a8770",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e12f79733175b3092763a5117de9273bea07d9611393d334b041afce7d4a8770",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e12f79733175b3092763a5117de9273bea07d9611393d334b041afce7d4a8770",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "e12f79733175b3092763a5117de9273bea07d9611393d334b041afce7d4a8770",
+      "caseIds": [
+        "error-chkin-audit-nested-visible-trace",
+        "error-chkin-empty-name-error",
+        "error-chkin-trace-stack-success",
+        "error-chkout-audit-balanced-empty-trace",
+        "error-chkout-audit-pop-child-preserve-parent",
+        "error-chkout-balanced-trace-success",
+        "error-chkout-empty-name-error",
+        "error-failed-audit-post-signal-recovery",
+        "error-failed-clean-state-success",
+        "error-failed-setmsg-does-not-fail-success",
+        "error-getmsg-audit-all-selectors-clean-and-reset",
+        "error-getmsg-invalid-selector-error",
+        "error-getmsg-long-roundtrip-success",
+        "error-reset-audit-repeat-reenable-message",
+        "error-reset-clears-long-message-success",
+        "error-setmsg-audit-long-buffer-boundary",
+        "error-setmsg-audit-replace-and-leading-blanks",
+        "error-setmsg-empty-message-error",
+        "error-setmsg-long-roundtrip-success",
+        "error-sigerr-audit-details-and-recovery",
+        "error-sigerr-audit-empty-code",
+        "error-sigerr-audit-short-buffer-boundary",
+        "error-sigerr-signals-error-path"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -6613,17 +6765,25 @@
       "scenarios": [
         {
           "caseId": "error-chkin-trace-stack-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "chkin/chkout updates traceback stack without setting failure status; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkin-empty-name-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative chkin error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkin-audit-nested-visible-trace",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Complete real captured traceback includes both active names before checkout; after explicit pops the next captured signal has no user frames. All short/long/trace fields and recovered flag reach the live exact comparison."
         }
       ],
@@ -6645,7 +6805,9 @@
             "packages/py-parity-checking/test/error-capture.test.ts",
             "packages/py-parity-checking/src/cases/error/chkin.cases.json"
           ],
-          "caseIds": ["error-chkin-audit-nested-visible-trace"]
+          "caseIds": [
+            "error-chkin-audit-nested-visible-trace"
+          ]
         },
         {
           "id": "trace-leaks-between-native-cases",
@@ -6658,7 +6820,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/error.py",
             "packages/py-parity-checking/test/error-capture.test.ts"
           ],
-          "caseIds": ["error-chkin-audit-nested-visible-trace"]
+          "caseIds": [
+            "error-chkin-audit-nested-visible-trace"
+          ]
         }
       ],
       "backends": {
@@ -6685,14 +6849,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> typed Node adapter -> registered native handler under global mutex -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6717,14 +6879,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkin -> WASM helper -> typed/configured _tspice_chkin with scoped heap allocations -> tspice_chkin in shared errors.c -> chkin_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6736,22 +6896,34 @@
       "scenarios": [
         {
           "caseId": "error-chkout-balanced-trace-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "chkout removes prior chkin entry and keeps error status clear; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-empty-name-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative chkout error path for empty traceback name; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-audit-pop-child-preserve-parent",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Checking out a child removes only that frame; a captured real error retains the parent.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-chkout-audit-balanced-empty-trace",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Balanced push/pop leaves no user frame in the captured signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -6819,14 +6991,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> typed Node adapter -> registered native handler under global mutex -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6851,14 +7021,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.chkout -> WASM helper -> typed/configured _tspice_chkout with scoped heap allocations -> tspice_chkout in shared errors.c -> chkout_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6870,17 +7038,29 @@
       "scenarios": [
         {
           "caseId": "error-failed-clean-state-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "failed reports false after explicit reset; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-failed-setmsg-does-not-fail-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "setmsg alone does not set failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-failed-audit-post-signal-recovery",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "failed remains clear after the shim captures and resets a real signaled error.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -6914,14 +7094,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> typed Node adapter -> registered native handler under global mutex -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6945,14 +7123,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.failed -> WASM helper -> typed/configured _tspice_failed with scoped heap allocations -> tspice_failed in shared errors.c -> failed_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6964,17 +7140,29 @@
       "scenarios": [
         {
           "caseId": "error-getmsg-long-roundtrip-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "getmsg(LONG) returns value previously set via setmsg; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-getmsg-invalid-selector-error",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Representative getmsg selector validation error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-getmsg-audit-all-selectors-clean-and-reset",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Each selector is observed before signaling, after automatic error recovery, and after explicit reset.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -7026,14 +7214,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7058,14 +7244,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getmsg -> WASM helper -> typed/configured _tspice_getmsg with scoped heap allocations -> tspice_getmsg in shared errors.c -> getmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7077,12 +7261,20 @@
       "scenarios": [
         {
           "caseId": "error-reset-clears-long-message-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "reset clears previously set long message and failed state; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-reset-audit-repeat-reenable-message",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Repeated reset clears prepared text and allows replacement before another signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -7116,14 +7308,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> typed Node adapter -> registered native handler under global mutex -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7147,14 +7337,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reset -> WASM helper -> typed/configured _tspice_reset with scoped heap allocations -> tspice_reset in shared errors.c -> reset_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7166,22 +7354,38 @@
       "scenarios": [
         {
           "caseId": "error-setmsg-long-roundtrip-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "setmsg updates the LONG message buffer; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-empty-message-error",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Representative setmsg empty-string error path; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-audit-replace-and-leading-blanks",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Long messages preserve leading blanks and replacement; messages alone do not set failure.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-setmsg-audit-long-buffer-boundary",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A 1900-character authored ASCII message is truncated to CSPICE's 1840-character LONG buffer; the entire buffer reaches the comparison.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -7215,14 +7419,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> typed Node adapter -> registered native handler under global mutex -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7246,14 +7448,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.setmsg -> WASM helper -> typed/configured _tspice_setmsg with scoped heap allocations -> tspice_setmsg in shared errors.c -> setmsg_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7265,22 +7465,36 @@
       "scenarios": [
         {
           "caseId": "error-sigerr-signals-error-path",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "sigerr triggers representative SPICE error status/failure behavior; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-details-and-recovery",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Signal twice with distinct messages/codes and compare complete captured details and automatic recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-empty-code",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Empty short-code wrapper error is distinguishable from a valid user signal.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         },
         {
           "caseId": "error-sigerr-audit-short-buffer-boundary",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An overlength authored short code is truncated to CSPICE's 25-character buffer and captured without hiding recovery.; dispatcher invokes each actual raw operation. Scalars/complete strings reach StepOutput; captured signal short/long/trace and post-error flag reach recursive exact comparison against SpiceyPy. Named error cases require the matching diagnostic, not merely two failures."
         }
       ],
@@ -7332,14 +7546,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> typed Node adapter -> registered native handler under global mutex -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7364,14 +7576,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sigerr -> WASM helper -> typed/configured _tspice_sigerr with scoped heap allocations -> tspice_sigerr in shared errors.c -> sigerr_c. Signaling captures/reset is the existing wrapper policy, not a harness substitute.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

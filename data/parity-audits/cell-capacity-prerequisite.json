@@ -5707,7 +5707,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -5735,7 +5736,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5761,7 +5763,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5789,7 +5792,120 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "324a745483b088191c39cc84050eb052615cfaddbcea2287993811ed88f050c8",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-d04-849d5336-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "324a745483b088191c39cc84050eb052615cfaddbcea2287993811ed88f050c8",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "324a745483b088191c39cc84050eb052615cfaddbcea2287993811ed88f050c8",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-d04-849d5336-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "324a745483b088191c39cc84050eb052615cfaddbcea2287993811ed88f050c8",
+      "caseIds": [
+        "cells-windows-ssize-audit-shrink-restore-original",
+        "cells-windows-ssize-negative-size-error",
+        "cells-windows-ssize-resizes-cell-success",
+        "cells-windows-valid-audit-n-exceeds-size",
+        "cells-windows-valid-audit-unsorted-duplicate-char",
+        "cells-windows-valid-audit-unsorted-duplicate-double",
+        "cells-windows-valid-audit-unsorted-duplicate-int",
+        "cells-windows-valid-negative-n-error",
+        "cells-windows-valid-normalizes-set-success",
+        "cells-windows-wnvald-audit-n-exceeds-size",
+        "cells-windows-wnvald-audit-odd-endpoint-count",
+        "cells-windows-wnvald-audit-unsorted-zero-pair",
+        "cells-windows-wnvald-negative-n-error",
+        "cells-windows-wnvald-normalizes-window-success"
+      ],
+      "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -5801,17 +5917,27 @@
       "scenarios": [
         {
           "caseId": "cells-windows-ssize-resizes-cell-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "ssize shrinks logical capacity within original storage and resets cardinality; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-ssize-negative-size-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative ssize argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-ssize-audit-shrink-restore-original",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Logical capacity shrinks/resets then returns to original allocation, including a temporary zero size.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],
@@ -5851,7 +5977,9 @@
             "packages/backend-node/test/cell-registry-rollback.test.ts",
             "packages/backend-node/test/fixtures/cell-registry-rollback.c"
           ],
-          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
+          "caseIds": [
+            "cells-windows-ssize-audit-shrink-restore-original"
+          ]
         },
         {
           "id": "signed-storage-size-overflow",
@@ -5864,7 +5992,9 @@
             "packages/backend-node/test/fixtures/cell-registry-rollback.c",
             "packages/backend-wasm/test/cell-allocation-size.test.ts"
           ],
-          "caseIds": ["cells-windows-ssize-audit-shrink-restore-original"]
+          "caseIds": [
+            "cells-windows-ssize-audit-shrink-restore-original"
+          ]
         },
         {
           "id": "wasm-handle-address-aliasing",
@@ -5908,14 +6038,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5938,14 +6066,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ssize -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_ssize -> ssize_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5957,32 +6083,52 @@
       "scenarios": [
         {
           "caseId": "cells-windows-valid-normalizes-set-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "valid runs against a populated int set cell; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-negative-n-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative valid argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-int",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-double",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-unsorted-duplicate-char",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Growing cardinality exposes zero-initialized unused storage; valid must sort and deduplicate the complete cell contents.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-valid-audit-n-exceeds-size",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Set validation rejects too many input elements before accessing them.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],
@@ -6111,14 +6257,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6141,14 +6285,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.valid -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_valid -> valid_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6160,27 +6302,41 @@
       "scenarios": [
         {
           "caseId": "cells-windows-wnvald-normalizes-window-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "wnvald validates a tracked window and preserves interval access; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-negative-n-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative wnvald argument validation error; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-unsorted-zero-pair",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Growing endpoint cardinality appends zero storage; validation sorts/merges the resulting out-of-order intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-odd-endpoint-count",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "An odd input count cannot form complete intervals.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         },
         {
           "caseId": "cells-windows-wnvald-audit-n-exceeds-size",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Too many endpoints are rejected before inspecting data.; handler invokes actual raw operation. ssize size/cardinality, valid complete typed set contents, and wnvald complete interval endpoints reach recursive live SpiceyPy comparison. New genuine CSPICE errors require named diagnostics; negative integer wrapper cases remain distinguished from CSPICE error parity."
         }
       ],
@@ -6303,14 +6459,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> typed Node adapter -> registered native handler -> process handle registry -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6333,14 +6487,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.wnvald -> WASM typed helper -> per-module pointer membership -> compiled export -> shared registry capacity precondition -> tspice_wnvald -> wnvald_c. Python directly invokes matching SpiceyPy on valid allocated storage.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }
