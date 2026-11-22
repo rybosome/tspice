@@ -57,7 +57,7 @@ int tspice_gdpool(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -113,7 +113,7 @@ int tspice_gipool(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -170,7 +170,7 @@ int tspice_gcpool(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -238,7 +238,7 @@ int tspice_gnpool(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -308,7 +308,7 @@ int tspice_dtpool(
     int outTypeMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -366,7 +366,7 @@ int tspice_pdpool(
     const double *values,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -398,7 +398,7 @@ int tspice_pipool(
     const int *ivals,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -431,7 +431,7 @@ int tspice_pcpool(
     const void *cvals,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -467,7 +467,7 @@ int tspice_swpool(
     const void *names,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -511,7 +511,7 @@ int tspice_cvpool(
     int *outUpdate,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';
@@ -544,7 +544,7 @@ int tspice_expool(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0 && err) {
     err[0] = '\0';

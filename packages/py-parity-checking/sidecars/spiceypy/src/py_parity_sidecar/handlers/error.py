@@ -6,6 +6,7 @@ import spiceypy as sp
 from ..models import (
     StepErrorChkin,
     StepErrorChkout,
+    StepErrorErract,
     StepErrorErrdev,
     StepErrorErrprt,
     StepErrorTrcoff,
@@ -54,9 +55,10 @@ def _trace_text(capacity: int, index: int | None = None) -> str:
 # policy wrappers strip trailing whitespace and allocate the requested size
 # even when only one physical byte is needed for a genuine length diagnostic.
 # Bind the two actual N0067 C routines in the independently loaded wheel.
+_error_action = _trace_library.erract_c
 _error_device = _trace_library.errdev_c
 _error_print = _trace_library.errprt_c
-for _policy_fn in (_error_device, _error_print):
+for _policy_fn in (_error_action, _error_device, _error_print):
     _policy_fn.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.POINTER(ctypes.c_char)]
     _policy_fn.restype = None
 
@@ -82,6 +84,7 @@ def _policy_call(fn, operation: str, value: str, capacity: int | None, full: int
 def initialize_policy_oracle() -> None:
     # The two frontends choose different initial policy. Set only the
     # documented tspice starting state in this new, dedicated sidecar process.
+    _policy_call(_error_action, "SET", "RETURN", None, 8)
     _policy_call(_error_print, "SET", "NONE", None, 41)
     _policy_call(_error_device, "SET", "SCREEN", None, 256)
 
@@ -104,6 +107,9 @@ def _format_sigerr_message() -> str:
 
 
 def run_error_step(step: WorkflowStep, _context: SidecarRuntimeContext) -> StepOutput | None:
+    if isinstance(step, StepErrorErract):
+        return StepOutput(op=step.op, value=_policy_call(_error_action, step.operation, step.value, step.capacity, 8))
+
     if isinstance(step, StepErrorErrdev):
         return StepOutput(op=step.op, value=_policy_call(_error_device, step.operation, step.value, step.capacity, 256))
 

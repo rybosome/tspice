@@ -29,7 +29,7 @@ int tspice_reclat(
     double *outLat,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -80,7 +80,7 @@ int tspice_latrec(
     double *outRect3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -109,7 +109,7 @@ int tspice_recsph(
     double *outLon,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -160,7 +160,7 @@ int tspice_sphrec(
     double *outRect3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -183,7 +183,7 @@ int tspice_sphrec(
 }
 
 int tspice_vnorm(const double *v3, double *outNorm, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -213,7 +213,7 @@ int tspice_vnorm(const double *v3, double *outNorm, char *err, int errMaxBytes) 
 }
 
 int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -254,7 +254,7 @@ int tspice_vhat(const double *v3, double *outVhat3, char *err, int errMaxBytes) 
 }
 
 int tspice_vdot(const double *a3, const double *b3, double *outDot, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -295,7 +295,7 @@ int tspice_vcrss(
     double *outCross3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -331,7 +331,7 @@ int tspice_vcrss(
 }
 
 int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -364,7 +364,7 @@ int tspice_mxv(const double *m3x3, const double *v3, double *outV3, char *err, i
 }
 
 int tspice_mtxv(const double *m3x3, const double *v3, double *outV3, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -403,7 +403,7 @@ int tspice_mxm(
     double *outM3x3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -449,7 +449,7 @@ int tspice_vadd(
     double *out3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -495,7 +495,7 @@ int tspice_vsub(
     double *out3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -536,7 +536,7 @@ int tspice_vsub(
 }
 
 int tspice_vminus(const double *v3, double *out3, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -576,7 +576,7 @@ int tspice_vscl(
     double *out3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -611,7 +611,7 @@ int tspice_vscl(
 }
 
 int tspice_rotate(double angle, int axis, double *outM3x3, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -653,7 +653,7 @@ int tspice_rotmat(
     double *outM3x3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -697,7 +697,7 @@ int tspice_axisar(
     double *outM3x3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -748,7 +748,7 @@ int tspice_georec(
     double *outRect3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -784,7 +784,7 @@ int tspice_recgeo(
     double *outAlt,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';

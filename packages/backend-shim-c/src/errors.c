@@ -357,6 +357,41 @@ static bool valid_policy_buffers(const char *op, const char *value, const char *
   return op && value && out && strlen(op) < INT_MAX && strlen(value) < INT_MAX;
 }
 
+int tspice_begin_scientific_call(char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  char action[8] = {0};
+  erract_c("GET", sizeof(action), action);
+  if (strcmp(action, "IGNORE") != 0 && strcmp(action, "REPORT") != 0) return 0;
+
+  tspice_clear_last_error_buffers();
+  return tspice_return_error(err, errMaxBytes,
+      "CSPICE action IGNORE or REPORT can leave scientific outputs undefined; select RETURN before calling this routine");
+}
+
+int tspice_erract(const char *op, char *value, int length, char *out, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  tspice_clear_error(err, errMaxBytes);
+  if (!valid_policy_buffers(op, value, out))
+    return tspice_return_error(err, errMaxBytes, "Invalid erract buffer");
+  out[0] = '\0';
+  if (eqstr_c(op, "GET")) {
+    if (length < 2) return tspice_return_error(err, errMaxBytes, "erract GET capacity must be at least two bytes");
+    erract_c(op, length, out);
+    return 0;
+  }
+  if (!eqstr_c(op, "SET")) return tspice_return_error(err, errMaxBytes, "Expected erract GET or SET");
+  const char *const actions[] = {"ABORT", "DEFAULT", "IGNORE", "REPORT", "RETURN"};
+  for (size_t i = 0; i < sizeof(actions) / sizeof(actions[0]); ++i) {
+    if (eqstr_c(value, actions[i])) {
+      char action[8];
+      tspice_copy_string(action, sizeof(action), actions[i]);
+      erract_c("SET", 0, action);
+      return 0;
+    }
+  }
+  return tspice_return_error(err, errMaxBytes, "Invalid CSPICE error action");
+}
+
 int tspice_errdev(const char *op, char *value, int length, char *out, char *err, int errMaxBytes) {
   tspice_init_cspice_error_handling_once();
   tspice_clear_error(err, errMaxBytes);

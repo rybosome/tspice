@@ -15,6 +15,7 @@ extern "C" {
 //
 // These helpers are a stable ABI surface. Callers should treat them as part of
 // the public C shim contract.
+int tspice_begin_scientific_call(char *err, int errMaxBytes);
 void tspice_init_cspice_error_handling_once(void);
 
 // Writes the current CSPICE error message (if any) into `err` (up to
@@ -38,6 +39,7 @@ int tspice_get_last_error_trace(char *out, int outMaxBytes);
 void tspice_clear_last_error_buffers(void);
 
 // --- CSPICE error/status utilities ---
+int tspice_erract(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
 int tspice_errdev(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
 int tspice_errprt(const char *op, char *value, int length, char *out, char *err, int errMaxBytes);
 int tspice_trcoff(char *err, int errMaxBytes);

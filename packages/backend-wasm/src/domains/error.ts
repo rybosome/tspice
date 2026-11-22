@@ -1,4 +1,4 @@
-import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import type { ErrorApi, SpiceErrorAction } from "@rybosome/tspice-backend-contract";
 import {
   policyArguments,
   assertGetmsgWhich,
@@ -85,6 +85,23 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
       },
     );
   }
+  function erract(op: "GET", capacity?: number): string;
+  function erract(op: "SET", value: SpiceErrorAction): void;
+  function erract(
+    op: "GET" | "SET",
+    argument?: number | string,
+  ): string | void {
+    const call = policyArguments(op, argument, 8);
+    const result = readPolicy(
+      op,
+      call.value,
+      call.capacity,
+      (o, v, l, out, err) =>
+        module._tspice_erract(o, v, l, out, err, WASM_ERR_MAX_BYTES),
+    );
+    if (!call.set) return result;
+  }
+
   function errdev(op: "GET", capacity?: number): string;
   function errdev(op: "SET", value: string): void;
   function errdev(
@@ -120,6 +137,7 @@ export function createErrorApi(module: EmscriptenModule): ErrorApi {
   }
 
   return {
+    erract,
     errdev,
     errprt,
     trcoff: () =>

@@ -16,7 +16,7 @@ int tspice_subpnt(
     double *outSrfvec3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -63,7 +63,7 @@ int tspice_subslr(
     double *outSrfvec3,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -113,7 +113,7 @@ int tspice_sincpt(
     int *outFound,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -179,7 +179,7 @@ int tspice_ilumin(
     double *outEmissn,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -251,7 +251,7 @@ int tspice_illumg(
     double *outEmissn,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -338,7 +338,7 @@ int tspice_illumf(
     int *outLit,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -429,7 +429,7 @@ int tspice_nvc2pl(
     double *outPlane4,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -469,7 +469,7 @@ int tspice_pl2nvc(
     double *outKonst,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';
@@ -523,7 +523,7 @@ int tspice_occult(
     int *outOcltid,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
 
   if (errMaxBytes > 0) {
     err[0] = '\0';

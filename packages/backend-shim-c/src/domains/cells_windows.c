@@ -295,7 +295,7 @@ static int tspice_alloc_and_init_char_cell(
 }
 
 int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -324,7 +324,7 @@ int tspice_new_int_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes
 }
 
 int tspice_new_double_cell(int size, uintptr_t *outCell, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -358,7 +358,7 @@ int tspice_new_char_cell(
     uintptr_t *outCell,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -392,7 +392,7 @@ int tspice_new_char_cell(
 }
 
 int tspice_new_window(int maxIntervals, uintptr_t *outWindow, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -481,7 +481,7 @@ int tspice_free_window(uintptr_t windowHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_char_cell_length(uintptr_t cellHandle, int *outLength, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -512,7 +512,7 @@ int tspice_char_cell_length(uintptr_t cellHandle, int *outLength, char *err, int
 }
 
 int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -537,7 +537,7 @@ int tspice_ssize(int size, uintptr_t cellHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_scard(int card, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -561,7 +561,7 @@ int tspice_scard(int card, uintptr_t cellHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_card(uintptr_t cellHandle, int *outCard, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -588,7 +588,7 @@ int tspice_card(uintptr_t cellHandle, int *outCard, char *err, int errMaxBytes) 
 }
 
 int tspice_size(uintptr_t cellHandle, int *outSize, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -615,7 +615,7 @@ int tspice_size(uintptr_t cellHandle, int *outSize, char *err, int errMaxBytes) 
 }
 
 int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -640,7 +640,7 @@ int tspice_valid(int size, int n, uintptr_t cellHandle, char *err, int errMaxByt
 }
 
 int tspice_insrti(int item, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -669,7 +669,7 @@ int tspice_insrti(int item, uintptr_t cellHandle, char *err, int errMaxBytes) {
 }
 
 int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -693,7 +693,7 @@ int tspice_insrtd(double item, uintptr_t cellHandle, char *err, int errMaxBytes)
 }
 
 int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -720,7 +720,7 @@ int tspice_insrtc(const char *item, uintptr_t cellHandle, char *err, int errMaxB
 }
 
 int tspice_cell_geti(uintptr_t cellHandle, int index, int *outItem, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -764,7 +764,7 @@ int tspice_cell_geti(uintptr_t cellHandle, int index, int *outItem, char *err, i
 
 
 int tspice_cell_getd(uintptr_t cellHandle, int index, double *outItem, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -812,7 +812,7 @@ int tspice_cell_getc(
     int outMaxBytes,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -858,7 +858,7 @@ int tspice_cell_getc(
 
 
 int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -886,7 +886,7 @@ int tspice_wninsd(double left, double right, uintptr_t windowHandle, char *err, 
 
 
 int tspice_wncard(uintptr_t windowHandle, int *outCard, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -927,7 +927,7 @@ int tspice_wnfetd(
     double *outRight,
     char *err,
     int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }
@@ -974,7 +974,7 @@ int tspice_wnfetd(
 
 
 int tspice_wnvald(int size, int n, uintptr_t windowHandle, char *err, int errMaxBytes) {
-  tspice_init_cspice_error_handling_once();
+  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
   if (err && errMaxBytes > 0) {
     err[0] = '\0';
   }

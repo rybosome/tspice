@@ -1,4 +1,4 @@
-import type { ErrorApi } from "@rybosome/tspice-backend-contract";
+import type { ErrorApi, SpiceErrorAction } from "@rybosome/tspice-backend-contract";
 import {
   policyArguments,
   assertGetmsgWhich,
@@ -11,6 +11,17 @@ import type { NativeAddon } from "../runtime/addon.js";
 
 /** Create an {@link ErrorApi} implementation backed by the native Node addon. */
 export function createErrorApi(native: NativeAddon): ErrorApi {
+  function erract(op: "GET", capacity?: number): string;
+  function erract(op: "SET", value: SpiceErrorAction): void;
+  function erract(
+    op: "GET" | "SET",
+    argument?: number | string,
+  ): string | void {
+    const call = policyArguments(op, argument, 8);
+    const result = native.erract(op, call.value, call.capacity);
+    if (!call.set) return result;
+  }
+
   function errdev(op: "GET", capacity?: number): string;
   function errdev(op: "SET", value: string): void;
   function errdev(
@@ -34,6 +45,7 @@ export function createErrorApi(native: NativeAddon): ErrorApi {
   }
 
   return {
+    erract,
     errdev,
     errprt,
     trcoff: () => native.trcoff(),

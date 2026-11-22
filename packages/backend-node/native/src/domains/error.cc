@@ -91,6 +91,19 @@ static bool ReadPolicyArgs(const Napi::CallbackInfo& info, PolicyArgs* args) {
     && ReadInt(env, info[2], &args->length);
 }
 
+static Napi::Value Erract(const Napi::CallbackInfo& info) {
+  PolicyArgs args;
+  if (!ReadPolicyArgs(info, &args)) return info.Env().Undefined();
+  char out[8] = {};
+  char err[tspice_backend_node::kErrMaxBytes];
+  std::lock_guard<std::mutex> lock(tspice_backend_node::g_cspice_mutex);
+  if (tspice_erract(args.op.c_str(), args.value.data(), std::min(args.length, 8), out, err, sizeof(err)) != 0) {
+    ThrowSpiceError(info.Env(), "erract", err, "erract");
+    return info.Env().Undefined();
+  }
+  return StringBytes(info.Env(), out, sizeof(out));
+}
+
 static Napi::Value Errdev(const Napi::CallbackInfo& info) {
   PolicyArgs args;
   if (!ReadPolicyArgs(info, &args)) return info.Env().Undefined();
@@ -397,6 +410,7 @@ static void Chkout(const Napi::CallbackInfo& info) {
 namespace tspice_backend_node {
 
 void RegisterError(Napi::Env env, Napi::Object exports) {
+  if (!SetExportChecked(env, exports, "erract", Napi::Function::New(env, Erract), __func__)) return;
   if (!SetExportChecked(env, exports, "errdev", Napi::Function::New(env, Errdev), __func__)) return;
   if (!SetExportChecked(env, exports, "errprt", Napi::Function::New(env, Errprt), __func__)) return;
   if (!SetExportChecked(env, exports, "trcoff", Napi::Function::New(env, Trcoff), __func__)) return;
