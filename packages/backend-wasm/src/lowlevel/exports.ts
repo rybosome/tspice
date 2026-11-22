@@ -1,7 +1,10 @@
-// Typed subset of Emscripten module exports used by tspice.
-//
-// NOTE: The `FS` member is intentionally `any` because Emscripten's FS typing is
-// not stable across toolchains.
+// Typed subset of the generated Emscripten module used by tspice.
+type EmscriptenStream = {
+  stream_ops: {
+    fsync?(stream: EmscriptenStream): void;
+  };
+};
+
 export type EmscriptenModule = {
   tspiceInvokeGf?: (
     id: number,
@@ -2349,6 +2352,7 @@ export type EmscriptenModule = {
   ): number;
 
   FS: {
+    getStream(fd: number): EmscriptenStream | null;
     mkdirTree(path: string): void;
     writeFile(path: string, data: Uint8Array): void;
     readFile(path: string, options: { encoding: "binary" }): Uint8Array;

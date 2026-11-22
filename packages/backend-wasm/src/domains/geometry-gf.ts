@@ -143,6 +143,11 @@ function tspiceCallGfrepi(
       if (result !== 0) {
         throwWasmSpiceError(module, errPtr, WASM_ERR_MAX_BYTES, result);
       }
+
+      // The shim drains libc stdout. Asyncify's fd_sync syncs the mount,
+      // so drain the terminal stream as well to emit the report immediately.
+      const stdout = module.FS.getStream(1);
+      stdout?.stream_ops.fsync?.(stdout);
     } finally {
       if (endmssPtr) module._free(endmssPtr);
       module._free(begmssPtr);
