@@ -351,3 +351,22 @@ The A15 review covers nine kernel-independent frame construction and state-trans
 ## Coordinate derivatives
 
 A07 covers twelve coordinate Jacobians. The source review records two pinned exception paths, independent directional derivatives, exact buffer ownership and tabulated body conventions. [Scientific and representation evidence](step8-coordinate-jacobians.md) [Per-routine records](../data/parity-audits/a07-coordinate-jacobians.json)
+
+## String transformations and matching
+
+A18 covers eight byte-oriented CSPICE methods. Its 64 registered workflows make
+274 canonical calls, including 12 expected SPICE errors. The independent oracle
+reads exact C buffers for the three string results, retaining trailing whitespace
+and exposing incomplete UTF-8 prefixes. Boolean results and byte indices use
+the installed SpiceyPy wrappers. Each backend judgment progresses from source
+review to verification after fresh required local lanes and observed CI.
+[Primary semantics, byte evidence and boundaries](step8-string-transforms.md)
+
+## String search positions and equivalent rows
+
+A19 adds seven routines on the A18 StringsApi. Its 56 workflows compare 407
+full byte or row indices, including misses, reverse substring start bounds
+and empty versus blank rows. The guarded maximum start and the locked
+ESRCHC row ABI have separate tests. The original A18 and Step 7 executions
+remain historical until the composite source passes the source-bound gates.
+[String search semantics, row layout and oracle](step8-string-search.md)

@@ -6565,7 +6565,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -6622,7 +6623,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6677,7 +6679,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6734,7 +6737,464 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "789658fea6abdb479c26dcacabba323b9c30714cb91ff793a8e6cba81b4cd859",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "789658fea6abdb479c26dcacabba323b9c30714cb91ff793a8e6cba81b4cd859",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "789658fea6abdb479c26dcacabba323b9c30714cb91ff793a8e6cba81b4cd859",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "789658fea6abdb479c26dcacabba323b9c30714cb91ff793a8e6cba81b4cd859",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eef31523379dd57f4c36125e7a241e1ec5f68cfdca46212e05cab341dc9b1c8c",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eef31523379dd57f4c36125e7a241e1ec5f68cfdca46212e05cab341dc9b1c8c",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eef31523379dd57f4c36125e7a241e1ec5f68cfdca46212e05cab341dc9b1c8c",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "eef31523379dd57f4c36125e7a241e1ec5f68cfdca46212e05cab341dc9b1c8c",
+      "caseIds": [
+        "time-deltet-audit-both-input-scales-and-leap-step",
+        "time-deltet-happy-et-with-lsk",
+        "time-deltet-missing-lsk-error",
+        "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
+        "time-et2utc-audit-before-common-era-calendar",
+        "time-et2utc-audit-before-common-era-iso-error",
+        "time-et2utc-audit-missing-leap-information",
+        "time-et2utc-audit-utc-leap-second-rounding",
+        "time-et2utc-happy-isoc",
+        "time-et2utc-invalid-format-error",
+        "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-scdecd-audit-negative-clock-range",
+        "time-scdecd-happy-with-cook-sclk",
+        "time-scdecd-missing-sclk-error",
+        "time-sce2c-audit-fractional-tick-versus-rounded-string",
+        "time-sce2c-audit-negative-epoch-range",
+        "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2c-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2c-happy-with-cook-sclk",
+        "time-sce2c-missing-sclk-error",
+        "time-sce2s-audit-fractional-tick-versus-rounded-string",
+        "time-sce2s-audit-negative-epoch-range",
+        "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
+        "time-sce2s-audit-non-tdb-clock-with-conversion-info",
+        "time-sce2s-happy-with-cook-sclk",
+        "time-sce2s-missing-sclk-error",
+        "time-scencd-audit-bad-partition",
+        "time-scencd-audit-empty-clock-string",
+        "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scencd-happy-with-cook-sclk",
+        "time-scencd-missing-sclk-error",
+        "time-scs2e-audit-bad-partition",
+        "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-scs2e-audit-non-tdb-clock-with-conversion-info",
+        "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
+        "time-scs2e-happy-with-cook-sclk",
+        "time-scs2e-missing-sclk-error",
+        "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
+        "time-sct2e-audit-negative-clock-range",
+        "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
+        "time-sct2e-audit-non-tdb-clock-with-conversion-info",
+        "time-sct2e-happy-with-cook-sclk",
+        "time-sct2e-missing-sclk-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -6746,17 +7206,27 @@
       "scenarios": [
         {
           "caseId": "time-deltet-happy-et-with-lsk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Computes ET-UTC delta at J2000 ET with LSK loaded"
         },
         {
           "caseId": "time-deltet-missing-lsk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: Representative deltet error when leap-seconds kernel is not loaded"
         },
         {
           "caseId": "time-deltet-audit-both-input-scales-and-leap-step",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every actual delta scalar reaches live comparison for both input scales, nonzero positive/negative epochs and pre/post leap steps. The result is near 60 seconds rather than a large epoch baseline, preserving sensitivity under existing tolerance. Case: deltet: both input scales and leap step, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -6809,14 +7279,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> Node adapter with integer validation -> serialized native handler -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6837,14 +7305,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.deltet -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_deltet -> actual deltet_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6856,37 +7322,59 @@
       "scenarios": [
         {
           "caseId": "time-et2utc-happy-isoc",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Formats J2000 epoch ET as UTC ISO calendar string"
         },
         {
           "caseId": "time-et2utc-invalid-format-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Representative formatting error with unsupported format token"
         },
         {
           "caseId": "time-et2utc-audit-all-formats-signed-fractional-and-clamped-precision",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: all formats signed fractional and clamped precision, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-utc-leap-second-rounding",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: utc leap second rounding, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-missing-leap-information",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: et2utc: missing leap information, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-et2utc-audit-before-common-era-calendar",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: Calendar/day formats retain era text for epochs before 1 AD."
         },
         {
           "caseId": "time-et2utc-audit-before-common-era-iso-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete output string reaches comparison for all five formats, signed/fractional ET, negative/large/INTMAX clamped integer precision, UTC leap-second rounding, B.C. C/D era text and named ISO/range/format/missing-info errors. Case: ISO formats cannot represent a B.C. era and must signal YEAROUTOFRANGE."
         }
       ],
@@ -6958,14 +7446,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> Node adapter with integer validation -> serialized native handler -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6986,14 +7472,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.et2utc -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_et2utc -> actual et2utc_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7005,22 +7489,34 @@
       "scenarios": [
         {
           "caseId": "time-scdecd-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Decodes cookbook SCLK ticks to partitioned clock string"
         },
         {
           "caseId": "time-scdecd-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: Representative scdecd error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-scdecd-audit-fractional-ticks-shared-boundary-and-last-count",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scdecd-audit-negative-clock-range",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete partitioned string reaches comparison for zero, fractional half-ticks, nonzero ticks, the shared endpoint and final mission count, with named range/missing-clock errors. Later-partition selection and rounding are observed explicitly. Case: scdecd: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -7098,14 +7594,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7126,14 +7620,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scdecd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scdecd -> actual scdecd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7145,32 +7637,50 @@
       "scenarios": [
         {
           "caseId": "time-sce2c-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Converts cookbook ET to encoded SCLK ticks"
         },
         {
           "caseId": "time-sce2c-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Representative sce2c error when SCLK kernel is missing"
         },
         {
           "caseId": "time-sce2c-audit-fractional-tick-versus-rounded-string",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-negative-epoch-range",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: sce2c: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2c-audit-non-tdb-clock-with-conversion-info",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every encoded output reaches comparison for small signed-system epochs, fractional half ticks, partition boundary and mission end. The fractional result is distinguished from rounded sce2s; conditional conversion with/without LSK and range errors are actual toolkit results. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7250,14 +7760,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7278,14 +7786,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2c -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2c -> actual sce2c_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7297,32 +7803,50 @@
       "scenarios": [
         {
           "caseId": "time-sce2s-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Formats cookbook ET into spacecraft clock string"
         },
         {
           "caseId": "time-sce2s-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Representative sce2s error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-sce2s-audit-fractional-tick-versus-rounded-string",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: fractional tick versus rounded string, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2s-audit-negative-epoch-range",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: sce2s: negative epoch range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sce2s-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Non-TDB clock mapping requires actual LSK conversion information."
         },
         {
           "caseId": "time-sce2s-audit-non-tdb-clock-with-conversion-info",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every complete clock string reaches comparison for fractional ET near tick rounding, nonzero epochs, shared partition boundary, mission end and both time-system correlations; missing conversion and out-of-mission errors are named. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7402,14 +7926,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> Node adapter with integer validation -> serialized native handler -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7430,14 +7952,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sce2s -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sce2s -> actual sce2s_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7449,27 +7969,41 @@
       "scenarios": [
         {
           "caseId": "time-scencd-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Encodes cookbook SCLK string into ticks"
         },
         {
           "caseId": "time-scencd-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: Representative scencd error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-scencd-audit-partitions-shared-boundary-and-field-rollover",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scencd-audit-bad-partition",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: bad partition, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scencd-audit-empty-clock-string",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every encoded scalar reaches comparison across explicit/inferred partitions, field rollover, nonzero counts and shared endpoints. Authored small clock values distinguish omitted partition offsets and constant/cookbook-only answers; named BADPARTNUMBER/EMPTYSTRING/missing clock errors remain distinct. Case: scencd: empty clock string, observe actual output or named diagnostic with live SpiceyPy"
         }
       ],
@@ -7547,14 +8081,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> Node adapter with integer validation -> serialized native handler -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7575,14 +8107,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scencd -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scencd -> actual scencd_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7594,32 +8124,50 @@
       "scenarios": [
         {
           "caseId": "time-scs2e-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Converts cookbook spacecraft clock string to ET"
         },
         {
           "caseId": "time-scs2e-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Representative scs2e error when SCLK kernel is missing"
         },
         {
           "caseId": "time-scs2e-audit-partitions-shared-boundary-and-field-rollover",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: partitions shared boundary and field rollover, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scs2e-audit-bad-partition",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: scs2e: bad partition, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-scs2e-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Non-TDB clock mapping requires actual LSK conversion information."
         },
         {
           "caseId": "time-scs2e-audit-non-tdb-clock-with-conversion-info",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison for multiple clock strings, partition boundaries/offsets, field rollover, TDB correlation without LSK and non-TDB correlation with LSK. Missing conditional conversion information and bad partitions are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7699,14 +8247,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7727,14 +8273,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.scs2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_scs2e -> actual scs2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7746,32 +8290,50 @@
       "scenarios": [
         {
           "caseId": "time-sct2e-happy-with-cook-sclk",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Converts cookbook encoded SCLK ticks to ET"
         },
         {
           "caseId": "time-sct2e-missing-sclk-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Representative sct2e error when SCLK kernel is not loaded"
         },
         {
           "caseId": "time-sct2e-audit-fractional-ticks-shared-boundary-and-last-count",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: fractional ticks shared boundary and last count, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-negative-clock-range",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: negative clock range, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-non-tdb-clock-requires-conversion-info",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: sct2e: non tdb clock requires conversion info, observe actual output or named diagnostic with live SpiceyPy"
         },
         {
           "caseId": "time-sct2e-audit-non-tdb-clock-with-conversion-info",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every ET scalar reaches comparison across fractional mission ticks, partition boundary and final count, including TDB and non-TDB correlations. Missing conditional conversion metadata and negative/range counts are named errors. Case: Loading LSK makes non-TDB clock mapping perform the actual time-system conversion."
         }
       ],
@@ -7851,14 +8413,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> Node adapter with integer validation -> serialized native handler -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7879,14 +8439,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.sct2e -> WASM adapter with integer validation/owned temporary buffers -> required compiled export -> shared tspice_sct2e -> actual sct2e_c. Oracle invokes actual matching SpiceyPy operation with independently loaded kernels; all requested outputs/errors reach comparison.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

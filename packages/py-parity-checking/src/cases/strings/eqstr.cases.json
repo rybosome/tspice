@@ -1,0 +1,206 @@
+[
+  {
+    "caseId": "strings-eqstr-case-and-punctuation",
+    "description": "Compare ASCII case-equivalent literals and near misses involving punctuation, order and length.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": "TeLeMetRy-42",
+        "b": "telemetry-42"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "TeLeMetRy-42",
+        "b": "telemetry_42"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "42",
+        "b": "24"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "A++",
+        "b": "a+"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-eqstr-internal-whitespace",
+    "description": "Whitespace can occur on either side or between letters.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": "A B",
+        "b": "AB"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "AB",
+        "b": "A\tB"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "A\n\rB",
+        "b": "ab"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "   AL P HA  ",
+        "b": "aLpha"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-eqstr-all-c-whitespace",
+    "description": "Exercise each C whitespace character separately and include a non-whitespace control.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": " a",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\ta",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\na",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\ra",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\u000ba",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\fa",
+        "b": "A"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\u001bA",
+        "b": "A"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-eqstr-empty-and-nonempty",
+    "description": "Only an empty second argument equals an empty first argument. Compare nonempty pure whitespace independently.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": "",
+        "b": ""
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "",
+        "b": " "
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "  ",
+        "b": ""
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "",
+        "b": "x"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": " \t",
+        "b": "\n\r"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": " \t",
+        "b": "  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-eqstr-leading-and-trailing",
+    "description": "Case and whitespace variations retain mismatched nonblank characters.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": " ab",
+        "b": "AB  "
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "A",
+        "b": "a\t\r"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\fA B \n",
+        "b": "a\tb"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "abc",
+        "b": "abX"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-eqstr-utf8-byte-comparison",
+    "description": "Compare UTF-8 byte strings containing identical or distinct non-ASCII sequences alongside ASCII case and whitespace.",
+    "workflow": [
+      {
+        "op": "strings.eqstr",
+        "a": "\u00e9",
+        "b": "\u00e9"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\u00c9",
+        "b": "\u00e9"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\u00df",
+        "b": "SS"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "A\u00a0B",
+        "b": "ab"
+      },
+      {
+        "op": "strings.eqstr",
+        "a": "\u96ea a",
+        "b": "\u96eaA"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

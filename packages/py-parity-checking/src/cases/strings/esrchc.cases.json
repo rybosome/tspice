@@ -1,0 +1,319 @@
+[
+  {
+    "caseId": "strings-esrchc-first-equivalent-row",
+    "description": "Unsorted duplicate-equivalent rows return the first zero-based position.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "AB",
+        "values": ["Zed", " A b ", "OTHER", "aB", "zz"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "other",
+        "values": ["Zed", " A b ", "OTHER", "aB", "zz"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "ZZ",
+        "values": ["Zed", " A b ", "OTHER", "aB", "zz"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "ZED",
+        "values": ["Zed", " A b ", "OTHER", "aB", "zz"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "absent",
+        "values": ["Zed", " A b ", "OTHER", "aB", "zz"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-empty-and-all-empty-tables",
+    "description": "The independent byte table supports zero rows and a stride of at least two for fully empty rows.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "",
+        "values": []
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": []
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "",
+        "values": [""]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": ["", ""]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "",
+        "values": ["", "", ""]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": " ",
+        "values": ["", ""]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-empty-versus-blank",
+    "description": "Two empty strings compare equal; one empty string differs from a nonempty blank or tab row.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "",
+        "values": ["x", " \t", "", "\n", "Y"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": " ",
+        "values": ["x", " \t", "", "\n", "Y"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "\n",
+        "values": ["x", " \t", "", "\n", "Y"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "\t",
+        "values": ["x", " \t", "", "\n", "Y"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "x",
+        "values": ["x", " \t", "", "\n", "Y"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "y",
+        "values": ["x", " \t", "", "\n", "Y"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-portable-c-whitespace",
+    "description": "All six portable C whitespace bytes participate in EQSTR comparisons throughout nonempty rows.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": " A\tB\nC",
+        "values": ["AB C", "!", "XY"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "a\u000bb\fc",
+        "values": ["AB C", "!", "XY"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "a\rb c",
+        "values": ["AB C", "!", "XY"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "x\ty",
+        "values": ["AB C", "!", "XY"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "A !",
+        "values": ["AB C", "!", "XY"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "!",
+        "values": ["AB C", "!", "XY"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-wide-utf8-rows",
+    "description": "Long UTF-8 rows determine the byte stride, while returned indices count whole rows.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "a",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "🛰🚀",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "éÉ",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "φ",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "é",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "é",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "🛰",
+        "values": ["a", "🛰🚀", "éÉ", "φ", "é"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-bom-and-no-unicode-casefold",
+    "description": "The byte representation retains a BOM, combining marks and distinct accented letter cases.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "abc",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "﻿a b c",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "É",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "é",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "É",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "﻿",
+        "values": ["﻿ABC", "É", "é", "é", "ABC"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-literal-punctuation-and-trailing-rows",
+    "description": "Compare full NUL-terminated rows without joining adjacent rows or treating punctuation as whitespace.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "abc",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "b c",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X - Y",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "x y",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "Tail",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "-",
+        "values": ["ab", "c", "x-y", "xy", "tail   "]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-esrchc-growing-and-shrinking-width",
+    "description": "Change row dimensions between adjacent lookups and retain a normal miss across fresh tables.",
+    "workflow": [
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": ["x"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": ["wide ASCII companion", "x"]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": []
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "x",
+        "values": ["🛰🚀", ""]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "X",
+        "values": ["x   "]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "",
+        "values": [""]
+      },
+      {
+        "op": "strings.esrchc",
+        "value": "tail",
+        "values": ["y", "tail"]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -5684,7 +5684,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -5735,7 +5736,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5784,7 +5786,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5835,7 +5838,416 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "71beff445933c2a2eb2045f4d227d0ee437ab0e6389156cbf00d2e7f374e2af5",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "71beff445933c2a2eb2045f4d227d0ee437ab0e6389156cbf00d2e7f374e2af5",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "71beff445933c2a2eb2045f4d227d0ee437ab0e6389156cbf00d2e7f374e2af5",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "71beff445933c2a2eb2045f4d227d0ee437ab0e6389156cbf00d2e7f374e2af5",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84575382b53ae5105490ce059e6e9c8cf799e80b38e6670107dc278658a6c542",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84575382b53ae5105490ce059e6e9c8cf799e80b38e6670107dc278658a6c542",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84575382b53ae5105490ce059e6e9c8cf799e80b38e6670107dc278658a6c542",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "84575382b53ae5105490ce059e6e9c8cf799e80b38e6670107dc278658a6c542",
+      "caseIds": [
+        "file-io-dlafns-audit-positive-second-segment-and-end",
+        "file-io-dlafns-closed-handle-error",
+        "file-io-dlafns-next-segment-search-success",
+        "file-io-dlaopn-audit-blank-type",
+        "file-io-dlaopn-audit-control-type",
+        "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
+        "file-io-dlaopn-create-empty-file-success",
+        "file-io-dlaopn-existing-file-error",
+        "file-io-dlaopn-negative-ncomch-error",
+        "file-io-dskmi2-audit-coarser-grid",
+        "file-io-dskmi2-audit-small-index",
+        "file-io-dskmi2-audit-small-workspace",
+        "file-io-dskmi2-audit-two-vertices",
+        "file-io-dskmi2-audit-vertex-mapping-disabled",
+        "file-io-dskmi2-audit-zero-coarse-scale",
+        "file-io-dskmi2-audit-zero-fine-scale",
+        "file-io-dskmi2-invalid-nv-error",
+        "file-io-dskmi2-minimal-mesh-success",
+        "file-io-dskmi2-non-integer-corscl-error",
+        "file-io-dskopn-audit-empty-file-header",
+        "file-io-dskopn-existing-file-error",
+        "file-io-dskopn-negative-ncomch-error",
+        "file-io-dskopn-write-and-identify-success",
+        "file-io-dskw02-audit-backward-times",
+        "file-io-dskw02-audit-two-meshes-and-metadata",
+        "file-io-dskw02-audit-unknown-frame",
+        "file-io-dskw02-audit-unsupported-class",
+        "file-io-dskw02-audit-zero-rectangle-extent",
+        "file-io-dskw02-closed-handle-error",
+        "file-io-dskw02-dlaopn-handle-kind-error",
+        "file-io-dskw02-write-and-traverse-success",
+        "file-io-exists-audit-create-open-close-lifecycle",
+        "file-io-exists-fixture-present-success",
+        "file-io-exists-missing-file-success",
+        "file-io-getfat-audit-text-and-daf-types",
+        "file-io-getfat-dsk-success",
+        "file-io-getfat-missing-file-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -5847,17 +6259,27 @@
       "scenarios": [
         {
           "caseId": "file-io-dlafns-next-segment-search-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dlafns advances from first DSK segment and reports end of traversal Compare all eight linked descriptor fields only when found, plus end/restart flags."
         },
         {
           "caseId": "file-io-dlafns-closed-handle-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dlafns error when handle is closed before traversal Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dlafns-audit-positive-second-segment-and-end",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Advance through a real second segment and end, restart, and compare every linked descriptor field. Supplemental content parity reads all geometry/metadata. Compare all eight linked descriptor fields only when found, plus end/restart flags."
         }
       ],
@@ -5915,14 +6337,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlafns -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5941,14 +6361,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlafns -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlafns -> shared C shim -> dlafns_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlafns independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5960,32 +6378,48 @@
       "scenarios": [
         {
           "caseId": "file-io-dlaopn-create-empty-file-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dlaopn creates an empty DLA file and dlabfs reports no segments"
         },
         {
           "caseId": "file-io-dlaopn-negative-ncomch-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dlaopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dlaopn-existing-file-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dlaopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
         },
         {
           "caseId": "file-io-dlaopn-audit-mixed-type-comments-and-reopen",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Four-character type truncation and case-aware header semantics, comment reservation and reopened valid empty DLA. Independent DAS header readback checks original type/name/comment records."
         },
         {
           "caseId": "file-io-dlaopn-audit-blank-type",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual CSPICE rejects invalid file type with BLANKFILETYPE. Actual CSPICE error required: BLANKFILETYPE."
         },
         {
           "caseId": "file-io-dlaopn-audit-control-type",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual CSPICE rejects invalid file type with ILLEGALCHARACTER. Actual CSPICE error required: ILLEGALCHARACTER."
         }
       ],
@@ -6040,14 +6474,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dlaopn -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6066,14 +6498,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dlaopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dlaopn -> shared C shim -> dlaopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dlaopn independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6085,52 +6515,75 @@
       "scenarios": [
         {
           "caseId": "file-io-dskmi2-minimal-mesh-success",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "dskmi2 builds a complete deterministic type-2 spatial index Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-invalid-nv-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskmi2 error for invalid nv Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskmi2-non-integer-corscl-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskmi2 error for non-integer corscl Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskmi2-audit-vertex-mapping-disabled",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Full 10-double/120000-int outputs distinguish absent optional vertex-plate lists and preserve all active voxel pointers. Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-audit-coarser-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A different fine/coarse scale on noncoplanar geometry distinguishes voxel size/origin and full integer index contents. Every returned double/integer reaches the live comparator; no summary truncation."
         },
         {
           "caseId": "file-io-dskmi2-audit-two-vertices",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Valid array shapes reach actual CSPICE BADVERTEXCOUNT. Actual CSPICE error required: BADVERTEXCOUNT."
         },
         {
           "caseId": "file-io-dskmi2-audit-zero-fine-scale",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require named actual CSPICE BADFINEVOXELSCALE rather than matching incidental failures. Actual CSPICE error required: BADFINEVOXELSCALE."
         },
         {
           "caseId": "file-io-dskmi2-audit-zero-coarse-scale",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require named actual CSPICE BADCOARSEVOXSCALE rather than matching incidental failures. Actual CSPICE error required: BADCOARSEVOXSCALE."
         },
         {
           "caseId": "file-io-dskmi2-audit-small-index",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require named actual CSPICE INTINDEXTOOSMALL rather than matching incidental failures. Actual CSPICE error required: INTINDEXTOOSMALL."
         },
         {
           "caseId": "file-io-dskmi2-audit-small-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require named actual CSPICE WORKSPACETOOSMALL rather than matching incidental failures. Actual CSPICE error required: WORKSPACETOOSMALL."
         }
       ],
@@ -6189,14 +6642,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskmi2 -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6215,14 +6666,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskmi2 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskmi2 -> shared C shim -> dskmi2_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskmi2 independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6234,22 +6683,34 @@
       "scenarios": [
         {
           "caseId": "file-io-dskopn-write-and-identify-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dskopn creates a writable DSK later identified by getfat"
         },
         {
           "caseId": "file-io-dskopn-negative-ncomch-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskopn error for invalid ncomch Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskopn-existing-file-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskopn error when the output file already exists Actual CSPICE error required: FILEOPENFAIL."
         },
         {
           "caseId": "file-io-dskopn-audit-empty-file-header",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "An empty DSK is still a valid DAS/DSK after close; read its actual type and genuine empty DLA miss."
         }
       ],
@@ -6302,14 +6763,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskopn -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6328,14 +6787,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskopn -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskopn -> shared C shim -> dskopn_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskopn independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6347,42 +6804,62 @@
       "scenarios": [
         {
           "caseId": "file-io-dskw02-write-and-traverse-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "dskw02 writes a segment that can be traversed via dlabfs/dlafns Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
         },
         {
           "caseId": "file-io-dskw02-closed-handle-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskw02 error when writing with a closed handle Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskw02-dlaopn-handle-kind-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative dskw02 error when called with a handle opened by dlaopn Contract/workflow precondition; not claimed as a CSPICE error path."
         },
         {
           "caseId": "file-io-dskw02-audit-two-meshes-and-metadata",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Write distinct 3D meshes, bodies/surfaces, coordinate bounds and ET intervals; compare full spatial indices and both DLA descriptors plus independent content readback. Consumed writer output is closed and read independently; supplemental content assertions verify scientific data and metadata."
         },
         {
           "caseId": "file-io-dskw02-audit-unknown-frame",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Valid compiled index reaches actual writer FRAMEIDNOTFOUND; failure cleanup closes the outstanding writer. Actual CSPICE error required: FRAMEIDNOTFOUND."
         },
         {
           "caseId": "file-io-dskw02-audit-backward-times",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Valid compiled index reaches actual writer TIMESOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: TIMESOUTOFORDER."
         },
         {
           "caseId": "file-io-dskw02-audit-zero-rectangle-extent",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Valid compiled index reaches actual writer BOUNDSOUTOFORDER; failure cleanup closes the outstanding writer. Actual CSPICE error required: BOUNDSOUTOFORDER."
         },
         {
           "caseId": "file-io-dskw02-audit-unsupported-class",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Valid compiled index reaches actual writer NOTSUPPORTED; failure cleanup closes the outstanding writer. Actual CSPICE error required: NOTSUPPORTED."
         }
       ],
@@ -6439,14 +6916,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_dskw02 -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6465,14 +6940,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.dskw02 -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_dskw02 -> shared C shim -> dskw02_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.dskw02 independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6484,17 +6957,29 @@
       "scenarios": [
         {
           "caseId": "file-io-exists-fixture-present-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "exists reports true for fixture path after furnsh staging"
         },
         {
           "caseId": "file-io-exists-missing-file-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "exists reports false for a missing fixture-relative file"
         },
         {
           "caseId": "file-io-exists-audit-create-open-close-lifecycle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe false before creation and true both while open and after actual close; scratch is removed after finalization."
         }
       ],
@@ -6552,14 +7037,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.exists -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_exists -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6578,14 +7061,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.exists -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_exists -> shared C shim -> exists_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.exists independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6597,17 +7078,27 @@
       "scenarios": [
         {
           "caseId": "file-io-getfat-dsk-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "getfat identifies a deterministic DSK fixture"
         },
         {
           "caseId": "file-io-getfat-missing-file-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative getfat missing-file error Actual CSPICE error required: FILENOTFOUND."
         },
         {
           "caseId": "file-io-getfat-audit-text-and-daf-types",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe distinct KPL/LSK and DAF/SPK type pairs on actual closed files, including a valid empty DAF."
         }
       ],
@@ -6675,14 +7166,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getfat -> Node typed file adapter -> owner-local handle registry as applicable -> native N-API implementation -> tspice_getfat -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6701,14 +7190,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.getfat -> WASM typed file adapter -> owner-local handle registry as applicable -> actual compiled _tspice_getfat -> shared C shim -> getfat_c. Registered TS workflow calls the actual raw method; locked Python handler invokes sp.getfat independently, with explicit contract preflight only where documented.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -145,6 +145,21 @@ import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" wit
 import coordsVectorsMtxvCasesRaw from "./coords-vectors/mtxv.cases.json" with { type: "json" };
 import coordsVectorsMxmCasesRaw from "./coords-vectors/mxm.cases.json" with { type: "json" };
 import coordsVectorsMxvCasesRaw from "./coords-vectors/mxv.cases.json" with { type: "json" };
+import stringCmprssCases from "./strings/cmprss.cases.json" with { type: "json" };
+import stringEqstrCases from "./strings/eqstr.cases.json" with { type: "json" };
+import stringIswhspCases from "./strings/iswhsp.cases.json" with { type: "json" };
+import stringLastnbCases from "./strings/lastnb.cases.json" with { type: "json" };
+import stringLcaseCases from "./strings/lcase.cases.json" with { type: "json" };
+import stringUcaseCases from "./strings/ucase.cases.json" with { type: "json" };
+import stringMatchiCases from "./strings/matchi.cases.json" with { type: "json" };
+import stringCposCases from "./strings/cpos.cases.json" with { type: "json" };
+import stringCposrCases from "./strings/cposr.cases.json" with { type: "json" };
+import stringNcposCases from "./strings/ncpos.cases.json" with { type: "json" };
+import stringNcposrCases from "./strings/ncposr.cases.json" with { type: "json" };
+import stringPosCases from "./strings/pos.cases.json" with { type: "json" };
+import stringPosrCases from "./strings/posr.cases.json" with { type: "json" };
+import stringEsrchcCases from "./strings/esrchc.cases.json" with { type: "json" };
+import stringMatchwCases from "./strings/matchw.cases.json" with { type: "json" };
 import coordsVectorsReclatCasesRaw from "./coords-vectors/reclat.cases.json" with { type: "json" };
 import coordsVectorsRecgeoCasesRaw from "./coords-vectors/recgeo.cases.json" with { type: "json" };
 import coordsVectorsRecsphCasesRaw from "./coords-vectors/recsph.cases.json" with { type: "json" };
@@ -574,7 +589,26 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfdistCases,
 ];
 
+export const stringsCases: ParityCase[] = [
+  ...(stringCmprssCases as ParityCase[]),
+  ...(stringEqstrCases as ParityCase[]),
+  ...(stringIswhspCases as ParityCase[]),
+  ...(stringLastnbCases as ParityCase[]),
+  ...(stringLcaseCases as ParityCase[]),
+  ...(stringUcaseCases as ParityCase[]),
+  ...(stringMatchiCases as ParityCase[]),
+  ...(stringCposCases as ParityCase[]),
+  ...(stringCposrCases as ParityCase[]),
+  ...(stringNcposCases as ParityCase[]),
+  ...(stringNcposrCases as ParityCase[]),
+  ...(stringPosCases as ParityCase[]),
+  ...(stringPosrCases as ParityCase[]),
+  ...(stringEsrchcCases as ParityCase[]),
+  ...(stringMatchwCases as ParityCase[]),
+];
+
 export const allCases: ParityCase[] = [
+  ...stringsCases,
   ...timeCases,
   ...idsNamesCases,
   ...coordsVectorsCases,

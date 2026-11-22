@@ -305,6 +305,21 @@ from .models import (
     StepTimeSce2s,
     StepTimeScs2e,
     StepTimeSct2e,
+    StepStringsCpos,
+    StepStringsCposr,
+    StepStringsNcpos,
+    StepStringsNcposr,
+    StepStringsPos,
+    StepStringsPosr,
+    StepStringsEsrchc,
+    StepStringsCmprss,
+    StepStringsEqstr,
+    StepStringsIswhsp,
+    StepStringsLastnb,
+    StepStringsLcase,
+    StepStringsUcase,
+    StepStringsMatchi,
+    StepStringsMatchw,
     StepTimeStr2Et,
     StepTimeTimout,
     StepTimeSpd,
@@ -526,6 +541,121 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
     op = _expect_string(step.get("op"), label="workflow step.op")
 
     match op:
+        case "strings.cpos":
+            return StepStringsCpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.cpos.start"),
+            )
+
+        case "strings.cposr":
+            return StepStringsCposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.cposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.cposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.cposr.start"),
+            )
+
+        case "strings.ncpos":
+            return StepStringsNcpos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncpos.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncpos.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncpos.start"),
+            )
+
+        case "strings.ncposr":
+            return StepStringsNcposr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.ncposr.text"),
+                chars=_expect_string(step.get("chars"), label="strings.ncposr.chars"),
+                start=_expect_int(step.get("start"), label="strings.ncposr.start"),
+            )
+
+        case "strings.pos":
+            return StepStringsPos(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.pos.text"),
+                substr=_expect_string(step.get("substr"), label="strings.pos.substr"),
+                start=_expect_int(step.get("start"), label="strings.pos.start"),
+            )
+
+        case "strings.posr":
+            return StepStringsPosr(
+                op=op,
+                text=_expect_string(step.get("text"), label="strings.posr.text"),
+                substr=_expect_string(step.get("substr"), label="strings.posr.substr"),
+                start=_expect_int(step.get("start"), label="strings.posr.start"),
+            )
+
+        case "strings.esrchc":
+            return StepStringsEsrchc(
+                op=op,
+                value=_expect_string(step.get("value"), label="strings.esrchc.value"),
+                values=_expect_string_list(step.get("values"), label="strings.esrchc.values"),
+            )
+
+        case "strings.cmprss":
+            return StepStringsCmprss(
+                op=op,
+                delim=_expect_string(step.get("delim"), label="strings.cmprss.delim"),
+                n=_expect_int(step.get("n"), label="strings.cmprss.n"),
+                input=_expect_string(step.get("input"), label="strings.cmprss.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.cmprss.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.eqstr":
+            return StepStringsEqstr(
+                op=op,
+                a=_expect_string(step.get("a"), label="strings.eqstr.a"),
+                b=_expect_string(step.get("b"), label="strings.eqstr.b"),
+            )
+
+        case "strings.iswhsp":
+            return StepStringsIswhsp(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.iswhsp.input"),
+            )
+
+        case "strings.lastnb":
+            return StepStringsLastnb(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lastnb.input"),
+            )
+
+        case "strings.lcase":
+            return StepStringsLcase(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.lcase.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.lcase.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.ucase":
+            return StepStringsUcase(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.ucase.input"),
+                lenout=_expect_int(step.get("lenout"), label="strings.ucase.lenout") if "lenout" in step else None,
+            )
+
+        case "strings.matchi":
+            return StepStringsMatchi(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.matchi.input"),
+                template=_expect_string(step.get("template"), label="strings.matchi.template"),
+                wstr=_expect_string(step.get("wstr"), label="strings.matchi.wstr"),
+                wchr=_expect_string(step.get("wchr"), label="strings.matchi.wchr"),
+            )
+
+        case "strings.matchw":
+            return StepStringsMatchw(
+                op=op,
+                input=_expect_string(step.get("input"), label="strings.matchw.input"),
+                template=_expect_string(step.get("template"), label="strings.matchw.template"),
+                wstr=_expect_string(step.get("wstr"), label="strings.matchw.wstr"),
+                wchr=_expect_string(step.get("wchr"), label="strings.matchw.wchr"),
+            )
+
         case "time.str2et":
             return StepTimeStr2Et(op=op, time=_expect_string(step.get("time"), label="time.str2et.time"))
 

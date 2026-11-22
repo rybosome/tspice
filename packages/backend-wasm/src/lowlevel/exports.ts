@@ -1935,6 +1935,124 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_cpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pos(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_posr(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_esrchc(
+    valuePtr: number,
+    count: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cmprss(
+    delim: number,
+    n: number,
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqstr(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_iswhsp(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lastnb(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lcase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchi(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchw(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -3727,6 +3845,124 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_cpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncpos(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ncposr(
+    textPtr: number,
+    charsPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_pos(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_posr(
+    textPtr: number,
+    substrPtr: number,
+    start: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_esrchc(
+    valuePtr: number,
+    count: number,
+    width: number,
+    rowsPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_cmprss(
+    delim: number,
+    n: number,
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_eqstr(
+    aPtr: number,
+    bPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_iswhsp(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lastnb(
+    inputPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_lcase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_ucase(
+    inputPtr: number,
+    lenout: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchi(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_matchw(
+    inputPtr: number,
+    templPtr: number,
+    wstr: number,
+    wchr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -4256,6 +4492,21 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_vsubg",
   "_tspice_vzerog",
   "_tspice_unormg",
+  "_tspice_cpos",
+  "_tspice_cposr",
+  "_tspice_ncpos",
+  "_tspice_ncposr",
+  "_tspice_pos",
+  "_tspice_posr",
+  "_tspice_esrchc",
+  "_tspice_cmprss",
+  "_tspice_eqstr",
+  "_tspice_iswhsp",
+  "_tspice_lastnb",
+  "_tspice_lcase",
+  "_tspice_ucase",
+  "_tspice_matchi",
+  "_tspice_matchw",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

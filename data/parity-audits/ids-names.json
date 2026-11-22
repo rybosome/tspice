@@ -5306,7 +5306,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -5352,7 +5353,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5396,7 +5398,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -5442,7 +5445,376 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f5a908c127e673f363d4d074c9380ec72863acb1e3f958f8e4991e9bc0d87837",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f5a908c127e673f363d4d074c9380ec72863acb1e3f958f8e4991e9bc0d87837",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f5a908c127e673f363d4d074c9380ec72863acb1e3f958f8e4991e9bc0d87837",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "f5a908c127e673f363d4d074c9380ec72863acb1e3f958f8e4991e9bc0d87837",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "11a92d6dc816e4e14feeb697528832493486bcf1c3cd0ab5d253f2d0fce7729a",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "11a92d6dc816e4e14feeb697528832493486bcf1c3cd0ab5d253f2d0fce7729a",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "11a92d6dc816e4e14feeb697528832493486bcf1c3cd0ab5d253f2d0fce7729a",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "11a92d6dc816e4e14feeb697528832493486bcf1c3cd0ab5d253f2d0fce7729a",
+      "caseIds": [
+        "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2n-audit-malformed-pool-mapping",
+        "ids-names-bodc2n-found-success",
+        "ids-names-bodc2n-not-found-success",
+        "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
+        "ids-names-bodc2s-audit-malformed-pool-mapping",
+        "ids-names-bodc2s-known-code-success",
+        "ids-names-boddef-audit-long-name-collision",
+        "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
+        "ids-names-boddef-empty-name-error",
+        "ids-names-boddef-round-trip-success",
+        "ids-names-bodfnd-audit-canonical-32-byte-key",
+        "ids-names-bodfnd-audit-empty-normalized-item",
+        "ids-names-bodfnd-audit-normalized-items-types-and-missing",
+        "ids-names-bodfnd-item-too-long-error",
+        "ids-names-bodfnd-presence-success",
+        "ids-names-bodn2c-audit-empty-name",
+        "ids-names-bodn2c-audit-malformed-pool-mapping",
+        "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
+        "ids-names-bodn2c-found-success",
+        "ids-names-bodn2c-not-found-success",
+        "ids-names-bods2c-audit-empty-name",
+        "ids-names-bods2c-audit-malformed-pool-mapping",
+        "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
+        "ids-names-bods2c-name-success",
+        "ids-names-bods2c-not-found-success",
+        "ids-names-bodvar-audit-all-values-beyond-old-cap",
+        "ids-names-bodvar-audit-canonical-32-byte-key",
+        "ids-names-bodvar-audit-empty-normalized-item",
+        "ids-names-bodvar-audit-normalized-items-types-and-missing",
+        "ids-names-bodvar-item-too-long-error",
+        "ids-names-bodvar-values-success"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -5454,22 +5826,36 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodc2n-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n resolves body code 399 to EARTH"
         },
         {
           "caseId": "ids-names-bodc2n-not-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n miss returns found=false"
         },
         {
           "caseId": "ids-names-bodc2n-audit-custom-leading-blanks-aliases-and-unknown",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: bodc2n: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodc2n-audit-malformed-pool-mapping",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual found/name reaches comparison for known/unknown IDs, negative custom codes, exact leading blanks/case, latest aliases and reassignment. Named malformed-pool error remains distinct from unknown IDs. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
         }
       ],
@@ -5505,7 +5891,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/ids_names.py",
             "packages/py-parity-checking/src/cases/ids-names/bodc2n.cases.json"
           ],
-          "caseIds": ["ids-names-bodc2n-audit-malformed-pool-mapping"]
+          "caseIds": [
+            "ids-names-bodc2n-audit-malformed-pool-mapping"
+          ]
         },
         {
           "id": "leading-name-blanks-trimmed",
@@ -5539,14 +5927,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2n -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5565,14 +5951,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2n -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2n -> actual bodc2n_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5584,17 +5968,27 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodc2s-known-code-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s resolves body code 399 to EARTH"
         },
         {
           "caseId": "ids-names-bodc2s-audit-custom-leading-blanks-aliases-and-unknown",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: bodc2s: custom leading blanks aliases and unknown, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodc2s-audit-malformed-pool-mapping",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The complete returned string reaches comparison, including known/custom names with leading blanks, preferred aliases and negative decimal fallback. Malformed mapping errors cannot satisfy a successful fallback case. Case: Malformed name/code vectors must signal the real mapping error rather than found:false or a fallback numeric string."
         }
       ],
@@ -5639,14 +6033,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2s -> Node typed adapter -> serialized native registered handler -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5665,14 +6057,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodc2s -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodc2s -> actual bodc2s_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5684,22 +6074,36 @@
       "scenarios": [
         {
           "caseId": "ids-names-boddef-round-trip-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef mapping can be resolved by bods2c and bodc2s in the same workflow"
         },
         {
           "caseId": "ids-names-boddef-empty-name-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Representative boddef validation error for empty body name"
         },
         {
           "caseId": "ids-names-boddef-audit-name-reassignment-and-pool-precedence",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: boddef: name reassignment and pool precedence, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-boddef-audit-long-name-collision",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The void mutation is observed through actual forward/reverse lookups, name reassignment, latest alias, earlier alias, long-name collision, kernel-pool priority and persistence after kclear. Empty definition requires EMPTYSTRING. Case: Names that differ only beyond NAIF maximum length select the latest definition; inspect both forward and reverse mappings."
         }
       ],
@@ -5745,14 +6149,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.boddef -> Node typed adapter -> serialized native registered handler -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5771,14 +6173,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.boddef -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_boddef -> actual boddef_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5790,27 +6190,43 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodfnd-presence-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd reports presence for numeric and character body constants"
         },
         {
           "caseId": "ids-names-bodfnd-item-too-long-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         },
         {
           "caseId": "ids-names-bodfnd-audit-normalized-items-types-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: bodfnd: normalized items types and missing, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodfnd-audit-canonical-32-byte-key",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual raw boolean is compared to actual sp.bodfnd, not a dtpool oracle substitute. Numeric/character/missing constants, normalized ASCII items, negative body IDs and longer item suffixes to a valid 32-byte key distinguish presence from numeric-only lookup. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
         },
         {
           "caseId": "ids-names-bodfnd-audit-empty-normalized-item",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         }
       ],
@@ -5898,14 +6314,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodfnd -> Node typed adapter -> serialized native registered handler -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -5924,14 +6338,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodfnd -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodfnd -> actual bodfnd_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -5943,27 +6355,43 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodn2c-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c resolves EARTH code"
         },
         {
           "caseId": "ids-names-bodn2c-not-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c miss returns found=false"
         },
         {
           "caseId": "ids-names-bodn2c-audit-normalized-names-and-numeric-is-not-name",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: normalized names and numeric is not name, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodn2c-audit-malformed-pool-mapping",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodn2c-audit-empty-name",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual found/code reaches live comparison for built-ins, mixed case/compressed blanks, numeric text versus names, unknown names and aliases. Named EMPTYSTRING and BADDIMENSIONS failures cannot be normalized to found:false. Case: bodn2c: empty name, compare complete live SpiceyPy results/effects"
         }
       ],
@@ -6007,14 +6435,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodn2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6033,14 +6459,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bodn2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bodn2c -> actual bodn2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6052,27 +6476,43 @@
       "scenarios": [
         {
           "caseId": "ids-names-bods2c-name-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c resolves EARTH to code 399"
         },
         {
           "caseId": "ids-names-bods2c-not-found-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c miss returns found=false"
         },
         {
           "caseId": "ids-names-bods2c-audit-numeric-strings-and-normalized-names",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: numeric strings and normalized names, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bods2c-audit-malformed-pool-mapping",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: malformed pool mapping, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bods2c-audit-empty-name",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Actual found/code reaches comparison for normalized names, signed strings, both integer extrema, overflow/fractional strings, aliases and misses. Named EMPTYSTRING/BADDIMENSIONS are checked independently of the wrapper NotFound flag. Case: bods2c: empty name, compare complete live SpiceyPy results/effects"
         }
       ],
@@ -6116,14 +6556,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bods2c -> Node typed adapter -> serialized native registered handler -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6142,14 +6580,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "Workflow -> actual raw.bods2c -> WASM typed adapter -> owned buffers and required compiled export -> shared tspice_bods2c -> actual bods2c_c. Oracle calls actual matching SpiceyPy operation, with real error-state checking before Found normalization.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6161,32 +6597,52 @@
       "scenarios": [
         {
           "caseId": "ids-names-bodvar-values-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar returns numeric values and normal misses for char/missing vars"
         },
         {
           "caseId": "ids-names-bodvar-item-too-long-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         },
         {
           "caseId": "ids-names-bodvar-audit-normalized-items-types-and-missing",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: normalized items types and missing, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodvar-audit-all-values-beyond-old-cap",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: bodvar: all values beyond old cap, compare complete live SpiceyPy results/effects"
         },
         {
           "caseId": "ids-names-bodvar-audit-canonical-32-byte-key",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every returned numeric value, array length and order reaches live comparison with actual sp.bodvar, including signed fractions, type replacement, missing/character [], canonical 32-byte key and a 1025-value constant exceeding the old cap. The metadata preflight models only the documented contract miss policy; it does not synthesize numeric values. Case: NAIF constructs a 32-byte pool key; item suffixes after the valid key do not change the selected constant."
         },
         {
           "caseId": "ids-names-bodvar-audit-empty-normalized-item",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Explicit normalized-item boundary rejection, not a claim of CSPICE diagnostic equivalence. The raw length/nonempty guard and oracle contract adaptation reject the input."
         }
       ],
@@ -6253,7 +6709,9 @@
             "packages/backend-wasm/test/ids-allocation-cleanup.test.ts",
             "packages/py-parity-checking/src/cases/ids-names/bodvar.cases.json"
           ],
-          "caseIds": ["ids-names-bodvar-audit-all-values-beyond-old-cap"]
+          "caseIds": [
+            "ids-names-bodvar-audit-all-values-beyond-old-cap"
+          ]
         }
       ],
       "backends": {
@@ -6274,14 +6732,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "composed",
           "trace": "Workflow -> actual raw.bodvar -> Node typed adapter -> serialized native registered handler -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6300,14 +6756,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "composed",
           "trace": "Workflow -> actual raw.bodvar -> WASM typed adapter -> owned buffers and required compiled export -> shared metadata preflight and bounded bodvcd_c; oracle actual sp.bodvar with explicit documented contract-miss adaptation.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -3057,6 +3057,53 @@ export function createFakeBackend(
       return { unit: v.map((value) => (norm === 0 ? 0 : value / norm)), norm };
     },
 
+    // This fake does not model CSPICE string and wildcard semantics.
+    cpos: () => {
+      throw new Error("Fake backend does not model cpos()");
+    },
+    cposr: () => {
+      throw new Error("Fake backend does not model cposr()");
+    },
+    ncpos: () => {
+      throw new Error("Fake backend does not model ncpos()");
+    },
+    ncposr: () => {
+      throw new Error("Fake backend does not model ncposr()");
+    },
+    pos: () => {
+      throw new Error("Fake backend does not model pos()");
+    },
+    posr: () => {
+      throw new Error("Fake backend does not model posr()");
+    },
+    esrchc: () => {
+      throw new Error("Fake backend does not model esrchc()");
+    },
+    cmprss: () => {
+      throw new Error("Fake backend does not model cmprss()");
+    },
+    eqstr: () => {
+      throw new Error("Fake backend does not model eqstr()");
+    },
+    iswhsp: () => {
+      throw new Error("Fake backend does not model iswhsp()");
+    },
+    lastnb: () => {
+      throw new Error("Fake backend does not model lastnb()");
+    },
+    lcase: () => {
+      throw new Error("Fake backend does not model lcase()");
+    },
+    ucase: () => {
+      throw new Error("Fake backend does not model ucase()");
+    },
+    matchi: () => {
+      throw new Error("Fake backend does not model matchi()");
+    },
+    matchw: () => {
+      throw new Error("Fake backend does not model matchw()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

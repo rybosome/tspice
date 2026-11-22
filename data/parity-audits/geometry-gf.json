@@ -13426,7 +13426,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -13549,7 +13550,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -13670,7 +13672,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -13793,7 +13796,992 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0ae7a53a1ad73d4840cd74038ab3df15aa7f153c56ecad49083e7c03396380cd",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0ae7a53a1ad73d4840cd74038ab3df15aa7f153c56ecad49083e7c03396380cd",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0ae7a53a1ad73d4840cd74038ab3df15aa7f153c56ecad49083e7c03396380cd",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "0ae7a53a1ad73d4840cd74038ab3df15aa7f153c56ecad49083e7c03396380cd",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a01202213ca7531dbeabf8b2ecb279a8723ede78d0d62161fcf0ee76ec3a3a9b",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a01202213ca7531dbeabf8b2ecb279a8723ede78d0d62161fcf0ee76ec3a3a9b",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a01202213ca7531dbeabf8b2ecb279a8723ede78d0d62161fcf0ee76ec3a3a9b",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "a01202213ca7531dbeabf8b2ecb279a8723ede78d0d62161fcf0ee76ec3a3a9b",
+      "caseIds": [
+        "geometry-gf-gfdist-audit-absmax-adjust",
+        "geometry-gf-gfdist-audit-absmin-adjust",
+        "geometry-gf-gfdist-audit-bad-correction",
+        "geometry-gf-gfdist-audit-bad-relation",
+        "geometry-gf-gfdist-audit-correction-cn",
+        "geometry-gf-gfdist-audit-correction-cn-s",
+        "geometry-gf-gfdist-audit-correction-lt",
+        "geometry-gf-gfdist-audit-correction-lt-s",
+        "geometry-gf-gfdist-audit-correction-xcn",
+        "geometry-gf-gfdist-audit-correction-xcn-s",
+        "geometry-gf-gfdist-audit-correction-xlt",
+        "geometry-gf-gfdist-audit-correction-xlt-s",
+        "geometry-gf-gfdist-audit-empty-result",
+        "geometry-gf-gfdist-audit-insufficient-result",
+        "geometry-gf-gfdist-audit-insufficient-workspace",
+        "geometry-gf-gfdist-audit-negative-adjust",
+        "geometry-gf-gfdist-audit-negative-step",
+        "geometry-gf-gfdist-audit-negative-workspace",
+        "geometry-gf-gfdist-audit-relation-absmax",
+        "geometry-gf-gfdist-audit-relation-absmin",
+        "geometry-gf-gfdist-audit-relation-equal",
+        "geometry-gf-gfdist-audit-relation-greater",
+        "geometry-gf-gfdist-audit-relation-less",
+        "geometry-gf-gfdist-audit-relation-locmax",
+        "geometry-gf-gfdist-audit-relation-locmin",
+        "geometry-gf-gfdist-audit-result-replacement",
+        "geometry-gf-gfdist-audit-split-confinement",
+        "geometry-gf-gfdist-audit-unknown-observer",
+        "geometry-gf-gfdist-audit-zero-result-capacity",
+        "geometry-gf-gfdist-audit-zero-step",
+        "geometry-gf-gfdist-audit-zero-workspace",
+        "geometry-gf-gfdist-invalid-nintvls-error",
+        "geometry-gf-gfdist-success",
+        "geometry-gf-gfrefn-audit-equal",
+        "geometry-gf-gfrefn-audit-flags-False-False",
+        "geometry-gf-gfrefn-audit-flags-False-True",
+        "geometry-gf-gfrefn-audit-flags-True-False",
+        "geometry-gf-gfrefn-audit-flags-True-True",
+        "geometry-gf-gfrefn-audit-fractional",
+        "geometry-gf-gfrefn-audit-large",
+        "geometry-gf-gfrefn-audit-reversed",
+        "geometry-gf-gfrefn-invalid-flags-error",
+        "geometry-gf-gfrefn-success",
+        "geometry-gf-gfrepf-audit-reinitialize",
+        "geometry-gf-gfrepf-success",
+        "geometry-gf-gfrepf-without-init-success",
+        "geometry-gf-gfrepi-audit-empty-prefix",
+        "geometry-gf-gfrepi-audit-empty-suffix",
+        "geometry-gf-gfrepi-audit-init-only",
+        "geometry-gf-gfrepi-audit-long-prefix",
+        "geometry-gf-gfrepi-audit-long-suffix",
+        "geometry-gf-gfrepi-audit-nonprinting-prefix",
+        "geometry-gf-gfrepi-audit-nonprinting-suffix",
+        "geometry-gf-gfrepi-audit-singleton",
+        "geometry-gf-gfrepi-missing-window-error",
+        "geometry-gf-gfrepi-success",
+        "geometry-gf-gfsep-audit-absmax-adjust",
+        "geometry-gf-gfsep-audit-absmin-adjust",
+        "geometry-gf-gfsep-audit-bad-correction",
+        "geometry-gf-gfsep-audit-bad-relation",
+        "geometry-gf-gfsep-audit-bad-shape",
+        "geometry-gf-gfsep-audit-correction-cn",
+        "geometry-gf-gfsep-audit-correction-cn-s",
+        "geometry-gf-gfsep-audit-correction-lt",
+        "geometry-gf-gfsep-audit-correction-lt-s",
+        "geometry-gf-gfsep-audit-correction-xcn",
+        "geometry-gf-gfsep-audit-correction-xcn-s",
+        "geometry-gf-gfsep-audit-correction-xlt",
+        "geometry-gf-gfsep-audit-correction-xlt-s",
+        "geometry-gf-gfsep-audit-empty-result",
+        "geometry-gf-gfsep-audit-ignored-point-frames",
+        "geometry-gf-gfsep-audit-insufficient-result",
+        "geometry-gf-gfsep-audit-insufficient-workspace",
+        "geometry-gf-gfsep-audit-negative-adjust",
+        "geometry-gf-gfsep-audit-negative-step",
+        "geometry-gf-gfsep-audit-negative-workspace",
+        "geometry-gf-gfsep-audit-relation-absmax",
+        "geometry-gf-gfsep-audit-relation-absmin",
+        "geometry-gf-gfsep-audit-relation-equal",
+        "geometry-gf-gfsep-audit-relation-greater",
+        "geometry-gf-gfsep-audit-relation-less",
+        "geometry-gf-gfsep-audit-relation-locmax",
+        "geometry-gf-gfsep-audit-relation-locmin",
+        "geometry-gf-gfsep-audit-result-replacement",
+        "geometry-gf-gfsep-audit-sphere-point",
+        "geometry-gf-gfsep-audit-split-confinement",
+        "geometry-gf-gfsep-audit-two-spheres",
+        "geometry-gf-gfsep-audit-unknown-observer",
+        "geometry-gf-gfsep-audit-zero-equality-limitation",
+        "geometry-gf-gfsep-audit-zero-result-capacity",
+        "geometry-gf-gfsep-audit-zero-step",
+        "geometry-gf-gfsep-audit-zero-workspace",
+        "geometry-gf-gfsep-invalid-relate-error",
+        "geometry-gf-gfsep-success",
+        "geometry-gf-gfsstp-audit-0",
+        "geometry-gf-gfsstp-audit-1",
+        "geometry-gf-gfsstp-audit-2",
+        "geometry-gf-gfsstp-audit-zero",
+        "geometry-gf-gfsstp-invalid-step-error",
+        "geometry-gf-gfsstp-success",
+        "geometry-gf-gfstep-audit-0",
+        "geometry-gf-gfstep-audit-1",
+        "geometry-gf-gfstep-audit-2",
+        "geometry-gf-gfstep-success",
+        "geometry-gf-gfstep-uninitialized-error",
+        "geometry-gf-gfstol-audit-kernel-clear-persistence",
+        "geometry-gf-gfstol-audit-zero",
+        "geometry-gf-gfstol-invalid-value-error",
+        "geometry-gf-gfstol-success"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -13805,32 +14793,52 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfsstp-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfsstp updates the constant step size used by gfstep; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-invalid-step-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfsstp invalid step size error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-0",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-1",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-2",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe distinct stored step values and updates through actual GFSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsstp-audit-zero",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require actual INVALIDSTEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -13876,14 +14884,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed node adapter -> actual registered N-API gfsstp binding -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -13900,14 +14906,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsstp -> typed wasm adapter -> actual compiled _tspice_gfsstp export -> shared tspice_gfsstp -> gfsstp_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -13919,27 +14923,45 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfstep-uninitialized-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfstep error when no constant step has been configured; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfstep returns the current constant step size; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-0",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-1",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstep-audit-2",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Time is ignored and the configured GF step persists across kernel clear; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -13984,14 +15006,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed node adapter -> actual registered N-API gfstep binding -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14008,14 +15028,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstep -> typed wasm adapter -> actual compiled _tspice_gfstep export -> shared tspice_gfstep -> gfstep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14027,22 +15045,34 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfstol-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual coarse/fine search endpoints; GFREFN alone cannot establish tolerance effects; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-invalid-value-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfstol invalid tolerance error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-audit-zero",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require actual INVALIDTOLERANCE; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfstol-audit-kernel-clear-persistence",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual coarse endpoints persist across kernel clear; harness finalization restores the documented default; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -14097,14 +15127,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed node adapter -> actual registered N-API gfstol binding -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14121,14 +15149,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfstol -> typed wasm adapter -> actual compiled _tspice_gfstol export -> shared tspice_gfstol -> gfstol_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14140,52 +15166,90 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrefn-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfrefn midpoint-style refinement estimate for a simple interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-invalid-flags-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfrefn error when refinement flags are not booleans; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-False-False",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-False-True",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-True-False",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-flags-True-True",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "All valid boolean combinations give the same actual bisection midpoint; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-reversed",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-fractional",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfrefn-audit-large",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe the complete midpoint under error-free CSPICE semantics; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -14235,14 +15299,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed node adapter -> actual registered N-API gfrefn binding -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14259,14 +15321,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrefn -> typed wasm adapter -> actual compiled _tspice_gfrefn export -> shared tspice_gfrefn -> gfrefn_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14278,52 +15338,78 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrepi-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfrepi initializes progress reporting for an existing window without mutating interval contents; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-missing-window-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfrepi missing-window error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-init-only",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Initialize through the actual raw routine without finalization; supplementary child tests compare the complete observable stdout; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-empty-prefix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-empty-suffix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-long-prefix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-long-suffix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-nonprinting-prefix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-nonprinting-suffix",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require the named actual CSPICE message validation error; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepi-audit-singleton",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Initialize/finalize a genuine zero-duration singleton window; real stdout is separately compared in isolated child probes; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         }
       ],
@@ -14389,7 +15475,9 @@
             "packages/backend-wasm/emscripten/tspice_backend_wasm.wasm",
             "packages/py-parity-checking/test/gf-reporter-output.test.ts"
           ],
-          "caseIds": ["geometry-gf-gfrepi-audit-init-only"]
+          "caseIds": [
+            "geometry-gf-gfrepi-audit-init-only"
+          ]
         },
         {
           "id": "sidecar-native-output-json-corruption",
@@ -14400,7 +15488,9 @@
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/geometry_gf.py",
             "packages/py-parity-checking/src/cases/geometry-gf/gfrepi.cases.json"
           ],
-          "caseIds": ["geometry-gf-gfrepi-audit-init-only"]
+          "caseIds": [
+            "geometry-gf-gfrepi-audit-init-only"
+          ]
         }
       ],
       "backends": {
@@ -14419,14 +15509,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed node adapter -> actual registered N-API gfrepi binding -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14443,14 +15531,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepi -> typed wasm adapter -> actual compiled _tspice_gfrepi export -> shared tspice_gfrepi -> gfrepi_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14462,17 +15548,29 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfrepf-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfrepf finalizes progress reporting without perturbing previously configured gfstep behavior; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepf-without-init-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "gfrepf is currently a no-op when called without prior gfrepi setup; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         },
         {
           "caseId": "geometry-gf-gfrepf-audit-reinitialize",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Reinitialize/finalize twice without changing the actual window; supplementary live stdout comparison observes finalization; registered null/window effects supplement real stdout tests; null alone is not reporter evidence."
         }
       ],
@@ -14515,14 +15613,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed node adapter -> actual registered N-API gfrepf binding -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14539,14 +15635,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfrepf -> typed wasm adapter -> actual compiled _tspice_gfrepf export -> shared tspice_gfrepf -> gfrepf_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14558,167 +15652,275 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfdist-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Runs gfdist over a confined interval and inspects the first result interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-invalid-nintvls-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfdist nintvls range validation error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-less",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-greater",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-absmin",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-absmax",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-locmin",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-relation-locmax",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-absmin-adjust",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-absmax-adjust",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-empty-result",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-result-replacement",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-split-confinement",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-lt",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-lt-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-cn",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-cn-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xlt",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xlt-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xcn",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-correction-xcn-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-step",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-step",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-bad-relation",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-bad-correction",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-negative-adjust",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-unknown-observer",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-zero-result-capacity",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-insufficient-result",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfdist-audit-insufficient-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -14908,14 +16110,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed node adapter -> actual registered N-API gfdist binding -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -14932,14 +16132,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfdist -> typed wasm adapter -> actual compiled _tspice_gfdist export -> shared tspice_gfdist -> gfdist_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -14951,192 +16149,318 @@
       "scenarios": [
         {
           "caseId": "geometry-gf-gfsep-success",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Runs gfsep and verifies the first returned separation interval; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-invalid-relate-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative gfsep invalid relation operator error; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-less",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for <; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-greater",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for >; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-equal",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for =; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-absmin",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-absmax",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for ABSMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-locmin",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMIN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-relation-locmax",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare every result endpoint and unchanged confinement for LOCMAX; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-absmin-adjust",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-absmax-adjust",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Positive adjustment expands absolute-extremum solutions into intervals; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-empty-result",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "A valid condition with no events produces an empty complete output; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-result-replacement",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Search discards existing result intervals rather than unioning them; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-split-confinement",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Every interval respects disjoint confinement gaps; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-lt",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-lt-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for LT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-cn",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-cn-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for CN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xlt",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xlt-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XLT+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xcn",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-correction-xcn-s",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe complete nontrivial event windows with moving target/observer for XCN+S; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-step",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-step",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-step; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-workspace; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-relation",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for bad-relation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-correction",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for bad-correction; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-negative-adjust",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for negative-adjust; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-unknown-observer",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for unknown-observer; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-result-capacity",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for zero-result-capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-insufficient-result",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Require a specific actual toolkit error for insufficient-result; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-insufficient-workspace",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Internal workspace is separate from ample output capacity; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-zero-equality-limitation",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "NAIF documents equality-to-zero cannot detect point alignment; extrema cases cover it; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-sphere-point",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Sphere limb separation differs from point-center separation; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-two-spheres",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Both authored radii affect the returned limb-separation event window; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-ignored-point-frames",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Current point shape has no orientation dependence; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         },
         {
           "caseId": "geometry-gf-gfsep-audit-bad-shape",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Reject an unsupported shape through actual GFSEP; actual raw scalar/effect or complete event/confinement windows reach recursive live comparison."
         }
       ],
@@ -15341,14 +16665,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed node adapter -> actual registered N-API gfsep binding -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -15365,14 +16687,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.gfsep -> typed wasm adapter -> actual compiled _tspice_gfsep export -> shared tspice_gfsep -> gfsep_c. Registered TS/Python handlers invoke actual raw/SpiceyPy routine. Full search windows or scalar state effects asserted; reporter actual stdout compared in separate real child processes. No harness fallback.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

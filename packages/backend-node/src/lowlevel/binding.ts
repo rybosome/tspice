@@ -525,6 +525,42 @@ export function getNodeBinding(): NativeAddon {
     typeof native.sxform === "function",
     "Expected native addon to export sxform(from, to, et)",
   );
+  invariant(typeof native.cpos === "function", "Native addon missing cpos()");
+  invariant(typeof native.cposr === "function", "Native addon missing cposr()");
+  invariant(typeof native.ncpos === "function", "Native addon missing ncpos()");
+  invariant(
+    typeof native.ncposr === "function",
+    "Native addon missing ncposr()",
+  );
+  invariant(typeof native.pos === "function", "Native addon missing pos()");
+  invariant(typeof native.posr === "function", "Native addon missing posr()");
+  invariant(
+    typeof native.esrchc === "function",
+    "Native addon missing esrchc()",
+  );
+  invariant(
+    typeof native.cmprss === "function",
+    "Native addon missing cmprss()",
+  );
+  invariant(typeof native.eqstr === "function", "Native addon missing eqstr()");
+  invariant(
+    typeof native.iswhsp === "function",
+    "Native addon missing iswhsp()",
+  );
+  invariant(
+    typeof native.lastnb === "function",
+    "Native addon missing lastnb()",
+  );
+  invariant(typeof native.lcase === "function", "Native addon missing lcase()");
+  invariant(typeof native.ucase === "function", "Native addon missing ucase()");
+  invariant(
+    typeof native.matchi === "function",
+    "Native addon missing matchi()",
+  );
+  invariant(
+    typeof native.matchw === "function",
+    "Native addon missing matchw()",
+  );
   invariant(
     typeof native.vlcom === "function",
     "Expected native addon to export vlcom()",

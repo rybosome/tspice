@@ -6431,7 +6431,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -6485,7 +6486,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6537,7 +6539,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6591,7 +6594,440 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "02fde1504958d539d850ab7be3410948346e7d9362615a879d168aac4c3c5a3f",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "02fde1504958d539d850ab7be3410948346e7d9362615a879d168aac4c3c5a3f",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "02fde1504958d539d850ab7be3410948346e7d9362615a879d168aac4c3c5a3f",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "02fde1504958d539d850ab7be3410948346e7d9362615a879d168aac4c3c5a3f",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6d3ff2100063ed39b4f410bc75f75ea23466830b4dce494b25f82f597a6a2fb7",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6d3ff2100063ed39b4f410bc75f75ea23466830b4dce494b25f82f597a6a2fb7",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6d3ff2100063ed39b4f410bc75f75ea23466830b4dce494b25f82f597a6a2fb7",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "6d3ff2100063ed39b4f410bc75f75ea23466830b4dce494b25f82f597a6a2fb7",
+      "caseIds": [
+        "coords-vectors-axisar-audit-nonunit-general-axis",
+        "coords-vectors-axisar-audit-zero-axis-and-angle",
+        "coords-vectors-axisar-happy-z-axis-quarter-turn",
+        "coords-vectors-georec-audit-flattening-boundary-error",
+        "coords-vectors-georec-audit-oblate-and-prolate",
+        "coords-vectors-georec-audit-pole-and-negative-altitude",
+        "coords-vectors-georec-audit-zero-radius-error",
+        "coords-vectors-georec-happy-spherical-equator",
+        "coords-vectors-georec-invalid-flattening-error",
+        "coords-vectors-latrec-audit-general-and-negative-radius",
+        "coords-vectors-latrec-audit-zero-and-pole",
+        "coords-vectors-latrec-happy-equatorial-quarter-turn",
+        "coords-vectors-mtxv-audit-basis-and-zero",
+        "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
+        "coords-vectors-mxm-audit-identity-and-zero",
+        "coords-vectors-mxm-audit-order-and-fractions",
+        "coords-vectors-mxm-happy-fixed-matrix-product",
+        "coords-vectors-mxv-audit-basis-and-zero",
+        "coords-vectors-mxv-happy-fixed-matrix-vector-product",
+        "coords-vectors-recgeo-audit-flattening-boundary-error",
+        "coords-vectors-recgeo-audit-negative-pole-and-spherical",
+        "coords-vectors-recgeo-audit-oblate-and-prolate",
+        "coords-vectors-recgeo-audit-zero-radius-error",
+        "coords-vectors-recgeo-happy-axis-aligned",
+        "coords-vectors-recgeo-invalid-flattening-error",
+        "coords-vectors-reclat-audit-origin-and-poles",
+        "coords-vectors-reclat-audit-quadrants",
+        "coords-vectors-reclat-happy-axis-y",
+        "coords-vectors-recsph-audit-origin-and-negative-pole",
+        "coords-vectors-recsph-audit-quadrants",
+        "coords-vectors-recsph-happy-positive-z",
+        "coords-vectors-rotate-audit-all-axes-radians",
+        "coords-vectors-rotate-audit-zero-and-modulo-axes",
+        "coords-vectors-rotate-happy-z-axis-quarter-turn",
+        "coords-vectors-rotmat-audit-nonidentity-left-product",
+        "coords-vectors-rotmat-audit-zero-and-modulo-axes",
+        "coords-vectors-rotmat-happy-z-axis-quarter-turn",
+        "coords-vectors-sphrec-audit-general-and-negative-radius",
+        "coords-vectors-sphrec-audit-zero-and-poles",
+        "coords-vectors-sphrec-happy-equatorial-quarter-turn"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -6603,17 +7039,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-axisar-happy-z-axis-quarter-turn",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "axisar converts axis-angle form to rotation matrix; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-axisar-audit-nonunit-general-axis",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "axisar: nonunit general axis; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-axisar-audit-zero-axis-and-angle",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "axisar: zero axis and angle; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -6659,14 +7102,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> typed Node adapter -> registered native handler -> tspice_axisar -> axisar_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6687,14 +7128,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.axisar -> WASM helper -> typed/configured binary _tspice_axisar -> shared C shim -> axisar_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6706,32 +7145,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-georec-happy-spherical-equator",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "georec converts geodetic lon/lat/alt to rectangular coordinates; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-invalid-flattening-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative georec invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-oblate-and-prolate",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "georec: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-pole-and-negative-altitude",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "georec: pole and negative altitude; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-flattening-boundary-error",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "georec: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-georec-audit-zero-radius-error",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "georec: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -6780,14 +7234,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> typed Node adapter -> registered native handler -> tspice_georec -> georec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6808,14 +7260,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.georec -> WASM helper -> typed/configured binary _tspice_georec -> shared C shim -> georec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6827,17 +7277,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-latrec-happy-equatorial-quarter-turn",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "latrec latitudinal-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-latrec-audit-general-and-negative-radius",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "latrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-latrec-audit-zero-and-pole",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "latrec: zero and pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -6883,14 +7340,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> typed Node adapter -> registered native handler -> tspice_latrec -> latrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6911,14 +7366,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.latrec -> WASM helper -> typed/configured binary _tspice_latrec -> shared C shim -> latrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6930,12 +7383,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mtxv-happy-fixed-transpose-matrix-vector-product",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "mtxv multiplies transpose(matrix) by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mtxv-audit-basis-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "mtxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -6955,7 +7413,9 @@
             "packages/py-parity-checking/src/cases/coords-vectors/mtxv.cases.json",
             "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
           ],
-          "caseIds": ["coords-vectors-mtxv-audit-basis-and-zero"]
+          "caseIds": [
+            "coords-vectors-mtxv-audit-basis-and-zero"
+          ]
         }
       ],
       "backends": {
@@ -6978,14 +7438,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> typed Node adapter -> registered native handler -> tspice_mtxv -> mtxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7006,14 +7464,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mtxv -> WASM helper -> typed/configured binary _tspice_mtxv -> shared C shim -> mtxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7025,17 +7481,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxm-happy-fixed-matrix-product",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "mxm matrix multiplication fixed case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxm-audit-order-and-fractions",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "mxm: order and fractions; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxm-audit-identity-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "mxm: identity and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7081,14 +7544,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> typed Node adapter -> registered native handler -> tspice_mxm -> mxm_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7109,14 +7570,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxm -> WASM helper -> typed/configured binary _tspice_mxm -> shared C shim -> mxm_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7128,12 +7587,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mxv-happy-fixed-matrix-vector-product",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "mxv multiplies row-major matrix by a vector; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-mxv-audit-basis-and-zero",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "mxv: basis and zero; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7153,7 +7617,9 @@
             "packages/py-parity-checking/src/cases/coords-vectors/mxv.cases.json",
             "packages/backend-wasm/test/coords-allocation-cleanup.test.ts"
           ],
-          "caseIds": ["coords-vectors-mxv-audit-basis-and-zero"]
+          "caseIds": [
+            "coords-vectors-mxv-audit-basis-and-zero"
+          ]
         }
       ],
       "backends": {
@@ -7176,14 +7642,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> typed Node adapter -> registered native handler -> tspice_mxv -> mxv_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7204,14 +7668,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mxv -> WASM helper -> typed/configured binary _tspice_mxv -> shared C shim -> mxv_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7223,32 +7685,47 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recgeo-happy-axis-aligned",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "recgeo deterministic axis-aligned case; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-invalid-flattening-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative recgeo invalid flattening error; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-oblate-and-prolate",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "recgeo: oblate and prolate; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-negative-pole-and-spherical",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "recgeo: negative pole and spherical; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-flattening-boundary-error",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "recgeo: reject flattening boundary with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recgeo-audit-zero-radius-error",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "recgeo: reject zero radius with the specific SPICE diagnostic; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7297,14 +7774,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> typed Node adapter -> registered native handler -> tspice_recgeo -> recgeo_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7325,14 +7800,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recgeo -> WASM helper -> typed/configured binary _tspice_recgeo -> shared C shim -> recgeo_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7344,17 +7817,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-reclat-happy-axis-y",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "reclat rectangular-to-latitudinal conversion for +Y unit axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-reclat-audit-quadrants",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "reclat: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-reclat-audit-origin-and-poles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "reclat: origin and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7400,14 +7880,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> typed Node adapter -> registered native handler -> tspice_reclat -> reclat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7428,14 +7906,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.reclat -> WASM helper -> typed/configured binary _tspice_reclat -> shared C shim -> reclat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7447,17 +7923,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-recsph-happy-positive-z",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "recsph rectangular-to-spherical conversion for +Z axis point; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recsph-audit-quadrants",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "recsph: quadrants; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-recsph-audit-origin-and-negative-pole",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "recsph: origin and negative pole; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7503,14 +7986,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> typed Node adapter -> registered native handler -> tspice_recsph -> recsph_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7531,14 +8012,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.recsph -> WASM helper -> typed/configured binary _tspice_recsph -> shared C shim -> recsph_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7550,17 +8029,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rotate-happy-z-axis-quarter-turn",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "rotate builds a +90 degree rotation matrix about the Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotate-audit-all-axes-radians",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "rotate: all axes radians; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotate-audit-zero-and-modulo-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "rotate: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7622,14 +8108,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> typed Node adapter -> registered native handler -> tspice_rotate -> rotate_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7650,14 +8134,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotate -> WASM helper -> typed/configured binary _tspice_rotate -> shared C shim -> rotate_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7669,17 +8151,25 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-rotmat-happy-z-axis-quarter-turn",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "rotmat rotates identity matrix by +90 degrees about Z axis; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotmat-audit-nonidentity-left-product",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "rotmat: nonidentity left product; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-rotmat-audit-zero-and-modulo-axes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "rotmat: zero and modulo axes; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7741,14 +8231,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> typed Node adapter -> registered native handler -> tspice_rotmat -> rotmat_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7769,14 +8257,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.rotmat -> WASM helper -> typed/configured binary _tspice_rotmat -> shared C shim -> rotmat_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7788,17 +8274,24 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sphrec-happy-equatorial-quarter-turn",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "sphrec spherical-to-rectangular conversion on equator at +Y; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-sphrec-audit-general-and-negative-radius",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "sphrec: general and negative radius; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         },
         {
           "caseId": "coords-vectors-sphrec-audit-zero-and-poles",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "sphrec: zero and poles; observe every returned field/component with live SpiceyPy; the actual raw return is copied into StepOutput.value, preserving all named fields or every vector/matrix entry and dimensions. Python calls the same SpiceyPy routine directly; matrix conversions only change nested/flat row-major representation."
         }
       ],
@@ -7844,14 +8337,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> typed Node adapter -> registered native handler -> tspice_sphrec -> sphrec_c. Length-three/nine copies and named output fields preserve order and units.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7872,14 +8363,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sphrec -> WASM helper -> typed/configured binary _tspice_sphrec -> shared C shim -> sphrec_c. HEAPF64 marshalling is row-major; outputs are copied before reverse-order freeing.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

@@ -1,0 +1,246 @@
+[
+  {
+    "caseId": "strings-ucase-ascii-letter-range",
+    "description": "Convert ASCII letters while preserving adjacent punctuation, case boundaries and digits.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "Az-By_Cx:07"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "@AZ[az{"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "TeLeMeTrY"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "123_!?"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-preserved-terminal-whitespace",
+    "description": "Preserve every terminal byte, including whitespace discarded by the locked Python string conversion.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "A  "
+      },
+      {
+        "op": "strings.ucase",
+        "input": "  Ab  "
+      },
+      {
+        "op": "strings.ucase",
+        "input": "A\r\n"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "B\t\u000b\f"
+      },
+      {
+        "op": "strings.ucase",
+        "input": " \t  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-empty-and-nonempty",
+    "description": "The inferred full output capacity accommodates empty strings and whitespace.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": ""
+      },
+      {
+        "op": "strings.ucase",
+        "input": " "
+      },
+      {
+        "op": "strings.ucase",
+        "input": "X"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\t"
+      },
+      {
+        "op": "strings.ucase",
+        "input": " X Y "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-utf8-and-bom",
+    "description": "Non-ASCII and leading BOM bytes pass through alongside ASCII case mapping.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "\u00df\u00e9A"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\u0130\u96eaa\ud800\udc00"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\ufeffAb"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "A\u00a0"
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\ud83d\ude00 Az  "
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-capacity-includes-nul",
+    "description": "Explicit buffer size includes the terminator. Right truncation can leave trailing blanks.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "AbCdE",
+        "lenout": 2
+      },
+      {
+        "op": "strings.ucase",
+        "input": "AbCdE",
+        "lenout": 5
+      },
+      {
+        "op": "strings.ucase",
+        "input": "AbCdE",
+        "lenout": 6
+      },
+      {
+        "op": "strings.ucase",
+        "input": "AbCdE",
+        "lenout": 50
+      },
+      {
+        "op": "strings.ucase",
+        "input": "A  B",
+        "lenout": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-utf8-byte-boundaries",
+    "description": "Byte capacities cut at complete UTF-8 scalar boundaries, including the leading BOM.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "\u00e9Ab",
+        "lenout": 3
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\u00e9Ab",
+        "lenout": 4
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\u00e9Ab",
+        "lenout": 5
+      },
+      {
+        "op": "strings.ucase",
+        "input": "A\ud83d\ude00b",
+        "lenout": 2
+      },
+      {
+        "op": "strings.ucase",
+        "input": "A\ud83d\ude00b",
+        "lenout": 6
+      },
+      {
+        "op": "strings.ucase",
+        "input": "\ufeffX",
+        "lenout": 4
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "strings-ucase-one-capacity-error",
+    "description": "This explicit capacity reaches the actual CSPICE STRINGTOOSHORT diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "Ab",
+        "lenout": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-ucase-zero-capacity-error",
+    "description": "This explicit capacity reaches the actual CSPICE STRINGTOOSHORT diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "Ab",
+        "lenout": 0
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-ucase-negative-capacity-error",
+    "description": "This explicit capacity reaches the actual CSPICE STRINGTOOSHORT diagnostic.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "Ab",
+        "lenout": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  },
+  {
+    "caseId": "strings-ucase-int32-capacity-limits",
+    "description": "A very large declared capacity has no effect once the full result fits in a physically sufficient buffer.",
+    "workflow": [
+      {
+        "op": "strings.ucase",
+        "input": "  Ab  ",
+        "lenout": 2147483647
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -6120,7 +6120,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "node",
@@ -6175,7 +6176,8 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6228,7 +6230,8 @@
       ],
       "id": "local-cp01-17f11884fb5b-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 17f11884fb5bdef7cbaf84bd480d4b8edde3d310. The native-required lane completed 3788 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -6283,7 +6286,448 @@
       "kind": "ci",
       "commit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
       "url": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 3788 live comparisons without unexpected skips.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4c02d2c4b4060c716f80e1ee0057cd2482ef99cf761df2be51480a37326473d5",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a18-572a9d29-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4c02d2c4b4060c716f80e1ee0057cd2482ef99cf761df2be51480a37326473d5",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f. JavaScript: 2,569 parity tests and one expected guard skip. Native-required: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4c02d2c4b4060c716f80e1ee0057cd2482ef99cf761df2be51480a37326473d5",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a18-572a9d29-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "4c02d2c4b4060c716f80e1ee0057cd2482ef99cf761df2be51480a37326473d5",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "572a9d29ee66e66b10627e53bddaa1323d2e9b8f",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43552166699/job/132316861810",
+      "observation": "Inspected successful Linux Node 22 native-required job 132316861810 on 572a9d29ee66e66b10627e53bddaa1323d2e9b8f: 2,346 registered Node/WASM live comparisons; 2,570 parity-package tests with no skips, including the native-required guard; 103 native wrapper, 638 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ffa2877d9a1f8792f5bd246fa60a7d0d0742a140be4c1cc354a0f4dabd48fd9",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "local-a19-a2b5705a-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ffa2877d9a1f8792f5bd246fa60a7d0d0742a140be4c1cc354a0f4dabd48fd9",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "observation": "Both complete required lanes passed locally on a2b5705aed96003d4ed95f584a0bd677c73c32b0. JavaScript: 2,688 parity tests and one expected guard skip. Native-required: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ffa2877d9a1f8792f5bd246fa60a7d0d0742a140be4c1cc354a0f4dabd48fd9",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
+    },
+    {
+      "id": "ci-a19-a2b5705a-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "2ffa2877d9a1f8792f5bd246fa60a7d0d0742a140be4c1cc354a0f4dabd48fd9",
+      "caseIds": [
+        "frames-ccifrm-audit-authored-distinct-class-id",
+        "frames-ccifrm-audit-builtin-class-pairs",
+        "frames-ccifrm-audit-invalid-class-type",
+        "frames-ccifrm-audit-missing-class-id",
+        "frames-ccifrm-found-success",
+        "frames-ccifrm-not-found-success",
+        "frames-cidfrm-audit-authored-preference-lifecycle",
+        "frames-cidfrm-audit-builtin-preferred-and-missing",
+        "frames-cidfrm-found-success",
+        "frames-cidfrm-not-found-success",
+        "frames-cnmfrm-audit-authored-preference-lifecycle",
+        "frames-cnmfrm-audit-case-blanks-and-misses",
+        "frames-cnmfrm-audit-empty-name",
+        "frames-cnmfrm-found-success",
+        "frames-cnmfrm-not-found-success",
+        "frames-frinfo-audit-builtins-and-missing",
+        "frames-frinfo-audit-distinct-frame-class-ids",
+        "frames-frinfo-audit-invalid-name-dimension",
+        "frames-frinfo-audit-missing-center",
+        "frames-frinfo-found-success",
+        "frames-frinfo-not-found-success",
+        "frames-frmnam-audit-builtins-zero-and-limits",
+        "frames-frmnam-audit-full32-byte-name",
+        "frames-frmnam-audit-loaded-negative-frame-lifecycle",
+        "frames-frmnam-found-success",
+        "frames-frmnam-not-found-success",
+        "frames-namfrm-audit-builtins-case-and-blanks",
+        "frames-namfrm-audit-empty-name",
+        "frames-namfrm-audit-loaded-negative-frame-lifecycle",
+        "frames-namfrm-found-success",
+        "frames-namfrm-not-found-success",
+        "frames-pxform-audit-missing-orientation-data",
+        "frames-pxform-audit-static-dynamic-and-composite",
+        "frames-pxform-audit-unload-removes-frame",
+        "frames-pxform-identity-success",
+        "frames-pxform-unknown-frame-error",
+        "frames-sxform-audit-missing-orientation-data",
+        "frames-sxform-audit-static-dynamic-and-composite",
+        "frames-sxform-audit-unload-removes-frame",
+        "frames-sxform-identity-success",
+        "frames-sxform-unknown-frame-error"
+      ],
+      "commit": "a2b5705aed96003d4ed95f584a0bd677c73c32b0",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43557194435/job/132332605253",
+      "observation": "Inspected successful Linux Node 22 native-required job 132332605253 on a2b5705aed96003d4ed95f584a0bd677c73c32b0: 2,458 registered Node/WASM live comparisons; 2,689 parity-package tests with no skips, including the native-required guard; 131 native wrapper, 676 WASM, 28 core and 151 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -6295,27 +6739,41 @@
       "scenarios": [
         {
           "caseId": "frames-namfrm-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "namfrm resolves J2000 -> frame code. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "namfrm miss returns found=false via code=0 sentinel. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-builtins-case-and-blanks",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Case/outer blanks are insignificant for known names, while a real miss yields found:false; every actual code reaches comparison.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-loaded-negative-frame-lifecycle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe unknown/negative static ID/dynamic ID/unknown transitions across actual frame load/unload without confusing loaded state and cached builtins.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-namfrm-audit-empty-name",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Actual empty C string signals EMPTYSTRING rather than a normal unknown-name miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -6368,14 +6826,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6394,14 +6850,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.namfrm -> WASM typed helper -> configured actual compiled _tspice_namfrm export -> shared tspice_namfrm -> namfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6413,27 +6867,41 @@
       "scenarios": [
         {
           "caseId": "frames-frmnam-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "frmnam resolves frame code 1 -> J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "frmnam miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-builtins-zero-and-limits",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe real names and empty-name misses at zero and both signed int32 limits; these are valid identifiers, not fabricated numeric errors.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-full32-byte-name",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "All32 actual frame-name characters reach raw result and exact comparison; no truncation to shorter buffers.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frmnam-audit-loaded-negative-frame-lifecycle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Negative frame code resolves its complete26-character authored name only while its frame definition is loaded.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -6477,7 +6945,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-frmnam-found-success"]
+          "caseIds": [
+            "frames-frmnam-found-success"
+          ]
         }
       ],
       "backends": {
@@ -6498,14 +6968,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6524,14 +6992,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frmnam -> WASM typed helper -> configured actual compiled _tspice_frmnam export -> shared tspice_frmnam -> frmnam_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6543,22 +7009,33 @@
       "scenarios": [
         {
           "caseId": "frames-cidfrm-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "cidfrm resolves EARTH center -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "cidfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-audit-builtin-preferred-and-missing",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare each preferred frame code/name pair, plus genuine unknown centers with found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cidfrm-audit-authored-preference-lifecycle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "OBJECT_1234567_FRAME selects the actual negative-code fixed frame while loaded, then disappears; frame center and class ID are deliberately distinct.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -6601,7 +7078,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-cidfrm-found-success"]
+          "caseIds": [
+            "frames-cidfrm-found-success"
+          ]
         },
         {
           "id": "cidfrm-oracle-found-before-error",
@@ -6636,14 +7115,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6662,14 +7139,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cidfrm -> WASM typed helper -> configured actual compiled _tspice_cidfrm export -> shared tspice_cidfrm -> cidfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6681,27 +7156,41 @@
       "scenarios": [
         {
           "caseId": "frames-cnmfrm-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "cnmfrm resolves EARTH center name -> frame mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "cnmfrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-case-blanks-and-misses",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Resolve body-name case/blanks into full preferred frame pair; unknown names return found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-authored-preference-lifecycle",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Authored NAIF body-name mapping and preferred frame load/unload produce real not-found/found/not-found states.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-cnmfrm-audit-empty-name",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Actual EMPTYSTRING must remain a toolkit error; default SpiceyPy found exceptions must not mask it.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -6744,7 +7233,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": ["frames-cnmfrm-found-success"]
+          "caseIds": [
+            "frames-cnmfrm-found-success"
+          ]
         },
         {
           "id": "cnmfrm-oracle-found-before-error",
@@ -6780,14 +7271,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6806,14 +7295,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.cnmfrm -> WASM typed helper -> configured actual compiled _tspice_cnmfrm export -> shared tspice_cnmfrm -> cnmfrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6825,32 +7312,49 @@
       "scenarios": [
         {
           "caseId": "frames-frinfo-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "frinfo resolves built-in J2000 frame metadata. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "frinfo miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-builtins-and-missing",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare all center/class/class-ID fields for inertial and body-fixed frames, with a true unknown frame miss.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-distinct-frame-class-ids",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "The negative static frame has center1234567/class4/classID-1800999, distinct from framecode-1800102; dynamic class5 and unload state distinguish every field.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-invalid-name-dimension",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Actual malformed NAME dimension signals INVALIDDIMENSION, not found:false.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-frinfo-audit-missing-center",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Valid name/class/class-ID with missing center reaches actual KERNELVARNOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -6895,7 +7399,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-frinfo-found-success"]
+          "caseIds": [
+            "frames-frinfo-found-success"
+          ]
         },
         {
           "id": "frinfo-oracle-found-before-error",
@@ -6932,14 +7438,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -6958,14 +7462,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.frinfo -> WASM typed helper -> configured actual compiled _tspice_frinfo export -> shared tspice_frinfo -> frinfo_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -6977,32 +7479,49 @@
       "scenarios": [
         {
           "caseId": "frames-ccifrm-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "ccifrm resolves built-in frame class/class-id mapping. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-not-found-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "ccifrm miss returns found=false. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-builtin-class-pairs",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete frame code/name/center triples for class/class-ID lookup and a real missing pair.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-authored-distinct-class-id",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Actual class ID maps to a different negative frame code and authored center; all fields and unload disappearance reach assertions.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-invalid-class-type",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "String-valued CLASS reaches actual INVALIDFRAMEDEF; it must not be coerced into missing.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-ccifrm-audit-missing-class-id",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A matching frame CLASS without CLASS_ID reaches actual INVALIDFRAMEDEF.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -7047,7 +7566,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-ccifrm-found-success"]
+          "caseIds": [
+            "frames-ccifrm-found-success"
+          ]
         },
         {
           "id": "ccifrm-oracle-found-before-error",
@@ -7084,14 +7605,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7110,14 +7629,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.ccifrm -> WASM typed helper -> configured actual compiled _tspice_ccifrm export -> shared tspice_ccifrm -> ccifrm_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7129,27 +7646,41 @@
       "scenarios": [
         {
           "caseId": "frames-pxform-identity-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "pxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-unknown-frame-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative pxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-static-dynamic-and-composite",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "All 9 rotation components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-missing-orientation-data",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-pxform-audit-unload-removes-frame",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -7192,7 +7723,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": ["frames-pxform-identity-success"]
+          "caseIds": [
+            "frames-pxform-identity-success"
+          ]
         },
         {
           "id": "pxform-typed-input-and-state-matrix",
@@ -7204,7 +7737,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-pxform-identity-success"]
+          "caseIds": [
+            "frames-pxform-identity-success"
+          ]
         }
       ],
       "backends": {
@@ -7225,14 +7760,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7251,14 +7784,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.pxform -> WASM typed helper -> configured actual compiled _tspice_pxform export -> shared tspice_pxform -> pxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -7270,27 +7801,41 @@
       "scenarios": [
         {
           "caseId": "frames-sxform-identity-success",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "sxform identity transform for J2000->J2000. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-unknown-frame-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Representative sxform UNKNOWNFRAME error. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-static-dynamic-and-composite",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "All 36 state-transform components compare in row-major order for nontrivial static, inverse, three dynamic epochs and composed frames. Dynamic velocity derivatives are nonzero and independently finite-difference checked.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-missing-orientation-data",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Known frames without required orientation kernels signal actual FRAMEDATANOTFOUND.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         },
         {
           "caseId": "frames-sxform-audit-unload-removes-frame",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "A successful transform before unload does not allow cached use of an unloaded custom frame; actual UNKNOWNFRAME follows.. Actual raw result reaches StepOutput.value; all found fields or every9/36 matrix component are recursively compared against the actual locked SpiceyPy operation. Named errors must be errors on both backends, not two misses. Literal metadata and matrix derivative/inverse checks independently establish field/layout meaning."
         }
       ],
@@ -7333,7 +7878,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/backend-wasm/test/frame-utility-allocations.test.ts"
           ],
-          "caseIds": ["frames-sxform-identity-success"]
+          "caseIds": [
+            "frames-sxform-identity-success"
+          ]
         },
         {
           "id": "sxform-typed-input-and-state-matrix",
@@ -7345,7 +7892,9 @@
             "packages/backend-wasm/src/domains/frames.ts",
             "packages/py-parity-checking/test/frame-utility-inputs.test.ts"
           ],
-          "caseIds": ["frames-sxform-identity-success"]
+          "caseIds": [
+            "frames-sxform-identity-success"
+          ]
         }
       ],
       "backends": {
@@ -7366,14 +7915,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sxform -> Node typed signed-integer/finite-input adapter -> native registered N-API handler -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-node",
-            "ci-cp01-17f11884fb5b-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -7392,14 +7939,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sxform -> WASM typed helper -> configured actual compiled _tspice_sxform export -> shared tspice_sxform -> sxform_c. Registered dispatcher propagates every found field or explicitly row-major matrix shape; Python invokes the same actual SpiceyPy operation, with scoped found handling for affected lookups.",
-          "executions": [
-            "local-cp01-17f11884fb5b-wasm",
-            "ci-cp01-17f11884fb5b-wasm"
-          ]
+          "executions": []
         }
       }
     }

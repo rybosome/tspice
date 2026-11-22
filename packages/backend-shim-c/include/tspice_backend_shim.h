@@ -1387,6 +1387,22 @@ int tspice_vzerog(const double *v, int ndim, int *out, char *err, int errMaxByte
 // unormg_c: dimension is inferred by adapters; empty buffers remain non-NULL.
 int tspice_unormg(const double *v, int ndim, double *outUnit, double *outNorm, char *err, int errMaxBytes);
 
+int tspice_cpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_cposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncpos(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_ncposr(const char *text, const char *chars, int start, int *out, char *err, int errMaxBytes);
+int tspice_pos(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_posr(const char *text, const char *substr, int start, int *out, char *err, int errMaxBytes);
+int tspice_esrchc(const char *value, int count, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_cmprss(int delim, int n, const char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_eqstr(const char *a, const char *b, int *out, char *err, int errMaxBytes);
+int tspice_iswhsp(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lastnb(const char *input, int *out, char *err, int errMaxBytes);
+int tspice_lcase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_ucase(char *input, int lenout, char *out, char *err, int errMaxBytes);
+int tspice_matchi(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+int tspice_matchw(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

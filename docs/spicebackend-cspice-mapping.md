@@ -14,6 +14,7 @@ Included domains (from `packages/backend-contract/src/domains/`):
 - `ephemeris`
 - `geometry`
 - `coords-vectors`
+- `strings`
 
 > Note: This mapping is intended to be complete (method-level) for all domains listed here.
 > Follow-up work is primarily around parity tests, fixtures for kernel-heavy routines (CK/FK/IK), and per-routine edge-case semantics.
@@ -247,6 +248,37 @@ Notes:
 | `geometry.occult(targ1, shape1, frame1, targ2, shape2, frame2, abcorr, observer, et)` | `occult_c`           | `(targ1: string, shape1: string, frame1: string, targ2: string, shape2: string, frame2: string, abcorr: AbCorr \| string, observer: string, et: number): number`    | `number`                                                                                  | exact integer match (occultation code)           | **stateful**: requires SPK (all bodies) + shape kernels (PCK/DSK) + any referenced frames; output is an integer condition code defined by CSPICE `occult_c`                |
 
 ---
+
+## Domain: `strings` (`StringsApi`)
+
+Each operation is available as a flat raw method on Node and WASM. Complete
+well-formed UTF-8 inputs may include whitespace and an initial BOM. Text
+arguments reject embedded NUL. Single-byte delimiter and wildcard arguments
+accept ASCII including the NUL scalar. All rows use authored text fixtures.
+[Byte semantics and independent oracle](step8-string-transforms.md)
+
+| Raw method                                                         | Canonical routine | Complete result                                                            |
+| ------------------------------------------------------------------ | ----------------- | -------------------------------------------------------------------------- |
+| `cmprss(delim: string, n: number, input: string, lenout?: number)` | `cmprss_c`        | Compressed string. Capacity includes the terminator, minimum 1.            |
+| `eqstr(a: string, b: string)`                                      | `eqstr_c`         | Exact boolean for whitespace-insensitive, ASCII case-insensitive equality. |
+| `iswhsp(input: string)`                                            | `iswhsp_c`        | Exact boolean for C whitespace or an empty input.                          |
+| `lastnb(input: string)`                                            | `lastnb_c`        | Zero-based last non-space byte index or −1.                                |
+| `lcase(input: string, lenout?: number)`                            | `lcase_c`         | ASCII-lowercased string. Capacity includes the terminator, minimum 2.      |
+| `ucase(input: string, lenout?: number)`                            | `ucase_c`         | ASCII-uppercased string. Capacity includes the terminator, minimum 2.      |
+| `matchi(input: string, templ: string, wstr: string, wchr: string)` | `matchi_c`        | Exact boolean for an ASCII case-insensitive, byte-oriented wildcard match. |
+| `matchw(input: string, templ: string, wstr: string, wchr: string)` | `matchw_c`        | Exact boolean for a case-sensitive, byte-oriented wildcard match.          |
+| `cpos(text, chars, start)`                                         | `cpos_c`          | First matching byte from the inclusive start, or −1.                       |
+| `cposr(text, chars, start)`                                        | `cposr_c`         | Last matching byte through the inclusive start, or −1.                     |
+| `ncpos(text, chars, start)`                                        | `ncpos_c`         | First byte outside the set from the inclusive start, or −1.                |
+| `ncposr(text, chars, start)`                                       | `ncposr_c`        | Last byte outside the set through the inclusive start, or −1.              |
+| `pos(text, substr, start)`                                         | `pos_c`           | First exact substring start, or −1.                                        |
+| `posr(text, substr, start)`                                        | `posr_c`          | Last exact substring start, or −1.                                         |
+| `esrchc(value, values)`                                            | `esrchc_c`        | First equivalent row, or −1.                                               |
+
+All six position results use UTF-8 byte indices. ESRCHC returns an array index
+and applies the whitespace and ASCII-case rules of EQSTR to each terminated
+row. The independent oracle exercises empty, all-empty, ASCII and multibyte rows.
+[Byte positions, signed bounds and row ABI](step8-string-search.md)
 
 ## Domain: `coords-vectors` (`CoordsVectorsApi`)
 

@@ -897,6 +897,22 @@ export type NativeAddon = {
   vzerog(v: readonly number[]): boolean;
   unormg(v: readonly number[]): { unit: number[]; norm: number };
 
+  cpos(text: string, chars: string, start: number): number;
+  cposr(text: string, chars: string, start: number): number;
+  ncpos(text: string, chars: string, start: number): number;
+  ncposr(text: string, chars: string, start: number): number;
+  pos(text: string, substr: string, start: number): number;
+  posr(text: string, substr: string, start: number): number;
+  esrchc(value: string, values: readonly string[]): number;
+  cmprss(delim: string, n: number, input: string, lenout: number): string;
+  eqstr(a: string, b: string): boolean;
+  iswhsp(input: string): boolean;
+  lastnb(input: string): number;
+  lcase(input: string, lenout: number): string;
+  ucase(input: string, lenout: number): string;
+  matchi(input: string, templ: string, wstr: string, wchr: string): boolean;
+  matchw(input: string, templ: string, wstr: string, wchr: string): boolean;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };
