@@ -22,6 +22,8 @@ const DEFAULT_UNSAFE_NO_STORE_OPS = Object.freeze([
   "raw.ekgc",
   "raw.ekgd",
   "raw.ekgi",
+  "raw.rdtext",
+  "raw.putcml",
   "raw.furnsh",
   "raw.unload",
   "raw.kclear",

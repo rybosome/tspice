@@ -61,6 +61,8 @@ import type {
   StepFileIoDskmi2,
   StepFileIoDskopn,
   StepFileIoDskw02,
+  StepFileIoRdtext,
+  StepFileIoPutcml,
   StepFileIoExists,
   StepFileIoGetfat,
   StepOutput,
@@ -70,6 +72,8 @@ import { resolvePathRef, toPathRef, toVirtualKernelPath } from "../../fixtures.j
 import type { RunTspiceContext } from "../context.js";
 
 type FileIoStep =
+  | StepFileIoRdtext
+  | StepFileIoPutcml
   | StepFileIoExists
   | StepFileIoGetfat
   | StepFileIoDafbbs
@@ -196,6 +200,19 @@ export function runFileIoStep(
   step: FileIoStep,
 ): StepOutput {
   switch (step.op) {
+    case "file-io.rdtext": {
+      const file =
+        step.fileId === ""
+          ? ""
+          : { path: step.fileId, bytes: new TextEncoder().encode(step.text) };
+      return {
+        op: step.op,
+        value: context.spice.raw.rdtext(file, step.lineln),
+      };
+    }
+    case "file-io.putcml":
+      context.spice.raw.putcml(step.argv);
+      return { op: step.op, value: null };
     case "file-io.exists":
       return {
         op: step.op,

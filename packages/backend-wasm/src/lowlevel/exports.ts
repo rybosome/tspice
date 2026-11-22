@@ -227,6 +227,29 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_rdtext(
+    owner: number,
+    path: number,
+    width: number,
+    line: number,
+    eof: number,
+    err: number,
+    maxBytes: number,
+  ): number;
+  _tspice_putcml(
+    argc: number,
+    packedBytes: number,
+    packed: number,
+    observed: number,
+    err: number,
+    maxBytes: number,
+  ): number;
+  _tspice_text_owner(owner: number, err: number, maxBytes: number): number;
+  _tspice_release_text_owner(
+    owner: number,
+    err: number,
+    maxBytes: number,
+  ): number;
   _tspice_getfat(
     pathPtr: number,
     outArchPtr: number,
@@ -6199,6 +6222,10 @@ const REQUIRED_FUNCTION_EXPORTS = [
 
   // File I/O
   "_tspice_exists",
+  "_tspice_rdtext",
+  "_tspice_putcml",
+  "_tspice_text_owner",
+  "_tspice_release_text_owner",
   "_tspice_getfat",
   "_tspice_dafac",
   "_tspice_dafdc",

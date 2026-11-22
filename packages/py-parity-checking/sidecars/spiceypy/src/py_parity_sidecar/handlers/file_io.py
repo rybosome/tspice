@@ -15,6 +15,7 @@ from .. import das_comment_oracle
 from .. import dla_segment_oracle
 from .. import das_data_oracle
 from ..das_file_oracle import file_record, file_name
+from .. import text_command_oracle
 from ..models import (
     PathRefInput,
     StepFileIoDafbfs,
@@ -73,6 +74,8 @@ from ..models import (
     StepFileIoDskmi2,
     StepFileIoDskopn,
     StepFileIoDskw02,
+    StepFileIoRdtext,
+    StepFileIoPutcml,
     StepFileIoExists,
     StepFileIoGetfat,
     StepOutput,
@@ -198,6 +201,13 @@ def _reshape_plates(flat_plates: list[int], *, np_count: int, label: str) -> np.
 
 def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> StepOutput | None:
     state = context.state.fileIo
+
+    if isinstance(step, StepFileIoRdtext):
+        return StepOutput(op=step.op, value=text_command_oracle.read_record(context, step))
+
+    if isinstance(step, StepFileIoPutcml):
+        text_command_oracle.store_command(step.argv)
+        return StepOutput(op=step.op, value=None)
 
     if isinstance(step, StepFileIoExists):
         return StepOutput(op=step.op, value=bool(sp.exists(_resolve_file_io_path(context, step.path))))

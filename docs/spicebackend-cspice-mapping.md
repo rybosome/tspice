@@ -810,6 +810,13 @@ lengths depend on each routine's dimension order. [Shapes, signed dimensions and
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw method | Linked N0067 entry | Result or effect                                                                                                                                                                                                                                                |
+| ---------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rdtext`   | `rdtext_c`         | Read one formatted physical record, advancing the cursor even after truncation. Return exact UTF-8 string bytes and EOF. EOF releases the unit and permits restart. Independently owned clients share an actual native file cursor until its last lease closes. |
+| `putcml`   | `putcml_c`         | Initialize process-local or WASM-instance-local arguments exactly once, returning void. Observe the actual count and privately copied argument bytes immediately and retain canonical repeated-call errors across reset and kernel clear.                       |
+
+[Text record semantics, ownership and command state](step8-text-command-state.md)
+
 | Raw call                         | CSPICE entry                                                                            | Observable effect                                               |
 | -------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | `dasac(handle, lines)`           | `dasac_c`                                                                               | Append complete printable comment rows to an owned DAS writer.  |

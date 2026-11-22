@@ -1,3 +1,4 @@
+import { releaseTextReaders } from "@rybosome/tspice-core";
 import type { SpiceBackend } from "@rybosome/tspice-backend-contract";
 
 import type { CreateBackendOptions } from "./backend.js";
@@ -15,6 +16,12 @@ const ekDisposers = new WeakMap<Spice | SpiceAsync, () => void>();
 /** Internal client lifecycle hook for direct EK loads, which survive KCLEAR. */
 export function releaseClientEkLoads(spice: Spice | SpiceAsync): void {
   ekDisposers.get(spice)?.();
+}
+
+const ownedReaderCleanup = new WeakMap<Spice | SpiceAsync, () => void>();
+/** Release this facade's outstanding direct text read leases at client disposal. */
+export function releaseClientTextReaders(spice: Spice | SpiceAsync): void {
+  ownedReaderCleanup.get(spice)?.();
 }
 export type CreateSpiceOptions = CreateBackendOptions & {
   /**
@@ -128,6 +135,11 @@ export async function createSpice(options: CreateSpiceOptions): Promise<Spice> {
       queryLoads.delete(h);
     }
   });
+  const release: unknown = Reflect.get(backend.raw, releaseTextReaders);
+  if (typeof release === "function")
+    ownedReaderCleanup.set(spice, () =>
+      Reflect.apply(release, backend.raw, []),
+    );
   return spice;
 }
 
@@ -178,5 +190,6 @@ export async function createSpiceAsync(
     kit: promisifyApi(sync.kit),
   };
   ekDisposers.set(asyncSpice, () => releaseClientEkLoads(sync));
+  ownedReaderCleanup.set(asyncSpice, () => releaseClientTextReaders(sync));
   return asyncSpice;
 }

@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 import {
   dasCommentTable,
   dasCommentPageBytes,
@@ -11,6 +14,13 @@ import {
   decodeDasSummary,
   decodeDasAddresses,
   decodeDasFileRecord,
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  packCommandArgs,
+  verifyCommandArgs,
+  readTextResult,
+  normalizeVirtualKernelPath,
 } from "@rybosome/tspice-core";
 import type {
   DlaDescriptor,
@@ -64,6 +74,37 @@ export function createFileIoApi(
   stager: Pick<KernelStager, "resolvePathForSpice">,
   outputs: VirtualOutputStager,
 ): FileIoApi {
+  let owner: number | undefined, root: string | undefined;
+  const staged = new Map<string, string>();
+  function readPath(
+    file: import("@rybosome/tspice-backend-contract").KernelSource,
+  ) {
+    if (typeof file === "string") {
+      textBytes(file);
+      if (!file || /^ +$/.test(file)) return file;
+      if (file.startsWith("/") && !file.startsWith("/kernels/"))
+        return resolvePath(file);
+      return staged.get(normalizeVirtualKernelPath(file)) ?? resolvePath(file);
+    }
+    if (!file || typeof file !== "object")
+      throw new TypeError("Expected a text path and bytes");
+    const { path: virtualPath, bytes } = file;
+    if (typeof virtualPath !== "string" || !(bytes instanceof Uint8Array))
+      throw new TypeError("Expected a text path and bytes");
+    textBytes(virtualPath);
+    const key = normalizeVirtualKernelPath(virtualPath),
+      prior = staged.get(key);
+    if (prior) {
+      if (!fs.readFileSync(prior).equals(bytes))
+        throw new Error("Text bytes changed for the staged path");
+      return prior;
+    }
+    root ??= fs.mkdtempSync(path.join(os.tmpdir(), "tspice-text-"));
+    const physical = path.join(root, String(staged.size));
+    fs.writeFileSync(physical, bytes, { flag: "wx" });
+    staged.set(key, physical);
+    return physical;
+  }
   const resolvePath = (path: string) => stager.resolvePathForSpice(path);
 
   const knownDasOutputs = new Map<string, VirtualOutput>();
@@ -117,6 +158,33 @@ export function createFileIoApi(
   }
 
   const api = {
+    [releaseTextReaders]: () => {
+      if (owner !== undefined) {
+        native.release_text_owner(owner);
+        owner = undefined;
+      }
+      if (root) {
+        fs.rmSync(root, { recursive: true, force: true });
+        root = undefined;
+        staged.clear();
+      }
+    },
+    rdtext: (
+      file: import("@rybosome/tspice-backend-contract").KernelSource,
+      lineln = 1024,
+    ) => {
+      textWidth(lineln);
+      const physical = readPath(file);
+      if (textBytes(physical).length > 255)
+        throw new RangeError("Resolved text path exceeds 255 bytes");
+      owner ??= native.text_owner();
+      const result = native.rdtext(owner, physical, lineln);
+      return readTextResult(result.bytes, result.eof);
+    },
+    putcml: (argv: readonly string[]) => {
+      const { count, bytes } = packCommandArgs(argv);
+      verifyCommandArgs(bytes, native.putcml(count, bytes));
+    },
     exists: (path: string) => {
       const exists = native.exists(resolvePath(path));
       invariant(
@@ -651,7 +719,7 @@ export function createFileIoApi(
         spaixd,
         spaixi,
       ),
-  } satisfies FileIoApi;
+  } satisfies FileIoApi & { [releaseTextReaders](): void };
 
   Object.defineProperty(api, "__debugOpenHandleCount", {
     value: () => handles.size(),

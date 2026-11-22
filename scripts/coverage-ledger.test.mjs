@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 511,
-    planned: 138,
+    implemented: 513,
+    planned: 136,
     excluded: 3,
-    caseFiles: 511,
-    scenarios: 3448,
+    caseFiles: 513,
+    scenarios: 3465,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 349);
+  assert.equal(ledger.audit.expansionRoutines, 351);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1105,4 +1105,24 @@ test("EK metadata requires its initialized scientific entry in addition to C wid
       ),
     );
   }
+});
+
+test("the excluded command getter cannot establish the public setter route", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "putcml_c(argc,args);",
+    "unrelated(argc,args);",
+  );
+  assert.throws(f.build, /putcml/);
+});
+
+test("the corrected reader still reaches the canonical record reader", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "rdtext_c(path,width,line,eof);",
+    "unrelated(path,width,line,eof);",
+  );
+  assert.throws(f.build, /rdtext/);
 });

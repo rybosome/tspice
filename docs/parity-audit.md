@@ -508,3 +508,7 @@ C13 compares complete CK rotations, state transforms, metadata IDs and type 2/3 
 ## Event kernel metadata
 
 C10 compares loaded tables, physical segment descriptors, SELECT projections, result extents and direct EK lifecycle across independent toolkits. [Metadata findings and acceptance evidence](step8-ek-metadata.md) [Per-routine audit](../data/parity-audits/c10-ek-metadata.json)
+
+## Text readers and command initialization
+
+C14 checks physical record boundaries, errors, shared cursor cleanup and the once-per-runtime command state. [Source review and test observations](step8-text-command-state.md) [Per-routine audit](../data/parity-audits/c14-text-command-state.json)

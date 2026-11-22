@@ -359,6 +359,8 @@ export function dispatchStep(
     case "kernels.unload":
       return runKernelsStep(context, step);
 
+    case "file-io.rdtext":
+    case "file-io.putcml":
     case "file-io.exists":
     case "file-io.getfat":
     case "file-io.dafbbs":

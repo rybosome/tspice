@@ -1299,6 +1299,18 @@
         "https://github.com/rybosome/tspice/pull/767"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c14-text-command-state",
+      "routines": [
+        "rdtext_c",
+        "putcml_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/772"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

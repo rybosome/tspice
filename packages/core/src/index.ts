@@ -156,6 +156,14 @@ export {
   ekMetadataOrdinal,
   type EkMetadataBuffers,
 } from "./spice-runtime/domains/ek-metadata.js";
+export {
+  releaseTextReaders,
+  textBytes,
+  textWidth,
+  readTextResult,
+  packCommandArgs,
+  verifyCommandArgs,
+} from "./spice-runtime/domains/text-command.js";
 export type { AssertSpiceInt32Options } from "./spice-runtime/shared/spice-int.js";
 export {
   SPICE_INT32_MIN,

@@ -2214,6 +2214,13 @@ export type StepEphemerisSpkw08 = {
   step: number;
 };
 
+export type StepFileIoRdtext = {
+  op: "file-io.rdtext";
+  fileId: string;
+  text: string;
+  lineln: number;
+};
+export type StepFileIoPutcml = { op: "file-io.putcml"; argv: string[] };
 export type StepFileIoExists = {
   op: "file-io.exists";
   path: PathRefLike;
@@ -3811,6 +3818,8 @@ export type WorkflowStep =
   | StepEphemerisSpkssb
   | StepEphemerisSpkuds
   | StepEphemerisSpkw08
+  | StepFileIoRdtext
+  | StepFileIoPutcml
   | StepFileIoExists
   | StepFileIoGetfat
   | StepFileIoDafbbs
@@ -4521,6 +4530,8 @@ export type StepOutput =
       };
     }
   | { op: "ephemeris.spkw08"; value: null }
+  | { op: "file-io.rdtext"; value: { line: string; eof: boolean } }
+  | { op: "file-io.putcml"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }
   | { op: "file-io.dafbbs"; value: null }

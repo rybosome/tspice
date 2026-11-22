@@ -2952,7 +2952,7 @@
       ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Resolve putcml oracle absence and actual command-state semantics. Establish Node/WASM text EOF and implicit unit lifecycle without interactive I/O. Existing exclusions remain unchanged.",
@@ -2970,21 +2970,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/772"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 772,
-        "url": "https://github.com/rybosome/tspice/pull/772",
-        "head": "2d7c924e7ecc54ac8242b3e0d2560e984cebdf4f",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43592497295",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "17 workflows / 34 registered backend comparisons, 11 public, 2 native and 10 WASM-focused checks. Final actual Chrome worker passed record/EOF/restart, FILEOPENFAILED recovery and command state."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "04bb754253a44b86ef915eec79bfe08a3e9a78be",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43588086401/job/132426787762",
+          "result": "Both complete required lanes passed locally on 04bb754253a44b86ef915eec79bfe08a3e9a78be. JavaScript: 2,475 parity tests and one expected guard skip. Native-required: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132426787762 on 04bb754253a44b86ef915eec79bfe08a3e9a78be: 2,252 registered Node/WASM live comparisons; 2,476 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 610 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Run both complete local lanes and canonical source CI, then check the final matrix and explicit GitHub rebaseability.",
+      "worktree": "/private/tmp/tspice-step8-text-command-state",
+      "branch": "codex/expand-text-command-state",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Linux JavaScript-only CI exposed six native-only supplemental tests without availability guards. The corrected suite passed five WASM checks with an absent addon, six native plus five WASM checks with compiled artifacts and the required native guard. Prior full local and canonical source executions remain historical.",
+      "priorCheckpoint": "Repaired standalone C fixture linkage to the canonical staged text-reader definitions."
     },
     {
       "id": "D01-time-additions",

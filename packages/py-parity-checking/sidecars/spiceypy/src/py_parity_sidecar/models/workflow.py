@@ -345,6 +345,8 @@ from .file_io import (
     StepFileIoDskmi2,
     StepFileIoDskopn,
     StepFileIoDskw02,
+    StepFileIoRdtext,
+    StepFileIoPutcml,
     StepFileIoExists,
     StepFileIoGetfat,
 )
@@ -886,6 +888,8 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkssb
     | StepEphemerisSpkuds
     | StepEphemerisSpkw08
+    | StepFileIoRdtext
+    | StepFileIoPutcml
     | StepFileIoExists
     | StepFileIoGetfat
     | StepFileIoDafbbs
