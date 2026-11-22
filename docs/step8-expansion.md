@@ -19,7 +19,11 @@ verification claims. The base's 162 routines and Step 7 repairs are not Step 8
 progress. The working branch's generated implementation count can increase before
 anything lands on main; never report that increase as merged coverage.
 
-## Active ownership and next deliveries
+## Checkpoint delivery
+
+The 76 pinned source PRs cover all 487 expansion routines and passed CI at their accepted heads. The queue records the exact source heads, bases, and CI runs. Checkpoint 01 combines 17 of those PRs through 15 ancestry-preserving merges. It adds 145 routines to the 162-routine baseline. Its combined artifact build, parity, and review determine when these routines can land. Subsequent checkpoints follow in order.
+
+## Initial ownership and deliveries
 
 `Codex Step 8 (/root)` owns all four active batches and their integration. The first
 batch uses `/private/tmp/tspice-step8-constants`, branch `codex/expand-constants`.

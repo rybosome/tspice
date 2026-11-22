@@ -52,7 +52,8 @@
         "time-tyear-constant-repeat-after-reset",
         "time-tyear-constant-value"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened.",
+      "historical": true
     },
     {
       "id": "local-a02-d5ba2aee-wasm",
@@ -84,7 +85,8 @@
         "time-tyear-constant-repeat-after-reset",
         "time-tyear-constant-value"
       ],
-      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened."
+      "observation": "Both complete required local lanes passed with Node 22.23.4, pnpm 10.13.1, locked Python 3.12.15/SpiceyPy 6.0.3 and production CSPICE N0067. Native-required execution rebuilt and loaded the production addon, ran the native-presence guard, all 2258 live comparisons (1129 per backend), all 2475 parity-package tests with no skips, and 86 Node / 600 WASM / 28 core / 152 facade tests. Final source includes exact live scalar comparisons and real RPC structured-clone checks. Initial JS formatting failure was fixed before successful complete lanes; no tolerance or guard weakened.",
+      "historical": true
     },
     {
       "id": "ci-a02-d5ba2aee-node",
@@ -118,7 +120,8 @@
       ],
       "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
       "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
     },
     {
       "id": "ci-a02-d5ba2aee-wasm",
@@ -152,7 +155,8 @@
       ],
       "commit": "d5ba2aee2ea707da7c303c4cd2e500c3f6b25cdd",
       "url": "https://github.com/rybosome/tspice/actions/runs/43536405345/job/132266367481",
-      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately."
+      "observation": "Inspected successful canonical Linux Node 22 native-required job on d5ba2aee: production N0067 addon built and loaded, native-required assertion executed, parity test task was a cache miss and all 2258 live comparisons passed (1129 scenarios per actual backend). All 2475 parity-package tests passed with no skips, plus 86 Node / 600 WASM / 28 core / 152 facade tests. Exact scalar, native boundary and real RPC tests executed. No job retry; remaining matrix jobs are tracked separately.",
+      "historical": true
     }
   ],
   "routines": [
@@ -164,12 +168,17 @@
       "scenarios": [
         {
           "caseId": "time-b1900-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-b1900-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.b1900 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -182,16 +191,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.b1900 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.b1900 -> WASM adapter -> typed/build-configured/binary _tspice_b1900 -> tspice_b1900 shared shim -> b1900_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -203,12 +222,17 @@
       "scenarios": [
         {
           "caseId": "time-j1950-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j1950-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.j1950 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -221,16 +245,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.j1950 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.j1950 -> WASM adapter -> typed/build-configured/binary _tspice_j1950 -> tspice_j1950 shared shim -> j1950_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -242,12 +276,17 @@
       "scenarios": [
         {
           "caseId": "time-j2100-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-j2100-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.j2100 scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -260,16 +299,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.j2100 -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.j2100 -> WASM adapter -> typed/build-configured/binary _tspice_j2100 -> tspice_j2100 shared shim -> j2100_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -281,12 +330,17 @@
       "scenarios": [
         {
           "caseId": "time-jyear-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-jyear-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.jyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -299,16 +353,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.jyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.jyear -> WASM adapter -> typed/build-configured/binary _tspice_jyear -> tspice_jyear shared shim -> jyear_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -320,12 +384,17 @@
       "scenarios": [
         {
           "caseId": "time-tyear-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "time-tyear-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.tyear scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -338,16 +407,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.tyear -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.tyear -> WASM adapter -> typed/build-configured/binary _tspice_tyear -> tspice_tyear shared shim -> tyear_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -359,12 +438,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-clight-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-clight-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.clight scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -377,16 +461,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.clight -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.clight -> WASM adapter -> typed/build-configured/binary _tspice_clight -> tspice_clight shared shim -> clight_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -398,12 +492,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmax-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmax-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.dpmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -416,16 +515,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dpmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dpmax -> WASM adapter -> typed/build-configured/binary _tspice_dpmax -> tspice_dpmax shared shim -> dpmax_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -437,12 +546,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-dpmin-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-dpmin-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.dpmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -455,16 +569,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dpmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.dpmin -> WASM adapter -> typed/build-configured/binary _tspice_dpmin -> tspice_dpmin shared shim -> dpmin_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -476,12 +600,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmax-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmax-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.intmax scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -494,16 +623,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.intmax -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.intmax -> WASM adapter -> typed/build-configured/binary _tspice_intmax -> tspice_intmax shared shim -> intmax_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     },
@@ -515,12 +654,17 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-intmin-constant-value",
-          "coverage": ["success"],
+          "coverage": [
+            "success"
+          ],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         },
         {
           "caseId": "coords-vectors-intmin-constant-repeat-after-reset",
-          "coverage": ["success", "state"],
+          "coverage": [
+            "success",
+            "state"
+          ],
           "observes": "Actual raw.intmin scalar reaches StepOutput.value unchanged and is compared with the matching direct locked SpiceyPy operation; repeated calls observe unchanged result across kernel clear and error reset."
         }
       ],
@@ -533,16 +677,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.intmin -> Node adapter -> registered native handler under g_cspice_mutex -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-node", "ci-a02-d5ba2aee-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.intmin -> WASM adapter -> typed/build-configured/binary _tspice_intmin -> tspice_intmin shared shim -> intmin_c; scalar returned unchanged.",
-          "executions": ["local-a02-d5ba2aee-wasm", "ci-a02-d5ba2aee-wasm"]
+          "executions": []
         }
       }
     }
