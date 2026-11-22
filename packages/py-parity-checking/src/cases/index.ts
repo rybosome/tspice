@@ -267,6 +267,20 @@ import ekEkgiCasesRaw from "./ek/ekgi.cases.json" with { type: "json" };
 import ekEkifldCasesRaw from "./ek/ekifld.cases.json" with { type: "json" };
 import ekEknsegCasesRaw from "./ek/eknseg.cases.json" with { type: "json" };
 import ekEkntabCasesRaw from "./ek/ekntab.cases.json" with { type: "json" };
+import ekEkopsCasesRaw from "./ek/ekops.cases.json" with { type: "json" };
+import ekEkbsegCasesRaw from "./ek/ekbseg.cases.json" with { type: "json" };
+import ekEkapprCasesRaw from "./ek/ekappr.cases.json" with { type: "json" };
+import ekEkinsrCasesRaw from "./ek/ekinsr.cases.json" with { type: "json" };
+import ekEkdelrCasesRaw from "./ek/ekdelr.cases.json" with { type: "json" };
+import ekEkacecCasesRaw from "./ek/ekacec.cases.json" with { type: "json" };
+import ekEkacedCasesRaw from "./ek/ekaced.cases.json" with { type: "json" };
+import ekEkaceiCasesRaw from "./ek/ekacei.cases.json" with { type: "json" };
+import ekEkrcecCasesRaw from "./ek/ekrcec.cases.json" with { type: "json" };
+import ekEkrcedCasesRaw from "./ek/ekrced.cases.json" with { type: "json" };
+import ekEkrceiCasesRaw from "./ek/ekrcei.cases.json" with { type: "json" };
+import ekEkucecCasesRaw from "./ek/ekucec.cases.json" with { type: "json" };
+import ekEkucedCasesRaw from "./ek/ekuced.cases.json" with { type: "json" };
+import ekEkuceiCasesRaw from "./ek/ekucei.cases.json" with { type: "json" };
 import ekEkopnCasesRaw from "./ek/ekopn.cases.json" with { type: "json" };
 import ekEkoprCasesRaw from "./ek/ekopr.cases.json" with { type: "json" };
 import ekEkopwCasesRaw from "./ek/ekopw.cases.json" with { type: "json" };
@@ -779,6 +793,20 @@ export const ephemerisCases: ParityCase[] = [
   ...(ephemerisSpkw08CasesRaw as ParityCase[]),
 ];
 export const ekCases: ParityCase[] = [
+  ...(ekEkopsCasesRaw as ParityCase[]),
+  ...(ekEkbsegCasesRaw as ParityCase[]),
+  ...(ekEkapprCasesRaw as ParityCase[]),
+  ...(ekEkinsrCasesRaw as ParityCase[]),
+  ...(ekEkdelrCasesRaw as ParityCase[]),
+  ...(ekEkacecCasesRaw as ParityCase[]),
+  ...(ekEkacedCasesRaw as ParityCase[]),
+  ...(ekEkaceiCasesRaw as ParityCase[]),
+  ...(ekEkrcecCasesRaw as ParityCase[]),
+  ...(ekEkrcedCasesRaw as ParityCase[]),
+  ...(ekEkrceiCasesRaw as ParityCase[]),
+  ...(ekEkucecCasesRaw as ParityCase[]),
+  ...(ekEkucedCasesRaw as ParityCase[]),
+  ...(ekEkuceiCasesRaw as ParityCase[]),
   ...(ekEkopnCasesRaw as ParityCase[]),
   ...(ekEkoprCasesRaw as ParityCase[]),
   ...(ekEkopwCasesRaw as ParityCase[]),

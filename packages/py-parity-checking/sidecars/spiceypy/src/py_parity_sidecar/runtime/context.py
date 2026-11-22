@@ -55,6 +55,7 @@ class EkSegmentState:
 
 @dataclass
 class EkState:
+    activeFast: tuple[int, int] | None = None
     lastQuery: str | None = None
     lastSuccessfulFindNmrows: int | None = None
     handles: dict[str, int] = field(default_factory=dict)

@@ -44,8 +44,161 @@ export type EkGetResult<T> =
   | { found: true; isNull: true }
   | { found: true; isNull: false; value: T };
 
+/** A complete EK record entry. Null entry payloads are unspecified; values is empty and nvals retains its stored extent. */
+export type EkEntryResult<T> = { nvals: number; values: T[]; isNull: boolean };
+
 /** Backend contract for EK (Events Kernel) file/query operations. */
 export interface EkApi {
+  /** Add to an uninitialized character entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacec_c.html
+   */
+  ekacec(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly string[],
+    isNull: boolean,
+  ): void;
+
+  /** Add to an uninitialized double entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekaced_c.html
+   */
+  ekaced(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly number[],
+    isNull: boolean,
+  ): void;
+
+  /** Add to an uninitialized integer entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekacei_c.html
+   */
+  ekacei(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly number[],
+    isNull: boolean,
+  ): void;
+
+  /** Read the complete character entry of a zero-based EK segment and record. Return its element count and owned values. A null entry returns its declared count (one for variable-size entries) and an empty values array. lenout includes the terminator and defaults to 1024 bytes. Returned strings preserve each row’s trailing blank padding through lenout−1.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrcec_c.html
+   */
+  ekrcec(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    lenout?: number,
+  ): EkEntryResult<string>;
+
+  /** Read the complete double entry of a zero-based EK segment and record. Return its element count and owned values. A null entry returns its declared count (one for variable-size entries) and an empty values array.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrced_c.html
+   */
+  ekrced(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+  ): EkEntryResult<number>;
+
+  /** Read the complete integer entry of a zero-based EK segment and record. Return its element count and owned values. A null entry returns its declared count (one for variable-size entries) and an empty values array.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekrcei_c.html
+   */
+  ekrcei(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+  ): EkEntryResult<number>;
+
+  /** Replace the character entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekucec_c.html
+   */
+  ekucec(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly string[],
+    isNull: boolean,
+  ): void;
+
+  /** Replace the double entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * Marking an existing non-nullable numeric scalar NULL is rejected before modifying its index or data.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekuced_c.html
+   */
+  ekuced(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly number[],
+    isNull: boolean,
+  ): void;
+
+  /** Replace the integer entry of a zero-based EK segment and record. Supply an array of values and an explicit null flag. The element count comes from the array. Supply a placeholder per required element for a null entry. Scalar columns consume the first value. Close the EK to persist the change.
+   * Marking an existing non-nullable numeric scalar NULL is rejected before modifying its index or data.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekucei_c.html
+   */
+  ekucei(
+    handle: SpiceHandle,
+    segno: number,
+    recno: number,
+    column: string,
+    values: readonly number[],
+    isNull: boolean,
+  ): void;
+
+  /**
+   * Open an unnamed scratch EK writer. The returned token belongs to this backend. Close with
+   * ekcls to release the scratch file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekops_c.html
+   */
+  ekops(): SpiceHandle;
+
+  /**
+   * Begin an EK segment for row-oriented writing. Return its zero-based segment number.
+   * Supply one to 100 column names and matching declaration strings. The caller owns the
+   * schema arrays. No fast load may be in progress. Fixed-count schemas can be created but
+   * accept no individual record edits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekbseg_c.html
+   */
+  ekbseg(
+    handle: SpiceHandle,
+    tabnam: string,
+    cnames: readonly string[],
+    decls: readonly string[],
+  ): number;
+
+  /**
+   * Append an empty record to a variable-count segment and return its zero-based record
+   * number. Each new entry must be populated before querying the file. An unfinished record
+   * may be deleted. Finish any active fast write first.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekappr_c.html
+   */
+  ekappr(handle: SpiceHandle, segno: number): number;
+
+  /**
+   * Insert an empty record before the zero-based recno in the variable-count segment. recno
+   * equal to the current row count appends. Later record numbers shift upwards. Populate its
+   * entries before querying, or delete the unfinished record.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekinsr_c.html
+   */
+  ekinsr(handle: SpiceHandle, segno: number, recno: number): void;
+
+  /**
+   * Delete the zero-based record and its entries from a variable-count segment. Later record
+   * numbers shift down by one. Indexed entries are removed from their indexes. Use an EK
+   * writer after completing any fast write.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/ekdelr_c.html
+   */
+  ekdelr(handle: SpiceHandle, segno: number, recno: number): void;
+
   /**
    * Open an existing EK for read and return a backend-owned opaque token.
    * Duplicate read opens retain separate claims; close each explicitly.

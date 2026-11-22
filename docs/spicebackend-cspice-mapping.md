@@ -969,6 +969,30 @@ WASM artifacts change in this batch; its writer/bounds prerequisite is #694.
 
 ## Domain: `ek` file and segment lifecycle (`EkApi`)
 
+[Physical EK entry values, nulls, byte widths and independent persisted reads](step8-ek-entries.md)
+
+| Raw method | Linked toolkit entry                     | Result or effect                                                                                                                   |
+| ---------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ekacec`   | `ekacec_c`                               | Add the character entry of an owned writable EK using the observed array count and null flag.                                      |
+| `ekaced`   | `ekaced_c`                               | Add the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                      |
+| `ekacei`   | `ekacei_c`                               | Add the integer entry of an owned writable EK using the observed array count and null flag.                                        |
+| `ekrcec`   | `ekrcec_` with checked C string handling | Read the entire character entry by physical segment/record, preserving null flag, element count and owned payload.                 |
+| `ekrced`   | `ekrced_` with checked C string handling | Read the entire double precision and TIME entry by physical segment/record, preserving null flag, element count and owned payload. |
+| `ekrcei`   | `ekrcei_` with checked C string handling | Read the entire integer entry by physical segment/record, preserving null flag, element count and owned payload.                   |
+| `ekucec`   | `ekucec_c`                               | Replace the character entry of an owned writable EK using the observed array count and null flag.                                  |
+| `ekuced`   | `ekuced_c`                               | Replace the double precision and TIME entry of an owned writable EK using the observed array count and null flag.                  |
+| `ekucei`   | `ekucei_c`                               | Replace the integer entry of an owned writable EK using the observed array count and null flag.                                    |
+
+[EK record edits, table schemas and writer constraints](step8-ek-records.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                                       |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ekops`    | `ekops_c`  | Create a temporary EK writer and return an owned opaque handle. EKCLS closes the file and releases scratch storage.                                                    |
+| `ekbseg`   | `ekbseg_c` | Begin an EK segment from table name and complete column names/declarations; return the zero-based segment number. Fixed-count and editable schemas are distinguished.  |
+| `ekappr`   | `ekappr_c` | Append an unpopulated record in a variable-count segment and return its zero-based ordinal. Initialize its entries before querying or delete the empty record.         |
+| `ekinsr`   | `ekinsr_c` | Insert a new unpopulated record before the indicated zero-based ordinal. Insertion at the current row count extends the segment. Later record numbers shift upward.    |
+| `ekdelr`   | `ekdelr_c` | Delete the given zero-based record and column/index links from an editable segment. Surviving row ordinals shift down. A newly unpopulated record may also be deleted. |
+
 | Raw method | Actual CSPICE route | Observations                                                                                                        |
 | ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `ekopn`    | `ekopn_c`           | Create, existing-file failure, actual 60-byte internal-name field and comment reservation.                          |

@@ -492,3 +492,11 @@ The seven C11 routines use independent binary fixtures and writers. Both compile
 ## CK writer lifecycle and segment formats
 
 C12 writes binary CK files through both compiled backends, reads complete independent pointing and angular velocity results, and exports complete physical segments for separate SpiceyPy readback. [Record layouts and source limits](step8-ck-writers.md) [Per-routine audit](../data/parity-audits/c12-ck-writers.json)
+
+## EK scratch files and record edits
+
+C08 compares the five added record routines through 38 workflows and reads independent completed EKs across the actual backends. [Scratch lifecycle, file schema and indexed deletion](step8-ek-records.md) [Per-routine audit](../data/parity-audits/c08-ek-records.json)
+
+## Physical EK entry values
+
+C09 compares nine typed record operations through independently created, updated and reopened EK files. [Entry semantics, canonical error handling and observed cross-file persistence](step8-ek-entries.md) [Per-routine evidence](../data/parity-audits/c09-ek-entries.json)

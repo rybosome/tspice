@@ -1161,6 +1161,21 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c08-ek-records",
+      "routines": [
+        "ekops_c",
+        "ekbseg_c",
+        "ekappr_c",
+        "ekinsr_c",
+        "ekdelr_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/753"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "c06-das-comments",
       "routines": [
         "dasac_c",
@@ -1224,6 +1239,27 @@
       "dependsOn": [],
       "prs": [
         "https://github.com/rybosome/tspice/pull/760"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c09-ek-entries",
+      "routines": [
+        "ekacec_c",
+        "ekaced_c",
+        "ekacei_c",
+        "ekrcec_c",
+        "ekrced_c",
+        "ekrcei_c",
+        "ekucec_c",
+        "ekuced_c",
+        "ekucei_c"
+      ],
+      "dependsOn": [
+        "c08-ek-records"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/762"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }

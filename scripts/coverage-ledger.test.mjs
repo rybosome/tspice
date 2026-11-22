@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 483,
-    planned: 166,
+    implemented: 497,
+    planned: 152,
     excluded: 3,
-    caseFiles: 483,
-    scenarios: 3229,
+    caseFiles: 497,
+    scenarios: 3349,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 321);
+  assert.equal(ledger.audit.expansionRoutines, 335);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1072,4 +1072,17 @@ test("DLA segment routes require their actual canonical operations beyond DAS ad
     );
     f.edit(source, "0 /* " + call + " */", call);
   }
+});
+
+test("an early C string check cannot stand in for the actual EK entry reader", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-shim-c/src/domains/ek.c",
+    "ekrced_(&handle",
+    "unrelated_reader_(&handle",
+  );
+  assert.throws(
+    f.build,
+    /Missing scientific SPICELIB reader for (node|wasm).ekrced/,
+  );
 });

@@ -460,6 +460,7 @@ export function buildLedger(root = defaultRoot, options = {}) {
       if (
         symbol.endsWith("_c") ||
         (!definition && (symbol === "eul2m_" || symbol === "sce2t_" || symbol === "daffpa_")) ||
+        (!definition && ["ekrcec_", "ekrced_", "ekrcei_"].includes(symbol)) ||
         dafExtraction ||
         dasExtraction
       ) {
@@ -671,7 +672,12 @@ export function buildLedger(root = defaultRoot, options = {}) {
       function mappingFor(backend, symbols, status) {
         const targets = cspiceCalls(symbols);
         const note = policy.mappingNotes?.[name]?.[backend];
-        const sameNamed = targets.includes(routine.name);
+        const isEkEntryRead = ["ekrcec", "ekrced", "ekrcei"].includes(name);
+        const sameNamed = !isEkEntryRead && targets.includes(routine.name);
+        if (isEkEntryRead && !targets.includes(name + "_"))
+          errors.push(
+            `Missing scientific SPICELIB reader for ${backend}.${name}`,
+          );
         if (!sameNamed && status !== "unsupported" && !note)
           errors.push(`Unexplained non-direct ${backend} mapping for ${name}`);
         if (

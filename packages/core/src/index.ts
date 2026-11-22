@@ -19,6 +19,13 @@ export {
   decodeDasAddresses,
   decodeDasFileRecord,
 } from "./spice-runtime/domains/das-files.js";
+export {
+  ekEntryColumn,
+  packEkEntry,
+  unpackEkEntry,
+  checkEkRecordIndex,
+  packEkRecordSchema,
+} from "./spice-runtime/domains/ek-records.js";
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {

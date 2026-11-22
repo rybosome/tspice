@@ -256,6 +256,20 @@ from .models import (
     StepEkEkifld,
     StepEkEknseg,
     StepEkEkntab,
+    StepEkEkops,
+    StepEkEkbseg,
+    StepEkEkappr,
+    StepEkEkinsr,
+    StepEkEkdelr,
+    StepEkEkacec,
+    StepEkEkaced,
+    StepEkEkacei,
+    StepEkEkrcec,
+    StepEkEkrced,
+    StepEkEkrcei,
+    StepEkEkucec,
+    StepEkEkuced,
+    StepEkEkucei,
     StepEkEkopn,
     StepEkEkopr,
     StepEkEkopw,
@@ -3967,6 +3981,124 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "ek.ekfind":
             return StepEkEkfind(op=op, query=_expect_string(step.get("query"), label="ek.ekfind.query"))
 
+        case "ek.ekops":
+            return StepEkEkops(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekops.handleId"),
+            )
+        case "ek.ekbseg":
+            return StepEkEkbseg(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekbseg.handleId"),
+                tabnam=_expect_string(step.get("tabnam"), label="ek.ekbseg.tabnam"),
+                cnames=_expect_string_list(step.get("cnames"), label="ek.ekbseg.cnames"),
+                decls=_expect_string_list(step.get("decls"), label="ek.ekbseg.decls"),
+            )
+        case "ek.ekappr":
+            return StepEkEkappr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekappr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekappr.segno"),
+            )
+        case "ek.ekinsr":
+            return StepEkEkinsr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekinsr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekinsr.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekinsr.recno"),
+            )
+        case "ek.ekdelr":
+            return StepEkEkdelr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekdelr.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekdelr.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekdelr.recno"),
+            )
+        case "ek.ekacec":
+            return StepEkEkacec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekacec.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekacec.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekacec.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekacec.column"),
+                values=_expect_string_list(step.get("values"), label="ek.ekacec.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekacec.isNull"),
+            )
+        case "ek.ekaced":
+            return StepEkEkaced(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekaced.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekaced.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekaced.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekaced.column"),
+                values=_expect_number_list(step.get("values"), label="ek.ekaced.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekaced.isNull"),
+            )
+        case "ek.ekacei":
+            return StepEkEkacei(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekacei.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekacei.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekacei.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekacei.column"),
+                values=_expect_int_list(step.get("values"), label="ek.ekacei.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekacei.isNull"),
+            )
+        case "ek.ekrcec":
+            return StepEkEkrcec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekrcec.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekrcec.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekrcec.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekrcec.column"),
+                lenout=_expect_int(step.get("lenout"), label="ek.ekrcec.lenout"),
+            )
+        case "ek.ekrced":
+            return StepEkEkrced(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekrced.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekrced.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekrced.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekrced.column"),
+            )
+        case "ek.ekrcei":
+            return StepEkEkrcei(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekrcei.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekrcei.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekrcei.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekrcei.column"),
+            )
+        case "ek.ekucec":
+            return StepEkEkucec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekucec.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekucec.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekucec.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekucec.column"),
+                values=_expect_string_list(step.get("values"), label="ek.ekucec.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekucec.isNull"),
+            )
+        case "ek.ekuced":
+            return StepEkEkuced(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekuced.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekuced.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekuced.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekuced.column"),
+                values=_expect_number_list(step.get("values"), label="ek.ekuced.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekuced.isNull"),
+            )
+        case "ek.ekucei":
+            return StepEkEkucei(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="ek.ekucei.handleId"),
+                segno=_expect_int(step.get("segno"), label="ek.ekucei.segno"),
+                recno=_expect_int(step.get("recno"), label="ek.ekucei.recno"),
+                column=_expect_string(step.get("column"), label="ek.ekucei.column"),
+                values=_expect_int_list(step.get("values"), label="ek.ekucei.values"),
+                isNull=_expect_bool(step.get("isNull"), label="ek.ekucei.isNull"),
+            )
         case "ek.ekopn":
             return StepEkEkopn(
                 op=op,
