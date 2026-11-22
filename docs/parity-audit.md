@@ -370,3 +370,15 @@ and empty versus blank rows. The guarded maximum start and the locked
 ESRCHC row ABI have separate tests. The original A18 and Step 7 executions
 remain historical until the composite source passes the source-bound gates.
 [String search semantics, row layout and oracle](step8-string-search.md)
+
+## Sorted bounds
+
+A24 covers six inclusive or strict last-qualifying-index searches. Its 44
+workflows make 282 canonical calls using the six installed SpiceyPy wrappers.
+Character rows have explicit UTF-8 byte widths, ASCII blank padding and final
+NULs. Numeric cases include ordered double boundaries and signed integers.
+[Sorted-boundary semantics and evidence](step8-sorted-bounds.md)
+
+## Array search
+
+A22 depends on the six A24 sorted bounds and adds eight direct raw operations. The 55 registered workflows make 351 independent canonical calls and cover physical order, duplicate selection, binary and linear search, and numeric and UTF-8 comparison rules. Two additional public tests compare exact live indices for values outside JSON, including NaN and infinities. [Array search semantics and evidence](step8-array-search.md) [Per-routine audit](../data/parity-audits/a22-array-search.json)

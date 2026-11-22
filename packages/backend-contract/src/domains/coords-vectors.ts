@@ -21,6 +21,197 @@ export type SpiceQuaternion = readonly [
 /** Backend contract for basic coordinate transforms and vector/matrix math. */
 export interface CoordsVectorsApi {
   /**
+   * Binary-search the supplied order and return the physical zero-based index of the matching entry.
+   * An empty array or a missing key returns -1.
+   * Supply a complete zero-based permutation of the values such that the indexed values are nondecreasing.
+   * Each index must occur exactly once. The returned index addresses the original values.
+   * When duplicates compare equal, CSPICE returns the first midpoint it probes that matches.
+   * Comparison is case-sensitive and orders unsigned UTF-8 bytes, extending shorter strings with ASCII spaces.
+   * Trailing spaces compare equal; tabs and other control bytes remain significant.
+   * Well-formed strings and rows must be free of embedded NUL. The key and blank-padded, NUL-terminated rectangular table each fit in signed 32-bit byte counts.
+   * The order length is at most 536,870,911 elements, keeping signed index and order-buffer byte counts representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bschoc_c.html
+   */
+  bschoc(
+    key: string,
+    values: readonly string[],
+    order: readonly number[],
+  ): number;
+
+  /**
+   * Binary-search the supplied order and return the physical zero-based index of the matching entry.
+   * An empty array or a missing key returns -1.
+   * Supply a complete zero-based permutation of the values such that the indexed values are nondecreasing.
+   * Each index must occur exactly once. The returned index addresses the original values.
+   * When duplicates compare equal, CSPICE returns the first midpoint it probes that matches.
+   * The key and each value must be signed 32-bit integers.
+   * The order length is at most 536,870,911 elements, keeping signed index and order-buffer byte counts representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bschoi_c.html
+   */
+  bschoi(
+    key: number,
+    values: readonly number[],
+    order: readonly number[],
+  ): number;
+
+  /**
+   * Binary-search the nondecreasing input and return the matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * When duplicates compare equal, CSPICE returns the first midpoint it probes that matches.
+   * Comparison is case-sensitive and orders unsigned UTF-8 bytes, extending shorter strings with ASCII spaces.
+   * Trailing spaces compare equal; tabs and other control bytes remain significant.
+   * Well-formed strings and rows must be free of embedded NUL. The key and blank-padded, NUL-terminated rectangular table each fit in signed 32-bit byte counts.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchc_c.html
+   */
+  bsrchc(key: string, values: readonly string[]): number;
+
+  /**
+   * Binary-search the nondecreasing input and return the matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * When duplicates compare equal, CSPICE returns the first midpoint it probes that matches.
+   * IEEE equality matches signed zeros and infinities. NaN keys or elements fall outside this ordered search domain.
+   * The element count is at most 1,073,741,823 to keep the one-based binary midpoint representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchd_c.html
+   */
+  bsrchd(key: number, values: readonly number[]): number;
+
+  /**
+   * Binary-search the nondecreasing input and return the matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * When duplicates compare equal, CSPICE returns the first midpoint it probes that matches.
+   * The key and each value must be signed 32-bit integers.
+   * The element count is at most 1,073,741,823 to keep the one-based binary midpoint representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/bsrchi_c.html
+   */
+  bsrchi(key: number, values: readonly number[]): number;
+
+  /**
+   * Search the input in its supplied order and return the first matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * Comparison is case-sensitive and orders unsigned UTF-8 bytes, extending shorter strings with ASCII spaces.
+   * Trailing spaces compare equal; tabs and other control bytes remain significant.
+   * Well-formed strings and rows must be free of embedded NUL. The key and blank-padded, NUL-terminated rectangular table each fit in signed 32-bit byte counts.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchc_c.html
+   */
+  isrchc(key: string, values: readonly string[]): number;
+
+  /**
+   * Search the input in its supplied order and return the first matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * IEEE equality matches signed zeros and infinities. NaN keys and elements never compare equal.
+   * The element count is at most 2,147,483,646 to keep the inclusive loop increment representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchd_c.html
+   */
+  isrchd(key: number, values: readonly number[]): number;
+
+  /**
+   * Search the input in its supplied order and return the first matching zero-based index.
+   * An empty array or a missing key returns -1.
+   * The key and each value must be signed 32-bit integers.
+   * The element count is at most 2,147,483,646 to keep the inclusive loop increment representable.
+   * WASM limits each buffer to 256 MiB. This search requires no kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/isrchi_c.html
+   */
+  isrchi(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing, case-sensitive byte order.
+   * CSPICE compares unsigned bytes and extends shorter strings with ASCII
+   * spaces. Trailing spaces compare equal. Control bytes, including tabs,
+   * retain their byte ordering. Empty keys and rows are supported.
+   * Well-formed UTF-16 inputs are encoded as UTF-8. Embedded NUL is invalid.
+   * A row has max(2, longest encoded row length + 1) bytes, with ASCII
+   * spaces after the text and a final NUL. The table and the terminated key
+   * each fit in signed 32-bit byte counts.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlec_c.html
+   */
+  lstlec(key: string, values: readonly string[]): number;
+
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries are doubles. Infinities are ordered, positive and negative zero
+   * compare equal, and NaN is rejected because it is unordered. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstled_c.html
+   */
+  lstled(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element less than or equal to key.
+   * An empty array or the absence of a qualifying value returns -1. Equality includes the last duplicate.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries must be signed 32-bit integers. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlei_c.html
+   */
+  lstlei(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing, case-sensitive byte order.
+   * CSPICE compares unsigned bytes and extends shorter strings with ASCII
+   * spaces. Trailing spaces compare equal. Control bytes, including tabs,
+   * retain their byte ordering. Empty keys and rows are supported.
+   * Well-formed UTF-16 inputs are encoded as UTF-8. Embedded NUL is invalid.
+   * A row has max(2, longest encoded row length + 1) bytes, with ASCII
+   * spaces after the text and a final NUL. The table and the terminated key
+   * each fit in signed 32-bit byte counts.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltc_c.html
+   */
+  lstltc(key: string, values: readonly string[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries are doubles. Infinities are ordered, positive and negative zero
+   * compare equal, and NaN is rejected because it is unordered. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstltd_c.html
+   */
+  lstltd(key: number, values: readonly number[]): number;
+
+  /**
+   * Return the zero-based index of the last element strictly less than key.
+   * An empty array or the absence of a qualifying value returns -1. Equal values are skipped.
+   *
+   * The caller supplies values in nondecreasing numerical order. The key and
+   * entries must be signed 32-bit integers. Array length
+   * is limited to 2147483647 elements.
+   * Input order is preserved. WASM limits each buffer to 256 MiB. No kernels
+   * are required.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/lstlti_c.html
+   */
+  lstlti(key: number, values: readonly number[]): number;
+
+  /**
    * Differentiate (range, azimuth, elevation) with respect to (x, y, z). Positive azimuth is counterclockwise when azccw is true and clockwise otherwise. Positive elevation points toward +Z when elplsz is true and toward −Z otherwise. On the Z-axis CSPICE signals POINTONZAXIS.
    * The owned row-major matrix has one row per output coordinate and one column per input coordinate. Finite inputs can produce nonfinite entries.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dazldr_c.html

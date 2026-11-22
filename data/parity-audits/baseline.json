@@ -706,6 +706,22 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "a24-sorted-bounds",
+      "routines": [
+        "lstlec_c",
+        "lstled_c",
+        "lstlei_c",
+        "lstltc_c",
+        "lstltd_c",
+        "lstlti_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/721"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a14-rotation-representations",
       "routines": [
         "eul2m_c",
@@ -760,6 +776,26 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/731"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a22-array-search",
+      "routines": [
+        "bschoc_c",
+        "bschoi_c",
+        "bsrchc_c",
+        "bsrchd_c",
+        "bsrchi_c",
+        "isrchc_c",
+        "isrchd_c",
+        "isrchi_c"
+      ],
+      "dependsOn": [
+        "a24-sorted-bounds"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/732"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },

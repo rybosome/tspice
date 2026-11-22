@@ -1,0 +1,614 @@
+[
+  {
+    "caseId": "coords-vectors-bschoc-empty",
+    "description": "Return the canonical -1 sentinel for empty input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "",
+        "values": [],
+        "order": []
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "X",
+        "values": [],
+        "order": []
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-singleton",
+    "description": "Test below, at and above a single physical element.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "I",
+        "values": ["J"],
+        "order": [0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "J",
+        "values": ["J"],
+        "order": [0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "K",
+        "values": ["J"],
+        "order": [0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-odd",
+    "description": "Find left, right and middle entries and a missing key in an odd-length input.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "AA",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "AB",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "C",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "LMN",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "W",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Y",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Z",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "0",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "LL",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "ZZ",
+        "values": ["Y", "C", "W", "AA", "Z", "AB", "LMN"],
+        "order": [3, 5, 1, 6, 2, 0, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-even",
+    "description": "Distinct even-length results map into the original array.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "C",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "F",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Q",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "W",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Z",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "B",
+        "values": ["Z", "W", "Q", "F", "C", "A"],
+        "order": [5, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-duplicates",
+    "description": "Multiple equal values have distinguishable physical positions. Compare the selection with CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A   ",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "M",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "M  ",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Z",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "L",
+        "values": ["Z", "M", "M", "A", "A  ", "A ", "A"],
+        "order": [6, 5, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-character-order",
+    "description": "Separate terminal tabs, leading spaces, case, multibyte characters and right-hand ASCII blank padding.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "\t",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": " ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": " A",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A\t",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A!",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "a",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "é",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Ω",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "🙂",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A  ",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "É",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A\n",
+        "values": [
+          "🙂",
+          "Ω",
+          "é",
+          "a",
+          "A!",
+          "A ",
+          "A",
+          "A\t",
+          " A",
+          " ",
+          "",
+          "\t"
+        ],
+        "order": [11, 9, 10, 8, 7, 5, 6, 4, 3, 2, 1, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-unequal-width",
+    "description": "Variable UTF-8 byte lengths and a key longer than every stored row.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "🌙",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "abc",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "Z",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "é",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "abcdef",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "🌙x",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "",
+        "values": ["🌙", "abc", "Z", "é"],
+        "order": [2, 1, 3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-ties-ascending-indices",
+    "description": "A different valid order within ties distinguishes physical indices from logical search positions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "J",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "L",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [1, 3, 4, 0, 2, 5, 6, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-bschoc-ties-descending-indices",
+    "description": "A different valid order within ties distinguishes physical indices from logical search positions.",
+    "workflow": [
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "A",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "J",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      },
+      {
+        "op": "coords-vectors.bschoc",
+        "key": "L",
+        "values": ["B", "A", "J", "A", "A", "L", "M", "Q"],
+        "order": [4, 3, 1, 0, 2, 5, 6, 7]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

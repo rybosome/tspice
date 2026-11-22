@@ -122,6 +122,20 @@ import type {
   StepCoordsVectorsDrdpgr,
   StepCoordsVectorsDrdsph,
   StepCoordsVectorsDsphdr,
+  StepCoordsVectorsLstlec,
+  StepCoordsVectorsLstled,
+  StepCoordsVectorsLstlei,
+  StepCoordsVectorsLstltc,
+  StepCoordsVectorsLstltd,
+  StepCoordsVectorsLstlti,
+  StepCoordsVectorsBschoc,
+  StepCoordsVectorsBschoi,
+  StepCoordsVectorsBsrchc,
+  StepCoordsVectorsBsrchd,
+  StepCoordsVectorsBsrchi,
+  StepCoordsVectorsIsrchc,
+  StepCoordsVectorsIsrchd,
+  StepCoordsVectorsIsrchi,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -270,6 +284,20 @@ type CoordsVectorsStep =
   | StepCoordsVectorsDrdpgr
   | StepCoordsVectorsDrdsph
   | StepCoordsVectorsDsphdr
+  | StepCoordsVectorsLstlec
+  | StepCoordsVectorsLstled
+  | StepCoordsVectorsLstlei
+  | StepCoordsVectorsLstltc
+  | StepCoordsVectorsLstltd
+  | StepCoordsVectorsLstlti
+  | StepCoordsVectorsBschoc
+  | StepCoordsVectorsBschoi
+  | StepCoordsVectorsBsrchc
+  | StepCoordsVectorsBsrchd
+  | StepCoordsVectorsBsrchi
+  | StepCoordsVectorsIsrchc
+  | StepCoordsVectorsIsrchd
+  | StepCoordsVectorsIsrchi
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -1082,6 +1110,76 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.unormg": {
       const out = context.spice.raw.unormg(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.bschoc": {
+      const out = context.spice.raw.bschoc(step.key, step.values, step.order);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.bschoi": {
+      const out = context.spice.raw.bschoi(step.key, step.values, step.order);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.bsrchc": {
+      const out = context.spice.raw.bsrchc(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.bsrchd": {
+      const out = context.spice.raw.bsrchd(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.bsrchi": {
+      const out = context.spice.raw.bsrchi(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.isrchc": {
+      const out = context.spice.raw.isrchc(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.isrchd": {
+      const out = context.spice.raw.isrchd(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.isrchi": {
+      const out = context.spice.raw.isrchi(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstlec": {
+      const out = context.spice.raw.lstlec(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstled": {
+      const out = context.spice.raw.lstled(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstlei": {
+      const out = context.spice.raw.lstlei(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstltc": {
+      const out = context.spice.raw.lstltc(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstltd": {
+      const out = context.spice.raw.lstltd(step.key, step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.lstlti": {
+      const out = context.spice.raw.lstlti(step.key, step.values);
       return { op: step.op, value: out };
     }
 

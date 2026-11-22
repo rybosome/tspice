@@ -3104,6 +3104,49 @@ export function createFakeBackend(
       throw new Error("Fake backend does not model matchw()");
     },
 
+    bschoc: () => {
+      throw new Error("Fake backend does not model bschoc()");
+    },
+    bschoi: () => {
+      throw new Error("Fake backend does not model bschoi()");
+    },
+    bsrchc: () => {
+      throw new Error("Fake backend does not model bsrchc()");
+    },
+    bsrchd: () => {
+      throw new Error("Fake backend does not model bsrchd()");
+    },
+    bsrchi: () => {
+      throw new Error("Fake backend does not model bsrchi()");
+    },
+    isrchc: () => {
+      throw new Error("Fake backend does not model isrchc()");
+    },
+    isrchd: () => {
+      throw new Error("Fake backend does not model isrchd()");
+    },
+    isrchi: () => {
+      throw new Error("Fake backend does not model isrchi()");
+    },
+    lstlec: () => {
+      throw new Error("Fake backend does not model lstlec()");
+    },
+    lstled: () => {
+      throw new Error("Fake backend does not model lstled()");
+    },
+    lstlei: () => {
+      throw new Error("Fake backend does not model lstlei()");
+    },
+    lstltc: () => {
+      throw new Error("Fake backend does not model lstltc()");
+    },
+    lstltd: () => {
+      throw new Error("Fake backend does not model lstltd()");
+    },
+    lstlti: () => {
+      throw new Error("Fake backend does not model lstlti()");
+    },
+
     reclat: (rect) => {
       const x = rect[0];
       const y = rect[1];

@@ -1403,6 +1403,38 @@ int tspice_ucase(char *input, int lenout, char *out, char *err, int errMaxBytes)
 int tspice_matchi(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
 int tspice_matchw(const char *input, const char *templ, int wstr, int wchr, int *out, char *err, int errMaxBytes);
 
+// Binary and linear array searches return physical indices, with -1 for a miss.
+int tspice_bschoc(
+    const char *key, int n, int width, const char *rows, const int *order, int *out, char *err, int errMaxBytes);
+int tspice_bschoi(
+    int key, int n, const int *values, const int *order, int *out, char *err, int errMaxBytes);
+int tspice_bsrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_bsrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_bsrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+int tspice_isrchc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_isrchd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_isrchi(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+
+// Sorted bounds use zero-based result indices. Character rows are blank padded and NUL terminated.
+int tspice_lstlec(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstled(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlei(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+int tspice_lstltc(
+    const char *key, int n, int width, const char *rows, int *out, char *err, int errMaxBytes);
+int tspice_lstltd(
+    double key, int n, const double *values, int *out, char *err, int errMaxBytes);
+int tspice_lstlti(
+    int key, int n, const int *values, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

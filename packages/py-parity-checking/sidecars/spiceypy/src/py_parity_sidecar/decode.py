@@ -140,6 +140,20 @@ from .models import (
     StepCoordsVectorsDrdpgr,
     StepCoordsVectorsDrdsph,
     StepCoordsVectorsDsphdr,
+    StepCoordsVectorsLstlec,
+    StepCoordsVectorsLstled,
+    StepCoordsVectorsLstlei,
+    StepCoordsVectorsLstltc,
+    StepCoordsVectorsLstltd,
+    StepCoordsVectorsLstlti,
+    StepCoordsVectorsBschoc,
+    StepCoordsVectorsBschoi,
+    StepCoordsVectorsBsrchc,
+    StepCoordsVectorsBsrchd,
+    StepCoordsVectorsBsrchi,
+    StepCoordsVectorsIsrchc,
+    StepCoordsVectorsIsrchd,
+    StepCoordsVectorsIsrchi,
     StepCoordsVectorsReclat,
     StepCoordsVectorsRecgeo,
     StepCoordsVectorsRecsph,
@@ -823,6 +837,106 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 body=_expect_int(step.get("body"), label="ids-names.bodvar.body"),
                 item=_expect_string(step.get("item"), label="ids-names.bodvar.item"),
+            )
+
+        case "coords-vectors.lstlec":
+            return StepCoordsVectorsLstlec(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstlec.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstlec.values"),
+            )
+
+        case "coords-vectors.lstled":
+            return StepCoordsVectorsLstled(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstled.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstled.values"),
+            )
+
+        case "coords-vectors.lstlei":
+            return StepCoordsVectorsLstlei(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlei.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlei.values"),
+            )
+
+        case "coords-vectors.lstltc":
+            return StepCoordsVectorsLstltc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.lstltc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.lstltc.values"),
+            )
+
+        case "coords-vectors.lstltd":
+            return StepCoordsVectorsLstltd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.lstltd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.lstltd.values"),
+            )
+
+        case "coords-vectors.lstlti":
+            return StepCoordsVectorsLstlti(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.lstlti.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.lstlti.values"),
+            )
+
+        case "coords-vectors.bschoc":
+            return StepCoordsVectorsBschoc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.bschoc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.bschoc.values"),
+                order=_expect_int_list(step.get("order"), label="coords-vectors.bschoc.order"),
+            )
+
+        case "coords-vectors.bschoi":
+            return StepCoordsVectorsBschoi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.bschoi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.bschoi.values"),
+                order=_expect_int_list(step.get("order"), label="coords-vectors.bschoi.order"),
+            )
+
+        case "coords-vectors.bsrchc":
+            return StepCoordsVectorsBsrchc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.bsrchc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.bsrchc.values"),
+            )
+
+        case "coords-vectors.bsrchd":
+            return StepCoordsVectorsBsrchd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.bsrchd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.bsrchd.values"),
+            )
+
+        case "coords-vectors.bsrchi":
+            return StepCoordsVectorsBsrchi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.bsrchi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.bsrchi.values"),
+            )
+
+        case "coords-vectors.isrchc":
+            return StepCoordsVectorsIsrchc(
+                op=op,
+                key=_expect_string(step.get("key"), label="coords-vectors.isrchc.key"),
+                values=_expect_string_list(step.get("values"), label="coords-vectors.isrchc.values"),
+            )
+
+        case "coords-vectors.isrchd":
+            return StepCoordsVectorsIsrchd(
+                op=op,
+                key=_expect_number(step.get("key"), label="coords-vectors.isrchd.key"),
+                values=_expect_number_list(step.get("values"), label="coords-vectors.isrchd.values"),
+            )
+
+        case "coords-vectors.isrchi":
+            return StepCoordsVectorsIsrchi(
+                op=op,
+                key=_expect_int(step.get("key"), label="coords-vectors.isrchi.key"),
+                values=_expect_int_list(step.get("values"), label="coords-vectors.isrchi.values"),
             )
 
         case "coords-vectors.mequg":

@@ -6,6 +6,11 @@ import {
   assertSpiceStorageFits,
   copySpiceStorage,
   spiceStorageLength,
+  searchOrderInput,
+  SPICE_INT32_MAX,
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
   assertMat3ArrayLike9,
   assertSpiceInt32,
   brandMat3RowMajor,
@@ -607,6 +612,136 @@ function generalVectorOutput(
 /** Create a {@link CoordsVectorsApi} implementation backed by the native Node addon. */
 export function createCoordsVectorsApi(native: NativeAddon): CoordsVectorsApi {
   return {
+    bschoc: (key, values, order) => {
+      const input = sortedCharacterInputs(
+        key,
+        values,
+        SPICE_INT32_MAX,
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.rows.length);
+      return sortedBoundResult(
+        native.bschoc(key, input.rows, indices),
+        input.rows.length,
+      );
+    },
+    bschoi: (key, values, order) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 4),
+      );
+      const indices = searchOrderInput(order, input.values.length);
+      return sortedBoundResult(
+        native.bschoi(input.key, input.values, indices),
+        input.values.length,
+      );
+    },
+    bsrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.bsrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    bsrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "double",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    bsrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        Math.floor(SPICE_INT32_MAX / 2),
+      );
+      return sortedBoundResult(
+        native.bsrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.isrchc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    isrchd: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "ieee",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    isrchi: (key, values) => {
+      const input = sortedNumericInputs(
+        key,
+        values,
+        "int",
+        SPICE_INT32_MAX - 1,
+      );
+      return sortedBoundResult(
+        native.isrchi(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlec: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstlec(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstled: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstled(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlei: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlei(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstltc: (key, values) => {
+      const input = sortedCharacterInputs(key, values);
+      return sortedBoundResult(
+        native.lstltc(key, input.rows),
+        input.rows.length,
+      );
+    },
+    lstltd: (key, values) => {
+      const input = sortedNumericInputs(key, values, "double");
+      return sortedBoundResult(
+        native.lstltd(input.key, input.values),
+        input.values.length,
+      );
+    },
+    lstlti: (key, values) => {
+      const input = sortedNumericInputs(key, values, "int");
+      return sortedBoundResult(
+        native.lstlti(input.key, input.values),
+        input.values.length,
+      );
+    },
     pi: () => {
       const out = native.pi();
       invariant(

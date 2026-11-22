@@ -1427,9 +1427,11 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
-      "dependsOn": [],
+      "dependsOn": [
+        "A24-sorted-bounds"
+      ],
       "prerequisiteReview": "Immediate shared numeric/character array encoding. Verify sorted-order preconditions, zero-based indices, order-vector mapping and legitimate -1 result.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
@@ -1443,21 +1445,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/732"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 732,
-        "url": "https://github.com/rybosome/tspice/pull/732",
-        "head": "47423c2e62ac98ffcae9939fa37f5dfb52ee3ecb",
-        "base": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43564692504",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "faad465966fe6254b6ed7c68672f834b86cba77d",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43563139285/job/132351042526",
+          "result": "Both complete required lanes passed locally on faad465966fe6254b6ed7c68672f834b86cba77d. JavaScript: 2,641 parity tests and one expected guard skip. Native-required: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132351042526 on faad465966fe6254b6ed7c68672f834b86cba77d: 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-array-search",
+      "branch": "codex/expand-array-search",
+      "baseCommit": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source faad4659. 2,416 registered Node/WASM live comparisons; 2,642 parity-package tests with no skips, including the native-required guard; 128 native wrapper, 668 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Stacked on A24 #721 at 3b2485cb. All 55 workflows with 351 canonical calls and 110 actual backend comparisons passed, plus two exact public/oracle tests, 36 native, 40 WASM, 54 inherited sorted-bound tests and all eight in Chrome."
     },
     {
       "id": "A23-array-order",
@@ -1524,7 +1529,7 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse reviewed array search representations when landed; verify strict versus inclusive comparisons, duplicates and -1 absence. No dependency on sorting wrappers when authored arrays are already sorted.",
@@ -1540,21 +1545,30 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/721"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 01 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 721,
-        "url": "https://github.com/rybosome/tspice/pull/721",
-        "head": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43554247102",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 2,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "ci-run-reference",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552968834",
+          "result": "Source CI pending."
+        },
+        {
+          "kind": "evidence-head-checkpoint",
+          "commit": "3b2485cb708f2a718bf8d130217d2119f59cc9cc",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554247102",
+          "result": "CI pending at this checkpoint."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "6c47568546269a4648e9d9784a7da548beda00fd",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43552968834/job/132319359971",
+          "result": "Both complete required lanes passed locally on 6c47568546269a4648e9d9784a7da548beda00fd. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132319359971 on 6c47568546269a4648e9d9784a7da548beda00fd: 2,306 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 92 native wrapper, 628 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Observe the complete final-head matrix and recheck explicit rebaseability after CI.",
+      "branch": "codex/expand-sorted-bounds",
+      "worktree": "/private/tmp/tspice-step8-sorted-bounds",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Draft #721 evidence head 3b2485cb708f2a718bf8d130217d2119f59cc9cc, CI 43554247102, awaiting canonical final-head evidence."
     },
     {
       "id": "B01-cell-arrays",

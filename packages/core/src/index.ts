@@ -189,3 +189,10 @@ export {
   frameStateResult,
   frameMatrixResult,
 } from "./spice-runtime/domains/frame-algebra.js";
+
+export {
+  searchOrderInput,
+  sortedNumericInputs,
+  sortedCharacterInputs,
+  sortedBoundResult,
+} from "./spice-runtime/domains/sorted-bounds.js";

@@ -1078,6 +1078,92 @@ export type StepCoordsVectorsUnormg = {
   v: number[];
 };
 
+export type StepCoordsVectorsLstlec = {
+  op: "coords-vectors.lstlec";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstled = {
+  op: "coords-vectors.lstled";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlei = {
+  op: "coords-vectors.lstlei";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstltc = {
+  op: "coords-vectors.lstltc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsLstltd = {
+  op: "coords-vectors.lstltd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsLstlti = {
+  op: "coords-vectors.lstlti";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsBschoc = {
+  op: "coords-vectors.bschoc";
+  key: string;
+  values: string[];
+  order: number[];
+};
+
+export type StepCoordsVectorsBschoi = {
+  op: "coords-vectors.bschoi";
+  key: number;
+  values: number[];
+  order: number[];
+};
+
+export type StepCoordsVectorsBsrchc = {
+  op: "coords-vectors.bsrchc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsBsrchd = {
+  op: "coords-vectors.bsrchd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsBsrchi = {
+  op: "coords-vectors.bsrchi";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsIsrchc = {
+  op: "coords-vectors.isrchc";
+  key: string;
+  values: string[];
+};
+
+export type StepCoordsVectorsIsrchd = {
+  op: "coords-vectors.isrchd";
+  key: number;
+  values: number[];
+};
+
+export type StepCoordsVectorsIsrchi = {
+  op: "coords-vectors.isrchi";
+  key: number;
+  values: number[];
+};
+
 export type StepCoordsVectorsReclat = {
   op: "coords-vectors.reclat";
   rectan: Vector3;
@@ -2458,6 +2544,20 @@ export type WorkflowStep =
   | StepCoordsVectorsDrdpgr
   | StepCoordsVectorsDrdsph
   | StepCoordsVectorsDsphdr
+  | StepCoordsVectorsLstlec
+  | StepCoordsVectorsLstled
+  | StepCoordsVectorsLstlei
+  | StepCoordsVectorsLstltc
+  | StepCoordsVectorsLstltd
+  | StepCoordsVectorsLstlti
+  | StepCoordsVectorsBschoc
+  | StepCoordsVectorsBschoi
+  | StepCoordsVectorsBsrchc
+  | StepCoordsVectorsBsrchd
+  | StepCoordsVectorsBsrchi
+  | StepCoordsVectorsIsrchc
+  | StepCoordsVectorsIsrchd
+  | StepCoordsVectorsIsrchi
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -2816,6 +2916,20 @@ export type StepOutput =
   | { op: "strings.ucase"; value: string }
   | { op: "strings.matchi"; value: boolean }
   | { op: "strings.matchw"; value: boolean }
+  | { op: "coords-vectors.bschoc"; value: number }
+  | { op: "coords-vectors.bschoi"; value: number }
+  | { op: "coords-vectors.bsrchc"; value: number }
+  | { op: "coords-vectors.bsrchd"; value: number }
+  | { op: "coords-vectors.bsrchi"; value: number }
+  | { op: "coords-vectors.isrchc"; value: number }
+  | { op: "coords-vectors.isrchd"; value: number }
+  | { op: "coords-vectors.isrchi"; value: number }
+  | { op: "coords-vectors.lstlec"; value: number }
+  | { op: "coords-vectors.lstled"; value: number }
+  | { op: "coords-vectors.lstlei"; value: number }
+  | { op: "coords-vectors.lstltc"; value: number }
+  | { op: "coords-vectors.lstltd"; value: number }
+  | { op: "coords-vectors.lstlti"; value: number }
   | { op: "time.str2et"; value: number }
   | { op: "time.et2utc"; value: string }
   | { op: "time.spd"; value: number }
