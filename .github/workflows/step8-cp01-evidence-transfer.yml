@@ -1,0 +1,34 @@
+name: Export the validated Step 8 checkpoint 01 evidence history
+on:
+  push:
+    branches: [codex/step8-cp01-evidence-transfer]
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify and preserve the incremental checkpoint revision
+        env:
+          SOURCE: 36ac438642ca5e2a338823f49d4637aeca25aa75
+          INTAKE: 17f11884fb5bdef7cbaf84bd480d4b8edde3d310
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$SOURCE"
+          git merge-base --is-ancestor "$INTAKE" "$SOURCE"
+          artifact="$RUNNER_TEMP/cp01-bundle"
+          git branch cp01-artifact "$SOURCE"
+          git bundle create "$artifact" refs/heads/cp01-artifact "^$INTAKE"
+          git bundle verify "$artifact"
+          output=.step8-transfers/checkpoint-01-evidence
+          mkdir -p "$output"
+          sha256sum "$artifact" | cut -d' ' -f1 > "$output/digest.txt"
+          printf '%s\n%s\n' "$SOURCE" "$INTAKE" > "$output/commits.txt"
+          base64 -w 76 "$artifact" | split -d -a 3 -l 3000 - "$output/validated.bundle.b64."
+          git add "$output"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Preserve the checkpoint 01 validation bundle for local recovery'
+          git push origin HEAD:refs/heads/codex/step8-cp01-evidence-transfer
