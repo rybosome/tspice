@@ -35,7 +35,7 @@ static int tspice_time_invalid_arg(char *err, int errMaxBytes, const char *msg) 
 }
 
 int tspice_tkvrsn_toolkit(char *out, int outMaxBytes, char *err, int errMaxBytes) {
-  if (tspice_begin_scientific_call(err, errMaxBytes)) return 1;
+  tspice_init_cspice_error_handling_once();
 
   if (err && errMaxBytes > 0) {
     err[0] = '\0';

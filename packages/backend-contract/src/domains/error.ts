@@ -10,15 +10,16 @@ export const GETMSG_WHICH_VALUES = ["SHORT", "LONG", "EXPLAIN"] as const;
 
 export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
 
+/** The five error response policies exposed by CSPICE N0067. */
+export type SpiceErrorAction =
+  "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
+
 /**
  * Backend contract for SPICE error/status utilities (`failed/reset/getmsg/...`).
  *
  * Runtime selector validation helpers (e.g. `assertGetmsgWhich`) live in
  * `@rybosome/tspice-core`.
  */
-export type SpiceErrorAction =
-  "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
-
 export interface ErrorApi {
   /** Read the current action with an optional output byte capacity including NUL. */
   erract(op: "GET", capacity?: number): string;

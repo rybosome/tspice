@@ -1,8 +1,8 @@
 {
   "audit": {
     "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
-    "baselineRoutines": 163,
-    "expansionRoutines": 10,
+    "baselineRoutines": 162,
+    "expansionRoutines": 11,
     "batches": [
       {
         "id": "cell-capacity-prerequisite",
@@ -472,18 +472,6 @@
         "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
-        "id": "b08-error-action",
-        "routines": [
-          "erract_c"
-        ],
-        "dependsOn": [
-          "b07-error-devices"
-        ],
-        "prs": [],
-        "nextAction": "Run isolated action round trips and scientific-boundary regression on both backends.",
-        "record": "data/parity-audits/b08-error-action.json"
-      },
-      {
         "id": "b06-error-observation",
         "routines": [
           "errch_c",
@@ -514,6 +502,18 @@
         "prs": [],
         "nextAction": "Verify the final local and canonical lanes.",
         "record": "data/parity-audits/b07-error-devices.json"
+      },
+      {
+        "id": "b08-error-action",
+        "routines": [
+          "erract_c"
+        ],
+        "dependsOn": [
+          "b07-error-devices"
+        ],
+        "prs": [],
+        "nextAction": "Run isolated action round trips and scientific-boundary regression on both backends.",
+        "record": "data/parity-audits/b08-error-action.json"
       }
     ],
     "counts": {
@@ -5466,7 +5466,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 150
+          "line": 151
         }
       },
       "mapping": {
@@ -5717,7 +5717,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 157
+          "line": 158
         }
       },
       "mapping": {
@@ -20679,7 +20679,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 24
+          "line": 25
         }
       },
       "mapping": {
@@ -20912,7 +20912,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 68
+          "line": 69
         }
       },
       "mapping": {
@@ -21194,7 +21194,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 38
+          "line": 39
         }
       },
       "mapping": {
@@ -21580,7 +21580,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 74
+          "line": 75
         }
       },
       "mapping": {
@@ -21844,7 +21844,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 80
+          "line": 81
         }
       },
       "mapping": {
@@ -22108,7 +22108,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 50
+          "line": 51
         }
       },
       "mapping": {
@@ -23379,7 +23379,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 111
+          "line": 112
         }
       },
       "mapping": {
@@ -25683,7 +25683,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 127
+          "line": 128
         }
       },
       "mapping": {
@@ -41237,7 +41237,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 86
+          "line": 87
         }
       },
       "mapping": {
@@ -42460,7 +42460,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 118
+          "line": 119
         }
       },
       "mapping": {
@@ -42675,7 +42675,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 92
+          "line": 93
         }
       },
       "mapping": {
@@ -45631,7 +45631,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 135
+          "line": 136
         }
       },
       "mapping": {
@@ -45923,7 +45923,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 143
+          "line": 144
         }
       },
       "mapping": {
@@ -60471,7 +60471,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 98
+          "line": 99
         }
       },
       "mapping": {
@@ -60663,7 +60663,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 104
+          "line": 105
         }
       },
       "mapping": {
@@ -60971,7 +60971,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 62
+          "line": 63
         }
       },
       "mapping": {
