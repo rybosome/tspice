@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "batch": "e24-gf-configurable",
+  "traceFiles": [
+    "packages/backend-shim-c/src/domains/geometry_gf.c",
+    "packages/backend-node/native/src/domains/geometry_gf.cc",
+    "packages/backend-wasm/src/domains/configured-gf.ts",
+    "packages/core/src/spice-runtime/domains/configured-gf.ts",
+    "packages/tspice/src/worker/transport/gfCallbacks.ts",
+    "packages/tspice/test/gf-worker-callbacks.test.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/configured_gf.py",
+    "packages/py-parity-checking/src/run-tspice/domains/geometry-gf.ts",
+    "docs/step8-gf-configurable.md"
+  ],
+  "executions": [],
+  "routines": [
+    {
+      "routine": "gfevnt_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfevnt_c.html",
+      "semantics": "Call the appropriate N0067 configurable solver with caller-provided steps, refinements, progress handlers and interruption. Snapshot confinement and publish complete results to the original generation-checked window.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfevnt-progress",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        },
+        {
+          "caseId": "geometry-gf-gfevnt-interrupted",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        }
+      ],
+      "edgeAssessment": "Cover both the normal search with progress and the first requested bail with a pre-populated result window.",
+      "errorAssessment": "The shim validates the tolerance, closed/aliased windows, workspace and callback return values. Host adapters preserve the original thrown callback error.",
+      "fixtures": [],
+      "fixtureRationale": "Reuse the authored audit geometry, frame and FOV kernels already referenced by the baseline visibility comparisons.",
+      "cleanup": "Restore callback frames on scope exit. Allocate private input and result windows and release both after success, interruption or failure.",
+      "tolerance": "Use the repository recursive comparison for the recorded numeric endpoints; compare callback order, type and text exactly.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfevnt delegates through the node adapter and shared shim to gfevnt_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfevnt delegates through the wasm adapter and shared shim to gfevnt_c.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gffove_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gffove_c.html",
+      "semantics": "Call the appropriate N0067 configurable solver with caller-provided steps, refinements, progress handlers and interruption. Snapshot confinement and publish complete results to the original generation-checked window.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gffove-progress",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        },
+        {
+          "caseId": "geometry-gf-gffove-interrupted",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        }
+      ],
+      "edgeAssessment": "Cover both the normal search with progress and the first requested bail with a pre-populated result window.",
+      "errorAssessment": "The shim validates the tolerance, closed/aliased windows, workspace and callback return values. Host adapters preserve the original thrown callback error.",
+      "fixtures": [],
+      "fixtureRationale": "Reuse the authored audit geometry, frame and FOV kernels already referenced by the baseline visibility comparisons.",
+      "cleanup": "Restore callback frames on scope exit. Allocate private input and result windows and release both after success, interruption or failure.",
+      "tolerance": "Use the repository recursive comparison for the recorded numeric endpoints; compare callback order, type and text exactly.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gffove delegates through the node adapter and shared shim to gffove_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gffove delegates through the wasm adapter and shared shim to gffove_c.",
+          "executions": []
+        }
+      }
+    },
+    {
+      "routine": "gfocce_c",
+      "contract": "packages/backend-contract/src/domains/geometry-gf.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfocce_c.html",
+      "semantics": "Call the appropriate N0067 configurable solver with caller-provided steps, refinements, progress handlers and interruption. Snapshot confinement and publish complete results to the original generation-checked window.",
+      "scenarios": [
+        {
+          "caseId": "geometry-gf-gfocce-progress",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        },
+        {
+          "caseId": "geometry-gf-gfocce-interrupted",
+          "coverage": [
+            "edge",
+            "success"
+          ],
+          "observes": "Records all callback inputs in order and both complete caller windows."
+        }
+      ],
+      "edgeAssessment": "Cover both the normal search with progress and the first requested bail with a pre-populated result window.",
+      "errorAssessment": "The shim validates the tolerance, closed/aliased windows, workspace and callback return values. Host adapters preserve the original thrown callback error.",
+      "fixtures": [],
+      "fixtureRationale": "Reuse the authored audit geometry, frame and FOV kernels already referenced by the baseline visibility comparisons.",
+      "cleanup": "Restore callback frames on scope exit. Allocate private input and result windows and release both after success, interruption or failure.",
+      "tolerance": "Use the repository recursive comparison for the recorded numeric endpoints; compare callback order, type and text exactly.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfocce delegates through the node adapter and shared shim to gfocce_c.",
+          "executions": []
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw gfocce delegates through the wasm adapter and shared shim to gfocce_c.",
+          "executions": []
+        }
+      }
+    }
+  ]
+}

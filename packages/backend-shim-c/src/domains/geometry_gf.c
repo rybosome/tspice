@@ -460,6 +460,170 @@ static int finish_user_search(UserSearchScope *scope, int interrupted, char *err
   return status;
 }
 
+/* Callback slots match the typed configurable GF adapter on both backends. */
+enum GfControlSlot { GF_STEP, GF_REFINE, GF_REPORT_START, GF_REPORT_UPDATE, GF_REPORT_END, GF_BAIL };
+
+typedef struct {
+  TspiceGfControlCallback invoke;
+  void *context;
+  int interrupted;
+} ConfigurableGfFrame;
+
+static _Thread_local ConfigurableGfFrame configurable_frame;
+
+#ifdef __EMSCRIPTEN__
+EM_JS(int, tspice_host_gf_control,
+      (int id, int slot, const double *values, int count, const char *prefix, const char *suffix, double *out), {
+  return Asyncify.handleSleep(function(wake) {
+    var settled = function(value) {
+      HEAPF64[out >>> 3] = value;
+      wake(Number.isFinite(value) ? 0 : 1);
+    };
+    try {
+      var valuesCopy = values ? Array.from(HEAPF64.subarray(values >>> 3, (values >>> 3) + count)) : [];
+      var args = slot === 2 ? [valuesCopy, UTF8ToString(prefix), UTF8ToString(suffix)] : valuesCopy;
+      var value = Module['tspiceInvokeGf'](id, slot, ...args);
+      if (value && typeof value.then === 'function') value.then(settled, function() { settled(NaN); });
+      else settled(value);
+    } catch (_) { settled(NaN); }
+  });
+});
+#endif
+
+static int call_gf_control(int slot, const double *args, int count, const char *prefix,
+                           const char *suffix, double *result) {
+  if (failed_c()) return 1;
+#ifdef __EMSCRIPTEN__
+  const int status = tspice_host_gf_control((int)(uintptr_t)configurable_frame.context,
+      slot, args, count, prefix, suffix, result);
+#else
+  const int status = configurable_frame.invoke(configurable_frame.context, slot,
+      args, count, prefix, suffix, result);
+#endif
+  if (status || !isfinite(*result) || (slot == GF_STEP && *result <= 0.) ||
+      (slot == GF_BAIL && *result != 0. && *result != 1.) ||
+      (slot == GF_REFINE && (*result < fmin(args[0], args[1]) || *result > fmax(args[0], args[1])))) {
+    setmsg_c("The configurable Geometry Finder callback failed or returned an invalid value.");
+    sigerr_c("SPICE(USERCALLBACKFAILED)");
+    return 1;
+  }
+  return 0;
+}
+
+static void configurable_step(SpiceDouble et, SpiceDouble *step) {
+  *step = 1.;
+  double value = 0.;
+  if (!call_gf_control(GF_STEP, &et, 1, NULL, NULL, &value)) *step = value;
+}
+
+static void configurable_refine(SpiceDouble a, SpiceDouble b, SpiceBoolean first,
+                                SpiceBoolean second, SpiceDouble *epoch) {
+  const double args[] = {a, b, first != SPICEFALSE, second != SPICEFALSE};
+  *epoch = a;
+  double value = 0.;
+  if (!call_gf_control(GF_REFINE, args, 4, NULL, NULL, &value)) *epoch = value;
+}
+
+static void configurable_report_start(SpiceCell *window, ConstSpiceChar *prefix,
+                                      ConstSpiceChar *suffix) {
+  double ignored = 0.;
+  call_gf_control(GF_REPORT_START, window->data, window->card, prefix, suffix, &ignored);
+}
+
+static void configurable_report_update(SpiceDouble start, SpiceDouble end, SpiceDouble epoch) {
+  const double args[] = {start, end, epoch};
+  double ignored = 0.;
+  call_gf_control(GF_REPORT_UPDATE, args, 3, NULL, NULL, &ignored);
+}
+
+static void configurable_report_end(void) {
+  double ignored = 0.;
+  call_gf_control(GF_REPORT_END, NULL, 0, NULL, NULL, &ignored);
+}
+
+static SpiceBoolean configurable_bail(void) {
+  double bail = 0.;
+  if (call_gf_control(GF_BAIL, NULL, 0, NULL, NULL, &bail)) return SPICETRUE;
+  if (bail != 0.) configurable_frame.interrupted = 1;
+  return bail != 0. ? SPICETRUE : SPICEFALSE;
+}
+
+static int begin_configurable_gf(TspiceGfControlCallback callback, void *context, double tolerance,
+    uintptr_t input, uintptr_t output, UserSearchScope *scope, char *err, int cap) {
+#ifdef __EMSCRIPTEN__
+  if (!context)
+#else
+  if (!callback)
+#endif
+    return tspice_geometry_gf_invalid_arg(err, cap, "Missing configurable GF callback");
+  if (!isfinite(tolerance) || tolerance <= 0.)
+    return tspice_geometry_gf_invalid_arg(err, cap, "Expected a finite positive convergence tolerance");
+  if (begin_user_search(input, output, 1., scope, err, cap)) return 1;
+  configurable_frame = (ConfigurableGfFrame){callback, context, 0};
+  return 0;
+}
+
+static int finish_configurable_gf(UserSearchScope *scope, char *err, int cap) {
+  const int interrupted = configurable_frame.interrupted;
+  configurable_frame = (ConfigurableGfFrame){0};
+  return finish_user_search(scope, interrupted, err, cap);
+}
+
+int tspice_gfevnt(TspiceGfControlCallback callback, void *context,
+    const char *quantity, int parameter_count, int row_bytes, const char *names,
+    const char *texts, const double *reals, const int *integers, const int *flags,
+    const char *relation, double reference, double tolerance, double adjustment, int count,
+    int report, int bail, uintptr_t input, uintptr_t output, char *err, int cap) {
+  if (!quantity || !relation || !names || !texts || !reals || !integers || !flags ||
+      parameter_count < 0 || parameter_count > SPICE_GFEVNT_MAXPAR || row_bytes < 2 ||
+      !isfinite(reference) || !isfinite(adjustment))
+    return tspice_geometry_gf_invalid_arg(err, cap, "Invalid configurable GF event quantity or relation");
+  if (tspice_check_gf_workspace(count, SPICE_GF_NWMAX, "gfevnt", err, cap)) return 1;
+  SpiceBoolean logicals[SPICE_GFEVNT_MAXPAR] = {0};
+  for (int i = 0; i < parameter_count; ++i) logicals[i] = flags[i] != 0;
+  UserSearchScope scope = {0};
+  if (begin_configurable_gf(callback, context, tolerance, input, output, &scope, err, cap)) return 1;
+  gfevnt_c(configurable_step, configurable_refine, quantity, parameter_count, row_bytes,
+      names, texts, reals, integers, logicals, relation, reference, tolerance, adjustment,
+      report != 0, configurable_report_start, configurable_report_update, configurable_report_end,
+      count, bail != 0, configurable_bail, &scope.input.cell, &scope.output.cell);
+  return finish_configurable_gf(&scope, err, cap);
+}
+
+int tspice_gffove(TspiceGfControlCallback callback, void *context,
+    const char *instrument, const char *shape, const double ray[3], const char *target,
+    const char *frame, const char *aberration, const char *observer, double tolerance,
+    int report, int bail, uintptr_t input, uintptr_t output, char *err, int cap) {
+  const char *text[] = {instrument, shape, target, frame, aberration, observer};
+  if (visibility_text(text, 6, err, cap)) return 1;
+  if (!ray || !isfinite(ray[0]) || !isfinite(ray[1]) || !isfinite(ray[2]))
+    return tspice_geometry_gf_invalid_arg(err, cap, "Invalid ray direction");
+  UserSearchScope scope = {0};
+  if (begin_configurable_gf(callback, context, tolerance, input, output, &scope, err, cap)) return 1;
+  gffove_c(instrument, shape, ray, target, frame, aberration, observer, tolerance,
+      configurable_step, configurable_refine, report != 0, configurable_report_start,
+      configurable_report_update, configurable_report_end, bail != 0, configurable_bail,
+      &scope.input.cell, &scope.output.cell);
+  return finish_configurable_gf(&scope, err, cap);
+}
+
+int tspice_gfocce(TspiceGfControlCallback callback, void *context,
+    const char *occultation, const char *front, const char *front_shape, const char *front_frame,
+    const char *back, const char *back_shape, const char *back_frame,
+    const char *aberration, const char *observer, double tolerance, int report, int bail,
+    uintptr_t input, uintptr_t output, char *err, int cap) {
+  const char *text[] = {occultation, front, front_shape, front_frame, back, back_shape,
+                        back_frame, aberration, observer};
+  if (visibility_text(text, 9, err, cap)) return 1;
+  UserSearchScope scope = {0};
+  if (begin_configurable_gf(callback, context, tolerance, input, output, &scope, err, cap)) return 1;
+  gfocce_c(occultation, front, front_shape, front_frame, back, back_shape, back_frame,
+      aberration, observer, tolerance, configurable_step, configurable_refine, report != 0,
+      configurable_report_start, configurable_report_update, configurable_report_end,
+      bail != 0, configurable_bail, &scope.input.cell, &scope.output.cell);
+  return finish_configurable_gf(&scope, err, cap);
+}
+
 int tspice_gfudb(TspiceGfCallback callback, void *context, double step,
                  uintptr_t input, uintptr_t output, char *err, int cap) {
   if (!valid_user_callback(callback, context))

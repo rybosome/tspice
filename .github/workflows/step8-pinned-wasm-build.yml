@@ -1,11 +1,11 @@
-name: Step 8 pinned WASM build
+name: Step 8 pinned source artifacts
 on:
   push:
     branches:
       - codex/step8-wasm-build
       - codex/step8-b08-wasm-build
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: step8-wasm-${{ github.ref }}
   cancel-in-progress: true
@@ -15,10 +15,12 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Regenerate with the pinned SDK
+        shell: bash
         run: |
           set -euo pipefail
           git clone --depth 1 --branch 3.1.74 https://github.com/emscripten-core/emsdk.git "$RUNNER_TEMP/emsdk"
@@ -28,7 +30,23 @@ jobs:
           source ./emsdk_env.sh
           cd "$GITHUB_WORKSPACE"
           emcc --version
+          pnpm install --frozen-lockfile
+          pnpm format
           node scripts/build-backend-wasm.mjs
+          node scripts/generate-cspice-inventory.mjs
+          pnpm generate:llm
+          pnpm generate:coverage-ledger
+          pnpm check:coverage-ledger
+          git diff --check
+      - uses: astral-sh/setup-uv@v5
+      - name: Check configured searches against the independent toolkit
+        run: |
+          pnpm run fetch:cspice
+          pnpm -C packages/backend-node run build:native
+          pnpm run stage:native-platform
+          pnpm run build
+          pnpm -C packages/py-parity-checking setup:sidecar
+          TSPICE_EXPECT_NATIVE=true pnpm -C packages/py-parity-checking exec vitest run test/parity.test.ts -t 'geometry-gf-(gfevnt|gffove|gfocce)'
       - uses: actions/upload-artifact@v4
         with:
           name: step8-wasm-assets
@@ -36,3 +54,17 @@ jobs:
             packages/backend-wasm/emscripten/tspice_backend_wasm.node.js
             packages/backend-wasm/emscripten/tspice_backend_wasm.web.js
             packages/backend-wasm/emscripten/tspice_backend_wasm.wasm
+      - name: Preserve generated output on the build branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$GITHUB_REF_NAME" in
+            codex/step8-wasm-build|codex/step8-b08-wasm-build) ;;
+            *) exit 1 ;;
+          esac
+          git add -A
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Regenerate pinned Step 8 source artifacts'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"

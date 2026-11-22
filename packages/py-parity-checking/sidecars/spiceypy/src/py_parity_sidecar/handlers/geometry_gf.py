@@ -20,6 +20,7 @@ from ..models import (
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
+    StepGeometryGfConfigured,
     StepGeometryGfGfoclt,
     StepGeometryGfGfrfov,
     StepGeometryGfGftfov,
@@ -127,6 +128,13 @@ def run_geometry_gf_step(step: WorkflowStep, windows: WindowStore) -> StepOutput
         with _suppress_native_stdout():
             sp.gfrepf()
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepGeometryGfConfigured):
+        from .configured_gf import run_configured_gf
+
+        cnfine = _require_window(windows, step.cnfineWindowId)
+        result = _get_or_create_window(windows, step.resultWindowId, max_intervals=step.resultMaxIntervals if step.resultMaxIntervals is not None else 8)
+        return run_configured_gf(step, cnfine, result)
 
     if isinstance(step, StepGeometryGfGfoclt):
         cnfine = _require_window(windows, step.cnfineWindowId)

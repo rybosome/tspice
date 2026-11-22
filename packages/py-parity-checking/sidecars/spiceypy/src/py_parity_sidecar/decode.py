@@ -139,6 +139,7 @@ from .models import (
     StepGeometryGfGfrefn,
     StepGeometryGfGfrepf,
     StepGeometryGfGfrepi,
+    StepGeometryGfConfigured,
     StepGeometryGfGfoclt,
     StepGeometryGfGfrfov,
     StepGeometryGfGftfov,
@@ -1748,6 +1749,20 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
         case "geometry-gf.gfrepf":
             return StepGeometryGfGfrepf(op=op)
 
+        case "geometry-gf.gfevnt" | "geometry-gf.gffove" | "geometry-gf.gfocce":
+            search = step.get("search")
+            if not isinstance(search, dict):
+                raise ValueError("Expected a configured Geometry Finder search")
+            bail_after = step.get("bailAfter")
+            maximum = step.get("resultMaxIntervals")
+            return StepGeometryGfConfigured(
+                op=op, search=search,
+                stepSeconds=_expect_number(step.get("stepSeconds"), label="configured GF step"),
+                cnfineWindowId=_expect_string(step.get("cnfineWindowId"), label="configured GF confinement"),
+                resultWindowId=_expect_string(step.get("resultWindowId"), label="configured GF result"),
+                resultMaxIntervals=None if maximum is None else _expect_int(maximum, label="configured GF maximum"),
+                bailAfter=None if bail_after is None else _expect_int(bail_after, label="configured GF bail"),
+            )
         case "geometry-gf.gfoclt":
             return StepGeometryGfGfoclt(
                 op=op,

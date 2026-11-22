@@ -1065,6 +1065,23 @@ typedef int (*TspiceGfCallback)(void *context, int predicate, double et, double 
 int tspice_udf(double et, double initial, double *out, char *err, int cap);
 int tspice_uddc(TspiceGfCallback callback, void *context, double x, double dx, int *out, char *err, int cap);
 int tspice_uddf(TspiceGfCallback callback, void *context, double x, double dx, double *out, char *err, int cap);
+typedef int (*TspiceGfControlCallback)(void *context, int slot, const double *values,
+    int count, const char *prefix, const char *suffix, double *out);
+int tspice_gfevnt(TspiceGfControlCallback callback, void *context,
+    const char *quantity, int parameter_count, int row_bytes, const char *names,
+    const char *texts, const double *reals, const int *integers, const int *flags,
+    const char *relation, double reference, double tolerance, double adjustment, int count,
+    int report, int bail, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gffove(TspiceGfControlCallback callback, void *context,
+    const char *instrument, const char *shape, const double ray[3], const char *target,
+    const char *frame, const char *aberration, const char *observer, double tolerance,
+    int report, int bail, uintptr_t input, uintptr_t output, char *err, int cap);
+int tspice_gfocce(TspiceGfControlCallback callback, void *context,
+    const char *occultation, const char *front, const char *front_shape, const char *front_frame,
+    const char *back, const char *back_shape, const char *back_frame,
+    const char *aberration, const char *observer, double tolerance, int report, int bail,
+    uintptr_t input, uintptr_t output, char *err, int cap);
+
 int tspice_gfudb(TspiceGfCallback callback, void *context, double step, uintptr_t input, uintptr_t output, char *err, int cap);
 int tspice_gfuds(TspiceGfCallback callback, void *context, const char *relate, double refval, double adjust, double step, int count, uintptr_t input, uintptr_t output, char *err, int cap);
 // gfsep_c: angular separation search.

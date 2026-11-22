@@ -1,6 +1,7 @@
 import type { GeometryGfApi } from "@rybosome/tspice-backend-contract";
 import {
   assertSpiceInt32,
+  bindConfiguredGfControl,
   invariant,
   fovRayDirection,
   spiceStringByteLength,
@@ -68,6 +69,12 @@ export function createGeometryGfApi(native: NativeAddon): GeometryGfApi {
     udf: (et, initialValue = 0) => native.udf(et, initialValue),
     uddf: (scalar, x, dx) => native.uddf(scalar, x, dx),
     uddc: (scalar, x, dx) => native.uddc(scalar, x, dx),
+    gfevnt: (search, cnfine, result, control) =>
+      native.gfevnt(search, cnfine, result, bindConfiguredGfControl(control, false)),
+    gffove: (search, cnfine, result, control) =>
+      native.gffove(search, cnfine, result, bindConfiguredGfControl(control, false)),
+    gfocce: (search, cnfine, result, control) =>
+      native.gfocce(search, cnfine, result, bindConfiguredGfControl(control, false)),
     gfudb: (scalar, predicate, step, cnfine, result) =>
       native.gfudb(scalar, predicate, step, cnfine, result),
     gfuds: (

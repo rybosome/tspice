@@ -1,0 +1,106 @@
+[
+  {
+    "caseId": "geometry-gf-gfocce-progress",
+    "description": "Observe complete progress and chosen step, refinement and bail callbacks with independent result windows.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfocce",
+        "search": {
+          "occultation": "ANY",
+          "front": "100101",
+          "frontShape": "ELLIPSOID",
+          "frontFrame": "AUDIT_GEOMETRY_FIXED",
+          "back": "100105",
+          "backShape": "ELLIPSOID",
+          "backFrame": "AUDIT_OCCULT_LARGE",
+          "aberration": "NONE",
+          "observer": "100104",
+          "tolerance": 1e-06,
+          "report": true,
+          "bail": true
+        },
+        "stepSeconds": 2,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "geometry-gf-gfocce-interrupted",
+    "description": "Observe complete progress and chosen step, refinement and bail callbacks with independent result windows.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.bsp"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-geometry.tf"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-fov.ti"
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "c",
+        "left": -200,
+        "right": 200,
+        "maxIntervals": 8
+      },
+      {
+        "op": "cells-windows.wninsd",
+        "windowId": "r",
+        "left": 300,
+        "right": 310,
+        "maxIntervals": 8
+      },
+      {
+        "op": "geometry-gf.gfocce",
+        "search": {
+          "occultation": "ANY",
+          "front": "100101",
+          "frontShape": "ELLIPSOID",
+          "frontFrame": "AUDIT_GEOMETRY_FIXED",
+          "back": "100105",
+          "backShape": "ELLIPSOID",
+          "backFrame": "AUDIT_OCCULT_LARGE",
+          "aberration": "NONE",
+          "observer": "100104",
+          "tolerance": 1e-06,
+          "report": true,
+          "bail": true
+        },
+        "stepSeconds": 2,
+        "cnfineWindowId": "c",
+        "resultWindowId": "r",
+        "bailAfter": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

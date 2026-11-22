@@ -80,3 +80,32 @@ it("cancels suspended callbacks and ignores late or foreign replies", async () =
   worker.complete(7);
   worker.dispose();
 });
+
+it("routes asynchronous configurable GF controls on each worker operation", async () => {
+  const events = [
+    { kind: "step", epoch: 5 },
+    { kind: "refine", first: 4, second: 6, stateAtFirst: false, stateAtSecond: true },
+    { kind: "reportStart", confinementEndpoints: [0, 10], prefix: "start", suffix: "end" },
+    { kind: "reportUpdate", intervalStart: 0, intervalEnd: 10, epoch: 5 },
+    { kind: "reportEnd" },
+    { kind: "bail" },
+  ];
+  for (const op of ["raw.gfevnt", "raw.gffove", "raw.gfocce"]) {
+    const expected = [2, 5, undefined, undefined, undefined, false];
+    const control = async (event: unknown) => {
+      expect(event).toEqual(events[expected.length ? 6 - expected.length : 0]);
+      return expected.shift();
+    };
+    const request = { op, args: [{}, 1, 2, control] };
+    const worker = createWorkerGfCallbacks((packet) => {
+      dispatchGfCallback(packet, () => request, (reply) => worker.receive(reply));
+    });
+    const remote = worker.decode(op, 9, 3, encodeGfCallback(op, 3, control));
+    if (typeof remote !== "function") throw Error("Missing configurable callback proxy");
+    const values: unknown[] = [];
+    for (const event of events) values.push(await remote(event));
+    expect(values).toEqual([2, 5, undefined, undefined, undefined, false]);
+    worker.complete(9);
+    worker.dispose();
+  }
+});

@@ -70,6 +70,9 @@ import ephemerisSpkudsCasesRaw from "./ephemeris/spkuds.cases.json" with { type:
 import ephemerisSpkw08CasesRaw from "./ephemeris/spkw08.cases.json" with { type: "json" };
 import { errorCases } from "./error/index.js";
 import { framesCases } from "./frames/index.js";
+import configured_gfevnt from "./geometry-gf/gfevnt.cases.json" with { type: "json" };
+import configured_gffove from "./geometry-gf/gffove.cases.json" with { type: "json" };
+import configured_gfocce from "./geometry-gf/gfocce.cases.json" with { type: "json" };
 import userUdf from "./geometry-gf/udf.cases.json" with { type: "json" };
 import userUddc from "./geometry-gf/uddc.cases.json" with { type: "json" };
 import userUddf from "./geometry-gf/uddf.cases.json" with { type: "json" };
@@ -310,6 +313,9 @@ export const geometryGfCases: ParityCase[] = [
   ...geometryGfGfrfovCases,
   ...geometryGfGftfovCases,
   ...geometryGfGfsepCases,
+  ...(configured_gfevnt as ParityCase[]),
+  ...(configured_gffove as ParityCase[]),
+  ...(configured_gfocce as ParityCase[]),
   ...(userUdf as ParityCase[]),
   ...(userUddc as ParityCase[]),
   ...(userUddf as ParityCase[]),
