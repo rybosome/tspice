@@ -262,6 +262,15 @@ from .frames import (
     StepFramesFrmnam,
     StepFramesNamfrm,
     StepFramesPxform,
+    StepFramesFrame,
+    StepFramesTwovec,
+    StepFramesTwovxf,
+    StepFramesEul2xf,
+    StepFramesXf2eul,
+    StepFramesXf2rav,
+    StepFramesRav2xf,
+    StepFramesInvstm,
+    StepFramesXpose6,
     StepFramesSxform,
 )
 from .ids_names import (
@@ -574,6 +583,15 @@ WorkflowStep: TypeAlias = (
     | StepFramesCkobj
     | StepFramesCkcov
     | StepFramesPxform
+    | StepFramesFrame
+    | StepFramesTwovec
+    | StepFramesTwovxf
+    | StepFramesEul2xf
+    | StepFramesXf2eul
+    | StepFramesXf2rav
+    | StepFramesRav2xf
+    | StepFramesInvstm
+    | StepFramesXpose6
     | StepFramesSxform
     | StepEkEkopn
     | StepEkEkopr

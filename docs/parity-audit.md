@@ -343,3 +343,7 @@ The independent oracle preserves rectangular, empty and supported signed
 dimensions. Public tests compare every element, owned output, transpose and
 product composition, and exceptional floating-point results.
 [Matrix contracts and numerical observations](step8-general-matrices.md)
+
+## Frame algebra
+
+The A15 review covers nine kernel-independent frame construction and state-transform methods. The 47 registered workflows contain 129 calls and 17 expected toolkit errors. The review tracks full row-major blocks, angular-velocity coordinates, both Euler uniqueness states and the linked-toolkit checks required for three failure paths. [Frame algebra evidence](step8-frame-algebra.md) [Routine audit](../data/parity-audits/a15-frame-algebra.json)

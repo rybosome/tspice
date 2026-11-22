@@ -8,6 +8,7 @@ import type {
   Found,
   Mat3RowMajor,
   SpiceMatrix6x6,
+  SpiceStateVector,
   SpiceVector3,
 } from "../shared/types.js";
 
@@ -165,6 +166,87 @@ export interface FramesApi {
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/pxform_c.html
    */
   pxform(from: string, to: string, et: number): Mat3RowMajor;
+
+  /**
+   * Construct a right-handed orthonormal frame from x. Return the unitized x and both auxiliary vectors chosen by CSPICE. A zero input returns the standard Cartesian basis. The supplied array is unchanged.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/frame_c.html
+   */
+  frame(x: Readonly<SpiceVector3>): {
+    x: SpiceVector3;
+    y: SpiceVector3;
+    z: SpiceVector3;
+  };
+
+  /**
+   * Construct the row-major rotation into the frame defined by a principal axis and a principal plane. Distinct axes use X=1, Y=2, Z=3. Bad indices, equal indices and dependent directions are scientific errors.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twovec_c.html
+   */
+  twovec(
+    axdef: Readonly<SpiceVector3>,
+    indexa: number,
+    plndef: Readonly<SpiceVector3>,
+    indexp: number,
+  ): Mat3RowMajor;
+
+  /**
+   * Construct the row-major state transform into the frame defined by two position/velocity states. Axis numbers use X=1, Y=2, Z=3. Distinct indices and independent position directions are required. Velocity units are position units per unit time.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/twovxf_c.html
+   */
+  twovxf(
+    axdef: Readonly<SpiceStateVector>,
+    indexa: number,
+    plndef: Readonly<SpiceStateVector>,
+    indexp: number,
+  ): SpiceMatrix6x6;
+
+  /**
+   * Build the state transform for passive Euler rotations about the supplied axes, in A, B, C product order. The first three components are radians and the last three their rates per unit time. Repeated valid adjacent axes are supported. The output has row-major blocks [R,0;dR/dt,R].
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/eul2xf_c.html
+   */
+  eul2xf(
+    eulang: Readonly<SpiceStateVector>,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): SpiceMatrix6x6;
+
+  /**
+   * Factor a state transformation into three Euler angles in radians and their three rates per unit time. The middle axis must differ from both its neighbors. Preserve all six components when unique=false, including the toolkit singularity convention. The upper-left rotation and lower-left derivative blocks are consumed.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2eul_c.html
+   */
+  xf2eul(
+    xform: Readonly<SpiceMatrix6x6>,
+    axisa: number,
+    axisb: number,
+    axisc: number,
+  ): { eulang: SpiceStateVector; unique: boolean };
+
+  /**
+   * Extract the rotation into the destination frame and its angular velocity relative to the source, expressed in source-frame coordinates (radians per unit time). CSPICE uses the upper-left rotation and lower-left derivative blocks of the row-major state transform.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xf2rav_c.html
+   */
+  xf2rav(xform: Readonly<SpiceMatrix6x6>): {
+    rot: Mat3RowMajor;
+    av: SpiceVector3;
+  };
+
+  /**
+   * Construct a row-major state transform from the source-to-destination position rotation and angular velocity of the destination relative to the source, expressed in source-frame coordinates. The derivative block is below the rotation.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/rav2xf_c.html
+   */
+  rav2xf(rot: Mat3RowMajor, av: Readonly<SpiceVector3>): SpiceMatrix6x6;
+
+  /**
+   * Invert a rotation-derived state transform using transposes of its 3×3 blocks. The input must represent a state transformation for the result to be its inverse; CSPICE does not check that condition. The result preserves the exact block-transpose operation.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/invstm_c.html
+   */
+  invstm(mat: Readonly<SpiceMatrix6x6>): SpiceMatrix6x6;
+
+  /**
+   * Transpose an arbitrary finite 6×6 matrix in flat row-major order. Copy all 36 elements, including signed zeros, into a new mutable matrix.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/xpose6_c.html
+   */
+  xpose6(m1: Readonly<SpiceMatrix6x6>): SpiceMatrix6x6;
 
   /**
    * Map position/velocity states from one frame to another at a finite TDB ET.

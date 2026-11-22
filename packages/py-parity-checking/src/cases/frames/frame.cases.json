@@ -1,0 +1,88 @@
+[
+  {
+    "caseId": "frames-frame-basis",
+    "description": "Observe the returned unitized input and both right-handed auxiliary axes.",
+    "workflow": [
+      {
+        "op": "frames.frame",
+        "x": [1, 0, 0]
+      },
+      {
+        "op": "frames.frame",
+        "x": [0, -4, 0]
+      },
+      {
+        "op": "frames.frame",
+        "x": [0, 0, 7]
+      },
+      {
+        "op": "frames.frame",
+        "x": [-1, -1, -1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frame-skew",
+    "description": "Compare all nine signed entries for each choice of smallest component.",
+    "workflow": [
+      {
+        "op": "frames.frame",
+        "x": [0.1, 2, -3]
+      },
+      {
+        "op": "frames.frame",
+        "x": [3, -0.1, 2]
+      },
+      {
+        "op": "frames.frame",
+        "x": [-3, 2, 0.1]
+      },
+      {
+        "op": "frames.frame",
+        "x": [1, 1, 2]
+      },
+      {
+        "op": "frames.frame",
+        "x": [2, 1, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frame-zero",
+    "description": "The zero vector yields the Cartesian basis.",
+    "workflow": [
+      {
+        "op": "frames.frame",
+        "x": [0, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-frame-scaled",
+    "description": "Observe directions at widely separated representable scales.",
+    "workflow": [
+      {
+        "op": "frames.frame",
+        "x": [
+          2.842170943040401e-14, -5.684341886080802e-14, 8.526512829121202e-14
+        ]
+      },
+      {
+        "op": "frames.frame",
+        "x": [35184372088832, -70368744177664, 105553116266496]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

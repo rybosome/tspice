@@ -465,7 +465,7 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/707"
       ],
-      "nextAction": "Both backend source judgments verified with local and canonical Linux Node 22 live execution. PR #707 remains draft until all required matrix jobs and final metadata checks complete; no merge authorized."
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
       "id": "a02-remaining-constants",
@@ -485,10 +485,8 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/708"
       ],
-      "nextAction": "Both backend source judgments verified with local and canonical Linux Node 22 live execution. PR #708 remains draft until all required matrix jobs and final metadata checks complete; no merge authorized."
-    }
-  ],
-  "expansionBatches": [
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
     {
       "id": "a05-cylindrical-coordinates",
       "routines": [
@@ -502,11 +500,11 @@
         "sphlat_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/709"],
-      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310653323 verified corrected source 43a7192412f763bc5f4d734b3de5a3f4546d0d8e. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
-    }
-  ],
-  "expansionBatches": [
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/709"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
     {
       "id": "a08-vector-basics",
       "routines": [
@@ -520,11 +518,11 @@
         "vsep_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/710"],
-      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310665780 verified corrected source d82a5d992da38e301b6d09ac3a44303de802a6e7. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
-    }
-  ],
-  "expansionBatches": [
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/710"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
     {
       "id": "a09-vector-combinations",
       "routines": [
@@ -538,111 +536,11 @@
         "vtmv_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/711"],
-      "nextAction": "Both required local lanes and inspected Linux Node 22 CI job 132310685814 verified corrected source bdb51dc6536adef891bde221f3caad79bea6ef7d. Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a06-coordinate-conventions",
-      "routines": [
-        "azlrec_c",
-        "recazl_c",
-        "pgrrec_c",
-        "recpgr_c",
-        "radrec_c",
-        "recrad_c",
-        "srfrec_c"
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/711"
       ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/713"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a03-scalar-math",
-      "routines": [
-        "brcktd_c",
-        "brckti_c",
-        "convrt_c",
-        "sumad_c",
-        "sumai_c",
-        "maxd_c",
-        "maxi_c",
-        "mind_c",
-        "mini_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/714"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a11-state-derivatives",
-      "routines": [
-        "ducrss_c",
-        "dvcrss_c",
-        "dvdot_c",
-        "dvhat_c",
-        "dvnorm_c",
-        "dvsep_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/716"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a16-polynomial-expansions",
-      "routines": [
-        "chbder_c",
-        "chbigr_c",
-        "chbint_c",
-        "chbval_c",
-        "polyds_c",
-        "rquad_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/717"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a17-interpolation",
-      "routines": [
-        "hrmesp_c",
-        "hrmint_c",
-        "lgresp_c",
-        "lgrind_c",
-        "lgrint_c",
-        "qderiv_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/718"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
-    {
-      "id": "a04-array-storage",
-      "routines": [
-        "clearc_c",
-        "cleard_c",
-        "cleari_c",
-        "filld_c",
-        "filli_c",
-        "moved_c"
-      ],
-      "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/720"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
     {
       "id": "a12-fixed-matrices",
       "routines": [
@@ -659,26 +557,47 @@
         "xpose_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/712"],
-      "nextAction": "A12 evidence on its original source is retained historically. Revalidate the composite A12/A14 source fingerprint in full required local runs and observed canonical CI before verification."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/712"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
-      "id": "a14-rotation-representations",
+      "id": "a06-coordinate-conventions",
       "routines": [
-        "eul2m_c",
-        "m2eul_c",
-        "m2q_c",
-        "q2m_c",
-        "qxq_c",
-        "qdq2av_c",
-        "raxisa_c"
+        "azlrec_c",
+        "recazl_c",
+        "pgrrec_c",
+        "recpgr_c",
+        "radrec_c",
+        "recrad_c",
+        "srfrec_c"
       ],
-      "dependsOn": ["a12-fixed-matrices"],
-      "prs": ["https://github.com/rybosome/tspice/pull/725"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
-    }
-  ],
-  "expansionBatches": [
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/713"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a03-scalar-math",
+      "routines": [
+        "brcktd_c",
+        "brckti_c",
+        "convrt_c",
+        "sumad_c",
+        "sumai_c",
+        "maxd_c",
+        "maxi_c",
+        "mind_c",
+        "mini_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/714"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
     {
       "id": "a10-general-vectors",
       "routines": [
@@ -699,8 +618,93 @@
         "unormg_c"
       ],
       "dependsOn": [],
-      "prs": ["https://github.com/rybosome/tspice/pull/715"],
-      "nextAction": "Revalidate A10 on the combined A10/A13 source. Original source-bound execution evidence remains recorded for PR #715."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/715"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a11-state-derivatives",
+      "routines": [
+        "ducrss_c",
+        "dvcrss_c",
+        "dvdot_c",
+        "dvhat_c",
+        "dvnorm_c",
+        "dvsep_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/716"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a16-polynomial-expansions",
+      "routines": [
+        "chbder_c",
+        "chbigr_c",
+        "chbint_c",
+        "chbval_c",
+        "polyds_c",
+        "rquad_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/717"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a17-interpolation",
+      "routines": [
+        "hrmesp_c",
+        "hrmint_c",
+        "lgresp_c",
+        "lgrind_c",
+        "lgrint_c",
+        "qderiv_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/718"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a04-array-storage",
+      "routines": [
+        "clearc_c",
+        "cleard_c",
+        "cleari_c",
+        "filld_c",
+        "filli_c",
+        "moved_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/720"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a14-rotation-representations",
+      "routines": [
+        "eul2m_c",
+        "m2eul_c",
+        "m2q_c",
+        "q2m_c",
+        "qxq_c",
+        "qdq2av_c",
+        "raxisa_c"
+      ],
+      "dependsOn": [
+        "a12-fixed-matrices"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/725"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
       "id": "a13-general-matrices",
@@ -714,9 +718,34 @@
         "vtmvg_c",
         "xposeg_c"
       ],
-      "dependsOn": ["a10-general-vectors"],
-      "prs": ["https://github.com/rybosome/tspice/pull/731"],
-      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+      "dependsOn": [
+        "a10-general-vectors"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/731"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a15-frame-algebra",
+      "routines": [
+        "frame_c",
+        "twovec_c",
+        "twovxf_c",
+        "eul2xf_c",
+        "xf2eul_c",
+        "xf2rav_c",
+        "rav2xf_c",
+        "invstm_c",
+        "xpose6_c"
+      ],
+      "dependsOn": [
+        "a12-fixed-matrices"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/736"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

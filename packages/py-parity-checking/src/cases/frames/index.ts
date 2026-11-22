@@ -13,6 +13,15 @@ import frinfoCasesRaw from "./frinfo.cases.json" with { type: "json" };
 import frmnamCasesRaw from "./frmnam.cases.json" with { type: "json" };
 import namfrmCasesRaw from "./namfrm.cases.json" with { type: "json" };
 import pxformCasesRaw from "./pxform.cases.json" with { type: "json" };
+import frameCasesRaw from "./frame.cases.json" with { type: "json" };
+import twovecCasesRaw from "./twovec.cases.json" with { type: "json" };
+import twovxfCasesRaw from "./twovxf.cases.json" with { type: "json" };
+import eul2xfCasesRaw from "./eul2xf.cases.json" with { type: "json" };
+import xf2eulCasesRaw from "./xf2eul.cases.json" with { type: "json" };
+import xf2ravCasesRaw from "./xf2rav.cases.json" with { type: "json" };
+import rav2xfCasesRaw from "./rav2xf.cases.json" with { type: "json" };
+import invstmCasesRaw from "./invstm.cases.json" with { type: "json" };
+import xpose6CasesRaw from "./xpose6.cases.json" with { type: "json" };
 import sxformCasesRaw from "./sxform.cases.json" with { type: "json" };
 
 export const framesCcifrmCases = ccifrmCasesRaw as ParityCase[];
@@ -44,5 +53,14 @@ export const framesCases: ParityCase[] = [
   ...framesFrmnamCases,
   ...framesNamfrmCases,
   ...framesPxformCases,
+  ...(frameCasesRaw as ParityCase[]),
+  ...(twovecCasesRaw as ParityCase[]),
+  ...(twovxfCasesRaw as ParityCase[]),
+  ...(eul2xfCasesRaw as ParityCase[]),
+  ...(xf2eulCasesRaw as ParityCase[]),
+  ...(xf2ravCasesRaw as ParityCase[]),
+  ...(rav2xfCasesRaw as ParityCase[]),
+  ...(invstmCasesRaw as ParityCase[]),
+  ...(xpose6CasesRaw as ParityCase[]),
   ...framesSxformCases,
 ];

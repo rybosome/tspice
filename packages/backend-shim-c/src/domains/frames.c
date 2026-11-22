@@ -1,5 +1,6 @@
 #include "tspice_backend_shim.h"
 
+#include "SpiceZfc.h"
 #include "SpiceUsr.h"
 
 #include "../handle_validation.h"
@@ -382,6 +383,209 @@ int tspice_pxform(
     outMatrix3x3[8] = (double)m[2][2];
   }
 
+  return 0;
+}
+
+static int frame_algebra_status(char *err, int errMaxBytes) {
+  if (!failed_c()) return 0;
+  tspice_get_spice_error_message_and_reset(err, errMaxBytes);
+  return 1;
+}
+
+// The Fortran TWOVXF entry in N0067 inverts its private XI even on a
+// ZZTWOVXF error. Run that exact construction with initialized storage first.
+static int check_twovxf(double axis[6], int indexa, double plane[6], int indexp,
+                        char *err, int errMaxBytes) {
+  doublereal checked[36] = {0};
+  chkin_c("twovxf_c");
+  chkin_c("TWOVXF");
+  zztwovxf_(axis, &indexa, plane, &indexp, checked);
+  chkout_c("TWOVXF");
+  chkout_c("twovxf_c");
+  return frame_algebra_status(err, errMaxBytes);
+}
+
+// XF2EUL_C copies a private logical after XF2EUL returns, including paths
+// where M2EUL signaled an error before it was set. Use the same column-major
+// input and an initialized logical to check the call under its proper trace.
+static int check_xf2eul(const SpiceDouble xform[6][6], int a, int b, int c,
+                        char *err, int errMaxBytes) {
+  SpiceDouble columnMajor[6][6];
+  SpiceDouble angles[6] = {0};
+  logical unique = 0;
+  chkin_c("xf2eul_c");
+  xpose6_c(xform, columnMajor);
+  xf2eul_(&columnMajor[0][0], &a, &b, &c, angles, &unique);
+  chkout_c("xf2eul_c");
+  return frame_algebra_status(err, errMaxBytes);
+}
+
+// EUL2XF combines adjacent equal axes before its normal EUL2M validation.
+// If the first axis cannot index its three-entry table, invoke the actual
+// axis validator with this input under EUL2XF's normal outer traceback.
+static int check_eul2xf_axes(double angles[6], int a, int b, int c,
+                             char *err, int errMaxBytes) {
+  if ((a >= 1 && a <= 3) || (b != a && b != c)) return 0;
+  doublereal rotation[9] = {0};
+  chkin_c("eul2xf_c");
+  chkin_c("EUL2XF");
+  eul2m_(angles, angles + 1, angles + 2, &a, &b, &c, rotation);
+  chkout_c("EUL2XF");
+  chkout_c("eul2xf_c");
+  return frame_algebra_status(err, errMaxBytes);
+}
+
+int tspice_frame(
+    const double *x, double *outX, double *outY, double *outZ, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!x || !outX || !outY || !outZ)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing frame storage");
+  SpiceDouble xCopy[3];
+  memcpy(xCopy, x, sizeof(xCopy));
+  SpiceDouble y[3] = {0};
+  SpiceDouble z[3] = {0};
+  frame_c(xCopy, y, z);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outX, xCopy, sizeof(xCopy));
+  memcpy(outY, y, sizeof(y));
+  memcpy(outZ, z, sizeof(z));
+  return 0;
+}
+
+int tspice_twovec(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outRotation, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!axdef || !plndef || !outRotation)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing twovec storage");
+  SpiceDouble rotation[3][3] = {{0}};
+  twovec_c(axdef, indexa, plndef, indexp, rotation);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outRotation, rotation, sizeof(rotation));
+  return 0;
+}
+
+int tspice_twovxf(
+    const double *axdef, int indexa, const double *plndef, int indexp, double *outXform, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!axdef || !plndef || !outXform)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing twovxf storage");
+  SpiceDouble axdefCopy[6];
+  memcpy(axdefCopy, axdef, sizeof(axdefCopy));
+  SpiceDouble plndefCopy[6];
+  memcpy(plndefCopy, plndef, sizeof(plndefCopy));
+  if (check_twovxf(axdefCopy, indexa, plndefCopy, indexp, err, errMaxBytes)) return 1;
+  SpiceDouble xform[6][6] = {{0}};
+  twovxf_c(axdefCopy, indexa, plndefCopy, indexp, xform);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outXform, xform, sizeof(xform));
+  return 0;
+}
+
+int tspice_eul2xf(
+    const double *eulang, int axisa, int axisb, int axisc, double *outXform, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!eulang || !outXform)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing eul2xf storage");
+  SpiceDouble eulangCopy[6];
+  memcpy(eulangCopy, eulang, sizeof(eulangCopy));
+  if (check_eul2xf_axes(eulangCopy, axisa, axisb, axisc, err, errMaxBytes)) return 1;
+  SpiceDouble xform[6][6] = {{0}};
+  eul2xf_c(eulangCopy, axisa, axisb, axisc, xform);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outXform, xform, sizeof(xform));
+  return 0;
+}
+
+int tspice_xf2eul(
+    const double *xform, int axisa, int axisb, int axisc, double *outEulang, int *outUnique, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!xform || !outEulang || !outUnique)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing xf2eul storage");
+  SpiceDouble xformMatrix[6][6];
+  memcpy(xformMatrix, xform, sizeof(xformMatrix));
+  if (check_xf2eul(xformMatrix, axisa, axisb, axisc, err, errMaxBytes)) return 1;
+  SpiceDouble eulang[6] = {0};
+  SpiceBoolean unique = SPICEFALSE;
+  xf2eul_c(xformMatrix, axisa, axisb, axisc, eulang, &unique);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outEulang, eulang, sizeof(eulang));
+  *outUnique = unique != SPICEFALSE;
+  return 0;
+}
+
+int tspice_xf2rav(
+    const double *xform, double *outRot, double *outAv, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!xform || !outRot || !outAv)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing xf2rav storage");
+  SpiceDouble xformMatrix[6][6];
+  memcpy(xformMatrix, xform, sizeof(xformMatrix));
+  SpiceDouble rot[3][3] = {{0}};
+  SpiceDouble av[3] = {0};
+  xf2rav_c(xformMatrix, rot, av);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outRot, rot, sizeof(rot));
+  memcpy(outAv, av, sizeof(av));
+  return 0;
+}
+
+int tspice_rav2xf(
+    const double *rot, const double *av, double *outXform, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!rot || !av || !outXform)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing rav2xf storage");
+  SpiceDouble rotMatrix[3][3];
+  memcpy(rotMatrix, rot, sizeof(rotMatrix));
+  SpiceDouble xform[6][6] = {{0}};
+  rav2xf_c(rotMatrix, av, xform);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outXform, xform, sizeof(xform));
+  return 0;
+}
+
+int tspice_invstm(
+    const double *mat, double *outInvmat, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!mat || !outInvmat)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing invstm storage");
+  SpiceDouble matMatrix[6][6];
+  memcpy(matMatrix, mat, sizeof(matMatrix));
+  SpiceDouble invmat[6][6] = {{0}};
+  invstm_c(matMatrix, invmat);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outInvmat, invmat, sizeof(invmat));
+  return 0;
+}
+
+int tspice_xpose6(
+    const double *m1, double *outMout, char *err, int errMaxBytes) {
+  tspice_init_cspice_error_handling_once();
+  if (err && errMaxBytes > 0) err[0] = '\0';
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  if (!m1 || !outMout)
+    return tspice_frames_invalid_arg(err, errMaxBytes, "Missing xpose6 storage");
+  SpiceDouble m1Matrix[6][6];
+  memcpy(m1Matrix, m1, sizeof(m1Matrix));
+  SpiceDouble mout[6][6] = {{0}};
+  xpose6_c(m1Matrix, mout);
+  if (frame_algebra_status(err, errMaxBytes)) return 1;
+  memcpy(outMout, mout, sizeof(mout));
   return 0;
 }
 

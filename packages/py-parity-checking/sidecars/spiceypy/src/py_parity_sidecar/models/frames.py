@@ -109,6 +109,73 @@ class StepFramesPxform:
 
 
 @dataclass(frozen=True)
+class StepFramesFrame:
+    op: Literal["frames.frame"]
+    x: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepFramesTwovec:
+    op: Literal["frames.twovec"]
+    axdef: tuple[float, float, float]
+    indexa: int
+    plndef: tuple[float, float, float]
+    indexp: int
+
+
+@dataclass(frozen=True)
+class StepFramesTwovxf:
+    op: Literal["frames.twovxf"]
+    axdef: list[float]
+    indexa: int
+    plndef: list[float]
+    indexp: int
+
+
+@dataclass(frozen=True)
+class StepFramesEul2xf:
+    op: Literal["frames.eul2xf"]
+    eulang: list[float]
+    axisa: int
+    axisb: int
+    axisc: int
+
+
+@dataclass(frozen=True)
+class StepFramesXf2eul:
+    op: Literal["frames.xf2eul"]
+    xform: list[list[float]]
+    axisa: int
+    axisb: int
+    axisc: int
+
+
+@dataclass(frozen=True)
+class StepFramesXf2rav:
+    op: Literal["frames.xf2rav"]
+    xform: list[list[float]]
+
+
+@dataclass(frozen=True)
+class StepFramesRav2xf:
+    op: Literal["frames.rav2xf"]
+    rot: list[list[float]]
+    av: tuple[float, float, float]
+
+
+@dataclass(frozen=True)
+class StepFramesInvstm:
+    op: Literal["frames.invstm"]
+    mat: list[list[float]]
+
+
+@dataclass(frozen=True)
+class StepFramesXpose6:
+    op: Literal["frames.xpose6"]
+    m1: list[list[float]]
+
+
+@dataclass(frozen=True)
 class StepFramesSxform:
     op: Literal["frames.sxform"]
     from_: str

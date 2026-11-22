@@ -175,3 +175,10 @@ export {
   checkMatrixProductRows,
   checkMatrixInputLength,
 } from "./spice-runtime/domains/general-matrices.js";
+
+export {
+  frameOperand,
+  frameVectorResult,
+  frameStateResult,
+  frameMatrixResult,
+} from "./spice-runtime/domains/frame-algebra.js";

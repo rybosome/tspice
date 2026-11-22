@@ -1,0 +1,239 @@
+[
+  {
+    "caseId": "frames-eul2xf-products",
+    "description": "Compare row-major position and rate blocks for cyclic, noncyclic and proper Euler axes.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 2,
+        "axisc": 3
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 3,
+        "axisb": 1,
+        "axisc": 2
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 2,
+        "axisb": 3,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 3
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 2,
+        "axisb": 1,
+        "axisc": 2
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 3,
+        "axisc": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-equal-axes",
+    "description": "Adjacent equal axes combine on the forward path, including three equal axes.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 1,
+        "axisc": 2
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 2,
+        "axisc": 2
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 3,
+        "axisb": 3,
+        "axisc": 3
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 2,
+        "axisb": 2,
+        "axisc": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-rates",
+    "description": "Compare individual signed derivatives at fixed and zero angles.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, 0, 0, 0],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, 0.5, 0, 0],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, 0, -0.75, 0],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, 0, 0, 0.875],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0, 0, 0, 0.5, -0.75, 0.875],
+        "axisa": 2,
+        "axisb": 3,
+        "axisc": 1
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-gimbal",
+    "description": "Observe forward transforms at both Tait-Bryan poles and a proper Euler pole.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.2, 1.5707963267948966, -0.3, 0.3, -0.25, 0.2],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.2, -1.5707963267948966, -0.3, 0.3, -0.25, 0.2],
+        "axisa": 3,
+        "axisb": 2,
+        "axisc": 1
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.2, 0, -0.3, 0.3, -0.25, 0.2],
+        "axisa": 3,
+        "axisb": 1,
+        "axisc": 3
+      },
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.2, 3.141592653589793, -0.3, 0.3, -0.25, 0.2],
+        "axisa": 3,
+        "axisb": 1,
+        "axisc": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-bad-middle",
+    "description": "Observe BADAXISNUMBERS at bad-middle.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 0,
+        "axisc": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-bad-last",
+    "description": "Observe BADAXISNUMBERS at bad-last.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 1,
+        "axisb": 2,
+        "axisc": 4
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-first-adjacent",
+    "description": "Observe BADAXISNUMBERS at first-adjacent.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 0,
+        "axisb": 0,
+        "axisc": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  },
+  {
+    "caseId": "frames-eul2xf-last-adjacent",
+    "description": "Observe BADAXISNUMBERS at last-adjacent.",
+    "workflow": [
+      {
+        "op": "frames.eul2xf",
+        "eulang": [0.3, -0.6, 0.4, -0.125, 0.25, -0.375],
+        "axisa": 4,
+        "axisb": 2,
+        "axisc": 2
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BADAXISNUMBERS"]
+    }
+  }
+]

@@ -687,6 +687,18 @@
           "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
           "job": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
           "result": "2,318 live / 2,543 parity, no native-required skips; full local pair passed."
+        },
+        {
+          "kind": "corrected-source-verification",
+          "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
+          "sourceDigest": "bf8ee681b67066c59829cbadda7c332c11877c976369889de78cea03ad406ead",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550210805",
+          "job": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
+          "localCommands": [
+            "pnpm run check:js:required",
+            "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
+          ],
+          "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
         }
       ],
       "nextAction": "Wait for the full final-head CI matrix and check explicit rebaseability after CI.",
@@ -822,24 +834,44 @@
         "invstm_c",
         "xpose6_c"
       ],
-      "domain": "coords-vectors",
-      "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
-      "prerequisiteReview": "Reuse existing Mat3/Mat6/Vec6 representations and define multi-output types. Establish handedness, derivative units, singular axes and state-transform layout.",
+      "domain": "frames",
+      "apiPlacement": "Existing FramesApi alongside pxform and sxform, with their source-to-destination and flat row-major state transform conventions. All nine use flat canonical raw names.",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [
+        "A12-fixed-matrices"
+      ],
+      "prerequisiteReview": "Reuses the existing 36-entry state transform and A12 matrix result branding. N0067 has three checked error routes using the same linked numerical routines.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
-        "domain": "coords-vectors",
+        "domain": "frames",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "source-wrappers-present",
+        "status": "independent-locked-library-route-established",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/736"
+      ],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "47 workflows / 129 calls / 17 expected errors. 94 registered backend comparisons, four public, 30 native and 45 WASM tests passed. Real Chrome exercised all nine methods. The collinearity fixtures use exact Cartesian-axis inputs to avoid cross-build residuals after normalization."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "3fb465451e3ca752aaafb81f1d9721da0438cebc",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43566084618/job/132360134973",
+          "result": "Both complete required lanes passed locally on 3fb465451e3ca752aaafb81f1d9721da0438cebc. JavaScript: 2,640 parity tests and one expected guard skip. Native-required: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132360134973 on 3fb465451e3ca752aaafb81f1d9721da0438cebc: 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-frame-algebra",
+      "worktree": "/private/tmp/tspice-step8-frame-algebra",
+      "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 3fb46545. 2,412 registered Node/WASM live comparisons; 2,641 parity-package tests with no skips, including the native-required guard; 151 native wrapper, 692 WASM, 34 core and 152 facade tests passed.",
+      "priorCheckpoint": "47 workflows / 129 calls / 17 expected errors. 94 registered backend comparisons, four public, 30 native and 45 WASM tests passed. Real Chrome exercised all nine methods. The collinearity fixtures use exact Cartesian-axis inputs to avoid cross-build residuals after normalization."
     },
     {
       "id": "A16-polynomial-expansions",
