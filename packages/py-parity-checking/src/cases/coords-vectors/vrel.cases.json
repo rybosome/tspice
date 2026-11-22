@@ -1,0 +1,102 @@
+[
+  {
+    "caseId": "coords-vectors-vrel-mixed-and-reversed",
+    "description": "vrel: mixed-and-reversed; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1, -2, 4],
+        "b": [5, 7, -11]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [5, 7, -11],
+        "b": [1, -2, 4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrel-zero-and-identical",
+    "description": "vrel: zero-and-identical; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrel",
+        "a": [0, 0, 0],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [0, 0, 0],
+        "b": [3, -4, 12]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [3, -4, 12],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [3, -4, 12],
+        "b": [3, -4, 12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrel-parallel-and-opposed",
+    "description": "vrel: parallel-and-opposed; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1, 2, 4],
+        "b": [2, 4, 8]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1, 2, 4],
+        "b": [-1, -2, -4]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrel-scaled-magnitudes",
+    "description": "vrel: scaled-magnitudes; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1e200, -2e200, 4e200],
+        "b": [5e200, 7e200, -1.1e201]
+      },
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1e-200, -2e-200, 4e-200],
+        "b": [5e-200, 7e-200, -1.1e-199]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vrel-nearby-large-components",
+    "description": "vrel: nearby-large-components; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vrel",
+        "a": [1000000000000000.0, -1000000000000000.0, 1000000000000000.0],
+        "b": [1000000000000003.0, -999999999999996.0, 1000000000000012.0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

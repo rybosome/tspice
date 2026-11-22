@@ -1,0 +1,110 @@
+[
+  {
+    "caseId": "coords-vectors-vlcom3-distinct-coefficients",
+    "description": "vlcom3: distinct-coefficients; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 2,
+        "v1": [1, -2, 4],
+        "b": -3,
+        "v2": [5, 7, -11],
+        "c": 0.5,
+        "v3": [-13, 17, 19]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom3-each-coefficient-slot",
+    "description": "vlcom3: each-coefficient-slot; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 1,
+        "v1": [1, 2, 3],
+        "b": 0,
+        "v2": [4, 5, 6],
+        "c": 0,
+        "v3": [7, 8, 9]
+      },
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 0,
+        "v1": [1, 2, 3],
+        "b": 1,
+        "v2": [4, 5, 6],
+        "c": 0,
+        "v3": [7, 8, 9]
+      },
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 0,
+        "v1": [1, 2, 3],
+        "b": 0,
+        "v2": [4, 5, 6],
+        "c": 1,
+        "v3": [7, 8, 9]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom3-zero-and-dyadic-cancellation",
+    "description": "vlcom3: zero-and-dyadic-cancellation; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 0,
+        "v1": [1, 2, 3],
+        "b": 0,
+        "v2": [4, 5, 6],
+        "c": 0,
+        "v3": [7, 8, 9]
+      },
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 2,
+        "v1": [1, 2, 4],
+        "b": -1,
+        "v2": [4, 8, 16],
+        "c": 0.5,
+        "v3": [4, 8, 16]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom3-scaled-magnitudes",
+    "description": "vlcom3: scaled-magnitudes; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 0.5,
+        "v1": [1e200, -2e200, 3e200],
+        "b": 2,
+        "v2": [4e200, 5e200, -6e200],
+        "c": -0.25,
+        "v3": [7e200, -8e200, 9e200]
+      },
+      {
+        "op": "coords-vectors.vlcom3",
+        "a": 0.5,
+        "v1": [1e-200, -2e-200, 3e-200],
+        "b": 2,
+        "v2": [4e-200, 5e-200, -6e-200],
+        "c": -0.25,
+        "v3": [7e-200, -8e-200, 9e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

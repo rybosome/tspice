@@ -1,0 +1,94 @@
+[
+  {
+    "caseId": "coords-vectors-vlcom-distinct-coefficients",
+    "description": "vlcom: distinct-coefficients; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 2,
+        "v1": [1, -2, 4],
+        "b": -3,
+        "v2": [5, 7, -11]
+      },
+      {
+        "op": "coords-vectors.vlcom",
+        "a": -0.5,
+        "v1": [3, 5, -7],
+        "b": 1.25,
+        "v2": [-2, 4, 8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom-zero-and-identity-coefficients",
+    "description": "vlcom: zero-and-identity-coefficients; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 0,
+        "v1": [3, -4, 12],
+        "b": 0,
+        "v2": [-7, 8, 9]
+      },
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 1,
+        "v1": [0.125, -2.5, 8],
+        "b": 0,
+        "v2": [7, 9, -13]
+      },
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 0,
+        "v1": [1, 2, 3],
+        "b": 1,
+        "v2": [-4, 5, 6]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom-dyadic-cancellation",
+    "description": "vlcom: dyadic-cancellation; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 2,
+        "v1": [1, 2, 4],
+        "b": -1,
+        "v2": [2, 4, 8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vlcom-scaled-magnitudes",
+    "description": "vlcom: scaled-magnitudes; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 0.5,
+        "v1": [1e200, -2e200, 3e200],
+        "b": 2,
+        "v2": [4e200, 5e200, -6e200]
+      },
+      {
+        "op": "coords-vectors.vlcom",
+        "a": 0.5,
+        "v1": [1e-200, -2e-200, 3e-200],
+        "b": 2,
+        "v2": [4e-200, 5e-200, -6e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

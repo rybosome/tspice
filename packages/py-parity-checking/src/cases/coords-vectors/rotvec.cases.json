@@ -1,0 +1,161 @@
+[
+  {
+    "caseId": "coords-vectors-rotvec-coordinate-rotation-basis",
+    "description": "rotvec: coordinate-rotation-basis; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, 2, 3],
+        "angle": 1.5707963267948966,
+        "axis": 1
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, 2, 3],
+        "angle": 1.5707963267948966,
+        "axis": 2
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, 2, 3],
+        "angle": 1.5707963267948966,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rotvec-mixed-negative-angle",
+    "description": "rotvec: mixed-negative-angle; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": -0.7,
+        "axis": 1
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rotvec-wrapped-axis-indices",
+    "description": "rotvec: wrapped-axis-indices; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 0
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 4
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 5
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 6
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": -1
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": -2
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": -3
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": -4
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": 2147483647
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 0.7,
+        "axis": -2147483648
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rotvec-zero-vector-and-zero-angle",
+    "description": "rotvec: zero-vector-and-zero-angle; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [0, 0, 0],
+        "angle": 1.25,
+        "axis": 2
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [0.125, -2.5, 8],
+        "angle": 0,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-rotvec-unwrapped-angle",
+    "description": "rotvec: unwrapped-angle; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": 6.533185307179586,
+        "axis": 3
+      },
+      {
+        "op": "coords-vectors.rotvec",
+        "v": [1, -2, 4],
+        "angle": -6.533185307179586,
+        "axis": 3
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

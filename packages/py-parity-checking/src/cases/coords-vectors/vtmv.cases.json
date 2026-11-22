@@ -1,0 +1,158 @@
+[
+  {
+    "caseId": "coords-vectors-vtmv-nonsymmetric-matrix",
+    "description": "vtmv: nonsymmetric-matrix; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1, -2, 4],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [5, 7, -11]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [5, 7, -11],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [1, -2, 4]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1, -2, 4],
+        "matrix": [
+          [2, 7, 17],
+          [-3, 11, 19],
+          [5, -13, 23]
+        ],
+        "v2": [5, 7, -11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vtmv-row-column-basis",
+    "description": "vtmv: row-column-basis; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1, 0, 0],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [0, 1, 0]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [0, 1, 0],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [1, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [0, 0, 1],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [0, 1, 0]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [0, 1, 0],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [0, 0, 1]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vtmv-zero-and-identity",
+    "description": "vtmv: zero-and-identity; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [0, 0, 0],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [1, -2, 4]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1, -2, 4],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1, -2, 4],
+        "matrix": [
+          [1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]
+        ],
+        "v2": [5, 7, -11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vtmv-balanced-scales",
+    "description": "vtmv: balanced-scales; compare every actual raw output component against independent live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1e200, -2e200, 4e200],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [5e-200, 7e-200, -1.1e-199]
+      },
+      {
+        "op": "coords-vectors.vtmv",
+        "v1": [1e-200, -2e-200, 4e-200],
+        "matrix": [
+          [2, -3, 5],
+          [7, 11, -13],
+          [17, 19, 23]
+        ],
+        "v2": [5e200, 7e200, -1.1e201]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

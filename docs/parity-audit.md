@@ -49,6 +49,32 @@ source-bound local and observed canonical CI evidence satisfies the normal
 verification requirements. Prior Step 7 observations remain historical on this
 branch.
 
+## Vector combinations expansion
+
+The A09 record reviews `vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`,
+`vrotv_c`, `rotvec_c`, and `vtmv_c`. Its 38 registered scenarios make 99 actual
+routine calls per backend. Unequal coefficients, reversed vectors, basis
+directions, signed/modulo axes and nonsymmetric matrices distinguish argument
+order, rotation convention and row-major layout. All output components reach
+the independent live oracle comparison.
+
+Focused comparisons rescale tiny linear/projection/perpendicular results and a
+small relative difference before comparing complete outputs to the live oracle.
+Zero-axis copies receive separate exact literal and signed-zero checks. A scoped
+15-observation live test retains finite and nonfinite result components without
+changing the shared comparator. Real-backend argument/recovery tests, native
+result-shape checks, and 41 WASM allocation failure/success cleanup tests cover
+the wrapper boundary. These describe assertion source; execution claims require
+the maintained evidence records.
+
+The [numerical observations](step8-vector-combinations-numerics.md) document the
+`vperp` zero-reference discrepancy between NAIF prose and the pinned source/live
+oracle, along with finite-input extremes. The raw contract preserves the actual
+routine and states the caveat. No scientific implementation or oracle output is
+substituted, and no routine is excluded. The audit remains `reviewed` pending
+fresh source-bound local and observed canonical CI evidence. Prior Step 7
+executions remain historical on this branch.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -105,7 +131,12 @@ Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checki
 `vdist_c`, `vequ_c`, `vupack_c`, `vzero_c`, `unorm_c`, `ucrss_c`, `vsep_c` now marshal the same entries that the typed adapters validated.
 Read each of the three vector components once into an owned fixed-length input. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
 
-Regression evidence: [vector-basics-domain.test.ts](../packages/backend-node/test/vector-basics-domain.test.ts), [vector-basics-allocations.test.ts](../packages/backend-wasm/test/vector-basics-allocations.test.ts). These adapter checks do not replace
+Regression evidence: [vector-basics-domain.test.ts](../packages/backend-node/test/vector-basics-domain.test.ts), [vector-basics-allocations.test.ts](../packages/backend-wasm/test/vector-basics-allocations.test.ts).
+
+`vlcom_c`, `vlcom3_c`, `vperp_c`, `vproj_c`, `vrel_c`, `vrotv_c`, `rotvec_c`, `vtmv_c` now marshal the same entries that the typed adapters validated.
+Capture each three-vector and, for vtmv, all nine row-major matrix entries into owned inputs. Both native delegation and WASM marshaling use the validated snapshot. Bounded entry-read and ownership regressions check this adapter property independently of unchanged scientific cases.
+
+Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-node/test/vector-combinations-domain.test.ts), [vector-combinations-allocations.test.ts](../packages/backend-wasm/test/vector-combinations-allocations.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on
 their recorded fingerprints; both required local lanes and observed canonical CI
 must run on the corrected source before current verification.
