@@ -53,6 +53,28 @@ export interface FileIoKitApi {
   readVirtualOutput(output: VirtualOutput): Uint8Array;
 }
 
+/** DAS fixed-file-record counters, in records or characters as named by NAIF. */
+export type DasFileRecord = {
+  idword: string;
+  ifname: string;
+  nresvr: number;
+  nresvc: number;
+  ncomr: number;
+  ncomc: number;
+};
+
+/** DAS file summary; each last triple is ordered character, double, integer. */
+export type DasFileSummary = {
+  nresvr: number;
+  nresvc: number;
+  ncomr: number;
+  ncomc: number;
+  free: number;
+  lastla: [number, number, number];
+  lastrc: [number, number, number];
+  lastwd: [number, number, number];
+};
+
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
   /** Append the supplied comment lines to a writable DAF. Printable ASCII is accepted by CSPICE.
@@ -121,6 +143,27 @@ export interface FileIoApi {
   /** Read an inclusive one-based range containing only double-precision array data through a live DAF handle, including supported non-native file formats. Missing records are zero-filled. The caller supplies a valid numeric data range and may use the segment summary addresses. Each call accepts up to 256 MiB of output. WASM supports addresses through 268,435,456.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgda_c.html */
   dafgda(handle: SpiceHandle, begin: number, end: number): number[];
+
+  /** Append printable ASCII comment lines to a writable DAS. Leading/internal spaces
+   * and empty rows are retained. Trailing ASCII spaces are dropped. Finish an active
+   * extraction first. Input row storage must fit 256 MiB.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasac_c.html */
+  dasac(handle: SpiceHandle, lines: readonly string[]): void;
+  /** Delete all DAS comment records. Data logical addresses survive relocation.
+   * Requires write access and a finished comment extraction.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasdc_c.html */
+  dasdc(handle: SpiceHandle): void;
+  /** Read at most bufsiz lines from a live DAS-backed file, with buffln bytes per
+   * row including NUL (default 1024). A rectangular page may occupy up to 256 MiB.
+   * Returns only the n defined rows. Read aliases share position; EOF resets the
+   * cursor. Explicitly close each link after use, including partially read files.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasec_c.html */
+  dasec(
+    handle: SpiceHandle,
+    bufsiz: number,
+    buffln?: number,
+  ): { n: number; lines: string[]; done: boolean };
+
   /**
    * Return whether a nonempty backend filesystem path exists.
    * A missing file returns false; this does not load or open a kernel.
@@ -196,6 +239,86 @@ export interface FileIoApi {
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffna_c.html
    */
   daffna(handle: SpiceHandle): boolean;
+
+  /**
+   * Create a named DAS for writing and return an owned token. File type is
+   * case-sensitive; the first four bytes starting at the first nonblank byte are
+   * stored in the eight-byte ID word. Internal name has 60 bytes. ncomr counts
+   * 1024-byte comment records. Physical pathname must fit the 255-byte toolkit
+   * field. Record and seek bounds depend on platform. Explicit VirtualOutput
+   * supports readback after close. Node accepts a filesystem path; WASM uses /kernels.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasonw_c.html
+   */
+  dasonw(
+    file: string | VirtualOutput,
+    ftype: string,
+    ifname: string,
+    ncomr: number,
+  ): SpiceHandle;
+
+  /**
+   * Open an unnamed temporary DAS writer. Closing releases the scratch file.
+   * DASHFN may return an empty name. N0067 can retain the previous file's ID
+   * word in the scratch record; the internal file name is DAS SCRATCH FILE.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasops_c.html
+   */
+  dasops(): SpiceHandle;
+
+  /**
+   * Open an existing native-format DAS for exclusive write. Ordinary string
+   * paths may open an existing DAS. A VirtualOutput must previously have been
+   * created by dasonw on this backend. Conflicting open access signals a SPICE error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasopw_c.html
+   */
+  dasopw(file: string | VirtualOutput): SpiceHandle;
+
+  /**
+   * Return the actual CSPICE file name, which may be an owner-specific staged
+   * path or an empty scratch name. namlen includes the NUL byte; default 256.
+   * Short positive capacities truncate; a truncated invalid UTF-8 sequence throws.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dashfn_c.html
+   */
+  dashfn(handle: SpiceHandle, namlen?: number): string;
+
+  /**
+   * Return the in-memory file summary, including the first free record,
+   * last logical addresses, descriptor record numbers and descriptor word
+   * positions. Each three-element field is ordered character, double, integer.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dashfs_c.html
+   */
+  dashfs(handle: SpiceHandle): DasFileSummary;
+
+  /**
+   * Return the last character, double and integer logical addresses. A zero
+   * address means that type has no data. DAS logical addresses start at one.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daslla_c.html
+   */
+  daslla(handle: SpiceHandle): { lastc: number; lastd: number; lasti: number };
+
+  /**
+   * Low-level close of a caller-owned DAS/DLA claim. This releases one link
+   * without flushing updated data buffers or segregating records. Flush a writer
+   * first with daswbr, or use dascls for normal finalization. Low-closing a
+   * dirty writer may lose writes and leave stale N0067 process-global buffers
+   * that can cause a later operation on a different file to fail.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasllc_c.html
+   */
+  dasllc(handle: SpiceHandle): void;
+
+  /**
+   * Read ID word, internal filename and all four counters from the file record.
+   * The default byte capacities 9 and 61 include NUL. Each length is independent;
+   * one-byte capacity signals STRINGTOOSHORT. Output must be representable UTF-8.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasrfr_c.html
+   */
+  dasrfr(handle: SpiceHandle, idwlen?: number, ifnlen?: number): DasFileRecord;
+
+  /**
+   * Write this open writer's buffered DAS data records without closing it or
+   * segregating the file. A read-only handle signals an actual toolkit access error.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daswbr_c.html
+   */
+  daswbr(handle: SpiceHandle): void;
 
   // --- DAS -----------------------------------------------------------------
 

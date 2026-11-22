@@ -1,0 +1,674 @@
+{
+  "schemaVersion": 1,
+  "batch": "c06-das-comments",
+  "traceFiles": [
+    "data/coverage-ledger-policy.json",
+    "docs/step8-das-comments.md",
+    "fixtures/consumer-nodom/src/index.ts",
+    "packages/backend-contract/src/domains/file-io.ts",
+    "packages/backend-contract/src/index.ts",
+    "packages/backend-contract/src/shared/types.ts",
+    "packages/backend-fake/src/index.ts",
+    "packages/backend-node/native/binding.gyp",
+    "packages/backend-node/native/src/addon.cc",
+    "packages/backend-node/native/src/domains/file_io.cc",
+    "packages/backend-node/src/domains/file-io.ts",
+    "packages/backend-node/src/index.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-node/src/runtime/virtual-output-staging.ts",
+    "packages/backend-node/test/das-comments-domain.test.ts",
+    "packages/backend-shim-c/include/tspice_backend_shim.h",
+    "packages/backend-shim-c/src/domains/file_io.c",
+    "packages/backend-shim-c/src/errors.c",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/backend-wasm/src/codec/errors.ts",
+    "packages/backend-wasm/src/domains/file-io.ts",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-wasm/src/runtime/create-backend.node.ts",
+    "packages/backend-wasm/src/runtime/create-backend.web.ts",
+    "packages/backend-wasm/src/runtime/fs.ts",
+    "packages/backend-wasm/src/runtime/virtual-outputs.ts",
+    "packages/backend-wasm/test/das-comments-allocations.test.ts",
+    "packages/core/src/index.ts",
+    "packages/core/src/spice-runtime/domains/das-files.ts",
+    "packages/core/src/spice-runtime/shared/spice-handles.ts",
+    "packages/py-parity-checking/fixtures/README.md",
+    "packages/py-parity-checking/fixtures/generate-audit-dsk.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_comment_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_file_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/file_io.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/runtime/lifecycle.py",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/src/parity-assert.ts",
+    "packages/py-parity-checking/src/run-sidecar.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/run-tspice/domains/file-io.ts",
+    "packages/py-parity-checking/src/runtime/lifecycle.ts",
+    "packages/py-parity-checking/test/das-comments-public.test.ts",
+    "packages/tspice/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "scripts/coverage-ledger.test.mjs"
+  ],
+  "executions": [
+    {
+      "id": "local-c06-df179e56-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9fcc4521d7b5d16fec07789dd901cf7f64be2a2be3081098ded626de91e4e50a",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-c06-df179e56-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9fcc4521d7b5d16fec07789dd901cf7f64be2a2be3081098ded626de91e4e50a",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "observation": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9fcc4521d7b5d16fec07789dd901cf7f64be2a2be3081098ded626de91e4e50a",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-c06-df179e56-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "9fcc4521d7b5d16fec07789dd901cf7f64be2a2be3081098ded626de91e4e50a",
+      "caseIds": [
+        "file-io-dasac-append-after-boundary",
+        "file-io-dasac-del",
+        "file-io-dasac-dla-logical-data",
+        "file-io-dasac-empty-lines",
+        "file-io-dasac-exact-record",
+        "file-io-dasac-many-records",
+        "file-io-dasac-new",
+        "file-io-dasac-no-rows",
+        "file-io-dasac-printable",
+        "file-io-dasac-read-only",
+        "file-io-dasac-record-split",
+        "file-io-dasac-reserved",
+        "file-io-dasac-right-blanks",
+        "file-io-dasac-scratch",
+        "file-io-dasac-tab",
+        "file-io-dasac-utf8",
+        "file-io-dasac-zero-before-access",
+        "file-io-dasdc-dla-addresses",
+        "file-io-dasdc-empty",
+        "file-io-dasdc-isolated-files",
+        "file-io-dasdc-multiple-records",
+        "file-io-dasdc-populated",
+        "file-io-dasdc-read-only",
+        "file-io-dasdc-repeated",
+        "file-io-dasdc-reserved-only",
+        "file-io-dasec-across-record",
+        "file-io-dasec-blank-order",
+        "file-io-dasec-changing-width",
+        "file-io-dasec-default-width",
+        "file-io-dasec-empty",
+        "file-io-dasec-full-final",
+        "file-io-dasec-interleaved",
+        "file-io-dasec-low-close-partial",
+        "file-io-dasec-narrow-second-row",
+        "file-io-dasec-negative-count",
+        "file-io-dasec-negative-width",
+        "file-io-dasec-partial-final",
+        "file-io-dasec-read-aliases",
+        "file-io-dasec-terminating-boundary",
+        "file-io-dasec-width-before-count",
+        "file-io-dasec-width-one",
+        "file-io-dasec-writer-reopen",
+        "file-io-dasec-zero-count"
+      ],
+      "commit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+      "observation": "Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "dasac_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasac_c.html",
+      "semantics": "Append printable ASCII comment rows to a writable DAS. Each row has an explicit terminator on disk. Preserve leading and internal spaces, strip trailing blanks, and retain an entirely blank line.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasac-new",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-reserved",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-empty-lines",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-printable",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-exact-record",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-record-split",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-many-records",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-right-blanks",
+          "coverage": ["success", "edge"],
+          "observes": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion."
+        },
+        {
+          "caseId": "file-io-dasac-append-after-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Grow a previously full 1024-byte record and preserve its final terminator and all appended lines."
+        },
+        {
+          "caseId": "file-io-dasac-scratch",
+          "coverage": ["success", "edge"],
+          "observes": "Initialize the toolkit DAS type via a named file, then append to an unnamed scratch DAS and verify each row before close."
+        },
+        {
+          "caseId": "file-io-dasac-dla-logical-data",
+          "coverage": ["success", "edge"],
+          "observes": "Append to a DLA writer and preserve its three logical integer addresses across record movement."
+        },
+        {
+          "caseId": "file-io-dasac-no-rows",
+          "coverage": ["error"],
+          "observes": "Obtain the original error for the input on a live writable DAS."
+        },
+        {
+          "caseId": "file-io-dasac-tab",
+          "coverage": ["error"],
+          "observes": "Obtain the original error for the input on a live writable DAS."
+        },
+        {
+          "caseId": "file-io-dasac-utf8",
+          "coverage": ["error"],
+          "observes": "Obtain the original error for the input on a live writable DAS."
+        },
+        {
+          "caseId": "file-io-dasac-del",
+          "coverage": ["error"],
+          "observes": "Obtain the original error for the input on a live writable DAS."
+        },
+        {
+          "caseId": "file-io-dasac-read-only",
+          "coverage": ["error"],
+          "observes": "Observe the original DASAC check order for this read-only claim."
+        },
+        {
+          "caseId": "file-io-dasac-zero-before-access",
+          "coverage": ["error"],
+          "observes": "Observe the original DASAC check order for this read-only claim."
+        }
+      ],
+      "edgeAssessment": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion. Grow a previously full 1024-byte record and preserve its final terminator and all appended lines. Initialize the toolkit DAS type via a named file, then append to an unnamed scratch DAS and verify each row before close. Append to a DLA writer and preserve its three logical integer addresses across record movement.",
+      "errorAssessment": "Obtain the original error for the input on a live writable DAS. INVALIDARGUMENT. Obtain the original error for the input on a live writable DAS. ILLEGALCHARACTER. Obtain the original error for the input on a live writable DAS. ILLEGALCHARACTER. Obtain the original error for the input on a live writable DAS. ILLEGALCHARACTER. Observe the original DASAC check order for this read-only claim. DASINVALIDACCESS. Observe the original DASAC check order for this read-only claim. INVALIDARGUMENT.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "The in-repository generator writes four tetrahedral DSK segments with synthetic vertices, plates, IDs and bounds. Independent public tests copy the source to private writable storage before changing comments.",
+          "distribution": "Project-authored fixture distributed with the repository under MIT."
+        }
+      ],
+      "fixtureRationale": "Registered workflows independently create small temporary DAS and DLA files. Two-way file tests also mutate independent private copies of a project-authored DSK and inspect the persisted result.",
+      "cleanup": "Native operations serialize under the process mutex. The shared tracker counts open DAS/DLA links and drains a partially consumed native reader on final close in bounded pages. Tests free all owned handles and transient WASM allocations and remove scratch files in finally.",
+      "tolerance": "Counts, booleans, strings, addresses, full native diagnostics and file-content comparisons are exact. No numeric tolerance change.",
+      "findings": [
+        {
+          "id": "dasac-das-comments-boundary",
+          "status": "repaired",
+          "summary": "An all-empty C input table can have an empty converted Fortran width. Empty JavaScript rows now occupy one real blank before the original conversion. Size and record-growth checks precede mutation. An active writable extraction must finish first.",
+          "repair": "An all-empty C input table can have an empty converted Fortran width. Empty JavaScript rows now occupy one real blank before the original conversion. Size and record-growth checks precede mutation. An active writable extraction must finish first.",
+          "caseIds": [
+            "file-io-dasac-empty-lines",
+            "file-io-dasac-exact-record",
+            "file-io-dasac-scratch",
+            "file-io-dasac-read-only",
+            "file-io-dasac-tab"
+          ],
+          "evidence": [
+            "docs/step8-das-comments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_comment_oracle.py",
+            "packages/py-parity-checking/test/das-comments-public.test.ts",
+            "packages/backend-node/test/das-comments-domain.test.ts",
+            "packages/backend-wasm/test/das-comments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dasac -> owner-checked native addon under the mutex -> tspice_dasac -> dasac_c. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dasac -> owner-checked WASM buffers and compiled export -> tspice_dasac -> dasac_c. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasdc_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasdc_c.html",
+      "semantics": "Delete all allocated comment records on a writable DAS, relocating the data area to reclaim record positions. Logical addresses and logical data survive deletion.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasdc-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
+        },
+        {
+          "caseId": "file-io-dasdc-reserved-only",
+          "coverage": ["success", "edge"],
+          "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
+        },
+        {
+          "caseId": "file-io-dasdc-populated",
+          "coverage": ["success", "edge"],
+          "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
+        },
+        {
+          "caseId": "file-io-dasdc-multiple-records",
+          "coverage": ["success", "edge"],
+          "observes": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page."
+        },
+        {
+          "caseId": "file-io-dasdc-repeated",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated deletion and a fresh append leave only new comments."
+        },
+        {
+          "caseId": "file-io-dasdc-isolated-files",
+          "coverage": ["success", "edge"],
+          "observes": "Delete on one of two simultaneously open writers while preserving the other file’s header and text."
+        },
+        {
+          "caseId": "file-io-dasdc-dla-addresses",
+          "coverage": ["success", "edge"],
+          "observes": "Delete allocated records in a DLA, then reopen to observe preserved logical addresses and reclaimed records."
+        },
+        {
+          "caseId": "file-io-dasdc-read-only",
+          "coverage": ["error"],
+          "observes": "Deleting via a live read claim reports the actual write-access diagnostic."
+        }
+      ],
+      "edgeAssessment": "Delete the comment area, observe the header and directory counters, then reopen and check the empty page. Delete the comment area, observe the header and directory counters, then reopen and check the empty page. Delete the comment area, observe the header and directory counters, then reopen and check the empty page. Delete the comment area, observe the header and directory counters, then reopen and check the empty page. Repeated deletion and a fresh append leave only new comments. Delete on one of two simultaneously open writers while preserving the other file’s header and text. Delete allocated records in a DLA, then reopen to observe preserved logical addresses and reclaimed records.",
+      "errorAssessment": "Deleting via a live read claim reports the actual write-access diagnostic. DASINVALIDACCESS.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "The in-repository generator writes four tetrahedral DSK segments with synthetic vertices, plates, IDs and bounds. Independent public tests copy the source to private writable storage before changing comments.",
+          "distribution": "Project-authored fixture distributed with the repository under MIT."
+        }
+      ],
+      "fixtureRationale": "Registered workflows independently create small temporary DAS and DLA files. Two-way file tests also mutate independent private copies of a project-authored DSK and inspect the persisted result.",
+      "cleanup": "Native operations serialize under the process mutex. The shared tracker counts open DAS/DLA links and drains a partially consumed native reader on final close in bounded pages. Tests free all owned handles and transient WASM allocations and remove scratch files in finally.",
+      "tolerance": "Counts, booleans, strings, addresses, full native diagnostics and file-content comparisons are exact. No numeric tolerance change.",
+      "findings": [
+        {
+          "id": "dasdc-das-comments-boundary",
+          "status": "repaired",
+          "summary": "Changing a writable comment area while its extract is outstanding invalidates borrowed positions. Finish the extract or close and reopen for mutation. Read-only claims retain the actual DASINVALIDACCESS diagnosis.",
+          "repair": "Changing a writable comment area while its extract is outstanding invalidates borrowed positions. Finish the extract or close and reopen for mutation. Read-only claims retain the actual DASINVALIDACCESS diagnosis.",
+          "caseIds": [
+            "file-io-dasdc-reserved-only",
+            "file-io-dasdc-repeated",
+            "file-io-dasdc-dla-addresses",
+            "file-io-dasdc-read-only"
+          ],
+          "evidence": [
+            "docs/step8-das-comments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_comment_oracle.py",
+            "packages/py-parity-checking/test/das-comments-public.test.ts",
+            "packages/backend-node/test/das-comments-domain.test.ts",
+            "packages/backend-wasm/test/das-comments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dasdc -> owner-checked native addon under the mutex -> tspice_dasdc -> dasdc_c. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "direct",
+          "trace": "raw.dasdc -> owner-checked WASM buffers and compiled export -> tspice_dasdc -> dasdc_c. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "dasec_c",
+      "contract": "packages/backend-contract/src/domains/file-io.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dasec_c.html",
+      "semantics": "Return only the n defined lines and completion flag. Read aliases share their file position. After EOF the next call restarts. Count is in lines and width includes a NUL.",
+      "scenarios": [
+        {
+          "caseId": "file-io-dasec-empty",
+          "coverage": ["success", "edge"],
+          "observes": "Repeated initial extraction of a reserved but empty DAS returns zero rows and done."
+        },
+        {
+          "caseId": "file-io-dasec-full-final",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-partial-final",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-blank-order",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-changing-width",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-default-width",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-across-record",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-terminating-boundary",
+          "coverage": ["success", "edge"],
+          "observes": "Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart."
+        },
+        {
+          "caseId": "file-io-dasec-read-aliases",
+          "coverage": ["success", "edge"],
+          "observes": "Two open read tokens advance one cursor; closing one link preserves the remaining page position."
+        },
+        {
+          "caseId": "file-io-dasec-interleaved",
+          "coverage": ["success", "edge"],
+          "observes": "Interleave two different physical files and observe independent pages and EOF."
+        },
+        {
+          "caseId": "file-io-dasec-low-close-partial",
+          "coverage": ["success", "edge"],
+          "observes": "Close an incomplete read with DASLLC and observe row one again after reopening."
+        },
+        {
+          "caseId": "file-io-dasec-writer-reopen",
+          "coverage": ["success", "edge"],
+          "observes": "Read on a writable claim, close the partial extraction, append after reopening and read the full new area."
+        },
+        {
+          "caseId": "file-io-dasec-zero-count",
+          "coverage": ["error"],
+          "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
+        },
+        {
+          "caseId": "file-io-dasec-negative-count",
+          "coverage": ["error"],
+          "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
+        },
+        {
+          "caseId": "file-io-dasec-width-one",
+          "coverage": ["error"],
+          "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
+        },
+        {
+          "caseId": "file-io-dasec-negative-width",
+          "coverage": ["error"],
+          "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
+        },
+        {
+          "caseId": "file-io-dasec-width-before-count",
+          "coverage": ["error"],
+          "observes": "Observe the genuine signed-capacity diagnostic for this live DAS input."
+        },
+        {
+          "caseId": "file-io-dasec-narrow-second-row",
+          "coverage": ["error"],
+          "observes": "The pinned long message uses the page-relative row number when its second output row is too short."
+        }
+      ],
+      "edgeAssessment": "Repeated initial extraction of a reserved but empty DAS returns zero rows and done. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Compare every defined row, count and completion flag across successive real pages, including an exact fit or restart. Two open read tokens advance one cursor; closing one link preserves the remaining page position. Interleave two different physical files and observe independent pages and EOF. Close an incomplete read with DASLLC and observe row one again after reopening. Read on a writable claim, close the partial extraction, append after reopening and read the full new area.",
+      "errorAssessment": "Observe the genuine signed-capacity diagnostic for this live DAS input. INVALIDARGUMENT. Observe the genuine signed-capacity diagnostic for this live DAS input. INVALIDARGUMENT. Observe the genuine signed-capacity diagnostic for this live DAS input. STRINGTOOSHORT. Observe the genuine signed-capacity diagnostic for this live DAS input. STRINGTOOSHORT. Observe the genuine signed-capacity diagnostic for this live DAS input. STRINGTOOSHORT. The pinned long message uses the page-relative row number when its second output row is too short. COMMENTTOOLONG.",
+      "fixtures": [
+        {
+          "path": "packages/py-parity-checking/fixtures/kernels/audit-multi-dsk.bds",
+          "provenance": "The in-repository generator writes four tetrahedral DSK segments with synthetic vertices, plates, IDs and bounds. Independent public tests copy the source to private writable storage before changing comments.",
+          "distribution": "Project-authored fixture distributed with the repository under MIT."
+        }
+      ],
+      "fixtureRationale": "Registered workflows independently create small temporary DAS and DLA files. Two-way file tests also mutate independent private copies of a project-authored DSK and inspect the persisted result.",
+      "cleanup": "Native operations serialize under the process mutex. The shared tracker counts open DAS/DLA links and drains a partially consumed native reader on final close in bounded pages. Tests free all owned handles and transient WASM allocations and remove scratch files in finally.",
+      "tolerance": "Counts, booleans, strings, addresses, full native diagnostics and file-content comparisons are exact. No numeric tolerance change.",
+      "findings": [
+        {
+          "id": "dasec-das-comments-boundary",
+          "status": "repaired",
+          "summary": "The public adapter reads a private completion flag even on early errors. Its reader caches a record across files, reserves -1 as a sentinel, and only releases file positions at EOF. Use the linked initialized original extractor and conversion, preflight width against independent real records and drain on last local close. Read the legitimate first writer directly through the linked record reader when its ID collides with the sentinel.",
+          "repair": "The public adapter reads a private completion flag even on early errors. Its reader caches a record across files, reserves -1 as a sentinel, and only releases file positions at EOF. Use the linked initialized original extractor and conversion, preflight width against independent real records and drain on last local close. Read the legitimate first writer directly through the linked record reader when its ID collides with the sentinel.",
+          "caseIds": [
+            "file-io-dasec-read-aliases",
+            "file-io-dasec-across-record",
+            "file-io-dasec-interleaved",
+            "file-io-dasec-low-close-partial",
+            "file-io-dasec-width-before-count",
+            "file-io-dasec-narrow-second-row"
+          ],
+          "evidence": [
+            "docs/step8-das-comments.md",
+            "packages/backend-shim-c/src/domains/file_io.c",
+            "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/das_comment_oracle.py",
+            "packages/py-parity-checking/test/das-comments-public.test.ts",
+            "packages/backend-node/test/das-comments-domain.test.ts",
+            "packages/backend-wasm/test/das-comments-allocations.test.ts"
+          ]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "raw.dasec -> owner-checked native addon under the mutex -> tspice_dasec -> initialized dasec_, original conversion and exceptional DASIOC record reads. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-node", "ci-c06-df179e56-node"]
+        },
+        "wasm": {
+          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "route": "composed",
+          "trace": "raw.dasec -> owner-checked WASM buffers and compiled export -> tspice_dasec -> initialized dasec_, original conversion and exceptional DASIOC record reads. The independent locked library operates on separately created files.",
+          "executions": ["local-c06-df179e56-wasm", "ci-c06-df179e56-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

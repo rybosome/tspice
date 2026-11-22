@@ -426,6 +426,18 @@ const exportedFunctions = [
   "_tspice_daffna",
 
   // --- DAS ---
+  "_tspice_dasac",
+  "_tspice_dasdc",
+  "_tspice_dasec",
+  "_tspice_dasonw",
+  "_tspice_dasops",
+  "_tspice_dasopw",
+  "_tspice_dashfn",
+  "_tspice_dashfs",
+  "_tspice_daslla",
+  "_tspice_dasllc",
+  "_tspice_dasrfr",
+  "_tspice_daswbr",
   "_tspice_dasopr",
   "_tspice_dascls",
 

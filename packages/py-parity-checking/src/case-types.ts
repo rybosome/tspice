@@ -1,6 +1,7 @@
 import type {
   SpiceStateVector,
   SpiceMatrix6x6,
+  SpiceRawBackend,
   FoundDlaDescriptor,
   KernelKindInput,
 } from "@rybosome/tspice-backend-contract";
@@ -2351,6 +2352,71 @@ export type StepFileIoDasopr = {
   handleId: string;
 };
 
+export type StepFileIoDasac = {
+  op: "file-io.dasac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDasdc = { op: "file-io.dasdc"; handleId: string };
+export type StepFileIoDasec = {
+  op: "file-io.dasec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
+export type StepFileIoDasonw = {
+  op: "file-io.dasonw";
+  handleId: string;
+  path: PathRefLike;
+  ftype: string;
+  ifname: string;
+  ncomr: number;
+};
+
+export type StepFileIoDasops = {
+  op: "file-io.dasops";
+  handleId: string;
+};
+
+export type StepFileIoDasopw = {
+  op: "file-io.dasopw";
+  handleId: string;
+  path: PathRefLike;
+};
+
+export type StepFileIoDashfn = {
+  op: "file-io.dashfn";
+  handleId: string;
+  namlen?: number;
+};
+
+export type StepFileIoDashfs = {
+  op: "file-io.dashfs";
+  handleId: string;
+};
+
+export type StepFileIoDaslla = {
+  op: "file-io.daslla";
+  handleId: string;
+};
+
+export type StepFileIoDasllc = {
+  op: "file-io.dasllc";
+  handleId: string;
+};
+
+export type StepFileIoDasrfr = {
+  op: "file-io.dasrfr";
+  handleId: string;
+  idwlen?: number;
+  ifnlen?: number;
+};
+
+export type StepFileIoDaswbr = {
+  op: "file-io.daswbr";
+  handleId: string;
+};
+
 export type StepFileIoDascls = {
   op: "file-io.dascls";
   handleId: string;
@@ -3387,6 +3453,18 @@ export type WorkflowStep =
   | StepFileIoDafbfs
   | StepFileIoDaffna
   | StepFileIoDasopr
+  | StepFileIoDasac
+  | StepFileIoDasdc
+  | StepFileIoDasec
+  | StepFileIoDasonw
+  | StepFileIoDasops
+  | StepFileIoDasopw
+  | StepFileIoDashfn
+  | StepFileIoDashfs
+  | StepFileIoDaslla
+  | StepFileIoDasllc
+  | StepFileIoDasrfr
+  | StepFileIoDaswbr
   | StepFileIoDascls
   | StepFileIoDlaopn
   | StepFileIoDlabfs
@@ -4045,6 +4123,18 @@ export type StepOutput =
   | { op: "file-io.dafbfs"; value: null }
   | { op: "file-io.daffna"; value: boolean }
   | { op: "file-io.dasopr"; value: null }
+  | { op: "file-io.dasac"; value: null }
+  | { op: "file-io.dasdc"; value: null }
+  | { op: "file-io.dasec"; value: ReturnType<SpiceRawBackend["dasec"]> }
+  | { op: "file-io.dasonw"; value: null }
+  | { op: "file-io.dasops"; value: null }
+  | { op: "file-io.dasopw"; value: null }
+  | { op: "file-io.dashfn"; value: { name: string; prefixMatches: boolean } }
+  | { op: "file-io.dashfs"; value: ReturnType<SpiceRawBackend["dashfs"]> }
+  | { op: "file-io.daslla"; value: ReturnType<SpiceRawBackend["daslla"]> }
+  | { op: "file-io.dasllc"; value: null }
+  | { op: "file-io.dasrfr"; value: ReturnType<SpiceRawBackend["dasrfr"]> }
+  | { op: "file-io.daswbr"; value: null }
   | { op: "file-io.dascls"; value: null }
   | { op: "file-io.dlaopn"; value: null }
   | { op: "file-io.dlabfs"; value: FoundDlaDescriptor }

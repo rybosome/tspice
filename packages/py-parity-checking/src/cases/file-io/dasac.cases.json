@@ -1,0 +1,946 @@
+[
+  {
+    "caseId": "file-io-dasac-new",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["Hello"]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-reserved",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["  first", "last  "]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-empty-lines",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["", "", " ", "  "]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-printable",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 1
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~",
+          " A B  "
+        ]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-exact-record",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-record-split",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 1
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+          "tail"
+        ]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-many-records",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 1
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "head",
+          "xyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy",
+          "tail"
+        ]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-right-blanks",
+    "description": "Append these distinct rows, check all four header counts and the file summary, then reopen for actual text and completion.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["a   ", "  a b   ", "  ", ""]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 12,
+        "buffln": 2600
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-append-after-boundary",
+    "description": "Grow a previously full 1024-byte record and preserve its final terminator and all appended lines.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        ]
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["two", "three"]
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 1024
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 9,
+        "buffln": 48
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-scratch",
+    "description": "Initialize the toolkit DAS type via a named file, then append to an unnamed scratch DAS and verify each row before close.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasops",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["first", "second", "third"]
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 3,
+        "buffln": 7
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-dla-logical-data",
+    "description": "Append to a DLA writer and preserve its three logical integer addresses across record movement.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "DSK",
+        "ifname": "DLA WITH THREE CONTROL WORDS",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": [
+          "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ]
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dlacls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasec",
+        "handleId": "a",
+        "bufsiz": 1,
+        "buffln": 1401
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasac-no-rows",
+    "description": "Obtain the original error for the input on a live writable DAS.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARGUMENT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasac-tab",
+    "description": "Obtain the original error for the input on a live writable DAS.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["good", "bad\t"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dasac-utf8",
+    "description": "Obtain the original error for the input on a live writable DAS.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["é"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dasac-del",
+    "description": "Obtain the original error for the input on a live writable DAS.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["other", "bad"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["ILLEGALCHARACTER"]
+    }
+  },
+  {
+    "caseId": "file-io-dasac-read-only",
+    "description": "Observe the original DASAC check order for this read-only claim.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": ["valid"]
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["DASINVALIDACCESS"]
+    }
+  },
+  {
+    "caseId": "file-io-dasac-zero-before-access",
+    "description": "Observe the original DASAC check order for this read-only claim.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        },
+        "ftype": "C06",
+        "ifname": "DAS COMMENTS a",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "c06-a.das"
+        }
+      },
+      {
+        "op": "file-io.dasac",
+        "handleId": "a",
+        "lines": []
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDARGUMENT"]
+    }
+  }
+]

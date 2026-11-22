@@ -1,0 +1,158 @@
+[
+  {
+    "caseId": "file-io-dasllc-clean-writer",
+    "description": "Close the empty writer without segregation; reopen and inspect its persisted header and address counters.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "path": {
+          "kind": "scratch",
+          "rel": "clean.das"
+        },
+        "ftype": "TEST",
+        "ifname": "CLEAN",
+        "ncomr": 1,
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "path": {
+          "kind": "scratch",
+          "rel": "clean.das"
+        },
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasllc-flush",
+    "description": "Inspect actual reopen addresses to distinguish buffered, explicitly flushed and normally closed file state.",
+    "workflow": [
+      {
+        "op": "file-io.dlaopn",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "DSK",
+        "ifname": "DLA BUF",
+        "ncomch": 0
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasllc-scratch",
+    "description": "Closing an anonymous file releases its claim; open another and inspect its addresses.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasllc-read-claim",
+    "description": "Release exactly one duplicate read claim while continuing to use the remaining one.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-query.ek"
+      },
+      {
+        "op": "kernels.unload",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "a",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "b",
+        "path": "kernels/audit-query.ek"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

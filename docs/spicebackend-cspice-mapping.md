@@ -775,6 +775,28 @@ lengths depend on each routine's dimension order. [Shapes, signed dimensions and
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
+| Raw call                         | CSPICE entry                                                                            | Observable effect                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `dasac(handle, lines)`           | `dasac_c`                                                                               | Append complete printable comment rows to an owned DAS writer.  |
+| `dasdc(handle)`                  | `dasdc_c`                                                                               | Remove all comment records and preserve logical data addresses. |
+| `dasec(handle, bufsiz, buffln?)` | Traced N0067 `dasec_`, actual physical record reader and original defined-row converter | Return `{ n, lines, done }` for the shared per-file cursor.     |
+
+The first DAS writer can have the same native ID as N0067's private no-record sentinel. The adapter reads that writer's actual comment records. [Cursor handling and file-format evidence](step8-das-comments.md)
+
+C04 exposes actual DAS writer, scratch and metadata routes. [Named/scratch DAS lifecycle, field widths and low-close behavior](step8-das-lifecycle.md)
+
+| Raw method | CSPICE     | Result or effect                                                                                                                                           |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dasonw`   | `dasonw_c` | Create a named DAS writer with case-sensitive four-byte type and 60-byte internal name. Reserve ncomr fixed 1024-byte records for comments.                |
+| `dasops`   | `dasops_c` | Open an actual temporary DAS and return an owned writer claim. Its external name may be empty and its internal name is DAS SCRATCH FILE.                   |
+| `dasopw`   | `dasopw_c` | Open an existing DAS for exclusive write. Toolkit open conflicts and file absence are observed independently.                                              |
+| `dashfn`   | `dashfn_c` | Return the actual file name with caller namlen including NUL; the 255-byte toolkit field and unnamed scratch behavior are preserved.                       |
+| `dashfs`   | `dashfs_c` | Read four reserved/comment counters, the first free record and three ordered triples of logical addresses, directory record numbers and word locations.    |
+| `daslla`   | `daslla_c` | Return the last logical character, double and integer addresses. All three values are observed independently.                                              |
+| `dasllc`   | `dasllc_c` | Release just one claim without flushing or segregating. Dirty data and process buffers require explicit caller handling.                                   |
+| `dasrfr`   | `dasrfr_c` | Read the on-disk fixed header, including its eight-byte identification word, 60-byte internal name and all four counts. Output capacities are independent. |
+| `daswbr`   | `daswbr_c` | Flush updated buffered data records of a live writer. A reader signals the toolkit access diagnostic; the writer stays open.                               |
+
 | Raw call                       | CSPICE entry                                                                      | Observable effect                                                   |
 | ------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | `dafac(handle,lines)`          | `dafac_c`                                                                         | Append printable comment lines to a writable DAF.                   |

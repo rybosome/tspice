@@ -379,6 +379,74 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dasac(
+    h: number,
+    n: number,
+    w: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasdc(h: number, err: number, errMaxBytes: number): number;
+  _tspice_dasec(
+    h: number,
+    rows: number,
+    w: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasonw(
+    path: number,
+    ftype: number,
+    ifname: number,
+    ncomr: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasops(out: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dasopw(
+    path: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dashfn(
+    handle: number,
+    namlen: number,
+    name: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dashfs(
+    handle: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_daslla(
+    handle: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dasllc(handle: number, errPtr: number, errMaxBytes: number): number;
+  _tspice_dasrfr(
+    handle: number,
+    idwlen: number,
+    ifnlen: number,
+    idword: number,
+    ifname: number,
+    out: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_daswbr(handle: number, errPtr: number, errMaxBytes: number): number;
   _tspice_dasopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -5673,6 +5741,18 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_dafcls",
   "_tspice_dafbfs",
   "_tspice_daffna",
+  "_tspice_dasac",
+  "_tspice_dasdc",
+  "_tspice_dasec",
+  "_tspice_dasonw",
+  "_tspice_dasops",
+  "_tspice_dasopw",
+  "_tspice_dashfn",
+  "_tspice_dashfs",
+  "_tspice_daslla",
+  "_tspice_dasllc",
+  "_tspice_dasrfr",
+  "_tspice_daswbr",
   "_tspice_dasopr",
   "_tspice_dascls",
   "_tspice_dlaopn",

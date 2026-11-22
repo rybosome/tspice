@@ -451,10 +451,17 @@ export function buildLedger(root = defaultRoot, options = {}) {
         symbols.includes("tspice_dafec") &&
         !definition &&
         (symbol === "dafec_" || symbol === "F2C_ConvertTrStrArr");
+      const dasExtraction =
+        symbols.includes("tspice_dasec") &&
+        !definition &&
+        ["dasec_", "dasioc_", "zzddhhlu_", "F2C_ConvertTrStrArr"].includes(
+          symbol,
+        );
       if (
         symbol.endsWith("_c") ||
         (!definition && (symbol === "eul2m_" || symbol === "sce2t_" || symbol === "daffpa_")) ||
-        dafExtraction
+        dafExtraction ||
+        dasExtraction
       ) {
         result.add(symbol);
         return;

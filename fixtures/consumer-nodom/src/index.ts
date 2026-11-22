@@ -1013,3 +1013,47 @@ function inspectDaf(spice: SpiceSync, path: string): Uint8Array | undefined {
   }
 }
 void inspectDaf;
+
+/** Check DAS metadata, string widths, virtual outputs and opaque token signatures without DOM types. */
+export async function typecheckDasLifecycle() {
+  const { spice, dispose } = await spiceClients.toSync({ backend: "wasm" }),
+    { raw, kit } = spice;
+  const output = { kind: "virtual-output", path: "c04.das" } as const;
+  try {
+    const h = raw.dasonw(output, "Test", "name", 0);
+    let name: string;
+    try {
+      name = raw.dashfn(h, 32);
+      raw.daswbr(h);
+    } finally {
+      raw.dasllc(h);
+    }
+    const w = raw.dasopw(output);
+    try {
+      const { lastla } = raw.dashfs(w);
+      const [character, double, integer] = lastla;
+      void [character, double, integer];
+    } finally {
+      raw.dascls(w);
+    }
+    const scratch = raw.dasops();
+    try {
+      raw.dasac(scratch, [" two  words", ""]);
+      const { n, lines, done } = raw.dasec(scratch, 2, 30);
+      const page: [number, string[], boolean] = [n, lines, done];
+      void page;
+      raw.dasdc(scratch);
+
+      return {
+        name,
+        bytes: kit.readVirtualOutput(output),
+        addresses: raw.daslla(scratch),
+        record: raw.dasrfr(scratch, 9, 61),
+      };
+    } finally {
+      raw.dascls(scratch);
+    }
+  } finally {
+    await dispose();
+  }
+}

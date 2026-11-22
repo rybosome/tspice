@@ -2428,7 +2428,7 @@
       ],
       "domain": "file-io",
       "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [],
       "prerequisiteReview": "Reuse DAS opaque handles. Define scratch/virtual output exposure with an immediate consumer; preserve duplicate claims, low-level versus ordinary close and buffer visibility.",
@@ -2444,21 +2444,30 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/743"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 743,
-        "url": "https://github.com/rybosome/tspice/pull/743",
-        "head": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
-        "base": "73f3fec8788ed926351f891b459ac75d434f6446",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43572200347",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "All 46 locked-library workflows passed in a single Python process. Both compiled backends passed all 92 registered comparisons across 202 workflow steps, 133 new-method calls and 13 expected error exits per backend. Four supplemental public tests passed, including isolated dirty/flush observations and actual header bytes. The native boundary suite passed 13 tests and the real WASM allocation/lifecycle suite passed 33; the no-DOM fixture compiled. A real Chrome worker exercised all nine methods, all 14 summary integers, both header widths and reserved counts, readback, scratch claims, recovery and persisted bytes."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "6ab9b286f62c7a2411fdfc52f8624559637231e1",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43570988079/job/132375119005",
+          "result": "Both complete required lanes passed locally on 6ab9b286f62c7a2411fdfc52f8624559637231e1. JavaScript: 2,526 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132375119005 on 6ab9b286f62c7a2411fdfc52f8624559637231e1: 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed."
+        },
+        {
+          "kind": "final-head-ci",
+          "testedCommit": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572200347",
+          "result": "Final PR matrix awaiting completion."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "branch": "codex/expand-das-lifecycle",
+      "worktree": "/private/tmp/tspice-step8-das-lifecycle",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 6ab9b286. 2,310 registered Node/WASM live comparisons; 2,527 parity-package tests with no skips, including the native-required guard; 79 native wrapper, 633 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "Nine actual shared C entry points, owner-local DAS claims, writer-output namespace and registered independent file-state cases. Dirty low-close use is scoped explicitly."
     },
     {
       "id": "C05-das-data",
@@ -2524,14 +2533,14 @@
         "dasec_c"
       ],
       "domain": "file-io",
-      "apiPlacement": "packages/backend-contract/src/domains/file-io.ts; raw methods retain canonical names without _c.",
-      "owner": null,
+      "apiPlacement": "FileIoApi on owned DAS/DLA claims.",
+      "owner": "Codex Step 8 (/root)",
       "status": "in-progress",
       "dependsOn": [
         "C04-das-lifecycle"
       ],
       "prerequisiteReview": "Verify fixed-width text, paged reads, end-of-comments and mutation persistence while preserving file claims.",
-      "fixtures": "Small synthetic scratch DAS comment files; independent oracle writer/reader.",
+      "fixtures": "Separate named DAS/DLA files and private copies of the repository-authored audit-multi-dsk.bds.",
       "expectedChanges": {
         "domain": "file-io",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
@@ -2543,21 +2552,24 @@
       "prs": [
         "https://github.com/rybosome/tspice/pull/755"
       ],
-      "validationEvidence": [],
-      "nextAction": "Intake the pinned source after checkpoint 02 lands and passes main CI.",
-      "sourceSnapshot": {
-        "number": 755,
-        "url": "https://github.com/rybosome/tspice/pull/755",
-        "head": "75c8f1822a859ec1d5cc88fd0c21c8be05a5a210",
-        "base": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
-        "ci": "https://github.com/rybosome/tspice/actions/runs/43578189336",
-        "ciConclusion": "success"
-      },
-      "checkpoint": {
-        "number": 3,
-        "status": "pending intake"
-      },
-      "deliveryNote": "The pinned source head passed its configured CI matrix."
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "Both real backends exchanged persisted files with the independent locked library, retained logical data and completed 5001 partial-read/close cycles. The final real Chrome worker observed all three operations and recovered after a short row. See docs/step8-das-comments.md."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "df179e567bab13c0dfb7b89913c239fc5fa3d866",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43576956217/job/132393162799",
+          "result": "Both complete required lanes passed locally on df179e567bab13c0dfb7b89913c239fc5fa3d866. JavaScript: 2,623 parity tests and one expected guard skip. Native-required: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132393162799 on df179e567bab13c0dfb7b89913c239fc5fa3d866: 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "baseCommit": "231cc9a38c92583973b84bed724bbb3ec6b8fcbd",
+      "worktree": "/private/tmp/tspice-step8-das-comments",
+      "branch": "codex/expand-das-comments",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source df179e56. 2,396 registered Node/WASM live comparisons; 2,624 parity-package tests with no skips, including the native-required guard; 83 native wrapper, 645 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "43 workflows, 362 steps, 109 new-method calls, 13 terminal toolkit errors; 86 registered comparisons, 11 public, 4 native and 12 WASM focused tests plus real Chrome passed."
     },
     {
       "id": "C07-dla-segments",

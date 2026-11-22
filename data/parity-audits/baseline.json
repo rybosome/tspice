@@ -1044,6 +1044,25 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c04-das-lifecycle",
+      "routines": [
+        "dasonw_c",
+        "dasops_c",
+        "dasopw_c",
+        "dashfn_c",
+        "dashfs_c",
+        "daslla_c",
+        "dasllc_c",
+        "dasrfr_c",
+        "daswbr_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/743"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "a23-array-order",
       "routines": [
         "isordv_c",
@@ -1117,6 +1136,21 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/751"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c06-das-comments",
+      "routines": [
+        "dasac_c",
+        "dasdc_c",
+        "dasec_c"
+      ],
+      "dependsOn": [
+        "c04-das-lifecycle"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/755"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }

@@ -1,0 +1,158 @@
+[
+  {
+    "caseId": "file-io-dasopw-reopen-modify",
+    "description": "Reopen a named file for writing, observe the full header, flush, close and reread.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasopw-missing",
+    "description": "Write-open on a nonexistent named file reports the canonical diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasopw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILENOTFOUND"]
+    }
+  },
+  {
+    "caseId": "file-io-dasopw-read-conflict",
+    "description": "An existing read claim prevents opening for write.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "other",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasopw-write-conflict",
+    "description": "A second independent write open conflicts with the first writer.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dasopw",
+        "handleId": "other",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENCONFLICT"]
+    }
+  }
+]

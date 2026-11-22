@@ -213,6 +213,26 @@ export type NativeAddon = {
   dafbfs(handle: number): void;
   daffna(handle: number): boolean;
 
+  dasac(handle: number, n: number, width: number, rows: Uint8Array): void;
+  dasdc(handle: number): void;
+  dasec(
+    handle: number,
+    bufsiz: number,
+    buffln: number,
+  ): { n: number; done: boolean; bytes: Uint8Array };
+  dasonw(path: string, ftype: string, ifname: string, ncomr: number): number;
+  dasops(): number;
+  dasopw(path: string): number;
+  dashfn(handle: number, namlen: number): string;
+  dashfs(handle: number): number[];
+  daslla(handle: number): number[];
+  dasllc(handle: number): void;
+  dasrfr(
+    handle: number,
+    idwlen: number,
+    ifnlen: number,
+  ): { idword: string; ifname: string; counts: number[] };
+  daswbr(handle: number): void;
   dasopr(path: string): number;
   dascls(handle: number): void;
 

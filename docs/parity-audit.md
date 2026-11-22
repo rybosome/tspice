@@ -468,3 +468,11 @@ C02 adds summary packing and unpacking, physical summary records, file headers a
 ## DAF mutation
 
 C03 adds comment appending, deletion and paging, plus packed summary replacement against a selected writable array. The workflows use separately created scratch DAFs. Independent readers inspect both backends’ completed output files. [Mutation semantics and measurements](step8-daf-mutation.md) [Routine audit](../data/parity-audits/c03-daf-mutation.json)
+
+## DAS creation and file state
+
+C04 adds nine raw DAS operations to the original 162-routine surface. The reviewed scientific coverage includes 46 workflows, 133 new-method calls and 13 expected diagnostic exits. [Lifecycle and data persistence](step8-das-lifecycle.md) [Per-routine record](../data/parity-audits/c04-das-lifecycle.json)
+
+## DAS comment records
+
+The C06 workflows exercise separately created and reopened DAS files, packed fixed-width input rows, shared-reader paging and file-data relocation. Both writers exchange persisted files with an independent SpiceyPy process. [DAS comment observations](step8-das-comments.md) [Routine audit](../data/parity-audits/c06-das-comments.json)

@@ -282,6 +282,18 @@ from .models import (
     StepFileIoDafrda,
     StepFileIoDafgda,
     StepFileIoDafopr,
+    StepFileIoDasac,
+    StepFileIoDasdc,
+    StepFileIoDasec,
+    StepFileIoDasonw,
+    StepFileIoDasops,
+    StepFileIoDasopw,
+    StepFileIoDashfn,
+    StepFileIoDashfs,
+    StepFileIoDaslla,
+    StepFileIoDasllc,
+    StepFileIoDasrfr,
+    StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
     StepFileIoDlabfs,
@@ -3249,6 +3261,89 @@ def _decode_step(raw_step: Any) -> WorkflowStep:
                 op=op,
                 path=_decode_path_ref(step.get("path"), label="file-io.dasopr.path"),
                 handleId=_expect_string(step.get("handleId"), label="file-io.dasopr.handleId"),
+            )
+
+        case "file-io.dasac":
+            return StepFileIoDasac(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                lines=_expect_string_list(step.get("lines"), label=op+".lines"),
+            )
+
+        case "file-io.dasdc":
+            return StepFileIoDasdc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+            )
+
+        case "file-io.dasec":
+            return StepFileIoDasec(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label=op+".handleId"),
+                bufsiz=_expect_int(step.get("bufsiz"), label=op+".bufsiz"),
+                buffln=_expect_int(step.get("buffln", 1024), label=op+".buffln"),
+            )
+
+        case "file-io.dasonw":
+            return StepFileIoDasonw(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasonw.handleId"),
+                path=_decode_path_ref(step.get("path"), label="file-io.dasonw.path"),
+                ftype=_expect_string(step.get("ftype"), label="file-io.dasonw.ftype"),
+                ifname=_expect_string(step.get("ifname"), label="file-io.dasonw.ifname"),
+                ncomr=_expect_int(step.get("ncomr"), label="file-io.dasonw.ncomr"),
+            )
+
+        case "file-io.dasops":
+            return StepFileIoDasops(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasops.handleId"),
+            )
+
+        case "file-io.dasopw":
+            return StepFileIoDasopw(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasopw.handleId"),
+                path=_decode_path_ref(step.get("path"), label="file-io.dasopw.path"),
+            )
+
+        case "file-io.dashfn":
+            return StepFileIoDashfn(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dashfn.handleId"),
+                namlen=_expect_int(step.get("namlen", 256), label="file-io.dashfn.namlen"),
+            )
+
+        case "file-io.dashfs":
+            return StepFileIoDashfs(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dashfs.handleId"),
+            )
+
+        case "file-io.daslla":
+            return StepFileIoDaslla(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.daslla.handleId"),
+            )
+
+        case "file-io.dasllc":
+            return StepFileIoDasllc(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasllc.handleId"),
+            )
+
+        case "file-io.dasrfr":
+            return StepFileIoDasrfr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.dasrfr.handleId"),
+                idwlen=_expect_int(step.get("idwlen", 9), label="file-io.dasrfr.idwlen"),
+                ifnlen=_expect_int(step.get("ifnlen", 61), label="file-io.dasrfr.ifnlen"),
+            )
+
+        case "file-io.daswbr":
+            return StepFileIoDaswbr(
+                op=op,
+                handleId=_expect_string(step.get("handleId"), label="file-io.daswbr.handleId"),
             )
 
         case "file-io.dascls":

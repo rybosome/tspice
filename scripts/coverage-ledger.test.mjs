@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 445,
-    planned: 204,
+    implemented: 457,
+    planned: 192,
     excluded: 3,
-    caseFiles: 445,
-    scenarios: 2952,
+    caseFiles: 457,
+    scenarios: 3041,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -622,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 283);
+  assert.equal(ledger.audit.expansionRoutines, 295);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -1030,4 +1030,27 @@ test("the file I/O shim must be compiled by the production build", (t) => {
     "",
   );
   assert.throws(f.build, /Node shared shim source not compiled/);
+});
+
+test("DASEC extraction needs reachable linked scientific and original conversion calls", (t) => {
+  const f = fixture(t);
+  const row = f.build().routines.find((r) => r.routine === "dasec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(row.mapping[backend].classification, "alias-or-composed");
+    assert.ok(!row.mapping[backend].cspiceEntrypoints.includes("dasec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const calls of [
+    ["dasec_(&h, &rows, count, out, &completed, width - 1)"],
+    ['dasioc_("READ", &unit, &rec, record, 4, 1024)'],
+    ['zzddhhlu_(&h, "DAS", &lock, &unit, 3)'],
+    [
+      "F2C_ConvertTrStrArr(*count, width, out)",
+      "F2C_ConvertTrStrArr(count, width, (char *)out)",
+    ],
+  ]) {
+    for (const call of calls) f.edit(source, call, "0 /* " + call + " */");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dasec/);
+    for (const call of calls) f.edit(source, "0 /* " + call + " */", call);
+  }
 });

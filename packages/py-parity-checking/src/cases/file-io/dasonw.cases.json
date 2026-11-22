@@ -1,0 +1,273 @@
+[
+  {
+    "caseId": "file-io-dasonw-record-and-persistence",
+    "description": "Inspect all header fields and counters, close, and reopen the same file.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-type-and-name-width",
+    "description": "Mixed-case type truncation and a 60-byte internal name survive close/reopen.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "Wxyz-extra",
+        "ifname": "0123456789012345678901234567890123456789012345678901234567890123456789",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasopr",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        }
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-two-new-files",
+    "description": "Distinct same-basename paths keep their names, headers and reservation counts.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "a",
+        "path": {
+          "kind": "scratch",
+          "rel": "a/same.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dasonw",
+        "handleId": "b",
+        "path": {
+          "kind": "scratch",
+          "rel": "b/same.das"
+        },
+        "ftype": "DIFF",
+        "ifname": "  Internal File 07",
+        "ncomr": 0
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-negative-records",
+    "description": "The new-file entrypoint preserves its own input diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": -1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["INVALIDCOUNT"]
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-empty-type",
+    "description": "The new-file entrypoint preserves its own input diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-blank-type",
+    "description": "The new-file entrypoint preserves its own input diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "   ",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["BLANKFILETYPE"]
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-empty-name",
+    "description": "The new-file entrypoint preserves its own input diagnostic.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "",
+        "ncomr": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["EMPTYSTRING"]
+    }
+  },
+  {
+    "caseId": "file-io-dasonw-existing-file",
+    "description": "A closed file cannot be created anew.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasonw",
+        "handleId": "h",
+        "path": {
+          "kind": "scratch",
+          "rel": "nested/observed.das"
+        },
+        "ftype": "aBcD",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["FILEOPENFAIL"]
+    }
+  }
+]

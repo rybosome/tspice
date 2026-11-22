@@ -1,0 +1,117 @@
+[
+  {
+    "caseId": "file-io-dasops-scratch-metadata",
+    "description": "Control the prior ID word before reading the N0067 scratch record and complete descriptors.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "seed",
+        "path": {
+          "kind": "scratch",
+          "rel": "seed.das"
+        },
+        "ftype": "SEED",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "seed"
+      },
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfn",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daslla",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.daswbr",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "h"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasops-two-claims",
+    "description": "Two anonymous files are independent; the second remains usable after a low-level close.",
+    "workflow": [
+      {
+        "op": "file-io.dasonw",
+        "handleId": "seed",
+        "path": {
+          "kind": "scratch",
+          "rel": "seed.das"
+        },
+        "ftype": "SEED",
+        "ifname": "  Internal File 07",
+        "ncomr": 3
+      },
+      {
+        "op": "file-io.dascls",
+        "handleId": "seed"
+      },
+      {
+        "op": "file-io.dasops",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasops",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dasllc",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dashfs",
+        "handleId": "b"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dasops-cleanup-on-failure",
+    "description": "An anonymous file is still owned by the workflow after a downstream error.",
+    "workflow": [
+      {
+        "op": "file-io.dasops",
+        "handleId": "h"
+      },
+      {
+        "op": "file-io.dasrfr",
+        "handleId": "h",
+        "ifnlen": 1
+      }
+    ],
+    "expectation": {
+      "kind": "error",
+      "errorMessageIncludes": ["STRINGTOOSHORT"]
+    }
+  }
+]

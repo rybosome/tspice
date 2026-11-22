@@ -10,6 +10,9 @@ from spiceypy.utils.exceptions import NotFoundError, SpiceyError
 from .. import daf_mutation_oracle
 from .. import daf_oracle
 from .. import daf_record_oracle
+from .. import das_comment_oracle
+
+from ..das_file_oracle import file_record, file_name
 from ..models import (
     PathRefInput,
     StepFileIoDafbfs,
@@ -34,6 +37,18 @@ from ..models import (
     StepFileIoDafrda,
     StepFileIoDafgda,
     StepFileIoDafopr,
+    StepFileIoDasac,
+    StepFileIoDasdc,
+    StepFileIoDasec,
+    StepFileIoDasonw,
+    StepFileIoDasops,
+    StepFileIoDasopw,
+    StepFileIoDashfn,
+    StepFileIoDashfs,
+    StepFileIoDaslla,
+    StepFileIoDasllc,
+    StepFileIoDasrfr,
+    StepFileIoDaswbr,
     StepFileIoDascls,
     StepFileIoDasopr,
     StepFileIoDlabfs,
@@ -74,6 +89,8 @@ def _register_handle(
     # Reusing a workflow label is a new open. dict replacement alone retains
     # its previous insertion position and breaks oldest-live alias selection.
     state.handles.pop(handle_id, None)
+    if kind in ("DAS", "DLA"):
+        das_comment_oracle.opened(int(handle))
     state.handles[handle_id] = FileIoHandleState(
         handle=int(handle),
         kind=kind,
@@ -304,6 +321,73 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         found = bool(sp.daffna())
         return StepOutput(op=step.op, value=found)
 
+    if isinstance(step,StepFileIoDasac):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.append(h,step.lines))
+
+    if isinstance(step,StepFileIoDasdc):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.delete(h))
+
+    if isinstance(step,StepFileIoDasec):
+        h = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True).handle
+        return StepOutput(op=step.op,value=das_comment_oracle.extract(h,step.bufsiz,step.buffln))
+
+    if isinstance(step, (StepFileIoDasonw, StepFileIoDasopw, StepFileIoDasops)):
+        existing = state.handles.get(step.handleId)
+        if existing is not None and existing.isOpen:
+            raise ValueError(f"File-io handle already open: {step.handleId}")
+        if isinstance(step, StepFileIoDasops):
+            handle = sp.dasops()
+        else:
+            if isinstance(step.path, str) or step.path.kind != "scratch":
+                raise ValueError("DAS writer workflows require a scratch path")
+            path = _resolve_file_io_path(context, step.path)
+            if isinstance(step, StepFileIoDasonw):
+                # Registered tests create small files. Keep oversized record counts
+                # out of the independent writer before allocation or disk I/O.
+                if not -(2**31) <= step.ncomr <= 500:
+                    raise ValueError("DAS oracle comment record count outside fixture range")
+                _prepare_output_path(path)
+                handle = sp.dasonw(path,step.ftype,step.ifname,step.ncomr)
+            else:
+                handle = sp.dasopw(path)
+        _register_handle(state,step.handleId,handle,kind="DAS",close_with="dascls")
+        return StepOutput(op=step.op,value=None)
+
+    if isinstance(step,(StepFileIoDashfn,StepFileIoDashfs,StepFileIoDaslla,
+                        StepFileIoDasrfr,StepFileIoDaswbr,StepFileIoDasllc)):
+        entry = _require_handle(state,step.handleId,expected_kind=("DAS","DLA"),require_open=True)
+        h = entry.handle
+        if isinstance(step,StepFileIoDashfn):
+            value = file_name(h,step.namlen)
+            full = file_name(h,256)
+            if full == "":
+                name = ""
+            else:
+                p = Path(full).resolve()
+                scratch = Path(context.paths.scratchRoot).resolve()
+                if p.is_relative_to(scratch):
+                    name = "scratch/" + p.relative_to(scratch).as_posix()
+                else:
+                    name = p.relative_to(Path(context.paths.fixturesRoot).resolve()).as_posix()
+            return StepOutput(op=step.op,value=dict(name=name,prefixMatches=value==full[:step.namlen-1]))
+        if isinstance(step,StepFileIoDashfs):
+            rr,rc,cr,cc,free,la,record,word = sp.dashfs(h)
+            return StepOutput(op=step.op,value=dict(nresvr=rr,nresvc=rc,ncomr=cr,ncomc=cc,
+                              free=free,lastla=la.tolist(),lastrc=record.tolist(),lastwd=word.tolist()))
+        if isinstance(step,StepFileIoDaslla):
+            c,d,i=sp.daslla(h)
+            return StepOutput(op=step.op,value=dict(lastc=c,lastd=d,lasti=i))
+        if isinstance(step,StepFileIoDasrfr):
+            return StepOutput(op=step.op,value=file_record(h,step.idwlen,step.ifnlen))
+        if isinstance(step,StepFileIoDaswbr):
+            sp.daswbr(h)
+        else:
+            das_comment_oracle.close(h,low=True)
+            entry.isOpen=False
+        return StepOutput(op=step.op,value=None)
+
     if isinstance(step, StepFileIoDasopr):
         handle = int(sp.dasopr(_resolve_file_io_path(context, step.path)))
         _register_handle(state, step.handleId, handle, kind="DAS", close_with="dascls")
@@ -316,7 +400,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind=("DAS", "DLA"),
             require_open=True,
         )
-        sp.dascls(handle_state.handle)
+        das_comment_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 
@@ -381,7 +465,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             require_open=True,
         )
         # tspice exposes dlacls as a DAS-close alias; CSPICE has no separate dlacls_c entrypoint.
-        sp.dascls(handle_state.handle)
+        das_comment_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 

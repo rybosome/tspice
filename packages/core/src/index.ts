@@ -5,6 +5,16 @@ export {
 } from "./spice-runtime/domains/pool-inputs.js";
 
 
+export {
+  dasCommentTable,
+  dasCommentPageBytes,
+  dasCommentPage,
+  dasFileTarget,
+  dasText,
+  decodeDasSummary,
+  decodeDasAddresses,
+  decodeDasFileRecord,
+} from "./spice-runtime/domains/das-files.js";
 /** Error thrown when an internal invariant is violated (should never happen in correct usage). */
 export class InvariantError extends Error {
   constructor(message: string) {
