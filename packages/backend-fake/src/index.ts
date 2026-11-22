@@ -2377,6 +2377,60 @@ export function createFakeBackend(
     getfat: (_path: string) => {
       throw new Error("Fake backend: getfat() is not implemented");
     },
+    dafac: () => {
+      throw new Error("Fake backend: dafac() is not implemented");
+    },
+    dafdc: () => {
+      throw new Error("Fake backend: dafdc() is not implemented");
+    },
+    dafec: () => {
+      throw new Error("Fake backend: dafec() is not implemented");
+    },
+    dafrs: () => {
+      throw new Error("Fake backend: dafrs() is not implemented");
+    },
+    dafps: () => {
+      throw new Error("Fake backend: dafps() is not implemented");
+    },
+    dafus: () => {
+      throw new Error("Fake backend: dafus() is not implemented");
+    },
+    dafgsr: () => {
+      throw new Error("Fake backend: dafgsr() is not implemented");
+    },
+    dafrfr: () => {
+      throw new Error("Fake backend: dafrfr() is not implemented");
+    },
+    dafrda: () => {
+      throw new Error("Fake backend: dafrda() is not implemented");
+    },
+    dafgda: () => {
+      throw new Error("Fake backend: dafgda() is not implemented");
+    },
+    dafbbs: () => {
+      throw new Error("Fake backend: dafbbs() is not implemented");
+    },
+    dafcs: () => {
+      throw new Error("Fake backend: dafcs() is not implemented");
+    },
+    daffpa: () => {
+      throw new Error("Fake backend: daffpa() is not implemented");
+    },
+    dafgh: () => {
+      throw new Error("Fake backend: dafgh() is not implemented");
+    },
+    dafgn: () => {
+      throw new Error("Fake backend: dafgn() is not implemented");
+    },
+    dafgs: () => {
+      throw new Error("Fake backend: dafgs() is not implemented");
+    },
+    dafhsf: () => {
+      throw new Error("Fake backend: dafhsf() is not implemented");
+    },
+    dafopw: () => {
+      throw new Error("Fake backend: dafopw() is not implemented");
+    },
     dafopr: (_path: string) => {
       throw new Error("Fake backend: dafopr() is not implemented");
     },

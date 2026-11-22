@@ -119,6 +119,15 @@ export function createSpiceHandleRegistry(): SpiceHandleRegistry {
   const registry: InternalSpiceHandleRegistry = {
     register,
     lookup,
+    findOwned: (kind, nativeHandle, context) => {
+      for (const [id, entry] of handles) {
+        if (entry.kind === kind && entry.nativeHandle === nativeHandle)
+          return asSpiceHandle(id);
+      }
+      throw new RangeError(
+        `${context}: current ${kind} file has no live handle owned by this backend`,
+      );
+    },
     close,
     size: () => handles.size,
 

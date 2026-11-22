@@ -237,6 +237,133 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_dafac(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafdc(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafec(
+    handle: number,
+    rows: number,
+    width: number,
+    data: number,
+    room: number,
+    n: number,
+    done: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrs(
+    handle: number,
+    data: number,
+    bytes: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafps(
+    nd: number,
+    ni: number,
+    dc: number,
+    dcCount: number,
+    ic: number,
+    icCount: number,
+    out: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafus(
+    summary: number,
+    size: number,
+    nd: number,
+    ni: number,
+    dc: number,
+    dcRoom: number,
+    ic: number,
+    icRoom: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+    out: number,
+    room: number,
+    outFound: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrfr(
+    handle: number,
+    ifnlen: number,
+    ifname: number,
+    room: number,
+    fields: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafrda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgda(
+    handle: number,
+    begin: number,
+    end: number,
+    words: number,
+    room: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafbbs(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafcs(handle: number, err: number, errMaxBytes: number): number;
+  _tspice_daffpa(
+    handle: number,
+    outFound: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgh(outHandle: number, err: number, errMaxBytes: number): number;
+  _tspice_dafgn(
+    handle: number,
+    namlen: number,
+    out: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafgs(
+    handle: number,
+    out: number,
+    room: number,
+    bytes: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafhsf(
+    handle: number,
+    nd: number,
+    ni: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_dafopw(
+    path: number,
+    outHandle: number,
+    err: number,
+    errMaxBytes: number,
+  ): number;
   _tspice_dafopr(
     pathPtr: number,
     outHandlePtr: number,
@@ -5524,6 +5651,24 @@ const REQUIRED_FUNCTION_EXPORTS = [
   // File I/O
   "_tspice_exists",
   "_tspice_getfat",
+  "_tspice_dafac",
+  "_tspice_dafdc",
+  "_tspice_dafec",
+  "_tspice_dafrs",
+  "_tspice_dafps",
+  "_tspice_dafus",
+  "_tspice_dafgsr",
+  "_tspice_dafrfr",
+  "_tspice_dafrda",
+  "_tspice_dafgda",
+  "_tspice_dafbbs",
+  "_tspice_dafcs",
+  "_tspice_daffpa",
+  "_tspice_dafgh",
+  "_tspice_dafgn",
+  "_tspice_dafgs",
+  "_tspice_dafhsf",
+  "_tspice_dafopw",
   "_tspice_dafopr",
   "_tspice_dafcls",
   "_tspice_dafbfs",

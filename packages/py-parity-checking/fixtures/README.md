@@ -187,3 +187,15 @@ the public loader; KEEPER registration is queried independently.
 repository license. Its surface IDs and names are artificial. Two body IDs
 exercise independent namespaces, alternate spellings and numeric-name precedence;
 it contains no shape or observational data.
+
+### Packed DAF navigation fixture
+
+The public navigation test runs `generate-navigation-daf.py` in a temporary
+directory using the locked SpiceyPy toolkit. It creates an original synthetic
+SPK with a negative center ID so that one packed pair of integer components
+has a noncanonical IEEE NaN bit pattern on little-endian hosts. The generator
+unpacks the summary again with CSPICE and checks the integer values. It also
+uses the pinned SPICELIB DAFRN routine to give a DAF array name a terminal tab,
+which the high-level Python string converter removes but the C function returns.
+Each backend receives its own copy; the scratch writer and reader close before
+cleanup. Only the MIT-licensed generator is checked in.

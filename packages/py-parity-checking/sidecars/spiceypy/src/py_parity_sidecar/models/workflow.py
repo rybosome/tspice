@@ -271,6 +271,24 @@ from .file_io import (
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
+    StepFileIoDafbbs,
+    StepFileIoDafcs,
+    StepFileIoDaffpa,
+    StepFileIoDafgh,
+    StepFileIoDafgn,
+    StepFileIoDafgs,
+    StepFileIoDafhsf,
+    StepFileIoDafopw,
+    StepFileIoDafac,
+    StepFileIoDafdc,
+    StepFileIoDafec,
+    StepFileIoDafrs,
+    StepFileIoDafps,
+    StepFileIoDafus,
+    StepFileIoDafgsr,
+    StepFileIoDafrfr,
+    StepFileIoDafrda,
+    StepFileIoDafgda,
     StepFileIoDafopr,
     StepFileIoDascls,
     StepFileIoDasopr,
@@ -804,6 +822,24 @@ WorkflowStep: TypeAlias = (
     | StepEphemerisSpkw08
     | StepFileIoExists
     | StepFileIoGetfat
+    | StepFileIoDafbbs
+    | StepFileIoDafcs
+    | StepFileIoDaffpa
+    | StepFileIoDafgh
+    | StepFileIoDafgn
+    | StepFileIoDafgs
+    | StepFileIoDafhsf
+    | StepFileIoDafopw
+    | StepFileIoDafac
+    | StepFileIoDafdc
+    | StepFileIoDafec
+    | StepFileIoDafrs
+    | StepFileIoDafps
+    | StepFileIoDafus
+    | StepFileIoDafgsr
+    | StepFileIoDafrfr
+    | StepFileIoDafrda
+    | StepFileIoDafgda
     | StepFileIoDafopr
     | StepFileIoDafcls
     | StepFileIoDafbfs

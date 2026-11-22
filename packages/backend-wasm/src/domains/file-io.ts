@@ -7,13 +7,31 @@ import type {
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
 import {
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
   assertSpiceInt32,
   assertSpiceInt32NonNegative,
 } from "@rybosome/tspice-core";
 
 import type { EmscriptenModule } from "../lowlevel/exports.js";
 
-import { WASM_ERR_MAX_BYTES, withAllocs, withMalloc } from "../codec/alloc.js";
+import {
+  WASM_ERR_MAX_BYTES,
+  WASM_MAX_ALLOC_BYTES,
+  withAllocs,
+  withMalloc,
+} from "../codec/alloc.js";
 import { throwWasmSpiceError } from "../codec/errors.js";
 import { writeUtf8CString } from "../codec/strings.js";
 import { resolveKernelPath } from "../runtime/fs.js";
@@ -279,6 +297,421 @@ export function createFileIoApi(
       }
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, table.byteLength],
+        (err, data) => {
+          module.HEAPU8.set(table, data >>> 0);
+          const rc = module._tspice_dafac(
+            h,
+            n,
+            width,
+            data,
+            table.byteLength,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+        },
+      );
+    },
+    dafdc: (handle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafdc,
+        handles.lookup(handle, ["DAF"], "dafdc").nativeHandle,
+      ),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      const size = dafCommentPageBytes(bufsiz, buffln);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4, 4],
+        (err, data, nPtr, donePtr) => {
+          const rc = module._tspice_dafec(
+            h,
+            bufsiz,
+            buffln,
+            data,
+            size,
+            nPtr,
+            donePtr,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+          const n = readHeapI32(module, nPtr >>> 2, "dafec(n)"),
+            done = readHeapI32(module, donePtr >>> 2, "dafec(done)");
+          if (n < 0 || n > bufsiz || (done !== 0 && done !== 1))
+            throw new TypeError("Invalid DAF comment page");
+          const start = data >>> 0;
+          return dafCommentPage(
+            n,
+            done === 1,
+            module.HEAPU8.subarray(start, start + n * buffln),
+            bufsiz,
+            buffln,
+          );
+        },
+      );
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      const h = handles.lookup(handle, ["DAF"], "dafrs").nativeHandle;
+      withAllocs(module, [WASM_ERR_MAX_BYTES, bytes.byteLength], (err, p) => {
+        module.HEAPU8.set(bytes, p >>> 0);
+        const rc = module._tspice_dafrs(
+          h,
+          p,
+          bytes.byteLength,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (rc) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, rc);
+      });
+    },
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const doubles = dafComponents(dc, n, false),
+        ints = dafComponents(ic, m, true);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          Math.max(8, bytes),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (d, i, out, e) => {
+          module.HEAPF64.set(doubles, d / 8);
+          module.HEAP32.set(ints, i / 4);
+          const rc = module._tspice_dafps(
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            out,
+            bytes,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + bytes);
+        },
+      );
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni),
+        input = dafBytes(summary, bytes);
+      return withAllocs(
+        module,
+        [
+          Math.max(8, bytes),
+          Math.max(8, 8 * n),
+          Math.max(4, 4 * m),
+          WASM_ERR_MAX_BYTES,
+        ],
+        (s, d, i, e) => {
+          module.HEAPU8.set(input, s);
+          const rc = module._tspice_dafus(
+            s,
+            bytes,
+            nd,
+            ni,
+            d,
+            n,
+            i,
+            m,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return {
+            dc: Array.from(module.HEAPF64.subarray(d / 8, d / 8 + n)),
+            ic: Array.from(module.HEAP32.subarray(i / 4, i / 4 + m)),
+          };
+        },
+      );
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2097152);
+      return withAllocs(
+        module,
+        [Math.max(8, bytes), 4, WASM_ERR_MAX_BYTES],
+        (out, f, e) => {
+          const rc = module._tspice_dafgsr(
+            h,
+            recno,
+            begin,
+            end,
+            out,
+            bytes,
+            f,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const found = module.HEAP32[f / 4];
+          if (found === 0) return { found: false };
+          if (found !== 1) throw new TypeError("Invalid DAFGSR found flag");
+          return { found: true, data: module.HEAPU8.slice(out, out + bytes) };
+        },
+      );
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      return withAllocs(
+        module,
+        [cap, 20, WASM_ERR_MAX_BYTES],
+        (name, fields, e) => {
+          const rc = module._tspice_dafrfr(
+            h,
+            cap,
+            name,
+            cap,
+            fields,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          const bytes = module.HEAPU8.subarray(name, name + cap),
+            end = bytes.indexOf(0);
+          if (end < 0) throw new TypeError("Missing DAFRFR name terminator");
+          const field = (i: number) =>
+            readHeapI32(
+              module,
+              heap32IndexFromPtr(fields, "dafrfr") + i,
+              "dafrfr",
+            );
+          return {
+            nd: field(0),
+            ni: field(1),
+            ifname: new TextDecoder("utf-8", {
+              fatal: true,
+              ignoreBOM: true,
+            }).decode(bytes.subarray(0, end)),
+            fward: field(2),
+            bward: field(3),
+            free: field(4),
+          };
+        },
+      );
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafrda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return module.HEAPU8.slice(out, out + 8 * words);
+        },
+      );
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 268435456);
+      return withAllocs(
+        module,
+        [Math.max(8, 8 * words), WASM_ERR_MAX_BYTES],
+        (out, e) => {
+          const rc = module._tspice_dafgda(
+            h,
+            begin,
+            end,
+            out,
+            words,
+            e,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (rc) throwWasmSpiceError(module, e, WASM_ERR_MAX_BYTES, rc);
+          return Array.from(module.HEAPF64.subarray(out / 8, out / 8 + words));
+        },
+      );
+    },
+    dafbbs: (handle: SpiceHandle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafbbs,
+        handles.lookup(handle, ["DAF"], "dafbbs").nativeHandle,
+      ),
+    dafcs: (handle: SpiceHandle) =>
+      callVoidHandle(
+        module,
+        module._tspice_dafcs,
+        handles.lookup(handle, ["DAF"], "dafcs").nativeHandle,
+      ),
+    daffpa: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "daffpa").nativeHandle;
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_daffpa(
+          native,
+          out,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        const flag = readHeapI32(
+          module,
+          heap32IndexFromPtr(out, "daffpa"),
+          "daffpa",
+        );
+        if (flag !== 0 && flag !== 1)
+          throw new TypeError("Invalid DAF search flag");
+        return flag === 1;
+      });
+    },
+    dafgh: () =>
+      withAllocs(module, [WASM_ERR_MAX_BYTES, 4], (err, out) => {
+        const code = module._tspice_dafgh(out, err, WASM_ERR_MAX_BYTES);
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return handles.findOwned(
+          "DAF",
+          readHeapI32(module, heap32IndexFromPtr(out, "dafgh"), "dafgh"),
+          "dafgh",
+        );
+      }),
+    dafgn: (handle: SpiceHandle, namlen = DAF_MAX_SUMMARY_BYTES + 1) => {
+      const native = handles.lookup(handle, ["DAF"], "dafgn").nativeHandle;
+      assertSpiceInt32(namlen, "dafgn(namlen)");
+      const capacity = Math.min(namlen, DAF_MAX_SUMMARY_BYTES + 1);
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, Math.max(capacity, 1)],
+        (err, out) => {
+          const code = module._tspice_dafgn(
+            native,
+            capacity,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const bytes = module.HEAPU8.subarray(out, out + capacity);
+          const end = bytes.indexOf(0);
+          if (end < 0) throw new RangeError("Missing DAF name terminator");
+          return new TextDecoder("utf-8", {
+            fatal: true,
+            ignoreBOM: true,
+          }).decode(bytes.subarray(0, end));
+        },
+      );
+    },
+    dafgs: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "dafgs").nativeHandle;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, DAF_MAX_SUMMARY_BYTES, 4],
+        (err, out, len) => {
+          const code = module._tspice_dafgs(
+            native,
+            out,
+            DAF_MAX_SUMMARY_BYTES,
+            len,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const count = readHeapI32(
+            module,
+            heap32IndexFromPtr(len, "dafgs"),
+            "dafgs",
+          );
+          if (count < 8 || count > DAF_MAX_SUMMARY_BYTES || count % 8)
+            throw new RangeError("Invalid packed DAF summary size");
+          return module.HEAPU8.slice(out, out + count);
+        },
+      );
+    },
+    dafhsf: (handle: SpiceHandle) => {
+      const native = handles.lookup(handle, ["DAF"], "dafhsf").nativeHandle;
+      return withAllocs(module, [WASM_ERR_MAX_BYTES, 4, 4], (err, nd, ni) => {
+        const code = module._tspice_dafhsf(
+          native,
+          nd,
+          ni,
+          err,
+          WASM_ERR_MAX_BYTES,
+        );
+        if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+        return dafSummaryFormat(
+          readHeapI32(
+            module,
+            heap32IndexFromPtr(nd, "dafhsf(nd)"),
+            "dafhsf(nd)",
+          ),
+          readHeapI32(
+            module,
+            heap32IndexFromPtr(ni, "dafhsf(ni)"),
+            "dafhsf(ni)",
+          ),
+        );
+      });
+    },
+    dafopw: (path: string) => {
+      dafPathByteLength(path, WASM_MAX_ALLOC_BYTES - 1);
+      const resolved = path.length ? resolveKernelPath(path) : path;
+      const size = dafPathByteLength(resolved, WASM_MAX_ALLOC_BYTES - 1) + 1;
+      return withAllocs(
+        module,
+        [WASM_ERR_MAX_BYTES, size, 4],
+        (err, pathPtr, out) => {
+          const bytes = new TextEncoder().encode(resolved);
+          module.HEAPU8.set(bytes, pathPtr);
+          module.HEAPU8[pathPtr + bytes.length] = 0;
+          const code = module._tspice_dafopw(
+            pathPtr,
+            out,
+            err,
+            WASM_ERR_MAX_BYTES,
+          );
+          if (code) throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, code);
+          const handle = readHeapI32(
+            module,
+            heap32IndexFromPtr(out, "dafopw"),
+            "dafopw",
+          );
+          try {
+            return handles.register("DAF", handle);
+          } catch (error) {
+            // The open already acquired a DAF claim. Reuse the owned error buffer for rollback.
+            const closeCode = module._tspice_dafcls(
+              handle,
+              err,
+              WASM_ERR_MAX_BYTES,
+            );
+            if (closeCode) {
+              try {
+                throwWasmSpiceError(module, err, WASM_ERR_MAX_BYTES, closeCode);
+              } catch (closeError) {
+                throw new AggregateError(
+                  [error, closeError],
+                  "Cannot register or close DAF writer",
+                );
+              }
+            }
+            throw error;
+          }
+        },
+      );
+    },
     dafopr: (path: string) => {
       const resolved = resolveKernelPath(path);
       const pathPtr = writeUtf8CString(module, resolved);

@@ -5,12 +5,34 @@ from typing import Any
 
 import numpy as np
 import spiceypy as sp
-from spiceypy.utils.exceptions import NotFoundError
+from spiceypy.utils.exceptions import NotFoundError, SpiceyError
 
+from .. import daf_mutation_oracle
+from .. import daf_oracle
+from .. import daf_record_oracle
 from ..models import (
+    PathRefInput,
     StepFileIoDafbfs,
     StepFileIoDafcls,
     StepFileIoDaffna,
+    StepFileIoDafbbs,
+    StepFileIoDafcs,
+    StepFileIoDaffpa,
+    StepFileIoDafgh,
+    StepFileIoDafgn,
+    StepFileIoDafgs,
+    StepFileIoDafhsf,
+    StepFileIoDafopw,
+    StepFileIoDafac,
+    StepFileIoDafdc,
+    StepFileIoDafec,
+    StepFileIoDafrs,
+    StepFileIoDafps,
+    StepFileIoDafus,
+    StepFileIoDafgsr,
+    StepFileIoDafrfr,
+    StepFileIoDafrda,
+    StepFileIoDafgda,
     StepFileIoDafopr,
     StepFileIoDascls,
     StepFileIoDasopr,
@@ -26,9 +48,9 @@ from ..models import (
     StepOutput,
     WorkflowStep,
 )
-from ..runtime import FileIoHandleState, FileIoState, SidecarRuntimeContext, resolve_path_ref
+from ..runtime import FileIoHandleState, FileIoState, SidecarRuntimeContext, resolve_path_ref, to_path_ref
 
-def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: str) -> str:
+def _resolve_file_io_path(context: SidecarRuntimeContext, path_value: PathRefInput) -> str:
     return resolve_path_ref(context.paths, path_value)
 
 
@@ -49,6 +71,9 @@ def _register_handle(
     if existing is not None and existing.isOpen:
         raise ValueError(f"File-io handle already exists and is open: {handle_id}")
 
+    # Reusing a workflow label is a new open. dict replacement alone retains
+    # its previous insertion position and breaks oldest-live alias selection.
+    state.handles.pop(handle_id, None)
     state.handles[handle_id] = FileIoHandleState(
         handle=int(handle),
         kind=kind,
@@ -149,10 +174,103 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
         arch, ftype = sp.getfat(_resolve_file_io_path(context, step.path))
         return StepOutput(op=step.op, value={"arch": str(arch), "type": str(ftype)})
 
-    if isinstance(step, StepFileIoDafopr):
-        handle = int(sp.dafopr(_resolve_file_io_path(context, step.path)))
+    if isinstance(step, (StepFileIoDafopr, StepFileIoDafopw)):
+        existing = state.handles.get(step.handleId)
+        if existing is not None and existing.isOpen:
+            raise ValueError(f"File-io handle already exists and is open: {step.handleId}")
+        if isinstance(step, StepFileIoDafopw):
+            path = to_path_ref(step.path)
+            if path.kind != "scratch":
+                raise ValueError("DAF write access requires a case scratch path")
+            resolved = resolve_path_ref(context.paths, path)
+            handle = int(sp.dafopw(resolved))
+        else:
+            resolved = _resolve_file_io_path(context, step.path)
+            handle = int(sp.dafopr(resolved))
+        daf_mutation_oracle.opened(handle, resolved, isinstance(step, StepFileIoDafopw))
         _register_handle(state, step.handleId, handle, kind="DAF", close_with="dafcls")
         return StepOutput(op=step.op, value=None)
+
+    if isinstance(step, StepFileIoDafac):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.append(handle, step.lines)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafdc):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.delete(handle)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafec):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.extract(handle, step.bufsiz, step.buffln)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrs):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_mutation_oracle.replace(handle, step.summary)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafps):
+        value = daf_record_oracle.pack(step.nd, step.ni, step.dc, step.ic)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafus):
+        value = daf_record_oracle.unpack(step.summary, step.nd, step.ni)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafgsr):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.summary_record(handle, step.recno, step.begin, step.end)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrfr):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.header(handle, step.ifnlen)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafrda):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.read_addresses(handle, step.begin, step.end, physical=True)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafgda):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        value = daf_record_oracle.read_addresses(handle, step.begin, step.end, physical=False)
+        return StepOutput(op=step.op, value=value)
+
+    if isinstance(step, StepFileIoDafgh):
+        current = int(sp.dafgh())
+        for label, entry in state.handles.items():
+            if entry.isOpen and entry.kind == "DAF" and entry.handle == current:
+                return StepOutput(op=step.op, value={"handleId": label})
+        raise ValueError("No locally owned DAF handle matches the current search")
+
+    if isinstance(step, (StepFileIoDafbbs, StepFileIoDafcs, StepFileIoDaffpa,
+                         StepFileIoDafgn, StepFileIoDafgs, StepFileIoDafhsf)):
+        handle = _require_handle(state, step.handleId, expected_kind="DAF", require_open=True).handle
+        if isinstance(step, StepFileIoDafbbs):
+            sp.dafbbs(handle)
+            return StepOutput(op=step.op, value=None)
+        if isinstance(step, StepFileIoDafcs):
+            sp.dafcs(handle)
+            return StepOutput(op=step.op, value=None)
+        if isinstance(step, StepFileIoDaffpa):
+            return StepOutput(op=step.op, value=daf_oracle.previous(handle))
+        if isinstance(step, StepFileIoDafgn):
+            try:
+                value = daf_oracle.name(handle, step.namlen)
+            except SpiceyError as error:
+                if not step.captureError:
+                    raise
+                return StepOutput(op=step.op, value={"short": error.short})
+            if step.captureError:
+                raise AssertionError("DAFGN did not raise the expected toolkit error")
+            return StepOutput(op=step.op, value=value)
+        if isinstance(step, StepFileIoDafgs):
+            return StepOutput(op=step.op, value=daf_oracle.summary(handle))
+        nd, ni = sp.dafhsf(handle)
+        return StepOutput(op=step.op, value={"nd": nd, "ni": ni})
 
     if isinstance(step, StepFileIoDafcls):
         handle_state = _require_handle(
@@ -161,7 +279,7 @@ def run_file_io_step(step: WorkflowStep, context: SidecarRuntimeContext) -> Step
             expected_kind="DAF",
             require_open=True,
         )
-        sp.dafcls(handle_state.handle)
+        daf_mutation_oracle.close(handle_state.handle)
         handle_state.isOpen = False
         return StepOutput(op=step.op, value=None)
 

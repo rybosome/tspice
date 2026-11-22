@@ -94,11 +94,11 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
   assert.deepEqual(ledger.summary, {
     total: 652,
     eligible: 649,
-    implemented: 427,
-    planned: 222,
+    implemented: 445,
+    planned: 204,
     excluded: 3,
-    caseFiles: 427,
-    scenarios: 2819,
+    caseFiles: 445,
+    scenarios: 2952,
     wasmRawUnsupported: 0,
   });
   const functions = cFunctions(
@@ -135,6 +135,40 @@ test("baseline derives breadth and preserves direct/non-direct evidence", (t) =>
     "rmaind_",
   ])
     assert.ok(localCalls.includes(required));
+  {
+    for (const name of [
+      "dafps",
+      "dafus",
+      "dafgsr",
+      "dafrfr",
+      "dafrda",
+      "dafgda",
+    ]) {
+      const routine = ledger.routines.find(
+        (entry) => entry.routine === name + "_c",
+      );
+      for (const backend of ["node", "wasm"])
+        assert.ok(
+          routine.mapping[backend].cspiceEntrypoints.includes(name + "_c"),
+        );
+    }
+    const functions = cFunctions(
+      cTokens(
+        fs.readFileSync(
+          path.join(f.root, "packages/backend-shim-c/src/domains/file_io.c"),
+          "utf8",
+        ),
+      ),
+    );
+    assert.ok(
+      cCalls(functions.get("tspice_dafgsr").body).includes(
+        "check_summary_record",
+      ),
+    );
+    const foreignChecks = cCalls(functions.get("check_summary_record").body);
+    for (const fn of ["zzddhisn_", "zzdafgdr_", "dafhsf_c"])
+      assert.ok(foreignChecks.includes(fn));
+  }
   const kplfrm = ledger.routines.find((r) => r.routine === "kplfrm_c");
   assert.equal(kplfrm.inventoryDecision, "planned");
   assert.equal(kplfrm.implementation, "contract-present");
@@ -588,7 +622,7 @@ test("maintained audit separates reviewed findings from verified backend executi
   const f = fixture(t);
   const ledger = f.build();
   assert.equal(ledger.audit.baselineRoutines, 162);
-  assert.equal(ledger.audit.expansionRoutines, 265);
+  assert.equal(ledger.audit.expansionRoutines, 283);
   // Each success route reaches its public C entrypoint. The three guarded paths
   // must also retain the linked numerical routine used to reject invalid input.
   for (const name of [
@@ -918,4 +952,82 @@ test("historical executions remain visible but cannot establish current verifica
     r.routines[0].backends.wasm.history.push("verified");
   });
   assert.throws(f.build, /missing local live verification/);
+});
+
+test("DAFEC requires the linked extractor and its original defined-row converter", (t) => {
+  const f = fixture(t);
+  const routine = f.build().routines.find((r) => r.routine === "dafec_c");
+  for (const backend of ["node", "wasm"]) {
+    assert.equal(routine.mapping[backend].classification, "alias-or-composed");
+    assert.ok(routine.mapping[backend].cspiceEntrypoints.includes("dafec_"));
+    assert.ok(
+      routine.mapping[backend].cspiceEntrypoints.includes(
+        "F2C_ConvertTrStrArr",
+      ),
+    );
+    assert.ok(!routine.mapping[backend].cspiceEntrypoints.includes("dafec_c"));
+  }
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  for (const call of [
+    "dafec_(&handle, &rows, n, out, &finished, width - 1)",
+    "F2C_ConvertTrStrArr(*n, width, out)",
+  ]) {
+    const replacement = "0 /* " + call + " */";
+    f.edit(source, call, replacement);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.dafec/);
+    f.edit(source, replacement, call);
+  }
+});
+
+test("the DAFFPA alias requires its linked SPICELIB call and outer trace", (t) => {
+  const f = fixture(t);
+  const routine = f
+    .build()
+    .routines.find((entry) => entry.routine === "daffpa_c");
+  for (const backend of ["node", "wasm"]) {
+    const mapping = routine.mapping[backend];
+    assert.equal(mapping.classification, "alias-or-composed");
+    assert.ok(mapping.cspiceEntrypoints.includes("daffpa_"));
+    assert.ok(mapping.cspiceEntrypoints.includes("dafcs_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkin_c"));
+    assert.ok(mapping.cspiceEntrypoints.includes("chkout_c"));
+    assert.ok(!mapping.cspiceEntrypoints.includes("daffpa_c"));
+  }
+
+  const source = "packages/backend-shim-c/src/domains/file_io.c";
+  const call = "daffpa_(&found)";
+  for (const replacement of [
+    "0 /* daffpa_(&found) */",
+    "daffna_(&found)",
+    "daffpa_c(&found)",
+  ]) {
+    f.edit(source, call + ";", replacement + ";");
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, replacement + ";", call + ";");
+  }
+  const selection =
+    "dafcs_c(handle);\n  if (DafStatus(err, errMaxBytes)) return 1;\n  // daffpa_c";
+  const withoutSelection = selection.replace(
+    "dafcs_c(handle);",
+    "/* no DAF selection */",
+  );
+  f.edit(source, selection, withoutSelection);
+  assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+  f.edit(source, withoutSelection, selection);
+  for (const traceCall of ['chkin_c("daffpa_c");', 'chkout_c("daffpa_c");']) {
+    const comment = "/* " + traceCall + " */";
+    f.edit(source, traceCall, comment);
+    assert.throws(f.build, /Stale non-direct mapping policy for node.daffpa/);
+    f.edit(source, comment, traceCall);
+  }
+});
+
+test("the file I/O shim must be compiled by the production build", (t) => {
+  const f = fixture(t);
+  f.edit(
+    "packages/backend-node/native/binding.gyp",
+    '        "../../backend-shim-c/src/domains/file_io.c",',
+    "",
+  );
+  assert.throws(f.build, /Node shared shim source not compiled/);
 });

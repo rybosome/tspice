@@ -811,6 +811,24 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c01-daf-navigation",
+      "routines": [
+        "dafbbs_c",
+        "dafcs_c",
+        "daffpa_c",
+        "dafgh_c",
+        "dafgn_c",
+        "dafgs_c",
+        "dafhsf_c",
+        "dafopw_c"
+      ],
+      "dependsOn": [],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/727"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "b01-cell-arrays",
       "routines": [
         "appndc_c",
@@ -954,6 +972,24 @@
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     },
     {
+      "id": "c02-daf-records",
+      "routines": [
+        "dafps_c",
+        "dafus_c",
+        "dafgsr_c",
+        "dafrfr_c",
+        "dafrda_c",
+        "dafgda_c"
+      ],
+      "dependsOn": [
+        "c01-daf-navigation"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/738"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
       "id": "d03-frame-additions",
       "routines": [
         "bltfrm_c",
@@ -1064,6 +1100,23 @@
       ],
       "prs": [
         "https://github.com/rybosome/tspice/pull/747"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "c03-daf-mutation",
+      "routines": [
+        "dafac_c",
+        "dafdc_c",
+        "dafec_c",
+        "dafrs_c"
+      ],
+      "dependsOn": [
+        "c01-daf-navigation",
+        "c02-daf-records"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/751"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }

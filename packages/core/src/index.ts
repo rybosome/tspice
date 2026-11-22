@@ -227,3 +227,19 @@ export {
   checkTimeYearWindow,
   timeOutputCapacity,
 } from "./spice-runtime/domains/time-inputs.js";
+
+export {
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
+} from "./spice-runtime/shared/daf.js";

@@ -162,6 +162,52 @@ export type NativeAddon = {
   exists(path: string): boolean;
   getfat(path: string): { arch: string; type: string };
 
+  dafac(handle: number, rows: number, width: number, table: Uint8Array): void;
+  dafdc(handle: number): void;
+  dafec(
+    handle: number,
+    rows: number,
+    width: number,
+  ): { n: number; bytes: Uint8Array; done: boolean };
+  dafrs(handle: number, summary: Uint8Array): void;
+  dafps(
+    nd: number,
+    ni: number,
+    dc: readonly number[],
+    ic: readonly number[],
+  ): Uint8Array;
+  dafus(
+    summary: Uint8Array,
+    nd: number,
+    ni: number,
+  ): { dc: number[]; ic: number[] };
+  dafgsr(
+    handle: number,
+    recno: number,
+    begin: number,
+    end: number,
+  ): { found: false } | { found: true; data: Uint8Array };
+  dafrfr(
+    handle: number,
+    ifnlen: number,
+  ): {
+    nd: number;
+    ni: number;
+    ifname: Uint8Array;
+    fward: number;
+    bward: number;
+    free: number;
+  };
+  dafrda(handle: number, begin: number, end: number): Uint8Array;
+  dafgda(handle: number, begin: number, end: number): number[];
+  dafbbs(handle: number): void;
+  dafcs(handle: number): void;
+  daffpa(handle: number): boolean;
+  dafgh(): number;
+  dafgn(handle: number, namlen: number): Uint8Array;
+  dafgs(handle: number): Uint8Array;
+  dafhsf(handle: number): { nd: number; ni: number };
+  dafopw(path: string): number;
   dafopr(path: string): number;
   dafcls(handle: number): void;
   dafbfs(handle: number): void;

@@ -446,10 +446,15 @@ export function buildLedger(root = defaultRoot, options = {}) {
       if (seen.has(key)) return;
       seen.add(key);
       const definition = shim.resolve(symbol, fromFile);
-      // These N0067 wrappers call linked SPICELIB routines. A real external call is required.
+      // Linked SPICELIB calls and scoped DAF row conversion provide alias evidence.
+      const dafExtraction =
+        symbols.includes("tspice_dafec") &&
+        !definition &&
+        (symbol === "dafec_" || symbol === "F2C_ConvertTrStrArr");
       if (
         symbol.endsWith("_c") ||
-        (!definition && (symbol === "eul2m_" || symbol === "sce2t_"))
+        (!definition && (symbol === "eul2m_" || symbol === "sce2t_" || symbol === "daffpa_")) ||
+        dafExtraction
       ) {
         result.add(symbol);
         return;

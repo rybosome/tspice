@@ -361,6 +361,24 @@ export function dispatchStep(
 
     case "file-io.exists":
     case "file-io.getfat":
+    case "file-io.dafbbs":
+    case "file-io.dafcs":
+    case "file-io.daffpa":
+    case "file-io.dafgh":
+    case "file-io.dafgn":
+    case "file-io.dafgs":
+    case "file-io.dafhsf":
+    case "file-io.dafopw":
+    case "file-io.dafac":
+    case "file-io.dafdc":
+    case "file-io.dafec":
+    case "file-io.dafrs":
+    case "file-io.dafps":
+    case "file-io.dafus":
+    case "file-io.dafgsr":
+    case "file-io.dafrfr":
+    case "file-io.dafrda":
+    case "file-io.dafgda":
     case "file-io.dafopr":
     case "file-io.dafcls":
     case "file-io.dafbfs":

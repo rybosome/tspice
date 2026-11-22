@@ -1,5 +1,6 @@
 import type {
   StepFileIoDafopr,
+  StepFileIoDafopw,
   StepFileIoDasopr,
   StepFileIoDlaopn,
   StepFileIoDskopn,
@@ -9,7 +10,7 @@ import type {
 } from "../../case-types.js";
 import { toPathRef } from "../../fixtures.js";
 
-import { publishAlias, readAlias } from "../context.js";
+import { publishAlias, readAlias, readGeneratedPath } from "../context.js";
 import type {
   DomainNormalizer,
   NormalizationContext,
@@ -20,6 +21,7 @@ type FileIoPathStep =
   | StepFileIoExists
   | StepFileIoGetfat
   | StepFileIoDafopr
+  | StepFileIoDafopw
   | StepFileIoDasopr
   | StepFileIoDlaopn
   | StepFileIoDskopn;
@@ -94,9 +96,18 @@ export const fileIoNormalizer: DomainNormalizer = {
 
   normalize(step: WorkflowStep, context) {
     switch (step.op) {
+      case "file-io.dafopw":
+      case "file-io.dafopr": {
+        const ref = toPathRef(
+          step.alias == null ? step.path : readAlias(context, step.alias),
+        );
+        const path = readGeneratedPath(context, ref.rel) ?? ref;
+        if (step.op === "file-io.dafopw" && path.kind !== "scratch")
+          throw new Error("DAF write access requires a case scratch path");
+        return { ...step, path };
+      }
       case "file-io.exists":
       case "file-io.getfat":
-      case "file-io.dafopr":
       case "file-io.dasopr":
       case "file-io.dlaopn":
       case "file-io.dskopn":

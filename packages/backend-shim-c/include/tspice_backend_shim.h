@@ -159,6 +159,34 @@ int tspice_getfat(
 
 // --- DAF -------------------------------------------------------------------
 
+// Pinned N0067 DAF summary uses at most 125 double words.
+#define TSPICE_DAF_SUMMARY_BYTES 1000
+#define TSPICE_DAF_NAME_BYTES (TSPICE_DAF_SUMMARY_BYTES + 1)
+int tspice_dafps(int nd, int ni, const double *dc, int dcCount, const int *ic, int icCount,
+                 unsigned char *out, int room, char *err, int errMaxBytes);
+int tspice_dafus(const unsigned char *summary, int size, int nd, int ni, double *dc, int dcRoom,
+                 int *ic, int icRoom, char *err, int errMaxBytes);
+int tspice_dafgsr(int handle, int recno, int begin, int end, unsigned char *out, int room,
+                  int *outFound, char *err, int errMaxBytes);
+int tspice_dafrfr(int handle, int ifnlen, char *ifname, int room, int *fields, char *err,
+                  int errMaxBytes);
+int tspice_dafrda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes);
+int tspice_dafgda(int handle, int begin, int end, double *words, int room, char *err,
+                  int errMaxBytes);
+int tspice_dafbbs(int handle, char *err, int errMaxBytes);
+int tspice_dafcs(int handle, char *err, int errMaxBytes);
+int tspice_daffpa(int handle, int *outFound, char *err, int errMaxBytes);
+int tspice_dafgh(int *outHandle, char *err, int errMaxBytes);
+int tspice_dafgn(int handle, int namlen, char *out, char *err, int errMaxBytes);
+#define TSPICE_DAF_PAGE_BYTES (256 * 1024 * 1024)
+int tspice_dafac(int handle, int n, int width, const unsigned char *rows, int room, char *err, int errMaxBytes);
+int tspice_dafdc(int handle, char *err, int errMaxBytes);
+int tspice_dafec(int handle, int rows, int width, unsigned char *out, int room, int *n, int *done, char *err, int errMaxBytes);
+int tspice_dafrs(int handle, const unsigned char *summary, int bytes, char *err, int errMaxBytes);
+int tspice_dafgs(int handle, unsigned char *out, int room, int *bytes, char *err, int errMaxBytes);
+int tspice_dafhsf(int handle, int *nd, int *ni, char *err, int errMaxBytes);
+int tspice_dafopw(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafopr(const char *path, int *outHandle, char *err, int errMaxBytes);
 int tspice_dafcls(int handle, char *err, int errMaxBytes);
 int tspice_dafbfs(int handle, char *err, int errMaxBytes);

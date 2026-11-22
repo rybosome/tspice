@@ -1,0 +1,249 @@
+[
+  {
+    "caseId": "file-io-dafgh-before-an-array",
+    "description": "DAFGH returns the active owner after beginning a search, before any array is current.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgh-interleaved-selection",
+    "description": "Current handle identity follows explicit and implicit selections across files.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "b",
+        "path": "kernels/audit-ephemeris.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafgs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "b"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgh-duplicate-open-ownership",
+    "description": "Two owned opens share a native DAF handle; closing the oldest promotes the surviving token.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "old",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "new",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "new"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "old"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "new"
+      },
+      {
+        "op": "file-io.dafgn",
+        "handleId": "new"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "new"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgh-reopen-workflow-label",
+    "description": "Reopening a previously closed label registers a new owner after the remaining alias.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "first",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "second",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "first"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "first"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "first",
+        "path": "kernels/audit-two-segment.bsp"
+      },
+      {
+        "op": "file-io.dafcs",
+        "handleId": "first"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "second"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "first"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "file-io-dafgh-exhausted-file",
+    "description": "An exhausted search retains its owning DAF handle.",
+    "workflow": [
+      {
+        "op": "kernels.furnsh",
+        "file": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafopr",
+        "handleId": "a",
+        "path": "kernels/audit-empty-daf.bsp"
+      },
+      {
+        "op": "file-io.dafbbs",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.daffpa",
+        "handleId": "a"
+      },
+      {
+        "op": "file-io.dafgh"
+      },
+      {
+        "op": "file-io.dafcls",
+        "handleId": "a"
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

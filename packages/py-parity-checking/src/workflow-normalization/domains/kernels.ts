@@ -36,7 +36,10 @@ function normalizeKernelFurnshFile(
   context: NormalizationContext,
 ): StepKernelsFurnsh["file"] {
   if (typeof step.file !== "string") {
-    return toPathRef(step.file);
+    const ref = toPathRef(step.file);
+    if (context.generatedSpkDirectory !== undefined && ref.kind === "scratch")
+      return readGeneratedPath(context, ref.rel) ?? ref;
+    return ref;
   }
 
   const generatedPath = readGeneratedPath(context, step.file);

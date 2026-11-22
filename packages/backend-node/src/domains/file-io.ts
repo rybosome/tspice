@@ -6,7 +6,23 @@ import type {
   SpiceHandle,
   VirtualOutput,
 } from "@rybosome/tspice-backend-contract";
-import { invariant } from "@rybosome/tspice-core";
+import {
+  invariant,
+  assertSpiceInt32,
+  dafCommentTable,
+  dafCommentPageBytes,
+  dafCommentPage,
+  dafReplacementBytes,
+  dafComponentLayout,
+  dafComponents,
+  dafBytes,
+  dafRecordBytes,
+  dafAddressWords,
+  dafFileNameCapacity,
+  DAF_MAX_SUMMARY_BYTES,
+  dafPathByteLength,
+  dafSummaryFormat,
+} from "@rybosome/tspice-core";
 
 import type { NativeAddon } from "../runtime/addon.js";
 import type { KernelStager } from "../runtime/kernel-staging.js";
@@ -124,6 +140,155 @@ export function createFileIoApi(
       return { arch: obj.arch, type: obj.type };
     },
 
+    dafac: (handle, lines) => {
+      const { n, width, table } = dafCommentTable(lines);
+      // Array accessors can close the original handle. Look it up after snapshotting.
+      const h = handles.lookup(handle, ["DAF"], "dafac").nativeHandle;
+      native.dafac(h, n, width, table);
+    },
+    dafdc: (handle) =>
+      native.dafdc(handles.lookup(handle, ["DAF"], "dafdc").nativeHandle),
+    dafec: (handle, bufsiz, buffln = 1024) => {
+      const h = handles.lookup(handle, ["DAF"], "dafec").nativeHandle;
+      dafCommentPageBytes(bufsiz, buffln);
+      const { n, done, bytes } = native.dafec(h, bufsiz, buffln);
+      return dafCommentPage(n, done, bytes, bufsiz, buffln);
+    },
+    dafrs: (handle, summary) => {
+      const bytes = dafReplacementBytes(summary);
+      native.dafrs(
+        handles.lookup(handle, ["DAF"], "dafrs").nativeHandle,
+        bytes,
+      );
+    },
+    dafps: (nd, ni, dc, ic) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafps(
+        nd,
+        ni,
+        dafComponents(dc, n, false),
+        dafComponents(ic, m, true),
+      );
+      return dafBytes(result, bytes, true);
+    },
+    dafus: (summary, nd, ni) => {
+      const { n, m, bytes } = dafComponentLayout(nd, ni);
+      const result = native.dafus(dafBytes(summary, bytes), nd, ni);
+      if (result.dc.length !== n || result.ic.length !== m)
+        throw new TypeError("Invalid DAFUS component count");
+      return {
+        dc: dafComponents(result.dc, n, false),
+        ic: dafComponents(result.ic, m, true),
+      };
+    },
+    dafgsr: (handle, recno, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgsr").nativeHandle;
+      const bytes = dafRecordBytes(recno, begin, end, 2147483647);
+      const result = native.dafgsr(h, recno, begin, end);
+      if (result.found === false) return { found: false };
+      if (result.found !== true)
+        throw new TypeError("Invalid DAFGSR found flag");
+      return { found: true, data: dafBytes(result.data, bytes, true) };
+    },
+    dafrfr: (handle, ifnlen = 61) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrfr").nativeHandle;
+      const cap = dafFileNameCapacity(ifnlen);
+      const { nd, ni, ifname, fward, bward, free } = native.dafrfr(h, cap);
+      for (const v of [nd, ni, fward, bward, free])
+        assertSpiceInt32(v, "DAFRFR file record integer");
+      if (!(ifname instanceof Uint8Array) || ifname.byteLength >= cap)
+        throw new TypeError("Invalid DAFRFR name bytes");
+      return {
+        nd,
+        ni,
+        ifname: new TextDecoder("utf-8", {
+          fatal: true,
+          ignoreBOM: true,
+        }).decode(ifname),
+        fward,
+        bward,
+        free,
+      };
+    },
+    dafrda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafrda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      return dafBytes(native.dafrda(h, begin, end), words * 8, true);
+    },
+    dafgda: (handle, begin, end) => {
+      const h = handles.lookup(handle, ["DAF"], "dafgda").nativeHandle;
+      const words = dafAddressWords(begin, end, 2147483647);
+      const values = native.dafgda(h, begin, end);
+      if (!Array.isArray(values) || values.length !== words)
+        throw new TypeError("Invalid DAFGDA output count");
+      return dafComponents(values, words, false);
+    },
+    dafbbs: (handle: SpiceHandle) =>
+      native.dafbbs(handles.lookup(handle, ["DAF"], "dafbbs").nativeHandle),
+    dafcs: (handle: SpiceHandle) =>
+      native.dafcs(handles.lookup(handle, ["DAF"], "dafcs").nativeHandle),
+    daffpa: (handle: SpiceHandle) => {
+      const found = native.daffpa(
+        handles.lookup(handle, ["DAF"], "daffpa").nativeHandle,
+      );
+      invariant(
+        typeof found === "boolean",
+        "Expected boolean DAF search result",
+      );
+      return found;
+    },
+    dafgh: () => handles.findOwned("DAF", native.dafgh(), "dafgh"),
+    dafgn: (handle: SpiceHandle, namlen = DAF_MAX_SUMMARY_BYTES + 1) => {
+      const entry = handles.lookup(handle, ["DAF"], "dafgn");
+      assertSpiceInt32(namlen, "dafgn(namlen)");
+      const capacity = Math.min(namlen, DAF_MAX_SUMMARY_BYTES + 1);
+      const bytes = native.dafgn(entry.nativeHandle, capacity);
+      invariant(
+        bytes instanceof Uint8Array && bytes.byteLength < capacity,
+        "Invalid DAF name bytes",
+      );
+      return new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(
+        bytes,
+      );
+    },
+    dafgs: (handle: SpiceHandle) => {
+      const bytes = native.dafgs(
+        handles.lookup(handle, ["DAF"], "dafgs").nativeHandle,
+      );
+      invariant(
+        bytes instanceof Uint8Array &&
+          bytes.byteLength >= 8 &&
+          bytes.byteLength <= DAF_MAX_SUMMARY_BYTES &&
+          bytes.byteLength % 8 === 0,
+        "Invalid packed DAF summary size",
+      );
+      return new Uint8Array(bytes);
+    },
+    dafhsf: (handle: SpiceHandle) => {
+      const { nd, ni } = native.dafhsf(
+        handles.lookup(handle, ["DAF"], "dafhsf").nativeHandle,
+      );
+      return dafSummaryFormat(nd, ni);
+    },
+    dafopw: (path: string) => {
+      dafPathByteLength(path);
+      const resolved = path.length ? resolvePath(path) : path;
+      dafPathByteLength(resolved);
+      const handle = native.dafopw(resolved);
+      try {
+        return handles.register("DAF", handle);
+      } catch (error) {
+        try {
+          native.dafcls(handle);
+        } catch (closeError) {
+          throw new AggregateError(
+            [error, closeError],
+            "Cannot register or close DAF writer",
+          );
+        }
+        throw error;
+      }
+    },
     dafopr: (path: string) =>
       handles.register("DAF", native.dafopr(resolvePath(path))),
     dafcls: (handle: SpiceHandle) =>

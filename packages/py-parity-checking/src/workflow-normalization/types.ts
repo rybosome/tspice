@@ -44,6 +44,7 @@ export type NormalizationContext = {
   target: NormalizeTarget;
   aliases: Map<string, AliasValue>;
   generatedPaths: Map<string, GeneratedPathValue>;
+  generatedSpkDirectory?: string;
 };
 
 export type DomainNormalizer = {

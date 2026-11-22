@@ -2225,6 +2225,103 @@ export type StepFileIoGetfat = {
   alias?: string;
 };
 
+export type StepFileIoDafbbs = {
+  op: "file-io.dafbbs";
+  handleId: string;
+};
+
+export type StepFileIoDafcs = {
+  op: "file-io.dafcs";
+  handleId: string;
+};
+
+export type StepFileIoDaffpa = {
+  op: "file-io.daffpa";
+  handleId: string;
+};
+
+export type StepFileIoDafgh = {
+  op: "file-io.dafgh";
+};
+
+export type StepFileIoDafgn = {
+  op: "file-io.dafgn";
+  handleId: string;
+  namlen?: number;
+  captureError?: boolean;
+};
+
+export type StepFileIoDafgs = {
+  op: "file-io.dafgs";
+  handleId: string;
+};
+
+export type StepFileIoDafhsf = {
+  op: "file-io.dafhsf";
+  handleId: string;
+};
+
+export type StepFileIoDafopw = {
+  op: "file-io.dafopw";
+  path: PathRefLike;
+  handleId: string;
+  alias?: string;
+};
+
+export type StepFileIoDafac = {
+  op: "file-io.dafac";
+  handleId: string;
+  lines: string[];
+};
+export type StepFileIoDafdc = { op: "file-io.dafdc"; handleId: string };
+export type StepFileIoDafec = {
+  op: "file-io.dafec";
+  handleId: string;
+  bufsiz: number;
+  buffln?: number;
+};
+export type StepFileIoDafrs = {
+  op: "file-io.dafrs";
+  handleId: string;
+  summary: number[];
+};
+export type StepFileIoDafps = {
+  op: "file-io.dafps";
+  nd: number;
+  ni: number;
+  dc: number[];
+  ic: number[];
+};
+export type StepFileIoDafus = {
+  op: "file-io.dafus";
+  summary: number[];
+  nd: number;
+  ni: number;
+};
+export type StepFileIoDafgsr = {
+  op: "file-io.dafgsr";
+  handleId: string;
+  recno: number;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafrfr = {
+  op: "file-io.dafrfr";
+  handleId: string;
+  ifnlen?: number;
+};
+export type StepFileIoDafrda = {
+  op: "file-io.dafrda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
+export type StepFileIoDafgda = {
+  op: "file-io.dafgda";
+  handleId: string;
+  begin: number;
+  end: number;
+};
 export type StepFileIoDafopr = {
   op: "file-io.dafopr";
   path: PathRefLike;
@@ -3267,6 +3364,24 @@ export type WorkflowStep =
   | StepEphemerisSpkw08
   | StepFileIoExists
   | StepFileIoGetfat
+  | StepFileIoDafbbs
+  | StepFileIoDafcs
+  | StepFileIoDaffpa
+  | StepFileIoDafgh
+  | StepFileIoDafgn
+  | StepFileIoDafgs
+  | StepFileIoDafhsf
+  | StepFileIoDafopw
+  | StepFileIoDafac
+  | StepFileIoDafdc
+  | StepFileIoDafec
+  | StepFileIoDafrs
+  | StepFileIoDafps
+  | StepFileIoDafus
+  | StepFileIoDafgsr
+  | StepFileIoDafrfr
+  | StepFileIoDafrda
+  | StepFileIoDafgda
   | StepFileIoDafopr
   | StepFileIoDafcls
   | StepFileIoDafbfs
@@ -3893,6 +4008,38 @@ export type StepOutput =
   | { op: "ephemeris.spkw08"; value: null }
   | { op: "file-io.exists"; value: boolean }
   | { op: "file-io.getfat"; value: { arch: string; type: string } }
+  | { op: "file-io.dafbbs"; value: null }
+  | { op: "file-io.dafcs"; value: null }
+  | { op: "file-io.daffpa"; value: boolean }
+  | { op: "file-io.dafgh"; value: { handleId: string } }
+  | { op: "file-io.dafgn"; value: string | { short: string } }
+  | { op: "file-io.dafgs"; value: number[] }
+  | { op: "file-io.dafhsf"; value: { nd: number; ni: number } }
+  | { op: "file-io.dafopw"; value: null }
+  | { op: "file-io.dafac" | "file-io.dafdc" | "file-io.dafrs"; value: null }
+  | {
+      op: "file-io.dafec";
+      value: { n: number; lines: string[]; done: boolean };
+    }
+  | { op: "file-io.dafps"; value: number[] }
+  | { op: "file-io.dafus"; value: { dc: number[]; ic: number[] } }
+  | {
+      op: "file-io.dafgsr";
+      value: { found: false } | { found: true; data: number[] };
+    }
+  | {
+      op: "file-io.dafrfr";
+      value: {
+        nd: number;
+        ni: number;
+        ifname: string;
+        fward: number;
+        bward: number;
+        free: number;
+      };
+    }
+  | { op: "file-io.dafrda"; value: number[] }
+  | { op: "file-io.dafgda"; value: number[] }
   | { op: "file-io.dafopr"; value: null }
   | { op: "file-io.dafcls"; value: null }
   | { op: "file-io.dafbfs"; value: null }

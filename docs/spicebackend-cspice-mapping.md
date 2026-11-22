@@ -775,16 +775,46 @@ lengths depend on each routine's dimension order. [Shapes, signed dimensions and
 
 ## Domain: `file-io` readers (`FileIoApi`)
 
-| Raw method       | Actual CSPICE route        | Semantic observations                                                                                                |
-| ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `dafopr(path)`   | `dafopr_c`                 | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
-| `dafcls(handle)` | `dafcls_c`                 | Release one read claim; public tokens close once and are rejected after close.                                       |
-| `dafbfs(handle)` | `dafbfs_c`                 | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
-| `daffna(handle)` | `dafcs_c` then `daffna_c`  | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
-| `dasopr(path)`   | `dasopr_c`                 | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
-| `dascls(handle)` | `dascls_c`                 | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
-| `dlabfs(handle)` | `dlabfs_c`                 | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
-| `dlacls(handle)` | tspice alias of `dascls_c` | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+| Raw call                       | CSPICE entry                                                                      | Observable effect                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `dafac(handle,lines)`          | `dafac_c`                                                                         | Append printable comment lines to a writable DAF.                   |
+| `dafdc(handle)`                | `dafdc_c`                                                                         | Remove its complete comment area.                                   |
+| `dafec(handle,bufsiz,buffln?)` | Traced N0067 `dafec_` with initialized outputs and original `F2C_ConvertTrStrArr` | Return `{n,lines,done}` for the shared file cursor.                 |
+| `dafrs(handle,summary)`        | `dafcs_c`, `dafhsf_c`, `dafrs_c`                                                  | Replace the selected packed summary and retain the array addresses. |
+
+Read aliases share page position. Finishing or closing the final DAF read link releases the original extractor cursor. [DAF comment and descriptor semantics](step8-daf-mutation.md)
+
+| Raw call                         | CSPICE entry | Result                                                           |
+| -------------------------------- | ------------ | ---------------------------------------------------------------- |
+| `dafps(nd,ni,dc,ic)`             | `dafps_c`    | Native-order packed `Uint8Array`                                 |
+| `dafus(summary,nd,ni)`           | `dafus_c`    | Owned `{dc,ic}` arrays                                           |
+| `dafgsr(handle,recno,begin,end)` | `dafgsr_c`   | `{found:false}` or `{found:true,data:Uint8Array}`                |
+| `dafrfr(handle,ifnlen?)`         | `dafrfr_c`   | `{nd,ni,ifname,fward,bward,free}`                                |
+| `dafrda(handle,begin,end)`       | `dafrda_c`   | Native-format physical words as `Uint8Array`                     |
+| `dafgda(handle,begin,end)`       | `dafgda_c`   | Numeric data as `number[]`, including translated non-native DAFs |
+
+All four file operations use live DAF handles issued to the calling backend. Word positions, record numbers and addresses are one-based. [Boundary and byte semantics](step8-daf-records.md)
+
+| Raw method               | Actual CSPICE route                  | Semantic observations                                                                                                |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `dafopr(path)`           | `dafopr_c`                           | Backend-owned opaque token; duplicate native read claims share a file/search state.                                  |
+| `dafcls(handle)`         | `dafcls_c`                           | Release one read or write claim; public tokens close once and are rejected after close.                              |
+| `dafbfs(handle)`         | `dafbfs_c`                           | Start/restart search; authored two-segment and empty files distinguish its effect.                                   |
+| `daffna(handle)`         | `dafcs_c` then `daffna_c`            | Select the file before each global next operation; compare interleaved true/false sequences, exhaustion and restart. |
+| `dafbbs(handle)`         | `dafbbs_c`                           | Begin or restart a backward search at the end of the selected DAF.                                                   |
+| `dafcs(handle)`          | `dafcs_c`                            | Select an already-started search without advancing its cursor.                                                       |
+| `daffpa(handle)`         | `dafcs_c`, traced SPICELIB `daffpa_` | Advance exactly once on the selected DAF using an initialized logical output.                                        |
+| `dafgh()`                | `dafgh_c`                            | Return the oldest surviving local DAF claim matching the toolkit’s current file.                                     |
+| `dafgn(handle, namlen?)` | `dafcs_c`, `dafgn_c`                 | Return the current name using a NUL-inclusive byte capacity and strict UTF-8.                                        |
+| `dafgs(handle)`          | `dafcs_c`, `dafhsf_c`, `dafgs_c`     | Return the packed summary as owned bytes, preserving integer pairs and NaN payloads.                                 |
+| `dafhsf(handle)`         | `dafhsf_c`                           | Return file-wide integer counts `{nd, ni}` independent of current array position.                                    |
+| `dafopw(path)`           | `dafopw_c`                           | Acquire a write claim on an existing native-format DAF and close it with `dafcls`.                                   |
+| `dasopr(path)`           | `dasopr_c`                           | Open DAS/DLA/DSK for read; close-one/retain-another claims and real wrong-format/missing-file errors.                |
+| `dascls(handle)`         | `dascls_c`                           | Finalize DAS/DLA output and release read claims; reopening proves a valid flushed empty DLA.                         |
+| `dlabfs(handle)`         | `dlabfs_c`                           | Return a miss or all eight signed-integer descriptor fields, valid only on a hit.                                    |
+| `dlacls(handle)`         | tspice alias of `dascls_c`           | Same DAS/DLA ownership/close behavior. N0067 has no separate `dlacls_c` C entrypoint.                                |
+
+The C01 review records the initialized DAFFPA alias, cross-client ownership, and exact byte evidence. [DAF navigation](step8-daf-navigation.md)
 
 The opaque-handle contract rejects foreign (within the same host realm), wrong-kind
 and already-closed tokens before FFI. CSPICE's numeric close primitives themselves

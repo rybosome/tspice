@@ -55,6 +55,72 @@ export interface FileIoKitApi {
 
 /** Backend contract for SPICE file I/O primitives (DAF/DAS/DLA). */
 export interface FileIoApi {
+  /** Append the supplied comment lines to a writable DAF. Printable ASCII is accepted by CSPICE.
+   * Trailing spaces are removed and leading/embedded spaces and empty rows are retained.
+   * The rectangular UTF-8 input table must fit 256 MiB. Finish any partial extraction before mutation.
+   * Adding comment records can relocate arrays and reposition this file's search.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafac_c.html */
+  dafac(handle: SpiceHandle, lines: readonly string[]): void;
+  /** Delete the entire comment area of a writable DAF. Finish any partial extraction first.
+   * N0067 may relocate array addresses when freeing reserved records.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafdc_c.html */
+  dafdc(handle: SpiceHandle): void;
+  /** Extract up to bufsiz lines from this DAF. buffln defaults to 1024 bytes and includes the NUL.
+   * A positive rectangular output must fit 256 MiB. Returned lines own their text. Open aliases
+   * share one per-file cursor. Reading after done restarts at the beginning. Closing the final
+   * local DAF link finishes any partial extraction so the native reader releases its cursor.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafec_c.html */
+  dafec(
+    handle: SpiceHandle,
+    bufsiz: number,
+    buffln?: number,
+  ): { n: number; lines: string[]; done: boolean };
+  /** Select a writable DAF's current array and replace its packed summary. Supply exactly the file's
+   * native-order 8*(ND+ceil(NI/2)) bytes. CSPICE retains the final two integer address fields.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrs_c.html */
+  dafrs(handle: SpiceHandle, summary: Uint8Array): void;
+  /** Pack the effective prefixes of double and signed 32-bit integer components into owned native-order bytes. Double components may include signed zero and IEEE nonfinite values. Negative counts consume zero components; at most 125 words are packed, doubles first. Extra input entries are ignored. An unused odd integer half-word is zeroed before publication.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafps_c.html */
+  dafps(
+    nd: number,
+    ni: number,
+    dc: readonly number[],
+    ic: readonly number[],
+  ): Uint8Array;
+  /** Unpack a native-order DAF summary using the same clipped counts as dafps. The input must contain the requested prefix. Returned arrays own every effective component. Integer words remain exact. JS number outputs preserve NaN classification; byte-oriented APIs retain packed payload bits.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafus_c.html */
+  dafus(
+    summary: Uint8Array,
+    nd: number,
+    ni: number,
+  ): { dc: number[]; ic: number[] };
+  /** Read a summary record from a live DAF claim. Record and word numbers are one-based. Intersect the inclusive word interval with 1 through 128. Found records may yield zero bytes, and missing records omit data. Returns owned host-order bytes including packed integers. Non-native input must identify a genuine summary record or a missing record; malformed converted summary counts are rejected. The WASM direct-access seek limit is record 2,097,152.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgsr_c.html */
+  dafgsr(
+    handle: SpiceHandle,
+    recno: number,
+    begin: number,
+    end: number,
+  ): { found: false } | { found: true; data: Uint8Array };
+  /** Read file summary sizes, internal name, first/last summary records and first free address. The default 61-byte capacity includes a terminator. Positive smaller capacities truncate before trailing ASCII blanks are removed. Capacity one yields an empty name. Incomplete or invalid returned UTF-8 is rejected.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrfr_c.html */
+  dafrfr(
+    handle: SpiceHandle,
+    ifnlen?: number,
+  ): {
+    nd: number;
+    ni: number;
+    ifname: string;
+    fward: number;
+    bward: number;
+    free: number;
+  };
+  /** Read an inclusive one-based range of native-format physical words as owned bytes, including packed integer or NaN payloads. Unavailable records contribute zero words. This deprecated CSPICE operation requires a live native-format DAF handle. Each call accepts up to 256 MiB of output. WASM supports addresses through 268,435,456.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafrda_c.html */
+  dafrda(handle: SpiceHandle, begin: number, end: number): Uint8Array;
+  /** Read an inclusive one-based range containing only double-precision array data through a live DAF handle, including supported non-native file formats. Missing records are zero-filled. The caller supplies a valid numeric data range and may use the segment summary addresses. Each call accepts up to 256 MiB of output. WASM supports addresses through 268,435,456.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgda_c.html */
+  dafgda(handle: SpiceHandle, begin: number, end: number): number[];
   /**
    * Return whether a nonempty backend filesystem path exists.
    * A missing file returns false; this does not load or open a kernel.
@@ -72,6 +138,31 @@ export interface FileIoApi {
 
   // --- DAF -----------------------------------------------------------------
 
+  /** Begin a backward array search on this live DAF, sharing its per-file cursor with other opens of the same file.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafbbs_c.html */
+  dafbbs(handle: SpiceHandle): void;
+  /** Select a previously started DAF search as the current search. Search selection is toolkit-global in each runtime.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcs_c.html */
+  dafcs(handle: SpiceHandle): void;
+  /** Select the handle’s search and move back one array. False denotes no previous array. Uses the same traced N0067 SPICELIB operation with defined error handling.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/daffpa_c.html */
+  daffpa(handle: SpiceHandle): boolean;
+  /** Return the oldest live DAF token in this backend for the current CSPICE search file. Repeated opens can share that file. An unowned current file is rejected.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgh_c.html */
+  dafgh(): SpiceHandle;
+  /** Select the handle's search and read the current array name. namlen is the signed byte capacity including NUL, default 1001. Smaller valid capacities retain the toolkit prefix. An incomplete or invalid UTF-8 result cannot be represented.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgn_c.html */
+  dafgn(handle: SpiceHandle, namlen?: number): string;
+  /** Select the handle's search and copy its current packed summary. The owned byte array contains 8*(ND+ceil(NI/2)) bytes in the runtime's native byte order, preserving all stored bit patterns. Use dafhsf for the layout.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafgs_c.html */
+  dafgs(handle: SpiceHandle): Uint8Array;
+  /** Read the counts of double (nd) and integer (ni) summary components in this DAF.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafhsf_c.html */
+  dafhsf(handle: SpiceHandle): { nd: number; ni: number };
+  /** Open an existing native-format DAF for write access and return a claim owned by this backend. Resolve mounted virtual paths as for dafopr. Close with dafcls.
+   * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafopw_c.html */
+  dafopw(path: string): SpiceHandle;
+
   /**
    * Open a DAF file for read and return a backend-owned opaque token.
    * Duplicate read opens have separate tokens but share CSPICE's file/cursor.
@@ -81,9 +172,9 @@ export interface FileIoApi {
   dafopr(path: string): SpiceHandle;
 
   /**
-   * Release one DAF read claim and invalidate its opaque token.
+   * Release one DAF read or write claim and invalidate its opaque token.
    * Wrong-kind, foreign and already-closed tokens throw at the registry boundary.
-   * @param handle Live token returned by this backend's `dafopr`.
+   * @param handle Live token returned by this backend's `dafopr` or `dafopw`.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/dafcls_c.html
    */
   dafcls(handle: SpiceHandle): void;

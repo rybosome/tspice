@@ -452,3 +452,19 @@ D03 adds six methods to the 162-routine baseline, including the two-epoch orient
 ## Civil time and local solar time expansion
 
 D01 adds five time methods to the immutable 162-routine Step 7 assignment. The reviewed source covers parser effects, exact text, leap-second increments, independent geometry, kernel/error order and safe representation boundaries. Older executions remain tied to their original sources. [Scientific observations and fixture provenance](step8-civil-time.md) [Maintained routine review](../data/parity-audits/d01-time-additions.json)
+
+## DAF navigation
+
+Eight new file operations cover reverse and interleaved searches, owned handles,
+array names, binary summaries, file dimensions and write-open access. The
+independent oracle follows the same pinned SPICELIB operation for DAFFPA and
+reads exact CSPICE bytes for DAFGN. Each backend judgment is source-bound.
+[DAF routes, state, fixtures and focused evidence](step8-daf-navigation.md)
+
+## DAF records
+
+C02 adds summary packing and unpacking, physical summary records, file headers and two address-read routines. The 42 registered workflows contain 198 steps and 103 calls to these routines. Five expected errors come from CSPICE and four from closed-handle checks. [DAF records and format restrictions](step8-daf-records.md) [Routine audit](../data/parity-audits/c02-daf-records.json)
+
+## DAF mutation
+
+C03 adds comment appending, deletion and paging, plus packed summary replacement against a selected writable array. The workflows use separately created scratch DAFs. Independent readers inspect both backends’ completed output files. [Mutation semantics and measurements](step8-daf-mutation.md) [Routine audit](../data/parity-audits/c03-daf-mutation.json)

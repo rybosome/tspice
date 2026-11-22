@@ -8,6 +8,24 @@ import type {
   StepFileIoDafbfs,
   StepFileIoDafcls,
   StepFileIoDaffna,
+  StepFileIoDafbbs,
+  StepFileIoDafcs,
+  StepFileIoDaffpa,
+  StepFileIoDafgh,
+  StepFileIoDafgn,
+  StepFileIoDafgs,
+  StepFileIoDafhsf,
+  StepFileIoDafopw,
+  StepFileIoDafac,
+  StepFileIoDafdc,
+  StepFileIoDafec,
+  StepFileIoDafrs,
+  StepFileIoDafps,
+  StepFileIoDafus,
+  StepFileIoDafgsr,
+  StepFileIoDafrfr,
+  StepFileIoDafrda,
+  StepFileIoDafgda,
   StepFileIoDafopr,
   StepFileIoDascls,
   StepFileIoDasopr,
@@ -22,12 +40,34 @@ import type {
   StepFileIoGetfat,
   StepOutput,
 } from "../../case-types.js";
-import { toVirtualKernelPath } from "../../fixtures.js";
+import {
+  resolvePathRef,
+  toPathRef,
+  toVirtualKernelPath,
+} from "../../fixtures.js";
 import type { RunTspiceContext } from "../context.js";
 
 type FileIoStep =
   | StepFileIoExists
   | StepFileIoGetfat
+  | StepFileIoDafbbs
+  | StepFileIoDafcs
+  | StepFileIoDaffpa
+  | StepFileIoDafgh
+  | StepFileIoDafgn
+  | StepFileIoDafgs
+  | StepFileIoDafhsf
+  | StepFileIoDafopw
+  | StepFileIoDafac
+  | StepFileIoDafdc
+  | StepFileIoDafec
+  | StepFileIoDafrs
+  | StepFileIoDafps
+  | StepFileIoDafus
+  | StepFileIoDafgsr
+  | StepFileIoDafrfr
+  | StepFileIoDafrda
+  | StepFileIoDafgda
   | StepFileIoDafopr
   | StepFileIoDafcls
   | StepFileIoDafbfs
@@ -115,11 +155,163 @@ export function runFileIoStep(
         value: context.spice.raw.getfat(resolveFileIoPath(step.path)),
       };
 
-    case "file-io.dafopr": {
-      const handle = context.spice.raw.dafopr(resolveFileIoPath(step.path));
+    case "file-io.dafopr":
+    case "file-io.dafopw": {
+      if (context.state.fileIo.handles.get(step.handleId)?.isOpen)
+        throw new Error(
+          `File-io handle already exists and is open: ${step.handleId}`,
+        );
+      const ref = toPathRef(step.path);
+      if (step.op === "file-io.dafopw" && ref.kind !== "scratch")
+        throw new Error("DAF write access requires a case scratch path");
+      // Node writers create the physical scratch file. WASM writers and
+      // staged read-only fixtures use the virtual kernel filesystem.
+      const path =
+        ref.kind === "scratch" && context.spice.raw.kind === "node"
+          ? resolvePathRef(context.paths, ref)
+          : toVirtualKernelPath(ref);
+      const handle =
+        step.op === "file-io.dafopw"
+          ? context.spice.raw.dafopw(path)
+          : context.spice.raw.dafopr(path);
       registerHandleState(context, step.handleId, handle, "dafcls");
       return { op: step.op, value: null };
     }
+
+    case "file-io.dafgh": {
+      const current = context.spice.raw.dafgh();
+      for (const [handleId, entry] of context.state.fileIo.handles) {
+        if (
+          entry.isOpen &&
+          entry.closeWith === "dafcls" &&
+          entry.handle === current
+        )
+          return { op: step.op, value: { handleId } };
+      }
+      throw new Error(
+        "No workflow handle matches the locally owned current DAF token",
+      );
+    }
+
+    case "file-io.dafbbs":
+    case "file-io.dafcs": {
+      const { handle } = requireHandleState(context, step.handleId);
+      if (step.op === "file-io.dafbbs") context.spice.raw.dafbbs(handle);
+      else context.spice.raw.dafcs(handle);
+      return { op: step.op, value: null };
+    }
+
+    case "file-io.daffpa":
+      return {
+        op: step.op,
+        value: context.spice.raw.daffpa(
+          requireHandleState(context, step.handleId).handle,
+        ),
+      };
+    case "file-io.dafgn": {
+      const { handle } = requireHandleState(context, step.handleId);
+      let value: string;
+      try {
+        value = context.spice.raw.dafgn(handle, step.namlen);
+      } catch (error) {
+        if (
+          step.captureError &&
+          typeof error === "object" &&
+          error !== null &&
+          "spiceShort" in error &&
+          typeof error.spiceShort === "string"
+        )
+          return { op: step.op, value: { short: error.spiceShort } };
+        throw error;
+      }
+      if (step.captureError)
+        throw new Error("DAFGN did not raise the expected toolkit error");
+      return { op: step.op, value };
+    }
+    case "file-io.dafac":
+      context.spice.raw.dafac(
+        requireHandleState(context, step.handleId).handle,
+        step.lines,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dafdc":
+      context.spice.raw.dafdc(
+        requireHandleState(context, step.handleId).handle,
+      );
+      return { op: step.op, value: null };
+    case "file-io.dafec":
+      return {
+        op: step.op,
+        value: context.spice.raw.dafec(
+          requireHandleState(context, step.handleId).handle,
+          step.bufsiz,
+          step.buffln,
+        ),
+      };
+    case "file-io.dafrs":
+      context.spice.raw.dafrs(
+        requireHandleState(context, step.handleId).handle,
+        Uint8Array.from(step.summary),
+      );
+      return { op: step.op, value: null };
+    case "file-io.dafps": {
+      const out = context.spice.raw.dafps(step.nd, step.ni, step.dc, step.ic);
+      return { op: step.op, value: Array.from(out) };
+    }
+    case "file-io.dafus": {
+      const out = context.spice.raw.dafus(
+        Uint8Array.from(step.summary),
+        step.nd,
+        step.ni,
+      );
+      return { op: step.op, value: out };
+    }
+    case "file-io.dafgsr": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafgsr(
+        handle,
+        step.recno,
+        step.begin,
+        step.end,
+      );
+      return {
+        op: step.op,
+        value: out.found
+          ? { found: true, data: Array.from(out.data) }
+          : { found: false },
+      };
+    }
+    case "file-io.dafrfr": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafrfr(handle, step.ifnlen);
+      return { op: step.op, value: out };
+    }
+    case "file-io.dafrda": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafrda(handle, step.begin, step.end);
+      return { op: step.op, value: Array.from(out) };
+    }
+    case "file-io.dafgda": {
+      const { handle } = requireHandleState(context, step.handleId);
+      const out = context.spice.raw.dafgda(handle, step.begin, step.end);
+      return { op: step.op, value: out };
+    }
+    case "file-io.dafgs":
+      return {
+        op: step.op,
+        value: Array.from(
+          context.spice.raw.dafgs(
+            requireHandleState(context, step.handleId).handle,
+          ),
+        ),
+      };
+    case "file-io.dafhsf":
+      return {
+        op: step.op,
+        value: context.spice.raw.dafhsf(
+          requireHandleState(context, step.handleId).handle,
+        ),
+      };
 
     case "file-io.dafcls": {
       const state = requireHandleState(context, step.handleId);
