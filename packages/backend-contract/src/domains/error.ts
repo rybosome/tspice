@@ -16,7 +16,8 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  * Runtime selector validation helpers (e.g. `assertGetmsgWhich`) live in
  * `@rybosome/tspice-core`.
  */
-export type SpiceErrorAction = "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
+export type SpiceErrorAction =
+  "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
 
 export interface ErrorApi {
   /** Read the current action with an optional output byte capacity including NUL. */

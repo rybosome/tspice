@@ -1,7 +1,7 @@
 {
   "audit": {
     "baselineCommit": "3f950ae22993aaf9a629263a12388bf56894879c",
-    "baselineRoutines": 162,
+    "baselineRoutines": 163,
     "expansionRoutines": 10,
     "batches": [
       {
@@ -472,6 +472,18 @@
         "record": "data/parity-audits/vectors-arithmetic.json"
       },
       {
+        "id": "b08-error-action",
+        "routines": [
+          "erract_c"
+        ],
+        "dependsOn": [
+          "b07-error-devices"
+        ],
+        "prs": [],
+        "nextAction": "Run isolated action round trips and scientific-boundary regression on both backends.",
+        "record": "data/parity-audits/b08-error-action.json"
+      },
+      {
         "id": "b06-error-observation",
         "routines": [
           "errch_c",
@@ -507,13 +519,13 @@
     "counts": {
       "node": {
         "unreviewed": 0,
-        "reviewed": 172,
+        "reviewed": 173,
         "needs-repair": 0,
         "verified": 0
       },
       "wasm": {
         "unreviewed": 0,
-        "reviewed": 172,
+        "reviewed": 173,
         "needs-repair": 0,
         "verified": 0
       }
@@ -530,11 +542,11 @@
   "summary": {
     "total": 652,
     "eligible": 649,
-    "implemented": 172,
-    "planned": 477,
+    "implemented": 173,
+    "planned": 476,
     "excluded": 3,
-    "caseFiles": 172,
-    "scenarios": 1171,
+    "caseFiles": 173,
+    "scenarios": 1176,
     "wasmRawUnsupported": 0
   },
   "ciLanes": [
@@ -955,7 +967,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 187
+        "line": 188
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -969,7 +981,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 186
+        "line": 187
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -983,7 +995,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 188
+        "line": 189
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -997,7 +1009,7 @@
       "contractDomain": "dsk",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 190
+        "line": 191
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1008,7 +1020,7 @@
       "contractDomain": "dsk",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 189
+        "line": 190
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1019,7 +1031,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 184
+        "line": 185
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -1033,7 +1045,7 @@
       "contractDomain": "dsk",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 181
+        "line": 182
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1044,7 +1056,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 183
+        "line": 184
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -1058,7 +1070,7 @@
       "contractDomain": "dsk",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 182
+        "line": 183
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1069,7 +1081,7 @@
       "contractDomain": "file-io",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 185
+        "line": 186
       },
       "namespaceMapping": "dispatcher-alias-with-direct-raw-call",
       "aliasEvidence": {
@@ -1083,7 +1095,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 177
+        "line": 178
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1094,7 +1106,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 176
+        "line": 177
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1105,7 +1117,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 175
+        "line": 176
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1116,7 +1128,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 170
+        "line": 171
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1127,7 +1139,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 178
+        "line": 179
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1138,7 +1150,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 163
+        "line": 164
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1149,7 +1161,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 164
+        "line": 165
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1160,7 +1172,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 165
+        "line": 166
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1171,7 +1183,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 166
+        "line": 167
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1182,7 +1194,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 174
+        "line": 175
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1193,7 +1205,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 173
+        "line": 174
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1204,7 +1216,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 171
+        "line": 172
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1215,7 +1227,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 167
+        "line": 168
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1226,7 +1238,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 168
+        "line": 169
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1237,7 +1249,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 169
+        "line": 170
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1248,7 +1260,7 @@
       "contractDomain": "ek",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 172
+        "line": 173
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1259,7 +1271,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 145
+        "line": 146
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1270,7 +1282,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 146
+        "line": 147
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1281,7 +1293,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 147
+        "line": 148
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1292,7 +1304,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 148
+        "line": 149
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1303,7 +1315,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 149
+        "line": 150
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1314,7 +1326,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 150
+        "line": 151
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1325,7 +1337,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 151
+        "line": 152
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1336,7 +1348,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 152
+        "line": 153
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1347,7 +1359,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 153
+        "line": 154
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1358,7 +1370,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 154
+        "line": 155
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1369,7 +1381,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 155
+        "line": 156
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1380,7 +1392,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 156
+        "line": 157
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1391,7 +1403,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 157
+        "line": 158
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1402,7 +1414,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 158
+        "line": 159
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1413,7 +1425,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 159
+        "line": 160
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1424,7 +1436,7 @@
       "contractDomain": "ephemeris",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 160
+        "line": 161
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1435,7 +1447,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 141
+        "line": 142
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1446,7 +1458,18 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 142
+        "line": 143
+      },
+      "namespaceMapping": "canonical-domain",
+      "aliasEvidence": null
+    },
+    {
+      "operation": "error.erract",
+      "contractMethod": "erract",
+      "contractDomain": "error",
+      "dispatch": {
+        "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+        "line": 126
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1457,7 +1480,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 129
+        "line": 130
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1468,7 +1491,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 126
+        "line": 127
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1479,7 +1502,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 130
+        "line": 131
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1490,7 +1513,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 131
+        "line": 132
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1501,7 +1524,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 127
+        "line": 128
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1512,7 +1535,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 136
+        "line": 137
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1523,7 +1546,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 138
+        "line": 139
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1534,7 +1557,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 132
+        "line": 133
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1545,7 +1568,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 137
+        "line": 138
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1556,7 +1579,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 133
+        "line": 134
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1567,7 +1590,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 139
+        "line": 140
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1578,7 +1601,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 140
+        "line": 141
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1589,7 +1612,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 134
+        "line": 135
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1600,7 +1623,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 135
+        "line": 136
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1611,7 +1634,7 @@
       "contractDomain": "error",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 128
+        "line": 129
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1787,7 +1810,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 198
+        "line": 199
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1798,7 +1821,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 195
+        "line": 196
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1809,7 +1832,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 204
+        "line": 205
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1820,7 +1843,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 199
+        "line": 200
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1831,7 +1854,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 200
+        "line": 201
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1842,7 +1865,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 201
+        "line": 202
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1853,7 +1876,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 203
+        "line": 204
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1864,7 +1887,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 202
+        "line": 203
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1875,7 +1898,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 196
+        "line": 197
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1886,7 +1909,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 197
+        "line": 198
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1897,7 +1920,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 194
+        "line": 195
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1908,7 +1931,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 193
+        "line": 194
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1919,7 +1942,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 205
+        "line": 206
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1930,7 +1953,7 @@
       "contractDomain": "frames",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 206
+        "line": 207
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1941,7 +1964,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 227
+        "line": 228
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1952,7 +1975,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 223
+        "line": 224
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1963,7 +1986,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 225
+        "line": 226
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1974,7 +1997,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 224
+        "line": 225
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1985,7 +2008,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 226
+        "line": 227
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -1996,7 +2019,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 220
+        "line": 221
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2007,7 +2030,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 221
+        "line": 222
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2018,7 +2041,7 @@
       "contractDomain": "geometry-gf",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 222
+        "line": 223
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2029,7 +2052,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 214
+        "line": 215
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2040,7 +2063,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 213
+        "line": 214
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2051,7 +2074,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 212
+        "line": 213
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2062,7 +2085,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 216
+        "line": 217
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2073,7 +2096,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 215
+        "line": 216
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2084,7 +2107,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 217
+        "line": 218
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2095,7 +2118,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 211
+        "line": 212
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2106,7 +2129,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 209
+        "line": 210
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2117,7 +2140,7 @@
       "contractDomain": "geometry",
       "dispatch": {
         "file": "packages/py-parity-checking/src/run-tspice/dispatch.ts",
-        "line": 210
+        "line": 211
       },
       "namespaceMapping": "canonical-domain",
       "aliasEvidence": null
@@ -2655,7 +2678,7 @@
           "symbol": "tspice_axisar",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1185
+            "line": 1187
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -2936,7 +2959,7 @@
           "symbol": "tspice_bodc2n",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 558
+            "line": 560
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -3196,7 +3219,7 @@
           "symbol": "tspice_bodc2s",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 567
+            "line": 569
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -3438,7 +3461,7 @@
           "symbol": "tspice_boddef",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 583
+            "line": 585
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -3703,7 +3726,7 @@
           "symbol": "tspice_bodfnd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 590
+            "line": 592
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -3984,7 +4007,7 @@
           "symbol": "tspice_bodn2c",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 550
+            "line": 552
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -4258,7 +4281,7 @@
           "symbol": "tspice_bods2c",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 575
+            "line": 577
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -4535,7 +4558,7 @@
           "symbol": "tspice_bodvar",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 607
+            "line": 609
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ids_names.c",
@@ -4546,7 +4569,7 @@
           "symbol": "tspice_dtpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 431
+            "line": 433
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -4913,7 +4936,7 @@
           "symbol": "tspice_card",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1352
+            "line": 1354
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -5158,7 +5181,7 @@
           "symbol": "tspice_ccifrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 668
+            "line": 670
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -5443,7 +5466,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 136
+          "line": 150
         }
       },
       "mapping": {
@@ -5490,7 +5513,7 @@
           "symbol": "tspice_chkin",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 56
+            "line": 58
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -5503,7 +5526,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 99
+            "line": 114
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -5515,7 +5538,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 415
+                "line": 429
               },
               "calls": [
                 "tspice_chkin"
@@ -5544,7 +5567,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 256
+            "line": 277
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -5694,7 +5717,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 143
+          "line": 157
         }
       },
       "mapping": {
@@ -5741,7 +5764,7 @@
           "symbol": "tspice_chkout",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 57
+            "line": 59
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -5754,7 +5777,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 103
+            "line": 118
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -5766,7 +5789,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 416
+                "line": 430
               },
               "calls": [
                 "tspice_chkout"
@@ -5795,7 +5818,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 271
+            "line": 292
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -6011,7 +6034,7 @@
           "symbol": "tspice_cidfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 634
+            "line": 636
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -6278,7 +6301,7 @@
           "symbol": "tspice_ckcov",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1308
+            "line": 1310
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -6824,7 +6847,7 @@
           "symbol": "tspice_ckgp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1269
+            "line": 1271
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7178,7 +7201,7 @@
           "symbol": "tspice_ckgpav",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1284
+            "line": 1286
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7546,7 +7569,7 @@
           "symbol": "tspice_cklpf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1299
+            "line": 1301
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -7858,7 +7881,7 @@
           "symbol": "tspice_ckobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1305
+            "line": 1307
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -8238,7 +8261,7 @@
           "symbol": "tspice_ckupf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1302
+            "line": 1304
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -8617,7 +8640,7 @@
           "symbol": "tspice_cnmfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 644
+            "line": 646
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -8929,7 +8952,7 @@
           "symbol": "tspice_cvpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 470
+            "line": 472
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -9214,7 +9237,7 @@
           "symbol": "tspice_dafbfs",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 131
+            "line": 133
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -9478,7 +9501,7 @@
           "symbol": "tspice_dafcls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 130
+            "line": 132
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -9765,7 +9788,7 @@
           "symbol": "tspice_daffna",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 137
+            "line": 139
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -10083,7 +10106,7 @@
           "symbol": "tspice_dafopr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 129
+            "line": 131
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -10464,7 +10487,7 @@
           "symbol": "tspice_dascls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 142
+            "line": 144
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -10751,7 +10774,7 @@
           "symbol": "tspice_dasopr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 141
+            "line": 143
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -11119,7 +11142,7 @@
           "symbol": "tspice_deltet",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 507
+            "line": 509
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -11408,7 +11431,7 @@
           "symbol": "tspice_dlabfs",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 157
+            "line": 159
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -11703,7 +11726,7 @@
           "symbol": "tspice_dascls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 142
+            "line": 144
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -11973,7 +11996,7 @@
           "symbol": "tspice_dlafns",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 158
+            "line": 160
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -12248,7 +12271,7 @@
           "symbol": "tspice_dlaopn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 146
+            "line": 148
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -12664,7 +12687,7 @@
           "symbol": "tspice_dskb02",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 379
+            "line": 381
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/dsk.c",
@@ -12972,7 +12995,7 @@
           "symbol": "tspice_dskgd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 366
+            "line": 368
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/dsk.c",
@@ -13283,7 +13306,7 @@
           "symbol": "tspice_dskmi2",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 306
+            "line": 308
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -13639,7 +13662,7 @@
           "symbol": "tspice_dskobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 352
+            "line": 354
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/dsk.c",
@@ -14001,7 +14024,7 @@
           "symbol": "tspice_dskopn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 298
+            "line": 300
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -14299,7 +14322,7 @@
           "symbol": "tspice_dsksrf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 354
+            "line": 356
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/dsk.c",
@@ -14740,7 +14763,7 @@
           "symbol": "tspice_dskw02",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 325
+            "line": 327
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -15159,7 +15182,7 @@
           "symbol": "tspice_dtpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 431
+            "line": 433
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -15496,7 +15519,7 @@
           "symbol": "tspice_ekaclc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 279
+            "line": 281
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -15884,7 +15907,7 @@
           "symbol": "tspice_ekacld",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 266
+            "line": 268
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -16220,7 +16243,7 @@
           "symbol": "tspice_ekacli",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 253
+            "line": 255
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -16574,7 +16597,7 @@
           "symbol": "tspice_ekcls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 182
+            "line": 184
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -16867,7 +16890,7 @@
           "symbol": "tspice_ekffld",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 294
+            "line": 296
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -17142,7 +17165,7 @@
           "symbol": "tspice_ekfind",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 197
+            "line": 199
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -17451,7 +17474,7 @@
           "symbol": "tspice_ekgc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 206
+            "line": 208
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -17806,7 +17829,7 @@
           "symbol": "tspice_ekgd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 217
+            "line": 219
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -18183,7 +18206,7 @@
           "symbol": "tspice_ekgi",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 227
+            "line": 229
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -18560,7 +18583,7 @@
           "symbol": "tspice_ekifld",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 239
+            "line": 241
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -18982,7 +19005,7 @@
           "symbol": "tspice_eknseg",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 193
+            "line": 195
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -19232,7 +19255,7 @@
           "symbol": "tspice_ekntab",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 184
+            "line": 186
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -19518,7 +19541,7 @@
           "symbol": "tspice_ekopn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 174
+            "line": 176
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -19789,7 +19812,7 @@
           "symbol": "tspice_ekopr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 171
+            "line": 173
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -20044,7 +20067,7 @@
           "symbol": "tspice_ekopw",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 172
+            "line": 174
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -20356,7 +20379,7 @@
           "symbol": "tspice_ektnam",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 186
+            "line": 188
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ek.c",
@@ -20649,7 +20672,233 @@
       "purpose": "Get/Set Default Error Action",
       "inventoryDecision": "planned",
       "inventoryJustification": null,
-      "implementation": "planned"
+      "implementation": "contract-present",
+      "contract": {
+        "name": "erract",
+        "interface": "ErrorApi",
+        "domain": "error",
+        "evidence": {
+          "file": "packages/backend-contract/src/domains/error.ts",
+          "line": 24
+        }
+      },
+      "mapping": {
+        "classification": "same-named-cspice-entrypoint",
+        "cspiceEntrypoints": [
+          "eqstr_c",
+          "erract_c",
+          "errprt_c"
+        ],
+        "node": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "eqstr_c",
+            "erract_c",
+            "errprt_c"
+          ]
+        },
+        "wasm": {
+          "classification": "same-named-cspice-entrypoint",
+          "reason": null,
+          "cspiceEntrypoints": [
+            "eqstr_c",
+            "erract_c",
+            "errprt_c"
+          ]
+        },
+        "semanticEquivalence": "reviewed; see maintained per-backend audit and verification status"
+      },
+      "shim": [
+        {
+          "symbol": "tspice_erract",
+          "declaration": {
+            "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
+            "line": 42
+          },
+          "definition": {
+            "file": "packages/backend-shim-c/src/errors.c",
+            "line": 371
+          }
+        }
+      ],
+      "backends": {
+        "node": {
+          "status": "source-route-present",
+          "evidence": {
+            "file": "packages/backend-node/src/domains/error.ts",
+            "line": 51
+          },
+          "factory": "createErrorApi",
+          "delegation": null,
+          "routePolicy": null,
+          "nativeExports": [
+            {
+              "name": "erract",
+              "handler": "Erract",
+              "registration": "RegisterError",
+              "evidence": {
+                "file": "packages/backend-node/native/src/domains/error.cc",
+                "line": 413
+              },
+              "calls": [
+                "tspice_erract"
+              ]
+            }
+          ],
+          "shimSymbols": [
+            "tspice_erract"
+          ],
+          "cspiceEntrypoints": [
+            "eqstr_c",
+            "erract_c",
+            "errprt_c"
+          ],
+          "ciJobs": [
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        },
+        "wasm": {
+          "status": "source-and-binary-route-present",
+          "unsupportedThrow": null,
+          "evidence": {
+            "file": "packages/backend-wasm/src/domains/error.ts",
+            "line": 143
+          },
+          "factory": "createErrorApi",
+          "delegation": null,
+          "routePolicy": null,
+          "shimSymbols": [
+            "tspice_erract"
+          ],
+          "cspiceEntrypoints": [
+            "eqstr_c",
+            "erract_c",
+            "errprt_c"
+          ],
+          "ciJobs": [
+            "check",
+            "check-native"
+          ],
+          "oracleParity": "registered-scenarios; execution must be established by CI logs"
+        }
+      },
+      "parity": {
+        "scenarios": [
+          {
+            "caseId": "error-erract-roundtrip-abort",
+            "source": "packages/py-parity-checking/src/cases/error/erract.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.erract"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Read the original error action, select ABORT, verify full and byte-truncated output, then restore RETURN.",
+              "record": "data/parity-audits/b08-error-action.json"
+            }
+          },
+          {
+            "caseId": "error-erract-roundtrip-default",
+            "source": "packages/py-parity-checking/src/cases/error/erract.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.erract"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Read the original error action, select DEFAULT, verify full and byte-truncated output, then restore RETURN.",
+              "record": "data/parity-audits/b08-error-action.json"
+            }
+          },
+          {
+            "caseId": "error-erract-roundtrip-ignore",
+            "source": "packages/py-parity-checking/src/cases/error/erract.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.erract"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Read the original error action, select IGNORE, verify full and byte-truncated output, then restore RETURN.",
+              "record": "data/parity-audits/b08-error-action.json"
+            }
+          },
+          {
+            "caseId": "error-erract-roundtrip-report",
+            "source": "packages/py-parity-checking/src/cases/error/erract.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.erract"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Read the original error action, select REPORT, verify full and byte-truncated output, then restore RETURN.",
+              "record": "data/parity-audits/b08-error-action.json"
+            }
+          },
+          {
+            "caseId": "error-erract-roundtrip-return",
+            "source": "packages/py-parity-checking/src/cases/error/erract.cases.json",
+            "expectation": "success",
+            "operations": [
+              "error.erract"
+            ],
+            "paths": [],
+            "assertionQuality": {
+              "coverage": [
+                "success",
+                "edge"
+              ],
+              "observes": "Read the original error action, select RETURN, verify full and byte-truncated output, then restore RETURN.",
+              "record": "data/parity-audits/b08-error-action.json"
+            }
+          }
+        ],
+        "meaningfulCoverage": "maintained-per-backend-audit; see audit status and evidence"
+      },
+      "audit": {
+        "batch": "b08-error-action",
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/b08-error-action.json"
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed"
+          ],
+          "route": "direct",
+          "trace": "Raw error action delegates to the shared C erract shim, which calls erract_c.",
+          "executions": [],
+          "status": "reviewed",
+          "record": "data/parity-audits/b08-error-action.json"
+        }
+      }
     },
     {
       "routine": "errch_c",
@@ -20663,7 +20912,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 54
+          "line": 68
         }
       },
       "mapping": {
@@ -20710,7 +20959,7 @@
           "symbol": "tspice_errch",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 44
+            "line": 46
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -20723,7 +20972,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 40
+            "line": 55
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -20735,7 +20984,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 403
+                "line": 417
               },
               "calls": [
                 "tspice_errch"
@@ -20764,7 +21013,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 129
+            "line": 150
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -20945,7 +21194,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 24
+          "line": 38
         }
       },
       "mapping": {
@@ -20995,11 +21244,11 @@
           "symbol": "tspice_errdev",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 41
+            "line": 43
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
-            "line": 360
+            "line": 395
           }
         }
       ],
@@ -21008,7 +21257,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 37
+            "line": 52
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21020,7 +21269,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 400
+                "line": 414
               },
               "calls": [
                 "tspice_errdev"
@@ -21050,7 +21299,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 123
+            "line": 144
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21331,7 +21580,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 60
+          "line": 74
         }
       },
       "mapping": {
@@ -21378,7 +21627,7 @@
           "symbol": "tspice_errdp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 45
+            "line": 47
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -21391,7 +21640,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 45
+            "line": 60
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21403,7 +21652,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 404
+                "line": 418
               },
               "calls": [
                 "tspice_errdp"
@@ -21432,7 +21681,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 138
+            "line": 159
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21595,7 +21844,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 66
+          "line": 80
         }
       },
       "mapping": {
@@ -21642,7 +21891,7 @@
           "symbol": "tspice_errint",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 46
+            "line": 48
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -21655,7 +21904,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 51
+            "line": 66
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21667,7 +21916,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 405
+                "line": 419
               },
               "calls": [
                 "tspice_errint"
@@ -21696,7 +21945,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 147
+            "line": 168
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21859,7 +22108,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 36
+          "line": 50
         }
       },
       "mapping": {
@@ -21906,11 +22155,11 @@
           "symbol": "tspice_errprt",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 42
+            "line": 44
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
-            "line": 370
+            "line": 405
           }
         }
       ],
@@ -21919,7 +22168,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 38
+            "line": 53
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -21931,7 +22180,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 401
+                "line": 415
               },
               "calls": [
                 "tspice_errprt"
@@ -21960,7 +22209,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 124
+            "line": 145
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -22301,7 +22550,7 @@
           "symbol": "tspice_et2utc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 488
+            "line": 490
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -22669,7 +22918,7 @@
           "symbol": "tspice_exists",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 116
+            "line": 118
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -22927,7 +23176,7 @@
           "symbol": "tspice_expool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 476
+            "line": 478
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -23130,7 +23379,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 97
+          "line": 111
         }
       },
       "mapping": {
@@ -23165,7 +23414,7 @@
           "symbol": "tspice_failed",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 51
+            "line": 53
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -23178,7 +23427,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 68
+            "line": 83
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -23190,7 +23439,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 410
+                "line": 424
               },
               "calls": [
                 "tspice_failed"
@@ -23215,7 +23464,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 175
+            "line": 196
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -23444,7 +23693,7 @@
           "symbol": "tspice_frinfo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 654
+            "line": 656
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -23741,7 +23990,7 @@
           "symbol": "tspice_frmnam",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 625
+            "line": 627
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -24026,7 +24275,7 @@
           "symbol": "tspice_furnsh",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 61
+            "line": 63
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -24404,7 +24653,7 @@
           "symbol": "tspice_gcpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 409
+            "line": 411
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -24654,7 +24903,7 @@
           "symbol": "tspice_gdpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 389
+            "line": 391
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -24904,7 +25153,7 @@
           "symbol": "tspice_georec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1193
+            "line": 1195
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -25207,7 +25456,7 @@
           "symbol": "tspice_getfat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 118
+            "line": 120
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/file_io.c",
@@ -25434,7 +25683,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 113
+          "line": 127
         }
       },
       "mapping": {
@@ -25478,7 +25727,7 @@
           "symbol": "tspice_getmsg",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 53
+            "line": 55
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -25491,7 +25740,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 81
+            "line": 96
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -25503,7 +25752,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 412
+                "line": 426
               },
               "calls": [
                 "tspice_getmsg"
@@ -25531,7 +25780,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 197
+            "line": 218
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -25743,7 +25992,7 @@
           "symbol": "tspice_gfdist",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1076
+            "line": 1078
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -26942,7 +27191,7 @@
           "symbol": "tspice_gfrefn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1047
+            "line": 1049
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -27302,7 +27551,7 @@
           "symbol": "tspice_gfrepf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1053
+            "line": 1055
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -27545,7 +27794,7 @@
           "symbol": "tspice_gfrepi",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1050
+            "line": 1052
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -27927,7 +28176,7 @@
           "symbol": "tspice_gfsep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1056
+            "line": 1058
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -29221,7 +29470,7 @@
           "symbol": "tspice_gfsstp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1038
+            "line": 1040
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -29511,7 +29760,7 @@
           "symbol": "tspice_gfstep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1041
+            "line": 1043
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -29788,7 +30037,7 @@
           "symbol": "tspice_gfstol",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1044
+            "line": 1046
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry_gf.c",
@@ -30091,7 +30340,7 @@
           "symbol": "tspice_gipool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 399
+            "line": 401
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -30358,7 +30607,7 @@
           "symbol": "tspice_gnpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 420
+            "line": 422
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -30665,7 +30914,7 @@
           "symbol": "tspice_illumf",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 794
+            "line": 796
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -31679,7 +31928,7 @@
           "symbol": "tspice_illumg",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 774
+            "line": 776
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -32568,7 +32817,7 @@
           "symbol": "tspice_ilumin",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1004
+            "line": 1006
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -33386,7 +33635,7 @@
           "symbol": "tspice_insrtc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1358
+            "line": 1360
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -33681,7 +33930,7 @@
           "symbol": "tspice_insrtd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1357
+            "line": 1359
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -33958,7 +34207,7 @@
           "symbol": "tspice_insrti",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1356
+            "line": 1358
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -34354,7 +34603,7 @@
           "symbol": "tspice_kclear",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 65
+            "line": 67
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -34621,7 +34870,7 @@
           "symbol": "tspice_kdata",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 69
+            "line": 71
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -34632,7 +34881,7 @@
           "symbol": "tspice_ktotal",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 67
+            "line": 69
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -34913,7 +35162,7 @@
           "symbol": "tspice_kdata",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 69
+            "line": 71
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -34924,7 +35173,7 @@
           "symbol": "tspice_kinfo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 83
+            "line": 85
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -34935,7 +35184,7 @@
           "symbol": "tspice_ktotal",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 67
+            "line": 69
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -35203,7 +35452,7 @@
           "symbol": "tspice_kplfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 108
+            "line": 110
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -35505,7 +35754,7 @@
           "symbol": "tspice_kdata",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 69
+            "line": 71
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -35516,7 +35765,7 @@
           "symbol": "tspice_ktotal",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 67
+            "line": 69
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -35790,7 +36039,7 @@
           "symbol": "tspice_kxtrct",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 94
+            "line": 96
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -36301,7 +36550,7 @@
           "symbol": "tspice_latrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1102
+            "line": 1104
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -36820,7 +37069,7 @@
           "symbol": "tspice_mtxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1149
+            "line": 1151
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -37050,7 +37299,7 @@
           "symbol": "tspice_mxm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1153
+            "line": 1155
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -37310,7 +37559,7 @@
           "symbol": "tspice_mxv",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1145
+            "line": 1147
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -37540,7 +37789,7 @@
           "symbol": "tspice_namfrm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 617
+            "line": 619
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -37873,7 +38122,7 @@
           "symbol": "tspice_nvc2pl",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 827
+            "line": 829
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -38217,7 +38466,7 @@
           "symbol": "tspice_occult",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1021
+            "line": 1023
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -39492,7 +39741,7 @@
           "symbol": "tspice_pcpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 454
+            "line": 456
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -39760,7 +40009,7 @@
           "symbol": "tspice_pdpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 440
+            "line": 442
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -40048,7 +40297,7 @@
           "symbol": "tspice_pipool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 447
+            "line": 449
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -40321,7 +40570,7 @@
           "symbol": "tspice_pl2nvc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 837
+            "line": 839
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -40738,7 +40987,7 @@
           "symbol": "tspice_pxform",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 683
+            "line": 685
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -40988,7 +41237,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 72
+          "line": 86
         }
       },
       "mapping": {
@@ -41032,7 +41281,7 @@
           "symbol": "tspice_qcktrc",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 47
+            "line": 49
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -41045,7 +41294,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 56
+            "line": 71
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -41057,7 +41306,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 406
+                "line": 420
               },
               "calls": [
                 "tspice_qcktrc"
@@ -41085,7 +41334,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 155
+            "line": 176
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -41379,7 +41628,7 @@
           "symbol": "tspice_recgeo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1204
+            "line": 1206
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -41668,7 +41917,7 @@
           "symbol": "tspice_reclat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1093
+            "line": 1095
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -41921,7 +42170,7 @@
           "symbol": "tspice_recsph",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1111
+            "line": 1113
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -42211,7 +42460,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 104
+          "line": 118
         }
       },
       "mapping": {
@@ -42246,7 +42495,7 @@
           "symbol": "tspice_reset",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 52
+            "line": 54
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -42259,7 +42508,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 77
+            "line": 92
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -42271,7 +42520,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 411
+                "line": 425
               },
               "calls": [
                 "tspice_reset"
@@ -42296,7 +42545,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 187
+            "line": 208
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -42426,7 +42675,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 78
+          "line": 92
         }
       },
       "mapping": {
@@ -42461,7 +42710,7 @@
           "symbol": "tspice_return",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 48
+            "line": 50
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -42474,7 +42723,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 60
+            "line": 75
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -42486,7 +42735,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 407
+                "line": 421
               },
               "calls": [
                 "tspice_return"
@@ -42511,7 +42760,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 159
+            "line": 180
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -42669,7 +42918,7 @@
           "symbol": "tspice_rotate",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1173
+            "line": 1175
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -42908,7 +43157,7 @@
           "symbol": "tspice_rotmat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1176
+            "line": 1178
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -43176,7 +43425,7 @@
           "symbol": "tspice_scard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1351
+            "line": 1353
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -43441,7 +43690,7 @@
           "symbol": "tspice_scdecd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1242
+            "line": 1244
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -43727,7 +43976,7 @@
           "symbol": "tspice_sce2c",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1259
+            "line": 1261
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -44065,7 +44314,7 @@
           "symbol": "tspice_sce2s",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1225
+            "line": 1227
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -44410,7 +44659,7 @@
           "symbol": "tspice_scencd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1234
+            "line": 1236
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -44732,7 +44981,7 @@
           "symbol": "tspice_scs2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1217
+            "line": 1219
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -45070,7 +45319,7 @@
           "symbol": "tspice_sct2e",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1251
+            "line": 1253
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -45382,7 +45631,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 121
+          "line": 135
         }
       },
       "mapping": {
@@ -45429,7 +45678,7 @@
           "symbol": "tspice_setmsg",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 54
+            "line": 56
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -45442,7 +45691,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 91
+            "line": 106
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -45454,7 +45703,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 413
+                "line": 427
               },
               "calls": [
                 "tspice_setmsg"
@@ -45483,7 +45732,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 226
+            "line": 247
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -45674,7 +45923,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 129
+          "line": 143
         }
       },
       "mapping": {
@@ -45721,7 +45970,7 @@
           "symbol": "tspice_sigerr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 55
+            "line": 57
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -45734,7 +45983,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 95
+            "line": 110
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -45746,7 +45995,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 414
+                "line": 428
               },
               "calls": [
                 "tspice_sigerr"
@@ -45775,7 +46024,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 241
+            "line": 262
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -45991,7 +46240,7 @@
           "symbol": "tspice_sincpt",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 987
+            "line": 989
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -46936,7 +47185,7 @@
           "symbol": "tspice_size",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1353
+            "line": 1355
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -47202,7 +47451,7 @@
           "symbol": "tspice_sphrec",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1120
+            "line": 1122
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -47490,7 +47739,7 @@
           "symbol": "tspice_spkcls",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 915
+            "line": 917
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -47777,7 +48026,7 @@
           "symbol": "tspice_spkcov",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 845
+            "line": 847
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -48179,7 +48428,7 @@
           "symbol": "tspice_spkez",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 727
+            "line": 729
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -48942,7 +49191,7 @@
           "symbol": "tspice_spkezp",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 739
+            "line": 741
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -49705,7 +49954,7 @@
           "symbol": "tspice_spkezr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 703
+            "line": 705
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -50539,7 +50788,7 @@
           "symbol": "tspice_spkgeo",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 751
+            "line": 753
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -51038,7 +51287,7 @@
           "symbol": "tspice_spkgps",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 762
+            "line": 764
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -51551,7 +51800,7 @@
           "symbol": "tspice_spkobj",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 853
+            "line": 855
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -51925,7 +52174,7 @@
           "symbol": "tspice_spkopa",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 912
+            "line": 914
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -52262,7 +52511,7 @@
           "symbol": "tspice_spkopn",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 903
+            "line": 905
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -52629,7 +52878,7 @@
           "symbol": "tspice_spkpds",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 875
+            "line": 877
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -53017,7 +53266,7 @@
           "symbol": "tspice_spkpos",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 715
+            "line": 717
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -53858,7 +54107,7 @@
           "symbol": "tspice_spksfs",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 863
+            "line": 865
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -54303,7 +54552,7 @@
           "symbol": "tspice_spkssb",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 814
+            "line": 816
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -54780,7 +55029,7 @@
           "symbol": "tspice_spkuds",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 887
+            "line": 889
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -55115,7 +55364,7 @@
           "symbol": "tspice_spkw08_v2",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 939
+            "line": 941
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/ephemeris.c",
@@ -55980,7 +56229,7 @@
           "symbol": "tspice_ssize",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1350
+            "line": 1352
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -56249,7 +56498,7 @@
           "symbol": "tspice_str2et",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 485
+            "line": 487
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -56541,7 +56790,7 @@
           "symbol": "tspice_subpnt",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 959
+            "line": 961
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -57415,7 +57664,7 @@
           "symbol": "tspice_subslr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 973
+            "line": 975
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/geometry.c",
@@ -58321,7 +58570,7 @@
           "symbol": "tspice_swpool",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 462
+            "line": 464
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernel_pool.c",
@@ -58571,7 +58820,7 @@
           "symbol": "tspice_sxform",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 694
+            "line": 696
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/frames.c",
@@ -58882,7 +59131,7 @@
           "symbol": "tspice_timdef_get",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 536
+            "line": 538
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -58893,7 +59142,7 @@
           "symbol": "tspice_timdef_set",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 543
+            "line": 545
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -59172,7 +59421,7 @@
           "symbol": "tspice_timout",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 498
+            "line": 500
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -59485,7 +59734,7 @@
           "symbol": "tspice_tkvrsn_toolkit",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 59
+            "line": 61
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -59748,7 +59997,7 @@
           "symbol": "tspice_tparse",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 524
+            "line": 526
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -60006,7 +60255,7 @@
           "symbol": "tspice_tpictr",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 527
+            "line": 529
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -60222,7 +60471,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 84
+          "line": 98
         }
       },
       "mapping": {
@@ -60257,7 +60506,7 @@
           "symbol": "tspice_trcdep",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 49
+            "line": 51
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -60270,7 +60519,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 61
+            "line": 76
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -60282,7 +60531,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 408
+                "line": 422
               },
               "calls": [
                 "tspice_trcdep"
@@ -60307,7 +60556,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 164
+            "line": 185
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -60414,7 +60663,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 90
+          "line": 104
         }
       },
       "mapping": {
@@ -60464,7 +60713,7 @@
           "symbol": "tspice_trcnam",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 50
+            "line": 52
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
@@ -60477,7 +60726,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 62
+            "line": 77
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -60489,7 +60738,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 409
+                "line": 423
               },
               "calls": [
                 "tspice_trcnam"
@@ -60519,7 +60768,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 169
+            "line": 190
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -60722,7 +60971,7 @@
         "domain": "error",
         "evidence": {
           "file": "packages/backend-contract/src/domains/error.ts",
-          "line": 48
+          "line": 62
         }
       },
       "mapping": {
@@ -60757,11 +61006,11 @@
           "symbol": "tspice_trcoff",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 43
+            "line": 45
           },
           "definition": {
             "file": "packages/backend-shim-c/src/errors.c",
-            "line": 380
+            "line": 415
           }
         }
       ],
@@ -60770,7 +61019,7 @@
           "status": "source-route-present",
           "evidence": {
             "file": "packages/backend-node/src/domains/error.ts",
-            "line": 39
+            "line": 54
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -60782,7 +61031,7 @@
               "registration": "RegisterError",
               "evidence": {
                 "file": "packages/backend-node/native/src/domains/error.cc",
-                "line": 402
+                "line": 416
               },
               "calls": [
                 "tspice_trcoff"
@@ -60807,7 +61056,7 @@
           "unsupportedThrow": null,
           "evidence": {
             "file": "packages/backend-wasm/src/domains/error.ts",
-            "line": 125
+            "line": 146
           },
           "factory": "createErrorApi",
           "delegation": null,
@@ -61110,7 +61359,7 @@
           "symbol": "tspice_unitim",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 515
+            "line": 517
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/time.c",
@@ -61386,7 +61635,7 @@
           "symbol": "tspice_unload",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 63
+            "line": 65
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/kernels.c",
@@ -61710,7 +61959,7 @@
           "symbol": "tspice_vadd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1161
+            "line": 1163
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -61948,7 +62197,7 @@
           "symbol": "tspice_valid",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1354
+            "line": 1356
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -62255,7 +62504,7 @@
           "symbol": "tspice_vcrss",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1141
+            "line": 1143
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -62517,7 +62766,7 @@
           "symbol": "tspice_vdot",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1138
+            "line": 1140
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -62769,7 +63018,7 @@
           "symbol": "tspice_vhat",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1135
+            "line": 1137
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -63053,7 +63302,7 @@
           "symbol": "tspice_vminus",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1167
+            "line": 1169
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -63284,7 +63533,7 @@
           "symbol": "tspice_vnorm",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1129
+            "line": 1131
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -63602,7 +63851,7 @@
           "symbol": "tspice_vscl",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1170
+            "line": 1172
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -63854,7 +64103,7 @@
           "symbol": "tspice_vsub",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1164
+            "line": 1166
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/coords_vectors.c",
@@ -64127,7 +64376,7 @@
           "symbol": "tspice_wncard",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1371
+            "line": 1373
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -64415,7 +64664,7 @@
           "symbol": "tspice_wnfetd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1372
+            "line": 1374
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -64697,7 +64946,7 @@
           "symbol": "tspice_wninsd",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1370
+            "line": 1372
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",
@@ -65003,7 +65252,7 @@
           "symbol": "tspice_wnvald",
           "declaration": {
             "file": "packages/backend-shim-c/include/tspice_backend_shim.h",
-            "line": 1379
+            "line": 1381
           },
           "definition": {
             "file": "packages/backend-shim-c/src/domains/cells_windows.c",

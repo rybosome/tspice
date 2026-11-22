@@ -31,7 +31,9 @@ async function assertParityForBackend(
   // whose initial-state observations must be independent of test order.
   if (
     parityCase.workflow.some((step) =>
-      ["error.erract", "error.errdev", "error.errprt", "error.trcoff"].includes(step.op),
+      ["error.erract", "error.errdev", "error.errprt", "error.trcoff"].includes(
+        step.op,
+      ),
     )
   ) {
     const child = spawnSync(

@@ -1,4 +1,7 @@
-import type { ErrorApi, SpiceErrorAction } from "@rybosome/tspice-backend-contract";
+import type {
+  ErrorApi,
+  SpiceErrorAction,
+} from "@rybosome/tspice-backend-contract";
 import {
   policyArguments,
   assertGetmsgWhich,
