@@ -17,7 +17,8 @@ export type GetmsgWhich = (typeof GETMSG_WHICH_VALUES)[number];
  * `@rybosome/tspice-core`.
  */
 /** The five error response policies exposed by CSPICE N0067. */
-export type SpiceErrorAction = "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
+export type SpiceErrorAction =
+  "ABORT" | "DEFAULT" | "IGNORE" | "REPORT" | "RETURN";
 
 export interface ErrorApi {
   /** Read the current action with an optional output byte capacity including NUL. */
