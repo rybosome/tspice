@@ -92,6 +92,25 @@ rescaled in focused live tests; global tolerance remains unchanged. The
 actual raw backends, independent oracle decode/dispatch, native wrapper and WASM
 allocation tests, and state lifecycle code. Reviews alone do not claim verification.
 
+## Scalar math expansion
+
+A03 adds nine routines alongside the unchanged original 162-routine baseline.
+Its 47 registered scenarios contain 373 actual routine calls, including seven
+genuine conversion errors. Four min/max functions have no top-level SpiceyPy
+wrappers; the new independent ctypes binding calls the actual locked library's
+canonical symbols with exact fixed-count/scalar-varargs ABI. Every supported
+arity 0..30 is exercised. Defined-input `sumai` results still come from CSPICE;
+unsafe signed prefixes are separate wrapper-safety checks, never oracle calls
+into undefined C behavior.
+
+The [scalar review](step8-scalar-math.md) records exact source/ABI evidence,
+conversion-table restrictions, ordered floating arithmetic, signed-zero probes,
+and allocation/count boundaries. The
+[batch audit](../data/parity-audits/a03-scalar-math.json) traces actual raw paths,
+independent oracle handlers, models/decoder, and focused tests. Old executions
+remain historical until fresh source-bound required local and canonical CI
+observations are recorded; review alone is not verification.
+
 ## Recording verification
 
 Execution records are maintained observations, not inferred from CI configuration or scenario registration. Record the command, backend, native-required flag where applicable, successful scenario IDs, result summary, and SHA-256 source digest. CI observations also need the actual successful job URL and tested commit. Inspect logs for executed cases and absence of unexpected skips before recording success. Local observations describe the run result; durable CI links provide independently inspectable execution evidence.
@@ -157,6 +176,9 @@ Regression evidence: [vector-combinations-domain.test.ts](../packages/backend-no
 
 `recazl_c`, `recpgr_c`, `recrad_c` now marshal the same entries that the typed adapters validated.
 Copy each validated rectangular coordinate once into an owned three-vector and dispatch only that vector. Keep flag, body-name and ellipsoid semantics unchanged. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
+
+`sumad_c`, `sumai_c`, `maxd_c`, `maxi_c`, `mind_c`, `mini_c` now marshal the same entries that the typed adapters validated.
+Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.
 
 Regression evidence: [owned-numeric-inputs.test.ts](../packages/py-parity-checking/test/owned-numeric-inputs.test.ts). These adapter checks do not replace
 the independent scientific workflows. Earlier executions remain historical on

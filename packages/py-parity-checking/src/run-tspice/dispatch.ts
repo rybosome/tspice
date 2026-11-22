@@ -87,6 +87,15 @@ export function dispatchStep(
     case "coords-vectors.radrec":
     case "coords-vectors.recrad":
     case "coords-vectors.srfrec":
+    case "coords-vectors.brcktd":
+    case "coords-vectors.brckti":
+    case "coords-vectors.convrt":
+    case "coords-vectors.sumad":
+    case "coords-vectors.sumai":
+    case "coords-vectors.maxd":
+    case "coords-vectors.maxi":
+    case "coords-vectors.mind":
+    case "coords-vectors.mini":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

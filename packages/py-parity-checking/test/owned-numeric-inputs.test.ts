@@ -35,6 +35,24 @@ for (const backend of ["node", "wasm"] as const) {
           raw.recpgr("EARTH", [3, 4, 5], 1, 0),
         );
         expect(raw.recrad(readOnce(3, 4, 5))).toEqual(raw.recrad([3, 4, 5]));
+        expect(raw.sumad(readOnce(2, -3, 5, 4))).toEqual(
+          raw.sumad([2, -3, 5, 4]),
+        );
+        expect(raw.sumai(readOnce(2, -3, 5, 4))).toEqual(
+          raw.sumai([2, -3, 5, 4]),
+        );
+        expect(raw.maxd(readOnce(2, -3, 5, 4))).toEqual(
+          raw.maxd([2, -3, 5, 4]),
+        );
+        expect(raw.maxi(readOnce(2, -3, 5, 4))).toEqual(
+          raw.maxi([2, -3, 5, 4]),
+        );
+        expect(raw.mind(readOnce(2, -3, 5, 4))).toEqual(
+          raw.mind([2, -3, 5, 4]),
+        );
+        expect(raw.mini(readOnce(2, -3, 5, 4))).toEqual(
+          raw.mini([2, -3, 5, 4]),
+        );
         expect(raw.failed()).toBe(false);
       } finally {
         await dispose();

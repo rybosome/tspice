@@ -1,0 +1,78 @@
+[
+  {
+    "caseId": "coords-vectors-sumai-empty-singleton-and-mixed",
+    "description": "sumai: empty-singleton-and-mixed; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumai",
+        "values": []
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [7]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [7, -11, 19, -5]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [-8, -1, -2]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sumai-safe-prefix-signed32-extrema",
+    "description": "sumai: safe-prefix-signed32-extrema; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumai",
+        "values": [2147483647]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [-2147483648]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [2147483647, -2147483647, 1]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [-2147483648, 2147483647, 1]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [1073741823, 1073741824]
+      },
+      {
+        "op": "coords-vectors.sumai",
+        "values": [-1073741824, -1073741824]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-sumai-longer-than-variadic-limit",
+    "description": "sumai: longer-than-variadic-limit; compare the actual scalar returned by independent live CSPICE.",
+    "workflow": [
+      {
+        "op": "coords-vectors.sumai",
+        "values": [
+          1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4,
+          1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4,
+          1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4, 1, -2, 3, -4,
+          1, -2, 3, -4
+        ]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -558,5 +558,24 @@
       "prs": ["https://github.com/rybosome/tspice/pull/713"],
       "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
     }
+  ],
+  "expansionBatches": [
+    {
+      "id": "a03-scalar-math",
+      "routines": [
+        "brcktd_c",
+        "brckti_c",
+        "convrt_c",
+        "sumad_c",
+        "sumai_c",
+        "maxd_c",
+        "maxi_c",
+        "mind_c",
+        "mini_c"
+      ],
+      "dependsOn": [],
+      "prs": ["https://github.com/rybosome/tspice/pull/714"],
+      "nextAction": "Source-bound local and canonical Linux Node 22 native-required executions observed. Await final complete PR matrix and confirm rebaseability."
+    }
   ]
 }

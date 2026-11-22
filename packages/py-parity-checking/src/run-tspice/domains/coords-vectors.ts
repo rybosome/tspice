@@ -36,6 +36,15 @@ import type {
   StepCoordsVectorsRadrec,
   StepCoordsVectorsRecrad,
   StepCoordsVectorsSrfrec,
+  StepCoordsVectorsBrcktd,
+  StepCoordsVectorsBrckti,
+  StepCoordsVectorsConvrt,
+  StepCoordsVectorsSumad,
+  StepCoordsVectorsSumai,
+  StepCoordsVectorsMaxd,
+  StepCoordsVectorsMaxi,
+  StepCoordsVectorsMind,
+  StepCoordsVectorsMini,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -98,6 +107,15 @@ type CoordsVectorsStep =
   | StepCoordsVectorsRadrec
   | StepCoordsVectorsRecrad
   | StepCoordsVectorsSrfrec
+  | StepCoordsVectorsBrcktd
+  | StepCoordsVectorsBrckti
+  | StepCoordsVectorsConvrt
+  | StepCoordsVectorsSumad
+  | StepCoordsVectorsSumai
+  | StepCoordsVectorsMaxd
+  | StepCoordsVectorsMaxi
+  | StepCoordsVectorsMind
+  | StepCoordsVectorsMini
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -368,6 +386,55 @@ export function runCoordsVectorsStep(
     case "coords-vectors.srfrec": {
       const out = context.spice.raw.srfrec(step.body, step.lon, step.lat);
       return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.brcktd": {
+      const out = context.spice.raw.brcktd(step.value, step.end1, step.end2);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.brckti": {
+      const out = context.spice.raw.brckti(step.value, step.end1, step.end2);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.convrt": {
+      const out = context.spice.raw.convrt(
+        step.value,
+        step.inUnit,
+        step.outUnit,
+      );
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.sumad": {
+      const out = context.spice.raw.sumad(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.sumai": {
+      const out = context.spice.raw.sumai(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.maxd": {
+      const out = context.spice.raw.maxd(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.maxi": {
+      const out = context.spice.raw.maxi(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mind": {
+      const out = context.spice.raw.mind(step.values);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.mini": {
+      const out = context.spice.raw.mini(step.values);
+      return { op: step.op, value: out };
     }
 
     case "coords-vectors.reclat": {

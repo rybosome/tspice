@@ -30,6 +30,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bodn2c_c` | Body name to ID code translation |
 | `bods2c_c` | Body string to ID code translation |
 | `bodvar_c` | Return values from the kernel pool |
+| `brcktd_c` | Bracket a d.p. value within an interval |
+| `brckti_c` | Bracket an integer value within an interval |
 | `card_c` | Cardinality of a cell |
 | `ccifrm_c` | Class and class ID to associated frame |
 | `chkin_c` | module Check In |
@@ -42,6 +44,7 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ckobj_c` | CK objects |
 | `ckupf_c` | CK, Unload pointing file |
 | `cnmfrm_c` | Center name to associated frame |
+| `convrt_c` | Convert Units |
 | `cvpool_c` | Check variable in the pool for update |
 | `dafbfs_c` | DAF, begin forward search |
 | `dafcls_c` | DAF, close |
@@ -117,6 +120,10 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `ktotal_c` | Kernel Totals |
 | `kxtrct_c` | Extract a substring starting with a keyword |
 | `latrec_c` | Latitudinal to rectangular coordinates |
+| `maxd_c` | Maximum of a set of double precision values |
+| `maxi_c` | Maximum of a set of integers |
+| `mind_c` | Minimum of a set of double precision values |
+| `mini_c` | minimum of a set of integers |
 | `mtxv_c` | Matrix transpose times vector, 3x3 |
 | `mxm_c` | Matrix times matrix, 3x3 |
 | `mxv_c` | Matrix times vector, 3x3 |
@@ -169,6 +176,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `str2et_c` | String to ET |
 | `subpnt_c` | Sub-observer point |
 | `subslr_c` | Sub-solar point |
+| `sumad_c` | Sum of a double precision array |
+| `sumai_c` | Sum of an integer array |
 | `swpool_c` | Set watch on a pool variable |
 | `sxform_c` | State Transformation Matrix |
 | `timdef_c` | Time Software Defaults |
@@ -207,8 +216,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `bltfrm_c` | Built-in frame IDs |
 | `bodvcd_c` | Return d.p. values from the kernel pool |
 | `bodvrd_c` | Return d.p. values from the kernel pool |
-| `brcktd_c` | Bracket a d.p. value within an interval |
-| `brckti_c` | Bracket an integer value within an interval |
 | `bschoc_c` | Binary search with order vector, character |
 | `bschoi_c` | Binary search with order vector, integer |
 | `bsrchc_c` | Binary search for a character string |
@@ -239,7 +246,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `clpool_c` | Clear the pool of kernel variables |
 | `cmprss_c` | Compress a character string |
 | `conics_c` | Determine state from conic elements |
-| `convrt_c` | Convert Units |
 | `copy_c` | Copy a SPICE cell |
 | `cpos_c` | Character position |
 | `cposr_c` | Character position, reverse |
@@ -455,12 +461,8 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `m2q_c` | Matrix to quaternion |
 | `matchi_c` | Match string against wildcard template |
 | `matchw_c` | Match string against wildcard template |
-| `maxd_c` | Maximum of a set of double precision values |
-| `maxi_c` | Maximum of a set of integers |
 | `mequ_c` | Matrix equal to another, 3x3 |
 | `mequg_c` | Matrix equal to another, general dimension |
-| `mind_c` | Minimum of a set of double precision values |
-| `mini_c` | minimum of a set of integers |
 | `moved_c` | Move a double precision array to another |
 | `mtxm_c` | Matrix transpose times matrix, 3x3 |
 | `mtxmg_c` | Matrix transpose times matrix, general dimension |
@@ -595,8 +597,6 @@ SpiceRawBackend is composed from: `TimeApi`, `KernelsApi`, `KernelPoolApi`, `EkA
 | `subpt_pl02` | Sub-observer point using DSK type 2 plate model |
 | `subsol_c` | Sub-solar point |
 | `subsol_pl02` | Sub-solar point using DSK type 2 plate model |
-| `sumad_c` | Sum of a double precision array |
-| `sumai_c` | Sum of an integer array |
 | `surfnm_c` | Surface normal vector on an ellipsoid |
 | `surfpt_c` | Surface point on an ellipsoid |
 | `surfpv_c` | Surface point and velocity |

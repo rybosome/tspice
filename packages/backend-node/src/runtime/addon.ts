@@ -649,6 +649,16 @@ export type NativeAddon = {
   recrad(rect: readonly number[]): { range: number; ra: number; dec: number };
   srfrec(body: number, lon: number, lat: number): number[];
 
+  brcktd(value: number, end1: number, end2: number): number;
+  brckti(value: number, end1: number, end2: number): number;
+  convrt(value: number, inUnit: string, outUnit: string): number;
+  sumad(values: readonly number[]): number;
+  sumai(values: readonly number[]): number;
+  maxd(values: readonly number[]): number;
+  maxi(values: readonly number[]): number;
+  mind(values: readonly number[]): number;
+  mini(values: readonly number[]): number;
+
   reclat(rect: number[]): { radius: number; lon: number; lat: number };
   latrec(radius: number, lon: number, lat: number): number[];
   recsph(rect: number[]): { radius: number; colat: number; lon: number };

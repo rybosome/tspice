@@ -1163,6 +1163,73 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_brcktd(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_brckti(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_convrt(
+    value: number,
+    inUnitPtr: number,
+    outUnitPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumad(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumai(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxd(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxi(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mind(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mini(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2238,6 +2305,73 @@ export type EmscriptenModule = {
     errMaxBytes: number,
   ): number;
 
+  _tspice_brcktd(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_brckti(
+    value: number,
+    end1: number,
+    end2: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_convrt(
+    value: number,
+    inUnitPtr: number,
+    outUnitPtr: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumad(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_sumai(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxd(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_maxi(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mind(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+  _tspice_mini(
+    valuesPtr: number,
+    count: number,
+    outPtr: number,
+    errPtr: number,
+    errMaxBytes: number,
+  ): number;
+
   _tspice_reclat(
     rect3Ptr: number,
     outRadiusPtr: number,
@@ -2672,6 +2806,15 @@ const REQUIRED_FUNCTION_EXPORTS = [
   "_tspice_radrec",
   "_tspice_recrad",
   "_tspice_srfrec",
+  "_tspice_brcktd",
+  "_tspice_brckti",
+  "_tspice_convrt",
+  "_tspice_sumad",
+  "_tspice_sumai",
+  "_tspice_maxd",
+  "_tspice_maxi",
+  "_tspice_mind",
+  "_tspice_mini",
   "_tspice_reclat",
   "_tspice_latrec",
   "_tspice_recsph",

@@ -1154,6 +1154,25 @@ int tspice_recrad(const double *rect, double *out, char *err, int errMaxBytes);
 // srfrec_c: out stores rectangular x, y, z.
 int tspice_srfrec(int body, double lon, double lat, double *out, char *err, int errMaxBytes);
 
+// brcktd_c: preserves CSPICE argument order.
+int tspice_brcktd(double value, double end1, double end2, double *out, char *err, int errMaxBytes);
+// brckti_c: preserves CSPICE argument order.
+int tspice_brckti(int value, int end1, int end2, int *out, char *err, int errMaxBytes);
+// convrt_c: preserves CSPICE argument order.
+int tspice_convrt(double value, const char *inUnit, const char *outUnit, double *out, char *err, int errMaxBytes);
+// sumad_c: array length supplies count.
+int tspice_sumad(const double *values, int count, double *out, char *err, int errMaxBytes);
+// sumai_c: array length supplies count.
+int tspice_sumai(const int *values, int count, int *out, char *err, int errMaxBytes);
+// maxd_c: array length supplies count.
+int tspice_maxd(const double *values, int count, double *out, char *err, int errMaxBytes);
+// maxi_c: array length supplies count.
+int tspice_maxi(const int *values, int count, int *out, char *err, int errMaxBytes);
+// mind_c: array length supplies count.
+int tspice_mind(const double *values, int count, double *out, char *err, int errMaxBytes);
+// mini_c: array length supplies count.
+int tspice_mini(const int *values, int count, int *out, char *err, int errMaxBytes);
+
 // reclat_c: rectangular -> latitudinal coordinates.
 int tspice_reclat(
     const double *rect3,

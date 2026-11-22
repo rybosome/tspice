@@ -1,0 +1,1213 @@
+{
+  "schemaVersion": 1,
+  "batch": "a03-scalar-math",
+  "traceFiles": [
+    "packages/py-parity-checking/src/run-tspice/domains/coords-vectors.ts",
+    "packages/py-parity-checking/src/run-tspice/dispatch.ts",
+    "packages/py-parity-checking/src/case-types.ts",
+    "packages/py-parity-checking/src/cases/index.ts",
+    "packages/py-parity-checking/test/scalar-math.test.ts",
+    "packages/py-parity-checking/test/scalar-math-extremes.test.ts",
+    "packages/backend-wasm/test/scalar-math-allocations.test.ts",
+    "packages/backend-node/test/scalar-math-domain.test.ts",
+    "fixtures/consumer-nodom/src/index.ts",
+    "scripts/build-backend-wasm.mjs",
+    "packages/backend-wasm/src/lowlevel/exports.ts",
+    "packages/backend-node/src/lowlevel/binding.ts",
+    "packages/backend-node/src/runtime/addon.ts",
+    "packages/backend-wasm/src/codec/alloc.ts",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/scalar_math_oracle.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/handlers/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/decode.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/__init__.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/coords_vectors.py",
+    "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/models/workflow.py",
+    "docs/step8-scalar-math.md",
+    "packages/backend-node/src/domains/coords-vectors.ts",
+    "packages/backend-wasm/src/domains/coords-vectors.ts",
+    "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+  ],
+  "executions": [
+    {
+      "id": "local-a03-02544981-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7f401bcdd4008f4ccfed392569ebd128888ba5c4eef3b941735656743af043",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
+    },
+    {
+      "id": "local-a03-02544981-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7f401bcdd4008f4ccfed392569ebd128888ba5c4eef3b941735656743af043",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "observation": "Both full required lanes passed at source02544981: native-required ran2312 actual Node/WASM live comparisons and2538 parity-package tests without skips, including production native guard;123native637WASM28core150facade tests passed. JS lane passed2312live and2537parity+one expected non-native guard skip. Scientific source unchanged since initial pushed source; CI observation pending.",
+      "historical": true
+    },
+    {
+      "id": "ci-a03-02544981-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7f401bcdd4008f4ccfed392569ebd128888ba5c4eef3b941735656743af043",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "ci-a03-02544981-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "ca7f401bcdd4008f4ccfed392569ebd128888ba5c4eef3b941735656743af043",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "commit": "02544981cbbfd1005bdfee94ca453620aea819e2",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43544898708/job/132293815854",
+      "observation": "Inspected successful canonical Linux Node22 native-required job:2312 actual Node/WASM live comparisons and2538 parity-package tests passed without skips, including production native guard. Both full required local lanes passed at this exact source;123native637WASM28core150facade tests. Final all-platform PR matrix is tracked separately.",
+      "historical": true
+    },
+    {
+      "id": "local-a03-891d04fe-node",
+      "kind": "local",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d3d82de9a41042aed0236e09c42730eb153d54f7aa8a5ade6247e7d3266b2c61",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "observation": "Both complete required lanes passed locally on 891d04fe8386f2f369b31581b41842226f98f0aa. JavaScript: 2,539 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "local-a03-891d04fe-wasm",
+      "kind": "local",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d3d82de9a41042aed0236e09c42730eb153d54f7aa8a5ade6247e7d3266b2c61",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "observation": "Both complete required lanes passed locally on 891d04fe8386f2f369b31581b41842226f98f0aa. JavaScript: 2,539 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a03-891d04fe-node",
+      "kind": "ci",
+      "backend": "node",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d3d82de9a41042aed0236e09c42730eb153d54f7aa8a5ade6247e7d3266b2c61",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "commit": "891d04fe8386f2f369b31581b41842226f98f0aa",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550309021/job/132311018401",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311018401 on 891d04fe8386f2f369b31581b41842226f98f0aa: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    },
+    {
+      "id": "ci-a03-891d04fe-wasm",
+      "kind": "ci",
+      "backend": "wasm",
+      "command": "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required",
+      "result": "passed",
+      "nativeRequired": true,
+      "sourceDigest": "d3d82de9a41042aed0236e09c42730eb153d54f7aa8a5ade6247e7d3266b2c61",
+      "caseIds": [
+        "coords-vectors-brcktd-collapsed-interval",
+        "coords-vectors-brcktd-finite-extrema",
+        "coords-vectors-brcktd-fractional-bounds",
+        "coords-vectors-brcktd-ordered-bounds",
+        "coords-vectors-brcktd-reversed-bounds",
+        "coords-vectors-brckti-collapsed-interval",
+        "coords-vectors-brckti-ordered-bounds",
+        "coords-vectors-brckti-reversed-bounds",
+        "coords-vectors-brckti-signed32-extrema",
+        "coords-vectors-convrt-angular-units",
+        "coords-vectors-convrt-astrometric-table",
+        "coords-vectors-convrt-case-and-trailing-blanks",
+        "coords-vectors-convrt-empty-input-error",
+        "coords-vectors-convrt-empty-output-error",
+        "coords-vectors-convrt-english-distances",
+        "coords-vectors-convrt-incompatible-error",
+        "coords-vectors-convrt-leading-blank-error",
+        "coords-vectors-convrt-metric-aliases",
+        "coords-vectors-convrt-scaled-magnitudes",
+        "coords-vectors-convrt-time-units",
+        "coords-vectors-convrt-unknown-input-error",
+        "coords-vectors-convrt-unknown-output-error",
+        "coords-vectors-convrt-unsupported-singular-error",
+        "coords-vectors-convrt-zero-and-finite-identity",
+        "coords-vectors-maxd-all-portable-arities",
+        "coords-vectors-maxd-empty-singleton-and-mixed",
+        "coords-vectors-maxd-finite-extrema",
+        "coords-vectors-maxd-repeated-values",
+        "coords-vectors-maxi-all-portable-arities",
+        "coords-vectors-maxi-empty-singleton-and-mixed",
+        "coords-vectors-maxi-repeated-values",
+        "coords-vectors-maxi-signed32-extrema",
+        "coords-vectors-mind-all-portable-arities",
+        "coords-vectors-mind-empty-singleton-and-mixed",
+        "coords-vectors-mind-finite-extrema",
+        "coords-vectors-mind-repeated-values",
+        "coords-vectors-mini-all-portable-arities",
+        "coords-vectors-mini-empty-singleton-and-mixed",
+        "coords-vectors-mini-repeated-values",
+        "coords-vectors-mini-signed32-extrema",
+        "coords-vectors-sumad-empty-singleton-and-mixed",
+        "coords-vectors-sumad-finite-extrema",
+        "coords-vectors-sumad-longer-than-variadic-limit",
+        "coords-vectors-sumad-ordered-cancellation",
+        "coords-vectors-sumai-empty-singleton-and-mixed",
+        "coords-vectors-sumai-longer-than-variadic-limit",
+        "coords-vectors-sumai-safe-prefix-signed32-extrema"
+      ],
+      "commit": "891d04fe8386f2f369b31581b41842226f98f0aa",
+      "url": "https://github.com/rybosome/tspice/actions/runs/43550309021/job/132311018401",
+      "observation": "Inspected successful Linux Node 22 native-required job 132311018401 on 891d04fe8386f2f369b31581b41842226f98f0aa: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+    }
+  ],
+  "routines": [
+    {
+      "routine": "brcktd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/brcktd_c.html",
+      "semantics": "raw.brcktd(value,end1,end2) returns the value constrained to the closed interval between either ordering of the endpoints. An interior or boundary value remains unchanged; an outside value yields the nearer endpoint. All three inputs must be finite numbers. Actual CSPICE selection, including signed zero, is retained; no alternate JS clamp is used.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-brcktd-ordered-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
+        },
+        {
+          "caseId": "coords-vectors-brcktd-reversed-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
+        },
+        {
+          "caseId": "coords-vectors-brcktd-collapsed-interval",
+          "coverage": ["success", "edge"],
+          "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
+        },
+        {
+          "caseId": "coords-vectors-brcktd-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
+        },
+        {
+          "caseId": "coords-vectors-brcktd-fractional-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Observe noninteger values and bounds to distinguish real-valued bracketing from integer conversion."
+        }
+      ],
+      "edgeAssessment": "Ordered/reversed/collapsed bounds, finite extrema, subnormals and fractional values are registered. Focused exact live extrema and tagged negative-zero input/output observations strengthen selection semantics.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.brcktd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.brcktd -> typed WASM adapter -> exported _tspice_brcktd, checked heap buffers and post-read transactional cleanup -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "brckti_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/brckti_c.html",
+      "semantics": "raw.brckti(value,end1,end2) returns the actual CSPICE integer bracket within the closed interval, independent of endpoint order. Each input and output is a signed 32-bit integer. Fractional or out-of-range language inputs are rejected before C conversion rather than truncated or clamped.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-brckti-ordered-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
+        },
+        {
+          "caseId": "coords-vectors-brckti-reversed-bounds",
+          "coverage": ["success", "edge"],
+          "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
+        },
+        {
+          "caseId": "coords-vectors-brckti-collapsed-interval",
+          "coverage": ["success", "edge"],
+          "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
+        },
+        {
+          "caseId": "coords-vectors-brckti-signed32-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
+        }
+      ],
+      "edgeAssessment": "Every interval position, reversed/collapsed bounds and signed32 extrema are registered. Focused exact live comparison and invalid-slot tests distinguish correct integer behavior from truncation/coercion.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.brckti -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.brckti -> typed WASM adapter -> exported _tspice_brckti, checked heap buffers and post-read transactional cleanup -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "convrt_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/convrt_c.html",
+      "semantics": "raw.convrt(value,inUnit,outUnit) calls actual CSPICE unit conversion with a finite scalar and unchanged unit strings; embedded NUL is rejected at the language/native boundaries. Supported angle, distance and time names/aliases use pinned N0067 conversion constants. Case and trailing blanks are accepted; leading blanks and unsupported singular spellings are not normalized by tspice. Empty, unknown and incompatible units preserve their genuine SPICE errors. NAIF requires callers to avoid floating overflow; the adapter retains numerical results without replacing historical estimates or adding a finite-output clamp.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-convrt-angular-units",
+          "coverage": ["success", "edge"],
+          "observes": "Observe angular conversions including degrees/radians and hour/minute/second angle aliases."
+        },
+        {
+          "caseId": "coords-vectors-convrt-metric-aliases",
+          "coverage": ["success", "edge"],
+          "observes": "Observe metric aliases and signed values across kilometer/meter/centimeter/millimeter scales."
+        },
+        {
+          "caseId": "coords-vectors-convrt-english-distances",
+          "coverage": ["success", "edge"],
+          "observes": "Observe feet, inches, yards, statute miles and nautical miles through the pinned conversion table."
+        },
+        {
+          "caseId": "coords-vectors-convrt-astrometric-table",
+          "coverage": ["success", "edge"],
+          "observes": "Observe AU, parsec, light-second and Julian light-year conversions using actual pinned constants; no modern astronomical constants are substituted."
+        },
+        {
+          "caseId": "coords-vectors-convrt-time-units",
+          "coverage": ["success", "edge"],
+          "observes": "Observe days, Julian years/YEARS, tropical years and hours/minutes/seconds, retaining their distinct conversion factors."
+        },
+        {
+          "caseId": "coords-vectors-convrt-case-and-trailing-blanks",
+          "coverage": ["success", "edge"],
+          "observes": "Observe mixed case and trailing blanks accepted by CSPICE without client-side string rewriting."
+        },
+        {
+          "caseId": "coords-vectors-convrt-zero-and-finite-identity",
+          "coverage": ["success", "edge"],
+          "observes": "Observe zero, a negative scalar, and maximum finite scalar in an identity unit conversion."
+        },
+        {
+          "caseId": "coords-vectors-convrt-scaled-magnitudes",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 1e200 and 1e-200 kilometer values converted to meters; focused actual-oracle rescaling makes tiny output observable."
+        },
+        {
+          "caseId": "coords-vectors-convrt-unknown-input-error",
+          "coverage": ["error"],
+          "observes": "Pass an unsupported input unit and observe UNITSNOTREC."
+        },
+        {
+          "caseId": "coords-vectors-convrt-unknown-output-error",
+          "coverage": ["error"],
+          "observes": "Pass an unsupported output unit and observe UNITSNOTREC."
+        },
+        {
+          "caseId": "coords-vectors-convrt-leading-blank-error",
+          "coverage": ["error"],
+          "observes": "Pass a leading-blank unit and observe UNITSNOTREC, preserving the distinction from accepted trailing blanks."
+        },
+        {
+          "caseId": "coords-vectors-convrt-unsupported-singular-error",
+          "coverage": ["error"],
+          "observes": "Pass METER and observe UNITSNOTREC instead of inventing a singular alias."
+        },
+        {
+          "caseId": "coords-vectors-convrt-incompatible-error",
+          "coverage": ["error"],
+          "observes": "Convert distance to time and observe INCOMPATIBLEUNITS."
+        },
+        {
+          "caseId": "coords-vectors-convrt-empty-input-error",
+          "coverage": ["error"],
+          "observes": "Pass an empty input-unit string and observe EMPTYSTRING from actual CSPICE."
+        },
+        {
+          "caseId": "coords-vectors-convrt-empty-output-error",
+          "coverage": ["error"],
+          "observes": "Pass an empty output-unit string and observe EMPTYSTRING from actual CSPICE."
+        }
+      ],
+      "edgeAssessment": "Angular, metric, English, astrometric and time families, signed/zero/identity inputs, case/trailing blanks and wide finite magnitudes are registered. Focused exact pinned AU/tropical-year literals and scaled live output checks strengthen the table semantics. Overflow is outside the documented scientific acceptance domain, not silently claimed as verified behavior.",
+      "errorAssessment": "Seven registered genuine SPICE error cases cover unknown input/output names, leading blanks, unsupported singular spelling, incompatible dimensions and each empty string. Public tests perform a valid conversion after each error and check the failure flag cleared. Nonstring/NUL/nonfinite inputs are separate boundary rejection tests; the raw string API cannot pass a literal null C pointer.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery. Both unit strings are UTF-8 encoded with NUL terminators in individually checked buffers; embedded NUL is rejected, empty strings reach CSPICE. Error tests reset in finally before client disposal.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused conversion checks rescale the independent tiny/large live scalar and retain exact selected pinned-table literals.",
+      "findings": [],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.convrt -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.convrt -> typed WASM adapter -> exported _tspice_convrt, checked heap buffers and post-read transactional cleanup -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sumad_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sumad_c.html",
+      "semantics": "raw.sumad(values) accepts a dense readonly finite-number array and returns the actual CSPICE ordered double accumulation from zero. Empty input returns zero. Inputs are not mutated. The count is derived from length and must fit signed32; WASM additionally checks its existing 256 MiB per-buffer limit. Cancellation, rounding, subnormals, signed zero and IEEE overflow retain the pinned routine behavior; no compensated, reordered or JavaScript sum replaces the result.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-sumad-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-sumad-ordered-cancellation",
+          "coverage": ["success", "edge"],
+          "observes": "Compare ordered sums [1e16,1,-1e16] and [1e16,-1e16,1], their sign variant and large cancellation leaving a tiny term. The 0 versus 1 outputs distinguish reassociation; a literal scaled tiny-result assertion supplements live comparison."
+        },
+        {
+          "caseId": "coords-vectors-sumad-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
+        },
+        {
+          "caseId": "coords-vectors-sumad-longer-than-variadic-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Observe all 64 supplied fractional elements through the array routine, distinguishing the sum count from the separate 30-element variadic cap."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton/mixed signs, order-dependent cancellation, maximum finite values, minimum subnormal remainder and 64-element input are registered. Scoped live extremes retain positive/negative infinity and an overflowed prefix that remains infinite after a finite subtraction, with a finite control. Tagged sumad([-0]) observes the actual positive-zero accumulator result.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery. Signed32 count and existing WASM byte limits are checked before allocation/entry traversal; oversized sparse arrays exercise rejection without allocating huge buffers. Empty arrays use an allocated minimal buffer with count zero. Full multi-gigabyte/saturation success is not claimed.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-sumad-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sumad -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sumad -> typed WASM adapter -> exported _tspice_sumad, checked heap buffers and post-read transactional cleanup -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "sumai_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/sumai_c.html",
+      "semantics": "raw.sumai(values) accepts a dense readonly signed32 integer array with signed32 length. Every ordered prefix beginning at zero must fit signed32; JS checks exact integer additions and shared C checks with int64_t before calling actual sumai_c. The independent oracle applies the same safety precondition before sp.sumai. Undefined C signed-overflow behavior is never executed or treated as wraparound semantics, even if a later input would restore a representable total. Every defined-input result, including empty zero, comes from actual sumai_c. WASM retains its existing 256 MiB per-buffer bound.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-sumai-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-sumai-safe-prefix-signed32-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe singleton signed32 bounds, cancellation sequences with every prefix valid, and multi-element sums exactly at each bound. All results come from actual CSPICE, not the safety-prefix accumulator."
+        },
+        {
+          "caseId": "coords-vectors-sumai-longer-than-variadic-limit",
+          "coverage": ["success", "edge"],
+          "observes": "Observe a 64-element mixed-sign array with safe prefixes; the array routine is not incorrectly capped at 30."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton/mixed signs, both exact signed32 bounds, safe cancellation and 64 inputs are registered. Wrapper-safety tests separately reject overflowing prefixes even when final mathematical totals fit, then perform valid recovery; shared C is exercised directly in Node/WASM. Unsafe inputs never enter an oracle scientific scenario.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery. Signed-prefix overflow is undefined in C, so it is rejected before actual sumai_c by both production and independent-oracle guards; these checks do not count as live parity of undefined behavior.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery. Signed32 count and existing WASM byte limits are checked before allocation/entry traversal; oversized sparse arrays exercise rejection without allocating huge buffers. Empty arrays use an allocated minimal buffer with count zero. Full multi-gigabyte/saturation success is not claimed.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused live finite/integer-extreme comparisons use exact equality, including minimum subnormal output where applicable.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-sumai-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sumai -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.sumai -> typed WASM adapter -> exported _tspice_sumai, checked heap buffers and post-read transactional cleanup -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "maxd_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/maxd_c.html",
+      "semantics": "raw.maxd(values) accepts a dense readonly array of finite doubles of length 0..30 and returns the actual CSPICE maximum. The length supplies the fixed C count; each element is passed as an individual typed scalar variadic argument. Empty input calls maxd_c(0) and returns zero. Inputs are unchanged. Counts beyond the portable limit, malformed elements and mismatched C counts are not sent to the routine. CSPICE tie/signed-zero selection is preserved rather than delegated to JavaScript Math.min/Math.max.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-maxd-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-maxd-all-portable-arities",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
+        },
+        {
+          "caseId": "coords-vectors-maxd-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
+        },
+        {
+          "caseId": "coords-vectors-maxd-repeated-values",
+          "coverage": ["success", "edge"],
+          "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton, all 0..30 supported arities with first/last extrema, mixed signs, repeated values at length 30, and finite extremes/subnormals are registered. Exact live comparison supplements normal tolerance. Tagged direct live probes preserve singleton negative zero and first-zero tie selection. Invalid count 31 and malformed entries are safety tests, not undefined scientific calls.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-maxd-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.maxd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.maxd -> typed WASM adapter -> exported _tspice_maxd, checked heap buffers and post-read transactional cleanup -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "maxi_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/maxi_c.html",
+      "semantics": "raw.maxi(values) accepts a dense readonly array of signed32 integers of length 0..30 and returns the actual CSPICE maximum. The length supplies the fixed C count; each element is passed as an individual typed scalar variadic argument. Empty input calls maxi_c(0) and returns zero. Inputs are unchanged. Counts beyond the portable limit, malformed elements and mismatched C counts are not sent to the routine.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-maxi-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-maxi-all-portable-arities",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
+        },
+        {
+          "caseId": "coords-vectors-maxi-signed32-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
+        },
+        {
+          "caseId": "coords-vectors-maxi-repeated-values",
+          "coverage": ["success", "edge"],
+          "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton, all 0..30 supported arities with first/last extrema, mixed signs, repeated values at length 30, and both signed32 limits are registered. Exact live comparison supplements normal tolerance. Invalid count 31 and malformed entries are safety tests, not undefined scientific calls.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-maxi-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.maxi -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.maxi -> typed WASM adapter -> exported _tspice_maxi, checked heap buffers and post-read transactional cleanup -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "mind_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mind_c.html",
+      "semantics": "raw.mind(values) accepts a dense readonly array of finite doubles of length 0..30 and returns the actual CSPICE minimum. The length supplies the fixed C count; each element is passed as an individual typed scalar variadic argument. Empty input calls mind_c(0) and returns zero. Inputs are unchanged. Counts beyond the portable limit, malformed elements and mismatched C counts are not sent to the routine. CSPICE tie/signed-zero selection is preserved rather than delegated to JavaScript Math.min/Math.max.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mind-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-mind-all-portable-arities",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
+        },
+        {
+          "caseId": "coords-vectors-mind-finite-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
+        },
+        {
+          "caseId": "coords-vectors-mind-repeated-values",
+          "coverage": ["success", "edge"],
+          "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton, all 0..30 supported arities with first/last extrema, mixed signs, repeated values at length 30, and finite extremes/subnormals are registered. Exact live comparison supplements normal tolerance. Tagged direct live probes preserve singleton negative zero and last-zero tie selection. Invalid count 31 and malformed entries are safety tests, not undefined scientific calls.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values. Scoped test-only input/output tags preserve negative zero and signed infinity without altering shared workflow transport; Object.is checks every zero sign against the actual independent oracle. See docs/step8-scalar-math.md.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mind-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mind -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mind -> typed WASM adapter -> exported _tspice_mind, checked heap buffers and post-read transactional cleanup -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    },
+    {
+      "routine": "mini_c",
+      "contract": "packages/backend-contract/src/domains/coords-vectors.ts",
+      "naif": "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/mini_c.html",
+      "semantics": "raw.mini(values) accepts a dense readonly array of signed32 integers of length 0..30 and returns the actual CSPICE minimum. The length supplies the fixed C count; each element is passed as an individual typed scalar variadic argument. Empty input calls mini_c(0) and returns zero. Inputs are unchanged. Counts beyond the portable limit, malformed elements and mismatched C counts are not sent to the routine.",
+      "scenarios": [
+        {
+          "caseId": "coords-vectors-mini-empty-singleton-and-mixed",
+          "coverage": ["success", "edge"],
+          "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
+        },
+        {
+          "caseId": "coords-vectors-mini-all-portable-arities",
+          "coverage": ["success", "edge"],
+          "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
+        },
+        {
+          "caseId": "coords-vectors-mini-signed32-extrema",
+          "coverage": ["success", "edge"],
+          "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
+        },
+        {
+          "caseId": "coords-vectors-mini-repeated-values",
+          "coverage": ["success", "edge"],
+          "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
+        }
+      ],
+      "edgeAssessment": "Empty/singleton, all 0..30 supported arities with first/last extrema, mixed signs, repeated values at length 30, and both signed32 limits are registered. Exact live comparison supplements normal tolerance. Invalid count 31 and malformed entries are safety tests, not undefined scientific calls.",
+      "errorAssessment": "NAIF documents this routine as error-free for its defined input domain; no fabricated scientific SPICE error is claimed. Input-type/count/range checks are explicit wrapper safety, with actual valid-call recovery.",
+      "fixtures": [],
+      "fixtureRationale": "Authored scalar/array and unit-string inputs only. No kernel, external scientific dataset, file or handle fixture is needed. Independent ctypes bindings load the exact locked SpiceyPy library, not a tspice artifact.",
+      "cleanup": "Kernel-free authored inputs require no files, data fixtures, handles or retained scientific state. The shared shim uses local result storage and publishes the actual result after SPICE status checking; failures collect diagnostics and reset before throwing. Native array inputs are copied to owned vectors under existing wrapper validation and calls use the SPICE mutex. WASM withAllocs copies inputs, reads the result before release, and rolls back every prior allocation on failure. Focused tests cover each allocation failure/success path and a valid same-heap recovery.",
+      "tolerance": "Normal registered scalar comparisons use the unchanged atol=1e-12/rtol=1e-12 comparator. Focused all-arity and extrema live comparisons require exact equality of returned selected values.",
+      "findings": [
+        {
+          "id": "validated-input-snapshot",
+          "status": "repaired",
+          "summary": "The adapters validated caller-owned numeric arrays and then read them again while dispatching or marshaling. These later reads could differ from the checked values.",
+          "repair": "Capture the input count, copy each finite or signed32 entry once, validate the sumai prefix using the owned copy and send the same values to the canonical reduction. Scalar clamp/conversion methods have no array input. The focused public boundary regression compares single-read inputs with ordinary arrays on both real backends; unchanged registered cases retain the independent scientific oracle.",
+          "evidence": [
+            "packages/backend-node/src/domains/coords-vectors.ts",
+            "packages/backend-wasm/src/domains/coords-vectors.ts",
+            "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
+          ],
+          "caseIds": ["coords-vectors-mini-empty-singleton-and-mixed"]
+        }
+      ],
+      "backends": {
+        "node": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mini -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-node", "ci-a03-891d04fe-node"]
+        },
+        "wasm": {
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "needs-repair",
+            "reviewed",
+            "verified"
+          ],
+          "route": "direct",
+          "trace": "raw.mini -> typed WASM adapter -> exported _tspice_mini, checked heap buffers and post-read transactional cleanup -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
+          "executions": ["local-a03-891d04fe-wasm", "ci-a03-891d04fe-wasm"]
+        }
+      }
+    }
+  ],
+  "verificationNote": "Current source fingerprint has both complete required local lanes and inspected successful canonical Linux Node 22 native-required execution, covering every reviewed scenario on actual Node and WASM. Full PR matrix/readiness is recorded separately; prior source/job observations remain historical."
+}

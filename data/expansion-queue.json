@@ -185,27 +185,43 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
       "dependsOn": [],
-      "prerequisiteReview": "Resolve variadic max/min C ABI and independently supported oracle route before that subset; validate lengths/overflow and integer reductions. Split missing-wrapper subset if it blocks supported scalar routines.",
+      "prerequisiteReview": "Integrate and validate the independent variadic C oracle route investigated in PR #707; retain explicit portable argument limits. Review input lengths/checked allocation sizes and reject undefined signed-prefix integer overflow before actual sumai arithmetic. No completed batch or verified semantics claim.",
       "fixtures": "None anticipated; authored scalar/array inputs.",
       "expectedChanges": {
         "domain": "coords-vectors",
         "scope": "Add raw contract/JSDoc, shared C calls, Node adapter/native registration and WASM adapter/exports; regenerate compiled artifacts; update fake/facade/schema consumers and live parity dispatch/cases. See common acceptance requirements."
       },
       "oracle": {
-        "status": "independent-route-investigation-required",
+        "status": "independent-route-source-investigated",
         "missingTopLevelWrappers": [
           "maxd_c",
           "maxi_c",
           "mind_c",
           "mini_c"
-        ]
+        ],
+        "evidence": "https://github.com/rybosome/tspice/pull/707",
+        "note": "Top-level wrappers remain absent for max/min; pinned symbols and ctypes varargs were investigated independently. A03 must wire and validate that route without substituting tspice output."
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership and investigate the listed locked-oracle wrapper gaps. Split supported independent routines if useful; do not skip parity or add exclusions."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/714"
+      ],
+      "validationEvidence": [
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "891d04fe8386f2f369b31581b41842226f98f0aa",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550309021/job/132311018401",
+          "result": "Both complete required lanes passed locally on 891d04fe8386f2f369b31581b41842226f98f0aa. JavaScript: 2,539 parity tests and one expected guard skip. Native-required: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed. Inspected successful Linux Node 22 native-required job 132311018401 on 891d04fe8386f2f369b31581b41842226f98f0aa: 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-scalar-math",
+      "branch": "codex/expand-scalar-math",
+      "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 891d04fe. 2,312 registered Node/WASM live comparisons; 2,540 parity-package tests with no skips, including the native-required guard; 123 native wrapper, 637 WASM, 28 core and 150 facade tests passed.",
+      "priorCheckpoint": "sumad, sumai, maxd, maxi, mind and mini now validate owned numeric arrays; the sumai prefix check uses the dispatched copy. Focused regression evidence is distinct from scientific parity. Earlier source records remain historical; fresh required local and observed canonical CI evidence for the corrected source is pending."
     },
     {
       "id": "A04-array-storage",
