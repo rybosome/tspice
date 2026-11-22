@@ -778,6 +778,50 @@ export type NativeAddon = {
   qxq(q1: readonly number[], q2: readonly number[]): unknown;
   qdq2av(q: readonly number[], dq: readonly number[]): unknown;
   raxisa(m: readonly number[]): { axis: unknown; angle: unknown };
+  dazldr(
+    x: number,
+    y: number,
+    z: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  dcyldr(x: number, y: number, z: number): number[];
+  dgeodr(x: number, y: number, z: number, re: number, f: number): number[];
+  dlatdr(x: number, y: number, z: number): number[];
+  dpgrdr(
+    body: string,
+    x: number,
+    y: number,
+    z: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdazl(
+    range: number,
+    az: number,
+    el: number,
+    azccw: boolean,
+    elplsz: boolean,
+  ): number[];
+  drdcyl(radius: number, lon: number, z: number): number[];
+  drdgeo(
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdlat(radius: number, lon: number, lat: number): number[];
+  drdpgr(
+    body: string,
+    lon: number,
+    lat: number,
+    alt: number,
+    re: number,
+    f: number,
+  ): number[];
+  drdsph(radius: number, colat: number, lon: number): number[];
+  dsphdr(x: number, y: number, z: number): number[];
   det(m: readonly number[]): number;
   diags2(symmat: readonly number[]): { diag: number[]; rotate: number[] };
   ident(): number[];

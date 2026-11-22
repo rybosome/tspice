@@ -746,6 +746,30 @@
         "https://github.com/rybosome/tspice/pull/736"
       ],
       "nextAction": "Verify the combined source on both required lanes and canonical CI."
+    },
+    {
+      "id": "a07-coordinate-jacobians",
+      "routines": [
+        "dazldr_c",
+        "dcyldr_c",
+        "dgeodr_c",
+        "dlatdr_c",
+        "dpgrdr_c",
+        "drdazl_c",
+        "drdcyl_c",
+        "drdgeo_c",
+        "drdlat_c",
+        "drdpgr_c",
+        "drdsph_c",
+        "dsphdr_c"
+      ],
+      "dependsOn": [
+        "a12-fixed-matrices"
+      ],
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/747"
+      ],
+      "nextAction": "Verify the combined source on both required lanes and canonical CI."
     }
   ]
 }

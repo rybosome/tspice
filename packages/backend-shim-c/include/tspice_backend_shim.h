@@ -1254,6 +1254,19 @@ int tspice_q2m(const double * q, double *r, char *err, int errMaxBytes);
 int tspice_qxq(const double * q1, const double * q2, double *qout, char *err, int errMaxBytes);
 int tspice_qdq2av(const double * q, const double * dq, double *av, char *err, int errMaxBytes);
 int tspice_raxisa(const double * m, double *axis, double *angle, char *err, int errMaxBytes);
+int tspice_dazldr(double x, double y, double z, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+int tspice_dcyldr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_dgeodr(double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_dlatdr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+int tspice_dpgrdr(const char *body, double x, double y, double z, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdazl(double range, double az, double el, int azccw, int elplsz, double *out, char *err, int errMaxBytes);
+int tspice_drdcyl(double radius, double lon, double z, double *out, char *err, int errMaxBytes);
+int tspice_drdgeo(double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdlat(double radius, double lon, double lat, double *out, char *err, int errMaxBytes);
+int tspice_drdpgr(const char *body, double lon, double lat, double alt, double re, double f, double *out, char *err, int errMaxBytes);
+int tspice_drdsph(double radius, double colat, double lon, double *out, char *err, int errMaxBytes);
+int tspice_dsphdr(double x, double y, double z, double *out, char *err, int errMaxBytes);
+
 int tspice_det(const double *m, double *out, char *err, int errMaxBytes);
 // diags2_c: flat row-major matrix buffers.
 int tspice_diags2(const double *symmat, double *diag, double *rotate, char *err, int errMaxBytes);

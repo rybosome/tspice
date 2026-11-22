@@ -706,6 +706,54 @@ export function getNodeBinding(): NativeAddon {
   invariant(typeof native.filli === "function", "Native addon missing filli()");
   invariant(typeof native.moved === "function", "Native addon missing moved()");
   invariant(
+    typeof native.dazldr === "function",
+    "Expected native addon to export dazldr()",
+  );
+  invariant(
+    typeof native.dcyldr === "function",
+    "Expected native addon to export dcyldr()",
+  );
+  invariant(
+    typeof native.dgeodr === "function",
+    "Expected native addon to export dgeodr()",
+  );
+  invariant(
+    typeof native.dlatdr === "function",
+    "Expected native addon to export dlatdr()",
+  );
+  invariant(
+    typeof native.dpgrdr === "function",
+    "Expected native addon to export dpgrdr()",
+  );
+  invariant(
+    typeof native.drdazl === "function",
+    "Expected native addon to export drdazl()",
+  );
+  invariant(
+    typeof native.drdcyl === "function",
+    "Expected native addon to export drdcyl()",
+  );
+  invariant(
+    typeof native.drdgeo === "function",
+    "Expected native addon to export drdgeo()",
+  );
+  invariant(
+    typeof native.drdlat === "function",
+    "Expected native addon to export drdlat()",
+  );
+  invariant(
+    typeof native.drdpgr === "function",
+    "Expected native addon to export drdpgr()",
+  );
+  invariant(
+    typeof native.drdsph === "function",
+    "Expected native addon to export drdsph()",
+  );
+  invariant(
+    typeof native.dsphdr === "function",
+    "Expected native addon to export dsphdr()",
+  );
+  invariant(
     typeof native.det === "function",
     "Expected native addon to export det()",
   );

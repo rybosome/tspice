@@ -404,9 +404,11 @@
       ],
       "domain": "coords-vectors",
       "apiPlacement": "packages/backend-contract/src/domains/coords-vectors.ts; raw methods retain canonical names without _c.",
-      "owner": null,
-      "status": "planned",
-      "dependsOn": [],
+      "owner": "Codex Step 8 (/root)",
+      "status": "in-progress",
+      "dependsOn": [
+        "A12-fixed-matrices"
+      ],
       "prerequisiteReview": "Use existing row-major Mat3 output. Distinguish derivative direction, singular axes, flattening and azimuth conventions; internal CSPICE callees do not require public wrapper prerequisites.",
       "fixtures": "Authored scalar inputs; synthetic pool body conventions only where required.",
       "expectedChanges": {
@@ -417,9 +419,27 @@
         "status": "source-wrappers-present",
         "missingTopLevelWrappers": []
       },
-      "prs": [],
-      "validationEvidence": [],
-      "nextAction": "Reserve ownership, refresh main/ledger, then resolve this batch's prerequisite review before implementation."
+      "prs": [
+        "https://github.com/rybosome/tspice/pull/747"
+      ],
+      "validationEvidence": [
+        {
+          "kind": "local-focused",
+          "result": "160 registered compiled comparisons; 6 public, 12 native boundary, 38 WASM allocation. Sync/async no-DOM consumer compiled. The actual Chrome public worker matched all 108 matrix entries to the locked library and recovered after a singular-axis error."
+        },
+        {
+          "kind": "source-bound-required-lanes",
+          "testedCommit": "1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43572898028/job/132380908546",
+          "result": "Both complete required lanes passed locally on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4. JavaScript: 2,708 parity tests and one expected guard skip. Native-required: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed. Inspected successful Linux Node 22 native-required job 132380908546 on 1fcdbd943ce63afb50b942bfc36e6d8c7d3e49d4: 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed."
+        }
+      ],
+      "nextAction": "Wait for the full metadata-head CI matrix and verify explicit rebaseability before marking the PR ready; do not merge.",
+      "worktree": "/private/tmp/tspice-step8-coordinate-jacobians",
+      "branch": "codex/expand-coordinate-jacobians",
+      "baseCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
+      "progressNote": "Both required local lanes and observed canonical native-required CI passed on the implementation source 1fcdbd94. 2,478 registered Node/WASM live comparisons; 2,709 parity-package tests with no skips, including the native-required guard; 133 native wrapper, 685 WASM, 34 core and 152 facade tests passed.",
+      "priorCheckpoint": "Twelve complete CSPICE-backed derivative paths; finite-difference, inverse, pool-state and IEEE components checked."
     },
     {
       "id": "A08-vector-basics",
@@ -683,12 +703,6 @@
       ],
       "validationEvidence": [
         {
-          "kind": "source-ci-checkpoint",
-          "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
-          "job": "https://github.com/rybosome/tspice/actions/runs/43550210805/job/132310706167",
-          "result": "2,318 live / 2,543 parity, no native-required skips; full local pair passed."
-        },
-        {
           "kind": "corrected-source-verification",
           "testedCommit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
           "sourceDigest": "bf8ee681b67066c59829cbadda7c332c11877c976369889de78cea03ad406ead",
@@ -699,19 +713,20 @@
             "TSPICE_EXPECT_NATIVE=true pnpm run check:native:required"
           ],
           "observation": "Corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. JS-required passed 2,318 registered comparisons and 2,542 parity tests with 1 expected native-required guard skip. Native-required passed 2,318 live comparisons, 2,543 parity tests, 121 native, 647 WASM, 34 core and 152 facade tests with zero skips. Both required lane logs show the parity package executing on a cache miss. Earlier source records remain historical. Inspected successful Linux Node 22 native-required job 132310706167 on corrected source 279dc29bedb7fb2f1eb4b4c83e1708c740226830. Its uncached parity package ran 2,318 registered comparisons and passed 2,543 parity tests without skips. Final-head readiness remains pending."
+        },
+        {
+          "kind": "final-head-ci",
+          "testedCommit": "a1127d866930e7e3be177d4fceee94a3a220b5c0",
+          "ciRun": "https://github.com/rybosome/tspice/actions/runs/43554113908",
+          "result": "Final PR matrix awaiting completion."
         }
       ],
-      "nextAction": "Wait for the full final-head CI matrix and check explicit rebaseability after CI.",
+      "nextAction": "Observe the complete CI matrix on the final evidence head and confirm explicit rebaseability against current main before PR-ready. Await authorization before merge.",
       "worktree": "/private/tmp/tspice-step8-fixed-matrices",
       "branch": "codex/expand-fixed-matrices",
       "baseCommit": "73f3fec8788ed926351f891b459ac75d434f6446",
-      "progressNote": "Draft #712, corrected source 279dc29b verified by both required local lanes and uncached Linux Node 22 source job 132310706167 at 2,318 live and 2,543 parity tests without native-required skips. Evidence head a1127d866930e7e3be177d4fceee94a3a220b5c0, final CI 43554113908 pending.",
-      "priorCheckpoint": "Integration owner reports both required locals and inspected source Linux Node 22 CI job 132286223439 passed 2318 live / 2543 parity tests without skips; all 173 source-bound routine audits have fresh verification. Final metadata f3289ac90d299bc0ef782ba576e9efd2173a8e25 pushed to draft PR #712; final-head CI/readiness pending.",
-      "sourceCheckpoint": {
-        "commit": "279dc29bedb7fb2f1eb4b4c83e1708c740226830",
-        "ciRun": "https://github.com/rybosome/tspice/actions/runs/43550210805",
-        "status": "draft-source-under-validation"
-      }
+      "progressNote": "Owned input correction is verified on source 279dc29bedb7fb2f1eb4b4c83e1708c740226830 after both required local lanes and inspected canonical CI on Linux Node 22. 2,318 live comparisons and 2,543 parity tests passed without native-required skips. All 173 current routines have source-bound verification. Final metadata head still requires its complete CI matrix and explicit rebaseability review.",
+      "priorCheckpoint": "Integration owner reports both required locals and inspected source Linux Node 22 CI job 132286223439 passed 2318 live / 2543 parity tests without skips; all 173 source-bound routine audits have fresh verification. Final metadata f3289ac90d299bc0ef782ba576e9efd2173a8e25 pushed to draft PR #712; final-head CI/readiness pending."
     },
     {
       "id": "A13-general-matrices",

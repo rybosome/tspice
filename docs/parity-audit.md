@@ -347,3 +347,7 @@ product composition, and exceptional floating-point results.
 ## Frame algebra
 
 The A15 review covers nine kernel-independent frame construction and state-transform methods. The 47 registered workflows contain 129 calls and 17 expected toolkit errors. The review tracks full row-major blocks, angular-velocity coordinates, both Euler uniqueness states and the linked-toolkit checks required for three failure paths. [Frame algebra evidence](step8-frame-algebra.md) [Routine audit](../data/parity-audits/a15-frame-algebra.json)
+
+## Coordinate derivatives
+
+A07 covers twelve coordinate Jacobians. The source review records two pinned exception paths, independent directional derivatives, exact buffer ownership and tabulated body conventions. [Scientific and representation evidence](step8-coordinate-jacobians.md) [Per-routine records](../data/parity-audits/a07-coordinate-jacobians.json)
