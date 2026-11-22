@@ -27,16 +27,12 @@
         "search": {
           "instrument": "AUDIT_CIRCLE",
           "shape": "ELLIPSOID",
-          "ray": [
-            1,
-            0,
-            0
-          ],
+          "ray": [1, 0, 0],
           "target": "100101",
           "frame": "AUDIT_GEOMETRY_FIXED",
           "aberration": "NONE",
           "observer": "100103",
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },
@@ -84,16 +80,12 @@
         "search": {
           "instrument": "AUDIT_CIRCLE",
           "shape": "ELLIPSOID",
-          "ray": [
-            1,
-            0,
-            0
-          ],
+          "ray": [1, 0, 0],
           "target": "100101",
           "frame": "AUDIT_GEOMETRY_FIXED",
           "aberration": "NONE",
           "observer": "100103",
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },

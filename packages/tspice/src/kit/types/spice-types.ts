@@ -155,7 +155,9 @@ type WorkerConfiguredGfRaw = {
     search: Parameters<SpiceRaw[K]>[0],
     cnfine: Parameters<SpiceRaw[K]>[1],
     result: Parameters<SpiceRaw[K]>[2],
-    control: GfControl<number | boolean | void | Promise<number | boolean | void>>,
+    control: GfControl<
+      number | boolean | void | Promise<number | boolean | void>
+    >,
   ) => Promise<void>;
 };
 

@@ -130,9 +130,27 @@ export async function createWasmBackend(
   const backend = {
     asyncRaw: {
       ...userGf.asynchronous,
-      gfevnt: async (...args: Parameters<import("@rybosome/tspice-backend-contract").GeometryGfApi["gfevnt"]>) => { await configured.gfevnt(true, module._tspice_gfevnt, ...args); },
-      gffove: async (...args: Parameters<import("@rybosome/tspice-backend-contract").GeometryGfApi["gffove"]>) => { await configured.gffove(true, module._tspice_gffove, ...args); },
-      gfocce: async (...args: Parameters<import("@rybosome/tspice-backend-contract").GeometryGfApi["gfocce"]>) => { await configured.gfocce(true, module._tspice_gfocce, ...args); },
+      gfevnt: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gfevnt"]
+        >
+      ) => {
+        await configured.gfevnt(true, module._tspice_gfevnt, ...args);
+      },
+      gffove: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gffove"]
+        >
+      ) => {
+        await configured.gffove(true, module._tspice_gffove, ...args);
+      },
+      gfocce: async (
+        ...args: Parameters<
+          import("@rybosome/tspice-backend-contract").GeometryGfApi["gfocce"]
+        >
+      ) => {
+        await configured.gfocce(true, module._tspice_gfocce, ...args);
+      },
     },
     kind: "wasm",
     raw: {

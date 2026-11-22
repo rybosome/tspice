@@ -77,15 +77,30 @@ export interface GeometryGfApi {
   /** Find a configurable event over a named geometric quantity. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfevnt_c.html
    */
-  gfevnt(search: GfEventSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
+  gfevnt(
+    search: GfEventSearch,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+    control: GfControl,
+  ): void;
   /** Find field-of-view intersections using a caller-defined step and refinement. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gffove_c.html
    */
-  gffove(search: GfFovSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
+  gffove(
+    search: GfFovSearch,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+    control: GfControl,
+  ): void;
   /** Find occultations using a caller-defined step and refinement. An interrupted search keeps the original result window.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/gfocce_c.html
    */
-  gfocce(search: GfOccultationSearch, cnfine: SpiceWindow, result: SpiceWindow, control: GfControl): void;
+  gfocce(
+    search: GfOccultationSearch,
+    cnfine: SpiceWindow,
+    result: SpiceWindow,
+    control: GfControl,
+  ): void;
 
   /** Return the initialized accumulator after the dummy scalar callback. Initial value defaults to zero.
    * @see https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/udf_c.html

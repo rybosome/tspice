@@ -44,7 +44,7 @@
           "reference": 105,
           "adjustment": 0,
           "workspaceIntervals": 64,
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },
@@ -109,7 +109,7 @@
           "reference": 105,
           "adjustment": 0,
           "workspaceIntervals": 64,
-          "tolerance": 1e-06,
+          "tolerance": 1e-6,
           "report": true,
           "bail": true
         },
