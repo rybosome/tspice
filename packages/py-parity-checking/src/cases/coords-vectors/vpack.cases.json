@@ -1,0 +1,65 @@
+[
+  {
+    "caseId": "coords-vectors-vpack-ordered-mixed-components",
+    "description": "vpack: ordered-mixed-components; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vpack",
+        "x": 1.25,
+        "y": -2.5,
+        "z": 7.75
+      },
+      {
+        "op": "coords-vectors.vpack",
+        "x": -8.5,
+        "y": 0.125,
+        "z": 3.25
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vpack-zero-and-axes",
+    "description": "vpack: zero-and-axes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vpack",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "op": "coords-vectors.vpack",
+        "x": 0,
+        "y": -3,
+        "z": 0
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vpack-finite-extremes",
+    "description": "vpack: finite-extremes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vpack",
+        "x": 1.7976931348623157e308,
+        "y": -1.7976931348623157e308,
+        "z": 5e-324
+      },
+      {
+        "op": "coords-vectors.vpack",
+        "x": 3e-200,
+        "y": -4e200,
+        "z": 0.125
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "caseId": "coords-vectors-vupack-ordered-mixed-components",
+    "description": "vupack: ordered-mixed-components; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vupack",
+        "v": [1.25, -2.5, 7.75]
+      },
+      {
+        "op": "coords-vectors.vupack",
+        "v": [-8.5, 0.125, 3.25]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vupack-zero-and-axes",
+    "description": "vupack: zero-and-axes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vupack",
+        "v": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.vupack",
+        "v": [0, -3, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-vupack-finite-extremes",
+    "description": "vupack: finite-extremes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.vupack",
+        "v": [1.7976931348623157e308, -1.7976931348623157e308, 5e-324]
+      },
+      {
+        "op": "coords-vectors.vupack",
+        "v": [3e-200, -4e200, 0.125]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

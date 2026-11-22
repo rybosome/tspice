@@ -13,6 +13,14 @@ import type {
   StepCoordsVectorsReccyl,
   StepCoordsVectorsSphcyl,
   StepCoordsVectorsSphlat,
+  StepCoordsVectorsVdist,
+  StepCoordsVectorsVequ,
+  StepCoordsVectorsVpack,
+  StepCoordsVectorsVupack,
+  StepCoordsVectorsVzero,
+  StepCoordsVectorsUnorm,
+  StepCoordsVectorsUcrss,
+  StepCoordsVectorsVsep,
   StepCoordsVectorsReclat,
   StepCoordsVectorsRecgeo,
   StepCoordsVectorsRecsph,
@@ -52,6 +60,14 @@ type CoordsVectorsStep =
   | StepCoordsVectorsReccyl
   | StepCoordsVectorsSphcyl
   | StepCoordsVectorsSphlat
+  | StepCoordsVectorsVdist
+  | StepCoordsVectorsVequ
+  | StepCoordsVectorsVpack
+  | StepCoordsVectorsVupack
+  | StepCoordsVectorsVzero
+  | StepCoordsVectorsUnorm
+  | StepCoordsVectorsUcrss
+  | StepCoordsVectorsVsep
   | StepCoordsVectorsReclat
   | StepCoordsVectorsLatrec
   | StepCoordsVectorsRecsph
@@ -174,6 +190,49 @@ export function runCoordsVectorsStep(
 
     case "coords-vectors.sphlat": {
       const out = context.spice.raw.sphlat(step.radius, step.colat, step.lon);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vdist": {
+      const out = context.spice.raw.vdist(step.a, step.b);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vequ": {
+      const out = context.spice.raw.vequ(step.v);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vpack": {
+      const out = context.spice.raw.vpack(step.x, step.y, step.z);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vupack": {
+      const out = context.spice.raw.vupack(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.vzero": {
+      const out = context.spice.raw.vzero(step.v);
+      return { op: step.op, value: out };
+    }
+
+    case "coords-vectors.unorm": {
+      const out = context.spice.raw.unorm(step.v);
+      return {
+        op: step.op,
+        value: { unit: toVector3(out.unit), norm: out.norm },
+      };
+    }
+
+    case "coords-vectors.ucrss": {
+      const out = context.spice.raw.ucrss(step.a, step.b);
+      return { op: step.op, value: toVector3(out) };
+    }
+
+    case "coords-vectors.vsep": {
+      const out = context.spice.raw.vsep(step.a, step.b);
       return { op: step.op, value: out };
     }
 

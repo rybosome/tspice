@@ -1,0 +1,78 @@
+[
+  {
+    "caseId": "coords-vectors-unorm-mixed-and-negative",
+    "description": "unorm: mixed-and-negative; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unorm",
+        "v": [3, -4, 12]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [-2.5, 1.25, -4.5]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unorm-zero-and-axes",
+    "description": "unorm: zero-and-axes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unorm",
+        "v": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [0, -7, 0]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [-9, 0, 0]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [0, 0, 11]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unorm-scaled-magnitudes",
+    "description": "unorm: scaled-magnitudes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unorm",
+        "v": [3e200, -4e200, 1.2e201]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [3e-200, -4e-200, 1.2e-199]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-unorm-subnormal-axis",
+    "description": "unorm: subnormal-axis; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.unorm",
+        "v": [5e-324, 0, 0]
+      },
+      {
+        "op": "coords-vectors.unorm",
+        "v": [0, -5e-324, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

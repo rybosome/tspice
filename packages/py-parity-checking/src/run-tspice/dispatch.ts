@@ -64,6 +64,14 @@ export function dispatchStep(
     case "coords-vectors.reccyl":
     case "coords-vectors.sphcyl":
     case "coords-vectors.sphlat":
+    case "coords-vectors.vdist":
+    case "coords-vectors.vequ":
+    case "coords-vectors.vpack":
+    case "coords-vectors.vupack":
+    case "coords-vectors.vzero":
+    case "coords-vectors.unorm":
+    case "coords-vectors.ucrss":
+    case "coords-vectors.vsep":
     case "coords-vectors.reclat":
     case "coords-vectors.latrec":
     case "coords-vectors.recsph":

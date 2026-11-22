@@ -1,0 +1,107 @@
+[
+  {
+    "caseId": "coords-vectors-ucrss-mixed-handedness",
+    "description": "ucrss: mixed-handedness; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1, -2, 3],
+        "b": [4, 5, -6]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [4, 5, -6],
+        "b": [1, -2, 3]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-ucrss-zero-parallel-opposed",
+    "description": "ucrss: zero inputs and exactly representable parallel/opposed inputs; dyadic scaled components cancel exactly with or without fused multiply-add. Non-dyadic collinear inputs can normalize compiler-dependent cancellation residuals at this singular boundary; no cross-build equality is claimed there. Compare every actual output component against live SpiceyPy without a tolerance exception.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [0, 0, 0],
+        "b": [2, -3, 4]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [2, -3, 4],
+        "b": [0, 0, 0]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1, 2, 4],
+        "b": [2, 4, 8]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1, 2, 4],
+        "b": [-2, -4, -8]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-ucrss-axis-handedness",
+    "description": "ucrss: axis-handedness; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1, 0, 0],
+        "b": [0, 2, 0]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [0, 2, 0],
+        "b": [1, 0, 0]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-ucrss-scaled-magnitudes",
+    "description": "ucrss: scaled-magnitudes; compare every scalar, vector component and flag returned by the actual routine against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1e200, -2e200, 3e200],
+        "b": [4e200, 5e200, -6e200]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1e-200, -2e-200, 3e-200],
+        "b": [4e-200, 5e-200, -6e-200]
+      },
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1e200, -2e200, 3e200],
+        "b": [4e-200, 5e-200, -6e-200]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  },
+  {
+    "caseId": "coords-vectors-ucrss-near-parallel",
+    "description": "ucrss: nonzero near-parallel inputs with an axis-aligned first vector, avoiding cancellation between nearly equal products; compare every actual output component against live SpiceyPy.",
+    "workflow": [
+      {
+        "op": "coords-vectors.ucrss",
+        "a": [1, 0, 0],
+        "b": [1, 1e-12, -2e-12]
+      }
+    ],
+    "expectation": {
+      "kind": "success"
+    }
+  }
+]

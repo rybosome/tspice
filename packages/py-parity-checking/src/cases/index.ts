@@ -30,6 +30,14 @@ import coordsVectorsLatsphCasesRaw from "./coords-vectors/latsph.cases.json" wit
 import coordsVectorsReccylCasesRaw from "./coords-vectors/reccyl.cases.json" with { type: "json" };
 import coordsVectorsSphcylCasesRaw from "./coords-vectors/sphcyl.cases.json" with { type: "json" };
 import coordsVectorsSphlatCasesRaw from "./coords-vectors/sphlat.cases.json" with { type: "json" };
+import coordsVectorsVdistCasesRaw from "./coords-vectors/vdist.cases.json" with { type: "json" };
+import coordsVectorsVequCasesRaw from "./coords-vectors/vequ.cases.json" with { type: "json" };
+import coordsVectorsVpackCasesRaw from "./coords-vectors/vpack.cases.json" with { type: "json" };
+import coordsVectorsVupackCasesRaw from "./coords-vectors/vupack.cases.json" with { type: "json" };
+import coordsVectorsVzeroCasesRaw from "./coords-vectors/vzero.cases.json" with { type: "json" };
+import coordsVectorsUnormCasesRaw from "./coords-vectors/unorm.cases.json" with { type: "json" };
+import coordsVectorsUcrssCasesRaw from "./coords-vectors/ucrss.cases.json" with { type: "json" };
+import coordsVectorsVsepCasesRaw from "./coords-vectors/vsep.cases.json" with { type: "json" };
 import coordsVectorsAxisarCasesRaw from "./coords-vectors/axisar.cases.json" with { type: "json" };
 import coordsVectorsGeorecCasesRaw from "./coords-vectors/georec.cases.json" with { type: "json" };
 import coordsVectorsLatrecCasesRaw from "./coords-vectors/latrec.cases.json" with { type: "json" };
@@ -214,6 +222,15 @@ export const coordsVectorsCases: ParityCase[] = [
   ...(coordsVectorsReccylCasesRaw as ParityCase[]),
   ...(coordsVectorsSphcylCasesRaw as ParityCase[]),
   ...(coordsVectorsSphlatCasesRaw as ParityCase[]),
+
+  ...(coordsVectorsVdistCasesRaw as ParityCase[]),
+  ...(coordsVectorsVequCasesRaw as ParityCase[]),
+  ...(coordsVectorsVpackCasesRaw as ParityCase[]),
+  ...(coordsVectorsVupackCasesRaw as ParityCase[]),
+  ...(coordsVectorsVzeroCasesRaw as ParityCase[]),
+  ...(coordsVectorsUnormCasesRaw as ParityCase[]),
+  ...(coordsVectorsUcrssCasesRaw as ParityCase[]),
+  ...(coordsVectorsVsepCasesRaw as ParityCase[]),
 
   ...(coordsVectorsReclatCasesRaw as ParityCase[]),
   ...(coordsVectorsLatrecCasesRaw as ParityCase[]),
