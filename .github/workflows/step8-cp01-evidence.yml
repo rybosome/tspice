@@ -1,0 +1,72 @@
+name: Record observed checkpoint 01 parity evidence
+on:
+  push:
+    branches: [codex/step8-cp01-evidence]
+permissions:
+  contents: write
+concurrency:
+  group: step8-cp01-observed-evidence
+  cancel-in-progress: false
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply observed full-lane evidence to the exact tested source
+        env:
+          TESTED_SOURCE: 17f11884fb5bdef7cbaf84bd480d4b8edde3d310
+        run: |
+          set -euo pipefail
+          tmp="$RUNNER_TEMP/step8-cp01-evidence"
+          cp -r .step8-cp01-evidence "$tmp"
+          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          git checkout --detach "$TESTED_SOURCE"
+          pnpm install --frozen-lockfile
+          node --input-type=module - "$tmp" <<'NODE'
+          import fs from "node:fs";
+          import path from "node:path";
+          import { registeredCases } from "./scripts/coverage-ledger/source-analysis.mjs";
+          const file = path.join(process.argv[2], "observation.json");
+          const record = JSON.parse(fs.readFileSync(file, "utf8"));
+          const observedCaseIds = registeredCases(process.cwd()).map((item) => item.caseId);
+          if (new Set(observedCaseIds).size !== 1894) throw new Error("Checkpoint registry changed");
+          for (const run of [record.hosted, record.canonical]) {
+            if (run.comparisons !== observedCaseIds.length * 2 ||
+                run.unexpectedSkips !== 0 || !run.completedNativeRequired) {
+              throw new Error("Incomplete observed required parity comparisons");
+            }
+            run.observedCaseIds = observedCaseIds;
+          }
+          fs.writeFileSync(file, JSON.stringify(record, null, 2));
+          NODE
+          node "$tmp/record.mjs" "$tmp/observation.json" | tee "$tmp/digests.json"
+          pnpm format
+          pnpm generate:coverage-ledger
+          pnpm check:coverage-ledger
+          pnpm test:coverage-ledger
+          pnpm format:check
+          git diff --check
+          git diff --name-only | awk '/^data\/parity-audits\/.*\.json$/ || /^data\/coverage-ledger\.json$/ || /^docs\/coverage-ledger\.md$/ {next} {print; bad=1} END {exit bad}'
+          git add data/parity-audits data/coverage-ledger.json docs/coverage-ledger.md
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Record checkpoint 01 source-bound native and WASM parity evidence'
+          git log -1 --format='%H %T %s'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checkpoint-01-observed-evidence
+          path: |
+            ${{runner.temp}}/step8-cp01-evidence/observation.json
+            ${{runner.temp}}/step8-cp01-evidence/digests.json
+      - name: Preserve the validated evidence head for publication
+        env:
+          TESTED_SOURCE: 17f11884fb5bdef7cbaf84bd480d4b8edde3d310
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$TESTED_SOURCE"
+          git push origin HEAD:refs/heads/codex/step8-cp01-evidence-candidate

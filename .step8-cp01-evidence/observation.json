@@ -1,0 +1,62 @@
+{
+  "sourceRevision": "17f11884fb5bdef7cbaf84bd480d4b8edde3d310",
+  "canonicalSourceRun": 45012853638,
+  "hosted": {
+    "completedNativeRequired": true,
+    "completedJavaScriptRequired": true,
+    "comparisons": 3788,
+    "unexpectedSkips": 0,
+    "nativeJob": "https://github.com/rybosome/tspice/actions/runs/45009595818/job/137168748216",
+    "testedCommit": "17f11884fb5bdef7cbaf84bd480d4b8edde3d310",
+    "testedTree": "9fc6c825a5aaed68245ac6ea73117aa2b8c3406e"
+  },
+  "canonical": {
+    "completedNativeRequired": true,
+    "completedJavaScriptRequired": true,
+    "comparisons": 3788,
+    "unexpectedSkips": 0,
+    "nativeJob": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178762153",
+    "jsJob": "https://github.com/rybosome/tspice/actions/runs/45012853638/job/137178761920",
+    "testedCommit": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+    "testedTree": "9fc6c825a5aaed68245ac6ea73117aa2b8c3406e"
+  },
+  "observations": {
+    "linuxNative": {
+      "jobId": 137178762153,
+      "slot": "native",
+      "comparisons": 3788,
+      "unexpectedSkips": 0,
+      "nativeGuard": true,
+      "testedMerge": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "lines": [
+        "2026-11-22T10:31:32.0595927Z Uses: rybosome/tspice/.github/workflows/reusable-node-pnpm.yml@refs/pull/783/merge (2851d19aa900e30c688b0d1c756a35357f10eebc)",
+        "export TSPICE_EXPECT_NATIVE=true",
+        "# Turbo forwards and hashes TSPICE_EXPECT_NATIVE for required test tasks.",
+        "2026-11-22T10:31:32.5997226Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +2851d19aa900e30c688b0d1c756a35357f10eebc:refs/remotes/pull/783/merge",
+        "2026-11-22T10:31:34.2563083Z  * [new ref]         2851d19aa900e30c688b0d1c756a35357f10eebc -> pull/783/merge",
+        "2026-11-22T10:31:34.6682835Z 2851d19aa900e30c688b0d1c756a35357f10eebc",
+        "2026-11-22T10:31:42.6120452Z export TSPICE_EXPECT_NATIVE=true",
+        "2026-11-22T10:31:42.6121079Z # Turbo forwards and hashes TSPICE_EXPECT_NATIVE for required test tasks.",
+        "2026-11-22T10:56:00.1443657Z  ✓ test/parity.test.ts (3788 tests) 1275767ms",
+        "2026-11-22T10:56:00.2875111Z       Tests  4175 passed (4175)",
+        "2026-11-22T10:56:02.0850152Z [native-pack-smoke] CSPICE toolkit version: CSPICE_N0067"
+      ]
+    },
+    "linuxJavaScript": {
+      "jobId": 137178761920,
+      "slot": "js",
+      "comparisons": 1894,
+      "unexpectedSkips": null,
+      "nativeGuard": false,
+      "testedMerge": "2851d19aa900e30c688b0d1c756a35357f10eebc",
+      "lines": [
+        "2026-11-22T10:31:31.8252482Z Uses: rybosome/tspice/.github/workflows/reusable-node-pnpm.yml@refs/pull/783/merge (2851d19aa900e30c688b0d1c756a35357f10eebc)",
+        "2026-11-22T10:31:32.4052771Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +2851d19aa900e30c688b0d1c756a35357f10eebc:refs/remotes/pull/783/merge",
+        "2026-11-22T10:31:34.0512252Z  * [new ref]         2851d19aa900e30c688b0d1c756a35357f10eebc -> pull/783/merge",
+        "2026-11-22T10:31:34.5196463Z 2851d19aa900e30c688b0d1c756a35357f10eebc",
+        "2026-11-22T10:47:18.3573743Z  ✓ test/parity.test.ts (3788 tests | 1894 skipped) 765685ms",
+        "2026-11-22T10:47:18.5074076Z       Tests  2118 passed | 2057 skipped (4175)"
+      ]
+    }
+  }
+}
