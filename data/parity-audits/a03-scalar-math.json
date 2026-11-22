@@ -817,7 +817,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -878,7 +879,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -937,7 +939,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -998,7 +1001,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -1010,27 +1014,42 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-brcktd-ordered-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
         },
         {
           "caseId": "coords-vectors-brcktd-reversed-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
         },
         {
           "caseId": "coords-vectors-brcktd-collapsed-interval",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
         },
         {
           "caseId": "coords-vectors-brcktd-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-brcktd-fractional-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe noninteger values and bounds to distinguish real-valued bracketing from integer conversion."
         }
       ],
@@ -1052,14 +1071,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1071,14 +1088,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brcktd -> typed WASM adapter -> exported _tspice_brcktd, checked heap buffers and post-read transactional cleanup -> shared tspice_brcktd -> actual brcktd_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brcktd, whose wrapper calls brcktd_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1090,22 +1105,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-brckti-ordered-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe values below, at both boundaries, inside and above an ordered closed interval."
         },
         {
           "caseId": "coords-vectors-brckti-reversed-bounds",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Repeat the full interval positions with reversed endpoints, distinguishing endpoint-order assumptions."
         },
         {
           "caseId": "coords-vectors-brckti-collapsed-interval",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe values below, equal to and above identical endpoints; every result is that endpoint."
         },
         {
           "caseId": "coords-vectors-brckti-signed32-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         }
       ],
@@ -1127,14 +1154,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1146,14 +1171,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.brckti -> typed WASM adapter -> exported _tspice_brckti, checked heap buffers and post-read transactional cleanup -> shared tspice_brckti -> actual brckti_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.brckti, whose wrapper calls brckti_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1165,77 +1188,115 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-convrt-angular-units",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe angular conversions including degrees/radians and hour/minute/second angle aliases."
         },
         {
           "caseId": "coords-vectors-convrt-metric-aliases",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe metric aliases and signed values across kilometer/meter/centimeter/millimeter scales."
         },
         {
           "caseId": "coords-vectors-convrt-english-distances",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe feet, inches, yards, statute miles and nautical miles through the pinned conversion table."
         },
         {
           "caseId": "coords-vectors-convrt-astrometric-table",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe AU, parsec, light-second and Julian light-year conversions using actual pinned constants; no modern astronomical constants are substituted."
         },
         {
           "caseId": "coords-vectors-convrt-time-units",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe days, Julian years/YEARS, tropical years and hours/minutes/seconds, retaining their distinct conversion factors."
         },
         {
           "caseId": "coords-vectors-convrt-case-and-trailing-blanks",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe mixed case and trailing blanks accepted by CSPICE without client-side string rewriting."
         },
         {
           "caseId": "coords-vectors-convrt-zero-and-finite-identity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe zero, a negative scalar, and maximum finite scalar in an identity unit conversion."
         },
         {
           "caseId": "coords-vectors-convrt-scaled-magnitudes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 1e200 and 1e-200 kilometer values converted to meters; focused actual-oracle rescaling makes tiny output observable."
         },
         {
           "caseId": "coords-vectors-convrt-unknown-input-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass an unsupported input unit and observe UNITSNOTREC."
         },
         {
           "caseId": "coords-vectors-convrt-unknown-output-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass an unsupported output unit and observe UNITSNOTREC."
         },
         {
           "caseId": "coords-vectors-convrt-leading-blank-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass a leading-blank unit and observe UNITSNOTREC, preserving the distinction from accepted trailing blanks."
         },
         {
           "caseId": "coords-vectors-convrt-unsupported-singular-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass METER and observe UNITSNOTREC instead of inventing a singular alias."
         },
         {
           "caseId": "coords-vectors-convrt-incompatible-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Convert distance to time and observe INCOMPATIBLEUNITS."
         },
         {
           "caseId": "coords-vectors-convrt-empty-input-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass an empty input-unit string and observe EMPTYSTRING from actual CSPICE."
         },
         {
           "caseId": "coords-vectors-convrt-empty-output-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Pass an empty output-unit string and observe EMPTYSTRING from actual CSPICE."
         }
       ],
@@ -1257,14 +1318,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1276,14 +1335,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.convrt -> typed WASM adapter -> exported _tspice_convrt, checked heap buffers and post-read transactional cleanup -> shared tspice_convrt -> actual convrt_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.convrt, whose wrapper calls convrt_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1295,22 +1352,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sumad-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-sumad-ordered-cancellation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare ordered sums [1e16,1,-1e16] and [1e16,-1e16,1], their sign variant and large cancellation leaving a tiny term. The 0 versus 1 outputs distinguish reassociation; a literal scaled tiny-result assertion supplements live comparison."
         },
         {
           "caseId": "coords-vectors-sumad-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-sumad-longer-than-variadic-limit",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe all 64 supplied fractional elements through the array routine, distinguishing the sum count from the separate 30-element variadic cap."
         }
       ],
@@ -1331,7 +1400,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-sumad-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-sumad-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1346,14 +1417,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1366,14 +1435,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumad -> typed WASM adapter -> exported _tspice_sumad, checked heap buffers and post-read transactional cleanup -> shared tspice_sumad -> actual sumad_c. Workflow dispatch calls this actual raw method; independent Python handler calls locked sp.sumad, whose wrapper calls sumad_c and returns its result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1385,17 +1452,26 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-sumai-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-sumai-safe-prefix-signed32-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe singleton signed32 bounds, cancellation sequences with every prefix valid, and multi-element sums exactly at each bound. All results come from actual CSPICE, not the safety-prefix accumulator."
         },
         {
           "caseId": "coords-vectors-sumai-longer-than-variadic-limit",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe a 64-element mixed-sign array with safe prefixes; the array routine is not incorrectly capped at 30."
         }
       ],
@@ -1416,7 +1492,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-sumai-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-sumai-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1431,14 +1509,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1451,14 +1527,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.sumai -> typed WASM adapter -> exported _tspice_sumai, checked heap buffers and post-read transactional cleanup -> shared tspice_sumai -> actual sumai_c. Safety-prefix checks complete before the canonical call. Python handler uses scalar_math_oracle.sumai to check the defined-input precondition, then returns sp.sumai -> actual sumai_c; the computed guard prefix is not returned.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1470,22 +1544,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-maxd-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-maxd-all-portable-arities",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-maxd-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-maxd-repeated-values",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1506,7 +1592,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-maxd-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-maxd-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1521,14 +1609,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1541,14 +1627,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxd -> typed WASM adapter -> exported _tspice_maxd, checked heap buffers and post-read transactional cleanup -> shared tspice_maxd -> actual maxd_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxd using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1560,22 +1644,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-maxi-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-maxi-all-portable-arities",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-maxi-signed32-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         },
         {
           "caseId": "coords-vectors-maxi-repeated-values",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1596,7 +1692,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-maxi-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-maxi-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1611,14 +1709,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1631,14 +1727,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.maxi -> typed WASM adapter -> exported _tspice_maxi, checked heap buffers and post-read transactional cleanup -> shared tspice_maxi -> actual maxi_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.maxi using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1650,22 +1744,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mind-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-mind-all-portable-arities",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-mind-finite-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact selected or accumulated finite extrema, including maximum magnitudes and the minimum subnormal; focused live equality prevents ordinary absolute tolerance accepting tiny output as zero."
         },
         {
           "caseId": "coords-vectors-mind-repeated-values",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1686,7 +1792,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-mind-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-mind-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1701,14 +1809,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1721,14 +1827,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mind -> typed WASM adapter -> exported _tspice_mind, checked heap buffers and post-read transactional cleanup -> shared tspice_mind -> actual mind_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mind using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1740,22 +1844,34 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-mini-empty-singleton-and-mixed",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe actual empty-array zero, singleton preservation and mixed-sign inputs; the routines themselves produce the scalar results."
         },
         {
           "caseId": "coords-vectors-mini-all-portable-arities",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe 60 actual canonical calls: empty and singleton, then a distinguishing extreme at the first and last position for each count 2..30. Focused live equality compares all outputs, while source review confirms every arm passes all count ordered entries."
         },
         {
           "caseId": "coords-vectors-mini-signed32-extrema",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe exact signed32 endpoints and extreme inputs; integer results are also compared exactly in focused live tests."
         },
         {
           "caseId": "coords-vectors-mini-repeated-values",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe repeated positive and negative values at the maximum portable length without replacing tie behavior."
         }
       ],
@@ -1776,7 +1892,9 @@
             "packages/backend-wasm/src/domains/coords-vectors.ts",
             "packages/py-parity-checking/test/owned-numeric-inputs.test.ts"
           ],
-          "caseIds": ["coords-vectors-mini-empty-singleton-and-mixed"]
+          "caseIds": [
+            "coords-vectors-mini-empty-singleton-and-mixed"
+          ]
         }
       ],
       "backends": {
@@ -1791,14 +1909,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed Node adapter -> native binding in native/src/domains/coords_vectors.cc under global SPICE mutex -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1811,14 +1927,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.mini -> typed WASM adapter -> exported _tspice_mini, checked heap buffers and post-read transactional cleanup -> shared tspice_mini -> actual mini_c. The shared C switch has 31 explicit canonical calls with exact count and ordered scalar arguments. Independent Python handler calls scalar_math_oracle.mini using ctypes.CDLL(libspice._name), fixed argtypes=[c_int], correct return type and individually boxed c_double/c_int varargs. No top-level SpiceyPy wrapper exists and no Python/JS min/max substitutes for the oracle result.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

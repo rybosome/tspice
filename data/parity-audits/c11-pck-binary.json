@@ -103,7 +103,8 @@
         "frames-pckw02-trim",
         "frames-pckw02-two-records"
       ],
-      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c11-ace63baf-wasm",
@@ -158,7 +159,8 @@
         "frames-pckw02-trim",
         "frames-pckw02-two-records"
       ],
-      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on ace63baf937aeefac1825b62975d43964a1202a3. JavaScript: 2,687 parity tests and one expected guard skip. Native-required: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c11-ace63baf-node",
@@ -215,7 +217,8 @@
       ],
       "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
-      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c11-ace63baf-wasm",
@@ -272,7 +275,8 @@
       ],
       "commit": "ace63baf937aeefac1825b62975d43964a1202a3",
       "url": "https://github.com/rybosome/tspice/actions/runs/43579051618/job/132399628389",
-      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132399628389 on ace63baf937aeefac1825b62975d43964a1202a3: 2,460 registered Node/WASM live comparisons; 2,688 parity-package tests with no skips, including the native-required guard; 114 native wrapper, 654 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -284,17 +288,26 @@
       "scenarios": [
         {
           "caseId": "frames-pckcls-empty",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Closing an empty writer reports NOSEGMENTSFOUND; cleanup releases the independent scratch handle. Require NOSEGMENTSFOUND."
         },
         {
           "caseId": "frames-pckcls-two-classes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Finalize a writer containing two class IDs and retain the exact set and independent windows. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcls-empty-then-write",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A writer with a valid single degree-zero constant segment can close and load. Compare the complete independent workflow outputs."
         }
       ],
@@ -313,16 +326,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and serialized Node addon -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckcls -> owner-local adapter and required WASM export -> tspice_pckcls -> pckcls_c. The independent handler uses the actual locked SpiceyPy pckcls wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -334,42 +357,66 @@
       "scenarios": [
         {
           "caseId": "frames-pckcov-gapped",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-lunar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-body-not-class",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-frame-not-class",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare all closed coverage intervals using the selected class ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-accumulate",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Append coverage to a nonempty window, including bridges, overlap and deduplication. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckcov-capacity",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The second disjoint interval exceeds a one-interval window. Require WINDOWEXCESS."
         },
         {
           "caseId": "frames-pckcov-missing",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A missing PCK path reports actual toolkit error. Require FILENOTFOUND."
         },
         {
           "caseId": "frames-pckcov-text",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A text kernel has no DAF binary coverage. Require INVALIDARCHTYPE."
         }
       ],
@@ -397,21 +444,35 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckcov.cases.json"
           ],
-          "caseIds": ["frames-pckcov-capacity"]
+          "caseIds": [
+            "frames-pckcov-capacity"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckcov -> owner-local adapter and serialized Node addon -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckcov -> owner-local adapter and required WASM export -> tspice_pckcov -> pckcov_c. The independent handler uses the actual locked SpiceyPy pckcov wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -423,32 +484,50 @@
       "scenarios": [
         {
           "caseId": "frames-pckfrm-fixture-classes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe sorted class IDs from three physical segments, two sharing one ID. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-accumulate",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Owned output preserves the original duplicate classes and a new negative class across files. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-tight",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A two-element cell exactly fits both distinct fixture classes. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckfrm-capacity",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A second distinct ID exceeds the one-element integer set. Require SETEXCESS."
         },
         {
           "caseId": "frames-pckfrm-missing",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Missing binary PCK path produces actual file diagnostics. Require FILENOTFOUND."
         },
         {
           "caseId": "frames-pckfrm-text",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Text PCK is a valid kernel but has no DAF segment IDs. Require INVALIDARCHTYPE."
         }
       ],
@@ -476,21 +555,35 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckfrm.cases.json"
           ],
-          "caseIds": ["frames-pckfrm-capacity"]
+          "caseIds": [
+            "frames-pckfrm-capacity"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckfrm -> owner-local adapter and serialized Node addon -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckfrm -> owner-local adapter and required WASM export -> tspice_pckfrm -> pckfrm_c. The independent handler uses the actual locked SpiceyPy pckfrm wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -502,22 +595,34 @@
       "scenarios": [
         {
           "caseId": "frames-pcklof-endpoints",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Independently evaluate inclusive endpoints, two record midpoints, a record crossover, and a separate segment. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pcklof-inverse",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate complete inverse state and orientation matrices separately on a nonstationary record. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pcklof-gap",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A genuine between-segment gap has no Earth orientation. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pcklof-missing",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A missing low-level PCK leaves no usable handle. Require FILENOTFOUND."
         }
       ],
@@ -545,21 +650,35 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pcklof.cases.json"
           ],
-          "caseIds": ["frames-pcklof-endpoints"]
+          "caseIds": [
+            "frames-pcklof-endpoints"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pcklof -> owner-local adapter and serialized Node addon -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pcklof -> owner-local adapter and required WASM export -> tspice_pcklof -> pcklof_c. The independent handler uses the actual locked SpiceyPy pcklof wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -571,27 +690,42 @@
       "scenarios": [
         {
           "caseId": "frames-pckopn-roundtrip",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Open a new PCK, write two angular records, close and reopen for independent frame, coverage and matrix observations. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-negative",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-reserved",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Exercise the actual comment reservation rule and inspect a finalized orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckopn-existing",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Opening a second writer on an existing physical file produces the real new-file diagnostic. Require FILEOPENFAIL."
         },
         {
           "caseId": "frames-pckopn-empty-internal-name",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An empty internal name is diagnosed before opening any writer. Require EMPTYSTRING."
         }
       ],
@@ -610,16 +744,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and serialized Node addon -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckopn -> owner-local adapter and required WASM export -> tspice_pckopn -> pckopn_c. The independent handler uses the actual locked SpiceyPy pckopn wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -631,22 +775,34 @@
       "scenarios": [
         {
           "caseId": "frames-pckuof-priority",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "At a shared epoch the latest file wins. Reloading the original promotes it, then one unload exposes the authored lower-priority orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckuof-last-unload",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Unloading the only directly loaded PCK removes its frame data. Require FRAMEDATANOTFOUND."
         },
         {
           "caseId": "frames-pckuof-reload",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A fresh load after unloading restores complete orientation and derivative. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckuof-keeper",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Direct binary PCK loading and unloading do not add entries to KEEPER. Compare the complete independent workflow outputs."
         }
       ],
@@ -674,21 +830,35 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckuof.cases.json"
           ],
-          "caseIds": ["frames-pckuof-priority"]
+          "caseIds": [
+            "frames-pckuof-priority"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckuof -> owner-local adapter and serialized Node addon -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckuof -> owner-local adapter and required WASM export -> tspice_pckuof -> pckuof_c. The independent handler uses the actual locked SpiceyPy pckuof wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     },
@@ -700,67 +870,106 @@
       "scenarios": [
         {
           "caseId": "frames-pckw02-two-records",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Distinct angle groups, slopes, records, endpoints and inclusive crossover are preserved in the full rotation and state matrices. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-degree-41",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate every angle at the maximum degree supported by the pinned fixed record reader. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-trim",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Descriptor bounds can trim the full Chebyshev record interval. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-singleton",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "An equal descriptor endpoint is a one-instant segment with a defined orientation. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-segment-priority",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A later overlapping segment supersedes the earlier segment within a single file. Compare the complete independent workflow outputs."
         },
         {
           "caseId": "frames-pckw02-count",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NUMCOEFFSNOTPOS."
         },
         {
           "caseId": "frames-pckw02-interval",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INTLENNOTPOS."
         },
         {
           "caseId": "frames-pckw02-bad-frame",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require INVALIDREFFRAME."
         },
         {
           "caseId": "frames-pckw02-reversed",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-early",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-late",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require BADDESCRTIMES."
         },
         {
           "caseId": "frames-pckw02-long-segid",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require IDSTRINGTOOLONG."
         },
         {
           "caseId": "frames-pckw02-nonprinting",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An already valid writer receives a rejected segment, comparing the canonical scientific diagnostic. Require NONPRINTABLECHARS."
         }
       ],
@@ -788,21 +997,35 @@
             "packages/backend-shim-c/src/domains/frames.c",
             "packages/py-parity-checking/src/cases/frames/pckw02.cases.json"
           ],
-          "caseIds": ["frames-pckw02-degree-41"]
+          "caseIds": [
+            "frames-pckw02-degree-41"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckw02 -> owner-local adapter and serialized Node addon -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
-          "executions": ["local-c11-ace63baf-node", "ci-c11-ace63baf-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "FramesApi.pckw02 -> owner-local adapter and required WASM export -> tspice_pckw02 -> pckw02_c. The independent handler uses the actual locked SpiceyPy pckw02 wrapper.",
-          "executions": ["local-c11-ace63baf-wasm", "ci-c11-ace63baf-wasm"]
+          "executions": []
         }
       }
     }

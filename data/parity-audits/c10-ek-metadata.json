@@ -128,7 +128,8 @@
         "ek-ekuef-keeper-removal",
         "ek-ekuef-repeatable-epochs"
       ],
-      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-c10-43e36dc9-wasm",
@@ -188,7 +189,8 @@
         "ek-ekuef-keeper-removal",
         "ek-ekuef-repeatable-epochs"
       ],
-      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 43e36dc906a0c4320be633f7dcef4862e1fd6d22. JavaScript: 2,533 parity tests and one expected guard skip. Native-required: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c10-43e36dc9-node",
@@ -250,7 +252,8 @@
       ],
       "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
       "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
-      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-c10-43e36dc9-wasm",
@@ -312,7 +315,8 @@
       ],
       "commit": "43e36dc906a0c4320be633f7dcef4862e1fd6d22",
       "url": "https://github.com/rybosome/tspice/actions/runs/43583869001/job/132414114857",
-      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132414114857 on 43e36dc906a0c4320be633f7dcef4862e1fd6d22: 2,314 registered Node/WASM live comparisons; 2,534 parity-package tests with no skips, including the native-required guard; 68 native wrapper, 627 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -324,27 +328,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekccnt-all-logical-tables",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Physical segments with shared table names contribute one schema; count all logical tables across two EKs."
         },
         {
           "caseId": "ek-ekccnt-direct-membership",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Repeat counts across case folding, blank padding and an explicit unload."
         },
         {
           "caseId": "ek-ekccnt-absent",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Unknown named table signals TABLENOTLOADED."
         },
         {
           "caseId": "ek-ekccnt-empty-name",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A zero-byte table name signals the C string error."
         },
         {
           "caseId": "ek-ekccnt-explicit-reader-only",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Opening an EK for reading does not load its schema."
         }
       ],
@@ -373,16 +392,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekccnt -> serialized native addon -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekccnt -> required WASM export with scoped allocations -> tspice_ekccnt -> ekccnt_c. Count the columns of an actual loaded logical table; opening its physical file alone does not register a table.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -394,37 +423,58 @@
       "scenarios": [
         {
           "caseId": "ek-ekcii-all-descriptors",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Inspect all seven physical storage classes, flags, scalar/fixed/variable sizes and types in logical column order."
         },
         {
           "caseId": "ek-ekcii-output-width",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Inspect truncated names and full descriptors at widths two, three, 33 and signed maximum."
         },
         {
           "caseId": "ek-ekcii-case-folded-table",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Lowercase and trailing blanks identify the loaded logical table."
         },
         {
           "caseId": "ek-ekcii-negative-index",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Observe genuine INVALIDINDEX in the column descriptor path."
         },
         {
           "caseId": "ek-ekcii-past-column",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Observe genuine INVALIDINDEX in the column descriptor path."
         },
         {
           "caseId": "ek-ekcii-missing-table",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Observe genuine TABLENOTLOADED in the column descriptor path."
         },
         {
           "caseId": "ek-ekcii-short-width",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Observe genuine STRINGTOOSHORT in the column descriptor path."
         }
       ],
@@ -457,21 +507,33 @@
             "packages/py-parity-checking/test/ek-metadata-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekcii.cases.json"
           ],
-          "caseIds": ["ek-ekcii-all-descriptors"]
+          "caseIds": [
+            "ek-ekcii-all-descriptors"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "EkApi.ekcii -> serialized native addon -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "EkApi.ekcii -> required WASM export with scoped allocations -> tspice_ekcii -> ekcii_ under initialized canonical trace. Read the indexed column name and all six descriptor attributes, including type, storage class, fixed/variable size and both flags.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -483,32 +545,50 @@
       "scenarios": [
         {
           "caseId": "ek-eklef-direct-only",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "The direct query load registers the physical file independently from KEEPER and survives KCLEAR."
         },
         {
           "caseId": "ek-eklef-duplicate",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Repeated direct loads of one file share the same query registration; one unload removes it."
         },
         {
           "caseId": "ek-eklef-two-physical-files",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Load two physical EKs sharing a logical table, remove either file and inspect the surviving logical schema."
         },
         {
           "caseId": "ek-eklef-keeper-overlap",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "One physical EK can be furnished and directly loaded. Unloading its KEEPER registration removes its query tables."
         },
         {
           "caseId": "ek-eklef-empty-ek",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "The actual query loader rejects an independently created EK with zero segments."
         },
         {
           "caseId": "ek-eklef-missing-file",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A missing EK file signals a real file-open error."
         }
       ],
@@ -546,21 +626,33 @@
             "packages/py-parity-checking/test/ek-metadata-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/eklef.cases.json"
           ],
-          "caseIds": ["ek-eklef-direct-only"]
+          "caseIds": [
+            "ek-eklef-direct-only"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.eklef -> serialized native addon -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.eklef -> required WASM export with scoped allocations -> tspice_eklef -> eklef_c. Create an idempotent direct query-file registration independent of explicit EK reader claims, with a client-owned token.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -572,47 +664,74 @@
       "scenarios": [
         {
           "caseId": "ek-eknelt-all-query-entries",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read entry extents of all seven selected columns and all three ordered rows, including fixed- and variable-size nulls."
         },
         {
           "caseId": "ek-eknelt-replacement-query",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A new SELECT changes item order and row order. Observe size from both result sets."
         },
         {
           "caseId": "ek-eknelt-psel-preserves-results",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Parsing a different SELECT leaves the current EKFIND result available."
         },
         {
           "caseId": "ek-eknelt-negative-row",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Read an invalid negative-row from the current successful query and inspect the real diagnostic."
         },
         {
           "caseId": "ek-eknelt-past-row",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Read an invalid past-row from the current successful query and inspect the real diagnostic."
         },
         {
           "caseId": "ek-eknelt-past-item",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Read an invalid past-item from the current successful query and inspect the real diagnostic."
         },
         {
           "caseId": "ek-eknelt-negative-item",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Read an invalid negative-item from the current successful query and inspect the real diagnostic."
         },
         {
           "caseId": "ek-eknelt-zero-rows",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Read an invalid zero-rows from the current successful query and inspect the real diagnostic."
         },
         {
           "caseId": "ek-eknelt-no-files",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Empty query manager takes precedence over both invalid indices."
         }
       ],
@@ -640,21 +759,33 @@
             "packages/py-parity-checking/test/ek-metadata-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/eknelt.cases.json"
           ],
-          "caseIds": ["ek-eknelt-all-query-entries"]
+          "caseIds": [
+            "ek-eknelt-all-query-entries"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "EkApi.eknelt -> serialized native addon -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "composed",
           "trace": "EkApi.eknelt -> required WASM export with scoped allocations -> tspice_eknelt -> eknelt_ under initialized canonical trace. Read the number of elements in a selected result row, including stored extents of SQL null and fixed/variable array entries.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -666,52 +797,82 @@
       "scenarios": [
         {
           "caseId": "ek-ekpsel-mixed-types",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for mixed-types."
         },
         {
           "caseId": "ek-ekpsel-alias-offsets",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for alias-offsets."
         },
         {
           "caseId": "ek-ekpsel-duplicate-projection",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for duplicate-projection."
         },
         {
           "caseId": "ek-ekpsel-fifty-items",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for fifty-items."
         },
         {
           "caseId": "ek-ekpsel-over-item-limit",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for over-item-limit."
         },
         {
           "caseId": "ek-ekpsel-missing-column",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for missing-column."
         },
         {
           "caseId": "ek-ekpsel-unsupported-expression",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe every defined SELECT result field or the actual parser diagnostic for unsupported-expression."
         },
         {
           "caseId": "ek-ekpsel-two-table-aliases",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Return table and column names plus exact qualified spans for a two-table query."
         },
         {
           "caseId": "ek-ekpsel-missing-table",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A query on an unloaded table returns a parse diagnostic."
         },
         {
           "caseId": "ek-ekpsel-empty-string",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "C-level empty query signals a structured string error."
         }
       ],
@@ -735,16 +896,26 @@
       "findings": [],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekpsel -> serialized native addon -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekpsel -> required WASM export with scoped allocations -> tspice_ekpsel -> ekpsel_c. Parse SELECT names, aliases, inclusive zero-based byte offsets, type and class arrays, or return the actual language diagnostic.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -756,32 +927,50 @@
       "scenarios": [
         {
           "caseId": "ek-ekssum-all-physical-segments",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Summarize each physical segment and its distinct row count, including repeated logical table schema."
         },
         {
           "caseId": "ek-ekssum-all-column-attributes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Read all seven column names/attribute records directly from the physical EK with no query load."
         },
         {
           "caseId": "ek-ekssum-direct-and-reader",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Owned reader and direct query load of the same file independently see identical complete metadata."
         },
         {
           "caseId": "ek-ekssum-negative-segment",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An invalid physical segment index reaches INDEXOUTOFRANGE."
         },
         {
           "caseId": "ek-ekssum-past-segment",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An invalid physical segment index reaches INDEXOUTOFRANGE."
         },
         {
           "caseId": "ek-ekssum-empty-ek",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "An empty physical writer has no segment zero."
         }
       ],
@@ -814,21 +1003,33 @@
             "packages/py-parity-checking/test/ek-metadata-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekssum.cases.json"
           ],
-          "caseIds": ["ek-ekssum-all-physical-segments"]
+          "caseIds": [
+            "ek-ekssum-all-physical-segments"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekssum -> serialized native addon -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekssum -> required WASM export with scoped allocations -> tspice_ekssum -> ekssum_c. Read physical segment table/row/column counts and every column name and six-field storage descriptor.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     },
@@ -840,27 +1041,42 @@
       "scenarios": [
         {
           "caseId": "ek-ekuef-independent-reader",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Unloading the last direct query file retains an independent reader and its metadata."
         },
         {
           "caseId": "ek-ekuef-file-specific",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Only the selected physical file is removed. Inspect each surviving table schema and metadata."
         },
         {
           "caseId": "ek-ekuef-keeper-removal",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "After KEEPER removes an overlapping registration, release its generation while a new direct load of the same opened file remains queryable."
         },
         {
           "caseId": "ek-ekuef-direct-clear-release",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Clear KEEPER twice with a direct-only file loaded, then explicitly unload."
         },
         {
           "caseId": "ek-ekuef-repeatable-epochs",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Direct unload and reload cycle produces the same physical summary and query count."
         }
       ],
@@ -898,21 +1114,33 @@
             "packages/py-parity-checking/test/ek-metadata-content.test.ts",
             "packages/py-parity-checking/src/cases/ek/ekuef.cases.json"
           ],
-          "caseIds": ["ek-ekuef-independent-reader"]
+          "caseIds": [
+            "ek-ekuef-independent-reader"
+          ]
         }
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekuef -> serialized native addon -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
-          "executions": ["local-c10-43e36dc9-node", "ci-c10-43e36dc9-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "EkApi.ekuef -> required WASM export with scoped allocations -> tspice_ekuef -> ekuef_c. Unload one direct physical query registration, preserve independent reader claims, and retire the owner-local token.",
-          "executions": ["local-c10-43e36dc9-wasm", "ci-c10-43e36dc9-wasm"]
+          "executions": []
         }
       }
     }

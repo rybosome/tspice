@@ -627,7 +627,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -694,7 +695,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -759,7 +761,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -826,7 +829,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -838,47 +842,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmesp-single-point",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-hrmesp-cubic-at-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-hrmesp-cubic-interior-and-extrapolation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-hrmesp-zero-and-constant",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-hrmesp-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmesp-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmesp-shifted-forward-and-reversed-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
         },
         {
           "caseId": "coords-vectors-hrmesp-zero-step-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
         },
         {
           "caseId": "coords-vectors-hrmesp-empty-table-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -898,14 +927,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -915,14 +942,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmesp -> typed WASM adapter -> checked buffers -> exported _tspice_hrmesp -> shared tspice_hrmesp -> actual hrmesp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmesp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -934,52 +959,80 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-hrmint-single-point",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-hrmint-cubic-at-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-hrmint-cubic-interior-and-extrapolation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-hrmint-zero-and-constant",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-hrmint-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-hrmint-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-hrmint-irregular-distinct-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-hrmint-permuted-distinct-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Preserve nonmonotonic distinct Hermite nodes and move each value/derivative pair with its abscissa; off-node value and derivative remain observable."
         },
         {
           "caseId": "coords-vectors-hrmint-duplicate-node-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-hrmint-empty-table-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1000,7 +1053,9 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": ["coords-vectors-hrmint-irregular-distinct-grid"]
+          "caseIds": [
+            "coords-vectors-hrmint-irregular-distinct-grid"
+          ]
         }
       ],
       "backends": {
@@ -1013,14 +1068,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1030,14 +1083,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.hrmint -> typed WASM adapter -> checked buffers -> exported _tspice_hrmint -> shared tspice_hrmint -> actual hrmint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy hrmint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1049,47 +1100,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgresp-single-point",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgresp-cubic-at-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgresp-cubic-interior-and-extrapolation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgresp-zero-and-constant",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgresp-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgresp-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgresp-shifted-forward-and-reversed-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare positive and negative spacing on shifted grids with appropriately reversed ordinates. Preserve the query in physical x units, node ordering and all returned fields."
         },
         {
           "caseId": "coords-vectors-lgresp-zero-step-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSTEPSIZE from zero spacing with a nonempty table, distinct from an empty/invalidly shaped input."
         },
         {
           "caseId": "coords-vectors-lgresp-empty-table-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1109,14 +1185,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1126,14 +1200,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgresp -> typed WASM adapter -> checked buffers -> exported _tspice_lgresp -> shared tspice_lgresp -> actual lgresp_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgresp, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1145,47 +1217,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrind-single-point",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgrind-cubic-at-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgrind-cubic-interior-and-extrapolation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgrind-zero-and-constant",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgrind-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrind-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrind-irregular-distinct-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-lgrind-duplicate-node-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-lgrind-empty-table-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1206,7 +1303,9 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": ["coords-vectors-lgrind-irregular-distinct-grid"]
+          "caseIds": [
+            "coords-vectors-lgrind-irregular-distinct-grid"
+          ]
         }
       ],
       "backends": {
@@ -1219,14 +1318,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1236,14 +1333,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrind -> typed WASM adapter -> checked buffers -> exported _tspice_lgrind -> shared tspice_lgrind -> actual lgrind_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrind, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1255,47 +1350,72 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-lgrint-single-point",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Query the sole sample and points on either side; distinguish the one-node Hermite tangent from a single Lagrange ordinate, and observe the physical derivative where returned."
         },
         {
           "caseId": "coords-vectors-lgrint-cubic-at-nodes",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Recover the supplied cubic values at the sampled abscissae. Where returned, the physical slope is compared independently at each sampled point."
         },
         {
           "caseId": "coords-vectors-lgrint-cubic-interior-and-extrapolation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate the authored cubic away from sample nodes and outside the grid. Compare all returned components, so passing through samples alone cannot satisfy this case."
         },
         {
           "caseId": "coords-vectors-lgrint-zero-and-constant",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Retain full outputs for zero and constant tables; verify zero derivatives where the routine returns them."
         },
         {
           "caseId": "coords-vectors-lgrint-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-lgrint-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-lgrint-irregular-distinct-grid",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Evaluate an irregular distinct grid away from sampled points, preserving corresponding ordinates and every returned field."
         },
         {
           "caseId": "coords-vectors-lgrint-duplicate-node-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual DIVIDEBYZERO for a repeated abscissa; preserve real duplicate-node failure without adapter deduplication or interpolation fallback."
         },
         {
           "caseId": "coords-vectors-lgrint-empty-table-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual INVALIDSIZE with zero points and valid storage, distinguishing the canonical table-size error from malformed paired lengths."
         }
       ],
@@ -1316,7 +1436,9 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": ["coords-vectors-lgrint-irregular-distinct-grid"]
+          "caseIds": [
+            "coords-vectors-lgrint-irregular-distinct-grid"
+          ]
         }
       ],
       "backends": {
@@ -1329,14 +1451,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1346,14 +1466,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lgrint -> typed WASM adapter -> checked buffers -> exported _tspice_lgrint -> shared tspice_lgrint -> actual lgrint_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy lgrint, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1365,37 +1483,57 @@
       "scenarios": [
         {
           "caseId": "coords-vectors-qderiv-half-interval-and-orientation",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Use scalar/vector endpoints with signed half-spacing and reversed endpoints. Compare every derivative sign and factor of two."
         },
         {
           "caseId": "coords-vectors-qderiv-variable-dimensions",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare each component and the exact inferred output length at several positive dimensions, including dimensions greater than three."
         },
         {
           "caseId": "coords-vectors-qderiv-constant-endpoints",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare zero derivatives for identical endpoints across all vector components; preserve the dynamic length."
         },
         {
           "caseId": "coords-vectors-qderiv-scaled-ordinates",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the ordinates (or both qderiv endpoint vectors) by 1e100 and 1e−100. Focused comparisons divide every output by the input scale and compare the full results."
         },
         {
           "caseId": "coords-vectors-qderiv-scaled-abscissas",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Scale the node spacing or qderiv half-interval by 1e100 and 1e−100. Focused comparisons retain interpolated values and compensate reciprocal derivative scaling to keep tiny slopes observable."
         },
         {
           "caseId": "coords-vectors-qderiv-balanced-extreme-endpoints",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Opposite maximum-finite endpoints with maximum-finite half-spacing keep two components near ±1 and a third nonzero subnormal. Focused rescaling observes the small component separately."
         },
         {
           "caseId": "coords-vectors-qderiv-zero-delta-error",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Observe actual DIVIDEBYZERO with equal positive-length endpoint arrays and zero half-spacing; empty-vector rejection instead belongs to caller validation."
         }
       ],
@@ -1416,7 +1554,9 @@
             "packages/backend-node/test/interpolation-domain.test.ts",
             "docs/step8-interpolation.md"
           ],
-          "caseIds": ["coords-vectors-qderiv-variable-dimensions"]
+          "caseIds": [
+            "coords-vectors-qderiv-variable-dimensions"
+          ]
         }
       ],
       "backends": {
@@ -1429,14 +1569,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed Node adapter -> registered native binding with validated counts and owned buffers -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1446,14 +1584,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.qderiv -> typed WASM adapter -> checked buffers -> exported _tspice_qderiv -> shared tspice_qderiv -> actual qderiv_c. Independent sidecar validates dimensions/finite inputs then calls locked SpiceyPy qderiv, whose wrapper calls the corresponding canonical symbol; all returned fields reach comparison.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }

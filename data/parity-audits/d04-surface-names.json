@@ -93,7 +93,8 @@
         "ids-names-srfscc-unequal-lengths",
         "ids-names-srfscc-wrong-type"
       ],
-      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "local-d04-849d5336-wasm",
@@ -151,7 +152,8 @@
         "ids-names-srfscc-unequal-lengths",
         "ids-names-srfscc-wrong-type"
       ],
-      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
+      "observation": "Both complete required lanes passed locally on 849d5336fee3e093f8c89574c2af792f17b74b76. JavaScript: 2,529 parity tests and one expected guard skip. Native-required: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-d04-849d5336-node",
@@ -211,7 +213,8 @@
       ],
       "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
-      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     },
     {
       "id": "ci-d04-849d5336-wasm",
@@ -271,7 +274,8 @@
       ],
       "commit": "849d5336fee3e093f8c89574c2af792f17b74b76",
       "url": "https://github.com/rybosome/tspice/actions/runs/43554777847/job/132325042058",
-      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed."
+      "observation": "Inspected successful Linux Node 22 native-required job 132325042058 on 849d5336fee3e093f8c89574c2af792f17b74b76: 2,310 registered Node/WASM live comparisons; 2,530 parity-package tests with no skips, including the native-required guard; 94 native wrapper, 624 WASM, 28 core and 150 facade tests passed.",
+      "historical": true
     }
   ],
   "routines": [
@@ -283,62 +287,107 @@
       "scenarios": [
         {
           "caseId": "ids-names-srfc2s-body-scoped-aliases",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
         },
         {
           "caseId": "ids-names-srfc2s-pool-clear-reload",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare before load, after replacement, after clear and after reloading the original."
         },
         {
           "caseId": "ids-names-srfc2s-decimal-fallback",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe decimal text and false isName, independently from a pool name with numeric spelling."
         },
         {
           "caseId": "ids-names-srfc2s-capacity-prefix",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities."
         },
         {
           "caseId": "ids-names-srfc2s-maximum-name",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle."
         },
         {
           "caseId": "ids-names-srfc2s-short-capacity-1",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfc2s-short-capacity-0",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfc2s-short-capacity-neg3",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfc2s-missing-variables",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
         },
         {
           "caseId": "ids-names-srfc2s-wrong-type",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
         },
         {
           "caseId": "ids-names-srfc2s-unequal-lengths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
         },
         {
           "caseId": "ids-names-srfc2s-blank-name",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
         }
       ],
@@ -366,7 +415,9 @@
             "packages/backend-node/test/surface-names-domain.test.ts",
             "docs/step8-surface-names.md"
           ],
-          "caseIds": ["ids-names-srfc2s-decimal-fallback"]
+          "caseIds": [
+            "ids-names-srfc2s-decimal-fallback"
+          ]
         },
         {
           "id": "srfc2s-failed-refresh-state",
@@ -402,16 +453,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfc2s -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": ["local-d04-849d5336-node", "ci-d04-849d5336-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfc2s -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfc2s -> actual srfc2s_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": ["local-d04-849d5336-wasm", "ci-d04-849d5336-wasm"]
+          "executions": []
         }
       }
     },
@@ -423,72 +486,124 @@
       "scenarios": [
         {
           "caseId": "ids-names-srfcss-body-scoped-aliases",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
         },
         {
           "caseId": "ids-names-srfcss-pool-clear-reload",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare before load, after replacement, after clear and after reloading the original."
         },
         {
           "caseId": "ids-names-srfcss-decimal-fallback",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe decimal text and false isName, independently from a pool name with numeric spelling."
         },
         {
           "caseId": "ids-names-srfcss-capacity-prefix",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Check fixed-byte prefixes of mixed case, decimal fallback and edge capacities."
         },
         {
           "caseId": "ids-names-srfcss-maximum-name",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Pool name wider than 36 bytes and a name ending in a tab compare through the exact-output oracle."
         },
         {
           "caseId": "ids-names-srfcss-short-capacity-1",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfcss-short-capacity-0",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfcss-short-capacity-neg3",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Real toolkit size error with physical storage even for nonpositive requested length. Actual CSPICE diagnostic STRINGTOOSHORT."
         },
         {
           "caseId": "ids-names-srfcss-body-lookup",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare recognized names, numeric strings and unknown bodies without collapsing decimal fallbacks."
         },
         {
           "caseId": "ids-names-srfcss-empty-body",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the genuine empty body string error. Actual CSPICE diagnostic EMPTYSTRING."
         },
         {
           "caseId": "ids-names-srfcss-missing-variables",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
         },
         {
           "caseId": "ids-names-srfcss-wrong-type",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
         },
         {
           "caseId": "ids-names-srfcss-unequal-lengths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
         },
         {
           "caseId": "ids-names-srfcss-blank-name",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
         }
       ],
@@ -516,7 +631,9 @@
             "packages/backend-node/test/surface-names-domain.test.ts",
             "docs/step8-surface-names.md"
           ],
-          "caseIds": ["ids-names-srfcss-decimal-fallback"]
+          "caseIds": [
+            "ids-names-srfcss-decimal-fallback"
+          ]
         },
         {
           "id": "srfcss-failed-refresh-state",
@@ -552,16 +669,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfcss -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": ["local-d04-849d5336-node", "ci-d04-849d5336-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfcss -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfcss -> actual srfcss_c. Independent comparison uses the independent typed caller buffer and name flag in the locked library.",
-          "executions": ["local-d04-849d5336-wasm", "ci-d04-849d5336-wasm"]
+          "executions": []
         }
       }
     },
@@ -573,57 +702,99 @@
       "scenarios": [
         {
           "caseId": "ids-names-srfs2c-body-scoped-aliases",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
         },
         {
           "caseId": "ids-names-srfs2c-pool-clear-reload",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare before load, after replacement, after clear and after reloading the original."
         },
         {
           "caseId": "ids-names-srfs2c-numeric-parser",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "CSPICE parses numeric spellings after name lookup; compare overflow, decimal, exponent, signs, and missing name."
         },
         {
           "caseId": "ids-names-srfs2c-precedence-remap",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Distinguish normalized duplicate names, assigned numeric spellings, case, repeats, integer endpoints and trailing blanks."
         },
         {
           "caseId": "ids-names-srfs2c-empty-surface",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A zero-length input must remain a toolkit error. Actual CSPICE diagnostic EMPTYSTRING."
         },
         {
           "caseId": "ids-names-srfs2c-body-lookup",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare recognized names, numeric strings and unknown bodies without collapsing decimal fallbacks."
         },
         {
           "caseId": "ids-names-srfs2c-empty-body",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "Check the genuine empty body string error. Actual CSPICE diagnostic EMPTYSTRING."
         },
         {
           "caseId": "ids-names-srfs2c-missing-variables",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
         },
         {
           "caseId": "ids-names-srfs2c-wrong-type",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
         },
         {
           "caseId": "ids-names-srfs2c-unequal-lengths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
         },
         {
           "caseId": "ids-names-srfs2c-blank-name",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
         }
       ],
@@ -651,7 +822,9 @@
             "packages/backend-node/test/surface-names-domain.test.ts",
             "docs/step8-surface-names.md"
           ],
-          "caseIds": ["ids-names-srfs2c-numeric-parser"]
+          "caseIds": [
+            "ids-names-srfs2c-numeric-parser"
+          ]
         },
         {
           "id": "srfs2c-failed-refresh-state",
@@ -671,16 +844,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfs2c -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": ["local-d04-849d5336-node", "ci-d04-849d5336-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfs2c -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfs2c -> actual srfs2c_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": ["local-d04-849d5336-wasm", "ci-d04-849d5336-wasm"]
+          "executions": []
         }
       }
     },
@@ -692,47 +877,82 @@
       "scenarios": [
         {
           "caseId": "ids-names-srfscc-body-scoped-aliases",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Observe both body-scoped duplicates, preferred spelling and old aliases."
         },
         {
           "caseId": "ids-names-srfscc-pool-clear-reload",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Compare before load, after replacement, after clear and after reloading the original."
         },
         {
           "caseId": "ids-names-srfscc-numeric-parser",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "CSPICE parses numeric spellings after name lookup; compare overflow, decimal, exponent, signs, and missing name."
         },
         {
           "caseId": "ids-names-srfscc-precedence-remap",
-          "coverage": ["success", "edge", "state"],
+          "coverage": [
+            "success",
+            "edge",
+            "state"
+          ],
           "observes": "Distinguish normalized duplicate names, assigned numeric spellings, case, repeats, integer endpoints and trailing blanks."
         },
         {
           "caseId": "ids-names-srfscc-empty-surface",
-          "coverage": ["error", "edge"],
+          "coverage": [
+            "error",
+            "edge"
+          ],
           "observes": "A zero-length input must remain a toolkit error. Actual CSPICE diagnostic EMPTYSTRING."
         },
         {
           "caseId": "ids-names-srfscc-missing-variables",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADSURFACEMAP."
         },
         {
           "caseId": "ids-names-srfscc-wrong-type",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BADVARIABLETYPE."
         },
         {
           "caseId": "ids-names-srfscc-unequal-lengths",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic ARRAYSIZEMISMATCH."
         },
         {
           "caseId": "ids-names-srfscc-blank-name",
-          "coverage": ["error", "edge", "state"],
+          "coverage": [
+            "error",
+            "edge",
+            "state"
+          ],
           "observes": "Observe actual malformed surface mapping diagnosis on a recognized body. Actual CSPICE diagnostic BLANKNAMEASSIGNED."
         }
       ],
@@ -760,7 +980,9 @@
             "packages/backend-node/test/surface-names-domain.test.ts",
             "docs/step8-surface-names.md"
           ],
-          "caseIds": ["ids-names-srfscc-numeric-parser"]
+          "caseIds": [
+            "ids-names-srfscc-numeric-parser"
+          ]
         },
         {
           "id": "srfscc-failed-refresh-state",
@@ -780,16 +1002,28 @@
       ],
       "backends": {
         "node": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfscc -> IDs/names adapter -> registered native addon under the shared CSPICE lock -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": ["local-d04-849d5336-node", "ci-d04-849d5336-node"]
+          "executions": []
         },
         "wasm": {
-          "history": ["unreviewed", "needs-repair", "reviewed", "verified"],
+          "history": [
+            "unreviewed",
+            "needs-repair",
+            "reviewed",
+            "verified",
+            "reviewed"
+          ],
           "route": "direct",
           "trace": "raw.srfscc -> IDs/names adapter -> bounded WASM buffers and exported shim -> shared tspice_srfscc -> actual srfscc_c. Independent comparison uses the locked SpiceyPy wrapper with scoped no_found_check.",
-          "executions": ["local-d04-849d5336-wasm", "ci-d04-849d5336-wasm"]
+          "executions": []
         }
       }
     }

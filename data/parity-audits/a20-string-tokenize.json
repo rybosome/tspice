@@ -719,7 +719,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-node",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "node",
@@ -795,7 +796,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -869,7 +871,8 @@
       ],
       "id": "local-cp02-44c6136d16c7-wasm",
       "kind": "local",
-      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344"
+      "observation": "The isolated Linux Node 22 validation runner exercised both complete lanes on 44c6136d16c7325e07e5e233988ffb02dab543ee. The native-required lane completed 5264 comparisons without unexpected skips. https://github.com/rybosome/tspice/actions/runs/45043538272/job/137273010344",
+      "historical": true
     },
     {
       "backend": "wasm",
@@ -945,7 +948,8 @@
       "kind": "ci",
       "commit": "b826f8e1b3d9afff24f291c885b6380ff82a8689",
       "url": "https://github.com/rybosome/tspice/actions/runs/45048703356/job/137288855808",
-      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips."
+      "observation": "The canonical Linux Node 22 native-required job tested the source revision tree and exercised 5264 live comparisons without unexpected skips.",
+      "historical": true
     }
   ],
   "routines": [
@@ -957,42 +961,63 @@
       "scenarios": [
         {
           "caseId": "strings-nextwd-spaces",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Observe the first word and the entire remaining string including interior runs of spaces."
         },
         {
           "caseId": "strings-nextwd-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Blank and empty text return two defined empty strings."
         },
         {
           "caseId": "strings-nextwd-ascii-controls",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Tabs and newlines are distinct from space and stay visible in each output."
         },
         {
           "caseId": "strings-nextwd-explicit-capacity",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Independent next and remainder capacities truncate different fields."
         },
         {
           "caseId": "strings-nextwd-unicode",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Complete UTF-8 scalar boundaries, mixed byte lengths, and adjacent blanks."
         },
         {
           "caseId": "strings-nextwd-short-next",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The canonical width error is observed even before the empty-input path."
         },
         {
           "caseId": "strings-nextwd-short-rest",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The canonical width error is observed even before the empty-input path."
         },
         {
           "caseId": "strings-nextwd-negative-rest",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "The canonical width error is observed even before the empty-input path."
         }
       ],
@@ -1008,7 +1033,9 @@
           "summary": "SpiceyPy 6.0.3 has no top-level wrapper to supply both the C output buffer(s) and original byte-location semantics.",
           "repair": "Bind nextwd_c in the same locked independent library with exact C argument types. Read only bytes before the NUL terminator and retain each additional output.",
           "status": "repaired",
-          "caseIds": ["strings-nextwd-unicode"],
+          "caseIds": [
+            "strings-nextwd-unicode"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1027,14 +1054,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nextwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1045,14 +1070,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nextwd -> module-local WASM byte buffers and typed export -> tspice_nextwd -> nextwd_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1064,32 +1087,49 @@
       "scenarios": [
         {
           "caseId": "strings-nthwd-ordinals",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Locate each word and distinguish zero-based byte locations, missing ordinals and truncation."
         },
         {
           "caseId": "strings-nthwd-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "No word of an empty or all-space string exists."
         },
         {
           "caseId": "strings-nthwd-utf8-byte-locations",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Multibyte code points before a hit distinguish byte offsets from JS indices."
         },
         {
           "caseId": "strings-nthwd-truncated-word",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A shortened word retains its original start location."
         },
         {
           "caseId": "strings-nthwd-signed-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Extreme ordinals outside the word count remain legitimate misses."
         },
         {
           "caseId": "strings-nthwd-output-capacity",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "A zero or negative caller buffer fails with the toolkit diagnostic."
         }
       ],
@@ -1105,7 +1145,9 @@
           "summary": "SpiceyPy 6.0.3 has no top-level wrapper to supply both the C output buffer(s) and original byte-location semantics.",
           "repair": "Bind nthwd_c in the same locked independent library with exact C argument types. Read only bytes before the NUL terminator and retain each additional output.",
           "status": "repaired",
-          "caseIds": ["strings-nthwd-utf8-byte-locations"],
+          "caseIds": [
+            "strings-nthwd-utf8-byte-locations"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1124,14 +1166,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nthwd -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1142,14 +1182,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.nthwd -> module-local WASM byte buffers and typed export -> tspice_nthwd -> nthwd_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1161,47 +1199,72 @@
       "scenarios": [
         {
           "caseId": "strings-lparse-delimiters",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Leading, consecutive and trailing separators produce exact ordered empty entries."
         },
         {
           "caseId": "strings-lparse-space-semantics",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare blank separators and blanks adjacent to punctuation."
         },
         {
           "caseId": "strings-lparse-separators",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Single initial delimiter byte and set-of-delimiters semantics can select different tokens."
         },
         {
           "caseId": "strings-lparse-widths",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Explicit small byte rows preserve count while shortening content and retaining terminal tab."
         },
         {
           "caseId": "strings-lparse-maximum-count",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "nmax truncates an otherwise longer list independently of row width."
         },
         {
           "caseId": "strings-lparse-no-room",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A nonpositive count returns no rows before input delimiter and row-width checks."
         },
         {
           "caseId": "strings-lparse-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Empty input with a valid output width returns one empty row before checking delimiters."
         },
         {
           "caseId": "strings-lparse-empty-delimiter",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Nonempty input with room requires a delimiter."
         },
         {
           "caseId": "strings-lparse-too-short-row",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Positive caller capacity validates row width before even empty input."
         }
       ],
@@ -1217,7 +1280,10 @@
           "summary": "The locked convenience wrappers cannot retain the complete public output representation: LPARSE chooses its own width and both high-level decoders strip terminal whitespace.",
           "repair": "Call lparse_c with the signed row count and effective byte width on zeroed, non-null storage, read exactly n rows independently and decode their bytes strictly.",
           "status": "repaired",
-          "caseIds": ["strings-lparse-widths", "strings-lparse-no-room"],
+          "caseIds": [
+            "strings-lparse-widths",
+            "strings-lparse-no-room"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1236,14 +1302,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lparse -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1254,14 +1318,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lparse -> module-local WASM byte buffers and typed export -> tspice_lparse -> lparse_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1273,47 +1335,72 @@
       "scenarios": [
         {
           "caseId": "strings-lparsm-delimiters",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Leading, consecutive and trailing separators produce exact ordered empty entries."
         },
         {
           "caseId": "strings-lparsm-space-semantics",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare blank separators and blanks adjacent to punctuation."
         },
         {
           "caseId": "strings-lparsm-separators",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Single initial delimiter byte and set-of-delimiters semantics can select different tokens."
         },
         {
           "caseId": "strings-lparsm-widths",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Explicit small byte rows preserve count while shortening content and retaining terminal tab."
         },
         {
           "caseId": "strings-lparsm-maximum-count",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "nmax truncates an otherwise longer list independently of row width."
         },
         {
           "caseId": "strings-lparsm-no-room",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A nonpositive count returns no rows before input delimiter and row-width checks."
         },
         {
           "caseId": "strings-lparsm-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Empty input with a valid output width returns one empty row before checking delimiters."
         },
         {
           "caseId": "strings-lparsm-empty-delimiter",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Nonempty input with room requires a delimiter."
         },
         {
           "caseId": "strings-lparsm-too-short-row",
-          "coverage": ["error"],
+          "coverage": [
+            "error"
+          ],
           "observes": "Positive caller capacity validates row width before even empty input."
         }
       ],
@@ -1329,7 +1416,10 @@
           "summary": "The locked convenience wrappers cannot retain the complete public output representation: LPARSE chooses its own width and both high-level decoders strip terminal whitespace.",
           "repair": "Call lparsm_c with the signed row count and effective byte width on zeroed, non-null storage, read exactly n rows independently and decode their bytes strictly.",
           "status": "repaired",
-          "caseIds": ["strings-lparsm-widths", "strings-lparsm-no-room"],
+          "caseIds": [
+            "strings-lparsm-widths",
+            "strings-lparsm-no-room"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1348,14 +1438,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lparsm -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1366,14 +1454,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lparsm -> module-local WASM byte buffers and typed export -> tspice_lparsm -> lparsm_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1385,32 +1471,50 @@
       "scenarios": [
         {
           "caseId": "strings-lx4dec-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior."
         },
         {
           "caseId": "strings-lx4dec-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor."
         },
         {
           "caseId": "strings-lx4dec-whole-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Both signed limits and their neighbors use the documented out-of-range scan result."
         },
         {
           "caseId": "strings-lx4dec-utf8",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A numeric or quoted token following multibyte text is recognized at a byte index."
         },
         {
           "caseId": "strings-lx4dec-number-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Signed/unsigned integers, fractional parts, exponents and incomplete prefixes separate the four scanners."
         },
         {
           "caseId": "strings-lx4dec-lexical-only",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A long digit run and large exponent are recognized by range without converting to a numeric value."
         }
       ],
@@ -1426,7 +1530,9 @@
           "summary": "The public signed32 start can make the translated one-based addition or end-index subtraction unrepresentable. LX4DEC also increments its Fortran start before its bounds check.",
           "repair": "Invoke the actual scanner at a safely equivalent out-of-range position, then express its observed miss relative to the original start. Preserve the separately defined empty result. The JS last field can represent −2147483649 exactly.",
           "status": "repaired",
-          "caseIds": ["strings-lx4dec-whole-extents"],
+          "caseIds": [
+            "strings-lx4dec-whole-extents"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1439,7 +1545,9 @@
           "summary": "The initial real Node grammar workflow rejected the valid pair (3,3) on \"-.25\" by forcing nchar to equal the inclusive span. The locked oracle and compiled WASM retained both fields.",
           "repair": "Validate the range of the two returned integers independently and preserve their values. Real addon tests cover positive and negative signed mantissas, nonzero offset and complete versus incomplete exponent. The original workflow and comparator remain intact.",
           "status": "repaired",
-          "caseIds": ["strings-lx4dec-number-grammar"],
+          "caseIds": [
+            "strings-lx4dec-number-grammar"
+          ],
           "evidence": [
             "packages/backend-node/test/string-tokenization-domain.test.ts",
             "packages/backend-node/src/domains/strings.ts",
@@ -1458,14 +1566,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4dec -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1476,14 +1582,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4dec -> module-local WASM byte buffers and typed export -> tspice_lx4dec -> lx4dec_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1495,32 +1599,50 @@
       "scenarios": [
         {
           "caseId": "strings-lx4num-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior."
         },
         {
           "caseId": "strings-lx4num-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor."
         },
         {
           "caseId": "strings-lx4num-whole-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Both signed limits and their neighbors use the documented out-of-range scan result."
         },
         {
           "caseId": "strings-lx4num-utf8",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A numeric or quoted token following multibyte text is recognized at a byte index."
         },
         {
           "caseId": "strings-lx4num-number-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Signed/unsigned integers, fractional parts, exponents and incomplete prefixes separate the four scanners."
         },
         {
           "caseId": "strings-lx4num-lexical-only",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A long digit run and large exponent are recognized by range without converting to a numeric value."
         }
       ],
@@ -1536,7 +1658,9 @@
           "summary": "The public signed32 start can make the translated one-based addition or end-index subtraction unrepresentable. LX4DEC also increments its Fortran start before its bounds check.",
           "repair": "Invoke the actual scanner at a safely equivalent out-of-range position, then express its observed miss relative to the original start. Preserve the separately defined empty result. The JS last field can represent −2147483649 exactly.",
           "status": "repaired",
-          "caseIds": ["strings-lx4num-whole-extents"],
+          "caseIds": [
+            "strings-lx4num-whole-extents"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1549,7 +1673,9 @@
           "summary": "The initial real Node grammar workflow rejected the valid pair (3,3) on \"-.25\" by forcing nchar to equal the inclusive span. The locked oracle and compiled WASM retained both fields.",
           "repair": "Validate the range of the two returned integers independently and preserve their values. Real addon tests cover positive and negative signed mantissas, nonzero offset and complete versus incomplete exponent. The original workflow and comparator remain intact.",
           "status": "repaired",
-          "caseIds": ["strings-lx4num-number-grammar"],
+          "caseIds": [
+            "strings-lx4num-number-grammar"
+          ],
           "evidence": [
             "packages/backend-node/test/string-tokenization-domain.test.ts",
             "packages/backend-node/src/domains/strings.ts",
@@ -1568,14 +1694,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4num -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1586,14 +1710,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4num -> module-local WASM byte buffers and typed export -> tspice_lx4num -> lx4num_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1605,32 +1727,50 @@
       "scenarios": [
         {
           "caseId": "strings-lx4sgn-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior."
         },
         {
           "caseId": "strings-lx4sgn-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor."
         },
         {
           "caseId": "strings-lx4sgn-whole-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Both signed limits and their neighbors use the documented out-of-range scan result."
         },
         {
           "caseId": "strings-lx4sgn-utf8",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A numeric or quoted token following multibyte text is recognized at a byte index."
         },
         {
           "caseId": "strings-lx4sgn-number-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Signed/unsigned integers, fractional parts, exponents and incomplete prefixes separate the four scanners."
         },
         {
           "caseId": "strings-lx4sgn-lexical-only",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A long digit run and large exponent are recognized by range without converting to a numeric value."
         }
       ],
@@ -1646,7 +1786,9 @@
           "summary": "The public signed32 start can make the translated one-based addition or end-index subtraction unrepresentable. LX4DEC also increments its Fortran start before its bounds check.",
           "repair": "Invoke the actual scanner at a safely equivalent out-of-range position, then express its observed miss relative to the original start. Preserve the separately defined empty result. The JS last field can represent −2147483649 exactly.",
           "status": "repaired",
-          "caseIds": ["strings-lx4sgn-whole-extents"],
+          "caseIds": [
+            "strings-lx4sgn-whole-extents"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1665,14 +1807,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4sgn -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1683,14 +1823,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4sgn -> module-local WASM byte buffers and typed export -> tspice_lx4sgn -> lx4sgn_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1702,32 +1840,50 @@
       "scenarios": [
         {
           "caseId": "strings-lx4uns-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior."
         },
         {
           "caseId": "strings-lx4uns-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor."
         },
         {
           "caseId": "strings-lx4uns-whole-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Both signed limits and their neighbors use the documented out-of-range scan result."
         },
         {
           "caseId": "strings-lx4uns-utf8",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A numeric or quoted token following multibyte text is recognized at a byte index."
         },
         {
           "caseId": "strings-lx4uns-number-grammar",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Signed/unsigned integers, fractional parts, exponents and incomplete prefixes separate the four scanners."
         },
         {
           "caseId": "strings-lx4uns-lexical-only",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A long digit run and large exponent are recognized by range without converting to a numeric value."
         }
       ],
@@ -1743,7 +1899,10 @@
           "summary": "The public signed32 start can make the translated one-based addition or end-index subtraction unrepresentable. LX4DEC also increments its Fortran start before its bounds check. N0067 returns without writing outputs for empty text and the high-level Python wrapper zero-initializes both slots.",
           "repair": "Invoke the actual scanner at a safely equivalent out-of-range position, then express its observed miss relative to the original start. Preserve the separately defined empty result. The JS last field can represent −2147483649 exactly. Seed last and nchar to the documented miss and verify the real locked C call preserves both.",
           "status": "repaired",
-          "caseIds": ["strings-lx4uns-whole-extents", "strings-lx4uns-empty"],
+          "caseIds": [
+            "strings-lx4uns-whole-extents",
+            "strings-lx4uns-empty"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1762,14 +1921,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4uns -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1780,14 +1937,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lx4uns -> module-local WASM byte buffers and typed export -> tspice_lx4uns -> lx4uns_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     },
@@ -1799,32 +1954,50 @@
       "scenarios": [
         {
           "caseId": "strings-lxqstr-empty",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Compare complete last and nchar outputs, including the per-routine empty-buffer behavior."
         },
         {
           "caseId": "strings-lxqstr-starts",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A hit only starts at the supplied zero-based byte index. Misses retain its predecessor."
         },
         {
           "caseId": "strings-lxqstr-whole-extents",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Both signed limits and their neighbors use the documented out-of-range scan result."
         },
         {
           "caseId": "strings-lxqstr-utf8",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "A numeric or quoted token following multibyte text is recognized at a byte index."
         },
         {
           "caseId": "strings-lxqstr-quoted",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Quoted strings, doubled quote, empty quoted string and unterminated text."
         },
         {
           "caseId": "strings-lxqstr-custom-delimiter",
-          "coverage": ["success", "edge"],
+          "coverage": [
+            "success",
+            "edge"
+          ],
           "observes": "Nonmatching delimiter, nonzero start and quoted UTF-8 payload."
         }
       ],
@@ -1840,7 +2013,9 @@
           "summary": "The public signed32 start can make the translated one-based addition or end-index subtraction unrepresentable. LX4DEC also increments its Fortran start before its bounds check.",
           "repair": "Invoke the actual scanner at a safely equivalent out-of-range position, then express its observed miss relative to the original start. Preserve the separately defined empty result. The JS last field can represent −2147483649 exactly.",
           "status": "repaired",
-          "caseIds": ["strings-lxqstr-whole-extents"],
+          "caseIds": [
+            "strings-lxqstr-whole-extents"
+          ],
           "evidence": [
             "packages/py-parity-checking/sidecars/spiceypy/src/py_parity_sidecar/token_oracle.py",
             "packages/backend-node/test/string-tokenization-domain.test.ts",
@@ -1859,14 +2034,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lxqstr -> typed UTF-8 Node adapter, native owned output under CSPICE mutex -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-node",
-            "ci-cp02-44c6136d16c7-node"
-          ]
+          "executions": []
         },
         "wasm": {
           "history": [
@@ -1877,14 +2050,12 @@
             "reviewed",
             "verified",
             "reviewed",
-            "verified"
+            "verified",
+            "reviewed"
           ],
           "route": "direct",
           "trace": "raw.lxqstr -> module-local WASM byte buffers and typed export -> tspice_lxqstr -> lxqstr_c. Every returned scientific field is observed.",
-          "executions": [
-            "local-cp02-44c6136d16c7-wasm",
-            "ci-cp02-44c6136d16c7-wasm"
-          ]
+          "executions": []
         }
       }
     }
